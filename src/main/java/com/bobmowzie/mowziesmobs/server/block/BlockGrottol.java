@@ -9,14 +9,14 @@ import net.minecraft.world.level.block.HorizontalBlock;
 import net.minecraft.world.item.BlockItemUseContext;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.resources.*;
+import net.minecraft.sounds.*;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.math.shapes.ISelectionContext;
-import net.minecraft.resources.math.shapes.VoxelShape;
-import net.minecraft.resources.math.shapes.VoxelShapes;
+import net.minecraft.util.shapes.ISelectionContext;
+import net.minecraft.util.shapes.VoxelShape;
+import net.minecraft.util.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
+import net.minecraft.world.level.LevelGenLevelReader;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.stream.Collector;
@@ -53,12 +53,12 @@ public class BlockGrottol extends HorizontalBlock {
 
     @Override
     @Deprecated
-    public boolean isValidPosition(BlockState state, IWorldReader world, BlockPos pos) {
+    public boolean isValidPosition(BlockState state, WorldGenLevelReader world, BlockPos pos) {
         return super.isValidPosition(state, world, pos) && hasSupport(world, pos);
     }
 
     @Override
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
         if (hasSupport(world, pos)) {
             world.removeBlock(pos, false);
         }
@@ -84,7 +84,7 @@ public class BlockGrottol extends HorizontalBlock {
     }*/
 
     private static boolean hasSupport(IBlockReader world, BlockPos pos) {
-        return world.getBlockState(pos.down()).getMaterial().isSolid();
+        return level.getBlockState(pos.below()).getMaterial().isSolid();
     }
 
     public enum Variant implements IStringSerializable {

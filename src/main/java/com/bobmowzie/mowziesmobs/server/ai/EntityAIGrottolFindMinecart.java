@@ -24,7 +24,7 @@ public final class EntityAIGrottolFindMinecart extends Goal {
     public EntityAIGrottolFindMinecart(EntityGrottol grottol) {
         this.grottol = grottol;
         this.sorter = Comparator.comparing(grottol::getDistanceSq);
-        this.predicate = minecart -> minecart != null && minecart.isAlive() && !minecart.isBeingRidden() && EntityGrottol.isBlockRail(minecart.world.getBlockState(minecart.getPosition()).getBlock());
+        this.predicate = minecart -> minecart != null && minecart.isAlive() && !minecart.isBeingRidden() && EntityGrottol.isBlockRail(minecart.level.getBlockState(minecart.getPosition()).getBlock());
         setMutexFlags(EnumSet.of(Flag.LOOK, Flag.MOVE));
     }
 
@@ -48,12 +48,12 @@ public final class EntityAIGrottolFindMinecart extends Goal {
     @Override
     public void startExecuting() {
         time = 0;
-        grottol.getNavigator().tryMoveToEntityLiving(minecart, 0.5D);
+        grottol.getNavigation().tryMoveToEntityLiving(minecart, 0.5D);
     }
 
     @Override
     public void resetTask() {
-        grottol.getNavigator().clearPath();
+        grottol.getNavigation().clearPath();
     }
 
     @Override
@@ -61,7 +61,7 @@ public final class EntityAIGrottolFindMinecart extends Goal {
         if (grottol.getDistanceSq(minecart) > 1.45D * 1.45D) {
             grottol.getLookController().setLookPositionWithEntity(minecart, 10.0F, grottol.getVerticalFaceSpeed());
             if (++time % 40 == 0) {
-                grottol.getNavigator().tryMoveToEntityLiving(minecart, 0.5D);
+                grottol.getNavigation().tryMoveToEntityLiving(minecart, 0.5D);
             }
         } else {
             grottol.startRiding(minecart, true);

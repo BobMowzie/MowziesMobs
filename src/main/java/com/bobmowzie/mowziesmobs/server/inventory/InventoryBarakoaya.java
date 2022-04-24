@@ -7,7 +7,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.NBTUtil;
-import net.minecraft.resources.NonNullList;
+import net.minecraft.sounds.NonNullList;
 
 import java.util.List;
 

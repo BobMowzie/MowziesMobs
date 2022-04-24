@@ -7,8 +7,8 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentType;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -20,13 +20,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemTier;
 import net.minecraft.world.item.ToolItem;
-import net.minecraft.resources.math.AxisAlignedBB;
-import net.minecraft.resources.math.RayTraceContext;
-import net.minecraft.resources.math.RayTraceResult;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.RayTraceContext;
+import net.minecraft.util.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.resources.text.ITextComponent;
-import net.minecraft.resources.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -42,9 +42,9 @@ public class ItemSpear extends MowzieToolItem {
         return enchantment.type == EnchantmentType.WEAPON || enchantment.type == EnchantmentType.BREAKABLE;
     }
 
-    public static LivingEntity raytraceEntities(World world, Player player, double range) {
+    public static LivingEntity raytraceEntities(Level world, Player player, double range) {
         ItemSpear.HitResult result = new ItemSpear.HitResult();
-        Vec3 pos = new Vec3(player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ());
+        Vec3 pos = new Vec3(player.getX(), player.getY() + player.getEyeHeight(), player.getZ());
         Vec3 segment = player.getLookVec();
         segment = pos.add(segment.x * range, segment.y * range, segment.z * range);
         result.setBlockHit(world.rayTraceBlocks(new RayTraceContext(pos, segment, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, player)));
@@ -79,10 +79,10 @@ public class ItemSpear extends MowzieToolItem {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.0").setStyle(ItemHandler.TOOLTIP_STYLE));
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.1").setStyle(ItemHandler.TOOLTIP_STYLE));
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<TextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
+        tooltip.add(new TextComponent(getDescriptionId() + ".text.0").setStyle(ItemHandler.TOOLTIP_STYLE));
+        tooltip.add(new TextComponent(getDescriptionId() + ".text.1").setStyle(ItemHandler.TOOLTIP_STYLE));
     }
 
     @Override
@@ -91,15 +91,15 @@ public class ItemSpear extends MowzieToolItem {
     }
 
     public static class HitResult {
-        private RayTraceResult blockHit;
+        private HitResult blockHit;
 
         private final List<LivingEntity> entities = new ArrayList<>();
 
-        public RayTraceResult getBlockHit() {
+        public HitResult getBlockHit() {
             return blockHit;
         }
 
-        public void setBlockHit(RayTraceResult blockHit) {
+        public void setBlockHit(HitResult blockHit) {
             this.blockHit = blockHit;
         }
 

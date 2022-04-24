@@ -4,7 +4,7 @@ import net.minecraft.world.level.block.AbstractRailBlock;
 import net.minecraft.world.entity.item.minecart.AbstractMinecart;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vector3i;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 import java.util.function.Consumer;
 
@@ -22,16 +22,16 @@ public final class BlackPinkRailLine implements Consumer<AbstractMinecart> {
         state = next(minecart.world, minecart);
     }
 
-    private State next(World world, AbstractMinecart minecart) {
-        BlockPos pos = getRailPosition(world, new BlockPos(minecart.getPositionVec()));
-        if (AbstractRailBlock.isRail(world.getBlockState(pos))) {
+    private State next(Level world, AbstractMinecart minecart) {
+        BlockPos pos = getRailPosition(world, new BlockPos(minecart.position()));
+        if (AbstractRailBlock.isRail(level.getBlockState(pos))) {
             return state.apply(world, minecart, pos);
         }
         return state.derail();
     }
 
-    private static BlockPos getRailPosition(World world, BlockPos pos) {
-        BlockPos below = pos.down();
+    private static BlockPos getRailPosition(Level world, BlockPos pos) {
+        BlockPos below = pos.below();
         return AbstractRailBlock.isRail(world, below) ? below : pos;
     }
 
@@ -40,14 +40,14 @@ public final class BlackPinkRailLine implements Consumer<AbstractMinecart> {
     }
 
     private abstract class State {
-        abstract State apply(World world, AbstractMinecart minecart, BlockPos pos);
+        abstract State apply(Level world, AbstractMinecart minecart, BlockPos pos);
 
         abstract State derail();
     }
 
     private final class StateAcquireVertex extends State {
         @Override
-        public State apply(World world, AbstractMinecart minecart, BlockPos vertex) {
+        public State apply(Level world, AbstractMinecart minecart, BlockPos vertex) {
             return new StateAcquireEdge(vertex);
         }
 
@@ -65,7 +65,7 @@ public final class BlackPinkRailLine implements Consumer<AbstractMinecart> {
         }
 
         @Override
-        public State apply(World world, AbstractMinecart minecart, BlockPos vertex) {
+        public State apply(Level world, AbstractMinecart minecart, BlockPos vertex) {
             return new StateSearch(vertex.subtract(this.vertex), vertex);
         }
 
@@ -99,7 +99,7 @@ public final class BlackPinkRailLine implements Consumer<AbstractMinecart> {
         }
 
         @Override
-        public State apply(World world, AbstractMinecart minecart, BlockPos vertex) {
+        public State apply(Level world, AbstractMinecart minecart, BlockPos vertex) {
             if (!this.vertex.equals(vertex)) {
                 Vector3i edge = vertex.subtract(this.vertex);
                 int ordinal = getOrdinal(this.edge, edge);
@@ -114,7 +114,7 @@ public final class BlackPinkRailLine implements Consumer<AbstractMinecart> {
         }
 
         private int getOrdinal(Vector3i v0, Vector3i v1) {
-            return 1 + (v1.getZ() * v0.getX() - v1.getX() * v0.getZ()) + ((v0.getX() * v1.getX() + v0.getZ() * v1.getZ()) & 2);
+            return 1 + (v1.z() * v0.x() - v1.x() * v0.z()) + ((v0.x() * v1.x() + v0.z() * v1.z()) & 2);
         }
 
         @Override

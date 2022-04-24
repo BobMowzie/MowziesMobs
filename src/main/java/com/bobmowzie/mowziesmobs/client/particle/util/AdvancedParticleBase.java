@@ -7,11 +7,11 @@ import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.particles.ParticleType;
-import net.minecraft.resources.math.MathHelper;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Quaternion;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.Vector3f;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -49,9 +49,9 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
             component.init(this);
         }
 
-        this.prevPosX = this.posX;
+        this.xo = this.posX;
         this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
+        this.zo = this.posZ;
         this.prevRed = this.red;
         this.prevGreen = this.green;
         this.prevBlue = this.blue;
@@ -84,9 +84,9 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
         prevAlpha = alpha;
         prevScale = scale;
         rotation.setPrevValues();
-        this.prevPosX = this.posX;
+        this.xo = this.posX;
         this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
+        this.zo = this.posZ;
         prevMotionX = motionX;
         prevMotionY = motionY;
         prevMotionZ = motionZ;
@@ -107,7 +107,7 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
         }
 
         if (ribbon != null) {
-            ribbon.setPosition(posX, posY, posZ);
+            ribbon.setPos(posX, posY, posZ);
             ribbon.positions[0] = new Vec3(posX, posY, posZ);
             ribbon.prevPositions[0] = getPrevPos();
         }
@@ -142,9 +142,9 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
         }
 
         Vec3 Vec3 = renderInfo.getProjectedView();
-        float f = (float)(MathHelper.lerp(partialTicks, this.prevPosX, this.posX) - Vec3.getX());
-        float f1 = (float)(MathHelper.lerp(partialTicks, this.prevPosY, this.posY) - Vec3.getY());
-        float f2 = (float)(MathHelper.lerp(partialTicks, this.prevPosZ, this.posZ) - Vec3.getZ());
+        float f = (float)(Mth.lerp(partialTicks, this.xo, this.posX) - Vec3.x());
+        float f1 = (float)(Mth.lerp(partialTicks, this.prevPosY, this.posY) - Vec3.y());
+        float f2 = (float)(Mth.lerp(partialTicks, this.zo, this.posZ) - Vec3.z());
 
         Quaternion quaternion = new Quaternion(0.0F, 0.0F, 0.0F, 1.0F);
         if (rotation instanceof ParticleRotation.FaceCamera) {
@@ -153,7 +153,7 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
                 quaternion = renderInfo.getRotation();
             } else {
                 quaternion = new Quaternion(renderInfo.getRotation());
-                float f3 = MathHelper.lerp(partialTicks, faceCameraRot.prevFaceCameraAngle, faceCameraRot.faceCameraAngle);
+                float f3 = Mth.lerp(partialTicks, faceCameraRot.prevFaceCameraAngle, faceCameraRot.faceCameraAngle);
                 quaternion.multiply(Vector3f.ZP.rotation(f3));
             }
         }
@@ -175,7 +175,7 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
             double y = orientRot.prevOrientation.y + (orientRot.orientation.y - orientRot.prevOrientation.y) * partialTicks;
             double z = orientRot.prevOrientation.z + (orientRot.orientation.z - orientRot.prevOrientation.z) * partialTicks;
             float pitch = (float) Math.asin(-y);
-            float yaw = (float) (MathHelper.atan2(x, z));
+            float yaw = (float) (Mth.atan2(x, z));
             Quaternion quatX = new Quaternion(pitch, 0, 0, false);
             Quaternion quatY = new Quaternion(0, yaw, 0, false);
             quaternion.multiply(quatY);
@@ -197,10 +197,10 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
         float f5 = this.getMinV();
         float f6 = this.getMaxV();
         int j = this.getBrightnessForRender(partialTicks);
-        buffer.pos(avector3f[0].getX(), avector3f[0].getY(), avector3f[0].getZ()).tex(f8, f6).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
-        buffer.pos(avector3f[1].getX(), avector3f[1].getY(), avector3f[1].getZ()).tex(f8, f5).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
-        buffer.pos(avector3f[2].getX(), avector3f[2].getY(), avector3f[2].getZ()).tex(f7, f5).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
-        buffer.pos(avector3f[3].getX(), avector3f[3].getY(), avector3f[3].getZ()).tex(f7, f6).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
+        buffer.pos(avector3f[0].x(), avector3f[0].y(), avector3f[0].z()).tex(f8, f6).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
+        buffer.pos(avector3f[1].x(), avector3f[1].y(), avector3f[1].z()).tex(f8, f5).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
+        buffer.pos(avector3f[2].x(), avector3f[2].y(), avector3f[2].z()).tex(f7, f5).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
+        buffer.pos(avector3f[3].x(), avector3f[3].y(), avector3f[3].z()).tex(f7, f6).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
 
         for (ParticleComponent component : components) {
             component.postRender(this, buffer, renderInfo, partialTicks, j);
@@ -211,7 +211,7 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
         return age;
     }
 
-    public double getPosX() {
+    public double getX() {
         return posX;
     }
 
@@ -219,7 +219,7 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
         setPosition(posX, this.posY, this.posZ);
     }
 
-    public double getPosY() {
+    public double getY() {
         return posY;
     }
 
@@ -227,7 +227,7 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
         setPosition(this.posX, posY, this.posZ);
     }
 
-    public double getPosZ() {
+    public double getZ() {
         return posZ;
     }
 
@@ -260,11 +260,11 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
     }
 
     public Vec3 getPrevPos() {
-        return new Vec3(prevPosX, prevPosY, prevPosZ);
+        return new Vec3(xo, prevPosY, zo);
     }
 
     public double getPrevPosX() {
-        return prevPosX;
+        return xo;
     }
 
     public double getPrevPosY() {
@@ -272,10 +272,10 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
     }
 
     public double getPrevPosZ() {
-        return prevPosZ;
+        return zo;
     }
 
-    public World getWorld() {
+    public Level getWorld() {
         return world;
     }
 
@@ -296,16 +296,16 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
         }
     }
 
-    public static void spawnParticle(World world, ParticleType<AdvancedParticleData> particle, double x, double y, double z, double motionX, double motionY, double motionZ, boolean faceCamera, double yaw, double pitch, double roll, double faceCameraAngle, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, boolean canCollide) {
+    public static void spawnParticle(Level world, ParticleType<AdvancedParticleData> particle, double x, double y, double z, double motionX, double motionY, double motionZ, boolean faceCamera, double yaw, double pitch, double roll, double faceCameraAngle, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, boolean canCollide) {
         spawnParticle(world, particle, x, y, z, motionX, motionY, motionZ, faceCamera, yaw, pitch, roll, faceCameraAngle, scale, r, g, b, a, drag, duration, emissive, canCollide, new ParticleComponent[]{});
     }
 
-    public static void spawnParticle(World world, ParticleType<AdvancedParticleData> particle, double x, double y, double z, double motionX, double motionY, double motionZ, boolean faceCamera, double yaw, double pitch, double roll, double faceCameraAngle, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, boolean canCollide, ParticleComponent[] components) {
+    public static void spawnParticle(Level world, ParticleType<AdvancedParticleData> particle, double x, double y, double z, double motionX, double motionY, double motionZ, boolean faceCamera, double yaw, double pitch, double roll, double faceCameraAngle, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, boolean canCollide, ParticleComponent[] components) {
         ParticleRotation rotation = faceCamera ? new ParticleRotation.FaceCamera((float) faceCameraAngle) : new ParticleRotation.EulerAngles((float)yaw, (float)pitch, (float)roll);
-        world.addParticle(new AdvancedParticleData(particle, rotation, scale, r, g, b, a, drag, duration, emissive, canCollide, components), x, y, z, motionX, motionY, motionZ);
+        level.addParticle(new AdvancedParticleData(particle, rotation, scale, r, g, b, a, drag, duration, emissive, canCollide, components), x, y, z, motionX, motionY, motionZ);
     }
 
-    public static void spawnParticle(World world, ParticleType<AdvancedParticleData> particle, double x, double y, double z, double motionX, double motionY, double motionZ, ParticleRotation rotation, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, boolean canCollide, ParticleComponent[] components) {
-        world.addParticle(new AdvancedParticleData(particle, rotation, scale, r, g, b, a, drag, duration, emissive, canCollide, components), x, y, z, motionX, motionY, motionZ);
+    public static void spawnParticle(Level world, ParticleType<AdvancedParticleData> particle, double x, double y, double z, double motionX, double motionY, double motionZ, ParticleRotation rotation, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, boolean canCollide, ParticleComponent[] components) {
+        level.addParticle(new AdvancedParticleData(particle, rotation, scale, r, g, b, a, drag, duration, emissive, canCollide, components), x, y, z, motionX, motionY, motionZ);
     }
 }

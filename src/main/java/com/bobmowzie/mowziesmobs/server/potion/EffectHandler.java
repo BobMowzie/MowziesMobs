@@ -34,6 +34,6 @@ public final class EffectHandler {
         MobEffectInstance effectInst = entity.getActivePotionEffect(effect);
         MobEffectInstance newEffect = new MobEffectInstance(effect, duration, amplifier, ambient, showParticles);
         if (effectInst != null) effectInst.combine(newEffect);
-        else entity.addPotionEffect(newEffect);
+        else entity.addEffect(newEffect);
     }
 }

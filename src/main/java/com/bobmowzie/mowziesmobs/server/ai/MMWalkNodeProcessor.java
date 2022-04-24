@@ -8,10 +8,10 @@ import net.minecraft.world.entity.MobEntity;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.pathfinding.WalkNodeProcessor;
-import net.minecraft.resources.Direction;
-import net.minecraft.resources.math.AxisAlignedBB;
+import net.minecraft.core.Direction;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.math.MathHelper;
+import net.minecraft.util.Mth;
 
 import javax.annotation.Nullable;
 import java.util.Set;
@@ -23,15 +23,15 @@ public class MMWalkNodeProcessor extends WalkNodeProcessor {
         AxisAlignedBB bounds = this.entity.getBoundingBox();
         if (this.getCanSwim() && this.entity.isInWater()) {
             y = (int) bounds.minY;
-            BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(MathHelper.floor(this.entity.posX), y, MathHelper.floor(this.entity.posZ));
+            BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(Mth.floor(this.entity.posX), y, Mth.floor(this.entity.posZ));
             for (Block block = this.blockaccess.getBlockState(pos).getBlock(); block == Blocks.FLOWING_WATER || block == Blocks.WATER; block = this.blockaccess.getBlockState(pos).getBlock()) {
                 pos.setY(++y);
             }
         } else if (this.entity.isOnGround()) {
-            y = MathHelper.floor(bounds.minY + 0.5D);
+            y = Mth.floor(bounds.minY + 0.5D);
         } else {
-            y = MathHelper.floor(this.entity.posY);
-            BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(MathHelper.floor(this.entity.posX), y, MathHelper.floor(this.entity.posZ));
+            y = Mth.floor(this.entity.posY);
+            BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(Mth.floor(this.entity.posX), y, Mth.floor(this.entity.posZ));
             while (y > 0 && (this.blockaccess.getBlockState(pos).getMaterial() == Material.AIR || this.blockaccess.getBlockState(pos).getBlock().isPassable(this.blockaccess, pos))) {
                 pos.setY(y--);
             }
@@ -39,8 +39,8 @@ public class MMWalkNodeProcessor extends WalkNodeProcessor {
         }
         // account for node size
         float r = this.entity.width * 0.5F;
-        int x = MathHelper.floor(this.entity.posX - r);
-        int z = MathHelper.floor(this.entity.posZ - r);
+        int x = Mth.floor(this.entity.posX - r);
+        int z = Mth.floor(this.entity.posZ - r);
         if (this.entity.getPathPriority(this.getPathType(this.entity, x, y, z)) < 0.0F) {
             Set<BlockPos> diagonals = Sets.newHashSet();
             diagonals.add(new BlockPos(bounds.minX - r, y, bounds.minZ - r));
@@ -48,9 +48,9 @@ public class MMWalkNodeProcessor extends WalkNodeProcessor {
             diagonals.add(new BlockPos(bounds.maxX - r, y, bounds.minZ - r));
             diagonals.add(new BlockPos(bounds.maxX - r, y, bounds.maxZ - r));
             for (BlockPos p : diagonals) {
-                PathNodeType pathnodetype = this.getPathType(this.entity, p.getX(), p.getY(), p.getZ());
+                PathNodeType pathnodetype = this.getPathType(this.entity, p.x(), p.y(), p.z());
                 if (this.entity.getPathPriority(pathnodetype) >= 0.0F) {
-                    return this.openPoint(p.getX(), p.getY(), p.getZ());
+                    return this.openPoint(p.x(), p.y(), p.z());
                 }
             }
         }
@@ -63,9 +63,9 @@ public class MMWalkNodeProcessor extends WalkNodeProcessor {
         int step = 0;
         PathNodeType pathnodetype = this.getPathType(this.entity, currentPoint.x, currentPoint.y + 1, currentPoint.z);
         if (this.entity.getPathPriority(pathnodetype) >= 0.0F) {
-            step = MathHelper.floor(Math.max(1.0F, this.entity.stepHeight));
+            step = Mth.floor(Math.max(1.0F, this.entity.maxUpStep));
         }
-        BlockPos under = (new BlockPos(currentPoint.x, currentPoint.y, currentPoint.z)).down();
+        BlockPos under = (new BlockPos(currentPoint.x, currentPoint.y, currentPoint.z)).below();
         double floor = currentPoint.y - (1.0D - this.blockaccess.getBlockState(under).getBoundingBox(this.blockaccess, under).maxY);
         PathPoint south = this.getNode(currentPoint.x, currentPoint.y, currentPoint.z + 1, step, floor, Direction.SOUTH);
         PathPoint west = this.getNode(currentPoint.x - 1, currentPoint.y, currentPoint.z, step, floor, Direction.WEST);
@@ -118,7 +118,7 @@ public class MMWalkNodeProcessor extends WalkNodeProcessor {
     private PathPoint getNode(int x, int y, int z, int step, double floor, Direction dir) {
         PathPoint result = null;
         BlockPos pos = new BlockPos(x, y, z);
-        BlockPos under = pos.down();
+        BlockPos under = pos.below();
         double dirFloor = (double) y - (1.0D - this.blockaccess.getBlockState(under).getBoundingBox(this.blockaccess, under).maxY);
         if (dirFloor - floor > 1.125D) {
             return null;

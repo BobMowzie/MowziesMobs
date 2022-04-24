@@ -5,7 +5,7 @@ import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.IRangedAttackMob;
-import net.minecraft.resources.SoundEvent;
+import net.minecraft.sounds.SoundEvent;
 
 public class AnimationProjectileAttackAI<T extends MowzieEntity & IAnimatedEntity & IRangedAttackMob> extends SimpleAnimationAI<T> {
     private final int attackFrame;
@@ -24,7 +24,7 @@ public class AnimationProjectileAttackAI<T extends MowzieEntity & IAnimatedEntit
     @Override
     public void tick() {
         super.tick();
-        LivingEntity entityTarget = entity.getAttackTarget();
+        LivingEntity entityTarget = entity.getTarget();
         if (entityTarget != null) {
             entity.faceEntity(entityTarget, 100, 100);
             entity.getLookController().setLookPositionWithEntity(entityTarget, 30F, 30F);

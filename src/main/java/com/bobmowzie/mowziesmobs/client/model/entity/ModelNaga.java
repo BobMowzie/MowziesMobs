@@ -676,7 +676,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         modelCorrections();
 
         float partial = delta;
-        float frame = entity.ticksExisted + partial;
+        float frame = entity.tickCount + partial;
 
         float hoverAnim = entity.prevHoverAnimFrac + (entity.hoverAnimFrac - entity.prevHoverAnimFrac) * partial;
         float nonHoverAnim = 1f - hoverAnim;
@@ -914,7 +914,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
 
                 if (entity.getAnimationTick() >= 23 && entity.getAnimationTick() < 60) {
                     Vec3 prevV = new Vec3(entity.prevMotionX, entity.prevMotionY, entity.prevMotionZ);
-                    Vec3 dv = prevV.add(entity.getMotion().subtract(prevV).scale(delta));
+                    Vec3 dv = prevV.add(entity.getDeltaMovement().subtract(prevV).scale(delta));
                     double d = Math.sqrt(dv.x * dv.x + dv.y * dv.y + dv.z * dv.z);
                     if (d != 0) {
                         double a = dv.y / d;

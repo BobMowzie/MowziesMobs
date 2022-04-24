@@ -4,12 +4,12 @@ import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.ilexiconn.llibrary.client.model.tools.ControlledAnimation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.TickableSound;
-import net.minecraft.resources.SoundCategory;
-import net.minecraft.resources.SoundEvent;
+import net.minecraft.sounds.SoundCategory;
+import net.minecraft.sounds.SoundEvent;
 
 public class BossMusicSound extends TickableSound {
     private MowzieEntity boss;
-    private int ticksExisted = 0;
+    private int tickCount = 0;
     private int timeUntilFade;
 
     private final SoundEvent soundEvent;
@@ -23,9 +23,9 @@ public class BossMusicSound extends TickableSound {
         this.repeat = true;
         this.repeatDelay = 0;
         this.priority = true;
-        this.x = boss.getPosX();
-        this.y = boss.getPosY();
-        this.z = boss.getPosZ();
+        this.x = boss.getX();
+        this.y = boss.getY();
+        this.z = boss.getZ();
 
         volumeControl = new ControlledAnimation(40);
         volumeControl.setTimer(20);
@@ -51,10 +51,10 @@ public class BossMusicSound extends TickableSound {
 
         volume = volumeControl.getAnimationFraction();
 
-        if (ticksExisted % 100 == 0) {
+        if (tickCount % 100 == 0) {
             Minecraft.getInstance().getMusicTicker().stop();
         }
-        ticksExisted++;
+        tickCount++;
     }
 
     public void setBoss(MowzieEntity boss) {

@@ -22,13 +22,13 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
-import net.minecraft.resources.Direction;
-import net.minecraft.resources.Hand;
-import net.minecraft.resources.HandSide;
+import net.minecraft.core.Direction;
+import net.minecraft.sounds.Hand;
+import net.minecraft.sounds.HandSide;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.resources.math.MathHelper;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.*;
-import net.minecraft.resources.text.TextFormatting;
+import net.minecraft.network.chat.TextFormatting;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimatableModel;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -144,14 +144,14 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
         boolean shouldSit = entityIn.isPassenger() && (entityIn.getRidingEntity() != null && entityIn.getRidingEntity().shouldRiderSit());
         this.entityModel.isSitting = shouldSit;
         this.entityModel.isChild = entityIn.isChild();
-        float f = MathHelper.interpolateAngle(partialTicks, entityIn.prevRenderYawOffset, entityIn.renderYawOffset);
-        float f1 = MathHelper.interpolateAngle(partialTicks, entityIn.yHeadRot0, entityIn.getYRot()Head);
+        float f = Mth.interpolateAngle(partialTicks, entityIn.yBodyRotO, entityIn.yBodyRot);
+        float f1 = Mth.interpolateAngle(partialTicks, entityIn.yHeadRot0, entityIn.getYRot()Head);
         float f2 = f1 - f;
         if (shouldSit && entityIn.getRidingEntity() instanceof LivingEntity) {
             LivingEntity livingentity = (LivingEntity)entityIn.getRidingEntity();
-            f = MathHelper.interpolateAngle(partialTicks, livingentity.prevRenderYawOffset, livingentity.renderYawOffset);
+            f = Mth.interpolateAngle(partialTicks, livingentity.yBodyRotO, livingentity.yBodyRot);
             f2 = f1 - f;
-            float f3 = MathHelper.wrapDegrees(f2);
+            float f3 = Mth.wrapDegrees(f2);
             if (f3 < -85.0F) {
                 f3 = -85.0F;
             }
@@ -168,7 +168,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
             f2 = f1 - f;
         }
 
-        float f6 = MathHelper.lerp(partialTicks, entityIn.xRot0, entityIn.getXRot());
+        float f6 = Mth.lerp(partialTicks, entityIn.xRot0, entityIn.getXRot());
         if (entityIn.getPose() == Pose.SLEEPING) {
             Direction direction = entityIn.getBedDirection();
             if (direction != null) {
@@ -182,7 +182,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
         float f8 = 0.0F;
         float f5 = 0.0F;
         if (!shouldSit && entityIn.isAlive()) {
-            f8 = MathHelper.lerp(partialTicks, entityIn.prevLimbSwingAmount, entityIn.limbSwingAmount);
+            f8 = Mth.lerp(partialTicks, entityIn.prevLimbSwingAmount, entityIn.limbSwingAmount);
             f5 = entityIn.limbSwing - entityIn.limbSwingAmount * (1.0F - partialTicks);
             if (entityIn.isChild()) {
                 f5 *= 3.0F;
@@ -197,7 +197,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
         if (this.modelProvider.isInitialized()) {
             this.applyRotationsPlayerRenderer(entityIn, matrixStackIn, f7, f, partialTicks, f1);
             float bodyRotateAmount = this.modelProvider.getControllerValue("BodyRotateController");
-            this.modelProvider.setRotationAngles(entityIn, f5, f8, f7, MathHelper.interpolateAngle(bodyRotateAmount, 0, f2), f6, partialTicks);
+            this.modelProvider.setRotationAngles(entityIn, f5, f8, f7, Mth.interpolateAngle(bodyRotateAmount, 0, f2), f6, partialTicks);
 
             MowzieGeoBone leftHeldItem = modelProvider.getMowzieBone("LeftHeldItem");
             MowzieGeoBone rightHeldItem = modelProvider.getMowzieBone("RightHeldItem");
@@ -215,12 +215,12 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
             Vector4f leftHeldItemPos = new Vector4f(0, 0, 0, 1);
             leftHeldItemPos.transform(leftHeldItem.getWorldSpaceXform());
             leftHeldItemPos.transform(toWorldSpace.getLast().getMatrix());
-            Vec3 leftHeldItemPos3 = new Vec3(leftHeldItemPos.getX(), leftHeldItemPos.getY(), leftHeldItemPos.getZ());
+            Vec3 leftHeldItemPos3 = new Vec3(leftHeldItemPos.x(), leftHeldItemPos.y(), leftHeldItemPos.z());
 
             Vector4f rightHeldItemPos = new Vector4f(0, 0, 0, 1);
             rightHeldItemPos.transform(rightHeldItem.getWorldSpaceXform());
             rightHeldItemPos.transform(toWorldSpace.getLast().getMatrix());
-            Vec3 rightHeldItemPos3 = new Vec3(rightHeldItemPos.getX(), rightHeldItemPos.getY(), rightHeldItemPos.getZ());
+            Vec3 rightHeldItemPos3 = new Vec3(rightHeldItemPos.x(), rightHeldItemPos.y(), rightHeldItemPos.z());
 
             betweenHandsPos = rightHeldItemPos3.add(leftHeldItemPos3.subtract(rightHeldItemPos3).scale(0.5));
         }
@@ -262,18 +262,18 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
         }
     }
 
-    protected void applyRotationsPlayerRenderer(AbstractClientPlayer entityLiving, MatrixStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks, float headYaw) {
+    protected void applyRotationsPlayerRenderer(AbstractClientPlayer entityLiving, MatrixStack matrixStackIn, float ageInTicks, float yRot, float partialTicks, float headYaw) {
         float f = entityLiving.getSwimAnimation(partialTicks);
         if (entityLiving.isElytraFlying()) {
-            this.applyRotationsLivingRenderer(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks, headYaw);
+            this.applyRotationsLivingRenderer(entityLiving, matrixStackIn, ageInTicks, yRot, partialTicks, headYaw);
             float f1 = (float)entityLiving.getTicksElytraFlying() + partialTicks;
-            float f2 = MathHelper.clamp(f1 * f1 / 100.0F, 0.0F, 1.0F);
+            float f2 = Mth.clamp(f1 * f1 / 100.0F, 0.0F, 1.0F);
             if (!entityLiving.isSpinAttacking()) {
                 matrixStackIn.rotate(Vector3f.XP.rotationDegrees(f2 * (-90.0F - entityLiving.getXRot())));
             }
 
             Vec3 vector3d = entityLiving.getLook(partialTicks);
-            Vec3 vector3d1 = entityLiving.getMotion();
+            Vec3 vector3d1 = entityLiving.getDeltaMovement();
             double d0 = Entity.horizontalMag(vector3d1);
             double d1 = Entity.horizontalMag(vector3d);
             if (d0 > 0.0D && d1 > 0.0D) {
@@ -283,32 +283,32 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
             }
         } else if (f > 0.0F) {
             float swimController = this.modelProvider.getControllerValue("SwimController");
-            this.applyRotationsLivingRenderer(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks, headYaw);
+            this.applyRotationsLivingRenderer(entityLiving, matrixStackIn, ageInTicks, yRot, partialTicks, headYaw);
             float f3 = entityLiving.isInWater() ? -90.0F - entityLiving.getXRot() : -90.0F;
-            float f4 = MathHelper.lerp(f, 0.0F, f3) * swimController;
+            float f4 = Mth.lerp(f, 0.0F, f3) * swimController;
             matrixStackIn.rotate(Vector3f.XP.rotationDegrees(f4));
             if (entityLiving.isActualySwimming()) {
                 matrixStackIn.translate(0.0D, -1.0D, (double)0.3F);
             }
         } else {
-            this.applyRotationsLivingRenderer(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks, headYaw);
+            this.applyRotationsLivingRenderer(entityLiving, matrixStackIn, ageInTicks, yRot, partialTicks, headYaw);
         }
     }
 
-    protected void applyRotationsLivingRenderer(AbstractClientPlayer entityLiving, MatrixStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks, float headYaw) {
+    protected void applyRotationsLivingRenderer(AbstractClientPlayer entityLiving, MatrixStack matrixStackIn, float ageInTicks, float yRot, float partialTicks, float headYaw) {
         if (this.func_230495_a_(entityLiving)) {
-            rotationYaw += (float)(Math.cos((double)entityLiving.ticksExisted * 3.25D) * Math.PI * (double)0.4F);
+            yRot += (float)(Math.cos((double)entityLiving.tickCount * 3.25D) * Math.PI * (double)0.4F);
         }
 
         Pose pose = entityLiving.getPose();
         if (pose != Pose.SLEEPING) {
             float bodyRotateAmount = this.modelProvider.getControllerValue("BodyRotateController");
-            matrixStackIn.rotate(Vector3f.YP.rotationDegrees(180.0F - MathHelper.interpolateAngle(bodyRotateAmount, headYaw, rotationYaw)));
+            matrixStackIn.rotate(Vector3f.YP.rotationDegrees(180.0F - Mth.interpolateAngle(bodyRotateAmount, headYaw, yRot)));
         }
 
         if (entityLiving.deathTime > 0) {
             float f = ((float)entityLiving.deathTime + partialTicks - 1.0F) / 20.0F * 1.6F;
-            f = MathHelper.sqrt(f);
+            f = Mth.sqrt(f);
             if (f > 1.0F) {
                 f = 1.0F;
             }
@@ -316,10 +316,10 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
             matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(f * this.getDeathMaxRotation(entityLiving)));
         } else if (entityLiving.isSpinAttacking()) {
             matrixStackIn.rotate(Vector3f.XP.rotationDegrees(-90.0F - entityLiving.getXRot()));
-            matrixStackIn.rotate(Vector3f.YP.rotationDegrees(((float)entityLiving.ticksExisted + partialTicks) * -75.0F));
+            matrixStackIn.rotate(Vector3f.YP.rotationDegrees(((float)entityLiving.tickCount + partialTicks) * -75.0F));
         } else if (pose == Pose.SLEEPING) {
             Direction direction = entityLiving.getBedDirection();
-            float f1 = direction != null ? getFacingAngle(direction) : rotationYaw;
+            float f1 = direction != null ? getFacingAngle(direction) : yRot;
             matrixStackIn.rotate(Vector3f.YP.rotationDegrees(f1));
             matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(this.getDeathMaxRotation(entityLiving)));
             matrixStackIn.rotate(Vector3f.YP.rotationDegrees(270.0F));

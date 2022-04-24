@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.resources.model.ModelRenderer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.resources.math.MathHelper;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.system.MathUtil;
@@ -131,7 +131,7 @@ public abstract class AdvancedModelBase<T extends Entity> extends EntityModel<T>
     }
 
     private float calculateChainRotation(float speed, float degree, float swing, float swingAmount, float offset, int boxIndex) {
-        return MathHelper.cos(swing * (speed * this.movementScale) + offset * boxIndex) * swingAmount * (degree * this.movementScale);
+        return Mth.cos(swing * (speed * this.movementScale) + offset * boxIndex) * swingAmount * (degree * this.movementScale);
     }
 
     private float calculateChainOffset(double rootOffset, AdvancedModelRenderer... boxes) {
@@ -227,9 +227,9 @@ public abstract class AdvancedModelBase<T extends Entity> extends EntityModel<T>
      */
     public float moveBox(float speed, float degree, boolean bounce, float f, float f1) {
         if (bounce) {
-            return -MathHelper.abs((MathHelper.sin(f * speed) * f1 * degree));
+            return -Mth.abs((Mth.sin(f * speed) * f1 * degree));
         } else {
-            return MathHelper.sin(f * speed) * f1 * degree - f1 * degree;
+            return Mth.sin(f * speed) * f1 * degree - f1 * degree;
         }
     }
 }

@@ -3,12 +3,12 @@ package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.mojang.serialization.Codec;
-import net.minecraft.resources.*;
+import net.minecraft.sounds.*;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.math.ChunkPos;
-import net.minecraft.resources.math.MutableBoundingBox;
-import net.minecraft.resources.registry.DynamicRegistries;
-import net.minecraft.resources.registry.Registry;
+import net.minecraft.util.ChunkPos;
+import net.minecraft.util.MutableBoundingBox;
+import net.minecraft.sounds.registry.DynamicRegistries;
+import net.minecraft.sounds.registry.Registry;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.provider.BiomeProvider;
@@ -55,7 +55,7 @@ public class WroughtnautChamberStructure extends MowzieStructure {
 
         @Override
         public void func_230364_a_(DynamicRegistries dynamicRegistryManager, ChunkGenerator chunkGenerator, TemplateManager templateManagerIn, int chunkX, int chunkZ, Biome biomeIn, NoFeatureConfig config) {
-            Rotation rotation = Rotation.values()[this.rand.nextInt(Rotation.values().length)];
+            Rotation rotation = Rotation.values()[this.random.nextInt(Rotation.values().length)];
 
             //Turns the chunk coordinates into actual coordinates we can use. (Gets center of that chunk)
             int x = (chunkX << 4) + 7;

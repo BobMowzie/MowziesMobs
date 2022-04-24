@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.server.item;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import com.google.common.collect.Sets;
-import net.minecraft.world.entity.SpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.controller.LookController;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.goal.LookAtGoal;
@@ -11,13 +11,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.resources.ActionResultType;
-import net.minecraft.resources.Direction;
-import net.minecraft.resources.Hand;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.ActionResultType;
+import net.minecraft.core.Direction;
+import net.minecraft.sounds.Hand;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.IServerLevel;
+import net.minecraft.world.level.Level;
 
 import java.util.Random;
 import java.util.Set;
@@ -39,7 +39,7 @@ public class ItemCapturedGrottol extends Item {
         BlockPos pos = context.getPos();
         Direction facing = context.getFace();
         Hand hand = context.getHand();
-        World world = context.getWorld();
+        Level world = context.getLevel();
         if (context.getFace() == Direction.DOWN) {
             return ActionResultType.FAIL;
         }
@@ -48,16 +48,16 @@ public class ItemCapturedGrottol extends Item {
         if (!player.canPlayerEdit(location, facing, stack)) {
             return ActionResultType.FAIL;
         }
-        if (!world.isClientSide) {
+        if (!level.isClientSide) {
             EntityGrottol grottol = new EntityGrottol(EntityHandler.GROTTOL, world);
-            CompoundNBT compound = stack.getChildTag("EntityTag");
+            CompoundTag compound = stack.getChildTag("EntityTag");
             if (compound != null) {
                 setData(grottol, compound);
             }
             grottol.moveToBlockPosAndAngles(location, 0, 0);
             lookAtPlayer(grottol, player);
-            grottol.onInitialSpawn((IServerWorld) world, world.getDifficultyForLocation(location), SpawnReason.MOB_SUMMONED, null, null);
-            world.addEntity(grottol);
+            grottol.finalizeSpawn((IServerLevel) world, world.getDifficultyForLocation(location), MobSpawnType.MOB_SUMMONED, null, null);
+            level.addFreshEntity(grottol);
             if (!player.abilities.isCreativeMode) {
                 stack.shrink(1);
             }
@@ -65,8 +65,8 @@ public class ItemCapturedGrottol extends Item {
         return ActionResultType.SUCCESS;
     }
 
-    private void setData(EntityGrottol grottol, CompoundNBT compound) {
-        CompoundNBT data = grottol.serializeNBT();
+    private void setData(EntityGrottol grottol, CompoundTag compound) {
+        CompoundTag data = grottol.serializeNBT();
         UUID id = grottol.getUniqueID();
         data.merge(compound);
         grottol.deserializeNBT(data);

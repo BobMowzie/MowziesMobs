@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.resources.math.MathHelper;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Quaternion;
 
 public class RenderFallingBlock extends EntityRenderer<EntityFallingBlock> {
@@ -23,11 +23,11 @@ public class RenderFallingBlock extends EntityRenderer<EntityFallingBlock> {
         matrixStackIn.push();
         matrixStackIn.translate(0, 0.5f, 0);
         if (entityIn.getMode() == EntityFallingBlock.EnumFallingBlockMode.MOBILE) {
-            matrixStackIn.rotate(new Quaternion(0, MathHelper.lerp(partialTicks, entityIn.yRot0, entityIn.getYRot()), 0, true));
-            matrixStackIn.rotate(new Quaternion(MathHelper.lerp(partialTicks, entityIn.xRot0, entityIn.getXRot()), 0, 0, true));
+            matrixStackIn.rotate(new Quaternion(0, Mth.lerp(partialTicks, entityIn.yRotO, entityIn.getYRot()), 0, true));
+            matrixStackIn.rotate(new Quaternion(Mth.lerp(partialTicks, entityIn.xRot0, entityIn.getXRot()), 0, 0, true));
         }
         else {
-            matrixStackIn.translate(0, MathHelper.lerp(partialTicks, entityIn.prevAnimY, entityIn.animY), 0);
+            matrixStackIn.translate(0, Mth.lerp(partialTicks, entityIn.prevAnimY, entityIn.animY), 0);
             matrixStackIn.translate(0, -1, 0);
         }
         matrixStackIn.translate(-0.5f, -0.5f, -0.5f);

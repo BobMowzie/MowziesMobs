@@ -44,13 +44,13 @@ public class RenderAxeAttack extends EntityRenderer<EntityAxeAttack> {
 //            matrixStackIn.push();
 //            Vec3 prevAxePos = new Vec3(axe.lastTickPosX, axe.lastTickPosY, axe.lastTickPosZ);
 //            Vec3 prevPlayerPos = new Vec3(player.lastTickPosX, player.lastTickPosY, player.lastTickPosZ);
-//            Vec3 axePos = prevAxePos.add(axe.getPositionVec().subtract(prevAxePos).scale(delta));
-//            Vec3 playerPos = prevPlayerPos.add(player.getPositionVec().subtract(prevPlayerPos).scale(delta));
+//            Vec3 axePos = prevAxePos.add(axe.position().subtract(prevAxePos).scale(delta));
+//            Vec3 playerPos = prevPlayerPos.add(player.position().subtract(prevPlayerPos).scale(delta));
 //            Vec3 deltaPos = axePos.subtract(playerPos).scale(-1);
-//            matrixStackIn.translate(deltaPos.getX(), deltaPos.getY(), deltaPos.getZ());
+//            matrixStackIn.translate(deltaPos.x(), deltaPos.y(), deltaPos.z());
 //            matrixStackIn.rotate(new Quaternion(new Vector3f(0, -1, 0), player.getYRot(), true));
 //            IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntitySolid(TEXTURE));
-//            model.setRotationAngles(axe, 0, 0, axe.ticksExisted + delta, 0, 0);
+//            model.setRotationAngles(axe, 0, 0, axe.tickCount + delta, 0, 0);
 //            model.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
 //            matrixStackIn.pop();
 //        }

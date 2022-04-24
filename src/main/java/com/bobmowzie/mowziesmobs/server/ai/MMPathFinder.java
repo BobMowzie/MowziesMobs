@@ -7,9 +7,9 @@ import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathFinder;
 import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.math.MathHelper;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.level.LevelGenLevelReader;
 import net.minecraft.world.Region;
 
 import javax.annotation.Nullable;
@@ -38,9 +38,9 @@ public class MMPathFinder extends PathFinder {
         @Override
         public Vec3 getVectorFromIndex(Entity entity, int index) {
             PathPoint point = this.getPathPointFromIndex(index);
-            double d0 = point.x + MathHelper.floor(entity.getWidth() + 1.0F) * 0.5D;
+            double d0 = point.x + Mth.floor(entity.getBbWidth() + 1.0F) * 0.5D;
             double d1 = point.y;
-            double d2 = point.z + MathHelper.floor(entity.getWidth() + 1.0F) * 0.5D;
+            double d2 = point.z + Mth.floor(entity.getBbWidth() + 1.0F) * 0.5D;
             return new Vec3(d0, d1, d2);
         }
 

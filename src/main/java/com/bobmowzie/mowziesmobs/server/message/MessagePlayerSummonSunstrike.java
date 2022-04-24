@@ -6,8 +6,8 @@ import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.Direction;
-import net.minecraft.resources.math.*;
+import net.minecraft.core.Direction;
+import net.minecraft.util.*;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
@@ -21,7 +21,7 @@ public class MessagePlayerSummonSunstrike {
 
     }
 
-    private static BlockRayTraceResult rayTrace(LivingEntity entity, double reach) {
+    private static BlockHitResult rayTrace(LivingEntity entity, double reach) {
         Vec3 pos = entity.getEyePosition(0);
         Vec3 segment = entity.getLookVec();
         segment = pos.add(segment.x * reach, segment.y * reach, segment.z * reach);
@@ -42,12 +42,12 @@ public class MessagePlayerSummonSunstrike {
             final NetworkEvent.Context context = contextSupplier.get();
             final ServerPlayer player = context.getSender();
             context.enqueueWork(() -> {
-                BlockRayTraceResult raytrace = rayTrace(player, REACH);
-                if (raytrace.getType() == RayTraceResult.Type.BLOCK && raytrace.getFace() == Direction.UP && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(EffectHandler.SUNS_BLESSING)) {
+                BlockHitResult raytrace = rayTrace(player, REACH);
+                if (raytrace.getType() == HitResult.Type.BLOCK && raytrace.getFace() == Direction.UP && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(EffectHandler.SUNS_BLESSING)) {
                     BlockPos hit = raytrace.getPos();
-                    EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE, player.world, player, hit.getX(), hit.getY(), hit.getZ());
+                    EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE, player.world, player, hit.x(), hit.y(), hit.z());
                     sunstrike.onSummon();
-                    player.world.addEntity(sunstrike);
+                    player.level.addFreshEntity(sunstrike);
                 }
             });
             context.setPacketHandled(true);

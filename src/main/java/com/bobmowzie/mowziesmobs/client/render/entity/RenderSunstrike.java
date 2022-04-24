@@ -13,13 +13,13 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.resources.math.AxisAlignedBB;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.math.MathHelper;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Matrix3f;
 import net.minecraft.world.phys.Matrix4f;
 import net.minecraft.world.phys.Quaternion;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -62,7 +62,7 @@ public class RenderSunstrike extends EntityRenderer<EntitySunstrike> {
 
     @Override
     public void render(EntitySunstrike sunstrike, float entityYaw, float delta, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        float maxY = (float) (MAX_HEIGHT - sunstrike.getPosY());
+        float maxY = (float) (MAX_HEIGHT - sunstrike.getY());
         if (maxY < 0) {
             return;
         }
@@ -80,33 +80,33 @@ public class RenderSunstrike extends EntityRenderer<EntitySunstrike> {
     }
 
     private void drawScorch(EntitySunstrike sunstrike, float delta, MatrixStack matrixStack, IVertexBuilder builder, int packedLightIn) {
-        World world = sunstrike.getEntityWorld();
-        double ex = sunstrike.lastTickPosX + (sunstrike.getPosX() - sunstrike.lastTickPosX) * delta;
-        double ey = sunstrike.lastTickPosY + (sunstrike.getPosY() - sunstrike.lastTickPosY) * delta;
-        double ez = sunstrike.lastTickPosZ + (sunstrike.getPosZ() - sunstrike.lastTickPosZ) * delta;
-        int minX = MathHelper.floor(ex - LINGER_RADIUS);
-        int maxX = MathHelper.floor(ex + LINGER_RADIUS);
-        int minY = MathHelper.floor(ey - LINGER_RADIUS);
-        int maxY = MathHelper.floor(ey);
-        int minZ = MathHelper.floor(ez - LINGER_RADIUS);
-        int maxZ = MathHelper.floor(ez + LINGER_RADIUS);
+        Level world = sunstrike.getEntityWorld();
+        double ex = sunstrike.lastTickPosX + (sunstrike.getX() - sunstrike.lastTickPosX) * delta;
+        double ey = sunstrike.lastTickPosY + (sunstrike.getY() - sunstrike.lastTickPosY) * delta;
+        double ez = sunstrike.lastTickPosZ + (sunstrike.getZ() - sunstrike.lastTickPosZ) * delta;
+        int minX = Mth.floor(ex - LINGER_RADIUS);
+        int maxX = Mth.floor(ex + LINGER_RADIUS);
+        int minY = Mth.floor(ey - LINGER_RADIUS);
+        int maxY = Mth.floor(ey);
+        int minZ = Mth.floor(ez - LINGER_RADIUS);
+        int maxZ = Mth.floor(ez + LINGER_RADIUS);
         float opacityMultiplier = (0.6F + RANDOMIZER.nextFloat() * 0.2F) * world.getLight(new BlockPos(ex, ey, ez));
         byte mirrorX = (byte) (RANDOMIZER.nextBoolean() ? -1 : 1);
         byte mirrorZ = (byte) (RANDOMIZER.nextBoolean() ? -1 : 1);
         for (BlockPos pos : BlockPos.getAllInBoxMutable(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ))) {
-            BlockState block = world.getBlockState(pos.down());
+            BlockState block = level.getBlockState(pos.below());
             if (block.getMaterial() != Material.AIR && world.getLight(pos) > 3) {
                 drawScorchBlock(world, block, pos, ex, ey, ez, opacityMultiplier, mirrorX, mirrorZ, matrixStack, builder, packedLightIn);
             }
         }
     }
 
-    private void drawScorchBlock(World world, BlockState block, BlockPos pos, double ex, double ey, double ez, float opacityMultiplier, byte mirrorX, byte mirrorZ, MatrixStack matrixStack, IVertexBuilder builder, int packedLightIn) {
+    private void drawScorchBlock(Level world, BlockState block, BlockPos pos, double ex, double ey, double ez, float opacityMultiplier, byte mirrorX, byte mirrorZ, MatrixStack matrixStack, IVertexBuilder builder, int packedLightIn) {
         MatrixStack.Entry matrixstack$entry = matrixStack.getLast();
         Matrix4f matrix4f = matrixstack$entry.getMatrix();
         Matrix3f matrix3f = matrixstack$entry.getNormal();
         if (block.isNormalCube(world, pos)) {
-            int bx = pos.getX(), by = pos.getY(), bz = pos.getZ();
+            int bx = pos.x(), by = pos.y(), bz = pos.z();
             float opacity = (float) ((1 - (ey - by) / 2) * opacityMultiplier);
             if (opacity >= 0) {
                 if (opacity > 1) {

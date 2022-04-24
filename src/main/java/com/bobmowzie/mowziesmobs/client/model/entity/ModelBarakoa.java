@@ -7,7 +7,7 @@ import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.resources.math.MathHelper;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -380,10 +380,10 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
 
     public void setDefaultAngles(EntityBarakoa entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
         maskType = entity.getMask();
-        headYaw = MathHelper.wrapDegrees(headYaw);
-        headPitch = MathHelper.wrapDegrees(headPitch);
+        headYaw = Mth.wrapDegrees(headYaw);
+        headPitch = Mth.wrapDegrees(headPitch);
         resetToDefaultPose();
-//                f = entity.ticksExisted;
+//                f = entity.tickCount;
 //                f1 = 0.5f;
 
         bone.setScale(1.25f);

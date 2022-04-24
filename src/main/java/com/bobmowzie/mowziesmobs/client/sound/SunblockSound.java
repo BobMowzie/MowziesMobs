@@ -7,14 +7,14 @@ import com.ilexiconn.llibrary.client.model.tools.ControlledAnimation;
 import net.minecraft.client.audio.TickableSound;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.resources.SoundCategory;
+import net.minecraft.sounds.SoundCategory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class SunblockSound extends TickableSound {
     private final LivingEntity entity;
-    int ticksExisted = 0;
+    int tickCount = 0;
     ControlledAnimation volumeControl;
     boolean active = true;
 
@@ -23,9 +23,9 @@ public class SunblockSound extends TickableSound {
         this.entity = entity;
         volume = 4F;
         pitch = 1f;
-        x = (float) entity.getPosX();
-        y = (float) entity.getPosY();
-        z = (float) entity.getPosZ();
+        x = (float) entity.getX();
+        y = (float) entity.getY();
+        z = (float) entity.getZ();
         volumeControl = new ControlledAnimation(10);
         repeat = true;
     }
@@ -39,9 +39,9 @@ public class SunblockSound extends TickableSound {
             finishPlaying();
         if (entity != null) {
             active = true;
-            x = (float) entity.getPosX();
-            y = (float) entity.getPosY();
-            z = (float) entity.getPosZ();
+            x = (float) entity.getX();
+            y = (float) entity.getY();
+            z = (float) entity.getZ();
             boolean barakoaHealing = false;
             if (entity instanceof EntityBarakoa) {
                 EntityBarakoa barakoa = (EntityBarakoa) entity;
@@ -56,6 +56,6 @@ public class SunblockSound extends TickableSound {
         else {
             active = false;
         }
-        ticksExisted++;
+        tickCount++;
     }
 }

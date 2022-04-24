@@ -7,10 +7,10 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaVillager;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.minecraft.world.entity.SpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.scoreboard.ScorePlayerTeam;
-import net.minecraft.world.IServerWorld;
+import net.minecraft.world.IServerLevel;
 
 import java.util.EnumSet;
 
@@ -33,7 +33,7 @@ public class AnimationSpawnBarakoa extends SimpleAnimationAI<EntityBarako> {
     @Override
     public void resetTask() {
         super.resetTask();
-        if (entity.barakoaSpawnCount < 3 && (entity.targetDistance > 6 || entity.getAttackTarget() == null || spawnSunblockers)) {
+        if (entity.barakoaSpawnCount < 3 && (entity.targetDistance > 6 || entity.getTarget() == null || spawnSunblockers)) {
             if (spawnSunblockers) AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityBarako.SPAWN_SUNBLOCKERS_ANIMATION);
             else AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityBarako.SPAWN_ANIMATION);
         } else {
@@ -64,19 +64,19 @@ public class AnimationSpawnBarakoa extends SimpleAnimationAI<EntityBarako> {
                 ((EntityBarakoaya)barakoa).hasTriedOrSucceededTeleport = false;
             }
             else barakoa = new EntityBarakoaVillager(EntityHandler.BARAKOA_VILLAGER, entity.world);
-            barakoa.setPositionAndRotation(entity.getPosX() + 2 * Math.sin(-angle * (Math.PI / 180)), entity.getPosY() + 1.5, entity.getPosZ() + 2 * Math.cos(-angle * (Math.PI / 180)), entity.getYRot()Head, 0);
+            barakoa.setPositionAndRotation(entity.getX() + 2 * Math.sin(-angle * (Math.PI / 180)), entity.getY() + 1.5, entity.getZ() + 2 * Math.cos(-angle * (Math.PI / 180)), entity.getYRot()Head, 0);
             barakoa.setActive(false);
             barakoa.active = false;
-            barakoa.onInitialSpawn((IServerWorld) entity.getEntityWorld(), entity.world.getDifficultyForLocation(barakoa.getPosition()), SpawnReason.MOB_SUMMONED, null, null);
+            barakoa.finalizeSpawn((IServerLevel) entity.getEntityWorld(), entity.world.getDifficultyForLocation(barakoa.getPosition()), MobSpawnType.MOB_SUMMONED, null, null);
             barakoa.setHomePosAndDistance(entity.getHomePosition(), 25);
             if (entity.getTeam() instanceof ScorePlayerTeam) {
                 barakoa.world.getScoreboard().addPlayerToTeam(barakoa.getScoreboardName(), (ScorePlayerTeam) entity.getTeam());
             }
-            entity.world.addEntity(barakoa);
-            barakoa.setMotion(0.7 * Math.sin(-angle * (Math.PI / 180)), 0.5, 0.7 * Math.cos(-angle * (Math.PI / 180)));
-            barakoa.setAttackTarget(entity.getAttackTarget());
-            if (entity.getAttackTarget() instanceof Player) {
-                barakoa.setMisbehavedPlayerId(entity.getAttackTarget().getUniqueID());
+            entity.level.addFreshEntity(barakoa);
+            barakoa.setDeltaMovement(0.7 * Math.sin(-angle * (Math.PI / 180)), 0.5, 0.7 * Math.cos(-angle * (Math.PI / 180)));
+            barakoa.setTarget(entity.getTarget());
+            if (entity.getTarget() instanceof Player) {
+                barakoa.setMisbehavedPlayerId(entity.getTarget().getUniqueID());
             }
         }
     }

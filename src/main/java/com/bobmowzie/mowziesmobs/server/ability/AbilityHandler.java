@@ -59,7 +59,7 @@ public enum AbilityHandler {
     }
 
     public <T extends LivingEntity> void sendAbilityMessage(T entity, AbilityType<?> abilityType) {
-        if (entity.world.isClientSide) {
+        if (entity.level.isClientSide) {
             return;
         }
         AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability(entity);
@@ -73,7 +73,7 @@ public enum AbilityHandler {
     }
 
     public <T extends LivingEntity> void sendInterruptAbilityMessage(T entity, AbilityType<?> abilityType) {
-        if (entity.world.isClientSide) {
+        if (entity.level.isClientSide) {
             return;
         }
         AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability(entity);
@@ -87,7 +87,7 @@ public enum AbilityHandler {
     }
 
     public <T extends Player> void sendPlayerTryAbilityMessage(T entity, AbilityType<?> ability) {
-        if (!(entity.world.isClientSide && entity instanceof ClientPlayer)) {
+        if (!(entity.level.isClientSide && entity instanceof ClientPlayer)) {
             return;
         }
         AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability(entity);

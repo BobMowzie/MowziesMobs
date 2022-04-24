@@ -25,7 +25,7 @@ public abstract class MowzieEntityModel<T extends MowzieEntity> extends Advanced
 
     @Override
     public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        float delta = ageInTicks - entityIn.ticksExisted;
+        float delta = ageInTicks - entityIn.tickCount;
         this.animator.update(entityIn, delta);
         this.animate(entityIn, limbSwing, limbSwingAmount, netHeadYaw, headPitch, delta);
     }

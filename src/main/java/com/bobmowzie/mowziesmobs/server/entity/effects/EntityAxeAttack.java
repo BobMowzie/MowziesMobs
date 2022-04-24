@@ -8,7 +8,7 @@ import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.entity.CreatureAttribute;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -22,24 +22,24 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.BlockParticleData;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.particles.BlockParticleOption;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.stats.Stats;
-import net.minecraft.resources.Hand;
-import net.minecraft.resources.SoundEvents;
+import net.minecraft.sounds.Hand;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.EntityDataManager;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.network.play.server.SEntityVelocityPacket;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.resources.math.AxisAlignedBB;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.math.MathHelper;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -50,31 +50,31 @@ import java.util.stream.Collectors;
  * Created by BobMowzie on 7/15/2017.
  */
 public class EntityAxeAttack extends EntityMagicEffect {
-    private static final EntityDataAccessor<Boolean> VERTICAL = EntityDataManager.createKey(EntityAxeAttack.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<ItemStack> AXE_STACK = EntityDataManager.createKey(EntityAxeAttack.class, EntityDataSerializers.ITEMSTACK);
+    private static final EntityDataAccessor<Boolean> VERTICAL = SynchedEntityData.defineId(EntityAxeAttack.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<ItemStack> AXE_STACK = SynchedEntityData.defineId(EntityAxeAttack.class, EntityDataSerializers.ITEM_STACK);
 
     public static int SWING_DURATION_HOR = 24;
     public static int SWING_DURATION_VER = 30;
     private float quakeAngle = 0;
     private AxisAlignedBB quakeBB = new AxisAlignedBB(0, 0, 0, 1, 1, 1);
 
-    public EntityAxeAttack(EntityType<? extends EntityAxeAttack> type, World world) {
+    public EntityAxeAttack(EntityType<? extends EntityAxeAttack> type, Level world) {
         super(type, world);
     }
 
-    public EntityAxeAttack(EntityType<? extends EntityAxeAttack> type, World world, LivingEntity caster, boolean vertical) {
+    public EntityAxeAttack(EntityType<? extends EntityAxeAttack> type, Level world, LivingEntity caster, boolean vertical) {
         this(type, world);
-        if (!world.isClientSide) {
+        if (!level.isClientSide) {
             this.setCasterID(caster.getEntityId());
         }
         setVertical(vertical);
-        setAxeStack(caster.getHeldItemMainhand());
+        setAxeStack(caster.getMainHandItem());
     }
     @Override
-    protected void registerData() {
-        super.registerData();
-        getDataManager().register(VERTICAL, false);
-        getDataManager().register(AXE_STACK, ItemHandler.WROUGHT_AXE.getDefaultInstance());
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        getEntityData().define(VERTICAL, false);
+        getEntityData().define(AXE_STACK, ItemHandler.WROUGHT_AXE.getDefaultInstance());
     }
 
     @Override
@@ -82,40 +82,40 @@ public class EntityAxeAttack extends EntityMagicEffect {
         super.tick();
         if (caster != null) {
             if (!caster.isAlive()) remove();
-            setPositionAndRotation(caster.getPosX(), caster.getPosY(), caster.getPosZ(), caster.getYRot(), caster.getXRot());
+            setPositionAndRotation(caster.getX(), caster.getY(), caster.getZ(), caster.getYRot(), caster.getXRot());
         }
-        if (!world.isClientSide && ticksExisted == 7) playSound(MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 0.7F, 1.1f);
-        if (!world.isClientSide && caster != null) {
-            if (!getVertical() && ticksExisted == SWING_DURATION_HOR /2 - 1) dealDamage(7.0f * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f, 4f, 160, 1.2f);
-            else if (getVertical() && ticksExisted == SWING_DURATION_VER /2 - 1) {
+        if (!level.isClientSide && tickCount == 7) playSound(MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 0.7F, 1.1f);
+        if (!level.isClientSide && caster != null) {
+            if (!getVertical() && tickCount == SWING_DURATION_HOR /2 - 1) dealDamage(7.0f * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f, 4f, 160, 1.2f);
+            else if (getVertical() && tickCount == SWING_DURATION_VER /2 - 1) {
                 dealDamage(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue(), 4.5f, 40, 0.8f);
-                quakeAngle = rotationYaw;
+                quakeAngle = yRot;
                 quakeBB = getBoundingBox();
                 playSound(MMSounds.ENTITY_WROUGHT_AXE_LAND.get(), 0.3F, 0.5F);
-                playSound(SoundEvents.ENTITY_GENERIC_EXPLODE, 2, 0.9F + rand.nextFloat() * 0.1F);
+                playSound(SoundEvents.ENTITY_GENERIC_EXPLODE, 2, 0.9F + random.nextFloat() * 0.1F);
             }
-            else if (getVertical() && ticksExisted == SWING_DURATION_VER /2 + 1) {
+            else if (getVertical() && tickCount == SWING_DURATION_VER /2 + 1) {
                 EntityCameraShake.cameraShake(world, getPositionVec(), 10, 0.05f, 0, 10);
             }
         }
 
         if (getVertical() && caster != null) {
-            if (ticksExisted >= SWING_DURATION_VER /2) {
+            if (tickCount >= SWING_DURATION_VER /2) {
                 int maxDistance = 16;
                 double perpFacing = quakeAngle * (Math.PI / 180);
                 double facingAngle = perpFacing + Math.PI / 2;
-                int hitY = MathHelper.floor(quakeBB.minY - 0.5);
-                int distance = ticksExisted - 15;
+                int hitY = Mth.floor(quakeBB.minY - 0.5);
+                int distance = tickCount - 15;
                 double spread = Math.PI * 0.35F;
-                int arcLen = MathHelper.ceil(distance * spread);
+                int arcLen = Mth.ceil(distance * spread);
                 double minY = quakeBB.minY;
                 double maxY = quakeBB.maxY;
                 for (int i = 0; i < arcLen; i++) {
                     double theta = (i / (arcLen - 1.0) - 0.5) * spread + facingAngle;
                     double vx = Math.cos(theta);
                     double vz = Math.sin(theta);
-                    double px = getPosX() + vx * distance;
-                    double pz = getPosZ() + vz * distance;
+                    double px = getX() + vx * distance;
+                    double pz = getZ() + vz * distance;
                     float factor = 1 - distance / (float) maxDistance;
                     AxisAlignedBB selection = new AxisAlignedBB(px - 1.5, minY, pz - 1.5, px + 1.5, maxY, pz + 1.5);
                     List<Entity> hit = world.getEntitiesWithinAABB(Entity.class, selection);
@@ -127,9 +127,9 @@ public class EntityAxeAttack extends EntityMagicEffect {
                             float applyKnockbackResistance = 0;
                             if (entity instanceof LivingEntity) {
                                 if (caster instanceof Player)
-                                    entity.attackEntityFrom(DamageSource.causePlayerDamage((Player) caster), (factor * 5 + 1) * (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f));
+                                    entity.hurt(DamageSource.causePlayerDamage((Player) caster), (factor * 5 + 1) * (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f));
                                 else
-                                    entity.attackEntityFrom(DamageSource.causeMobDamage(caster), (factor * 5 + 1) * (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f));
+                                    entity.hurt(DamageSource.causeMobDamage(caster), (factor * 5 + 1) * (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f));
                                 applyKnockbackResistance = (float) ((LivingEntity) entity).getAttribute(Attributes.KNOCKBACK_RESISTANCE).getValue();
                             }
                             double magnitude = -0.2;
@@ -139,37 +139,37 @@ public class EntityAxeAttack extends EntityMagicEffect {
                                 y += 0.15 * (1 - applyKnockbackResistance);
                             }
                             double z = vz * (1 - factor) * magnitude * (1 - applyKnockbackResistance);
-                            entity.setMotion(entity.getMotion().add(x, y, z));
+                            entity.setDeltaMovement(entity.getDeltaMovement().add(x, y, z));
                             if (entity instanceof ServerPlayer) {
                                 ((ServerPlayer) entity).connection.sendPacket(new SEntityVelocityPacket(entity));
                             }
                         }
                     }
-                    if (world.rand.nextBoolean()) {
-                        int hitX = MathHelper.floor(px);
-                        int hitZ = MathHelper.floor(pz);
+                    if (world.random.nextBoolean()) {
+                        int hitX = Mth.floor(px);
+                        int hitZ = Mth.floor(pz);
                         BlockPos pos = new BlockPos(hitX, hitY, hitZ);
                         BlockPos abovePos = new BlockPos(pos).up();
-                        BlockState block = world.getBlockState(pos);
-                        BlockState blockAbove = world.getBlockState(abovePos);
-                        if (block.getMaterial() != Material.AIR && block.isNormalCube(world, pos) && !block.getBlock().hasTileEntity(block) && !blockAbove.getMaterial().blocksMovement()) {
+                        BlockState block = level.getBlockState(pos);
+                        BlockState blockAbove = level.getBlockState(abovePos);
+                        if (block.getMaterial() != Material.AIR && block.isNormalCube(world, pos) && !block.getBlock().hasTileEntity(block) && !blockAbove.getMaterial().blocksMotion()) {
                             EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK, world, block, 0.3f);
-                            fallingBlock.setPosition(hitX + 0.5, hitY + 1, hitZ + 0.5);
-                            world.addEntity(fallingBlock);
+                            fallingBlock.setPos(hitX + 0.5, hitY + 1, hitZ + 0.5);
+                            level.addFreshEntity(fallingBlock);
                         }
                     }
                 }
             }
         }
-        if (ticksExisted > SWING_DURATION_HOR) remove();
+        if (tickCount > SWING_DURATION_HOR) remove();
     }
 
     private void dealDamage(float damage, float range, float arc, float applyKnockback) {
         boolean hit = false;
         List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(range, 2, range, range);
         for (LivingEntity entityHit : entitiesHit) {
-            float entityHitAngle = (float) ((Math.atan2(entityHit.getPosZ() - getPosZ(), entityHit.getPosX() - getPosX()) * (180 / Math.PI) - 90) % 360);
-            float entityAttackingAngle = rotationYaw % 360;
+            float entityHitAngle = (float) ((Math.atan2(entityHit.getZ() - getZ(), entityHit.getX() - getX()) * (180 / Math.PI) - 90) % 360);
+            float entityAttackingAngle = yRot % 360;
             if (entityHitAngle < 0) {
                 entityHitAngle += 360;
             }
@@ -177,7 +177,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
                 entityAttackingAngle += 360;
             }
             float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
-            float entityHitDistance = (float) Math.sqrt((entityHit.getPosZ() - getPosZ()) * (entityHit.getPosZ() - getPosZ()) + (entityHit.getPosX() - getPosX()) * (entityHit.getPosX() - getPosX()));
+            float entityHitDistance = (float) Math.sqrt((entityHit.getZ() - getZ()) * (entityHit.getZ() - getZ()) + (entityHit.getX() - getX()) * (entityHit.getX() - getX()));
             if (entityHit != caster && entityHitDistance <= range && entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2 || entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2) {
                 PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(caster, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
                 if (playerCapability != null) {
@@ -186,8 +186,8 @@ public class EntityAxeAttack extends EntityMagicEffect {
                     playerCapability.setAxeCanAttack(false);
                 }
                 else {
-                    entityHit.attackEntityFrom(DamageSource.causeMobDamage(caster), damage);
-                    entityHit.setMotion(entityHit.getMotion().x * applyKnockback, entityHit.getMotion().y, entityHit.getMotion().z * applyKnockback);
+                    entityHit.hurt(DamageSource.causeMobDamage(caster), damage);
+                    entityHit.setDeltaMovement(entityHit.getDeltaMovement().x * applyKnockback, entityHit.getDeltaMovement().y, entityHit.getDeltaMovement().z * applyKnockback);
                 }
                 hit = true;
             }
@@ -198,15 +198,15 @@ public class EntityAxeAttack extends EntityMagicEffect {
     }
 
     public void setVertical(boolean vertical) {
-        getDataManager().set(VERTICAL, vertical);
+        getEntityData().set(VERTICAL, vertical);
     }
 
     public boolean getVertical() {
-        return getDataManager().get(VERTICAL);
+        return getEntityData().get(VERTICAL);
     }
 
     private List<LivingEntity> getEntityLivingBaseNearby(double distanceX, double distanceY, double distanceZ, double radius) {
-        List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(distanceX, distanceY, distanceZ));
+        List<Entity> list = level.getEntities(this, getBoundingBox().grow(distanceX, distanceY, distanceZ));
         ArrayList<LivingEntity> nearEntities = list.stream().filter(entityNeighbor -> entityNeighbor instanceof LivingEntity && getDistance(entityNeighbor) <= radius).map(entityNeighbor -> (LivingEntity) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
         return nearEntities;
     }
@@ -221,11 +221,11 @@ public class EntityAxeAttack extends EntityMagicEffect {
     }
 
     public void setAxeStack(ItemStack axeStack) {
-        getDataManager().set(AXE_STACK, axeStack);
+        getEntityData().set(AXE_STACK, axeStack);
     }
 
     public ItemStack getAxeStack() {
-        return getDataManager().get(AXE_STACK);
+        return getEntityData().get(AXE_STACK);
     }
 
     /**
@@ -234,7 +234,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
     public void attackTargetEntityWithCurrentItem(Entity targetEntity, Player player, float damageMult, float knockbackMult) {
         if (!net.minecraftforge.common.ForgeHooks.onPlayerAttackTarget(player, targetEntity)) return;
 
-        ItemStack oldStack = player.getHeldItemMainhand();
+        ItemStack oldStack = player.getMainHandItem();
         ItemStack newStack = getAxeStack();
         player.setHeldItem(Hand.MAIN_HAND, newStack);
         player.getAttributeManager().reapplyModifiers(newStack.getAttributeModifiers(EquipmentSlot.MAINHAND));
@@ -244,9 +244,9 @@ public class EntityAxeAttack extends EntityMagicEffect {
                 float f = (float)player.getAttributeValue(Attributes.ATTACK_DAMAGE) * damageMult;
                 float f1;
                 if (targetEntity instanceof LivingEntity) {
-                    f1 = EnchantmentHelper.getModifierForCreature(player.getHeldItemMainhand(), ((LivingEntity)targetEntity).getCreatureAttribute());
+                    f1 = EnchantmentHelper.getModifierForCreature(player.getMainHandItem(), ((LivingEntity)targetEntity).getCreatureAttribute());
                 } else {
-                    f1 = EnchantmentHelper.getModifierForCreature(player.getHeldItemMainhand(), CreatureAttribute.UNDEFINED);
+                    f1 = EnchantmentHelper.getModifierForCreature(player.getMainHandItem(), CreatureAttribute.UNDEFINED);
                 }
 
                 float f2 = 1.0f;
@@ -258,7 +258,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
                     int i = 0;
                     i = i + EnchantmentHelper.getKnockbackModifier(player);
                     if (player.isSprinting() && flag) {
-                        player.world.playSound((Player)null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_PLAYER_ATTACK_KNOCKBACK, player.getSoundCategory(), 1.0F, 1.0F);
+                        player.level.playSound((Player)null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENTITY_PLAYER_ATTACK_KNOCKBACK, player.getSoundCategory(), 1.0F, 1.0F);
                         ++i;
                         flag1 = true;
                     }
@@ -277,30 +277,30 @@ public class EntityAxeAttack extends EntityMagicEffect {
                         }
                     }
 
-                    Vec3 vector3d = targetEntity.getMotion();
-                    boolean flag5 = targetEntity.attackEntityFrom(DamageSource.causePlayerDamage(player), f);
+                    Vec3 vector3d = targetEntity.getDeltaMovement();
+                    boolean flag5 = targetEntity.hurt(DamageSource.causePlayerDamage(player), f);
                     if (flag5) {
                         if (i > 0) {
                             if (targetEntity instanceof LivingEntity) {
-                                ((LivingEntity)targetEntity).applyKnockback((float)i * 0.5F * knockbackMult, (double)MathHelper.sin(player.getYRot() * ((float)Math.PI / 180F)), (double)(-MathHelper.cos(player.getYRot() * ((float)Math.PI / 180F))));
+                                ((LivingEntity)targetEntity).applyKnockback((float)i * 0.5F * knockbackMult, (double)Mth.sin(player.getYRot() * ((float)Math.PI / 180F)), (double)(-Mth.cos(player.getYRot() * ((float)Math.PI / 180F))));
                             } else {
-                                targetEntity.addVelocity((double)(-MathHelper.sin(player.getYRot() * ((float)Math.PI / 180F)) * (float)i * 0.5F * knockbackMult), 0.1D, (double)(MathHelper.cos(player.getYRot() * ((float)Math.PI / 180F)) * (float)i * 0.5F * knockbackMult));
+                                targetEntity.push((double)(-Mth.sin(player.getYRot() * ((float)Math.PI / 180F)) * (float)i * 0.5F * knockbackMult), 0.1D, (double)(Mth.cos(player.getYRot() * ((float)Math.PI / 180F)) * (float)i * 0.5F * knockbackMult));
                             }
 
-                            player.setMotion(player.getMotion().mul(0.6D, 1.0D, 0.6D));
+                            player.setDeltaMovement(player.getDeltaMovement().mul(0.6D, 1.0D, 0.6D));
                             player.setSprinting(false);
                         }
 
                         if (targetEntity instanceof ServerPlayer && targetEntity.velocityChanged) {
                             ((ServerPlayer)targetEntity).connection.sendPacket(new SEntityVelocityPacket(targetEntity));
                             targetEntity.velocityChanged = false;
-                            targetEntity.setMotion(vector3d);
+                            targetEntity.setDeltaMovement(vector3d);
                         }
 
                         if (flag) {
-                            player.world.playSound((Player)null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, player.getSoundCategory(), 1.0F, 1.0F);
+                            player.level.playSound((Player)null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, player.getSoundCategory(), 1.0F, 1.0F);
                         } else {
-                            player.world.playSound((Player)null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_PLAYER_ATTACK_WEAK, player.getSoundCategory(), 1.0F, 1.0F);
+                            player.level.playSound((Player)null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENTITY_PLAYER_ATTACK_WEAK, player.getSoundCategory(), 1.0F, 1.0F);
                         }
 
                         if (f1 > 0.0F) {
@@ -313,13 +313,13 @@ public class EntityAxeAttack extends EntityMagicEffect {
                         }
 
                         EnchantmentHelper.applyArthropodEnchantments(player, targetEntity);
-                        ItemStack itemstack1 = player.getHeldItemMainhand();
+                        ItemStack itemstack1 = player.getMainHandItem();
                         Entity entity = targetEntity;
                         if (targetEntity instanceof net.minecraftforge.entity.PartEntity) {
                             entity = ((net.minecraftforge.entity.PartEntity<?>) targetEntity).getParent();
                         }
 
-                        if (!player.world.isClientSide && !itemstack1.isEmpty() && entity instanceof LivingEntity) {
+                        if (!player.level.isClientSide && !itemstack1.isEmpty() && entity instanceof LivingEntity) {
                             ItemStack copy = itemstack1.copy();
                             itemstack1.hitEntity((LivingEntity)entity, player);
                             if (itemstack1.isEmpty()) {
@@ -335,15 +335,15 @@ public class EntityAxeAttack extends EntityMagicEffect {
                                 targetEntity.setFire(j * 4);
                             }
 
-                            if (player.world instanceof ServerWorld && f5 > 2.0F) {
+                            if (player.world instanceof ServerLevel && f5 > 2.0F) {
                                 int k = (int)((double)f5 * 0.5D);
-                                ((ServerWorld)player.world).spawnParticle(ParticleTypes.DAMAGE_INDICATOR, targetEntity.getPosX(), targetEntity.getPosYHeight(0.5D), targetEntity.getPosZ(), k, 0.1D, 0.0D, 0.1D, 0.2D);
+                                ((ServerLevel)player.world).spawnParticle(ParticleTypes.DAMAGE_INDICATOR, targetEntity.getX(), targetEntity.getPosYHeight(0.5D), targetEntity.getZ(), k, 0.1D, 0.0D, 0.1D, 0.2D);
                             }
                         }
 
                         player.addExhaustion(0.1F);
                     } else {
-                        player.world.playSound((Player)null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_PLAYER_ATTACK_NODAMAGE, player.getSoundCategory(), 1.0F, 1.0F);
+                        player.level.playSound((Player)null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENTITY_PLAYER_ATTACK_NODAMAGE, player.getSoundCategory(), 1.0F, 1.0F);
                         if (flag4) {
                             targetEntity.extinguish();
                         }
@@ -357,16 +357,16 @@ public class EntityAxeAttack extends EntityMagicEffect {
     }
 
     @Override
-    protected void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
+    protected void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
         setAxeStack(ItemStack.read(compound.getCompound("axe_stack")));
         setVertical(compound.getBoolean("vertical"));
     }
 
     @Override
-    protected void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
-        compound.put("axe_stack", getAxeStack().write(new CompoundNBT()));
+    protected void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
+        compound.put("axe_stack", getAxeStack().write(new CompoundTag()));
         compound.putBoolean("vertical", getVertical());
     }
 }

@@ -9,7 +9,7 @@ import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.client.audio.TickableSound;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.resources.SoundCategory;
+import net.minecraft.sounds.SoundCategory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -23,9 +23,9 @@ public class SpawnBoulderChargeSound extends TickableSound {
         this.user = user;
         volume = 1F;
         pitch = 0.95f;
-        x = (float) user.getPosX();
-        y = (float) user.getPosY();
-        z = (float) user.getPosZ();
+        x = (float) user.getX();
+        y = (float) user.getY();
+        z = (float) user.getZ();
 
         AbilityCapability.IAbilityCapability capability = AbilityHandler.INSTANCE.getAbilityCapability(user);
         if (capability != null) {

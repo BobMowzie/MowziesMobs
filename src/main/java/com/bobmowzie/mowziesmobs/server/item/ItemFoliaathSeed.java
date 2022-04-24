@@ -7,20 +7,20 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MobEntity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.SpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUseContext;
-import net.minecraft.resources.ActionResultType;
-import net.minecraft.resources.Direction;
-import net.minecraft.resources.Hand;
+import net.minecraft.sounds.ActionResultType;
+import net.minecraft.core.Direction;
+import net.minecraft.sounds.Hand;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.text.ITextComponent;
-import net.minecraft.resources.text.TranslationTextComponent;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.IServerLevel;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -30,16 +30,16 @@ public class ItemFoliaathSeed extends Item {
         super(properties);
     }
 
-    public Entity spawnCreature(IServerWorld world, MobEntity entity, double x, double y, double z) {
+    public Entity spawnCreature(IServerLevel world, MobEntity entity, double x, double y, double z) {
         if (entity != null) {
-            entity.setLocationAndAngles(x + 0.5, y, z + 0.5, world.getWorld().rand.nextFloat() * 360 - 180, 0);
+            entity.setLocationAndAngles(x + 0.5, y, z + 0.5, world.getLevel().random.nextFloat() * 360 - 180, 0);
             entity.getYRot()Head = entity.getYRot();
-            entity.renderYawOffset = entity.getYRot();
-            entity.onInitialSpawn(world, world.getDifficultyForLocation(entity.getPosition()), SpawnReason.MOB_SUMMONED, null, null);
-            if (!entity.canSpawn(world, SpawnReason.MOB_SUMMONED)) {
+            entity.yBodyRot = entity.getYRot();
+            entity.finalizeSpawn(world, world.getDifficultyForLocation(entity.getPosition()), MobSpawnType.MOB_SUMMONED, null, null);
+            if (!entity.checkSpawnRules(world, MobSpawnType.MOB_SUMMONED)) {
                 return null;
             }
-            world.addEntity(entity);
+            level.addFreshEntity(entity);
         }
         return entity;
     }
@@ -52,13 +52,13 @@ public class ItemFoliaathSeed extends Item {
         Direction facing = context.getFace();
         ItemStack stack = player.getHeldItem(hand);
         BlockPos pos = context.getPos();
-        World world = context.getWorld();
-        if (world.isClientSide) {
+        Level world = context.getLevel();
+        if (level.isClientSide) {
             return ActionResultType.SUCCESS;
         } else if (!player.canPlayerEdit(pos.offset(facing), facing, stack)) {
             return ActionResultType.FAIL;
         }
-        Entity entity = spawnCreature((ServerWorld) world, new EntityBabyFoliaath(EntityHandler.BABY_FOLIAATH, world), pos.getX(), pos.getY() + 1, pos.getZ());
+        Entity entity = spawnCreature((ServerLevel) world, new EntityBabyFoliaath(EntityHandler.BABY_FOLIAATH, world), pos.x(), pos.y() + 1, pos.z());
         if (entity != null) {
             if (entity instanceof LivingEntity && stack.hasDisplayName()) {
                 entity.setCustomName(stack.getDisplayName());
@@ -71,11 +71,11 @@ public class ItemFoliaathSeed extends Item {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.0").setStyle(ItemHandler.TOOLTIP_STYLE));
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.1").setStyle(ItemHandler.TOOLTIP_STYLE));
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.2").setStyle(ItemHandler.TOOLTIP_STYLE));
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.3").setStyle(ItemHandler.TOOLTIP_STYLE));
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<TextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
+        tooltip.add(new TextComponent(getDescriptionId() + ".text.0").setStyle(ItemHandler.TOOLTIP_STYLE));
+        tooltip.add(new TextComponent(getDescriptionId() + ".text.1").setStyle(ItemHandler.TOOLTIP_STYLE));
+        tooltip.add(new TextComponent(getDescriptionId() + ".text.2").setStyle(ItemHandler.TOOLTIP_STYLE));
+        tooltip.add(new TextComponent(getDescriptionId() + ".text.3").setStyle(ItemHandler.TOOLTIP_STYLE));
     }
 }

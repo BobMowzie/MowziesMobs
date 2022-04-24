@@ -1,14 +1,14 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
-import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.item.Food;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.resources.text.ITextComponent;
-import net.minecraft.resources.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -18,15 +18,15 @@ import java.util.List;
  */
 
 public class ItemGlowingJelly extends Item {
-    public static Food GLOWING_JELLY_FOOD = (new Food.Builder().hunger(1).saturation(0.1f).effect(new MobEffectInstance(MobEffects.NIGHT_VISION, 1200, 0), 1.0f)).build();
+    public static FoodProperties GLOWING_JELLY_FOOD = (new FoodProperties.Builder().nutrition(1).saturationMod(0.1f).effect(new MobEffectInstance(MobEffects.NIGHT_VISION, 1200, 0), 1.0f)).build();
 
     public ItemGlowingJelly(Item.Properties properties) {
         super(properties);
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.0").setStyle(ItemHandler.TOOLTIP_STYLE));
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
+        tooltip.add(new TextComponent(getDescriptionId() + ".text.0").setStyle(ItemHandler.TOOLTIP_STYLE));
     }
 }

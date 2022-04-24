@@ -4,7 +4,7 @@ import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.resources.SoundEvent;
+import net.minecraft.sounds.SoundEvent;
 
 import java.util.EnumSet;
 
@@ -36,7 +36,7 @@ public class AnimationAttackAI<T extends MowzieEntity & IAnimatedEntity> extends
     @Override
     public void startExecuting() {
         super.startExecuting();
-        entityTarget = entity.getAttackTarget();
+        entityTarget = entity.getTarget();
     }
 
     @Override
@@ -47,7 +47,7 @@ public class AnimationAttackAI<T extends MowzieEntity & IAnimatedEntity> extends
         }
         if (entity.getAnimationTick() == damageFrame) {
             if (entityTarget != null && entity.targetDistance <= range) {
-                entity.attackEntityAsMob(entityTarget, damageMultiplier, applyKnockbackMultiplier);
+                entity.doHurtTarget(entityTarget, damageMultiplier, applyKnockbackMultiplier);
                 onAttack(entityTarget, damageMultiplier, applyKnockbackMultiplier);
                 if (hitSound != null) {
                     entity.playSound(hitSound, 1, 1);   

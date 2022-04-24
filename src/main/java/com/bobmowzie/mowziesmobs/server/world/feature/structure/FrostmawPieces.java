@@ -3,16 +3,16 @@ package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.resources.Mirror;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.Mirror;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.resources.Rotation;
+import net.minecraft.sounds.Rotation;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.math.ChunkPos;
-import net.minecraft.resources.math.MutableBoundingBox;
+import net.minecraft.util.ChunkPos;
+import net.minecraft.util.MutableBoundingBox;
 import net.minecraft.world.ISeedReader;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.IServerLevel;
+import net.minecraft.world.level.LevelGenLevel;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
@@ -53,7 +53,7 @@ public class FrostmawPieces {
         }
 
 
-        public Piece(TemplateManager templateManagerIn, CompoundNBT tagCompound) {
+        public Piece(TemplateManager templateManagerIn, CompoundTag tagCompound) {
             super(FeatureHandler.FROSTMAW_PIECE, tagCompound);
             this.resourceLocation = new ResourceLocation(tagCompound.getString("Template"));
             this.rotation = Rotation.valueOf(tagCompound.getString("Rot"));
@@ -72,8 +72,8 @@ public class FrostmawPieces {
          * (abstract) Helper method to read subclass data from NBT
          */
         @Override
-        protected void readAdditional(CompoundNBT tagCompound) {
-            super.readAdditional(tagCompound);
+        protected void readAdditionalSaveData(CompoundTag tagCompound) {
+            super.readAdditionalSaveData(tagCompound);
             tagCompound.putString("Template", this.resourceLocation.toString());
             tagCompound.putString("Rot", this.rotation.name());
         }
@@ -90,7 +90,7 @@ public class FrostmawPieces {
          * rare block spawns under the floor, or what item an Item Frame will have.
          */
         @Override
-        protected void handleDataMarker(String function, BlockPos pos, IServerWorld worldIn, Random rand, MutableBoundingBox sbb) {
+        protected void handleDataMarker(String function, BlockPos pos, IServerLevel worldIn, Random rand, MutableBoundingBox sbb) {
 
         }
 
@@ -98,7 +98,7 @@ public class FrostmawPieces {
         public boolean func_230383_a_(ISeedReader p_230383_1_, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, MutableBoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
             this.placeSettings.setRotation(this.rotation).setMirror(Mirror.NONE).func_237133_d_(true);
             BlockPos blockpos = FrostmawPieces.OFFSET.get(this.resourceLocation);
-            this.templatePosition.add(Template.transformedBlockPos(placeSettings, new BlockPos(0 - blockpos.getX(), blockpos.getY(), 0 - blockpos.getZ())));
+            this.templatePosition.add(Template.transformedBlockPos(placeSettings, new BlockPos(0 - blockpos.x(), blockpos.y(), 0 - blockpos.z())));
 
             return super.func_230383_a_(p_230383_1_, p_230383_2_, p_230383_3_, p_230383_4_, p_230383_5_, p_230383_6_, p_230383_7_);
         }

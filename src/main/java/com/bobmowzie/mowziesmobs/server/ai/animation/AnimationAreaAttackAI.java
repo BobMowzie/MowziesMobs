@@ -4,7 +4,7 @@ import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.resources.SoundEvent;
+import net.minecraft.sounds.SoundEvent;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -45,8 +45,8 @@ public class AnimationAreaAttackAI<T extends MowzieEntity & IAnimatedEntity> ext
         List<LivingEntity> entitiesHit = entity.getEntityLivingBaseNearby(range, height, range, range);
         boolean hit = false;
         for (LivingEntity entityHit : entitiesHit) {
-            float entityHitAngle = (float) ((Math.atan2(entityHit.getPosZ() - entity.getPosZ(), entityHit.getPosX() - entity.getPosX()) * (180 / Math.PI) - 90) % 360);
-            float entityAttackingAngle = entity.renderYawOffset % 360;
+            float entityHitAngle = (float) ((Math.atan2(entityHit.getZ() - entity.getZ(), entityHit.getX() - entity.getX()) * (180 / Math.PI) - 90) % 360);
+            float entityAttackingAngle = entity.yBodyRot % 360;
             if (entityHitAngle < 0) {
                 entityHitAngle += 360;
             }
@@ -54,9 +54,9 @@ public class AnimationAreaAttackAI<T extends MowzieEntity & IAnimatedEntity> ext
                 entityAttackingAngle += 360;
             }
             float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
-            float entityHitDistance = (float) Math.sqrt((entityHit.getPosZ() - entity.getPosZ()) * (entityHit.getPosZ() - entity.getPosZ()) + (entityHit.getPosX() - entity.getPosX()) * (entityHit.getPosX() - entity.getPosX())) - entityHit.getWidth() / 2f;
+            float entityHitDistance = (float) Math.sqrt((entityHit.getZ() - entity.getZ()) * (entityHit.getZ() - entity.getZ()) + (entityHit.getX() - entity.getX()) * (entityHit.getX() - entity.getX())) - entityHit.getBbWidth() / 2f;
             if (entityHitDistance <= range && (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2)) {
-                entity.attackEntityAsMob(entityHit, damageMultiplier, applyKnockbackMultiplier);
+                entity.doHurtTarget(entityHit, damageMultiplier, applyKnockbackMultiplier);
                 onAttack(entityHit, damageMultiplier, applyKnockbackMultiplier);
                 hit = true;
             }

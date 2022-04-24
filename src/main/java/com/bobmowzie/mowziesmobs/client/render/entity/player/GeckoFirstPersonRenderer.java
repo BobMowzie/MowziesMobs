@@ -16,10 +16,10 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.Hand;
-import net.minecraft.resources.HandSide;
+import net.minecraft.sounds.Hand;
+import net.minecraft.sounds.HandSide;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.resources.math.MathHelper;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Quaternion;
 import net.minecraft.world.phys.Vector3f;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -94,9 +94,9 @@ public class GeckoFirstPersonRenderer extends FirstPersonRenderer implements IGe
             handDisplay = flag ? ability.getFirstPersonMainHandDisplay() : ability.getFirstPersonOffHandDisplay();
 
             if (ability.getCurrentSection().sectionType == AbilitySection.AbilitySectionType.STARTUP)
-                offHandEquipProgress = MathHelper.clamp(1f - (ability.getTicksInSection() + partialTicks) / 5f, 0f, 1f);
+                offHandEquipProgress = Mth.clamp(1f - (ability.getTicksInSection() + partialTicks) / 5f, 0f, 1f);
             else if (ability.getCurrentSection().sectionType == AbilitySection.AbilitySectionType.RECOVERY && ability.getCurrentSection() instanceof AbilitySection.AbilitySectionDuration)
-                offHandEquipProgress = MathHelper.clamp((ability.getTicksInSection() + partialTicks - ((AbilitySection.AbilitySectionDuration)ability.getCurrentSection()).duration + 5) / 5f, 0f, 1f);
+                offHandEquipProgress = Mth.clamp((ability.getTicksInSection() + partialTicks - ((AbilitySection.AbilitySectionDuration)ability.getCurrentSection()).duration + 5) / 5f, 0f, 1f);
         }
 
         if (handDisplay != Ability.HandDisplay.DONT_RENDER && modelProvider.isInitialized()) {
@@ -201,12 +201,12 @@ public class GeckoFirstPersonRenderer extends FirstPersonRenderer implements IGe
     // Mirrored render utils
     public static void moveToPivotMirror(GeoCube cube, MatrixStack stack) {
         Vector3f pivot = cube.pivot;
-        stack.translate((double)(-pivot.getX() / 16.0F), (double)(pivot.getY() / 16.0F), (double)(pivot.getZ() / 16.0F));
+        stack.translate((double)(-pivot.x() / 16.0F), (double)(pivot.y() / 16.0F), (double)(pivot.z() / 16.0F));
     }
 
     public static void moveBackFromPivotMirror(GeoCube cube, MatrixStack stack) {
         Vector3f pivot = cube.pivot;
-        stack.translate((double)(pivot.getX() / 16.0F), (double)(-pivot.getY() / 16.0F), (double)(-pivot.getZ() / 16.0F));
+        stack.translate((double)(pivot.x() / 16.0F), (double)(-pivot.y() / 16.0F), (double)(-pivot.z() / 16.0F));
     }
 
     public static void moveToPivotMirror(GeoBone bone, MatrixStack stack) {
@@ -238,8 +238,8 @@ public class GeckoFirstPersonRenderer extends FirstPersonRenderer implements IGe
 
     public static void rotateMirror(GeoCube bone, MatrixStack stack) {
         Vector3f rotation = bone.rotation;
-        stack.rotate(new Quaternion(0.0F, 0.0F, -rotation.getZ(), false));
-        stack.rotate(new Quaternion(0.0F, -rotation.getY(), 0.0F, false));
-        stack.rotate(new Quaternion(rotation.getX(), 0.0F, 0.0F, false));
+        stack.rotate(new Quaternion(0.0F, 0.0F, -rotation.z(), false));
+        stack.rotate(new Quaternion(0.0F, -rotation.y(), 0.0F, false));
+        stack.rotate(new Quaternion(rotation.x(), 0.0F, 0.0F, false));
     }
 }

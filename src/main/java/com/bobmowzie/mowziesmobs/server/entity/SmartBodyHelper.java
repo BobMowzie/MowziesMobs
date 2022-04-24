@@ -1,10 +1,10 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
-import net.minecraft.world.entity.ai.controller.BodyController;
+import net.minecraft.world.entity.ai.controller.BodyRotationControl;
 import net.minecraft.world.entity.MobEntity;
-import net.minecraft.resources.math.MathHelper;
+import net.minecraft.util.Mth;
 
-public class SmartBodyHelper extends BodyController {
+public class SmartBodyHelper extends BodyRotationControl {
 	private static final float MAX_ROTATE = 75;
 
 	private static final int HISTORY_SIZE = 10;
@@ -30,16 +30,16 @@ public class SmartBodyHelper extends BodyController {
             histPosX[i] = histPosX[i - 1];
             histPosZ[i] = histPosZ[i - 1];
         }
-        histPosX[0] = entity.getPosX();
-        histPosZ[0] = entity.getPosZ();
+        histPosX[0] = entity.getX();
+        histPosZ[0] = entity.getZ();
         double dx = delta(histPosX);
         double dz = delta(histPosZ);
         double distSq = dx * dx + dz * dz;
 		if (distSq > 2.5e-7) {
-			double moveAngle = (float) MathHelper.atan2(dz, dx) * (180 / (float) Math.PI) - 90;
-			entity.renderYawOffset += MathHelper.wrapDegrees(moveAngle - entity.renderYawOffset) * 0.6F;
-//			this.entity.renderYawOffset = this.entity.getYRot();
-//			this.entity.getYRot()Head = approach(this.entity.renderYawOffset, this.entity.getYRot()Head, 75.0F);
+			double moveAngle = (float) Mth.atan2(dz, dx) * (180 / (float) Math.PI) - 90;
+			entity.yBodyRot += Mth.wrapDegrees(moveAngle - entity.yBodyRot) * 0.6F;
+//			this.entity.yBodyRot = this.entity.getYRot();
+//			this.entity.getYRot()Head = approach(this.entity.yBodyRot, this.entity.getYRot()Head, 75.0F);
 			this.targetYawHead = this.entity.getYRot()Head;
 			this.rotateTime = 0;
         } else if (entity.getPassengers().isEmpty() || !(entity.getPassengers().get(0) instanceof MobEntity)) {
@@ -54,7 +54,7 @@ public class SmartBodyHelper extends BodyController {
 					limit = Math.max(1 - (rotateTime - speed) / (float) speed, 0) * MAX_ROTATE;
 				}
 			}
-			entity.renderYawOffset = approach(entity.getYRot()Head, entity.renderYawOffset, limit);
+			entity.yBodyRot = approach(entity.getYRot()Head, entity.yBodyRot, limit);
 		}
 	}
 
@@ -71,7 +71,7 @@ public class SmartBodyHelper extends BodyController {
     }
 
 	public static float approach(float target, float current, float limit) {
-		float delta = MathHelper.wrapDegrees(current - target);
+		float delta = Mth.wrapDegrees(current - target);
 		if (delta < -limit) {
 			delta = -limit;
 		} else if (delta >= limit) {

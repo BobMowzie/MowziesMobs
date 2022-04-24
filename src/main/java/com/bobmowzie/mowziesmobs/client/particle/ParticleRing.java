@@ -14,12 +14,12 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
-import net.minecraft.resources.math.MathHelper;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Quaternion;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.Vector3f;
-import net.minecraft.resources.registry.Registry;
-import net.minecraft.world.World;
+import net.minecraft.sounds.registry.Registry;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.Locale;
@@ -97,16 +97,16 @@ public class ParticleRing extends SpriteTexturedParticle {
         particleBlue = b;
 
         Vec3 Vec3 = renderInfo.getProjectedView();
-        float f = (float)(MathHelper.lerp(partialTicks, this.prevPosX, this.posX) - Vec3.getX());
-        float f1 = (float)(MathHelper.lerp(partialTicks, this.prevPosY, this.posY) - Vec3.getY());
-        float f2 = (float)(MathHelper.lerp(partialTicks, this.prevPosZ, this.posZ) - Vec3.getZ());
+        float f = (float)(Mth.lerp(partialTicks, this.xo, this.posX) - Vec3.x());
+        float f1 = (float)(Mth.lerp(partialTicks, this.prevPosY, this.posY) - Vec3.y());
+        float f2 = (float)(Mth.lerp(partialTicks, this.zo, this.posZ) - Vec3.z());
         Quaternion quaternion = new Quaternion(0.0F, 0.0F, 0.0F, 1.0F);
         if (facesCamera) {
             if (this.particleAngle == 0.0F) {
                 quaternion = renderInfo.getRotation();
             } else {
                 quaternion = new Quaternion(renderInfo.getRotation());
-                float f3 = MathHelper.lerp(partialTicks, this.prevParticleAngle, this.particleAngle);
+                float f3 = Mth.lerp(partialTicks, this.prevParticleAngle, this.particleAngle);
                 quaternion.multiply(Vector3f.ZP.rotation(f3));
             }
         }
@@ -134,10 +134,10 @@ public class ParticleRing extends SpriteTexturedParticle {
         float f5 = this.getMinV();
         float f6 = this.getMaxV();
         int j = this.getBrightnessForRender(partialTicks);
-        buffer.pos(avector3f[0].getX(), avector3f[0].getY(), avector3f[0].getZ()).tex(f8, f6).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
-        buffer.pos(avector3f[1].getX(), avector3f[1].getY(), avector3f[1].getZ()).tex(f8, f5).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
-        buffer.pos(avector3f[2].getX(), avector3f[2].getY(), avector3f[2].getZ()).tex(f7, f5).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
-        buffer.pos(avector3f[3].getX(), avector3f[3].getY(), avector3f[3].getZ()).tex(f7, f6).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
+        buffer.pos(avector3f[0].x(), avector3f[0].y(), avector3f[0].z()).tex(f8, f6).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
+        buffer.pos(avector3f[1].x(), avector3f[1].y(), avector3f[1].z()).tex(f8, f5).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
+        buffer.pos(avector3f[2].x(), avector3f[2].y(), avector3f[2].z()).tex(f7, f5).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
+        buffer.pos(avector3f[3].x(), avector3f[3].y(), avector3f[3].z()).tex(f7, f6).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
     }
 
     @Override

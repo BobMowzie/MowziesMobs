@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.client.sound;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.client.audio.TickableSound;
 import net.minecraft.world.entity.item.minecart.AbstractMinecart;
-import net.minecraft.resources.SoundCategory;
+import net.minecraft.sounds.SoundCategory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -19,9 +19,9 @@ public final class BlackPinkSound extends TickableSound {
     @Override
     public void tick() {
         if (minecart.isAlive()) {
-            x = (float) minecart.getPosX();
-            y = (float) minecart.getPosY();
-            z = (float) minecart.getPosZ();
+            x = (float) minecart.getX();
+            y = (float) minecart.getY();
+            z = (float) minecart.getZ();
         } else {
             finishPlaying();
         }

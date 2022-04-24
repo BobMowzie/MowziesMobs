@@ -4,16 +4,16 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.resources.Mirror;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.Mirror;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.resources.Rotation;
+import net.minecraft.sounds.Rotation;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.math.ChunkPos;
-import net.minecraft.resources.math.MutableBoundingBox;
+import net.minecraft.util.ChunkPos;
+import net.minecraft.util.MutableBoundingBox;
 import net.minecraft.world.ISeedReader;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.IServerLevel;
+import net.minecraft.world.level.LevelGenLevel;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
@@ -57,7 +57,7 @@ public class WroughtnautChamberPieces {
         }
 
 
-        public Piece(TemplateManager templateManagerIn, CompoundNBT tagCompound)
+        public Piece(TemplateManager templateManagerIn, CompoundTag tagCompound)
         {
             super(FeatureHandler.WROUGHTNAUT_CHAMBER_PIECE, tagCompound);
             this.resourceLocation = new ResourceLocation(tagCompound.getString("Template"));
@@ -90,19 +90,19 @@ public class WroughtnautChamberPieces {
          * (abstract) Helper method to read subclass data from NBT
          */
         @Override
-        protected void readAdditional(CompoundNBT tagCompound)
+        protected void readAdditionalSaveData(CompoundTag tagCompound)
         {
-            super.readAdditional(tagCompound);
+            super.readAdditionalSaveData(tagCompound);
             tagCompound.putString("Template", this.resourceLocation.toString());
             tagCompound.putString("Rot", this.rotation.name());
-            tagCompound.putInt("StartX", startPos.getX());
-            tagCompound.putInt("StartY", startPos.getY());
-            tagCompound.putInt("StartZ", startPos.getZ());
+            tagCompound.putInt("StartX", startPos.x());
+            tagCompound.putInt("StartY", startPos.y());
+            tagCompound.putInt("StartZ", startPos.z());
             tagCompound.putBoolean("HasWall", wallPos != null);
             if (wallPos != null) {
-                tagCompound.putInt("WallX", wallPos.getX());
-                tagCompound.putInt("WallY", wallPos.getY());
-                tagCompound.putInt("WallZ", wallPos.getZ());
+                tagCompound.putInt("WallX", wallPos.x());
+                tagCompound.putInt("WallY", wallPos.y());
+                tagCompound.putInt("WallZ", wallPos.z());
             }
         }
 
@@ -118,7 +118,7 @@ public class WroughtnautChamberPieces {
          * rare block spawns under the floor, or what item an Item Frame will have.
          */
         @Override
-        protected void handleDataMarker(String function, BlockPos pos, IServerWorld worldIn, Random rand, MutableBoundingBox sbb) {
+        protected void handleDataMarker(String function, BlockPos pos, IServerLevel worldIn, Random rand, MutableBoundingBox sbb) {
 
         }
 
@@ -126,7 +126,7 @@ public class WroughtnautChamberPieces {
         public boolean func_230383_a_(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, MutableBoundingBox mutableBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
             Pair<BlockPos, Rotation> chamberResults;
             if (wallPos == null) {
-                chamberResults = tryWroughtChamber(worldIn, startPos.getX(), startPos.getY(), startPos.getZ());
+                chamberResults = tryWroughtChamber(worldIn, startPos.x(), startPos.y(), startPos.z());
                 this.placeSettings.setIgnoreEntities(false);
             }
             else {
@@ -140,7 +140,7 @@ public class WroughtnautChamberPieces {
             this.templatePosition = chamberResults.getLeft();
             this.placeSettings.setRotation(chamberResults.getRight());
             this.placeSettings.func_237133_d_(true);
-//            System.out.println("Wroughtnaut Chamber at " + templatePosition.getX() + " " + templatePosition.getY() + " " + templatePosition.getZ());
+//            System.out.println("Wroughtnaut Chamber at " + templatePosition.x() + " " + templatePosition.y() + " " + templatePosition.z());
             BlockPos rotationOffset = new BlockPos(0, 0, -9).rotate(placeSettings.getRotation());
             this.templatePosition = this.templatePosition.add(rotationOffset);
             mutableBoundingBoxIn = template.getMutableBoundingBox(placeSettings, templatePosition);
@@ -149,7 +149,7 @@ public class WroughtnautChamberPieces {
         }
 
         @Nullable
-        public static Pair<BlockPos, Rotation> tryWroughtChamber(IWorld world, int x, int surfaceY, int z) {
+        public static Pair<BlockPos, Rotation> tryWroughtChamber(WorldGenLevel world, int x, int surfaceY, int z) {
             int xzCheckDistance = 6; // Always starts at chunk center, so it can safely check 6 blocks in any direction
             ChunkPos chunkPos = new ChunkPos(new BlockPos(x, surfaceY, z));
 
@@ -161,26 +161,26 @@ public class WroughtnautChamberPieces {
             for (int y = heightMax; y >= heightMin; y--) {
                 BlockPos airPos = checkForAirInXY(world, new BlockPos(x, y, z), xzCheckDistance);
                 if (airPos != null) {
-                    x = airPos.getX();
-                    z = airPos.getZ();
+                    x = airPos.x();
+                    z = airPos.z();
                     for (int y2 = 1; y2 <= 30; y2++) {
                         BlockPos p0 = new BlockPos(x, y - y2, z);
                         ChunkPos p0ChunkPos = new ChunkPos(p0);
                         if (!chunkPos.equals(p0ChunkPos)) continue;
-                        if (world.getBlockState(p0).isNormalCube(world, p0)) {
+                        if (level.getBlockState(p0).isNormalCube(world, p0)) {
                             int y4 = 0;
                             int y5 = 0;
                             for (int x2 = 0; x2 <= xzCheckDistance; x2++) {
                                 BlockPos p1 = new BlockPos(x - x2, y - y2 + y4 + 1, z);
                                 ChunkPos p1ChunkPos = new ChunkPos(p1);
                                 if (!chunkPos.equals(p1ChunkPos)) continue;
-                                if (world.getBlockState(p1).isNormalCube(world, p1)) {
+                                if (level.getBlockState(p1).isNormalCube(world, p1)) {
                                     Boolean wall = true;
                                     for (int y3 = 1; y3 <= 4; y3++) {
                                         BlockPos p2 = new BlockPos(x - x2, y - y2 + y4 + 1 + y3, z);
                                         ChunkPos p2ChunkPos = new ChunkPos(p2);
                                         if (!chunkPos.equals(p2ChunkPos)) continue;
-                                        if (!world.getBlockState(p2).isNormalCube(world, p2)) {
+                                        if (!level.getBlockState(p2).isNormalCube(world, p2)) {
                                             wall = false;
                                             y4 += y3;
                                             break;
@@ -190,7 +190,7 @@ public class WroughtnautChamberPieces {
                                         BlockPos p2 = new BlockPos(x - x2, y - y2 + y4, z);
                                         ChunkPos p2ChunkPos = new ChunkPos(p2);
                                         if (!chunkPos.equals(p2ChunkPos)) continue;
-                                        if (world.getBlockState(p2).isNormalCube(world, p2)) {
+                                        if (level.getBlockState(p2).isNormalCube(world, p2)) {
                                             return Pair.of(new BlockPos(x - x2, y - y2 + y4, z), Rotation.CLOCKWISE_180);
                                         }
                                     }
@@ -198,13 +198,13 @@ public class WroughtnautChamberPieces {
                                 p1 = new BlockPos(x + x2, y - y2 + y5 + 1, z);
                                 p1ChunkPos = new ChunkPos(p1);
                                 if (!chunkPos.equals(p1ChunkPos)) continue;
-                                if (world.getBlockState(p1).isNormalCube(world, p1)) {
+                                if (level.getBlockState(p1).isNormalCube(world, p1)) {
                                     Boolean wall = true;
                                     for (int y3 = 1; y3 <= 4; y3++) {
                                         BlockPos p2 = new BlockPos(x + x2, y - y2 + y5 + 1 + y3, z);
                                         ChunkPos p2ChunkPos = new ChunkPos(p2);
                                         if (!chunkPos.equals(p2ChunkPos)) continue;
-                                        if (!world.getBlockState(p2).isNormalCube(world, p2)) {
+                                        if (!level.getBlockState(p2).isNormalCube(world, p2)) {
                                             wall = false;
                                             y5 += y3;
                                             break;
@@ -214,7 +214,7 @@ public class WroughtnautChamberPieces {
                                         BlockPos p2 = new BlockPos(x + x2, y - y2 + y5, z);
                                         ChunkPos p2ChunkPos = new ChunkPos(p2);
                                         if (!chunkPos.equals(p2ChunkPos)) continue;
-                                        if (world.getBlockState(p2).isNormalCube(world, p2)) {
+                                        if (level.getBlockState(p2).isNormalCube(world, p2)) {
                                             return Pair.of(new BlockPos(x + x2, y - y2 + y5, z), Rotation.NONE);
                                         }
                                     }
@@ -226,11 +226,11 @@ public class WroughtnautChamberPieces {
                                 BlockPos p1 = new BlockPos(x, y - y2 + y4 + 1, z - z2);
                                 ChunkPos p1ChunkPos = new ChunkPos(p1);
                                 if (!chunkPos.equals(p1ChunkPos)) continue;
-                                if (world.getBlockState(p1).isOpaqueCube(world, p1)) {
+                                if (level.getBlockState(p1).isOpaqueCube(world, p1)) {
                                     Boolean wall = true;
                                     for (int y3 = 1; y3 <= 4; y3++) {
                                         BlockPos p2 = new BlockPos(x, y - y2 + y4 + 1 + y3, z - z2);
-                                        if (!world.getBlockState(p2).isNormalCube(world, p2)) {
+                                        if (!level.getBlockState(p2).isNormalCube(world, p2)) {
                                             wall = false;
                                             y4 += y3;
                                             break;
@@ -240,7 +240,7 @@ public class WroughtnautChamberPieces {
                                         BlockPos p2 = new BlockPos(x, y - y2 + y4, z - z2);
                                         ChunkPos p2ChunkPos = new ChunkPos(p2);
                                         if (!chunkPos.equals(p2ChunkPos)) continue;
-                                        if (world.getBlockState(p2).isNormalCube(world, p2)) {
+                                        if (level.getBlockState(p2).isNormalCube(world, p2)) {
                                             return Pair.of(new BlockPos(x, y - y2 + y4, z - z2), Rotation.COUNTERCLOCKWISE_90);
                                         }
                                     }
@@ -248,13 +248,13 @@ public class WroughtnautChamberPieces {
                                 p1 = new BlockPos(x, y - y2 + y5 + 1, z + z2);
                                 p1ChunkPos = new ChunkPos(p1);
                                 if (!chunkPos.equals(p1ChunkPos)) continue;
-                                if (world.getBlockState(p1).isNormalCube(world, p1)) {
+                                if (level.getBlockState(p1).isNormalCube(world, p1)) {
                                     Boolean wall = true;
                                     for (int y3 = 1; y3 <= 4; y3++) {
                                         BlockPos p2 = new BlockPos(x, y - y2 + y5 + 1 + y3, z + z2);
                                         ChunkPos p2ChunkPos = new ChunkPos(p2);
                                         if (!chunkPos.equals(p2ChunkPos)) continue;
-                                        if (!world.getBlockState(p2).isNormalCube(world, p2)) {
+                                        if (!level.getBlockState(p2).isNormalCube(world, p2)) {
                                             wall = false;
                                             y5 += y3;
                                             break;
@@ -264,7 +264,7 @@ public class WroughtnautChamberPieces {
                                         BlockPos p2 = new BlockPos(x, y - y2 + y5, z + z2);
                                         ChunkPos p2ChunkPos = new ChunkPos(p2);
                                         if (!chunkPos.equals(p2ChunkPos)) continue;
-                                        if (world.getBlockState(p2).isNormalCube(world, p2)) {
+                                        if (level.getBlockState(p2).isNormalCube(world, p2)) {
                                             return Pair.of(new BlockPos(x, y - y2 + y5, z + z2), Rotation.CLOCKWISE_90);
                                         }
                                     }
@@ -279,11 +279,11 @@ public class WroughtnautChamberPieces {
         }
 
         @Nullable
-        public static BlockPos checkForAirInXY(IWorld world, BlockPos start, int range) {
+        public static BlockPos checkForAirInXY(WorldGenLevel world, BlockPos start, int range) {
             for (int dx = -range; dx < range; dx++) {
                 for (int dz = -range; dz < range; dz++) {
                     BlockPos check = start.add(dx, 0, dz);
-                    if (world.chunkExists(check.getX() >> 4, check.getZ() >> 4)) {
+                    if (world.chunkExists(check.x() >> 4, check.z() >> 4)) {
                         if (world.isAirBlock(check)) return check;
                     }
                 }

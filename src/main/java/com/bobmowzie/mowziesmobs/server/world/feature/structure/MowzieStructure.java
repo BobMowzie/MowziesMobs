@@ -4,9 +4,9 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.mojang.serialization.Codec;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.resources.SharedSeedRandom;
+import net.minecraft.sounds.SharedSeedRandom;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.math.ChunkPos;
+import net.minecraft.util.ChunkPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.provider.BiomeProvider;
@@ -48,15 +48,15 @@ public abstract class MowzieStructure extends Structure<NoFeatureConfig> {
     protected boolean func_230363_a_(ChunkGenerator chunkGenerator, BiomeProvider biomeSource, long seed, SharedSeedRandom chunkRandom, int chunkX, int chunkZ, Biome biome, ChunkPos chunkPos, NoFeatureConfig featureConfig) {
         BlockPos centerOfChunk = new BlockPos((chunkX << 4) + 7, 0, (chunkZ << 4) + 7);
         if (checkHeightLimitAgainstSurface()) {
-            int landHeight = chunkGenerator.getNoiseHeight(centerOfChunk.getX(), centerOfChunk.getZ(), Heightmap.Type.WORLD_SURFACE_WG);
+            int landHeight = chunkGenerator.getNoiseHeight(centerOfChunk.x(), centerOfChunk.z(), Heightmap.Type.WORLD_SURFACE_WG);
             double minHeight = getGenerationConfig().heightMin.get();
             double maxHeight = getGenerationConfig().heightMax.get();
             if (minHeight != -1 && landHeight < minHeight) return false;
             if (maxHeight != -1 && landHeight > maxHeight) return false;
         }
         if (avoidWater()) {
-            int landHeight = chunkGenerator.getHeight(centerOfChunk.getX(), centerOfChunk.getZ(), Heightmap.Type.WORLD_SURFACE_WG);
-            IBlockReader columnOfBlocks = chunkGenerator.func_230348_a_(centerOfChunk.getX(), centerOfChunk.getZ());
+            int landHeight = chunkGenerator.getHeight(centerOfChunk.x(), centerOfChunk.z(), Heightmap.Type.WORLD_SURFACE_WG);
+            IBlockReader columnOfBlocks = chunkGenerator.func_230348_a_(centerOfChunk.x(), centerOfChunk.z());
             BlockState topBlock = columnOfBlocks.getBlockState(centerOfChunk.up(landHeight));
             if (!topBlock.getFluidState().isEmpty()) return false;
         }

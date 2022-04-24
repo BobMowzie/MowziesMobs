@@ -8,9 +8,9 @@ import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.INBT;
-import net.minecraft.resources.Direction;
+import net.minecraft.core.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -150,9 +150,9 @@ public class AbilityCapability {
 
         @Override
         public INBT writeNBT() {
-            CompoundNBT compound = new CompoundNBT();
+            CompoundTag compound = new CompoundTag();
             for (Map.Entry<AbilityType<?>, Ability> abilityEntry : getAbilityMap().entrySet()) {
-                CompoundNBT nbt = abilityEntry.getValue().writeNBT();
+                CompoundTag nbt = abilityEntry.getValue().writeNBT();
                 if (!nbt.isEmpty()) {
                     compound.put(abilityEntry.getKey().getName(), nbt);
                 }
@@ -162,7 +162,7 @@ public class AbilityCapability {
 
         @Override
         public void readNBT(INBT nbt) {
-            CompoundNBT compound = (CompoundNBT) nbt;
+            CompoundTag compound = (CompoundTag) nbt;
             Set<String> keys = compound.keySet();
             for (String abilityName : keys) {
                 nbtMap.put(abilityName, compound.get(abilityName));

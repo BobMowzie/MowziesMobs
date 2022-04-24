@@ -2,20 +2,20 @@ package com.bobmowzie.mowziesmobs.server.ai;
 
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.pathfinding.GroundPathNavigator;
+import net.minecraft.pathfinding.GroundPathNavigation;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathFinder;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.pathfinding.PathType;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.math.MathHelper;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 import java.util.Objects;
 
-public class MMPathNavigateGround extends GroundPathNavigator {
-    public MMPathNavigateGround(MowzieEntity entity, World world) {
+public class MMPathNavigateGround extends GroundPathNavigation {
+    public MMPathNavigateGround(MowzieEntity entity, Level world) {
         super(entity, world);
     }
 
@@ -37,10 +37,10 @@ public class MMPathNavigateGround extends GroundPathNavigator {
                 break;
             }
         }
-        final Vec3 base = entityPos.add(-this.entity.getWidth() * 0.5F, 0.0F, -this.entity.getWidth() * 0.5F);
-        final Vec3 max = base.add(this.entity.getWidth(), this.entity.getHeight(), this.entity.getWidth());
-        if (this.tryShortcut(path, new Vec3(this.entity.getPosX(), this.entity.getPosY(), this.entity.getPosZ()), pathLength, base, max)) {
-            if (this.isAt(path, 0.5F) || this.atElevationChange(path) && this.isAt(path, this.entity.getWidth() * 0.5F)) {
+        final Vec3 base = entityPos.add(-this.entity.getBbWidth() * 0.5F, 0.0F, -this.entity.getBbWidth() * 0.5F);
+        final Vec3 max = base.add(this.entity.getBbWidth(), this.entity.getHeight(), this.entity.getBbWidth());
+        if (this.tryShortcut(path, new Vec3(this.entity.getX(), this.entity.getY(), this.entity.getZ()), pathLength, base, max)) {
+            if (this.isAt(path, 0.5F) || this.atElevationChange(path) && this.isAt(path, this.entity.getBbWidth() * 0.5F)) {
                 path.setCurrentPathIndex(path.getCurrentPathIndex() + 1);
             }
         }
@@ -49,14 +49,14 @@ public class MMPathNavigateGround extends GroundPathNavigator {
 
     private boolean isAt(Path path, float threshold) {
         final Vec3 pathPos = path.getPosition(this.entity);
-        return MathHelper.abs((float) (this.entity.getPosX() - pathPos.x)) < threshold &&
-                MathHelper.abs((float) (this.entity.getPosZ() - pathPos.z)) < threshold &&
-                Math.abs(this.entity.getPosY() - pathPos.y) < 1.0D;
+        return Mth.abs((float) (this.entity.getX() - pathPos.x)) < threshold &&
+                Mth.abs((float) (this.entity.getZ() - pathPos.z)) < threshold &&
+                Math.abs(this.entity.getY() - pathPos.y) < 1.0D;
     }
 
     private boolean atElevationChange(Path path) {
         final int curr = path.getCurrentPathIndex();
-        final int end = Math.min(path.getCurrentPathLength(), curr + MathHelper.ceil(this.entity.getWidth() * 0.5F) + 1);
+        final int end = Math.min(path.getCurrentPathLength(), curr + Mth.ceil(this.entity.getBbWidth() * 0.5F) + 1);
         final int currY = path.getPathPointFromIndex(curr).y;
         for (int i = curr + 1; i < end; i++) {
             if (path.getPathPointFromIndex(i).y != currY) {
@@ -105,7 +105,7 @@ public class MMPathNavigateGround extends GroundPathNavigator {
             ldi[i] = leadEdgeToInt(lead, step[i]);
             tri[i] = trailEdgeToInt(tr[i], step[i]);
             normed[i] = value / max_t;
-            tDelta[i] = MathHelper.abs(max_t / value);
+            tDelta[i] = Mth.abs(max_t / value);
             float dist = dir ? (ldi[i] + 1 - lead) : (lead - ldi[i]);
             tNext[i] = tDelta[i] < Float.POSITIVE_INFINITY ? tDelta[i] * dist : Float.POSITIVE_INFINITY;
         }
@@ -136,7 +136,7 @@ public class MMPathNavigateGround extends GroundPathNavigator {
             for (int x = x0; x != x1; x += stepx) {
                 for (int z = z0; z != z1; z += stepz) {
                     for (int y = y0; y != y1; y += stepy) {
-                        BlockState block = this.world.getBlockState(pos.setPos(x, y, z));
+                        BlockState block = this.level.getBlockState(pos.setPos(x, y, z));
                         if (!block.allowsMovement(this.world, pos, PathType.LAND)) return false;
                     }
                     PathNodeType below = this.nodeProcessor.determineNodeType(this.world, x, y0 - 1, z, this.entity, 1, 1, 1, true, true);
@@ -152,11 +152,11 @@ public class MMPathNavigateGround extends GroundPathNavigator {
     }
 
     static int leadEdgeToInt(float coord, int step) {
-        return MathHelper.floor(coord - step * EPSILON);
+        return Mth.floor(coord - step * EPSILON);
     }
 
     static int trailEdgeToInt(float coord, int step) {
-        return MathHelper.floor(coord + step * EPSILON);
+        return Mth.floor(coord + step * EPSILON);
     }
 
     static float element(Vec3 v, int i) {

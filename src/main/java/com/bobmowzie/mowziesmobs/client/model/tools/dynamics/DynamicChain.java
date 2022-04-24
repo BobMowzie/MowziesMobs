@@ -6,7 +6,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.resources.math.MathHelper;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -78,7 +78,7 @@ public class DynamicChain {
                         gravityAmount * d[i+1] * m[i+1] * (Math.sin(down - r[i].y + down)),
                         0));
                 Vec3 floorVec = new Vec3(0, 1 * d[i+1] * m[i+1] * (Math.sin(Math.PI/2 - r[i].y + Math.PI/2)), 0);
-                if (useFloor && entity.isOnGround() && p[i+1].y < entity.getPosY()) {
+                if (useFloor && entity.isOnGround() && p[i+1].y < entity.getY()) {
                     T[i] = T[i].subtract(floorVec);
                 }
                 T[i] = wrapAngles(T[i].add(gravityVec));
@@ -179,14 +179,14 @@ public class DynamicChain {
             setChain(chainOrig, chainDynamic);
         }
 
-        if (prevUpdateTick != entity.ticksExisted) {
+        if (prevUpdateTick != entity.tickCount) {
             for (int i = 0; i < chainOrig.length; i++) {
                 pOrig[i] = chainOrig[i].getWorldPos(entity, delta);
             }
 
             updateBendConstraint(gravityAmount, stiffness, stiffnessFalloff, damping, numUpdates, useFloor);
 
-            prevUpdateTick = entity.ticksExisted;
+            prevUpdateTick = entity.tickCount;
         }
 
         if (chainDynamic == null) return;
@@ -225,10 +225,10 @@ public class DynamicChain {
     }
 
     private static Vec3 fromPitchYaw(float pitch, float yaw) {
-        float f = MathHelper.cos(-yaw - (float)Math.PI);
-        float f1 = MathHelper.sin(-yaw - (float)Math.PI);
-        float f2 = -MathHelper.cos(-pitch);
-        float f3 = MathHelper.sin(-pitch);
+        float f = Mth.cos(-yaw - (float)Math.PI);
+        float f1 = Mth.sin(-yaw - (float)Math.PI);
+        float f2 = -Mth.cos(-pitch);
+        float f3 = Mth.sin(-pitch);
         return new Vec3(f1 * f2, f3, f * f2);
     }
 
@@ -247,8 +247,8 @@ public class DynamicChain {
         float dx = (float) (p2.x - p1.x);
         float dy = (float) (p2.y - p1.y);
 
-        float yaw = (float) MathHelper.atan2(dz, dx);
-        float pitch = (float) MathHelper.atan2(Math.sqrt(dz * dz + dx * dx), dy);
+        float yaw = (float) Mth.atan2(dz, dx);
+        float pitch = (float) Mth.atan2(Math.sqrt(dz * dz + dx * dx), dy);
         return wrapAngles(new Vec3(yaw, pitch, 0));
 
 //        Vec3 vec1 = p2.subtract(p1);
@@ -281,10 +281,10 @@ public class DynamicChain {
 
     public static Vec3 toPitchYaw(Vec3 vector)
     {
-//        float f = MathHelper.cos(-p_189986_1_ * 0.017453292F - (float)Math.PI);
-//        float f1 = MathHelper.sin(-p_189986_1_ * 0.017453292F - (float)Math.PI);
-//        float f2 = -MathHelper.cos(-p_189986_0_ * 0.017453292F);
-//        float f3 = MathHelper.sin(-p_189986_0_ * 0.017453292F);
+//        float f = Mth.cos(-p_189986_1_ * 0.017453292F - (float)Math.PI);
+//        float f1 = Mth.sin(-p_189986_1_ * 0.017453292F - (float)Math.PI);
+//        float f2 = -Mth.cos(-p_189986_0_ * 0.017453292F);
+//        float f3 = Mth.sin(-p_189986_0_ * 0.017453292F);
 //        return new Vec3((double)(f1 * f2), (double)f3, (double)(f * f2));
 
         double f3 = vector.y;
@@ -331,9 +331,9 @@ public class DynamicChain {
     }
 
     private static Vec3 wrapAngles(Vec3 r) {
-//        double x = Math.toRadians(MathHelper.wrapDegrees(Math.toDegrees(r.x)));
-//        double y = Math.toRadians(MathHelper.wrapDegrees(Math.toDegrees(r.y)));
-//        double z = Math.toRadians(MathHelper.wrapDegrees(Math.toDegrees(r.z)));
+//        double x = Math.toRadians(Mth.wrapDegrees(Math.toDegrees(r.x)));
+//        double y = Math.toRadians(Mth.wrapDegrees(Math.toDegrees(r.y)));
+//        double z = Math.toRadians(Mth.wrapDegrees(Math.toDegrees(r.z)));
 
         double x = r.x;
         double y = r.y;

@@ -6,14 +6,14 @@ import com.bobmowzie.mowziesmobs.server.world.feature.structure.*;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.Codec;
-import net.minecraft.resources.RegistryKey;
+import net.minecraft.sounds.RegistryKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.resources.registry.DynamicRegistries;
-import net.minecraft.resources.registry.MutableRegistry;
-import net.minecraft.resources.registry.Registry;
-import net.minecraft.resources.registry.WorldGenRegistries;
+import net.minecraft.sounds.registry.DynamicRegistries;
+import net.minecraft.sounds.registry.MutableRegistry;
+import net.minecraft.sounds.registry.Registry;
+import net.minecraft.sounds.registry.WorldGenRegistries;
 import net.minecraft.world.DimensionType;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.FlatChunkGenerator;
 import net.minecraft.world.gen.feature.*;
@@ -21,9 +21,9 @@ import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.settings.DimensionStructuresSettings;
 import net.minecraft.world.gen.settings.StructureSeparationSettings;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -94,8 +94,8 @@ public class FeatureHandler {
 
     private static Method GETCODEC_METHOD;
     public static void addDimensionalSpacing(final WorldEvent.Load event) {
-        if(event.getWorld() instanceof ServerWorld){
-            ServerWorld serverWorld = (ServerWorld)event.getWorld();
+        if(event.getLevel() instanceof ServerLevel){
+            ServerLevel serverLevel = (ServerLevel)event.getLevel();
 
             // Skip Terraforged worlds
             try {
@@ -104,11 +104,11 @@ public class FeatureHandler {
                 if(cgRL != null && cgRL.getNamespace().equals("terraforged")) return;
             }
             catch(Exception e){
-                MowziesMobs.LOGGER.error("Was unable to check if " + serverWorld.getDimensionKey().getLocation() + " is using Terraforged's ChunkGenerator.");
+                MowziesMobs.LOGGER.error("Was unable to check if " + serverWorld.dimension().getLocation() + " is using Terraforged's ChunkGenerator.");
             }
 
             if(serverWorld.getChunkProvider().getChunkGenerator() instanceof FlatChunkGenerator &&
-                    serverWorld.getDimensionKey().equals(World.OVERWORLD)){
+                    serverWorld.dimension().equals(World.OVERWORLD)){
                 return;
             }
 
@@ -121,9 +121,9 @@ public class FeatureHandler {
         }
     }
 
-    private static void addStructureSpacing(Structure<NoFeatureConfig> structure, Map<Structure<?>, StructureSeparationSettings> tempMap, ServerWorld world, ConfigHandler.GenerationConfig generationConfig) {
+    private static void addStructureSpacing(Structure<NoFeatureConfig> structure, Map<Structure<?>, StructureSeparationSettings> tempMap, ServerLevel world, ConfigHandler.GenerationConfig generationConfig) {
         List<? extends String> dimensionNames = generationConfig.dimensions.get();
-        ResourceLocation currDimensionName = world.getDimensionKey().getLocation();
+        ResourceLocation currDimensionName = world.dimension().getLocation();
         if (dimensionNames.contains(currDimensionName.toString())) {
             tempMap.putIfAbsent(structure, DimensionStructuresSettings.field_236191_b_.get(structure));
         }

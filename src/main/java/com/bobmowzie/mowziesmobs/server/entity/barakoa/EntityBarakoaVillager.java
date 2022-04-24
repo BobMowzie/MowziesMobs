@@ -13,13 +13,13 @@ import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.ILivingEntityData;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.SpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.goal.MoveTowardsRestrictionGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
-import net.minecraft.world.entity.monster.IMob;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
@@ -28,22 +28,22 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.EntityDataManager;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.management.PreYggdrasilConverter;
-import net.minecraft.resources.ActionResultType;
-import net.minecraft.resources.Hand;
+import net.minecraft.sounds.ActionResultType;
+import net.minecraft.sounds.Hand;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.text.ITextComponent;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.*;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.UUID;
 
-public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstrikeImmune, IMob {
+public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstrikeImmune, Enemy {
     private static final TradeStore DEFAULT = new TradeStore.Builder()
         .addTrade(Items.GOLD_INGOT, 2, ItemHandler.BLOWGUN, 1, 6)
         .addTrade(Items.COCOA_BEANS, 10, ItemHandler.DART, 8, 6)
@@ -61,9 +61,9 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
         .addTrade(Items.IRON_HELMET, 1, Items.GOLD_INGOT, 4, 2)
         .build();
 
-    private static final EntityDataAccessor<Optional<Trade>> TRADE = EntityDataManager.createKey(EntityBarakoaVillager.class, ServerProxy.OPTIONAL_TRADE);
-    //    private static final EntityDataAccessor<Integer> NUM_SALES = EntityDataManager.createKey(EntityBarakoaya.class, EntityDataSerializers.VARINT);
-    private static final EntityDataAccessor<Optional<UUID>> MISBEHAVED_PLAYER = EntityDataManager.createKey(EntityBarakoaVillager.class, EntityDataSerializers.OPTIONAL_UNIQUE_ID);
+    private static final EntityDataAccessor<Optional<Trade>> TRADE = SynchedEntityData.defineId(EntityBarakoaVillager.class, ServerProxy.OPTIONAL_TRADE);
+    //    private static final EntityDataAccessor<Integer> NUM_SALES = SynchedEntityData.defineId(EntityBarakoaya.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Optional<UUID>> MISBEHAVED_PLAYER = SynchedEntityData.defineId(EntityBarakoaVillager.class, EntityDataSerializers.OPTIONAL_UNIQUE_ID);
 
     //TODO: Sale limits. After X sales, go out of stock and change trade.
 
@@ -80,7 +80,7 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
 
     private Player customer;
 
-    public EntityBarakoaVillager(EntityType<? extends EntityBarakoaVillager> type, World world) {
+    public EntityBarakoaVillager(EntityType<? extends EntityBarakoaVillager> type, Level world) {
         super(type, world);
         setWeapon(0);
 //        setNumSales(MAX_SALES);
@@ -116,32 +116,32 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
     }
 
     @Override
-    protected void registerData() {
-        super.registerData();
-        getDataManager().register(TRADE, Optional.empty());
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        getEntityData().define(TRADE, Optional.empty());
         this.dataManager.register(MISBEHAVED_PLAYER, Optional.empty());
-//        getDataManager().register(NUM_SALES, MAX_SALES);
+//        getEntityData().define(NUM_SALES, MAX_SALES);
     }
 
     public void setOfferingTrade(Trade trade) {
-        getDataManager().set(TRADE, Optional.ofNullable(trade));
+        getEntityData().set(TRADE, Optional.ofNullable(trade));
     }
 
     public Trade getOfferingTrade() {
-        return getDataManager().get(TRADE).orElse(null);
+        return getEntityData().get(TRADE).orElse(null);
     }
 
     //    public int getNumSales() {
-//        return getDataManager().get(NUM_SALES);
+//        return getEntityData().get(NUM_SALES);
 //    }
 //
 //    public void setNumSales(int numSales) {
-//        getDataManager().set(NUM_SALES, numSales);
+//        getEntityData().set(NUM_SALES, numSales);
 //    }
 
     public boolean isOfferingTrade() {
-        if (getDataManager().get(TRADE) instanceof Optional) {
-            return getDataManager().get(TRADE).isPresent();
+        if (getEntityData().get(TRADE) instanceof Optional) {
+            return getEntityData().get(TRADE).isPresent();
         }
         else return false;
     }
@@ -165,19 +165,19 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
     @Override
     public void tick() {
         super.tick();
-        if (getAttackTarget() instanceof Player) {
-            if (((Player) getAttackTarget()).isCreative() || getAttackTarget().isSpectator()) setAttackTarget(null);
+        if (getTarget() instanceof Player) {
+            if (((Player) getTarget()).isCreative() || getTarget().isSpectator()) setTarget(null);
         }
         if ((!isOfferingTrade() || timeOffering <= 0) && tradeStore.hasStock()) {
             setOfferingTrade(tradeStore.get(rand));
-            timeOffering = rand.nextInt(MAX_OFFER_TIME - MIN_OFFER_TIME + 1) + MIN_OFFER_TIME;
+            timeOffering = random.nextInt(MAX_OFFER_TIME - MIN_OFFER_TIME + 1) + MIN_OFFER_TIME;
         }
     }
 
     public void openGUI(Player Player) {
         setCustomer(Player);
         MowziesMobs.PROXY.setReferencedMob(this);
-        if (!this.world.isClientSide && getAttackTarget() == null && isAlive()) {
+        if (!this.level.isClientSide && getTarget() == null && isAlive()) {
             Player.openContainer(new INamedContainerProvider() {
                 @Override
                 public Container createMenu(int id, PlayerInventory playerInventory, Player player) {
@@ -185,7 +185,7 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
                 }
 
                 @Override
-                public ITextComponent getDisplayName() {
+                public TextComponent getDisplayName() {
                     return EntityBarakoaVillager.this.getDisplayName();
                 }
             });
@@ -194,7 +194,7 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
 
     @Override
     protected ActionResultType getEntityInteractionResult(Player player, Hand hand) {
-        if (canTradeWith(player) && getAttackTarget() == null && isAlive()) {
+        if (canTradeWith(player) && getTarget() == null && isAlive()) {
             openGUI(player);
             return ActionResultType.SUCCESS;
         }
@@ -211,28 +211,28 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
 
     @Nullable
     @Override
-    public ILivingEntityData onInitialSpawn(IServerWorld world, DifficultyInstance difficulty, SpawnReason reason, @Nullable ILivingEntityData livingData, @Nullable CompoundNBT compound) {
+    public SpawnGroupData finalizeSpawn(IServerLevel world, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData livingData, @Nullable CompoundTag compound) {
         tradeStore = DEFAULT;
-        if (reason == SpawnReason.COMMAND) setHomePosAndDistance(getPosition(), 25);
-        return super.onInitialSpawn(world, difficulty, reason, livingData, compound);
+        if (reason == MobSpawnType.COMMAND) setHomePosAndDistance(getPosition(), 25);
+        return super.finalizeSpawn(world, difficulty, reason, livingData, compound);
     }
 
     @Override
-    public boolean preventDespawn() {
+    public boolean requiresCustomPersistence() {
         return true;
     }
 
     @Override
-    public void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
+    public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
         compound.put("tradeStore", tradeStore.serialize());
         if (isOfferingTrade()) {
             compound.put("offeringTrade", getOfferingTrade().serialize());
         }
         compound.putInt("timeOffering", timeOffering);
-        compound.putInt("HomePosX", this.getHomePosition().getX());
-        compound.putInt("HomePosY", this.getHomePosition().getY());
-        compound.putInt("HomePosZ", this.getHomePosition().getZ());
+        compound.putInt("HomePosX", this.getHomePosition().x());
+        compound.putInt("HomePosY", this.getHomePosition().y());
+        compound.putInt("HomePosZ", this.getHomePosition().z());
         compound.putInt("HomeDist", (int) this.getMaximumHomeDistance());
         if (this.getMisbehavedPlayerId() != null) {
             compound.putUniqueId("MisbehavedPlayer", this.getMisbehavedPlayerId());
@@ -241,8 +241,8 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
     }
 
     @Override
-    public void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
         tradeStore = TradeStore.deserialize(compound.getCompound("tradeStore"));
         setOfferingTrade(Trade.deserialize(compound.getCompound("offeringTrade")));
         timeOffering = compound.getInt("timeOffering");

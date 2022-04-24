@@ -319,22 +319,22 @@ public class ModelBoulder<T extends EntityBoulder> extends AdvancedModelBase {
             EntityBoulder entity = (EntityBoulder) entityIn;
             size = entity.getBoulderSize();
             resetToDefaultPose();
-            int tick = Math.max(entity.ticksExisted, 0);
-            float delta = ageInTicks - entity.ticksExisted;
+            int tick = Math.max(entity.tickCount, 0);
+            float delta = ageInTicks - entity.tickCount;
             for (int i = 0; i < blockModels.length; i++) {
                 blockModels[i].setBlockState(entity.getBlock());
             }
             boulder0block1.rotationPointY += -32 * (float) (Math.pow(0.6 * (tick + delta + 1), -3));
-            boulder0block1.rotationPointY += 2 * Math.cos(0.1f * (entity.ticksExisted + entity.animationOffset + delta));
+            boulder0block1.rotationPointY += 2 * Math.cos(0.1f * (entity.tickCount + entity.animationOffset + delta));
 
             boulder1.rotationPointY += -32 * (float) (Math.pow(0.2 * (tick + delta + 1), -3));
-            boulder1.rotationPointY += 2.4 * Math.cos(0.07f * (entity.ticksExisted + entity.animationOffset + delta));
+            boulder1.rotationPointY += 2.4 * Math.cos(0.07f * (entity.tickCount + entity.animationOffset + delta));
 
             boulder2.rotationPointY += -8 * (float) (Math.pow(0.05 * (tick + delta + 1), -1));
-            boulder2.rotationPointY += 2.8 * Math.cos(0.04f * (entity.ticksExisted + entity.animationOffset + delta));
+            boulder2.rotationPointY += 2.8 * Math.cos(0.04f * (entity.tickCount + entity.animationOffset + delta));
 
             boulder3.rotationPointY += -90 + Math.min(90, 1.2 * (tick + delta));
-            boulder3.rotationPointY += 3.2 * Math.cos(0.03f * (entity.ticksExisted + entity.animationOffset + delta));
+            boulder3.rotationPointY += 3.2 * Math.cos(0.03f * (entity.tickCount + entity.animationOffset + delta));
 
             boulder3.rotationPointY += 16;
             boulder3block1.rotationPointY -= 8;

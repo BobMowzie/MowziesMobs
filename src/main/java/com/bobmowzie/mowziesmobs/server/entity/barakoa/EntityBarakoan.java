@@ -7,13 +7,13 @@ import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.EntityDataManager;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.resources.math.RayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.util.HitResult;
+import net.minecraft.world.level.Level;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +22,7 @@ import java.util.UUID;
 public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarakoa {
     protected static final Optional<UUID> ABSENT_LEADER = Optional.empty();
 
-    private static final EntityDataAccessor<Optional<UUID>> LEADER = EntityDataManager.createKey(EntityBarakoan.class, EntityDataSerializers.OPTIONAL_UNIQUE_ID);
+    private static final EntityDataAccessor<Optional<UUID>> LEADER = SynchedEntityData.defineId(EntityBarakoan.class, EntityDataSerializers.OPTIONAL_UNIQUE_ID);
 
     private final Class<L> leaderClass;
 
@@ -32,11 +32,11 @@ public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarak
 
     public boolean shouldSetDead;
 
-    public EntityBarakoan(EntityType<? extends EntityBarakoan> type, World world, Class<L> leaderClass) {
+    public EntityBarakoan(EntityType<? extends EntityBarakoan> type, Level world, Class<L> leaderClass) {
         this(type, world, leaderClass, null);
     }
 
-    public EntityBarakoan(EntityType<? extends EntityBarakoan> type, World world, Class<L> leaderClass, L leader) {
+    public EntityBarakoan(EntityType<? extends EntityBarakoan> type, Level world, Class<L> leaderClass, L leader) {
         super(type, world);
         this.leaderClass = leaderClass;
         if (leader != null) {
@@ -46,13 +46,13 @@ public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarak
     }
 
     @Override
-    protected void registerData() {
-        super.registerData();
-        getDataManager().register(LEADER, ABSENT_LEADER);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        getEntityData().define(LEADER, ABSENT_LEADER);
     }
 
     public Optional<UUID> getLeaderUUID() {
-        return getDataManager().get(LEADER);
+        return getEntityData().get(LEADER);
     }
 
     public void setLeaderUUID(UUID uuid) {
@@ -60,11 +60,11 @@ public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarak
     }
 
     public void setLeaderUUID(Optional<UUID> uuid) {
-        getDataManager().set(LEADER, uuid);
+        getEntityData().set(LEADER, uuid);
     }
 
     @Override
-    public ItemStack getPickedResult(RayTraceResult target) {
+    public ItemStack getPickedResult(HitResult target) {
         return new ItemStack(ItemHandler.BARAKOA_SPAWN_EGG);
     }
 
@@ -82,7 +82,7 @@ public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarak
 
     @Override
     protected void updateCircling() {
-        LivingEntity target = getAttackTarget();
+        LivingEntity target = getTarget();
         if (leader != null && target != null) {
             if (!attacking && targetDistance < 5) {
                 this.circleEntity(target, 7, 0.3f, true, getTribeCircleTick(), (float) ((index + 1) * (Math.PI * 2) / (getPackSize() + 1)), 1.75f);
@@ -128,7 +128,7 @@ public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarak
     }
 
     @Override
-    public boolean preventDespawn() {
+    public boolean requiresCustomPersistence() {
         return leader != null;
     }
 
@@ -141,8 +141,8 @@ public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarak
     protected abstract void removeAsPackMember();
 
     @Override
-    public void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
+    public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
         Optional<UUID> leader = getLeaderUUID();
         if (leader.isPresent()) {
             compound.putString("leaderUUID", leader.get().toString());
@@ -150,8 +150,8 @@ public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarak
     }
 
     @Override
-    public void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
         String uuid = compound.getString("leaderUUID");
         if (uuid.isEmpty()) {
             setLeaderUUID(ABSENT_LEADER);

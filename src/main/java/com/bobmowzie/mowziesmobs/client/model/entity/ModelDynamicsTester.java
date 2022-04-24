@@ -92,7 +92,7 @@ public class ModelDynamicsTester<T extends EntityDynamicsTester> extends Advance
     @Override
     public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         resetToDefaultPose();
-//        bob(body1, 0.3f, 16, false, entity.ticksExisted + LLibrary.PROXY.getPartialTicks(), 1F);
+//        bob(body1, 0.3f, 16, false, entity.tickCount + LLibrary.PROXY.getPartialTicks(), 1F);
         root.rotationPointZ += 16;
     }
 }

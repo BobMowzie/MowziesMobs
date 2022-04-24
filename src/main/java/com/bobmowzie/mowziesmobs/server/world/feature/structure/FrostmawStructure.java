@@ -3,10 +3,10 @@ package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.mojang.serialization.Codec;
-import net.minecraft.resources.Rotation;
+import net.minecraft.sounds.Rotation;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.math.MutableBoundingBox;
-import net.minecraft.resources.registry.DynamicRegistries;
+import net.minecraft.util.MutableBoundingBox;
+import net.minecraft.sounds.registry.DynamicRegistries;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
@@ -43,7 +43,7 @@ public class FrostmawStructure extends MowzieStructure {
 
         @Override
         public void func_230364_a_(DynamicRegistries dynamicRegistryManager, ChunkGenerator generator, TemplateManager templateManagerIn, int chunkX, int chunkZ, Biome biomeIn, NoFeatureConfig config) {
-            Rotation rotation = Rotation.values()[this.rand.nextInt(Rotation.values().length)];
+            Rotation rotation = Rotation.values()[this.random.nextInt(Rotation.values().length)];
 
             //Turns the chunk coordinates into actual coordinates we can use. (Gets center of that chunk)
             int x = (chunkX << 4) + 7;

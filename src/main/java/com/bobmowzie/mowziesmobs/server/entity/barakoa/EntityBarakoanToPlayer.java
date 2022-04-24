@@ -13,21 +13,21 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.EntityDataManager;
-import net.minecraft.resources.ActionResultType;
-import net.minecraft.resources.Hand;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.ActionResultType;
+import net.minecraft.sounds.Hand;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.resources.SoundEvent;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -35,43 +35,43 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class EntityBarakoanToPlayer extends EntityBarakoan<Player> {
-    private static final EntityDataAccessor<ItemStack> MASK_STORED = EntityDataManager.createKey(EntityBarakoanToPlayer.class, EntityDataSerializers.ITEMSTACK);
+    private static final EntityDataAccessor<ItemStack> MASK_STORED = SynchedEntityData.defineId(EntityBarakoanToPlayer.class, EntityDataSerializers.ITEM_STACK);
     @OnlyIn(Dist.CLIENT)
     public Vec3[] feetPos;
 
-    public EntityBarakoanToPlayer(EntityType<? extends EntityBarakoanToPlayer> type, World world) {
+    public EntityBarakoanToPlayer(EntityType<? extends EntityBarakoanToPlayer> type, Level world) {
         this(type, world, null);
     }
 
-    public EntityBarakoanToPlayer(EntityType<? extends EntityBarakoanToPlayer> type, World world, Player leader) {
+    public EntityBarakoanToPlayer(EntityType<? extends EntityBarakoanToPlayer> type, Level world, Player leader) {
         super(type, world, Player.class, leader);
-        experienceValue = 0;
-        if (world.isClientSide) {
+        xpReward = 0;
+        if (level.isClientSide) {
             feetPos = new Vec3[]{new Vec3(0, 0, 0)};
         }
     }
 
     @Override
-    protected void registerData() {
-        super.registerData();
-        getDataManager().register(MASK_STORED, new ItemStack(ItemHandler.BARAKOA_MASK_FURY, 1));
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        getEntityData().define(MASK_STORED, new ItemStack(ItemHandler.BARAKOA_MASK_FURY, 1));
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        if (rand.nextFloat() < 0.5) return null;
+        if (random.nextFloat() < 0.5) return null;
         return super.getAmbientSound();
     }
 
     @Override
     public void tick() {
-        if (ticksExisted > 30 && (getLeader() == null || getLeader().getHealth() <= 0)) {
+        if (tickCount > 30 && (getLeader() == null || getLeader().getHealth() <= 0)) {
             deactivate();
         }
         super.tick();
-        if (world.isClientSide && feetPos != null && feetPos.length > 0) {
+        if (level.isClientSide && feetPos != null && feetPos.length > 0) {
             feetPos[0] = getPositionVec().add(0, 0.05f, 0);
-            if (ticksExisted % 10 == 0) AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING2.get(), feetPos[0].getX(), feetPos[0].getY(), feetPos[0].getZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 1.5F, 1, 223 / 255f, 66 / 255f, 1, 1, 15, true, false, new ParticleComponent[]{
+            if (tickCount % 10 == 0) AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING2.get(), feetPos[0].x(), feetPos[0].y(), feetPos[0].z(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 1.5F, 1, 223 / 255f, 66 / 255f, 1, 1, 15, true, false, new ParticleComponent[]{
                     new ParticleComponent.PinLocation(feetPos),
                     new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                     new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(1f, 10f), false)
@@ -94,9 +94,9 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<Player> {
         }
     }
 
-    public static AttributeModifierMap.MutableAttribute createAttributes() {
-        return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 7 * ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig.attackMultiplier.get())
-                .createMutableAttribute(Attributes.MAX_HEALTH, 20 * ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig.healthMultiplier.get());
+    public static AttributeSupplier.Builder createAttributes() {
+        return MowzieEntity.createAttributes().add(Attributes.ATTACK_DAMAGE, 7 * ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig.attackMultiplier.get())
+                .add(Attributes.MAX_HEALTH, 20 * ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig.healthMultiplier.get());
     }
 
     @Override
@@ -138,7 +138,7 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<Player> {
 
     @Nullable
     @Override
-    protected ResourceLocation getLootTable() {
+    protected ResourceLocation getDefaultLootTable() {
         return null;
     }
 
@@ -155,16 +155,16 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<Player> {
     public boolean isTeleportFriendlyBlock(int x, int z, int y, int xOffset, int zOffset)
     {
         BlockPos blockpos = new BlockPos(x + xOffset, y - 1, z + zOffset);
-        BlockState iblockstate = this.world.getBlockState(blockpos);
+        BlockState iblockstate = this.level.getBlockState(blockpos);
         return iblockstate.canEntitySpawn(this.world, blockpos, this.getType()) && this.world.isAirBlock(blockpos.up()) && this.world.isAirBlock(blockpos.up(2));
     }
 
     public ItemStack getStoredMask() {
-        return getDataManager().get(MASK_STORED);
+        return getEntityData().get(MASK_STORED);
     }
 
     public void setStoredMask(ItemStack mask) {
-        getDataManager().set(MASK_STORED, mask);
+        getEntityData().set(MASK_STORED, mask);
     }
 
     @Override
@@ -173,17 +173,17 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<Player> {
     }
 
     @Override
-    public void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
-        CompoundNBT compoundnbt = compound.getCompound("storedMask");
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
+        CompoundTag compoundnbt = compound.getCompound("storedMask");
         this.setStoredMask(ItemStack.read(compoundnbt));
     }
 
     @Override
-    public void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
+    public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
         if (!this.getStoredMask().isEmpty()) {
-            compound.put("storedMask", this.getStoredMask().write(new CompoundNBT()));
+            compound.put("storedMask", this.getStoredMask().write(new CompoundTag()));
         }
     }
 }

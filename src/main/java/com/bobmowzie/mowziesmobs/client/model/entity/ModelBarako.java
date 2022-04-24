@@ -5,7 +5,7 @@ import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.resources.math.MathHelper;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -380,8 +380,8 @@ public class ModelBarako<T extends EntityBarako> extends MowzieEntityModel<T> {
 
     @Override
     protected void animate(EntityBarako entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
-        headYaw = MathHelper.wrapDegrees(headYaw);
-        headPitch = MathHelper.wrapDegrees(headPitch);
+        headYaw = Mth.wrapDegrees(headYaw);
+        headPitch = Mth.wrapDegrees(headPitch);
         if (headYaw > 70) {
             headYaw = 70f;
         }

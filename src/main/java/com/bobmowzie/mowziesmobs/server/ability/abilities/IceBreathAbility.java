@@ -14,7 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.resources.Hand;
+import net.minecraft.sounds.Hand;
 
 public class IceBreathAbility extends Ability {
     protected EntityIceBreath iceBreath;
@@ -31,16 +31,16 @@ public class IceBreathAbility extends Ability {
     public void start() {
         super.start();
         LivingEntity user = getUser();
-        if (!getUser().world.isClientSide()) {
+        if (!getUser().level.isClientSide()) {
             EntityIceBreath iceBreath = new EntityIceBreath(EntityHandler.ICE_BREATH, user.world, user);
-            iceBreath.setPositionAndRotation(user.getPosX(), user.getPosY() + user.getEyeHeight() - 0.5f, user.getPosZ(), user.getYRot(), user.getXRot());
-            user.world.addEntity(iceBreath);
+            iceBreath.setPositionAndRotation(user.getX(), user.getY() + user.getEyeHeight() - 0.5f, user.getZ(), user.getYRot(), user.getXRot());
+            user.level.addFreshEntity(iceBreath);
             this.iceBreath = iceBreath;
         }
         playAnimation("ice_breath_start", false);
 
         if (getUser().getActiveHand() == Hand.MAIN_HAND) {
-            heldItemMainHandVisualOverride = getUser().getHeldItemMainhand();
+            heldItemMainHandVisualOverride = getUser().getMainHandItem();
             heldItemOffHandVisualOverride = ItemStack.EMPTY;
             firstPersonOffHandDisplay = Ability.HandDisplay.DONT_RENDER;
         }

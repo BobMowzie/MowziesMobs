@@ -7,7 +7,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.RandomPositionGenerator;
 import net.minecraft.pathfinding.Path;
-import net.minecraft.resources.EntityPredicates;
+import net.minecraft.sounds.EntityPredicates;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 
@@ -74,9 +74,9 @@ public class MMAIAvoidEntity<U extends PathfinderMob, T extends Entity> extends 
         }
         entityEvading = entities.get(0);
         for (int n = 0; n < numChecks; n++) {
-            Vec3 pos = RandomPositionGenerator.findRandomTargetBlockAwayFrom(entity, horizontalEvasion, verticalEvasion, entityEvading.getPositionVec());
+            Vec3 pos = RandomPositionGenerator.findRandomTargetBlockAwayFrom(entity, horizontalEvasion, verticalEvasion, entityEvading.position());
             if (pos != null && !(entityEvading.getDistanceSq(pos.x, pos.y, pos.z) < entityEvading.getDistanceSq(entity))) {
-                entityPathEntity = entity.getNavigator().getPathToPos(new BlockPos(pos), 0);
+                entityPathEntity = entity.getNavigation().getPathToPos(new BlockPos(pos), 0);
                 if (entityPathEntity != null) {
                     return true;
                 }
@@ -92,12 +92,12 @@ public class MMAIAvoidEntity<U extends PathfinderMob, T extends Entity> extends 
 
     @Override
     public boolean shouldContinueExecuting() {
-        return !entity.getNavigator().noPath();
+        return !entity.getNavigation().isDone();
     }
 
     @Override
     public void startExecuting() {
-        entity.getNavigator().setPath(entityPathEntity, farSpeed);
+        entity.getNavigation().setPath(entityPathEntity, farSpeed);
     }
 
     @Override
@@ -107,6 +107,6 @@ public class MMAIAvoidEntity<U extends PathfinderMob, T extends Entity> extends 
 
     @Override
     public void tick() {
-        entity.getNavigator().setSpeed(entity.getDistanceSq(entityEvading) < NEAR_DISTANCE * NEAR_DISTANCE ? nearSpeed : farSpeed);
+        entity.getNavigation().setSpeed(entity.getDistanceSq(entityEvading) < NEAR_DISTANCE * NEAR_DISTANCE ? nearSpeed : farSpeed);
     }
 }

@@ -15,14 +15,14 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.INBT;
-import net.minecraft.particles.BlockParticleData;
+import net.minecraft.particles.BlockParticleOption;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.resources.Direction;
-import net.minecraft.resources.math.MathHelper;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -236,7 +236,7 @@ public class FrozenCapability {
 
         @Override
         public void addFreezeProgress(LivingEntity entity, float amount) {
-            if (!entity.world.isClientSide && !entity.isPotionActive(EffectHandler.FROZEN)) {
+            if (!entity.level.isClientSide && !entity.isPotionActive(EffectHandler.FROZEN)) {
                 freezeProgress += amount;
                 freezeDecayDelay = MAX_FREEZE_DECAY_DELAY;
                 MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new MessageAddFreezeProgress(entity, amount));
@@ -247,33 +247,33 @@ public class FrozenCapability {
         public void onFreeze(LivingEntity entity) {
             if (entity != null) {
                 frozenController = new EntityFrozenController(EntityHandler.FROZEN_CONTROLLER, entity.world);
-                frozenController.setPositionAndRotation(entity.getPosX(), entity.getPosY(), entity.getPosZ(), entity.getYRot(), entity.getXRot());
-                entity.world.addEntity(frozenController);
-                frozenController.setRenderYawOffset(entity.renderYawOffset);
+                frozenController.setPositionAndRotation(entity.getX(), entity.getY(), entity.getZ(), entity.getYRot(), entity.getXRot());
+                entity.level.addFreshEntity(frozenController);
+                frozenController.setRenderYawOffset(entity.yBodyRot);
                 frozenYaw = entity.getYRot();
                 frozenPitch = entity.getXRot();
                 frozenYawHead = entity.getYRot()Head;
                 frozenLimbSwingAmount = 0;//entity.limbSwingAmount;
-                frozenRenderYawOffset = entity.renderYawOffset;
+                frozenRenderYawOffset = entity.yBodyRot;
                 frozenSwingProgress = entity.swingProgress;
                 entity.startRiding(frozenController, true);
                 entity.resetActiveHand();
 
                 if (entity instanceof MobEntity) {
                     MobEntity mobEntity = (MobEntity) entity;
-                    if (mobEntity.getAttackTarget() != null) setPreAttackTarget(mobEntity.getAttackTarget().getUniqueID());
-                    prevHasAI = !((MobEntity) entity).isAIDisabled();
+                    if (mobEntity.getTarget() != null) setPreAttackTarget(mobEntity.getTarget().getUniqueID());
+                    prevHasAI = !((MobEntity) entity).isNoAi();
                     mobEntity.setNoAI(true);
                 }
 
-                if (entity.world.isClientSide) {
-                    int particleCount = (int) (10 + 1 * entity.getHeight() * entity.getWidth() * entity.getWidth());
+                if (entity.level.isClientSide) {
+                    int particleCount = (int) (10 + 1 * entity.getHeight() * entity.getBbWidth() * entity.getBbWidth());
                     for (int i = 0; i < particleCount; i++) {
-                        double snowX = entity.getPosX() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                        double snowZ = entity.getPosZ() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                        double snowY = entity.getPosY() + entity.getHeight() * entity.getRNG().nextFloat();
-                        Vec3 motion = new Vec3(snowX - entity.getPosX(), snowY - (entity.getPosY() + entity.getHeight() / 2), snowZ - entity.getPosZ()).normalize();
-                        entity.world.addParticle(new ParticleSnowFlake.SnowflakeData(40, false), snowX, snowY, snowZ, 0.1d * motion.x, 0.1d * motion.y, 0.1d * motion.z);
+                        double snowX = entity.getX() + entity.getBbWidth() * entity.getRNG().nextFloat() - entity.getBbWidth() / 2;
+                        double snowZ = entity.getZ() + entity.getBbWidth() * entity.getRNG().nextFloat() - entity.getBbWidth() / 2;
+                        double snowY = entity.getY() + entity.getHeight() * entity.getRNG().nextFloat();
+                        Vec3 motion = new Vec3(snowX - entity.getX(), snowY - (entity.getY() + entity.getHeight() / 2), snowZ - entity.getZ()).normalize();
+                        entity.level.addParticle(new ParticleSnowFlake.SnowflakeData(40, false), snowX, snowY, snowZ, 0.1d * motion.x, 0.1d * motion.y, 0.1d * motion.z);
                     }
                 }
                 entity.playSound(MMSounds.ENTITY_FROSTMAW_FROZEN_CRASH.get(), 1, 1);
@@ -284,29 +284,29 @@ public class FrozenCapability {
         public void onUnfreeze(LivingEntity entity) {
             if (entity != null) {
                 if (frozenController != null) {
-                    Vec3 oldPosition = entity.getPositionVec();
+                    Vec3 oldPosition = entity.position();
                     entity.stopRiding();
-                    entity.setPositionAndUpdate(oldPosition.getX(), oldPosition.getY(), oldPosition.getZ());
+                    entity.setPositionAndUpdate(oldPosition.x(), oldPosition.y(), oldPosition.z());
                     frozenController.remove();
                 }
                 entity.playSound(MMSounds.ENTITY_FROSTMAW_FROZEN_CRASH.get(), 1, 0.5f);
-                if (entity.world.isClientSide) {
-                    int particleCount = (int) (10 + 1 * entity.getHeight() * entity.getWidth() * entity.getWidth());
+                if (entity.level.isClientSide) {
+                    int particleCount = (int) (10 + 1 * entity.getHeight() * entity.getBbWidth() * entity.getBbWidth());
                     for (int i = 0; i < particleCount; i++) {
-                        double particleX = entity.getPosX() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                        double particleZ = entity.getPosZ() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                        double particleY = entity.getPosY() + entity.getHeight() * entity.getRNG().nextFloat() + 0.3f;
-                        entity.world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, Blocks.ICE.getDefaultState()), particleX, particleY, particleZ, 0, 0, 0);
+                        double particleX = entity.getX() + entity.getBbWidth() * entity.getRNG().nextFloat() - entity.getBbWidth() / 2;
+                        double particleZ = entity.getZ() + entity.getBbWidth() * entity.getRNG().nextFloat() - entity.getBbWidth() / 2;
+                        double particleY = entity.getY() + entity.getHeight() * entity.getRNG().nextFloat() + 0.3f;
+                        entity.level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.ICE.defaultBlockState()), particleX, particleY, particleZ, 0, 0, 0);
                     }
                 }
                 if (entity instanceof MobEntity) {
-                    if (((MobEntity) entity).isAIDisabled() && prevHasAI) {
+                    if (((MobEntity) entity).isNoAi() && prevHasAI) {
                         ((MobEntity) entity).setNoAI(false);
                     }
                     if (getPreAttackTarget() != null) {
                         Player target = entity.world.getPlayerByUuid(getPreAttackTarget());
                         if (target != null) {
-                            ((MobEntity) entity).setAttackTarget(target);
+                            ((MobEntity) entity).setTarget(target);
                         }
                     }
                 }
@@ -317,10 +317,10 @@ public class FrozenCapability {
         public void tick(LivingEntity entity) {
             // Freeze logic
             if (getFreezeProgress() >= 1) {
-                entity.addPotionEffect(new MobEffectInstance(EffectHandler.FROZEN, 50, 0, false, false));
+                entity.addEffect(new MobEffectInstance(EffectHandler.FROZEN, 50, 0, false, false));
                 freezeProgress = 1f;
             } else if (freezeProgress > 0) {
-                entity.addPotionEffect(new MobEffectInstance(MobEffects.SLOWNESS, 9, MathHelper.floor(freezeProgress * 5 + 1), false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 9, Mth.floor(freezeProgress * 5 + 1), false, false));
             }
 
             if (frozenController == null) {
@@ -334,23 +334,23 @@ public class FrozenCapability {
 
             if (entity.isPotionActive(EffectHandler.FROZEN)) {
                 if (entity.getActivePotionEffect(EffectHandler.FROZEN).getDuration() <= 0) entity.removeActivePotionEffect(EffectHandler.FROZEN);
-                entity.addPotionEffect(new MobEffectInstance(MobEffects.SLOWNESS, 2, 50, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 2, 50, false, false));
                 entity.setSneaking(false);
 
-                if (entity.world.isClientSide && entity.ticksExisted % 2 == 0) {
-                    double cloudX = entity.getPosX() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                    double cloudZ = entity.getPosZ() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                    double cloudY = entity.getPosY() + entity.getHeight() * entity.getRNG().nextFloat();
-                    entity.world.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f, 0.75f, 1f, 15f, 25, ParticleCloud.EnumCloudBehavior.CONSTANT, 1f), cloudX, cloudY, cloudZ, 0f, -0.01f, 0f);
+                if (entity.level.isClientSide && entity.tickCount % 2 == 0) {
+                    double cloudX = entity.getX() + entity.getBbWidth() * entity.getRNG().nextFloat() - entity.getBbWidth() / 2;
+                    double cloudZ = entity.getZ() + entity.getBbWidth() * entity.getRNG().nextFloat() - entity.getBbWidth() / 2;
+                    double cloudY = entity.getY() + entity.getHeight() * entity.getRNG().nextFloat();
+                    entity.level.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f, 0.75f, 1f, 15f, 25, ParticleCloud.EnumCloudBehavior.CONSTANT, 1f), cloudX, cloudY, cloudZ, 0f, -0.01f, 0f);
 
-                    double snowX = entity.getPosX() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                    double snowZ = entity.getPosZ() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                    double snowY = entity.getPosY() + entity.getHeight() * entity.getRNG().nextFloat();
-                    entity.world.addParticle(new ParticleSnowFlake.SnowflakeData(40, false), snowX, snowY, snowZ, 0d, -0.01d, 0d);
+                    double snowX = entity.getX() + entity.getBbWidth() * entity.getRNG().nextFloat() - entity.getBbWidth() / 2;
+                    double snowZ = entity.getZ() + entity.getBbWidth() * entity.getRNG().nextFloat() - entity.getBbWidth() / 2;
+                    double snowY = entity.getY() + entity.getHeight() * entity.getRNG().nextFloat();
+                    entity.level.addParticle(new ParticleSnowFlake.SnowflakeData(40, false), snowX, snowY, snowZ, 0d, -0.01d, 0d);
                 }
             }
             else {
-                if (!entity.world.isClientSide && getPrevFrozen()) {
+                if (!entity.level.isClientSide && getPrevFrozen()) {
                     onUnfreeze(entity);
                     MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new MessageUnfreezeEntity(entity));
                 }
@@ -368,7 +368,7 @@ public class FrozenCapability {
 
         @Override
         public INBT writeNBT() {
-            CompoundNBT compound = new CompoundNBT();
+            CompoundTag compound = new CompoundTag();
             compound.putFloat("freezeProgress", getFreezeProgress());
             compound.putInt("freezeDecayDelay", getFreezeDecayDelay());
             compound.putFloat("frozenLimbSwingAmount", getFrozenLimbSwingAmount());
@@ -387,7 +387,7 @@ public class FrozenCapability {
 
         @Override
         public void readNBT(INBT nbt) {
-            CompoundNBT compound = (CompoundNBT) nbt;
+            CompoundTag compound = (CompoundTag) nbt;
             setFreezeProgress(compound.getFloat("freezeProgress"));
             setFreezeDecayDelay(compound.getInt("freezeDecayDelay"));
             setFrozenLimbSwingAmount(compound.getFloat("frozenLimbSwingAmount"));

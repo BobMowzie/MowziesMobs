@@ -20,12 +20,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.item.minecart.MinecartEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.INBT;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.resources.Direction;
-import net.minecraft.resources.Hand;
-import net.minecraft.resources.math.MathHelper;
+import net.minecraft.core.Direction;
+import net.minecraft.sounds.Hand;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -251,7 +251,7 @@ public class PlayerCapability {
 
         @Override
         public void addedToWorld(EntityJoinWorldEvent event) {
-            if (event.getWorld().isClientSide()) {
+            if (event.getLevel().isClientSide()) {
                 Player player = (Player) event.getEntity();
                 geckoPlayer = new GeckoPlayer.GeckoPlayerThirdPerson(player);
                 if (event.getEntity() == Minecraft.getInstance().player) GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON = new GeckoPlayer.GeckoPlayerFirstPerson(player);
@@ -261,7 +261,7 @@ public class PlayerCapability {
         public void tick(TickEvent.PlayerTickEvent event) {
             Player player = event.player;
 
-            prevMotion = player.getPositionVec().subtract(new Vec3(player.prevPosX, player.prevPosY, player.prevPosZ));
+            prevMotion = player.position().subtract(new Vec3(player.xo, player.prevPosY, player.zo));
             prevTime = time;
             if (untilSunstrike > 0) {
                 untilSunstrike--;
@@ -273,18 +273,18 @@ public class PlayerCapability {
             if (event.side == LogicalSide.SERVER) {
                 for (ItemStack itemStack : event.player.inventory.mainInventory) {
                     if (itemStack.getItem() instanceof ItemEarthTalisman)
-                        player.addPotionEffect(new MobEffectInstance(EffectHandler.GEOMANCY, 20, 0, false, false));
+                        player.addEffect(new MobEffectInstance(EffectHandler.GEOMANCY, 20, 0, false, false));
                 }
                 if (player.getHeldItemOffhand().getItem() instanceof ItemEarthTalisman)
-                    player.addPotionEffect(new MobEffectInstance(EffectHandler.GEOMANCY, 20, 0, false, false));
+                    player.addEffect(new MobEffectInstance(EffectHandler.GEOMANCY, 20, 0, false, false));
 
                 List<EntityBarakoanToPlayer> pack = tribePack;
                 float theta = (2 * (float) Math.PI / pack.size());
                 for (int i = 0; i < pack.size(); i++) {
                     EntityBarakoanToPlayer barakoan = pack.get(i);
                     barakoan.index = i;
-                    if (barakoan.getAttackTarget() == null && barakoan.getAnimation() != EntityBarakoanToPlayer.DEACTIVATE_ANIMATION) {
-                        barakoan.getNavigator().tryMoveToXYZ(player.getPosX() + tribePackRadius * MathHelper.cos(theta * i), player.getPosY(), player.getPosZ() + tribePackRadius * MathHelper.sin(theta * i), 0.45);
+                    if (barakoan.getTarget() == null && barakoan.getAnimation() != EntityBarakoanToPlayer.DEACTIVATE_ANIMATION) {
+                        barakoan.getNavigation().moveTo(player.getX() + tribePackRadius * Mth.cos(theta * i), player.getY(), player.getZ() + tribePackRadius * Mth.sin(theta * i), 0.45);
                         if (player.getDistance(barakoan) > 20 && player.isOnGround()) {
                             tryTeleportBarakoan(player, barakoan);
                         }
@@ -412,15 +412,15 @@ public class PlayerCapability {
         }
 
         private void tryTeleportBarakoan(Player player, EntityBarakoanToPlayer barakoan) {
-            int x = MathHelper.floor(player.getPosX()) - 2;
-            int z = MathHelper.floor(player.getPosZ()) - 2;
-            int y = MathHelper.floor(player.getBoundingBox().minY);
+            int x = Mth.floor(player.getX()) - 2;
+            int z = Mth.floor(player.getZ()) - 2;
+            int y = Mth.floor(player.getBoundingBox().minY);
 
             for (int l = 0; l <= 4; ++l) {
                 for (int i1 = 0; i1 <= 4; ++i1) {
                     if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && barakoan.isTeleportFriendlyBlock(x, z, y, l, i1)) {
                         barakoan.setLocationAndAngles((float) (x + l) + 0.5F, y, (float) (z + i1) + 0.5F, barakoan.getYRot(), barakoan.getXRot());
-                        barakoan.getNavigator().clearPath();
+                        barakoan.getNavigation().clearPath();
                         return;
                     }
                 }
@@ -453,7 +453,7 @@ public class PlayerCapability {
 
         @Override
         public INBT writeNBT() {
-            CompoundNBT compound = new CompoundNBT();
+            CompoundTag compound = new CompoundTag();
             compound.putInt("untilSunstrike", untilSunstrike);
             compound.putInt("untilAxeSwing", untilAxeSwing);
             compound.putInt("prevTime", prevTime);
@@ -463,7 +463,7 @@ public class PlayerCapability {
 
         @Override
         public void readNBT(INBT nbt) {
-            CompoundNBT compound = (CompoundNBT) nbt;
+            CompoundTag compound = (CompoundTag) nbt;
             untilSunstrike = compound.getInt("untilSunstrike");
             untilAxeSwing = compound.getInt("untilAxeSwing");
             prevTime = compound.getInt("prevTime");

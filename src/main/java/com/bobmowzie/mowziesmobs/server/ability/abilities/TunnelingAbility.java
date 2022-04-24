@@ -25,9 +25,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.resources.math.AxisAlignedBB;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.math.MathHelper;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -41,7 +41,7 @@ import java.util.List;
 public class TunnelingAbility extends Ability {
     private int doubleTapTimer = 0;
     public boolean prevUnderground;
-    public BlockState justDug = Blocks.DIRT.getDefaultState();
+    public BlockState justDug = Blocks.DIRT.defaultBlockState();
     boolean underground = false;
 
     @OnlyIn(Dist.CLIENT)
@@ -66,7 +66,7 @@ public class TunnelingAbility extends Ability {
         super.start();
         underground = false;
         prevUnderground = false;
-        if (getUser().world.isClientSide()) {
+        if (getUser().level.isClientSide()) {
             spinAmount = 0;
             pitch = 0;
         }
@@ -82,43 +82,43 @@ public class TunnelingAbility extends Ability {
         float tunnelSpeed = 0.3f;
         if (underground) {
             if (getUser().isSneaking()) {
-                getUser().setMotion(lookVec.normalize().scale(tunnelSpeed));
+                getUser().setDeltaMovement(lookVec.normalize().scale(tunnelSpeed));
             }
             else {
-                getUser().setMotion(lookVec.mul(0.3, 0, 0.3).add(0, 1, 0).normalize().scale(tunnelSpeed));
+                getUser().setDeltaMovement(lookVec.mul(0.3, 0, 0.3).add(0, 1, 0).normalize().scale(tunnelSpeed));
             }
 
             List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(getUser(),2, 2, 2, 2);
             for (LivingEntity entityHit : entitiesHit) {
                 DamageSource damageSource = DamageSource.causeMobDamage(getUser());
                 if (getUser() instanceof Player) damageSource = DamageSource.causePlayerDamage((Player) getUser());
-                entityHit.attackEntityFrom(damageSource, 6 * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.geomancyAttackMultiplier.get().floatValue());
+                entityHit.hurt(damageSource, 6 * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.geomancyAttackMultiplier.get().floatValue());
             }
         }
         else {
-            getUser().setMotion(getUser().getMotion().subtract(0, 0.07, 0));
-            if (getUser().getMotion().getY() < -1.3) getUser().setMotion(getUser().getMotion().getX(), -1.3, getUser().getMotion().getZ());
+            getUser().setDeltaMovement(getUser().getDeltaMovement().subtract(0, 0.07, 0));
+            if (getUser().getDeltaMovement().y() < -1.3) getUser().setDeltaMovement(getUser().getDeltaMovement().x(), -1.3, getUser().getDeltaMovement().z());
         }
 
-        if ((getUser().isSneaking() && getUser().getMotion().y < 0) || underground) {
-            if (getUser().ticksExisted % 16 == 0) getUser().playSound(MMSounds.EFFECT_GEOMANCY_RUMBLE.get(rand.nextInt(3)).get(), 0.6f, 0.5f + rand.nextFloat() * 0.2f);
-            Vec3 userCenter = getUser().getPositionVec().add(0, getUser().getHeight() / 2f, 0);
+        if ((getUser().isSneaking() && getUser().getDeltaMovement().y < 0) || underground) {
+            if (getUser().tickCount % 16 == 0) getUser().playSound(MMSounds.EFFECT_GEOMANCY_RUMBLE.get(random.nextInt(3)).get(), 0.6f, 0.5f + random.nextFloat() * 0.2f);
+            Vec3 userCenter = getUser().position().add(0, getUser().getHeight() / 2f, 0);
             float radius = 2f;
             AxisAlignedBB aabb = new AxisAlignedBB(-radius, -radius, -radius, radius, radius, radius);
             aabb = aabb.offset(userCenter);
-            for (int i = 0; i < getUser().getMotion().length() * 4; i++) {
+            for (int i = 0; i < getUser().getDeltaMovement().length() * 4; i++) {
                 for (int x = (int) Math.floor(aabb.minX); x <= Math.floor(aabb.maxX); x++) {
                     for (int y = (int) Math.floor(aabb.minY); y <= Math.floor(aabb.maxY); y++) {
                         for (int z = (int) Math.floor(aabb.minZ); z <= Math.floor(aabb.maxZ); z++) {
                             Vec3 posVec = new Vec3(x, y, z);
                             if (posVec.add(0.5, 0.5, 0.5).subtract(userCenter).lengthSquared() > radius * radius) continue;
-                            Vec3 motionScaled = getUser().getMotion().normalize().scale(i);
+                            Vec3 motionScaled = getUser().getDeltaMovement().normalize().scale(i);
                             posVec = posVec.add(motionScaled);
                             BlockPos pos = new BlockPos(posVec);
-                            BlockState blockState = getUser().world.getBlockState(pos);
+                            BlockState blockState = getUser().level.getBlockState(pos);
                             if (EffectGeomancy.isBlockDiggable(blockState) && blockState.getBlock() != Blocks.BEDROCK) {
                                 justDug = blockState;
-                                EntityBlockSwapper.swapBlock(getUser().world, pos, Blocks.AIR.getDefaultState(), 20, false, false);
+                                EntityBlockSwapper.swapBlock(getUser().world, pos, Blocks.AIR.defaultBlockState(), 20, false, false);
                             }
                         }
                     }
@@ -126,28 +126,28 @@ public class TunnelingAbility extends Ability {
             }
         }
         if (!prevUnderground && underground) {
-            getUser().playSound(MMSounds.EFFECT_GEOMANCY_BREAK_MEDIUM.get(rand.nextInt(3)).get(), 1f, 0.9f + rand.nextFloat() * 0.1f);
-            if (getUser().world.isClientSide)
-                AdvancedParticleBase.spawnParticle(getUser().world, ParticleHandler.RING2.get(), (float) getUser().getPosX(), (float) getUser().getPosY() + 0.02f, (float) getUser().getPosZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, true, new ParticleComponent[]{
+            getUser().playSound(MMSounds.EFFECT_GEOMANCY_BREAK_MEDIUM.get(random.nextInt(3)).get(), 1f, 0.9f + random.nextFloat() * 0.1f);
+            if (getUser().level.isClientSide)
+                AdvancedParticleBase.spawnParticle(getUser().world, ParticleHandler.RING2.get(), (float) getUser().getX(), (float) getUser().getY() + 0.02f, (float) getUser().getZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, true, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(10f, 30f), false)
                 });
         }
         if (prevUnderground && !underground) {
-            getUser().playSound(MMSounds.EFFECT_GEOMANCY_BREAK.get(), 1f, 0.9f + rand.nextFloat() * 0.1f);
-            if (getUser().world.isClientSide)
-                AdvancedParticleBase.spawnParticle(getUser().world, ParticleHandler.RING2.get(), (float) getUser().getPosX(), (float) getUser().getPosY() + 0.02f, (float) getUser().getPosZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, true, new ParticleComponent[]{
+            getUser().playSound(MMSounds.EFFECT_GEOMANCY_BREAK.get(), 1f, 0.9f + random.nextFloat() * 0.1f);
+            if (getUser().level.isClientSide)
+                AdvancedParticleBase.spawnParticle(getUser().world, ParticleHandler.RING2.get(), (float) getUser().getX(), (float) getUser().getY() + 0.02f, (float) getUser().getZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, true, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(10f, 30f), false)
                 });
-            getUser().setMotion(getUser().getMotion().scale(10f));
+            getUser().setDeltaMovement(getUser().getDeltaMovement().scale(10f));
 
             for (int i = 0; i < 6; i++) {
-                if (justDug == null) justDug = Blocks.DIRT.getDefaultState();
+                if (justDug == null) justDug = Blocks.DIRT.defaultBlockState();
                 EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK, getUser().world, 80, justDug);
-                fallingBlock.setPosition(getUser().getPosX(), getUser().getPosY() + 1, getUser().getPosZ());
-                fallingBlock.setMotion(getUser().getRNG().nextFloat() * 0.8f - 0.4f, 0.4f + getUser().getRNG().nextFloat() * 0.8f, getUser().getRNG().nextFloat() * 0.8f - 0.4f);
-                getUser().world.addEntity(fallingBlock);
+                fallingBlock.setPos(getUser().getX(), getUser().getY() + 1, getUser().getZ());
+                fallingBlock.setDeltaMovement(getUser().getRNG().nextFloat() * 0.8f - 0.4f, 0.4f + getUser().getRNG().nextFloat() * 0.8f, getUser().getRNG().nextFloat() * 0.8f - 0.4f);
+                getUser().level.addFreshEntity(fallingBlock);
             }
         }
         prevUnderground = underground;
@@ -178,7 +178,7 @@ public class TunnelingAbility extends Ability {
         e.getController().transitionLengthTicks = 4;
         if (perspective == GeckoPlayer.Perspective.THIRD_PERSON) {
             float yMotionThreshold = getUser() == Minecraft.getInstance().player ? 1 : 2;
-            if (!underground && !getUser().isSneaking() && getUser().getMotion().getY() < yMotionThreshold) {
+            if (!underground && !getUser().isSneaking() && getUser().getDeltaMovement().y() < yMotionThreshold) {
                 e.getController().setAnimation(new AnimationBuilder().addAnimation("tunneling_fall", false));
             }
             else {
@@ -192,8 +192,8 @@ public class TunnelingAbility extends Ability {
     public void codeAnimations(MowzieAnimatedGeoModel<? extends IAnimatable> model, float partialTick) {
         super.codeAnimations(model, partialTick);
         float faceMotionController = 1f - model.getControllerValue("FaceVelocityController");
-        Vec3 moveVec = getUser().getMotion().normalize();
-        pitch = (float) MathHelper.lerp(0.3 * partialTick, pitch, moveVec.getY());
+        Vec3 moveVec = getUser().getDeltaMovement().normalize();
+        pitch = (float) Mth.lerp(0.3 * partialTick, pitch, moveVec.y());
         MowzieGeoBone com = model.getMowzieBone("CenterOfMass");
         com.setRotationX((float) (-Math.PI/2f + Math.PI/2f * pitch) * faceMotionController);
 

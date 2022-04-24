@@ -36,6 +36,6 @@ public class EffectGeomancy extends MowzieEffect {
     }
 
     public static boolean canUse(LivingEntity entity) {
-        return entity.getHeldItemMainhand().isEmpty() && entity.isPotionActive(EffectHandler.GEOMANCY);
+        return entity.getMainHandItem().isEmpty() && entity.isPotionActive(EffectHandler.GEOMANCY);
     }
 }

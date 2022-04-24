@@ -7,8 +7,8 @@ import com.bobmowzie.mowziesmobs.server.message.MessageAddFreezeProgress;
 import com.bobmowzie.mowziesmobs.server.message.MessageBlackPinkInYourArea;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.item.minecart.AbstractMinecart;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
 
 import java.util.function.BiConsumer;
@@ -17,10 +17,10 @@ public final class BlackPinkInYourArea implements BiConsumer<World, AbstractMine
     private BlackPinkInYourArea() {}
 
     @Override
-    public void accept(World world, AbstractMinecart minecart) {
+    public void accept(Level world, AbstractMinecart minecart) {
         /*BlockState state = minecart.getDisplayTile();
         if (state.getBlock() != BlockHandler.GROTTOL.get()) {
-            state = BlockHandler.GROTTOL.get().getDefaultState();
+            state = BlockHandler.GROTTOL.get().defaultBlockState();
             minecart.setDisplayTileOffset(minecart.getDefaultDisplayTileOffset());
         }
         minecart.setDisplayTile(state.with(BlockGrottol.VARIANT, BlockGrottol.Variant.BLACK_PINK));*/

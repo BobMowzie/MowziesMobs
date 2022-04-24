@@ -12,7 +12,7 @@ import net.minecraft.world.entity.MobEntity;
 import net.minecraft.world.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.level.LevelGenLevelReader;
 import net.minecraft.world.biome.MobSpawnInfo;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.spawner.WorldEntitySpawner;
@@ -33,11 +33,11 @@ public class SpawnHandler {
     }
 
     public static void registerSpawnPlacementTypes() {
-        EntitySpawnPlacementRegistry.PlacementType.create("MMSPAWN", new TriPredicate<IWorldReader, BlockPos, EntityType<? extends MobEntity>>() {
+        EntitySpawnPlacementRegistry.PlacementType.create("MMSPAWN", new TriPredicate<WorldGenLevelReader, BlockPos, EntityType<? extends MobEntity>>() {
             @Override
-            public boolean test(IWorldReader t, BlockPos pos, EntityType<? extends MobEntity> entityType) {
-                BlockState block = t.getBlockState(pos.down());
-                if (block.getBlock() == Blocks.BEDROCK || block.getBlock() == Blocks.BARRIER || !block.getMaterial().blocksMovement())
+            public boolean test(WorldGenLevelReader t, BlockPos pos, EntityType<? extends MobEntity> entityType) {
+                BlockState block = t.getBlockState(pos.below());
+                if (block.getBlock() == Blocks.BEDROCK || block.getBlock() == Blocks.BARRIER || !block.getMaterial().blocksMotion())
                     return false;
                 BlockState iblockstateUp = t.getBlockState(pos);
                 BlockState iblockstateUp2 = t.getBlockState(pos.up());

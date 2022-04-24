@@ -44,7 +44,7 @@ public class RenderSuperNova extends EntityRenderer<EntitySuperNova> {
 
     @Override
     public ResourceLocation getEntityTexture(EntitySuperNova entity) {
-        int index = entity.ticksExisted % TEXTURES.length;
+        int index = entity.tickCount % TEXTURES.length;
         return TEXTURES[index];
     }
 
@@ -52,7 +52,7 @@ public class RenderSuperNova extends EntityRenderer<EntitySuperNova> {
     public void render(EntitySuperNova entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         matrixStackIn.push();
         IVertexBuilder ivertexbuilder = bufferIn.getBuffer(MMRenderType.getGlowingEffect(this.getEntityTexture(entityIn)));
-        model.setRotationAngles(entityIn, 0, 0, entityIn.ticksExisted + partialTicks, 0, 0);
+        model.setRotationAngles(entityIn, 0, 0, entityIn.tickCount + partialTicks, 0, 0);
         model.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
         matrixStackIn.pop();
     }

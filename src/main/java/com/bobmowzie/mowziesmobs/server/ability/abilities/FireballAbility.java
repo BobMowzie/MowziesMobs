@@ -22,8 +22,8 @@ public class FireballAbility extends Ability {
             LivingEntity user = getUser();
             Vec3 lookVec = user.getLookVec();
             SmallFireballEntity smallfireballentity = new SmallFireballEntity(user.world, user, lookVec.x, lookVec.y, lookVec.z);
-            smallfireballentity.setPosition(smallfireballentity.getPosX(), user.getPosYHeight(0.5D) + 0.5D, smallfireballentity.getPosZ());
-            user.world.addEntity(smallfireballentity);
+            smallfireballentity.setPos(smallfireballentity.getX(), user.getPosYHeight(0.5D) + 0.5D, smallfireballentity.getZ());
+            user.level.addFreshEntity(smallfireballentity);
         }
     }
 }

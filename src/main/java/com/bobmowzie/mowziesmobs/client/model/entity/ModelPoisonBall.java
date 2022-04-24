@@ -37,9 +37,9 @@ public class ModelPoisonBall<T extends EntityPoisonBall> extends AdvancedModelBa
 	@Override
 	public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		EntityPoisonBall poisonBall = entityIn;
-		float delta = ageInTicks - entityIn.ticksExisted;
+		float delta = ageInTicks - entityIn.tickCount;
 		Vec3 prevV = new Vec3(poisonBall.prevMotionX, poisonBall.prevMotionY, poisonBall.prevMotionZ);
-		Vec3 dv = prevV.add(poisonBall.getMotion().subtract(prevV).scale(delta));
+		Vec3 dv = prevV.add(poisonBall.getDeltaMovement().subtract(prevV).scale(delta));
 		double d = Math.sqrt(dv.x * dv.x + dv.y * dv.y + dv.z * dv.z);
 		if (d != 0) {
 			double a = dv.y / d;

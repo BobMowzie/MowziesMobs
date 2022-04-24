@@ -7,7 +7,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.HandSide;
+import net.minecraft.sounds.HandSide;
 
 /**
  * Created by BobMowzie on 4/14/2017.

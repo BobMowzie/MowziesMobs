@@ -6,7 +6,7 @@ import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoMo
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.resources.math.MathHelper;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Matrix4f;
 import net.minecraft.world.phys.Quaternion;
 import net.minecraft.world.phys.Vec3;
@@ -143,24 +143,24 @@ public class ModelSculptor extends MowzieAnimatedGeoModel<EntitySculptor> {
         skirtJoint2L.setModelRotationMat(leftMat);
 
         Vec3 average = thighToKneeL.add(thighToKneeR).scale(2).mul(0, 1, 1).normalize();
-        float angleAv = (float) MathHelper.atan2(average.getY(), average.getZ());
+        float angleAv = (float) Mth.atan2(average.y(), average.z());
         skirtBack.setRotationX(skirtBack.getRotationX() - angleAv + 3.48f);
         skirtFront.setRotationX(skirtFront.getRotationX() - Math.min(angleAv, -2) + 3.48f);
         Vec3 skirtFrontDiff = skirtLocFrontL.getModelPosition().subtract(skirtLocFrontR.getModelPosition());
         skirtFront.setScaleX(Math.max((float) (0.3f + 0.15f * skirtFrontDiff.length()), 0.4f));
         Vec3 skirtBackDiff = skirtLocBackL.getModelPosition().subtract(skirtLocBackR.getModelPosition());
         skirtBack.setScaleX((float) (0.15f + 0.1f * skirtBackDiff.length()));
-        float angleF = (float) MathHelper.atan2(skirtFrontDiff.normalize().getZ(), skirtFrontDiff.normalize().getX());
+        float angleF = (float) Mth.atan2(skirtFrontDiff.normalize().z(), skirtFrontDiff.normalize().x());
         if (angleF < 0.001 || angleF > 3.141) angleF = 0;
         skirtFront.setRotationY(angleF * 0.6f);
-        skirtFront.addPosition(0.5f * (float) skirtLocFrontR.getModelPosition().add(skirtFrontDiff.scale(0.5)).getX(), 0, 0);
-        float angleB = (float) MathHelper.atan2(skirtBackDiff.normalize().getZ(), skirtBackDiff.normalize().getX());
+        skirtFront.addPosition(0.5f * (float) skirtLocFrontR.getModelPosition().add(skirtFrontDiff.scale(0.5)).x(), 0, 0);
+        float angleB = (float) Mth.atan2(skirtBackDiff.normalize().z(), skirtBackDiff.normalize().x());
         skirtBack.setRotationY(angleB * 0.5f);
-        skirtBack.addPosition(0.5f * (float) skirtLocBackR.getModelPosition().add(skirtBackDiff.scale(0.5)).getX(), 0, 0);
+        skirtBack.addPosition(0.5f * (float) skirtLocBackR.getModelPosition().add(skirtBackDiff.scale(0.5)).x(), 0, 0);
         float bothDots = (float) Math.pow(rightDot * leftDot, 1);
         float f = Math.min(1, bothDots * 2);
-        skirtR.addRotation(0, MathHelper.clamp(angleF, -0.5f, 0.5f) * (1 - f) - bothDots * 0.4f, 0);
-        skirtL.addRotation(0, MathHelper.clamp(angleF, -0.5f, 0.5f) * (1 - f) + bothDots * 0.4f, 0);
+        skirtR.addRotation(0, Mth.clamp(angleF, -0.5f, 0.5f) * (1 - f) - bothDots * 0.4f, 0);
+        skirtL.addRotation(0, Mth.clamp(angleF, -0.5f, 0.5f) * (1 - f) + bothDots * 0.4f, 0);
 
         MowzieGeoBone frontCloth = getMowzieBone("clothFront");
         MowzieGeoBone frontCloth2 = getMowzieBone("clothFront2");

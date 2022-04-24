@@ -12,12 +12,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
-import net.minecraft.resources.*;
-import net.minecraft.resources.Hand;
-import net.minecraft.resources.SoundEvents;
-import net.minecraft.resources.text.ITextComponent;
-import net.minecraft.resources.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.sounds.*;
+import net.minecraft.sounds.Hand;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -53,7 +53,7 @@ public class ItemWroughtAxe extends MowzieAxeItem {
     @Override
     public boolean hitEntity(ItemStack heldItemStack, LivingEntity entityHit, LivingEntity attacker) {
         if (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable.get()) heldItemStack.damageItem(2, attacker, p -> p.sendBreakAnimation(Hand.MAIN_HAND));
-        if (!entityHit.world.isClientSide) {
+        if (!entityHit.level.isClientSide) {
             entityHit.playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.3F, 0.5F);
         }
         return true;
@@ -65,7 +65,7 @@ public class ItemWroughtAxe extends MowzieAxeItem {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, Player player, Hand hand) {
+    public ActionResult<ItemStack> onItemRightClick(Level world, Player player, Hand hand) {
         if (hand == Hand.MAIN_HAND && player.getCooledAttackStrength(0.5F) == 1.0f) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
             if (playerCapability != null && playerCapability.getUntilAxeSwing() <= 0) {
@@ -85,11 +85,11 @@ public class ItemWroughtAxe extends MowzieAxeItem {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.0").setStyle(ItemHandler.TOOLTIP_STYLE));
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.1").setStyle(ItemHandler.TOOLTIP_STYLE));
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.2").setStyle(ItemHandler.TOOLTIP_STYLE));
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<TextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
+        tooltip.add(new TextComponent(getDescriptionId() + ".text.0").setStyle(ItemHandler.TOOLTIP_STYLE));
+        tooltip.add(new TextComponent(getDescriptionId() + ".text.1").setStyle(ItemHandler.TOOLTIP_STYLE));
+        tooltip.add(new TextComponent(getDescriptionId() + ".text.2").setStyle(ItemHandler.TOOLTIP_STYLE));
     }
 
     @Override

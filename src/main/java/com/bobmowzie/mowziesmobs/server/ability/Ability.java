@@ -9,7 +9,7 @@ import net.minecraft.world.entity.LivingEntity;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.INBT;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -69,7 +69,7 @@ public class Ability {
         this.sectionTrack = sectionTrack;
         this.cooldownMax = cooldownMax;
         this.rand = new Random();
-        if (user.world.isClientSide) {
+        if (user.level.isClientSide) {
             this.activeThirdPersonAnimation = new AnimationBuilder().addAnimation("idle");
             heldItemMainHandVisualOverride = null;
             heldItemOffHandVisualOverride = null;
@@ -91,7 +91,7 @@ public class Ability {
     }
 
     public void playAnimation(String animationName, GeckoPlayer.Perspective perspective, boolean shouldLoop) {
-        if (getUser() instanceof Player && getUser().world.isClientSide()) {
+        if (getUser() instanceof Player && getUser().level.isClientSide()) {
             AnimationBuilder newActiveAnimation = new AnimationBuilder().addAnimation(animationName, shouldLoop);
             if (perspective == GeckoPlayer.Perspective.FIRST_PERSON) {
                 activeFirstPersonAnimation = newActiveAnimation;
@@ -114,7 +114,7 @@ public class Ability {
 
     public void tick() {
         if (isUsing()) {
-            if (getUser().isServerWorld() && !canContinueUsing()) AbilityHandler.INSTANCE.sendInterruptAbilityMessage(getUser(), this.abilityType);
+            if (getUser().isServerLevel() && !canContinueUsing()) AbilityHandler.INSTANCE.sendInterruptAbilityMessage(getUser(), this.abilityType);
 
             tickUsing();
 
@@ -150,7 +150,7 @@ public class Ability {
         currentSectionIndex = 0;
         if (!runsInBackground()) abilityCapability.setActiveAbility(null);
 
-        if (getUser().world.isClientSide) {
+        if (getUser().level.isClientSide) {
             heldItemMainHandVisualOverride = null;
             heldItemOffHandVisualOverride = null;
             firstPersonMainHandDisplay = HandDisplay.DEFAULT;
@@ -336,8 +336,8 @@ public class Ability {
         return firstPersonOffHandDisplay;
     }
 
-    public CompoundNBT writeNBT() {
-        CompoundNBT compound = new CompoundNBT();
+    public CompoundTag writeNBT() {
+        CompoundTag compound = new CompoundTag();
         if (isUsing()) {
             compound.putInt("ticks_in_use", ticksInUse);
             compound.putInt("ticks_in_section", ticksInSection);
@@ -350,7 +350,7 @@ public class Ability {
     }
 
     public void readNBT(INBT nbt) {
-        CompoundNBT compound = (CompoundNBT) nbt;
+        CompoundTag compound = (CompoundTag) nbt;
         isUsing = compound.contains("ticks_in_use");
         if (isUsing) {
             ticksInUse = compound.getInt("ticks_in_use");

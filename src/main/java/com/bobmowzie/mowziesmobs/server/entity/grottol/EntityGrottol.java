@@ -21,9 +21,9 @@ import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.RandomWalkingGoal;
@@ -34,20 +34,20 @@ import net.minecraft.world.entity.item.minecart.MinecartEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.particles.BlockParticleData;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.particles.BlockParticleOption;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.pathfinding.PathNavigator;
+import net.minecraft.pathfinding.PathNavigation;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.resources.SoundEvent;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.math.MathHelper;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.LevelGenLevel;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * Created by BobMowzie on 7/3/2018.
@@ -79,10 +79,10 @@ public class EntityGrottol extends MowzieEntity {
 
     private int timeSinceDeflectSound = 0;
 
-    public EntityGrottol(EntityType<? extends EntityGrottol> type, World world) {
+    public EntityGrottol(EntityType<? extends EntityGrottol> type, Level world) {
         super(type, world);
-        experienceValue = 15;
-        stepHeight = 1.15F;
+        xpReward = 15;
+        maxUpStep = 1.15F;
 
         moveController = new MMEntityMoveHelper(this, 45);
     }
@@ -150,17 +150,17 @@ public class EntityGrottol extends MowzieEntity {
     }
 
     @Override
-    protected PathNavigator createNavigator(World world) {
+    protected PathNavigation createNavigation(Level world) {
         return new MMPathNavigateGround(this, world);
     }
 
     @Override
     public float getBlockPathWeight(BlockPos pos) {
-        return (float) pos.distanceSq(this.getPositionVec(), true);
+        return (float) pos.distSqr(this.position(), true);
     }
 
     @Override
-    public boolean isPushedByWater() {
+    public boolean isPushedByFluid() {
         return false;
     }
 
@@ -175,19 +175,19 @@ public class EntityGrottol extends MowzieEntity {
     }
 
     @Override
-    public boolean canRenderOnFire() {
+    public boolean displayFireAnimation() {
         return false;
     }
 
     @Override
-    public boolean isServerWorld() {
-        return super.isServerWorld() && !isInMinecart();
+    public boolean isServerLevel() {
+        return super.isServerLevel() && !isInMinecart();
     }
 
-    public static AttributeModifierMap.MutableAttribute createAttributes() {
+    public static AttributeSupplier.Builder createAttributes() {
         return MowzieEntity.createAttributes()
-                .createMutableAttribute(Attributes.MAX_HEALTH, 20 * ConfigHandler.COMMON.MOBS.GROTTOL.healthMultiplier.get())
-                .createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1);
+                .add(Attributes.MAX_HEALTH, 20 * ConfigHandler.COMMON.MOBS.GROTTOL.healthMultiplier.get())
+                .add(Attributes.KNOCKBACK_RESISTANCE, 1);
     }
 
     @Override
@@ -196,30 +196,30 @@ public class EntityGrottol extends MowzieEntity {
     }
 
     @Override
-    public boolean canSpawn(IWorld world, SpawnReason reason) {
-        return getEntitiesNearby(EntityGrottol.class, 20, 20, 20, 20).isEmpty() && super.canSpawn(world, reason);
+    public boolean checkSpawnRules(LevelAccessor world, MobSpawnType reason) {
+        return getEntitiesNearby(EntityGrottol.class, 20, 20, 20, 20).isEmpty() && super.checkSpawnRules(world, reason);
     }
 
     @Override
     public boolean hitByEntity(Entity entity) {
         if (entity instanceof Player) {
             Player player = (Player) entity;
-            if (EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, player.getHeldItemMainhand()) > 0) {
-                if (!world.isClientSide && isAlive()) {
+            if (EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, player.getMainHandItem()) > 0) {
+                if (!level.isClientSide && isAlive()) {
                     entityDropItem(ItemHandler.CAPTURED_GROTTOL.create(this), 0.0F);
-                    BlockState state = Blocks.STONE.getDefaultState();
+                    BlockState state = Blocks.STONE.defaultBlockState();
                     SoundType sound = state.getBlock().getSoundType(state, world, this.getPosition(), entity);
-                    world.playSound(
+                    level.playSound(
                         null,
-                        getPosX(), getPosY(), getPosZ(),
+                        getX(), getY(), getZ(),
                         sound.getBreakSound(),
                         getSoundCategory(),
                         (sound.getVolume() + 1.0F) / 2.0F,
                         sound.getPitch() * 0.8F
                     );
-                    if (world instanceof ServerWorld) {
-                        ((ServerWorld) world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, state),
-                            getPosX(), getPosY() + getHeight() / 2.0D, getPosZ(),
+                    if (world instanceof ServerLevel) {
+                        ((ServerLevel) world).spawnParticle(new BlockParticleOption(ParticleTypes.BLOCK, state),
+                            getX(), getY() + getHeight() / 2.0D, getZ(),
                             32,
                             getWidth() / 4.0F, getHeight() / 4.0F, getWidth() / 4.0F,
                             0.05D
@@ -235,18 +235,18 @@ public class EntityGrottol extends MowzieEntity {
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource source, float amount) {
+    public boolean hurt(DamageSource source, float amount) {
         Entity entity = source.getTrueSource();
         if (entity instanceof Player) {
             Player player = (Player) entity;
-            if (player.getHeldItemMainhand().canHarvestBlock(Blocks.DIAMOND_ORE.getDefaultState())) {
-                if (EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, player.getHeldItemMainhand()) > 0) {
+            if (player.getMainHandItem().canHarvestBlock(Blocks.DIAMOND_ORE.defaultBlockState())) {
+                if (EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, player.getMainHandItem()) > 0) {
                     death = EnumDeathType.FORTUNE_PICKAXE;
                     if (player instanceof ServerPlayer) AdvancementHandler.GROTTOL_KILL_FORTUNE_TRIGGER.trigger((ServerPlayer) player);
                 } else {
                     death = EnumDeathType.PICKAXE;
                 }
-                return super.attackEntityFrom(source, getHealth());
+                return super.hurt(source, getHealth());
             } else {
                 if (timeSinceDeflectSound >= 5) {
                     timeSinceDeflectSound = 0;
@@ -258,46 +258,46 @@ public class EntityGrottol extends MowzieEntity {
         else if (entity instanceof MobEntity) {
             return false;
         }
-        return super.attackEntityFrom(source, amount);
+        return super.hurt(source, amount);
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (!world.isClientSide) {
+        if (!level.isClientSide) {
             Entity e = getRidingEntity();
             if (isMinecart(e)) {
                 AbstractMinecart minecart = (AbstractMinecart) e;
                 reader.accept(minecart);
-                boolean onRail = isBlockRail(world.getBlockState(e.getPosition()).getBlock());
-                if ((timeSinceMinecart > 3 && e.getMotion().length() < 0.001) || !onRail) {
+                boolean onRail = isBlockRail(level.getBlockState(e.getPosition()).getBlock());
+                if ((timeSinceMinecart > 3 && e.getDeltaMovement().length() < 0.001) || !onRail) {
                     minecart.removePassengers();
                     timeSinceMinecart = 0;
                 }
                 else if (onRail) {
-                    minecart.setMotion(minecart.getForward().scale(2.7));
+                    minecart.setDeltaMovement(minecart.getForward().scale(2.7));
                     timeSinceMinecart++;
                 }
             }
         }
-//        if (ticksExisted == 1) System.out.println("Grottle at " + getPosition());
+//        if (tickCount == 1) System.out.println("Grottle at " + getPosition());
 
         //Sparkle particles
-        if (world.isClientSide && isAlive() && rand.nextInt(15) == 0) {
-            double x = getPosX() + 0.5f * (2 * rand.nextFloat() - 1f);
-            double y = getPosY() + 0.8f + 0.3f * (2 * rand.nextFloat() - 1f);
-            double z = getPosZ() + 0.5f * (2 * rand.nextFloat() - 1f);
+        if (level.isClientSide && isAlive() && random.nextInt(15) == 0) {
+            double x = getX() + 0.5f * (2 * random.nextFloat() - 1f);
+            double y = getY() + 0.8f + 0.3f * (2 * random.nextFloat() - 1f);
+            double z = getZ() + 0.5f * (2 * random.nextFloat() - 1f);
             if (isBlackPinkInYourArea()) {
-                world.addParticle(ParticleTypes.NOTE, x, y, z, rand.nextDouble() / 2, 0, 0);
+                level.addParticle(ParticleTypes.NOTE, x, y, z, random.nextDouble() / 2, 0, 0);
             } else {
-                world.addParticle(ParticleHandler.SPARKLE.get(), x, y, z, 0, 0, 0);
+                level.addParticle(ParticleHandler.SPARKLE.get(), x, y, z, 0, 0, 0);
             }
         }
 
         //Footstep Sounds
-        float moveX = (float) (getPosX() - prevPosX);
-        float moveZ = (float) (getPosZ() - prevPosZ);
-        float speed = MathHelper.sqrt(moveX * moveX + moveZ * moveZ);
+        float moveX = (float) (getX() - xo);
+        float moveZ = (float) (getZ() - zo);
+        float speed = Mth.sqrt(moveX * moveX + moveZ * moveZ);
         if (frame % 6 == 0 && speed > 0.05) {
             playSound(MMSounds.ENTITY_GROTTOL_STEP.get(), 1F, 1.8f);
         }
@@ -311,22 +311,22 @@ public class EntityGrottol extends MowzieEntity {
         if (timeSinceDeflectSound < 5) timeSinceDeflectSound++;
 
         // AI Task
-        if (!world.isClientSide && fleeTime >= 55 && getAnimation() == NO_ANIMATION && !isAIDisabled() && !isPotionActive(EffectHandler.FROZEN)) {
-            BlockState blockBeneath = world.getBlockState(getPosition().down());
+        if (!level.isClientSide && fleeTime >= 55 && getAnimation() == NO_ANIMATION && !isNoAi() && !isPotionActive(EffectHandler.FROZEN)) {
+            BlockState blockBeneath = level.getBlockState(getPosition().below());
             if (isBlockDiggable(blockBeneath)) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, BURROW_ANIMATION);
             }
         }
-        if (!world.isClientSide && getAnimation() == BURROW_ANIMATION) {
+        if (!level.isClientSide && getAnimation() == BURROW_ANIMATION) {
             if (getAnimationTick() % 4 == 3) {
-                playSound(MMSounds.ENTITY_GROTTOL_BURROW.get(), 1, 0.8f + rand.nextFloat() * 0.4f);
-                BlockState blockBeneath = world.getBlockState(getPosition().down());
+                playSound(MMSounds.ENTITY_GROTTOL_BURROW.get(), 1, 0.8f + random.nextFloat() * 0.4f);
+                BlockState blockBeneath = level.getBlockState(getPosition().below());
                 Material mat = blockBeneath.getMaterial();
                 if (mat == Material.EARTH || mat == Material.SAND || mat == Material.CLAY || mat == Material.ROCK || mat == Material.ORGANIC) {
-                    Vec3 pos = new Vec3(0.5D, 0.05D, 0.0D).rotateYaw((float) Math.toRadians(-renderYawOffset - 90));
-                    if (world instanceof ServerWorld) {
-                        ((ServerWorld) world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, blockBeneath),
-                                getPosX() + pos.x, getPosY() + pos.y, getPosZ() + pos.z,
+                    Vec3 pos = new Vec3(0.5D, 0.05D, 0.0D).rotateYaw((float) Math.toRadians(-yBodyRot - 90));
+                    if (world instanceof ServerLevel) {
+                        ((ServerLevel) world).spawnParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockBeneath),
+                                getX() + pos.x, getY() + pos.y, getZ() + pos.z,
                                 8,
                                 0.25D, 0.025D, 0.25D,
                                 0.1D
@@ -382,7 +382,7 @@ public class EntityGrottol extends MowzieEntity {
         /*if (isMinecart(entity)) {
                 AbstractMinecart minecart = (AbstractMinecart) entity;
                 if (minecart.getDisplayTile().getBlock() != BlockHandler.GROTTOL.get()) {
-                    minecart.setDisplayTile(BlockHandler.GROTTOL.get().getDefaultState());
+                    minecart.setDisplayTile(BlockHandler.GROTTOL.get().defaultBlockState());
                     minecart.setDisplayTileOffset(minecart.getDefaultDisplayTileOffset());
                 }
             }*/
@@ -424,7 +424,7 @@ public class EntityGrottol extends MowzieEntity {
     }
 
     @Override
-    protected ResourceLocation getLootTable() {
+    protected ResourceLocation getDefaultLootTable() {
         return LootTableHandler.GROTTOL;
     }
 

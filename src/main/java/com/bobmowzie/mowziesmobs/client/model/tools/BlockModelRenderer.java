@@ -13,7 +13,7 @@ public class BlockModelRenderer extends AdvancedModelRenderer {
 
     public BlockModelRenderer(AdvancedModelBase model) {
         super(model);
-        setBlockState(Blocks.DIRT.getDefaultState());
+        setBlockState(Blocks.DIRT.defaultBlockState());
     }
 
     public void setBlockState(BlockState blockState) {

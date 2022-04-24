@@ -5,7 +5,7 @@ import com.ilexiconn.llibrary.client.util.ClientUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelRenderer;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.resources.math.MathHelper;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -43,13 +43,13 @@ public class ChainBuffer {
      */
     public void calculateChainSwingBuffer(float maxAngle, int bufferTime, float angleDecrement, float divisor, LivingEntity entity) {
         this.prevYawVariation = this.yawVariation;
-        if (entity.renderYawOffset != entity.prevRenderYawOffset && MathHelper.abs(this.yawVariation) < maxAngle) {
-            this.yawVariation += (entity.prevRenderYawOffset - entity.renderYawOffset) / divisor;
+        if (entity.yBodyRot != entity.yBodyRotO && Mth.abs(this.yawVariation) < maxAngle) {
+            this.yawVariation += (entity.yBodyRotO - entity.yBodyRot) / divisor;
         }
         if (this.yawVariation > 0.7F * angleDecrement) {
             if (this.yawTimer > bufferTime) {
                 this.yawVariation -= angleDecrement;
-                if (MathHelper.abs(this.yawVariation) < angleDecrement) {
+                if (Mth.abs(this.yawVariation) < angleDecrement) {
                     this.yawVariation = 0.0F;
                     this.yawTimer = 0;
                 }
@@ -59,7 +59,7 @@ public class ChainBuffer {
         } else if (this.yawVariation < -0.7F * angleDecrement) {
             if (this.yawTimer > bufferTime) {
                 this.yawVariation += angleDecrement;
-                if (MathHelper.abs(this.yawVariation) < angleDecrement) {
+                if (Mth.abs(this.yawVariation) < angleDecrement) {
                     this.yawVariation = 0.0F;
                     this.yawTimer = 0;
                 }
@@ -80,13 +80,13 @@ public class ChainBuffer {
      */
     public void calculateChainWaveBuffer(float maxAngle, int bufferTime, float angleDecrement, float divisor, LivingEntity entity) {
         this.prevPitchVariation = this.pitchVariation;
-        if (entity.getXRot() != entity.xRot0 && MathHelper.abs(this.pitchVariation) < maxAngle) {
+        if (entity.getXRot() != entity.xRot0 && Mth.abs(this.pitchVariation) < maxAngle) {
             this.pitchVariation += (entity.xRot0 - entity.getXRot()) / divisor;
         }
         if (this.pitchVariation > 0.7F * angleDecrement) {
             if (this.pitchTimer > bufferTime) {
                 this.pitchVariation -= angleDecrement;
-                if (MathHelper.abs(this.pitchVariation) < angleDecrement) {
+                if (Mth.abs(this.pitchVariation) < angleDecrement) {
                     this.pitchVariation = 0.0F;
                     this.pitchTimer = 0;
                 }
@@ -96,7 +96,7 @@ public class ChainBuffer {
         } else if (this.pitchVariation < -0.7F * angleDecrement) {
             if (this.pitchTimer > bufferTime) {
                 this.pitchVariation += angleDecrement;
-                if (MathHelper.abs(this.pitchVariation) < angleDecrement) {
+                if (Mth.abs(this.pitchVariation) < angleDecrement) {
                     this.pitchVariation = 0.0F;
                     this.pitchTimer = 0;
                 }

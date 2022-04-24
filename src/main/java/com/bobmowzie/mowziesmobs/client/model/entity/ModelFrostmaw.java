@@ -540,7 +540,7 @@ public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T
         LegArticulator.articulateQuadruped(entity, entity.legSolver, waist, headJoint,
                 legLeft1, legLeft2, legRight1, legRight2, armLeftJoint, armLeftJoint2, armRightJoint, armRightJoint2,
                 0.6f, 0.6f, -0.65f, -0.65f,
-                ageInTicks - entity.ticksExisted
+                ageInTicks - entity.tickCount
         );
         legLeftJoint.rotateAngleX -= waist.rotateAngleX - waist.defaultRotationX;
         legRightJoint.rotateAngleX -= waist.rotateAngleX - waist.defaultRotationX;
@@ -554,7 +554,7 @@ public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T
 
     @Override
     protected void animate(EntityFrostmaw entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
-        float frame = entity.ticksExisted + delta;
+        float frame = entity.tickCount + delta;
 
         if (entity.getAnimation() == EntityFrostmaw.SWIPE_ANIMATION) {
             animator.setAnimation(EntityFrostmaw.SWIPE_ANIMATION);
@@ -1567,7 +1567,7 @@ public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T
             }
         }
 
-//        limbSwing = 0.5f * (entity.ticksExisted + delta);
+//        limbSwing = 0.5f * (entity.tickCount + delta);
 //        limbSwingAmount = 1f;
         float globalSpeed = 0.5f;
         float globalHeightQuad = 1.2f * (1 - standUpController.rotationPointX);

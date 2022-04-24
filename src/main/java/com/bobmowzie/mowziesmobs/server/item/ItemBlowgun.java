@@ -4,22 +4,22 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.client.audio.Sound;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.EnchantmentType;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrowEntity;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.*;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.resources.Hand;
-import net.minecraft.resources.SoundEvents;
-import net.minecraft.resources.SoundCategory;
-import net.minecraft.resources.text.ITextComponent;
-import net.minecraft.resources.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.sounds.Hand;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundCategory;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -35,7 +35,7 @@ public class ItemBlowgun extends BowItem {
     }
 
     @Override
-    public void onPlayerStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft)
+    public void onPlayerStoppedUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft)
     {
         if (entityLiving instanceof Player) {
             Player Player = (Player)entityLiving;
@@ -56,7 +56,7 @@ public class ItemBlowgun extends BowItem {
                     boolean flag1 = Player.abilities.isCreativeMode || (itemstack.getItem() instanceof ItemDart && ((ItemDart)itemstack.getItem()).isInfinite(itemstack, stack, Player));
                     if (!worldIn.isClientSide) {
                         ArrowItem arrowitem = (ArrowItem)(itemstack.getItem() instanceof ItemDart ? itemstack.getItem() : ItemHandler.DART);
-                        AbstractArrowEntity abstractarrowentity = arrowitem.createArrow(worldIn, itemstack, Player);
+                        AbstractArrow abstractarrowentity = arrowitem.createArrow(worldIn, itemstack, Player);
                         abstractarrowentity = customArrow(abstractarrowentity);
                         abstractarrowentity.setDirectionAndMovement(Player, Player.getXRot(), Player.getYRot(), 0.0F, f * 1.1F /*ALTERED FROM PARENT*/, 1.0F);
                         if (f == 1.0F) {
@@ -81,13 +81,13 @@ public class ItemBlowgun extends BowItem {
                             player.sendBreakAnimation(Player.getActiveHand());
                         });
                         if (flag1 || Player.abilities.isCreativeMode && (itemstack.getItem() == Items.SPECTRAL_ARROW || itemstack.getItem() == Items.TIPPED_ARROW)) {
-                            abstractarrowentity.pickupStatus = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
+                            abstractarrowentity.pickupStatus = AbstractArrow.PickupStatus.CREATIVE_ONLY;
                         }
 
                         worldIn.addEntity(abstractarrowentity);
                     }
 
-                    worldIn.playSound((Player)null, Player.getPosX(), Player.getPosY(), Player.getPosZ(), MMSounds.ENTITY_BARAKOA_BLOWDART.get(), SoundCategory.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F) + f * 0.5F); //CHANGED FROM PARENT CLASS
+                    worldIn.playSound((Player)null, Player.getX(), Player.getY(), Player.getZ(), MMSounds.ENTITY_BARAKOA_BLOWDART.get(), SoundCategory.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F) + f * 0.5F); //CHANGED FROM PARENT CLASS
                     if (!flag1 && !Player.abilities.isCreativeMode) {
                         itemstack.shrink(1);
                         if (itemstack.isEmpty()) {
@@ -117,11 +117,11 @@ public class ItemBlowgun extends BowItem {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.0").setStyle(ItemHandler.TOOLTIP_STYLE));
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.1").setStyle(ItemHandler.TOOLTIP_STYLE));
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.2").setStyle(ItemHandler.TOOLTIP_STYLE));
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<TextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
+        tooltip.add(new TextComponent(getDescriptionId() + ".text.0").setStyle(ItemHandler.TOOLTIP_STYLE));
+        tooltip.add(new TextComponent(getDescriptionId() + ".text.1").setStyle(ItemHandler.TOOLTIP_STYLE));
+        tooltip.add(new TextComponent(getDescriptionId() + ".text.2").setStyle(ItemHandler.TOOLTIP_STYLE));
     }
 
     /**

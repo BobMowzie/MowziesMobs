@@ -4,11 +4,11 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.RandomPositionGenerator;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.projectile.ProjectileEntity;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.pathfinding.Path;
-import net.minecraft.pathfinding.PathNavigator;
-import net.minecraft.resources.math.AxisAlignedBB;
-import net.minecraft.resources.math.RayTraceContext;
+import net.minecraft.pathfinding.PathNavigation;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.RayTraceContext;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
@@ -21,38 +21,38 @@ public class AvoidProjectilesGoal extends Goal {
     protected final PathfinderMob entity;
     private final double farSpeed;
     private final double nearSpeed;
-    protected ProjectileEntity avoidTarget;
+    protected Projectile avoidTarget;
     protected final float avoidDistance;
     protected Path path;
     protected Vec3 dodgeVec;
-    protected final PathNavigator navigation;
+    protected final PathNavigation navigation;
     /** Class of entity this behavior seeks to avoid */
-    protected final Class<ProjectileEntity> classToAvoid;
-    protected final Predicate<ProjectileEntity> avoidTargetSelector;
+    protected final Class<Projectile> classToAvoid;
+    protected final Predicate<Projectile> avoidTargetSelector;
     private int dodgeTimer = 0;
 
-    public AvoidProjectilesGoal(PathfinderMob entityIn, Class<ProjectileEntity> classToAvoidIn, float avoidDistanceIn, double farSpeedIn, double nearSpeedIn) {
+    public AvoidProjectilesGoal(PathfinderMob entityIn, Class<Projectile> classToAvoidIn, float avoidDistanceIn, double farSpeedIn, double nearSpeedIn) {
         this(entityIn, classToAvoidIn, (entity) -> {
             return true;
         }, avoidDistanceIn, farSpeedIn, nearSpeedIn);
     }
 
-    public AvoidProjectilesGoal(PathfinderMob entityIn, Class<ProjectileEntity> avoidClass, Predicate<ProjectileEntity> targetPredicate, float distance, double nearSpeedIn, double farSpeedIn) {
+    public AvoidProjectilesGoal(PathfinderMob entityIn, Class<Projectile> avoidClass, Predicate<Projectile> targetPredicate, float distance, double nearSpeedIn, double farSpeedIn) {
         this.entity = entityIn;
         this.classToAvoid = avoidClass;
         this.avoidTargetSelector = targetPredicate.and(target -> {
-            Vec3 aActualMotion = new Vec3(target.getPosX() - target.prevPosX, target.getPosY() - target.prevPosY, target.getPosZ() - target.prevPosZ);
-            if (aActualMotion.length() < 0.1 || target.ticksExisted < 0) {
+            Vec3 aActualMotion = new Vec3(target.getX() - target.xo, target.getY() - target.prevPosY, target.getZ() - target.zo);
+            if (aActualMotion.length() < 0.1 || target.tickCount < 0) {
                 return false;
             }
             if (!entity.getEntitySenses().canSee(target)) return false;
-            float dot = (float) target.getMotion().normalize().dotProduct(entity.getPositionVec().subtract(target.getPositionVec()).normalize());
+            float dot = (float) target.getDeltaMovement().normalize().dotProduct(entity.position().subtract(target.position()).normalize());
             return !(dot < 0.8);
         });
         this.avoidDistance = distance;
         this.farSpeed = nearSpeedIn;
         this.nearSpeed = farSpeedIn;
-        this.navigation = entityIn.getNavigator();
+        this.navigation = entityIn.getNavigation();
         this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE));
     }
 
@@ -67,12 +67,12 @@ public class AvoidProjectilesGoal extends Goal {
             return false;
         } else {
             Vec3 projectilePos = guessProjectileDestination(this.avoidTarget);
-//            Vec3 vector3d = entity.getPositionVec().subtract(projectilePos);
-//            entity.setMotion(entity.getMotion().add(vector3d.normalize().scale(1.0)));
+//            Vec3 vector3d = entity.position().subtract(projectilePos);
+//            entity.setDeltaMovement(entity.getDeltaMovement().add(vector3d.normalize().scale(1.0)));
 
-            dodgeVec = avoidTarget.getMotion().crossProduct(new Vec3(0, 1, 0)).normalize().scale(1);
-            Vec3 newPosLeft = entity.getPositionVec().add(dodgeVec);
-            Vec3 newPosRight = entity.getPositionVec().add(dodgeVec.scale(-1));
+            dodgeVec = avoidTarget.getDeltaMovement().crossProduct(new Vec3(0, 1, 0)).normalize().scale(1);
+            Vec3 newPosLeft = entity.position().add(dodgeVec);
+            Vec3 newPosRight = entity.position().add(dodgeVec.scale(-1));
             Vec3 diffLeft = newPosLeft.subtract(projectilePos);
             Vec3 diffRight = newPosRight.subtract(projectilePos);
             if (diffRight.lengthSquared() > diffLeft.lengthSquared()) {
@@ -83,7 +83,7 @@ public class AvoidProjectilesGoal extends Goal {
             if (vector3d == null) {
                 this.path = null;
                 return true;
-            } else if (projectilePos.subtract(vector3d).lengthSquared() < projectilePos.subtract(entity.getPositionVec()).lengthSquared()) {
+            } else if (projectilePos.subtract(vector3d).lengthSquared() < projectilePos.subtract(entity.position()).lengthSquared()) {
                 return false;
             } else {
                 this.path = this.navigation.pathfind(vector3d.x, vector3d.y, vector3d.z, 0);
@@ -105,9 +105,9 @@ public class AvoidProjectilesGoal extends Goal {
     public void startExecuting() {
         if (path != null) {
             this.navigation.setPath(this.path, this.farSpeed);
-            dodgeVec = this.path.getPosition(entity).subtract(entity.getPositionVec()).normalize().scale(1);
+            dodgeVec = this.path.getPosition(entity).subtract(entity.position()).normalize().scale(1);
         }
-        entity.setMotion(entity.getMotion().add(dodgeVec));
+        entity.setDeltaMovement(entity.getDeltaMovement().add(dodgeVec));
     }
 
     /**
@@ -123,31 +123,31 @@ public class AvoidProjectilesGoal extends Goal {
      */
     public void tick() {
         if (this.entity.getDistanceSq(this.avoidTarget) < 49.0D) {
-            this.entity.getNavigator().setSpeed(this.nearSpeed);
+            this.entity.getNavigation().setSpeed(this.nearSpeed);
         } else {
-            this.entity.getNavigator().setSpeed(this.farSpeed);
+            this.entity.getNavigation().setSpeed(this.farSpeed);
         }
         dodgeTimer++;
 
     }
 
-    private Vec3 guessProjectileDestination(ProjectileEntity projectile) {
-        Vec3 vector3d = projectile.getPositionVec();
-        Vec3 vector3d1 = vector3d.add(projectile.getMotion().scale(50));
+    private Vec3 guessProjectileDestination(Projectile projectile) {
+        Vec3 vector3d = projectile.position();
+        Vec3 vector3d1 = vector3d.add(projectile.getDeltaMovement().scale(50));
         return entity.world.rayTraceBlocks(new RayTraceContext(vector3d, vector3d1, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, projectile)).getHitVec();
     }
 
     @Nullable
-    private <T extends ProjectileEntity> T getMostMovingTowardsMeEntity(Class<? extends T> entityClazz, Predicate<? super T> predicate, LivingEntity entity, AxisAlignedBB p_225318_10_) {
+    private <T extends Projectile> T getMostMovingTowardsMeEntity(Class<? extends T> entityClazz, Predicate<? super T> predicate, LivingEntity entity, AxisAlignedBB p_225318_10_) {
         return this.getMostMovingTowardsMeEntityFromList(entity.world.getLoadedEntitiesWithinAABB(entityClazz, p_225318_10_, predicate), entity);
     }
 
-    private <T extends ProjectileEntity> T getMostMovingTowardsMeEntityFromList(List<? extends T> entities, LivingEntity target) {
+    private <T extends Projectile> T getMostMovingTowardsMeEntityFromList(List<? extends T> entities, LivingEntity target) {
         double d0 = -2.0D;
         T t = null;
 
         for(T t1 : entities) {
-            double d1 = t1.getMotion().normalize().dotProduct(target.getPositionVec().subtract(t1.getPositionVec()).normalize());;
+            double d1 = t1.getDeltaMovement().normalize().dotProduct(target.position().subtract(t1.position()).normalize());;
             if (d1 > d0) {
                 d0 = d1;
                 t = t1;

@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.client.sound;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.client.audio.TickableSound;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.resources.SoundCategory;
+import net.minecraft.sounds.SoundCategory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -13,7 +13,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class NagaSwoopSound extends TickableSound {
     private final Entity naga;
-    int ticksExisted = 0;
+    int tickCount = 0;
     boolean active = true;
 
     public NagaSwoopSound(Entity naga) {
@@ -21,9 +21,9 @@ public class NagaSwoopSound extends TickableSound {
         this.naga = naga;
         volume = 2F;
         pitch = 1.2f;
-        x = (float) naga.getPosX();
-        y = (float) naga.getPosY();
-        z = (float) naga.getPosZ();
+        x = (float) naga.getX();
+        y = (float) naga.getY();
+        z = (float) naga.getZ();
         repeat = false;
     }
 
@@ -31,14 +31,14 @@ public class NagaSwoopSound extends TickableSound {
     public void tick() {
         if (naga != null) {
             active = true;
-            x = (float) naga.getPosX();
-            y = (float) naga.getPosY();
-            z = (float) naga.getPosZ();
+            x = (float) naga.getX();
+            y = (float) naga.getY();
+            z = (float) naga.getZ();
             if (!naga.isAlive()) {
                 active = false;
                 finishPlaying();
             }
         }
-        ticksExisted++;
+        tickCount++;
     }
 }

@@ -2,11 +2,11 @@ package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.mojang.serialization.Codec;
-import net.minecraft.resources.Direction;
-import net.minecraft.resources.Rotation;
+import net.minecraft.core.Direction;
+import net.minecraft.sounds.Rotation;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.math.MutableBoundingBox;
-import net.minecraft.resources.registry.DynamicRegistries;
+import net.minecraft.util.MutableBoundingBox;
+import net.minecraft.sounds.registry.DynamicRegistries;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
@@ -46,15 +46,15 @@ public class BarakoaVillageStructure extends MowzieStructure {
 
         @Override
         public void func_230364_a_(DynamicRegistries dynamicRegistryManager, ChunkGenerator generator, TemplateManager templateManagerIn, int chunkX, int chunkZ, Biome biomeIn, NoFeatureConfig config) {
-            Rotation rotation = Rotation.values()[this.rand.nextInt(Rotation.values().length)];
+            Rotation rotation = Rotation.values()[this.random.nextInt(Rotation.values().length)];
 
             //Turns the chunk coordinates into actual coordinates we can use. (Gets center of that chunk)
             int x = (chunkX << 4) + 7;
             int z = (chunkZ << 4) + 7;
             BlockPos centerPos = new BlockPos(x, 1, z);
 
-            int surfaceY = generator.getHeight(centerPos.getX(), centerPos.getZ(), Heightmap.Type.WORLD_SURFACE_WG);
-            int oceanFloorY = generator.getHeight(centerPos.getX(), centerPos.getZ(), Heightmap.Type.OCEAN_FLOOR_WG);
+            int surfaceY = generator.getHeight(centerPos.x(), centerPos.z(), Heightmap.Type.WORLD_SURFACE_WG);
+            int oceanFloorY = generator.getHeight(centerPos.x(), centerPos.z(), Heightmap.Type.OCEAN_FLOOR_WG);
             if (oceanFloorY < surfaceY) return;
 
             //Firepit
@@ -67,29 +67,29 @@ public class BarakoaVillageStructure extends MowzieStructure {
             BarakoaVillagePieces.addPiece(BarakoaVillagePieces.THRONE, templateManagerIn, thronePos, rotation, this.components, this.rand);
 
             //Houses
-            int numHouses = rand.nextInt(4) + 3;
+            int numHouses = random.nextInt(4) + 3;
             for (int i = 1; i <= numHouses; i++) {
                 for (int j = 0; j < 30; j++) {
-                    float distance = rand.nextInt(8) + 10;
-                    int angle = rand.nextInt(360);
-                    BlockPos housePos = new BlockPos(centerPos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.getZ() + distance * Math.cos(Math.toRadians(angle)));
+                    float distance = random.nextInt(8) + 10;
+                    int angle = random.nextInt(360);
+                    BlockPos housePos = new BlockPos(centerPos.x() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.z() + distance * Math.cos(Math.toRadians(angle)));
                     housePos = posToSurface(generator, housePos);
-                    housePos = housePos.offset(Direction.UP, rand.nextInt(2));
+                    housePos = housePos.offset(Direction.UP, random.nextInt(2));
                     if (startHouse(generator, templateManagerIn, housePos)) break;
                 }
             }
 
             //Altar
-            int numAltars = rand.nextInt(3) + 2;
+            int numAltars = random.nextInt(3) + 2;
             for (int i = 1; i <= numAltars; i++) {
                 int distance;
                 int angle;
                 for (int j = 1; j <= 10; j++) {
-                    distance = rand.nextInt(15) + 5;
-                    angle = rand.nextInt(360);
-                    BlockPos altarPos = new BlockPos(centerPos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.getZ() + distance * Math.cos(Math.toRadians(angle)));
+                    distance = random.nextInt(15) + 5;
+                    angle = random.nextInt(360);
+                    BlockPos altarPos = new BlockPos(centerPos.x() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.z() + distance * Math.cos(Math.toRadians(angle)));
                     altarPos = posToSurface(generator, altarPos);
-                    StructurePiece altar = new BarakoaVillagePieces.AltarPiece(rand, altarPos.getX(), altarPos.getY(), altarPos.getZ());
+                    StructurePiece altar = new BarakoaVillagePieces.AltarPiece(rand, altarPos.x(), altarPos.y(), altarPos.z());
                     boolean intersects = false;
                     for (StructurePiece piece : components) {
                         if (altar.getBoundingBox().intersectsWith(piece.getBoundingBox())) {
@@ -105,16 +105,16 @@ public class BarakoaVillageStructure extends MowzieStructure {
             }
 
             //Stakes
-            int numStakes = rand.nextInt(12) + 5;
+            int numStakes = random.nextInt(12) + 5;
             for (int i = 1; i <= numStakes; i++) {
                 int distance;
                 int angle;
                 for (int j = 1; j <= 10; j++) {
-                    distance = rand.nextInt(15) + 5;
-                    angle = rand.nextInt(360);
-                    BlockPos stakePos = new BlockPos(centerPos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.getZ() + distance * Math.cos(Math.toRadians(angle)));
+                    distance = random.nextInt(15) + 5;
+                    angle = random.nextInt(360);
+                    BlockPos stakePos = new BlockPos(centerPos.x() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.z() + distance * Math.cos(Math.toRadians(angle)));
                     stakePos = posToSurface(generator, stakePos);
-                    StructurePiece stake = new BarakoaVillagePieces.StakePiece(rand, stakePos.getX(), stakePos.getY(), stakePos.getZ());
+                    StructurePiece stake = new BarakoaVillagePieces.StakePiece(rand, stakePos.x(), stakePos.y(), stakePos.z());
                     boolean intersects = false;
                     for (StructurePiece piece : components) {
                         if (stake.getBoundingBox().intersectsWith(piece.getBoundingBox())) {
@@ -139,13 +139,13 @@ public class BarakoaVillageStructure extends MowzieStructure {
         }
 
         private boolean startHouse(ChunkGenerator generator, TemplateManager templateManagerIn, BlockPos housePos) {
-            Rotation rotation = Rotation.values()[this.rand.nextInt(Rotation.values().length)];
+            Rotation rotation = Rotation.values()[this.random.nextInt(Rotation.values().length)];
             StructurePiece newHouse = BarakoaVillagePieces.addHouse(templateManagerIn, housePos, rotation, this.components, this.rand);
             if (newHouse != null) {
-                Rotation roofRotation = Rotation.values()[this.rand.nextInt(Rotation.values().length)];
+                Rotation roofRotation = Rotation.values()[this.random.nextInt(Rotation.values().length)];
                 StructurePiece roof = BarakoaVillagePieces.addPiece(BarakoaVillagePieces.ROOF, templateManagerIn, housePos, roofRotation, this.components, this.rand);
 
-                int sideHouseDir = rand.nextInt(6) + 1;
+                int sideHouseDir = random.nextInt(6) + 1;
                 if (sideHouseDir <= 2) {
                     Rotation sideHouseRotation = sideHouseDir == 1 ? rotation.add(Rotation.CLOCKWISE_90) : rotation.add(Rotation.COUNTERCLOCKWISE_90);
                     if (BarakoaVillagePieces.addPieceCheckBounds(BarakoaVillagePieces.HOUSE_SIDE, templateManagerIn, housePos, sideHouseRotation, this.components, this.rand, Arrays.asList(newHouse, roof)) == null) {
@@ -159,8 +159,8 @@ public class BarakoaVillageStructure extends MowzieStructure {
         }
 
         private BlockPos posToSurface(ChunkGenerator generator, BlockPos pos) {
-            int surfaceY = generator.getHeight(pos.getX(), pos.getZ(), Heightmap.Type.WORLD_SURFACE_WG);
-            return new BlockPos(pos.getX(), surfaceY - 1, pos.getZ());
+            int surfaceY = generator.getHeight(pos.x(), pos.z(), Heightmap.Type.WORLD_SURFACE_WG);
+            return new BlockPos(pos.x(), surfaceY - 1, pos.z());
         }
     }
 }

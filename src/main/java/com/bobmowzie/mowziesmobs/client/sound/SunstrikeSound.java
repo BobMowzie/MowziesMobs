@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.client.sound;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.client.audio.TickableSound;
-import net.minecraft.resources.SoundCategory;
+import net.minecraft.sounds.SoundCategory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -16,9 +16,9 @@ public class SunstrikeSound extends TickableSound {
         this.sunstrike = sunstrike;
         volume = 1.5F;
         pitch = 1.1F;
-        x = (float) sunstrike.getPosX();
-        y = (float) sunstrike.getPosY();
-        z = (float) sunstrike.getPosZ();
+        x = (float) sunstrike.getX();
+        y = (float) sunstrike.getY();
+        z = (float) sunstrike.getZ();
     }
 
     @Override

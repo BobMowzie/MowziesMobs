@@ -38,7 +38,7 @@ public class RibbonComponent extends ParticleComponent {
             newComponents[components.length] = new AttachToParticle(particle);
             newComponents[components.length + 1] = new Trail();
 
-            ParticleRibbon.spawnRibbon(particle.getWorld(), ribbon, length, particle.getPosX(), particle.getPosY(), particle.getPosZ(), 0, 0, 0, faceCamera, yaw, pitch, roll, scale, r, g, b, a, 0, particle.getMaxAge() + length, emissive, newComponents);
+            ParticleRibbon.spawnRibbon(particle.getLevel(), ribbon, length, particle.getX(), particle.getY(), particle.getZ(), 0, 0, 0, faceCamera, yaw, pitch, roll, scale, r, g, b, a, 0, particle.getMaxAge() + length, emissive, newComponents);
         }
     }
 
@@ -87,7 +87,7 @@ public class RibbonComponent extends ParticleComponent {
                     ribbon.positions[i] = ribbon.positions[i - 1];
                     ribbon.prevPositions[i] = ribbon.prevPositions[i - 1];
                 }
-                ribbon.positions[0] = new Vec3(ribbon.getPosX(), ribbon.getPosY(), ribbon.getPosZ());
+                ribbon.positions[0] = new Vec3(ribbon.getX(), ribbon.getY(), ribbon.getZ());
                 ribbon.prevPositions[0] = ribbon.getPrevPos();
             }
         }
@@ -106,7 +106,7 @@ public class RibbonComponent extends ParticleComponent {
         public void postUpdate(AdvancedParticleBase particle) {
             if (particle instanceof ParticleRibbon && validateLocation(startLocation) && validateLocation(endLocation)) {
                 ParticleRibbon ribbon = (ParticleRibbon) particle;
-                ribbon.setPosition(startLocation[0].getX(), startLocation[0].getY(), startLocation[0].getZ());
+                ribbon.setPos(startLocation[0].x(), startLocation[0].y(), startLocation[0].z());
 
                 Vec3 increment = endLocation[0].subtract(startLocation[0]).scale(1.0f / (float) (ribbon.positions.length - 1));
                 for (int i = 0; i < ribbon.positions.length; i++) {

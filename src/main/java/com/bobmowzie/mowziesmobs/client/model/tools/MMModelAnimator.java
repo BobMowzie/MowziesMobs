@@ -4,7 +4,7 @@ import com.ilexiconn.llibrary.client.model.Transform;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.client.resources.model.ModelRenderer;
-import net.minecraft.resources.math.MathHelper;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -165,7 +165,7 @@ public class MMModelAnimator {
                 }
             } else {
                 float tick = (animationTick - this.prevTempTick + this.delta) / (this.tempTick - this.prevTempTick);
-                float inc = MathHelper.sin((float) (tick * Math.PI / 2.0F)), dec = 1.0F - inc;
+                float inc = Mth.sin((float) (tick * Math.PI / 2.0F)), dec = 1.0F - inc;
                 for (ModelRenderer box : this.prevTransformMap.keySet()) {
                     Transform transform = this.prevTransformMap.get(box);
                     box.rotateAngleX += dec * transform.getRotationX();

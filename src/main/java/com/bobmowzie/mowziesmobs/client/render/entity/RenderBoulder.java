@@ -38,10 +38,10 @@ public class RenderBoulder extends EntityRenderer<EntityBoulder> {
         super(mgr);
         model = new ModelBoulder();
         texMap = new TreeMap<String, ResourceLocation>();
-        texMap.put(Blocks.STONE.getTranslationKey(), TEXTURE_STONE);
-        texMap.put(Blocks.DIRT.getTranslationKey(), TEXTURE_DIRT);
-        texMap.put(Blocks.CLAY.getTranslationKey(), TEXTURE_CLAY);
-        texMap.put(Blocks.SANDSTONE.getTranslationKey(), TEXTURE_SANDSTONE);
+        texMap.put(Blocks.STONE.getDescriptionId(), TEXTURE_STONE);
+        texMap.put(Blocks.DIRT.getDescriptionId(), TEXTURE_DIRT);
+        texMap.put(Blocks.CLAY.getDescriptionId(), TEXTURE_CLAY);
+        texMap.put(Blocks.SANDSTONE.getDescriptionId(), TEXTURE_SANDSTONE);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class RenderBoulder extends EntityRenderer<EntityBoulder> {
 //        }
 //        else return TEXTURE_DIRT;
         if (entity.storedBlock != null) {
-            ResourceLocation tex = texMap.get(entity.storedBlock.getBlock().getTranslationKey());
+            ResourceLocation tex = texMap.get(entity.storedBlock.getBlock().getDescriptionId());
             if (tex != null) return tex;
         }
         return TEXTURE_DIRT;
@@ -60,7 +60,7 @@ public class RenderBoulder extends EntityRenderer<EntityBoulder> {
     @Override
     public void render(EntityBoulder entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         matrixStackIn.push();
-        model.setRotationAngles(entityIn, 0, 0, entityIn.ticksExisted + partialTicks, 0, 0);
+        model.setRotationAngles(entityIn, 0, 0, entityIn.tickCount + partialTicks, 0, 0);
         BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
         AdvancedModelRenderer root;
         if (entityIn.boulderSize == EntityBoulder.BoulderSizeEnum.SMALL) root = model.boulder0block1;

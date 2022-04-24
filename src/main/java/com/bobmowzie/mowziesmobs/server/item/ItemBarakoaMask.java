@@ -18,12 +18,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.effect.Effect;
-import net.minecraft.resources.*;
+import net.minecraft.sounds.*;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.resources.text.ITextComponent;
-import net.minecraft.resources.text.TextFormatting;
-import net.minecraft.resources.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TextFormatting;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -49,7 +49,7 @@ public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, Player player, Hand hand) {
+    public ActionResult<ItemStack> onItemRightClick(Level world, Player player, Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         ItemStack headStack = player.inventory.armorInventory.get(3);
         if (headStack.getItem() instanceof ItemBarakoMask) {
@@ -76,21 +76,21 @@ public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask {
             if (mask == MaskType.FAITH) barakoa = new EntityBarakoayaToPlayer(EntityHandler.BARAKOAYA_TO_PLAYER, player.world, player);
             else barakoa = new EntityBarakoanToPlayer(EntityHandler.BARAKOAN_TO_PLAYER, player.world, player);
 //            property.addPackMember(barakoa);
-            if (!player.world.isClientSide) {
+            if (!player.level.isClientSide) {
                 if (mask != MaskType.FAITH) {
                     int weapon;
                     if (mask != MaskType.FURY) weapon = barakoa.randomizeWeapon();
                     else weapon = 0;
                     barakoa.setWeapon(weapon);
                 }
-                barakoa.setPositionAndRotation(player.getPosX() + 1 * Math.sin(-angle * (Math.PI / 180)), player.getPosY() + 1.5, player.getPosZ() + 1 * Math.cos(-angle * (Math.PI / 180)), (float) angle, 0);
+                barakoa.setPositionAndRotation(player.getX() + 1 * Math.sin(-angle * (Math.PI / 180)), player.getY() + 1.5, player.getZ() + 1 * Math.cos(-angle * (Math.PI / 180)), (float) angle, 0);
                 barakoa.setActive(false);
                 barakoa.active = false;
-                player.world.addEntity(barakoa);
+                player.level.addFreshEntity(barakoa);
                 double vx = 0.5 * Math.sin(-angle * Math.PI / 180);
                 double vy = 0.5;
                 double vz = 0.5 * Math.cos(-angle * Math.PI / 180);
-                barakoa.setMotion(vx, vy, vz);
+                barakoa.setDeltaMovement(vx, vy, vz);
                 barakoa.setHealth((1.0f - durability) * barakoa.getMaxHealth());
                 barakoa.setMask(mask);
                 barakoa.setStoredMask(stack.copy());
@@ -129,10 +129,10 @@ public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.0").setStyle(ItemHandler.TOOLTIP_STYLE));
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.1").setStyle(ItemHandler.TOOLTIP_STYLE));
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<TextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
+        tooltip.add(new TextComponent(getDescriptionId() + ".text.0").setStyle(ItemHandler.TOOLTIP_STYLE));
+        tooltip.add(new TextComponent(getDescriptionId() + ".text.1").setStyle(ItemHandler.TOOLTIP_STYLE));
     }
 
     @Override

@@ -107,11 +107,11 @@ public class ClientProxy extends ServerProxy {
                     double dx = (double) ix / size * scale;
                     double dy = (double) iy / size * scale;
                     double dz = (double) iz / size * scale;
-                    Vec3 minecartMotion = minecart.getMotion();
+                    Vec3 minecartMotion = minecart.getDeltaMovement();
                     Minecraft.getInstance().particles.addEffect(new DiggingParticle(
                             world,
                             x + dx + offset, y + dy + offset, z + dz + offset,
-                            dx + minecartMotion.getX(), dy + minecartMotion.getY(), dz + minecartMotion.getZ(),
+                            dx + minecartMotion.x(), dy + minecartMotion.y(), dz + minecartMotion.z(),
                             state
                     ) {}.setBlockPos(pos));
                 }

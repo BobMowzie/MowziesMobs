@@ -19,10 +19,10 @@ import net.minecraft.world.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.resources.text.ITextComponent;
-import net.minecraft.resources.text.Style;
-import net.minecraft.resources.text.TranslationTextComponent;
-import net.minecraft.resources.text.event.HoverEvent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.event.HoverEvent;
 
 public final class GuiBarakoTrade extends ContainerScreen<ContainerBarakoTrade> implements InventoryBarako.ChangeListener {
     private static final ResourceLocation TEXTURE_TRADE = new ResourceLocation(MowziesMobs.MODID, "textures/gui/container/barako_trade.png");
@@ -38,7 +38,7 @@ public final class GuiBarakoTrade extends ContainerScreen<ContainerBarakoTrade> 
 
     private boolean hasTraded;
 
-    public GuiBarakoTrade(ContainerBarakoTrade screenContainer, PlayerInventory inv, ITextComponent titleIn) {
+    public GuiBarakoTrade(ContainerBarakoTrade screenContainer, PlayerInventory inv, TextComponent titleIn) {
         super(screenContainer, inv, titleIn);
         this.barako = screenContainer.getBarako();
         this.inventory = screenContainer.getInventoryBarako();
@@ -51,7 +51,7 @@ public final class GuiBarakoTrade extends ContainerScreen<ContainerBarakoTrade> 
         super.init();
         buttons.clear();
         String text = I18n.format(hasTraded ? "entity.mowziesmobs.barako.replenish.button.text" : "entity.mowziesmobs.barako.trade.button.text");
-        grantButton = addButton(new Button(guiLeft + 115, guiTop + 52, 56, 20, new TranslationTextComponent(text), this::actionPerformed));
+        grantButton = addButton(new Button(guiLeft + 115, guiTop + 52, 56, 20, new TextComponent(text), this::actionPerformed));
         grantButton.active = hasTraded;
         updateButton();
     }
@@ -138,17 +138,17 @@ public final class GuiBarakoTrade extends ContainerScreen<ContainerBarakoTrade> 
 
     private void updateButton() {
         if (hasTraded) {
-            grantButton.setMessage(new TranslationTextComponent(I18n.format("entity.mowziesmobs.barako.replenish.button.text")));
+            grantButton.setMessage(new TextComponent(I18n.format("entity.mowziesmobs.barako.replenish.button.text")));
             grantButton.setWidth(108);
             grantButton.x = guiLeft + 63;
         }
         else {
-            grantButton.setMessage(new TranslationTextComponent(I18n.format("entity.mowziesmobs.barako.trade.button.text")));
+            grantButton.setMessage(new TextComponent(I18n.format("entity.mowziesmobs.barako.trade.button.text")));
         }
     }
 
     private Style getHoverText() {
-        TranslationTextComponent text = new TranslationTextComponent(I18n.format(hasTraded ? "entity.mowziesmobs.barako.replenish.button.hover" : "entity.mowziesmobs.barako.trade.button.hover"));
+        TextComponent text = new TextComponent(I18n.format(hasTraded ? "entity.mowziesmobs.barako.replenish.button.hover" : "entity.mowziesmobs.barako.trade.button.hover"));
         return text.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, text));
     }
 }

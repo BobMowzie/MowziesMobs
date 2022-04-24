@@ -15,7 +15,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.world.entity.player.PlayerInventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.resources.text.ITextComponent;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -29,7 +29,7 @@ public final class GuiBarakoayaTrade extends ContainerScreen<ContainerBarakoayaT
 
     private int cursorHit;
 
-    public GuiBarakoayaTrade(ContainerBarakoayaTrade screenContainer, PlayerInventory inv, ITextComponent titleIn) {
+    public GuiBarakoayaTrade(ContainerBarakoayaTrade screenContainer, PlayerInventory inv, TextComponent titleIn) {
         super(screenContainer, inv, titleIn);
         this.barakoaya = screenContainer.getBarakoaya();
         this.inventory = screenContainer.getInventoryBarakoaya();
@@ -43,7 +43,7 @@ public final class GuiBarakoayaTrade extends ContainerScreen<ContainerBarakoayaT
         }
         if (cursorHit > 0) {
             cursorHit--;
-//            Mouse.setCursorPosition(Mouse.getX() + cursorHit * 16 / 6, Mouse.getY() - cursorHit * 44 / 6); // TODO
+//            Mouse.setCursorPosition(Mouse.x() + cursorHit * 16 / 6, Mouse.y() - cursorHit * 44 / 6); // TODO
         }
     }
 

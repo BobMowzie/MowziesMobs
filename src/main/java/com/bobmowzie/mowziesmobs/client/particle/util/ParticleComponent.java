@@ -162,15 +162,15 @@ public abstract class ParticleComponent {
 
         private void applyUpdate(AdvancedParticleBase particle, float value) {
             if (property == EnumParticleProperty.POS_X) {
-                if (additive) particle.setPosX(particle.getPosX() + value);
+                if (additive) particle.setPosX(particle.getX() + value);
                 else particle.setPosX(value);
             }
             else if (property == EnumParticleProperty.POS_Y) {
-                if (additive) particle.setPosY(particle.getPosY() + value);
+                if (additive) particle.setPosY(particle.getY() + value);
                 else particle.setPosY(value);
             }
             else if (property == EnumParticleProperty.POS_Z) {
-                if (additive) particle.setPosZ(particle.getPosZ() + value);
+                if (additive) particle.setPosZ(particle.getZ() + value);
                 else particle.setPosZ(value);
             }
             else if (property == EnumParticleProperty.MOTION_X) {
@@ -253,14 +253,14 @@ public abstract class ParticleComponent {
         @Override
         public void init(AdvancedParticleBase particle) {
             if (location != null && location.length > 0) {
-                particle.setPosition(location[0].x, location[0].y, location[0].z);
+                particle.setPos(location[0].x, location[0].y, location[0].z);
             }
         }
 
         @Override
         public void preUpdate(AdvancedParticleBase particle) {
             if (location != null && location.length > 0) {
-                particle.setPosition(location[0].x, location[0].y, location[0].z);
+                particle.setPos(location[0].x, location[0].y, location[0].z);
             }
         }
     }
@@ -287,7 +287,7 @@ public abstract class ParticleComponent {
 
         @Override
         public void init(AdvancedParticleBase particle) {
-            startLocation = new Vec3(particle.getPosX(), particle.getPosY(), particle.getPosZ());
+            startLocation = new Vec3(particle.getX(), particle.getY(), particle.getZ());
         }
 
         @Override
@@ -295,7 +295,7 @@ public abstract class ParticleComponent {
             float ageFrac = particle.getAge() / (particle.getMaxAge() - 1);
             if (location.length > 0) {
                 Vec3 destinationVec = location[0];
-                Vec3 currPos = new Vec3(particle.getPosX(), particle.getPosY(), particle.getPosZ());
+                Vec3 currPos = new Vec3(particle.getX(), particle.getY(), particle.getZ());
                 Vec3 diff = destinationVec.subtract(currPos);
                 if (diff.length() < killDist) particle.setExpired();
                 if (behavior == EnumAttractorBehavior.EXPONENTIAL) {
@@ -374,7 +374,7 @@ public abstract class ParticleComponent {
             if (location.length > 0 && location[0] != null) {
                 newPos.add((float)location[0].x, (float)location[0].y, (float)location[0].z);
             }
-            particle.setPosition(newPos.getX(), newPos.getY(), newPos.getZ());
+            particle.setPos(newPos.x(), newPos.y(), newPos.z());
         }
     }
 
@@ -386,9 +386,9 @@ public abstract class ParticleComponent {
         @Override
         public void preRender(AdvancedParticleBase particle, float partialTicks) {
             super.preRender(particle, partialTicks);
-            double dx = particle.getPosX() - particle.getPrevPosX();
-            double dy = particle.getPosY() - particle.getPrevPosY();
-            double dz = particle.getPosZ() - particle.getPrevPosZ();
+            double dx = particle.getX() - particle.getPrevPosX();
+            double dy = particle.getY() - particle.getPrevPosY();
+            double dz = particle.getZ() - particle.getPrevPosZ();
             double d = Math.sqrt(dx * dx + dy * dy + dz * dz);
             if (d != 0) {
                 if (particle.rotation instanceof ParticleRotation.EulerAngles) {

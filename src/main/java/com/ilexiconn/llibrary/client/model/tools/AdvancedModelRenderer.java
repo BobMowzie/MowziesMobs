@@ -9,8 +9,8 @@ import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.client.resources.model.Model;
 import net.minecraft.client.resources.model.ModelRenderer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.resources.Direction;
-import net.minecraft.resources.math.MathHelper;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -305,7 +305,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
 
     private float calculateRotation(float speed, float degree, boolean invert, float offset, float weight, float f, float f1) {
         float movementScale = this.model instanceof AdvancedModelBase ? ((AdvancedModelBase<?>)this.model).getMovementScale() : 1;
-        float rotation = (MathHelper.cos(f * (speed * movementScale) + offset) * (degree * movementScale) * f1) + (weight * f1);
+        float rotation = (Mth.cos(f * (speed * movementScale) + offset) * (degree * movementScale) * f1) + (weight * f1);
         return invert ? -rotation : rotation;
     }
 
@@ -402,11 +402,11 @@ public class AdvancedModelRenderer extends ModelRenderer {
 
     public Vec3 getWorldPos(Entity entity, float delta) {
         MatrixStack matrixStack = new MatrixStack();
-        float dx = (float) (entity.lastTickPosX + (entity.getPosX() - entity.lastTickPosX) * delta);
-        float dy = (float) (entity.lastTickPosY + (entity.getPosY() - entity.lastTickPosY) * delta);
-        float dz = (float) (entity.lastTickPosZ + (entity.getPosZ() - entity.lastTickPosZ) * delta);
+        float dx = (float) (entity.lastTickPosX + (entity.getX() - entity.lastTickPosX) * delta);
+        float dy = (float) (entity.lastTickPosY + (entity.getY() - entity.lastTickPosY) * delta);
+        float dz = (float) (entity.lastTickPosZ + (entity.getZ() - entity.lastTickPosZ) * delta);
         matrixStack.translate(dx, dy, dz);
-        float dYaw = MathHelper.interpolateAngle(delta, entity.yRot0, entity.getYRot());
+        float dYaw = Mth.interpolateAngle(delta, entity.yRotO, entity.getYRot());
         matrixStack.rotate(new Quaternion(0, -dYaw + 180, 0, true));
         matrixStack.scale(-1, -1, 1);
         matrixStack.translate(0, -1.5f, 0);
@@ -416,16 +416,16 @@ public class AdvancedModelRenderer extends ModelRenderer {
 
         Vector4f vec = new Vector4f(0, 0, 0, 1);
         vec.transform(matrix4f);
-        return new Vec3(vec.getX(), vec.getY(), vec.getZ());
+        return new Vec3(vec.x(), vec.y(), vec.z());
     }
 
     public void setWorldPos(Entity entity, Vec3 worldPos, float delta) {
         MatrixStack matrixStack = new MatrixStack();
-        float dx = (float) (entity.lastTickPosX + (entity.getPosX() - entity.lastTickPosX) * delta);
-        float dy = (float) (entity.lastTickPosY + (entity.getPosY() - entity.lastTickPosY) * delta);
-        float dz = (float) (entity.lastTickPosZ + (entity.getPosZ() - entity.lastTickPosZ) * delta);
+        float dx = (float) (entity.lastTickPosX + (entity.getX() - entity.lastTickPosX) * delta);
+        float dy = (float) (entity.lastTickPosY + (entity.getY() - entity.lastTickPosY) * delta);
+        float dz = (float) (entity.lastTickPosZ + (entity.getZ() - entity.lastTickPosZ) * delta);
         matrixStack.translate(dx, dy, dz);
-        float dYaw = MathHelper.interpolateAngle(delta, entity.yRot0, entity.getYRot());
+        float dYaw = Mth.interpolateAngle(delta, entity.yRotO, entity.getYRot());
         matrixStack.rotate(new Quaternion(0, -dYaw + 180, 0, true));
         matrixStack.scale(-1, -1, 1);
         matrixStack.translate(0, -1.5f, 0);
@@ -433,11 +433,11 @@ public class AdvancedModelRenderer extends ModelRenderer {
         Matrix4f matrix4f = matrixEntry.getMatrix();
         matrix4f.invert();
 
-        Vector4f vec = new Vector4f((float) worldPos.getX(), (float) worldPos.getY(), (float) worldPos.getZ(), 1);
+        Vector4f vec = new Vector4f((float) worldPos.x(), (float) worldPos.y(), (float) worldPos.z(), 1);
         vec.transform(matrix4f);
-        rotationPointX = vec.getX() * 16;
-        rotationPointY = vec.getY() * 16;
-        rotationPointZ = vec.getZ() * 16;
+        rotationPointX = vec.x() * 16;
+        rotationPointY = vec.y() * 16;
+        rotationPointZ = vec.z() * 16;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -511,18 +511,18 @@ public class AdvancedModelRenderer extends ModelRenderer {
             for(AdvancedModelRenderer.TexturedQuad modelrenderer$texturedquad : quads) {
                 Vector3f vector3f = modelrenderer$texturedquad.normal.copy();
                 vector3f.transform(matrix3f);
-                float f = vector3f.getX();
-                float f1 = vector3f.getY();
-                float f2 = vector3f.getZ();
+                float f = vector3f.x();
+                float f1 = vector3f.y();
+                float f2 = vector3f.z();
 
                 for(int i = 0; i < 4; ++i) {
                     AdvancedModelRenderer.PositionTextureVertex modelrenderer$positiontexturevertex = modelrenderer$texturedquad.vertexPositions[i];
-                    float f3 = modelrenderer$positiontexturevertex.position.getX() / 16.0F;
-                    float f4 = modelrenderer$positiontexturevertex.position.getY() / 16.0F;
-                    float f5 = modelrenderer$positiontexturevertex.position.getZ() / 16.0F;
+                    float f3 = modelrenderer$positiontexturevertex.position.x() / 16.0F;
+                    float f4 = modelrenderer$positiontexturevertex.position.y() / 16.0F;
+                    float f5 = modelrenderer$positiontexturevertex.position.z() / 16.0F;
                     Vector4f vector4f = new Vector4f(f3, f4, f5, 1.0F);
                     vector4f.transform(matrix4f);
-                    bufferIn.addVertex(vector4f.getX(), vector4f.getY(), vector4f.getZ(), red, green, blue, alpha, modelrenderer$positiontexturevertex.textureU, modelrenderer$positiontexturevertex.textureV, packedOverlayIn, packedLightIn, f, f1, f2);
+                    bufferIn.addVertex(vector4f.x(), vector4f.y(), vector4f.z(), red, green, blue, alpha, modelrenderer$positiontexturevertex.textureU, modelrenderer$positiontexturevertex.textureV, packedOverlayIn, packedLightIn, f, f1, f2);
                 }
             }
         }

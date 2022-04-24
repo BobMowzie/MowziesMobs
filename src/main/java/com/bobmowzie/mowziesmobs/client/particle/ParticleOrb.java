@@ -14,8 +14,8 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
-import net.minecraft.resources.registry.Registry;
-import net.minecraft.world.World;
+import net.minecraft.sounds.registry.Registry;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -38,7 +38,7 @@ public class ParticleOrb extends SpriteTexturedParticle {
         super(world, x, y, z);
         this.targetX = targetX;
         this.targetZ = targetZ;
-        particleScale = (4.5F + rand.nextFloat() * 1.5F) * 0.1f;
+        particleScale = (4.5F + random.nextFloat() * 1.5F) * 0.1f;
         maxAge = 120;
         signX = Math.signum(targetX - posX);
         signZ = Math.signum(targetZ - posZ);
@@ -83,9 +83,9 @@ public class ParticleOrb extends SpriteTexturedParticle {
     @Override
     public void tick() {
         particleAlpha = 0.1f;
-        prevPosX = posX;
+        xo = posX;
         prevPosY = posY;
-        prevPosZ = posZ;
+        zo = posZ;
         if (mode == 0) {
             double vecX = targetX - posX;
             double vecZ = targetZ - posZ;

@@ -5,7 +5,7 @@ import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.resources.model.ModelRenderer;
-import net.minecraft.resources.math.MathHelper;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -514,8 +514,8 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
                 handLeftJoint.rotateAngleZ -= 0.5;
                 axeHandle.rotateAngleY += 0.8;
 
-                float y = MathHelper.wrapDegrees(headYaw) / (180f / (float) Math.PI);
-                head.rotateAngleY += MathHelper.clamp(y, (float) -Math.PI / 4, (float) Math.PI / 4);
+                float y = Mth.wrapDegrees(headYaw) / (180f / (float) Math.PI);
+                head.rotateAngleY += Mth.clamp(y, (float) -Math.PI / 4, (float) Math.PI / 4);
                 neck.rotateAngleX += (headPitch > 0.0F ? headPitch * 1.4F : headPitch) / (180f / (float) Math.PI);
             } else {
                 shoulderLeft.rotateAngleZ -= 0.4;
@@ -552,8 +552,8 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
         }
 
         float frame = entity.frame + delta;
-        limbSwing = (float) ((4 * Math.PI * frame - 30 * MathHelper.sin((float) (0.1 * Math.PI * (frame - 9))) - 27 * Math.PI) / (4 * Math.PI)) + 5f;
-        limbSwingAmount = (float) Math.pow(MathHelper.sin((float) (entity.walkAnim.getTimer() * Math.PI * 0.05)), 2);
+        limbSwing = (float) ((4 * Math.PI * frame - 30 * Mth.sin((float) (0.1 * Math.PI * (frame - 9))) - 27 * Math.PI) / (4 * Math.PI)) + 5f;
+        limbSwingAmount = (float) Math.pow(Mth.sin((float) (entity.walkAnim.getTimer() * Math.PI * 0.05)), 2);
 
         float globalSpeed = (float) (Math.PI * 0.05);
         float globalDegree = 0.8F;

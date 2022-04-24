@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.resources.model.ItemCameraTransforms;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.HandSide;
+import net.minecraft.sounds.HandSide;
 import net.minecraft.world.phys.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -32,7 +32,7 @@ public class GeckoHeldItemLayer extends LayerRenderer<AbstractClientPlayer, Play
     public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, AbstractClientPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         if (!renderPlayerAnimated.getAnimatedPlayerModel().isInitialized()) return;
         boolean flag = entitylivingbaseIn.getPrimaryHand() == HandSide.RIGHT;
-        ItemStack mainHandStack = entitylivingbaseIn.getHeldItemMainhand();
+        ItemStack mainHandStack = entitylivingbaseIn.getMainHandItem();
         ItemStack offHandStack = entitylivingbaseIn.getHeldItemOffhand();
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(entitylivingbaseIn);
         if (abilityCapability != null && abilityCapability.getActiveAbility() != null) {

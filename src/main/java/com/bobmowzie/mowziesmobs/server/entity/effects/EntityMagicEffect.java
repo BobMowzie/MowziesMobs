@@ -5,14 +5,14 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.EntityDataManager;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.network.play.server.SSpawnObjectPacket;
-import net.minecraft.resources.math.AxisAlignedBB;
-import net.minecraft.world.World;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 import javax.annotation.Nullable;
@@ -23,28 +23,28 @@ import java.util.List;
  */
 public abstract class EntityMagicEffect extends Entity {
     public LivingEntity caster;
-    private static final EntityDataAccessor<Integer> CASTER = EntityDataManager.createKey(EntityMagicEffect.class, EntityDataSerializers.VARINT);
+    private static final EntityDataAccessor<Integer> CASTER = SynchedEntityData.defineId(EntityMagicEffect.class, EntityDataSerializers.INT);
 
-    public EntityMagicEffect(EntityType<? extends EntityMagicEffect> type, World worldIn) {
+    public EntityMagicEffect(EntityType<? extends EntityMagicEffect> type, Level worldIn) {
         super(type, worldIn);
     }
 
     @Override
-    public PushReaction getPushReaction() {
+    public PushReaction getPistonPushReaction() {
         return PushReaction.IGNORE;
     }
 
     @Override
-    protected void registerData() {
-        getDataManager().register(CASTER, -1);
+    protected void defineSynchedData() {
+        getEntityData().define(CASTER, -1);
     }
 
     public int getCasterID() {
-        return getDataManager().get(CASTER);
+        return getEntityData().get(CASTER);
     }
 
     public void setCasterID(int id) {
-        getDataManager().set(CASTER, id);
+        getEntityData().set(CASTER, id);
     }
 
     @Override
@@ -59,23 +59,23 @@ public abstract class EntityMagicEffect extends Entity {
     @Override
     public void tick() {
         super.tick();
-        if (ticksExisted == 1) {
+        if (tickCount == 1) {
             caster = (LivingEntity) world.getEntityByID(getCasterID());
         }
     }
 
     @Override
-    public IPacket<?> createSpawnPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
-    protected void readAdditional(CompoundNBT compound) {
+    protected void readAdditionalSaveData(CompoundTag compound) {
 
     }
 
     @Override
-    protected void writeAdditional(CompoundNBT compound) {
+    protected void addAdditionalSaveData(CompoundTag compound) {
 
     }
 
@@ -84,7 +84,7 @@ public abstract class EntityMagicEffect extends Entity {
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double r) {
-        return world.getEntitiesWithinAABB(entityClass, getBoundingBox().grow(r, r, r), e -> e != this && getDistance(e) <= r + e.getWidth() / 2f);
+        return world.getEntitiesWithinAABB(entityClass, getBoundingBox().grow(r, r, r), e -> e != this && getDistance(e) <= r + e.getBbWidth() / 2f);
     }
 
     public <T extends Entity> List<T> getEntitiesNearbyCube(Class<T> entityClass, double r) {

@@ -26,7 +26,7 @@ public final class EntityAIBarakoayaTrade extends Goal {
 
     @Override
     public void startExecuting() {
-        barakoaya.getNavigator().clearPath();
+        barakoaya.getNavigation().clearPath();
     }
 
     @Override

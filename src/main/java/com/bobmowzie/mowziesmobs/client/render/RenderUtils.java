@@ -15,7 +15,7 @@ public class RenderUtils {
 
     public static Vec3 getWorldPosFromModel(Entity entity, float entityYaw, AdvancedModelRenderer modelRenderer) {
         MatrixStack matrixStack = new MatrixStack();
-        matrixStack.translate(entity.getPosX(), entity.getPosY(), entity.getPosZ());
+        matrixStack.translate(entity.getX(), entity.getY(), entity.getZ());
         matrixStack.rotate(new Quaternion(0, -entityYaw + 180, 0, true));
         matrixStack.scale(-1, -1, 1);
         matrixStack.translate(0, -1.5f, 0);
@@ -25,7 +25,7 @@ public class RenderUtils {
 
         Vector4f vec = new Vector4f(0, 0, 0, 1);
         vec.transform(matrix4f);
-        return new Vec3(vec.getX(), vec.getY(), vec.getZ());
+        return new Vec3(vec.x(), vec.y(), vec.z());
     }
 
     public static void translateRotateGeckolib(GeoBone bone, MatrixStack matrixStackIn) {
@@ -53,7 +53,7 @@ public class RenderUtils {
 
     public static Vec3 getWorldPosFromModel(Entity entity, float entityYaw, GeoBone geoBone) {
         MatrixStack matrixStack = new MatrixStack();
-        matrixStack.translate(entity.getPosX(), entity.getPosY(), entity.getPosZ());
+        matrixStack.translate(entity.getX(), entity.getY(), entity.getZ());
         matrixStack.rotate(new Quaternion(0, -entityYaw + 180, 0, true));
         matrixStack.scale(-1, -1, 1);
         matrixStack.translate(0, -1.5f, 0);
@@ -63,6 +63,6 @@ public class RenderUtils {
 
         Vector4f vec = new Vector4f(0, 0, 0, 1);
         vec.transform(matrix4f);
-        return new Vec3(vec.getX(), vec.getY(), vec.getZ());
+        return new Vec3(vec.x(), vec.y(), vec.z());
     }
 }

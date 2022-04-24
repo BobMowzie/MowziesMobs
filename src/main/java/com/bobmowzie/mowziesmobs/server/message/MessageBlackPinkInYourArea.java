@@ -49,15 +49,15 @@ public final class MessageBlackPinkInYourArea {
                 if (entity instanceof AbstractMinecart) {
                     AbstractMinecart minecart = (AbstractMinecart) entity;
                     MowziesMobs.PROXY.playBlackPinkSound(minecart);
-                    BlockState state = Blocks.STONE.getDefaultState()
+                    BlockState state = Blocks.STONE.defaultBlockState()
                             .with(BlockGrottol.VARIANT, BlockGrottol.Variant.BLACK_PINK);
                     BlockPos pos = minecart.getPosition();
                     final float scale = 0.75F;
-                    double x = minecart.getPosX(),
-                            y = minecart.getPosY() + 0.375F + 0.5F + (minecart.getDefaultDisplayTileOffset() - 8) / 16.0F * scale,
-                            z = minecart.getPosZ();
+                    double x = minecart.getX(),
+                            y = minecart.getY() + 0.375F + 0.5F + (minecart.getDefaultDisplayTileOffset() - 8) / 16.0F * scale,
+                            z = minecart.getZ();
                     SoundType sound = state.getBlock().getSoundType(state, world, pos, minecart);
-                    world.playSound(
+                    level.playSound(
                             x, y, z,
                             sound.getBreakSound(),
                             minecart.getSoundCategory(),

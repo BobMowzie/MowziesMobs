@@ -94,7 +94,7 @@ public final class ContainerBarakoayaTrade extends Container {
     public void onContainerClosed(Player player) {
         super.onContainerClosed(player);
         if (barakoaya != null) barakoaya.setCustomer(null);
-        if (!player.world.isClientSide) {
+        if (!player.level.isClientSide) {
             ItemStack stack = inventory.removeStackFromSlot(0);
             if (stack != ItemStack.EMPTY) {
                 player.dropItem(stack, false);

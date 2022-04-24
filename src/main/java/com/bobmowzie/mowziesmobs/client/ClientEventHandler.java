@@ -25,10 +25,10 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.resources.Hand;
+import net.minecraft.sounds.Hand;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.resources.math.MathHelper;
-import net.minecraft.resources.text.TranslationTextComponent;
+import net.minecraft.util.Mth;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
@@ -53,7 +53,7 @@ public enum ClientEventHandler {
         boolean shouldAnimate = false;
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
         if (abilityCapability != null) shouldAnimate = abilityCapability.getActiveAbility() != null;
-//        shouldAnimate = (player.ticksExisted / 20) % 2 == 0;
+//        shouldAnimate = (player.tickCount / 20) % 2 == 0;
         if (shouldAnimate) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
             if (playerCapability != null) {
@@ -70,7 +70,7 @@ public enum ClientEventHandler {
 
                         if (event.isCanceled()) {
                             float delta = event.getPartialTicks();
-                            float f1 = MathHelper.lerp(delta, player.xRot0, player.getXRot());
+                            float f1 = Mth.lerp(delta, player.xRot0, player.getXRot());
                             firstPersonRenderer.renderItemInFirstPerson((AbstractClientPlayer) player, f1, delta, event.getHand(), event.getSwingProgress(), event.getItemStack(), event.getEquipProgress(), event.getMatrixStack(), event.getBuffers(), event.getLight(), geckoPlayer);
                         }
                     }
@@ -87,7 +87,7 @@ public enum ClientEventHandler {
         boolean shouldAnimate = player.hasEffect(EffectHandler.FROZEN);
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
         if (abilityCapability != null) shouldAnimate = shouldAnimate || abilityCapability.getActiveAbility() != null;
-//        shouldAnimate = (player.ticksExisted / 20) % 2 == 0;
+//        shouldAnimate = (player.tickCount / 20) % 2 == 0;
         if (shouldAnimate) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
             if (playerCapability != null) {
@@ -126,7 +126,7 @@ public enum ClientEventHandler {
 //                player.getYRot() = (float) (yaw * 180f/Math.PI + 90);
 //                player.getXRot() = (float) (pitch * 180f/Math.PI);
 //                player.getYRot()Head = player.getYRot();
-//                player.yRot0 = player.getYRot();
+//                player.yRotO = player.getYRot();
 //                player.xRot0 = player.getXRot();
 //                player.yHeadRot0 = player.getYRot()Head;
 //            }
@@ -135,7 +135,7 @@ public enum ClientEventHandler {
 //                player.getYRot() = frozenCapability.getFrozenYaw();
 //                player.getXRot() = frozenCapability.getFrozenPitch();
 //                player.getYRot()Head = frozenCapability.getFrozenYawHead();
-//                player.yRot0 = player.getYRot();
+//                player.yRotO = player.getYRot();
 //                player.xRot0 = player.getXRot();
 //                player.yHeadRot0 = player.getYRot()Head;
 //            }
@@ -153,7 +153,7 @@ public enum ClientEventHandler {
             entity.xRotO = frozenCapability.getFrozenPitch();
             entity.setYHeadRot(frozenCapability.getFrozenYawHead());
             entity.yHeadRotO = frozenCapability.getFrozenYawHead();
-            entity.renderYawOffset = entity.prevRenderYawOffset = frozenCapability.getFrozenRenderYawOffset();
+            entity.yBodyRot = entity.yBodyRotO = frozenCapability.getFrozenRenderYawOffset();
             entity.swingProgress = entity.prevSwingProgress = frozenCapability.getFrozenSwingProgress();
             entity.limbSwingAmount = entity.prevLimbSwingAmount = frozenCapability.getFrozenLimbSwingAmount();
             entity.setSneaking(false);
@@ -188,7 +188,7 @@ public enum ClientEventHandler {
                 drawMarioNumber(marioOffsetX, offsetY + 8, points, 6);
                 // Coin
                 int coinOffsetX = col + col / 2 - 15;
-                int coinU = 40 + ((int) (Math.max(0, MathHelper.sin(t * 0.005F)) * 2 + 0.5F)) * 6;
+                int coinU = 40 + ((int) (Math.max(0, Mth.sin(t * 0.005F)) * 2 + 0.5F)) * 6;
                 AbstractGui.blit(coinOffsetX, offsetY + 8, coinU, 8, 5, 8, 64, 64);
                 // x02
                 AbstractGui.blit(coinOffsetX + 9, offsetY + 8, 16, 8, 23, 7, 64, 64);
@@ -218,7 +218,7 @@ public enum ClientEventHandler {
                     event.setCanceled(true);
                 }
                 if (event.getType().equals(RenderGameOverlayEvent.ElementType.ALL)) {
-                    Minecraft.getInstance().ingameGUI.setOverlayMessage(new TranslationTextComponent(""), false);
+                    Minecraft.getInstance().ingameGUI.setOverlayMessage(new TextComponent(""), false);
                 }
             }
         }
@@ -244,7 +244,7 @@ public enum ClientEventHandler {
     public void onSetupCamera(EntityViewRenderEvent.CameraSetup event) {
         Player player = Minecraft.getInstance().player;
         float delta = Minecraft.getInstance().getRenderPartialTicks();
-        float ticksExistedDelta = player.ticksExisted + delta;
+        float tickCountDelta = player.tickCount + delta;
         if (player != null) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
             if (playerCapability != null && playerCapability.getGeomancy().canUse(player) && playerCapability.getGeomancy().isSpawningBoulder() && playerCapability.getGeomancy().getSpawnBoulderCharge() > 2) {
@@ -256,7 +256,7 @@ public enum ClientEventHandler {
                 player.getYRot() = (float) (yaw * 180f/Math.PI + 90);
                 player.getXRot() = (float) (pitch * 180f/Math.PI);
                 player.getYRot()Head = player.getYRot();
-                player.yRot0 = player.getYRot();
+                player.yRotO = player.getYRot();
                 player.xRot0 = player.getXRot();
                 player.yHeadRot0 = player.getYRot()Head;
                 event.setPitch(pitch);
@@ -267,7 +267,7 @@ public enum ClientEventHandler {
                 player.getYRot() = frozenCapability.getFrozenYaw();
                 player.getXRot() = frozenCapability.getFrozenPitch();
                 player.getYRot()Head = frozenCapability.getFrozenYawHead();
-                player.yRot0 = player.getYRot();
+                player.yRotO = player.getYRot();
                 player.xRot0 = player.getXRot();
                 player.yHeadRot0 = player.getYRot()Head;
 
@@ -283,9 +283,9 @@ public enum ClientEventHandler {
                     }
                 }
                 if (shakeAmplitude > 1.0f) shakeAmplitude = 1.0f;
-                event.setPitch((float) (event.getPitch() + shakeAmplitude * Math.cos(ticksExistedDelta * 3 + 2) * 25));
-                event.setYaw((float) (event.getYaw() + shakeAmplitude * Math.cos(ticksExistedDelta * 5 + 1) * 25));
-                event.setRoll((float) (event.getRoll() + shakeAmplitude * Math.cos(ticksExistedDelta * 4) * 25));
+                event.setPitch((float) (event.getPitch() + shakeAmplitude * Math.cos(tickCountDelta * 3 + 2) * 25));
+                event.setYaw((float) (event.getYaw() + shakeAmplitude * Math.cos(tickCountDelta * 5 + 1) * 25));
+                event.setRoll((float) (event.getRoll() + shakeAmplitude * Math.cos(tickCountDelta * 4) * 25));
             }
         }
     }

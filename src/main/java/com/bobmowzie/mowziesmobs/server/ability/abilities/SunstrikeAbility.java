@@ -8,11 +8,11 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.resources.Direction;
+import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.math.BlockRayTraceResult;
-import net.minecraft.resources.math.RayTraceContext;
-import net.minecraft.resources.math.RayTraceResult;
+import net.minecraft.util.BlockHitResult;
+import net.minecraft.util.RayTraceContext;
+import net.minecraft.util.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
@@ -20,7 +20,7 @@ public class SunstrikeAbility extends Ability {
     private static final double REACH = 15;
     private final static int SUNSTRIKE_RECOVERY = 20;
 
-    protected BlockRayTraceResult rayTrace;
+    protected BlockHitResult rayTrace;
 
     public SunstrikeAbility(AbilityType<SunstrikeAbility> abilityType, LivingEntity user) {
         super(abilityType, user, new AbilitySection[] {
@@ -29,7 +29,7 @@ public class SunstrikeAbility extends Ability {
         });
     }
 
-    private static BlockRayTraceResult rayTrace(LivingEntity entity, double reach) {
+    private static BlockHitResult rayTrace(LivingEntity entity, double reach) {
         Vec3 pos = entity.getEyePosition(0);
         Vec3 segment = entity.getLookVec();
         segment = pos.add(segment.x * reach, segment.y * reach, segment.z * reach);
@@ -40,8 +40,8 @@ public class SunstrikeAbility extends Ability {
     public boolean tryAbility() {
         super.tryAbility();
         LivingEntity user = getUser();
-        BlockRayTraceResult raytrace = rayTrace(user, REACH);
-        if (raytrace.getType() == RayTraceResult.Type.BLOCK && raytrace.getFace() == Direction.UP) {
+        BlockHitResult raytrace = rayTrace(user, REACH);
+        if (raytrace.getType() == HitResult.Type.BLOCK && raytrace.getFace() == Direction.UP) {
             this.rayTrace = raytrace;
             return true;
         }
@@ -52,11 +52,11 @@ public class SunstrikeAbility extends Ability {
     public void start() {
         super.start();
         LivingEntity user = getUser();
-        if (!user.world.isClientSide()) {
+        if (!user.level.isClientSide()) {
             BlockPos hit = rayTrace.getPos();
-            EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE, user.world, user, hit.getX(), hit.getY(), hit.getZ());
+            EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE, user.world, user, hit.x(), hit.y(), hit.z());
             sunstrike.onSummon();
-            user.world.addEntity(sunstrike);
+            user.level.addFreshEntity(sunstrike);
         }
         playAnimation("sunstrike", false);
     }

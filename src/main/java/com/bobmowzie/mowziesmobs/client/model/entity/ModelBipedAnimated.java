@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.resources.model.ModelRenderer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.resources.HandSide;
+import net.minecraft.sounds.HandSide;
 import net.minecraft.world.phys.Vec3;
 
 public class ModelBipedAnimated<T extends LivingEntity> extends BipedModel<T> {
@@ -58,11 +58,11 @@ public class ModelBipedAnimated<T extends LivingEntity> extends BipedModel<T> {
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
         if (playerCapability != null && playerCapability.getGeomancy().tunneling) {
             model.isSneak = false;
-            Vec3 moveVec = player.getMotion();
+            Vec3 moveVec = player.getDeltaMovement();
             moveVec = moveVec.normalize();
 //            if (model instanceof PlayerModel) RenderSystem.rotatef(45 - 45 * (float)moveVec.y, 1.0F, 0.0F, 0.0F);
 
-            float spin = 1f * (player.ticksExisted + delta);
+            float spin = 1f * (player.tickCount + delta);
             model.bipedHead.rotateAngleX = 1.57f * Math.min(0f, (float)moveVec.y);
             model.bipedHead.rotateAngleY = spin;
             model.bipedHead.rotateAngleZ = 0;

@@ -16,8 +16,8 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.resources.model.ItemCameraTransforms;
 import net.minecraft.world.item.Items;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.resources.math.MathHelper;
-import net.minecraft.resources.text.TextFormatting;
+import net.minecraft.util.Mth;
+import net.minecraft.network.chat.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -47,7 +47,7 @@ public class RenderBarakoa extends MobRenderer<EntityBarakoa, ModelBarakoa<Entit
     public void render(EntityBarakoa entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
         boolean healingAnim = entityIn.getAnimation() == EntityBarakoa.HEAL_LOOP_ANIMATION || entityIn.getAnimation() == EntityBarakoa.HEAL_START_ANIMATION || entityIn.getAnimation() == EntityBarakoa.HEAL_STOP_ANIMATION;
-        float f = MathHelper.interpolateAngle(partialTicks, entityIn.prevRenderYawOffset, entityIn.renderYawOffset);
+        float f = Mth.interpolateAngle(partialTicks, entityIn.yBodyRotO, entityIn.yBodyRot);
         if (healingAnim && entityIn.staffPos != null && entityIn.staffPos.length > 0) entityIn.staffPos[0] = RenderUtils.getWorldPosFromModel(entityIn, f, getEntityModel().staffEnd);
     }
 

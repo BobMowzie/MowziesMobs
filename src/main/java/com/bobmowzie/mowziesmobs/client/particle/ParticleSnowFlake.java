@@ -15,8 +15,8 @@ import net.minecraft.particles.ParticleType;
 import net.minecraft.world.phys.Quaternion;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.Vector3f;
-import net.minecraft.resources.registry.Registry;
-import net.minecraft.world.World;
+import net.minecraft.sounds.registry.Registry;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.Locale;
@@ -36,8 +36,8 @@ public class ParticleSnowFlake extends SpriteTexturedParticle {
         motionY = vY;
         motionZ = vZ;
         maxAge = (int) duration;
-        swirlTick = rand.nextInt(120);
-        spread = rand.nextFloat();
+        swirlTick = random.nextInt(120);
+        spread = random.nextFloat();
         this.swirls = swirls;
     }
 
@@ -63,17 +63,17 @@ public class ParticleSnowFlake extends SpriteTexturedParticle {
         if (swirls) {
             Vector3f motionVec = new Vector3f((float)motionX, (float)motionY, (float)motionZ);
             motionVec.normalize();
-            float yaw = (float) Math.atan2(motionVec.getX(), motionVec.getZ());
-            float pitch = (float) Math.atan2(motionVec.getY(), 1);
+            float yaw = (float) Math.atan2(motionVec.x(), motionVec.z());
+            float pitch = (float) Math.atan2(motionVec.y(), 1);
             float swirlRadius = 4f * (age / (float) maxAge) * spread;
             Quaternion quatSpin = motionVec.rotation(swirlTick * 0.2f);
             Quaternion quatOrient = new Quaternion(pitch, yaw, 0, false);
             Vector3f vec = new Vector3f(swirlRadius, 0, 0);
             vec.transform(quatOrient);
             vec.transform(quatSpin);
-            posX += vec.getX();
-            posY += vec.getY();
-            posZ += vec.getZ();
+            posX += vec.x();
+            posY += vec.y();
+            posZ += vec.z();
         }
 
         if (age >= maxAge) {

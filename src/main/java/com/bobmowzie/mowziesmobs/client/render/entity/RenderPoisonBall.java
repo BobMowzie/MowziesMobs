@@ -33,7 +33,7 @@ public class RenderPoisonBall extends EntityRenderer<EntityPoisonBall> {
         matrixStackIn.push();
         matrixStackIn.rotate(new Quaternion(new Vector3f(0, -1, 0), entityYaw, true));
         IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntityTranslucent(this.getEntityTexture(entityIn)));
-        model.setRotationAngles(entityIn, 0, 0, entityIn.ticksExisted + partialTicks, 0, 0);
+        model.setRotationAngles(entityIn, 0, 0, entityIn.tickCount + partialTicks, 0, 0);
         model.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
         matrixStackIn.pop();
     }

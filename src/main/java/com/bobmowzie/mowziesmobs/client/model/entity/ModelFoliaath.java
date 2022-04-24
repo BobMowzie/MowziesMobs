@@ -5,7 +5,7 @@ import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.resources.math.MathHelper;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -483,9 +483,9 @@ public class ModelFoliaath<T extends EntityFoliaath> extends MowzieEntityModel<T
 
     public float rotateBox(float speed, float degree, boolean invert, float offset, float weight, float f, float f1) {
         if (invert) {
-            return -MathHelper.cos(f * speed + offset) * degree * f1 + weight * f1;
+            return -Mth.cos(f * speed + offset) * degree * f1 + weight * f1;
         } else {
-            return MathHelper.cos(f * speed + offset) * degree * f1 + weight * f1;
+            return Mth.cos(f * speed + offset) * degree * f1 + weight * f1;
         }
     }
 }

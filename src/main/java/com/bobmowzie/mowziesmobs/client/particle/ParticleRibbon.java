@@ -13,12 +13,12 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.particles.ParticleType;
-import net.minecraft.resources.math.AxisAlignedBB;
-import net.minecraft.resources.math.MathHelper;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Matrix4f;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.Vector4f;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -32,7 +32,7 @@ public class ParticleRibbon extends AdvancedParticleBase {
         super(worldIn, xCoordIn, yCoordIn, zCoordIn, motionX, motionY, motionZ, rotation, scale, r, g, b, a, drag, duration, emissive, false, components);
         positions = new Vec3[length];
         prevPositions = new Vec3[length];
-        if (positions.length >= 1) positions[0] = new Vec3(getPosX(), getPosY(), getPosZ());
+        if (positions.length >= 1) positions[0] = new Vec3(getX(), getY(), getZ());
         if (prevPositions.length >= 1) prevPositions[0] = getPrevPos();
     }
 
@@ -169,10 +169,10 @@ public class ParticleRibbon extends AdvancedParticleBase {
             float f2 = this.getMinV();
             float f3 = this.getMaxV();
 
-            buffer.pos(vertices2[0].getX(), vertices2[0].getY(), vertices2[0].getZ()).tex(f1, f3).color(prevR, prevG, prevB, prevA).lightmap(j).endVertex();
-            buffer.pos(vertices2[1].getX(), vertices2[1].getY(), vertices2[1].getZ()).tex(f1, f2).color(prevR, prevG, prevB, prevA).lightmap(j).endVertex();
-            buffer.pos(vertices2[2].getX(), vertices2[2].getY(), vertices2[2].getZ()).tex(f, f2).color(r, g, b, a).lightmap(j).endVertex();
-            buffer.pos(vertices2[3].getX(), vertices2[3].getY(), vertices2[3].getZ()).tex(f, f3).color(r, g, b, a).lightmap(j).endVertex();
+            buffer.pos(vertices2[0].x(), vertices2[0].y(), vertices2[0].z()).tex(f1, f3).color(prevR, prevG, prevB, prevA).lightmap(j).endVertex();
+            buffer.pos(vertices2[1].x(), vertices2[1].y(), vertices2[1].z()).tex(f1, f2).color(prevR, prevG, prevB, prevA).lightmap(j).endVertex();
+            buffer.pos(vertices2[2].x(), vertices2[2].y(), vertices2[2].z()).tex(f, f2).color(r, g, b, a).lightmap(j).endVertex();
+            buffer.pos(vertices2[3].x(), vertices2[3].y(), vertices2[3].z()).tex(f, f3).color(r, g, b, a).lightmap(j).endVertex();
 
             prevR = r;
             prevG = g;
@@ -188,20 +188,20 @@ public class ParticleRibbon extends AdvancedParticleBase {
     @Override
     public AxisAlignedBB getBoundingBox() {
         if (positions == null || positions.length <= 0 || positions[0] == null) return super.getBoundingBox();
-        double minX = positions[0].getX() - 0.1;
-        double minY = positions[0].getY() - 0.1;
-        double minZ = positions[0].getZ() - 0.1;
-        double maxX = positions[0].getX() + 0.1;
-        double maxY = positions[0].getY() + 0.1;
-        double maxZ = positions[0].getZ() + 0.1;
+        double minX = positions[0].x() - 0.1;
+        double minY = positions[0].y() - 0.1;
+        double minZ = positions[0].z() - 0.1;
+        double maxX = positions[0].x() + 0.1;
+        double maxY = positions[0].y() + 0.1;
+        double maxZ = positions[0].z() + 0.1;
         for (Vec3 pos : positions) {
             if (pos == null) continue;
-            minX = Math.min(minX, pos.getX());
-            minY = Math.min(minY, pos.getY());
-            minZ = Math.min(minZ, pos.getZ());
-            maxX = Math.max(maxX, pos.getX());
-            maxY = Math.max(maxY, pos.getY());
-            maxZ = Math.max(maxZ, pos.getZ());
+            minX = Math.min(minX, pos.x());
+            minY = Math.min(minY, pos.y());
+            minZ = Math.min(minZ, pos.z());
+            maxX = Math.max(maxX, pos.x());
+            maxY = Math.max(maxY, pos.y());
+            maxZ = Math.max(maxZ, pos.z());
         }
         return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
     }
@@ -238,12 +238,12 @@ public class ParticleRibbon extends AdvancedParticleBase {
         }
     }
 
-    public static void spawnRibbon(World world, ParticleType<? extends RibbonParticleData> particle, int length, double x, double y, double z, double motionX, double motionY, double motionZ, boolean faceCamera, double yaw, double pitch, double roll, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive) {
+    public static void spawnRibbon(Level world, ParticleType<? extends RibbonParticleData> particle, int length, double x, double y, double z, double motionX, double motionY, double motionZ, boolean faceCamera, double yaw, double pitch, double roll, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive) {
         spawnRibbon(world, particle, length, x, y, z, motionX, motionY, motionZ, faceCamera, yaw, pitch, roll, scale, r, g, b, a, drag, duration, emissive, new ParticleComponent[]{});
     }
 
-    public static void spawnRibbon(World world, ParticleType<? extends RibbonParticleData> particle, int length, double x, double y, double z, double motionX, double motionY, double motionZ, boolean faceCamera, double yaw, double pitch, double roll, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, ParticleComponent[] components) {
+    public static void spawnRibbon(Level world, ParticleType<? extends RibbonParticleData> particle, int length, double x, double y, double z, double motionX, double motionY, double motionZ, boolean faceCamera, double yaw, double pitch, double roll, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, ParticleComponent[] components) {
         ParticleRotation rotation = faceCamera ? new ParticleRotation.FaceCamera((float) 0) : new ParticleRotation.EulerAngles((float)yaw, (float)pitch, (float)roll);
-        world.addParticle(new RibbonParticleData(particle, rotation, scale, r, g, b, a, drag, duration, emissive, length, components), x, y, z, motionX, motionY, motionZ);
+        level.addParticle(new RibbonParticleData(particle, rotation, scale, r, g, b, a, drag, duration, emissive, length, components), x, y, z, motionX, motionY, motionZ);
     }
 }

@@ -9,7 +9,7 @@ import net.minecraft.world.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public final class ContainerBarakoTrade extends Container {
@@ -83,19 +83,19 @@ public final class ContainerBarakoTrade extends Container {
     public void onContainerClosed(Player player) {
         super.onContainerClosed(player);
         if (barako != null) barako.setCustomer(null);
-        if (!player.world.isClientSide) {
+        if (!player.level.isClientSide) {
             ItemStack stack = inventory.removeStackFromSlot(0);
             if (stack != ItemStack.EMPTY) {
                 ItemEntity dropped = player.dropItem(stack, false);
                 if (dropped != null) {
-                    dropped.setMotion(dropped.getMotion().scale(0.5));
+                    dropped.setDeltaMovement(dropped.getDeltaMovement().scale(0.5));
                 }
             }
         }
     }
 
     public void returnItems() {
-        if (!player.world.isClientSide) {
+        if (!player.level.isClientSide) {
             ItemStack stack = inventory.removeStackFromSlot(0);
             if (stack != ItemStack.EMPTY) {
                 ItemHandlerHelper.giveItemToPlayer(player, stack);

@@ -11,13 +11,13 @@ import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ItemParticleData;
+import net.minecraft.particles.ItemParticleOption;
 import net.minecraft.particles.ParticleType;
-import net.minecraft.resources.registry.Registry;
-import net.minecraft.world.World;
+import net.minecraft.sounds.registry.Registry;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -52,7 +52,7 @@ public class ParticleCloud extends SpriteTexturedParticle {
         green = (float) g;
         blue = (float) b;
         this.behavior = behavior;
-        particleAngle = prevParticleAngle = (float) (rand.nextInt(4) * Math.PI/2);
+        particleAngle = prevParticleAngle = (float) (random.nextInt(4) * Math.PI/2);
         this.airDrag = (float) airDrag;
     }
 

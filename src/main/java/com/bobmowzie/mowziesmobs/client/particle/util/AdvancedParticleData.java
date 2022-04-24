@@ -7,9 +7,9 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
 import com.mojang.brigadier.StringReader;
-import net.minecraft.resources.Rotation;
+import net.minecraft.sounds.Rotation;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.resources.registry.Registry;
+import net.minecraft.sounds.registry.Registry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

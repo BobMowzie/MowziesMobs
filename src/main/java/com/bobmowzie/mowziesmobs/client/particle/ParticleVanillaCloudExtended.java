@@ -9,11 +9,11 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ItemParticleData;
+import net.minecraft.particles.ItemParticleOption;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.resources.registry.Registry;
-import net.minecraft.world.World;
+import net.minecraft.sounds.registry.Registry;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -38,7 +38,7 @@ public class ParticleVanillaCloudExtended extends SpriteTexturedParticle {
         this.motionX += motionX;
         this.motionY += motionY;
         this.motionZ += motionZ;
-        float f1 = 1.0F - this.rand.nextFloat() * 0.3F;
+        float f1 = 1.0F - this.random.nextFloat() * 0.3F;
         this.red = (float) (f1 * r);
         this.green = (float) (f1 * g);
         this.blue = (float) (f1 * b);
@@ -63,9 +63,9 @@ public class ParticleVanillaCloudExtended extends SpriteTexturedParticle {
     @Override
     public void tick()
     {
-        this.prevPosX = this.posX;
+        this.xo = this.posX;
         this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
+        this.zo = this.posZ;
 
         if (this.age++ >= this.maxAge)
         {
@@ -225,11 +225,11 @@ public class ParticleVanillaCloudExtended extends SpriteTexturedParticle {
         }
     }
 
-    public static void spawnVanillaCloud(World world, double x, double y, double z, double motionX, double motionY, double motionZ, double scale, double r, double g, double b, double drag, double duration) {
-        world.addParticle(new VanillaCloudData((float)scale, (float)r, (float)g, (float)b, (float)drag, (float)duration, null), x, y, z, motionX, motionY, motionZ);
+    public static void spawnVanillaCloud(Level world, double x, double y, double z, double motionX, double motionY, double motionZ, double scale, double r, double g, double b, double drag, double duration) {
+        level.addParticle(new VanillaCloudData((float)scale, (float)r, (float)g, (float)b, (float)drag, (float)duration, null), x, y, z, motionX, motionY, motionZ);
     }
 
-    public static void spawnVanillaCloudDestination(World world, double x, double y, double z, double motionX, double motionY, double motionZ, double scale, double r, double g, double b, double drag, double duration, Vec3[] destination) {
-        world.addParticle(new VanillaCloudData((float)scale, (float)r, (float)g, (float)b, (float)drag, (float)duration, destination), x, y, z, motionX, motionY, motionZ);
+    public static void spawnVanillaCloudDestination(Level world, double x, double y, double z, double motionX, double motionY, double motionZ, double scale, double r, double g, double b, double drag, double duration, Vec3[] destination) {
+        level.addParticle(new VanillaCloudData((float)scale, (float)r, (float)g, (float)b, (float)drag, (float)duration, destination), x, y, z, motionX, motionY, motionZ);
     }
 }

@@ -5,7 +5,7 @@ import com.ilexiconn.llibrary.server.animation.Animation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.world.entity.ai.goal.RandomWalkingGoal;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -13,7 +13,7 @@ public class EntityDynamicsTester extends MowzieEntity {
     @OnlyIn(Dist.CLIENT)
     public DynamicChain dc;
 
-    public EntityDynamicsTester(World world) {
+    public EntityDynamicsTester(Level world) {
         super(EntityHandler.NAGA, world);
     }
 
@@ -42,12 +42,12 @@ public class EntityDynamicsTester extends MowzieEntity {
     @Override
     public void tick() {
         super.tick();
-        if (world.isClientSide) {
-            if (ticksExisted == 1) {
+        if (level.isClientSide) {
+            if (tickCount == 1) {
                 dc = new DynamicChain(this);
             }
             dc.updateSpringConstraint(0.1f, 0.3f, 0.6f, 1f, true, 0.5f, 1);
-            renderYawOffset = rotationYaw;
+            yBodyRot = yRot;
         }
     }
 }

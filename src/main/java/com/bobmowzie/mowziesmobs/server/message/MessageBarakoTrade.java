@@ -69,7 +69,7 @@ public class MessageBarakoTrade {
                         }
                     }
                     if (satisfied) {
-                        player.addPotionEffect(new MobEffectInstance(EffectHandler.SUNS_BLESSING, ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.effectDuration.get() * 60 * 20, 0, false, false));
+                        player.addEffect(new MobEffectInstance(EffectHandler.SUNS_BLESSING, ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.effectDuration.get() * 60 * 20, 0, false, false));
                         if (barako.getAnimation() != EntityBarako.BLESS_ANIMATION) {
                             barako.setAnimationTick(0);
                             AnimationHandler.INSTANCE.sendAnimationMessage(barako, EntityBarako.BLESS_ANIMATION);

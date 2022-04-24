@@ -4,14 +4,14 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.client.model.tools.ControlledAnimation;
 import net.minecraft.client.audio.TickableSound;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.resources.SoundCategory;
+import net.minecraft.sounds.SoundCategory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class IceBreathSound extends TickableSound {
     private final Entity iceBreath;
-    int ticksExisted = 0;
+    int tickCount = 0;
     ControlledAnimation volumeControl;
     boolean active = true;
 
@@ -20,9 +20,9 @@ public class IceBreathSound extends TickableSound {
         this.iceBreath = icebreath;
         volume = 3F;
         pitch = 1f;
-        x = (float) icebreath.getPosX();
-        y = (float) icebreath.getPosY();
-        z = (float) icebreath.getPosZ();
+        x = (float) icebreath.getX();
+        y = (float) icebreath.getY();
+        z = (float) icebreath.getZ();
         volumeControl = new ControlledAnimation(10);
         repeat = true;
     }
@@ -36,9 +36,9 @@ public class IceBreathSound extends TickableSound {
             finishPlaying();
         if (iceBreath != null) {
             active = true;
-            x = (float) iceBreath.getPosX();
-            y = (float) iceBreath.getPosY();
-            z = (float) iceBreath.getPosZ();
+            x = (float) iceBreath.getX();
+            y = (float) iceBreath.getY();
+            z = (float) iceBreath.getZ();
             if (!iceBreath.isAlive()) {
                 active = false;
             }
@@ -46,6 +46,6 @@ public class IceBreathSound extends TickableSound {
         else {
             active = false;
         }
-        ticksExisted++;
+        tickCount++;
     }
 }

@@ -6,10 +6,10 @@ package com.bobmowzie.mowziesmobs.server.entity;
 
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.resources.math.AxisAlignedBB;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.math.shapes.VoxelShape;
-import net.minecraft.world.World;
+import net.minecraft.util.shapes.VoxelShape;
+import net.minecraft.world.level.Level;
 
 public class LegSolver {
     public final Leg[] legs;
@@ -19,7 +19,7 @@ public class LegSolver {
     }
 
     public final void update(LivingEntity entity) {
-        double sideTheta = entity.renderYawOffset / (180 / Math.PI);
+        double sideTheta = entity.yBodyRot / (180 / Math.PI);
         double sideX = Math.cos(sideTheta);
         double sideZ = Math.sin(sideTheta);
         double forwardTheta = sideTheta + Math.PI / 2;
@@ -50,14 +50,14 @@ public class LegSolver {
 
         public void update(LivingEntity entity, double sideX, double sideZ, double forwardX, double forwardZ) {
             this.prevHeight = this.height;
-            this.height = settle(entity, entity.getPosX() + sideX * this.side + forwardX * this.forward, entity.getPosY(), entity.getPosZ() + sideZ * this.side + forwardZ * this.forward, this.height);
+            this.height = settle(entity, entity.getX() + sideX * this.side + forwardX * this.forward, entity.getY(), entity.getZ() + sideZ * this.side + forwardZ * this.forward, this.height);
         }
 
         private float settle(LivingEntity entity, double x, double y, double z, float height) {
             BlockPos pos = new BlockPos(x, y + 1e-3, z);
             float dist = getDistance(entity.world, pos);
             if (1 - dist < 1e-3) {
-                dist = getDistance(entity.world, pos.down()) + (float) y % 1;
+                dist = getDistance(entity.world, pos.below()) + (float) y % 1;
             } else {
                 dist -= 1 - (y % 1);
             }
@@ -69,8 +69,8 @@ public class LegSolver {
             return height;
         }
 
-        private float getDistance(World world, BlockPos pos) {
-            BlockState state = world.getBlockState(pos);
+        private float getDistance(Level world, BlockPos pos) {
+            BlockState state = level.getBlockState(pos);
             VoxelShape shape = state.getCollisionShape(world, pos);
             float f = 0;
             if (!shape.isEmpty()) {
