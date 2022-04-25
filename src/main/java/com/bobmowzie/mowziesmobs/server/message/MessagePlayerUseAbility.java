@@ -3,8 +3,8 @@ package com.bobmowzie.mowziesmobs.server.message;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
@@ -21,11 +21,11 @@ public class MessagePlayerUseAbility {
         this.index = index;
     }
 
-    public static void serialize(final MessagePlayerUseAbility message, final PacketBuffer buf) {
+    public static void serialize(final MessagePlayerUseAbility message, final FriendlyByteBuf buf) {
         buf.writeVarInt(message.index);
     }
 
-    public static MessagePlayerUseAbility deserialize(final PacketBuffer buf) {
+    public static MessagePlayerUseAbility deserialize(final FriendlyByteBuf buf) {
         final MessagePlayerUseAbility message = new MessagePlayerUseAbility();
         message.index = buf.readVarInt();
         return message;
@@ -35,7 +35,7 @@ public class MessagePlayerUseAbility {
         @Override
         public void accept(final MessagePlayerUseAbility message, final Supplier<NetworkEvent.Context> contextSupplier) {
             final NetworkEvent.Context context = contextSupplier.get();
-            final ServerPlayerEntity player = context.getSender();
+            final ServerPlayer player = context.getSender();
             context.enqueueWork(() -> {
                 AbilityCapability.IAbilityCapability abilityCapability = CapabilityHandler.getCapability(player, AbilityCapability.AbilityProvider.ABILITY_CAPABILITY);
                 if (abilityCapability != null) {

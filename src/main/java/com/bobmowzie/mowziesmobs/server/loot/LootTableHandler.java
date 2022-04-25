@@ -1,13 +1,13 @@
 package com.bobmowzie.mowziesmobs.server.loot;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import net.minecraft.loot.ILootSerializer;
-import net.minecraft.loot.LootConditionType;
-import net.minecraft.loot.LootFunctionType;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.loot.functions.ILootFunction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.world.level.storage.loot.Serializer;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Registry;
 
 public class LootTableHandler {
     // Mob drops
@@ -26,10 +26,10 @@ public class LootTableHandler {
     public static final ResourceLocation BARAKO = register("entities/barako");
     public static final ResourceLocation BARAKOA_VILLAGE_HOUSE = register("chests/barakoa_village_house");
 
-    public static LootFunctionType CHECK_FROSTMAW_CRYSTAL;
-    public static LootFunctionType GROTTOL_DEATH_TYPE;
+    public static LootItemFunctionType CHECK_FROSTMAW_CRYSTAL;
+    public static LootItemFunctionType GROTTOL_DEATH_TYPE;
 
-    public static LootConditionType FROSTMAW_HAS_CRYSTAL;
+    public static LootItemConditionType FROSTMAW_HAS_CRYSTAL;
 
     public static void init() {
 //        CHECK_FROSTMAW_CRYSTAL = registerFunction("mowziesmobs:has_crystal", new LootFunctionCheckFrostmawCrystal.Serializer());
@@ -41,11 +41,11 @@ public class LootTableHandler {
         return new ResourceLocation(MowziesMobs.MODID, id);
     }
 
-    private static LootFunctionType registerFunction(String name, ILootSerializer<? extends ILootFunction> serializer) {
-        return Registry.register(Registry.LOOT_FUNCTION_TYPE, new ResourceLocation(name), new LootFunctionType(serializer));
+    private static LootItemFunctionType registerFunction(String name, Serializer<? extends LootItemFunction> serializer) {
+        return Registry.register(Registry.LOOT_FUNCTION_TYPE, new ResourceLocation(name), new LootItemFunctionType(serializer));
     }
 
-    private static LootConditionType registerCondition(String registryName, ILootSerializer<? extends ILootCondition> serializer) {
-        return Registry.register(Registry.LOOT_CONDITION_TYPE, new ResourceLocation(registryName), new LootConditionType(serializer));
+    private static LootItemConditionType registerCondition(String registryName, Serializer<? extends LootItemCondition> serializer) {
+        return Registry.register(Registry.LOOT_CONDITION_TYPE, new ResourceLocation(registryName), new LootItemConditionType(serializer));
     }
 }

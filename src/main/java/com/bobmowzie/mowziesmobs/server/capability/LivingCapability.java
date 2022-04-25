@@ -1,10 +1,10 @@
 package com.bobmowzie.mowziesmobs.server.capability;
 
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -19,9 +19,9 @@ public class LivingCapability {
 
         void tick(LivingEntity entity);
 
-        INBT writeNBT();
+        Tag writeNBT();
 
-        void readNBT(INBT nbt);
+        void readNBT(Tag nbt);
     }
 
     public static class LastDamageCapabilityImp implements ILivingCapability {
@@ -54,25 +54,25 @@ public class LivingCapability {
         }
 
         @Override
-        public INBT writeNBT() {
-            CompoundNBT compound = new CompoundNBT();
+        public Tag writeNBT() {
+            CompoundTag compound = new CompoundTag();
             return compound;
         }
 
         @Override
-        public void readNBT(INBT nbt) {
-            CompoundNBT compound = (CompoundNBT) nbt;
+        public void readNBT(Tag nbt) {
+            CompoundTag compound = (CompoundTag) nbt;
         }
     }
 
     public static class LivingStorage implements Capability.IStorage<ILivingCapability> {
         @Override
-        public INBT writeNBT(Capability<LivingCapability.ILivingCapability> capability, LivingCapability.ILivingCapability instance, Direction side) {
+        public Tag writeNBT(Capability<LivingCapability.ILivingCapability> capability, LivingCapability.ILivingCapability instance, Direction side) {
             return instance.writeNBT();
         }
 
         @Override
-        public void readNBT(Capability<LivingCapability.ILivingCapability> capability, LivingCapability.ILivingCapability instance, Direction side, INBT nbt) {
+        public void readNBT(Capability<LivingCapability.ILivingCapability> capability, LivingCapability.ILivingCapability instance, Direction side, Tag nbt) {
             instance.readNBT(nbt);
         }
     }

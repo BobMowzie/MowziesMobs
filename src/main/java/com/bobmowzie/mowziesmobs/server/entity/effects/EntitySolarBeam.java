@@ -14,24 +14,24 @@ import com.bobmowzie.mowziesmobs.server.damage.DamageUtil;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.minecraft.block.material.PushReaction;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.PointOfView;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
+import net.minecraft.client.CameraType;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.core.Direction;
 import net.minecraft.util.math.*;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -39,6 +39,12 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 
 public class EntitySolarBeam extends Entity {
     public static final double RADIUS_BARAKO = 30;
@@ -54,46 +60,46 @@ public class EntitySolarBeam extends Entity {
 
     public Direction blockSide = null;
 
-    private static final DataParameter<Float> YAW = EntityDataManager.createKey(EntitySolarBeam.class, DataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> YAW = SynchedEntityData.defineId(EntitySolarBeam.class, EntityDataSerializers.FLOAT);
 
-    private static final DataParameter<Float> PITCH = EntityDataManager.createKey(EntitySolarBeam.class, DataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> PITCH = SynchedEntityData.defineId(EntitySolarBeam.class, EntityDataSerializers.FLOAT);
 
-    private static final DataParameter<Integer> DURATION = EntityDataManager.createKey(EntitySolarBeam.class, DataSerializers.VARINT);
+    private static final EntityDataAccessor<Integer> DURATION = SynchedEntityData.defineId(EntitySolarBeam.class, EntityDataSerializers.INT);
 
-    private static final DataParameter<Boolean> HAS_PLAYER = EntityDataManager.createKey(EntitySolarBeam.class, DataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> HAS_PLAYER = SynchedEntityData.defineId(EntitySolarBeam.class, EntityDataSerializers.BOOLEAN);
 
-    private static final DataParameter<Integer> CASTER = EntityDataManager.createKey(EntitySolarBeam.class, DataSerializers.VARINT);
+    private static final EntityDataAccessor<Integer> CASTER = SynchedEntityData.defineId(EntitySolarBeam.class, EntityDataSerializers.INT);
 
     public float prevYaw;
     public float prevPitch;
 
     @OnlyIn(Dist.CLIENT)
-    private Vector3d[] attractorPos;
+    private Vec3[] attractorPos;
 
-    public EntitySolarBeam(EntityType<? extends EntitySolarBeam> type, World world) {
+    public EntitySolarBeam(EntityType<? extends EntitySolarBeam> type, Level world) {
         super(type, world);
-        ignoreFrustumCheck = true;
-        if (world.isRemote) {
-            attractorPos = new Vector3d[] {new Vector3d(0, 0, 0)};
+        noCulling = true;
+        if (world.isClientSide) {
+            attractorPos = new Vec3[] {new Vec3(0, 0, 0)};
         }
     }
 
-    public EntitySolarBeam(EntityType<? extends EntitySolarBeam> type, World world, LivingEntity caster, double x, double y, double z, float yaw, float pitch, int duration) {
+    public EntitySolarBeam(EntityType<? extends EntitySolarBeam> type, Level world, LivingEntity caster, double x, double y, double z, float yaw, float pitch, int duration) {
         this(type, world);
         this.caster = caster;
         this.setYaw(yaw);
         this.setPitch(pitch);
         this.setDuration(duration);
-        this.setPosition(x, y, z);
+        this.setPos(x, y, z);
         this.calculateEndPos();
         this.playSound(MMSounds.LASER.get(), 2f, 1);
-        if (!world.isRemote) {
-            this.setCasterID(caster.getEntityId());
+        if (!world.isClientSide) {
+            this.setCasterID(caster.getId());
         }
     }
 
     @Override
-    public PushReaction getPushReaction() {
+    public PushReaction getPistonPushReaction() {
         return PushReaction.IGNORE;
     }
 
@@ -105,26 +111,26 @@ public class EntitySolarBeam extends Entity {
         prevCollidePosZ = collidePosZ;
         prevYaw = renderYaw;
         prevPitch = renderPitch;
-        prevPosX = getPosX();
-        prevPosY = getPosY();
-        prevPosZ = getPosZ();
-        if (ticksExisted == 1 && world.isRemote) {
-            caster = (LivingEntity) world.getEntityByID(getCasterID());
+        xo = getX();
+        yo = getY();
+        zo = getZ();
+        if (tickCount == 1 && level.isClientSide) {
+            caster = (LivingEntity) level.getEntity(getCasterID());
         }
         if (getHasPlayer()) {
-            if (!world.isRemote) {
+            if (!level.isClientSide) {
                 this.updateWithPlayer();
             }
         }
         if (caster != null) {
-            renderYaw = (float) ((caster.rotationYawHead + 90.0d) * Math.PI / 180.0d);
-            renderPitch = (float) (-caster.rotationPitch * Math.PI / 180.0d);
+            renderYaw = (float) ((caster.yHeadRot + 90.0d) * Math.PI / 180.0d);
+            renderPitch = (float) (-caster.xRot * Math.PI / 180.0d);
         }
 
         if (!on && appear.getTimer() == 0) {
             this.remove();
         }
-        if (on && ticksExisted > 20) {
+        if (on && tickCount > 20) {
             appear.increaseTimer();
         } else {
             appear.decreaseTimer();
@@ -132,33 +138,33 @@ public class EntitySolarBeam extends Entity {
 
         if (caster != null && !caster.isAlive()) remove();
 
-        if (world.isRemote && ticksExisted <= 10 && caster != null) {
+        if (level.isClientSide && tickCount <= 10 && caster != null) {
             int particleCount = 8;
             while (--particleCount != 0) {
-                double radius = 2f * caster.getWidth();
-                double yaw = rand.nextFloat() * 2 * Math.PI;
-                double pitch = rand.nextFloat() * 2 * Math.PI;
+                double radius = 2f * caster.getBbWidth();
+                double yaw = random.nextFloat() * 2 * Math.PI;
+                double pitch = random.nextFloat() * 2 * Math.PI;
                 double ox = radius * Math.sin(yaw) * Math.sin(pitch);
                 double oy = radius * Math.cos(pitch);
                 double oz = radius * Math.cos(yaw) * Math.sin(pitch);
-                double rootX = caster.getPosX();
-                double rootY = caster.getPosY() + caster.getHeight() / 2f + 0.3f;
-                double rootZ = caster.getPosZ();
+                double rootX = caster.getX();
+                double rootY = caster.getY() + caster.getBbHeight() / 2f + 0.3f;
+                double rootZ = caster.getZ();
                 if (getHasPlayer()) {
-                    if (caster instanceof PlayerEntity && !(caster == Minecraft.getInstance().player && Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON)) {
-                        GeckoPlayer geckoPlayer = GeckoPlayer.getGeckoPlayer((PlayerEntity) caster, GeckoPlayer.Perspective.THIRD_PERSON);
+                    if (caster instanceof Player && !(caster == Minecraft.getInstance().player && Minecraft.getInstance().options.getCameraType() == CameraType.FIRST_PERSON)) {
+                        GeckoPlayer geckoPlayer = GeckoPlayer.getGeckoPlayer((Player) caster, GeckoPlayer.Perspective.THIRD_PERSON);
                         if (geckoPlayer != null) {
                             GeckoRenderPlayer renderPlayer = (GeckoRenderPlayer) geckoPlayer.getPlayerRenderer();
                             if (renderPlayer.betweenHandsPos != null) {
-                                rootX += renderPlayer.betweenHandsPos.getX();
-                                rootY += renderPlayer.betweenHandsPos.getY();
-                                rootZ += renderPlayer.betweenHandsPos.getZ();
+                                rootX += renderPlayer.betweenHandsPos.x();
+                                rootY += renderPlayer.betweenHandsPos.y();
+                                rootZ += renderPlayer.betweenHandsPos.z();
                             }
                         }
                     }
                 }
-                attractorPos[0] = new Vector3d(rootX, rootY, rootZ);
-                AdvancedParticleBase.spawnParticle(world, ParticleHandler.ORB2.get(), rootX + ox, rootY + oy, rootZ + oz, 0, 0, 0, true, 0, 0, 0, 0, 5F, 1, 1, 1, 1, 1, 7, true, false, new ParticleComponent[]{
+                attractorPos[0] = new Vec3(rootX, rootY, rootZ);
+                AdvancedParticleBase.spawnParticle(level, ParticleHandler.ORB2.get(), rootX + ox, rootY + oy, rootZ + oz, 0, 0, 0, true, 0, 0, 0, 0, 5F, 1, 1, 1, 1, 1, 7, true, false, new ParticleComponent[]{
                         new ParticleComponent.Attractor(attractorPos, 1.7f, 0.0f, ParticleComponent.Attractor.EnumAttractorBehavior.EXPONENTIAL),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, new ParticleComponent.KeyTrack(
                                 new float[]{0f, 0.8f},
@@ -171,13 +177,13 @@ public class EntitySolarBeam extends Entity {
                 });
             }
         }
-        if (ticksExisted > 20) {
+        if (tickCount > 20) {
             this.calculateEndPos();
-            List<LivingEntity> hit = raytraceEntities(world, new Vector3d(getPosX(), getPosY(), getPosZ()), new Vector3d(endPosX, endPosY, endPosZ), false, true, true).entities;
+            List<LivingEntity> hit = raytraceEntities(level, new Vec3(getX(), getY(), getZ()), new Vec3(endPosX, endPosY, endPosZ), false, true, true).entities;
             if (blockSide != null) {
                 spawnExplosionParticles(2);
             }
-            if (!world.isRemote) {
+            if (!level.isClientSide) {
                 for (LivingEntity target : hit) {
                     if (caster instanceof EntityBarako && target instanceof LeaderSunstrikeImmune) {
                         continue;
@@ -188,44 +194,44 @@ public class EntitySolarBeam extends Entity {
                         damageFire *= ConfigHandler.COMMON.MOBS.BARAKO.combatConfig.attackMultiplier.get();
                         damageMob *= ConfigHandler.COMMON.MOBS.BARAKO.combatConfig.attackMultiplier.get();
                     }
-                    if (caster instanceof PlayerEntity) {
+                    if (caster instanceof Player) {
                         damageFire *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier.get();
                         damageMob *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier.get();
                     }
-                    DamageUtil.dealMixedDamage(target, DamageSource.causeIndirectDamage(this, caster), damageMob, DamageSource.ON_FIRE, damageFire);
+                    DamageUtil.dealMixedDamage(target, DamageSource.indirectMobAttack(this, caster), damageMob, DamageSource.ON_FIRE, damageFire);
                 }
             } else {
-                if (ticksExisted - 15 < getDuration()) {
+                if (tickCount - 15 < getDuration()) {
                     int particleCount = 4;
                     while (particleCount --> 0) {
                         double radius = 1f;
-                        double yaw = (float) (rand.nextFloat() * 2 * Math.PI);
-                        double pitch = (float) (rand.nextFloat() * 2 * Math.PI);
+                        double yaw = (float) (random.nextFloat() * 2 * Math.PI);
+                        double pitch = (float) (random.nextFloat() * 2 * Math.PI);
                         double ox = (float) (radius * Math.sin(yaw) * Math.sin(pitch));
                         double oy = (float) (radius * Math.cos(pitch));
                         double oz = (float) (radius * Math.cos(yaw) * Math.sin(pitch));
                         double o2x = (float) (-1 * Math.cos(getYaw()) * Math.cos(getPitch()));
                         double o2y = (float) (-1 * Math.sin(getPitch()));
                         double o2z = (float) (-1 * Math.sin(getYaw()) * Math.cos(getPitch()));
-                        world.addParticle(new ParticleOrb.OrbData((float) (collidePosX + o2x + ox), (float) (collidePosY + o2y + oy), (float) (collidePosZ + o2z + oz), 15), getPosX() + o2x + ox, getPosY() + o2y + oy, getPosZ() + o2z + oz, 0, 0, 0);
+                        level.addParticle(new ParticleOrb.OrbData((float) (collidePosX + o2x + ox), (float) (collidePosY + o2y + oy), (float) (collidePosZ + o2z + oz), 15), getX() + o2x + ox, getY() + o2y + oy, getZ() + o2z + oz, 0, 0, 0);
                     }
                     particleCount = 4;
                     while (particleCount --> 0) {
                         double radius = 2f;
-                        double yaw = rand.nextFloat() * 2 * Math.PI;
-                        double pitch = rand.nextFloat() * 2 * Math.PI;
+                        double yaw = random.nextFloat() * 2 * Math.PI;
+                        double pitch = random.nextFloat() * 2 * Math.PI;
                         double ox = radius * Math.sin(yaw) * Math.sin(pitch);
                         double oy = radius * Math.cos(pitch);
                         double oz = radius * Math.cos(yaw) * Math.sin(pitch);
                         double o2x = -1 * Math.cos(getYaw()) * Math.cos(getPitch());
                         double o2y = -1 * Math.sin(getPitch());
                         double o2z = -1 * Math.sin(getYaw()) * Math.cos(getPitch());
-                        world.addParticle(new ParticleOrb.OrbData((float) (collidePosX + o2x + ox), (float) (collidePosY + o2y + oy), (float) (collidePosZ + o2z + oz), 20), collidePosX + o2x, collidePosY + o2y, collidePosZ + o2z, 0, 0, 0);
+                        level.addParticle(new ParticleOrb.OrbData((float) (collidePosX + o2x + ox), (float) (collidePosY + o2y + oy), (float) (collidePosZ + o2z + oz), 20), collidePosX + o2x, collidePosY + o2y, collidePosZ + o2z, 0, 0, 0);
                     }
                 }
             }
         }
-        if (ticksExisted - 20 > getDuration()) {
+        if (tickCount - 20 > getDuration()) {
             on = false;
         }
     }
@@ -233,114 +239,114 @@ public class EntitySolarBeam extends Entity {
     private void spawnExplosionParticles(int amount) {
         for (int i = 0; i < amount; i++) {
             final float velocity = 0.1F;
-            float yaw = (float) (rand.nextFloat() * 2 * Math.PI);
-            float motionY = rand.nextFloat() * 0.08F;
-            float motionX = velocity * MathHelper.cos(yaw);
-            float motionZ = velocity * MathHelper.sin(yaw);
-            world.addParticle(ParticleTypes.FLAME, collidePosX, collidePosY + 0.1, collidePosZ, motionX, motionY, motionZ);
+            float yaw = (float) (random.nextFloat() * 2 * Math.PI);
+            float motionY = random.nextFloat() * 0.08F;
+            float motionX = velocity * Mth.cos(yaw);
+            float motionZ = velocity * Mth.sin(yaw);
+            level.addParticle(ParticleTypes.FLAME, collidePosX, collidePosY + 0.1, collidePosZ, motionX, motionY, motionZ);
         }
         for (int i = 0; i < amount / 2; i++) {
-            world.addParticle(ParticleTypes.LAVA, collidePosX, collidePosY + 0.1, collidePosZ, 0, 0, 0);
+            level.addParticle(ParticleTypes.LAVA, collidePosX, collidePosY + 0.1, collidePosZ, 0, 0, 0);
         }
     }
 
     @Override
-    protected void registerData() {
-        getDataManager().register(YAW, 0F);
-        getDataManager().register(PITCH, 0F);
-        getDataManager().register(DURATION, 0);
-        getDataManager().register(HAS_PLAYER, false);
-        getDataManager().register(CASTER, -1);
+    protected void defineSynchedData() {
+        getEntityData().define(YAW, 0F);
+        getEntityData().define(PITCH, 0F);
+        getEntityData().define(DURATION, 0);
+        getEntityData().define(HAS_PLAYER, false);
+        getEntityData().define(CASTER, -1);
     }
 
     public float getYaw() {
-        return getDataManager().get(YAW);
+        return getEntityData().get(YAW);
     }
 
     public void setYaw(float yaw) {
-        getDataManager().set(YAW, yaw);
+        getEntityData().set(YAW, yaw);
     }
 
     public float getPitch() {
-        return getDataManager().get(PITCH);
+        return getEntityData().get(PITCH);
     }
 
     public void setPitch(float pitch) {
-        getDataManager().set(PITCH, pitch);
+        getEntityData().set(PITCH, pitch);
     }
 
     public int getDuration() {
-        return getDataManager().get(DURATION);
+        return getEntityData().get(DURATION);
     }
 
     public void setDuration(int duration) {
-        getDataManager().set(DURATION, duration);
+        getEntityData().set(DURATION, duration);
     }
 
     public boolean getHasPlayer() {
-        return getDataManager().get(HAS_PLAYER);
+        return getEntityData().get(HAS_PLAYER);
     }
 
     public void setHasPlayer(boolean player) {
-        getDataManager().set(HAS_PLAYER, player);
+        getEntityData().set(HAS_PLAYER, player);
     }
 
     public int getCasterID() {
-        return getDataManager().get(CASTER);
+        return getEntityData().get(CASTER);
     }
 
     public void setCasterID(int id) {
-        getDataManager().set(CASTER, id);
+        getEntityData().set(CASTER, id);
     }
 
     @Override
-    protected void readAdditional(CompoundNBT nbt) {}
+    protected void readAdditionalSaveData(CompoundTag nbt) {}
 
     @Override
-    protected void writeAdditional(CompoundNBT nbt) {}
+    protected void addAdditionalSaveData(CompoundTag nbt) {}
 
     @Override
-    public IPacket<?> createSpawnPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     private void calculateEndPos() {
         double radius = caster instanceof EntityBarako ? RADIUS_BARAKO : RADIUS_PLAYER;
-        if (world.isRemote()) {
-            endPosX = getPosX() + radius * Math.cos(renderYaw) * Math.cos(renderPitch);
-            endPosZ = getPosZ() + radius * Math.sin(renderYaw) * Math.cos(renderPitch);
-            endPosY = getPosY() + radius * Math.sin(renderPitch);
+        if (level.isClientSide()) {
+            endPosX = getX() + radius * Math.cos(renderYaw) * Math.cos(renderPitch);
+            endPosZ = getZ() + radius * Math.sin(renderYaw) * Math.cos(renderPitch);
+            endPosY = getY() + radius * Math.sin(renderPitch);
         }
         else {
-            endPosX = getPosX() + radius * Math.cos(getYaw()) * Math.cos(getPitch());
-            endPosZ = getPosZ() + radius * Math.sin(getYaw()) * Math.cos(getPitch());
-            endPosY = getPosY() + radius * Math.sin(getPitch());
+            endPosX = getX() + radius * Math.cos(getYaw()) * Math.cos(getPitch());
+            endPosZ = getZ() + radius * Math.sin(getYaw()) * Math.cos(getPitch());
+            endPosY = getY() + radius * Math.sin(getPitch());
         }
     }
 
-    public HitResult raytraceEntities(World world, Vector3d from, Vector3d to, boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock) {
+    public HitResult raytraceEntities(Level world, Vec3 from, Vec3 to, boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock) {
         HitResult result = new HitResult();
-        result.setBlockHit(world.rayTraceBlocks(new RayTraceContext(from, to, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this)));
+        result.setBlockHit(world.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this)));
         if (result.blockHit != null) {
-            Vector3d hitVec = result.blockHit.getHitVec();
+            Vec3 hitVec = result.blockHit.getLocation();
             collidePosX = hitVec.x;
             collidePosY = hitVec.y;
             collidePosZ = hitVec.z;
-            blockSide = result.blockHit.getFace();
+            blockSide = result.blockHit.getDirection();
         } else {
             collidePosX = endPosX;
             collidePosY = endPosY;
             collidePosZ = endPosZ;
             blockSide = null;
         }
-        List<LivingEntity> entities = world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(Math.min(getPosX(), collidePosX), Math.min(getPosY(), collidePosY), Math.min(getPosZ(), collidePosZ), Math.max(getPosX(), collidePosX), Math.max(getPosY(), collidePosY), Math.max(getPosZ(), collidePosZ)).grow(1, 1, 1));
+        List<LivingEntity> entities = world.getEntitiesOfClass(LivingEntity.class, new AABB(Math.min(getX(), collidePosX), Math.min(getY(), collidePosY), Math.min(getZ(), collidePosZ), Math.max(getX(), collidePosX), Math.max(getY(), collidePosY), Math.max(getZ(), collidePosZ)).inflate(1, 1, 1));
         for (LivingEntity entity : entities) {
             if (entity == caster) {
                 continue;
             }
-            float pad = entity.getCollisionBorderSize() + 0.5f;
-            AxisAlignedBB aabb = entity.getBoundingBox().grow(pad, pad, pad);
-            Optional<Vector3d> hit = aabb.rayTrace(from, to);
+            float pad = entity.getPickRadius() + 0.5f;
+            AABB aabb = entity.getBoundingBox().inflate(pad, pad, pad);
+            Optional<Vec3> hit = aabb.clip(from, to);
             if (aabb.contains(from)) {
                 result.addEntityHit(entity);
             } else if (hit.isPresent()) {
@@ -351,35 +357,35 @@ public class EntitySolarBeam extends Entity {
     }
 
     @Override
-    public void applyEntityCollision(Entity entityIn) {
+    public void push(Entity entityIn) {
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean isPickable() {
         return false;
     }
 
     @Override
-    public boolean canBePushed() {
+    public boolean isPushable() {
         return false;
     }
 
     @Override
-    public boolean isInRangeToRenderDist(double distance) {
+    public boolean shouldRenderAtSqrDistance(double distance) {
         return distance < 1024;
     }
 
     private void updateWithPlayer() {
-        this.setYaw((float) ((caster.rotationYawHead + 90) * Math.PI / 180.0d));
-        this.setPitch((float) (-caster.rotationPitch * Math.PI / 180.0d));
-        Vector3d vecOffset = caster.getLookVec().normalize().scale(1);
-        this.setPosition(caster.getPosX() + vecOffset.getX(), caster.getPosY() + 1.2f + vecOffset.getY(), caster.getPosZ() + vecOffset.getZ());
+        this.setYaw((float) ((caster.yHeadRot + 90) * Math.PI / 180.0d));
+        this.setPitch((float) (-caster.xRot * Math.PI / 180.0d));
+        Vec3 vecOffset = caster.getLookAngle().normalize().scale(1);
+        this.setPos(caster.getX() + vecOffset.x(), caster.getY() + 1.2f + vecOffset.y(), caster.getZ() + vecOffset.z());
     }
 
     @Override
     public void remove() {
         super.remove();
-        if (caster instanceof PlayerEntity) {
+        if (caster instanceof Player) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(caster, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
             if (playerCapability != null) {
                 playerCapability.setUsingSolarBeam(false);
@@ -388,17 +394,17 @@ public class EntitySolarBeam extends Entity {
     }
 
     public static class HitResult {
-        private BlockRayTraceResult blockHit;
+        private BlockHitResult blockHit;
 
         private final List<LivingEntity> entities = new ArrayList<>();
 
-        public BlockRayTraceResult getBlockHit() {
+        public BlockHitResult getBlockHit() {
             return blockHit;
         }
 
-        public void setBlockHit(RayTraceResult rayTraceResult) {
-            if (rayTraceResult.getType() == RayTraceResult.Type.BLOCK)
-                this.blockHit = (BlockRayTraceResult) rayTraceResult;
+        public void setBlockHit(HitResult rayTraceResult) {
+            if (rayTraceResult.getType() == HitResult.Type.BLOCK)
+                this.blockHit = (BlockHitResult) rayTraceResult;
         }
 
         public void addEntityHit(LivingEntity entity) {

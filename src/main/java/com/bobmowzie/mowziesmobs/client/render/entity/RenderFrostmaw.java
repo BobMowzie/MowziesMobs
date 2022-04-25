@@ -6,13 +6,13 @@ import com.bobmowzie.mowziesmobs.client.render.MowzieRenderUtils;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.ItemLayer;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Created by BobMowzie on 5/8/2017.
@@ -20,29 +20,29 @@ import net.minecraft.util.math.vector.Vector3d;
 public class RenderFrostmaw extends MobRenderer<EntityFrostmaw, ModelFrostmaw<EntityFrostmaw>> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/frostmaw.png");
 
-    public RenderFrostmaw(EntityRendererManager mgr) {
+    public RenderFrostmaw(EntityRenderDispatcher mgr) {
         super(mgr, new ModelFrostmaw<>(), 3.5f);
-        addLayer(new ItemLayer<>(this, getEntityModel().iceCrystalHand, ItemHandler.ICE_CRYSTAL.getDefaultInstance(), ItemCameraTransforms.TransformType.GROUND));
-        addLayer(new ItemLayer<>(this, getEntityModel().iceCrystal, ItemHandler.ICE_CRYSTAL.getDefaultInstance(), ItemCameraTransforms.TransformType.GROUND));
+        addLayer(new ItemLayer<>(this, getModel().iceCrystalHand, ItemHandler.ICE_CRYSTAL.getDefaultInstance(), ItemTransforms.TransformType.GROUND));
+        addLayer(new ItemLayer<>(this, getModel().iceCrystal, ItemHandler.ICE_CRYSTAL.getDefaultInstance(), ItemTransforms.TransformType.GROUND));
     }
 
     @Override
-    protected float getDeathMaxRotation(EntityFrostmaw entity) {
+    protected float getFlipDegrees(EntityFrostmaw entity) {
         return 0;
     }
 
     @Override
-    public ResourceLocation getEntityTexture(EntityFrostmaw entity) {
+    public ResourceLocation getTextureLocation(EntityFrostmaw entity) {
         return RenderFrostmaw.TEXTURE;
     }
 
     @Override
-    public void render(EntityFrostmaw entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+    public void render(EntityFrostmaw entity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
         if (entity.getAnimation() == EntityFrostmaw.SWIPE_ANIMATION || entity.getAnimation() == EntityFrostmaw.SWIPE_TWICE_ANIMATION || entity.getAnimation() == EntityFrostmaw.ICE_BREATH_ANIMATION || entity.getAnimation() == EntityFrostmaw.ICE_BALL_ANIMATION || !entity.getActive()) {
-            Vector3d rightHandPos = MowzieRenderUtils.getWorldPosFromModel(entity, entityYaw, entityModel.rightHandSocket);
-            Vector3d leftHandPos = MowzieRenderUtils.getWorldPosFromModel(entity, entityYaw, entityModel.leftHandSocket);
-            Vector3d mouthPos = MowzieRenderUtils.getWorldPosFromModel(entity, entityYaw, entityModel.mouthSocket);
+            Vec3 rightHandPos = MowzieRenderUtils.getWorldPosFromModel(entity, entityYaw, model.rightHandSocket);
+            Vec3 leftHandPos = MowzieRenderUtils.getWorldPosFromModel(entity, entityYaw, model.leftHandSocket);
+            Vec3 mouthPos = MowzieRenderUtils.getWorldPosFromModel(entity, entityYaw, model.mouthSocket);
             entity.setSocketPosArray(0, rightHandPos);
             entity.setSocketPosArray(1, leftHandPos);
             entity.setSocketPosArray(2, mouthPos);

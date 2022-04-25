@@ -2,15 +2,15 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.RigUtils;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Matrix3f;
-import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.resources.ResourceLocation;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.geo.render.built.GeoCube;
@@ -23,31 +23,31 @@ import java.util.Iterator;
 public abstract class MowzieGeoEntityRenderer<T extends LivingEntity & IAnimatable> extends GeoEntityRenderer<T> {
     private Matrix4f renderEarlyMat = new Matrix4f();
 
-    protected MowzieGeoEntityRenderer(EntityRendererManager renderManager, AnimatedGeoModel<T> modelProvider) {
+    protected MowzieGeoEntityRenderer(EntityRenderDispatcher renderManager, AnimatedGeoModel<T> modelProvider) {
         super(renderManager, modelProvider);
     }
 
     @Override
-    public RenderType getRenderType(T animatable, float partialTicks, MatrixStack stack, IRenderTypeBuffer renderTypeBuffer, IVertexBuilder vertexBuilder, int packedLightIn, ResourceLocation textureLocation) {
-        return RenderType.getEntityCutoutNoCull(textureLocation);
+    public RenderType getRenderType(T animatable, float partialTicks, PoseStack stack, MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn, ResourceLocation textureLocation) {
+        return RenderType.entityCutoutNoCull(textureLocation);
     }
 
     @Override
-    public void renderEarly(T animatable, MatrixStack stackIn, float ticks, IRenderTypeBuffer renderTypeBuffer, IVertexBuilder vertexBuilder, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float partialTicks) {
+    public void renderEarly(T animatable, PoseStack stackIn, float ticks, MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float partialTicks) {
         super.renderEarly(animatable, stackIn, ticks, renderTypeBuffer, vertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, partialTicks);
-        renderEarlyMat = stackIn.getLast().getMatrix().copy();
+        renderEarlyMat = stackIn.last().pose().copy();
     }
 
     @Override
-    public void renderRecursively(GeoBone bone, MatrixStack stack, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        stack.push();
+    public void renderRecursively(GeoBone bone, PoseStack stack, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        stack.pushPose();
         boolean rotOverride = bone instanceof MowzieGeoBone && ((MowzieGeoBone)bone).rotMat != null;
         RenderUtils.translate(bone, stack);
         RenderUtils.moveToPivot(bone, stack);
         if (rotOverride) {
             MowzieGeoBone mowzieBone = (MowzieGeoBone) bone;
-            stack.getLast().getMatrix().mul(mowzieBone.rotMat);
-            stack.getLast().getNormal().mul(new Matrix3f(mowzieBone.rotMat));
+            stack.last().pose().multiply(mowzieBone.rotMat);
+            stack.last().normal().mul(new Matrix3f(mowzieBone.rotMat));
         }
         else {
             RenderUtils.rotate(bone, stack);
@@ -56,7 +56,7 @@ public abstract class MowzieGeoEntityRenderer<T extends LivingEntity & IAnimatab
         if (bone instanceof MowzieGeoBone) {
             MowzieGeoBone mowzieBone = (MowzieGeoBone) bone;
             if (mowzieBone.isTrackingXform()) {
-                Matrix4f matBone = stack.getLast().getMatrix().copy();
+                Matrix4f matBone = stack.last().pose().copy();
                 Matrix4f renderEarlyMatInvert = renderEarlyMat.copy();
                 renderEarlyMatInvert.invert();
                 matBone.multiplyBackward(renderEarlyMatInvert);
@@ -70,9 +70,9 @@ public abstract class MowzieGeoEntityRenderer<T extends LivingEntity & IAnimatab
 
             while(var10.hasNext()) {
                 GeoCube cube = (GeoCube)var10.next();
-                stack.push();
+                stack.pushPose();
                 this.renderCube(cube, stack, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                stack.pop();
+                stack.popPose();
             }
 
             var10 = bone.childBones.iterator();
@@ -83,6 +83,6 @@ public abstract class MowzieGeoEntityRenderer<T extends LivingEntity & IAnimatab
             }
         }
 
-        stack.pop();
+        stack.popPose();
     }
 }

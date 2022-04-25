@@ -3,21 +3,21 @@ package com.bobmowzie.mowziesmobs.client.particle.util;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
 import com.mojang.brigadier.StringReader;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.core.Registry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Locale;
 
-public class AdvancedParticleData implements IParticleData {
-    public static final IParticleData.IDeserializer<AdvancedParticleData> DESERIALIZER = new IParticleData.IDeserializer<AdvancedParticleData>() {
-        public AdvancedParticleData deserialize(ParticleType<AdvancedParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
+public class AdvancedParticleData implements ParticleOptions {
+    public static final ParticleOptions.Deserializer<AdvancedParticleData> DESERIALIZER = new ParticleOptions.Deserializer<AdvancedParticleData>() {
+        public AdvancedParticleData fromCommand(ParticleType<AdvancedParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
             reader.expect(' ');
             double airDrag = reader.readDouble();
             reader.expect(' ');
@@ -49,17 +49,17 @@ public class AdvancedParticleData implements IParticleData {
             ParticleRotation rotation;
             if (rotationMode.equals("face_camera")) rotation = new ParticleRotation.FaceCamera((float) faceCameraAngle);
             else if (rotationMode.equals("euler")) rotation = new ParticleRotation.EulerAngles((float)yaw, (float)pitch, (float)roll);
-            else rotation = new ParticleRotation.OrientVector(new Vector3d(yaw, pitch, roll));
+            else rotation = new ParticleRotation.OrientVector(new Vec3(yaw, pitch, roll));
             return new AdvancedParticleData(particleTypeIn, rotation, scale, red, green, blue, alpha, airDrag, duration, emissive, canCollide);
         }
 
-        public AdvancedParticleData read(ParticleType<AdvancedParticleData> particleTypeIn, PacketBuffer buffer) {
+        public AdvancedParticleData fromNetwork(ParticleType<AdvancedParticleData> particleTypeIn, FriendlyByteBuf buffer) {
             double airDrag = buffer.readFloat();
             double red = buffer.readFloat();
             double green = buffer.readFloat();
             double blue = buffer.readFloat();
             double alpha = buffer.readFloat();
-            String rotationMode = buffer.readString();
+            String rotationMode = buffer.readUtf();
             double scale = buffer.readFloat();
             double yaw = buffer.readFloat();
             double pitch = buffer.readFloat();
@@ -71,7 +71,7 @@ public class AdvancedParticleData implements IParticleData {
             ParticleRotation rotation;
             if (rotationMode.equals("face_camera")) rotation = new ParticleRotation.FaceCamera((float) faceCameraAngle);
             else if (rotationMode.equals("euler")) rotation = new ParticleRotation.EulerAngles((float)yaw, (float)pitch, (float)roll);
-            else rotation = new ParticleRotation.OrientVector(new Vector3d(yaw, pitch, roll));
+            else rotation = new ParticleRotation.OrientVector(new Vec3(yaw, pitch, roll));
             return new AdvancedParticleData(particleTypeIn, rotation, scale, red, green, blue, alpha, airDrag, duration, emissive, canCollide);
         }
     };
@@ -115,7 +115,7 @@ public class AdvancedParticleData implements IParticleData {
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void writeToNetwork(FriendlyByteBuf buffer) {
         String rotationMode;
         float faceCameraAngle = 0;
         float yaw = 0;
@@ -133,7 +133,7 @@ public class AdvancedParticleData implements IParticleData {
         }
         else {
             rotationMode = "orient";
-            Vector3d vec = ((ParticleRotation.OrientVector)rotation).orientation;
+            Vec3 vec = ((ParticleRotation.OrientVector)rotation).orientation;
             yaw = (float) vec.x;
             pitch = (float) vec.y;
             roll = (float) vec.z;
@@ -144,7 +144,7 @@ public class AdvancedParticleData implements IParticleData {
         buffer.writeFloat(this.green);
         buffer.writeFloat(this.blue);
         buffer.writeFloat(this.alpha);
-        buffer.writeString(rotationMode);
+        buffer.writeUtf(rotationMode);
         buffer.writeFloat(this.scale);
         buffer.writeFloat(yaw);
         buffer.writeFloat(pitch);
@@ -157,7 +157,7 @@ public class AdvancedParticleData implements IParticleData {
 
     @SuppressWarnings("deprecation")
     @Override
-    public String getParameters() {
+    public String writeToString() {
         String rotationMode;
         float faceCameraAngle = 0;
         float yaw = 0;
@@ -175,7 +175,7 @@ public class AdvancedParticleData implements IParticleData {
         }
         else {
             rotationMode = "orient";
-            Vector3d vec = ((ParticleRotation.OrientVector)rotation).orientation;
+            Vec3 vec = ((ParticleRotation.OrientVector)rotation).orientation;
             yaw = (float) vec.x;
             pitch = (float) vec.y;
             roll = (float) vec.z;

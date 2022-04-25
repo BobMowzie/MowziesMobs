@@ -4,10 +4,10 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
@@ -19,8 +19,8 @@ public class ModelGeckoPlayerFirstPerson extends MowzieAnimatedGeoModel<GeckoPla
 	private ResourceLocation modelLocation;
 	private ResourceLocation textureLocation;
 
-	public BipedModel.ArmPose leftArmPose = BipedModel.ArmPose.EMPTY;
-	public BipedModel.ArmPose rightArmPose = BipedModel.ArmPose.EMPTY;
+	public HumanoidModel.ArmPose leftArmPose = HumanoidModel.ArmPose.EMPTY;
+	public HumanoidModel.ArmPose rightArmPose = HumanoidModel.ArmPose.EMPTY;
 
 	protected boolean useSmallArms;
 	
@@ -74,10 +74,10 @@ public class ModelGeckoPlayerFirstPerson extends MowzieAnimatedGeoModel<GeckoPla
 
 	/** Check if the modelId has some ResourceLocation **/
 	@Override
-	public boolean resourceForModelId(AbstractClientPlayerEntity player) {
+	public boolean resourceForModelId(AbstractClientPlayer player) {
 		this.animationFileLocation = new ResourceLocation(MowziesMobs.MODID, "animations/animated_player_first_person.animation.json");
 		this.modelLocation = new ResourceLocation(MowziesMobs.MODID, "geo/animated_player_first_person.geo.json");
-		this.textureLocation = player.getLocationSkin();
+		this.textureLocation = player.getSkinTextureLocation();
 		return true;
 	}
 }

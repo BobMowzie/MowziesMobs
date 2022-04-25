@@ -5,30 +5,38 @@ import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.loot.*;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.loot.conditions.LootConditionManager;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditions;
 
 import java.util.Set;
 
-public class LootConditionFrostmawHasCrystal implements ILootCondition {
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition.Builder;
+
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.Serializer;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
+
+public class LootConditionFrostmawHasCrystal implements LootItemCondition {
 
     private static final LootConditionFrostmawHasCrystal INSTANCE = new LootConditionFrostmawHasCrystal();
 
     private LootConditionFrostmawHasCrystal() {
     }
 
-    public LootConditionType getConditionType() {
-        return LootConditionManager.KILLED_BY_PLAYER;
+    public LootItemConditionType getType() {
+        return LootItemConditions.KILLED_BY_PLAYER;
     }
 
-    public Set<LootParameter<?>> getRequiredParameters() {
-        return ImmutableSet.of(LootParameters.LAST_DAMAGE_PLAYER);
+    public Set<LootContextParam<?>> getReferencedContextParams() {
+        return ImmutableSet.of(LootContextParams.LAST_DAMAGE_PLAYER);
     }
 
     public boolean test(LootContext context) {
-        Entity entity = context.get(LootParameters.THIS_ENTITY);
+        Entity entity = context.getParamOrNull(LootContextParams.THIS_ENTITY);
         if (entity instanceof EntityFrostmaw) {
             EntityFrostmaw frostmaw = (EntityFrostmaw) entity;
             return frostmaw.getHasCrystal();
@@ -36,13 +44,13 @@ public class LootConditionFrostmawHasCrystal implements ILootCondition {
         return false;
     }
 
-    public static IBuilder builder() {
+    public static Builder builder() {
         return () -> {
             return INSTANCE;
         };
     }
 
-    public static class Serializer implements ILootSerializer<LootConditionFrostmawHasCrystal> {
+    public static class Serializer implements Serializer<LootConditionFrostmawHasCrystal> {
         public Serializer() {
         }
 

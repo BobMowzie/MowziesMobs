@@ -7,6 +7,8 @@ import net.minecraft.entity.ai.goal.Goal;
 
 import java.util.EnumSet;
 
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
+
 public class SimpleAnimationAI<T extends MowzieEntity & IAnimatedEntity> extends AnimationAI<T> {
     protected final Animation animation;
 
@@ -28,7 +30,7 @@ public class SimpleAnimationAI<T extends MowzieEntity & IAnimatedEntity> extends
     public SimpleAnimationAI(T entity, Animation animation, EnumSet<Flag> interruptFlagTypes) {
         super(entity);
         this.animation = animation;
-        setMutexFlags(interruptFlagTypes);
+        setFlags(interruptFlagTypes);
     }
 
     @Override

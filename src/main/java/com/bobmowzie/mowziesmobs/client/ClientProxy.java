@@ -12,23 +12,23 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.*;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.TickableSound;
-import net.minecraft.client.particle.DiggingParticle;
+import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
+import net.minecraft.client.particle.TerrainParticle;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.LivingRenderer;
-import net.minecraft.client.renderer.entity.PlayerRenderer;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.item.IItemPropertyGetter;
-import net.minecraft.item.ItemModelsProperties;
-import net.minecraft.item.Items;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.client.renderer.item.ItemPropertyFunction;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.world.item.Items;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -64,58 +64,58 @@ public class ClientProxy extends ServerProxy {
 
     @Override
     public void onLateInit(final IEventBus modbus) {
-        for (EntityRenderer<?> entityRenderer : Minecraft.getInstance().getRenderManager().renderers.values()) {
-            if (entityRenderer instanceof LivingRenderer) {
-                LivingRenderer livingRenderer = (LivingRenderer) entityRenderer;
+        for (EntityRenderer<?> entityRenderer : Minecraft.getInstance().getEntityRenderDispatcher().renderers.values()) {
+            if (entityRenderer instanceof LivingEntityRenderer) {
+                LivingEntityRenderer livingRenderer = (LivingEntityRenderer) entityRenderer;
                 livingRenderer.addLayer(new FrozenRenderHandler.LayerFrozen(livingRenderer));
                 livingRenderer.addLayer(new SunblockLayer(livingRenderer));
             }
         }
-        for (PlayerRenderer playerRenderer : Minecraft.getInstance().getRenderManager().getSkinMap().values()) {
+        for (PlayerRenderer playerRenderer : Minecraft.getInstance().getEntityRenderDispatcher().getSkinMap().values()) {
             playerRenderer.addLayer(new FrozenRenderHandler.LayerFrozen(playerRenderer));
             playerRenderer.addLayer(new SunblockLayer(playerRenderer));
         }
-        IItemPropertyGetter pulling = ItemModelsProperties.func_239417_a_(Items.BOW, new ResourceLocation("pulling"));
-        ItemModelsProperties.registerProperty(ItemHandler.BLOWGUN.asItem(), new ResourceLocation("pulling"), pulling);
+        ItemPropertyFunction pulling = ItemProperties.getProperty(Items.BOW, new ResourceLocation("pulling"));
+        ItemProperties.register(ItemHandler.BLOWGUN.asItem(), new ResourceLocation("pulling"), pulling);
     }
 
     @Override
     public void playSunstrikeSound(EntitySunstrike strike) {
-        Minecraft.getInstance().getSoundHandler().play(new SunstrikeSound(strike));
+        Minecraft.getInstance().getSoundManager().play(new SunstrikeSound(strike));
     }
 
     @Override
     public void playIceBreathSound(Entity entity) {
-        Minecraft.getInstance().getSoundHandler().play(new IceBreathSound(entity));
+        Minecraft.getInstance().getSoundManager().play(new IceBreathSound(entity));
     }
 
     @Override
     public void playBoulderChargeSound(LivingEntity player) {
-        Minecraft.getInstance().getSoundHandler().play(new SpawnBoulderChargeSound(player));
+        Minecraft.getInstance().getSoundManager().play(new SpawnBoulderChargeSound(player));
     }
 
     @Override
     public void playNagaSwoopSound(EntityNaga naga) {
-        Minecraft.getInstance().getSoundHandler().play(new NagaSwoopSound(naga));
+        Minecraft.getInstance().getSoundManager().play(new NagaSwoopSound(naga));
     }
 
     @Override
-    public void playBlackPinkSound(AbstractMinecartEntity entity) {
-        Minecraft.getInstance().getSoundHandler().play(new BlackPinkSound(entity));
+    public void playBlackPinkSound(AbstractMinecart entity) {
+        Minecraft.getInstance().getSoundManager().play(new BlackPinkSound(entity));
     }
 
     @Override
     public void playSunblockSound(LivingEntity entity) {
-        sunblockSounds.removeIf(TickableSound::isDonePlaying);
+        sunblockSounds.removeIf(AbstractTickableSoundInstance::isStopped);
         if (sunblockSounds.size() < 10) {
             SunblockSound sunblockSound = new SunblockSound(entity);
             sunblockSounds.add(sunblockSound);
-            Minecraft.getInstance().getSoundHandler().play(sunblockSound);
+            Minecraft.getInstance().getSoundManager().play(sunblockSound);
         }
     }
 
     @Override
-    public void minecartParticles(ClientWorld world, AbstractMinecartEntity minecart, float scale, double x, double y, double z, BlockState state, BlockPos pos) {
+    public void minecartParticles(ClientLevel world, AbstractMinecart minecart, float scale, double x, double y, double z, BlockState state, BlockPos pos) {
         final int size = 3;
         float offset =  -0.5F * scale;
         for (int ix = 0; ix < size; ix++) {
@@ -124,13 +124,13 @@ public class ClientProxy extends ServerProxy {
                     double dx = (double) ix / size * scale;
                     double dy = (double) iy / size * scale;
                     double dz = (double) iz / size * scale;
-                    Vector3d minecartMotion = minecart.getMotion();
-                    Minecraft.getInstance().particles.addEffect(new DiggingParticle(
+                    Vec3 minecartMotion = minecart.getDeltaMovement();
+                    Minecraft.getInstance().particleEngine.add(new TerrainParticle(
                             world,
                             x + dx + offset, y + dy + offset, z + dz + offset,
-                            dx + minecartMotion.getX(), dy + minecartMotion.getY(), dz + minecartMotion.getZ(),
+                            dx + minecartMotion.x(), dy + minecartMotion.y(), dz + minecartMotion.z(),
                             state
-                    ) {}.setBlockPos(pos));
+                    ) {}.init(pos));
                 }
             }
         }

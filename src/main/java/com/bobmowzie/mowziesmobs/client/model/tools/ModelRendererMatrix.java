@@ -1,21 +1,21 @@
 package com.bobmowzie.mowziesmobs.client.model.tools;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.math.vector.Matrix3f;
-import net.minecraft.util.math.vector.Matrix4f;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.model.geom.ModelPart;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
 
-public class ModelRendererMatrix extends ModelRenderer {
+public class ModelRendererMatrix extends ModelPart {
     private Matrix4f worldXform;
     private Matrix3f worldNormal;
 
     private boolean useMatrixMode;
 
-    public ModelRendererMatrix(ModelRenderer original) {
-        super((int) original.textureWidth, (int) original.textureHeight, original.textureOffsetX, original.textureOffsetY);
-        copyModelAngles(original);
-        cubeList.addAll(original.cubeList);
-        childModels.addAll(original.childModels);
+    public ModelRendererMatrix(ModelPart original) {
+        super((int) original.xTexSize, (int) original.yTexSize, original.xTexOffs, original.yTexOffs);
+        copyFrom(original);
+        cubes.addAll(original.cubes);
+        children.addAll(original.children);
 
         worldNormal = new Matrix3f();
         worldNormal.setIdentity();
@@ -26,28 +26,28 @@ public class ModelRendererMatrix extends ModelRenderer {
     }
 
     @Override
-    public void translateRotate(MatrixStack matrixStackIn) {
+    public void translateAndRotate(PoseStack matrixStackIn) {
         if (!useMatrixMode || getWorldNormal() == null || getWorldXform() == null) {
-            super.translateRotate(matrixStackIn);
+            super.translateAndRotate(matrixStackIn);
         }
         else {
-            MatrixStack.Entry last = matrixStackIn.getLast();
-            last.getMatrix().setIdentity();
-            last.getNormal().setIdentity();
-            last.getMatrix().mul(getWorldXform());
-            last.getNormal().mul(getWorldNormal());
+            PoseStack.Pose last = matrixStackIn.last();
+            last.pose().setIdentity();
+            last.normal().setIdentity();
+            last.pose().multiply(getWorldXform());
+            last.normal().mul(getWorldNormal());
         }
         useMatrixMode = false;
     }
 
     @Override
-    public void copyModelAngles(ModelRenderer modelRendererIn) {
+    public void copyFrom(ModelPart modelRendererIn) {
         if (modelRendererIn instanceof ModelRendererMatrix) {
             ModelRendererMatrix other = (ModelRendererMatrix) modelRendererIn;
             this.setWorldNormal(other.getWorldNormal());
             this.setWorldXform(other.getWorldXform());
         }
-        super.copyModelAngles(modelRendererIn);
+        super.copyFrom(modelRendererIn);
     }
 
     public Matrix3f getWorldNormal() {

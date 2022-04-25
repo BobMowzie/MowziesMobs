@@ -10,8 +10,8 @@ public class AnimationDeactivateAI<T extends MowzieEntity & IAnimatedEntity> ext
     }
 
     @Override
-    public void resetTask() {
-        super.resetTask();
+    public void stop() {
+        super.stop();
         entity.active = false;
     }
 }

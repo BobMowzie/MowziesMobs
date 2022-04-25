@@ -3,16 +3,21 @@ package com.bobmowzie.mowziesmobs.server.message;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Direction;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.Direction;
 import net.minecraft.util.math.*;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 
 public class MessagePlayerSummonSunstrike {
     private static final double REACH = 15;
@@ -21,17 +26,17 @@ public class MessagePlayerSummonSunstrike {
 
     }
 
-    private static BlockRayTraceResult rayTrace(LivingEntity entity, double reach) {
-        Vector3d pos = entity.getEyePosition(0);
-        Vector3d segment = entity.getLookVec();
+    private static BlockHitResult rayTrace(LivingEntity entity, double reach) {
+        Vec3 pos = entity.getEyePosition(0);
+        Vec3 segment = entity.getLookAngle();
         segment = pos.add(segment.x * reach, segment.y * reach, segment.z * reach);
-        return entity.world.rayTraceBlocks(new RayTraceContext(pos, segment, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, entity));
+        return entity.level.clip(new ClipContext(pos, segment, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity));
     }
 
-    public static void serialize(final MessagePlayerSummonSunstrike message, final PacketBuffer buf) {
+    public static void serialize(final MessagePlayerSummonSunstrike message, final FriendlyByteBuf buf) {
     }
 
-    public static MessagePlayerSummonSunstrike deserialize(final PacketBuffer buf) {
+    public static MessagePlayerSummonSunstrike deserialize(final FriendlyByteBuf buf) {
         final MessagePlayerSummonSunstrike message = new MessagePlayerSummonSunstrike();
         return message;
     }
@@ -40,14 +45,14 @@ public class MessagePlayerSummonSunstrike {
         @Override
         public void accept(final MessagePlayerSummonSunstrike message, final Supplier<NetworkEvent.Context> contextSupplier) {
             final NetworkEvent.Context context = contextSupplier.get();
-            final ServerPlayerEntity player = context.getSender();
+            final ServerPlayer player = context.getSender();
             context.enqueueWork(() -> {
-                BlockRayTraceResult raytrace = rayTrace(player, REACH);
-                if (raytrace.getType() == RayTraceResult.Type.BLOCK && raytrace.getFace() == Direction.UP && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(EffectHandler.SUNS_BLESSING)) {
-                    BlockPos hit = raytrace.getPos();
-                    EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE.get(), player.world, player, hit.getX(), hit.getY(), hit.getZ());
+                BlockHitResult raytrace = rayTrace(player, REACH);
+                if (raytrace.getType() == HitResult.Type.BLOCK && raytrace.getDirection() == Direction.UP && player.inventory.getSelected().isEmpty() && player.hasEffect(EffectHandler.SUNS_BLESSING)) {
+                    BlockPos hit = raytrace.getBlockPos();
+                    EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE.get(), player.level, player, hit.getX(), hit.getY(), hit.getZ());
                     sunstrike.onSummon();
-                    player.world.addEntity(sunstrike);
+                    player.level.addFreshEntity(sunstrike);
                 }
             });
             context.setPacketHandled(true);

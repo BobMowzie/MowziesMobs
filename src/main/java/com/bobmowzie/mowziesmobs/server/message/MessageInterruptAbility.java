@@ -5,8 +5,8 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
@@ -25,12 +25,12 @@ public class MessageInterruptAbility {
         this.index = index;
     }
 
-    public static void serialize(final MessageInterruptAbility message, final PacketBuffer buf) {
+    public static void serialize(final MessageInterruptAbility message, final FriendlyByteBuf buf) {
         buf.writeVarInt(message.entityID);
         buf.writeVarInt(message.index);
     }
 
-    public static MessageInterruptAbility deserialize(final PacketBuffer buf) {
+    public static MessageInterruptAbility deserialize(final FriendlyByteBuf buf) {
         final MessageInterruptAbility message = new MessageInterruptAbility();
         message.entityID = buf.readVarInt();
         message.index = buf.readVarInt();
@@ -42,7 +42,7 @@ public class MessageInterruptAbility {
         public void accept(final MessageInterruptAbility message, final Supplier<NetworkEvent.Context> contextSupplier) {
             final NetworkEvent.Context context = contextSupplier.get();
             context.enqueueWork(() -> {
-                LivingEntity entity = (LivingEntity) Minecraft.getInstance().world.getEntityByID(message.entityID);
+                LivingEntity entity = (LivingEntity) Minecraft.getInstance().level.getEntity(message.entityID);
                 if (entity != null) {
                     AbilityCapability.IAbilityCapability abilityCapability = CapabilityHandler.getCapability(entity, AbilityCapability.AbilityProvider.ABILITY_CAPABILITY);
                     if (abilityCapability != null) {

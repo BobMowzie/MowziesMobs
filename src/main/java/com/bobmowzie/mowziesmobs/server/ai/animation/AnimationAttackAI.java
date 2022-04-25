@@ -3,10 +3,12 @@ package com.bobmowzie.mowziesmobs.server.ai.animation;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.sounds.SoundEvent;
 
 import java.util.EnumSet;
+
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class AnimationAttackAI<T extends MowzieEntity & IAnimatedEntity> extends SimpleAnimationAI<T> {
     protected LivingEntity entityTarget;
@@ -30,20 +32,20 @@ public class AnimationAttackAI<T extends MowzieEntity & IAnimatedEntity> extends
         this.damageMultiplier = damageMultiplier;
         this.damageFrame = damageFrame;
         this.hitSound = hitSound;
-        this.setMutexFlags(EnumSet.of(Flag.LOOK));
+        this.setFlags(EnumSet.of(Flag.LOOK));
     }
 
     @Override
-    public void startExecuting() {
-        super.startExecuting();
-        entityTarget = entity.getAttackTarget();
+    public void start() {
+        super.start();
+        entityTarget = entity.getTarget();
     }
 
     @Override
     public void tick() {
         super.tick();
         if (entity.getAnimationTick() < damageFrame && entityTarget != null) {
-            entity.faceEntity(entityTarget, 30F, 30F);
+            entity.lookAt(entityTarget, 30F, 30F);
         }
         if (entity.getAnimationTick() == damageFrame) {
             if (entityTarget != null && entity.targetDistance <= range) {

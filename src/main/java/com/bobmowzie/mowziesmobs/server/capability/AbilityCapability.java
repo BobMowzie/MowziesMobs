@@ -6,12 +6,12 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.core.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -62,15 +62,15 @@ public class AbilityCapability {
 
         void codeAnimations(MowzieAnimatedGeoModel<? extends IAnimatable> model, float partialTick);
 
-        INBT writeNBT();
+        Tag writeNBT();
 
-        void readNBT(INBT nbt);
+        void readNBT(Tag nbt);
     }
 
     public static class AbilityCapabilityImp implements IAbilityCapability {
         SortedMap<AbilityType<?>, Ability> abilityInstances = new TreeMap<>();
         Ability activeAbility = null;
-        Map<String, INBT> nbtMap = new HashMap<>();
+        Map<String, Tag> nbtMap = new HashMap<>();
 
         @Override
         public void instanceAbilities(LivingEntity entity) {
@@ -101,7 +101,7 @@ public class AbilityCapability {
 
         @Override
         public AbilityType<?>[] getAbilityTypesOnEntity(LivingEntity entity) {
-            if (entity instanceof PlayerEntity) {
+            if (entity instanceof Player) {
                 return AbilityHandler.PLAYER_ABILITIES;
             }
             return new AbilityType[0];
@@ -158,10 +158,10 @@ public class AbilityCapability {
         }
 
         @Override
-        public INBT writeNBT() {
-            CompoundNBT compound = new CompoundNBT();
+        public Tag writeNBT() {
+            CompoundTag compound = new CompoundTag();
             for (Map.Entry<AbilityType<?>, Ability> abilityEntry : getAbilityMap().entrySet()) {
-                CompoundNBT nbt = abilityEntry.getValue().writeNBT();
+                CompoundTag nbt = abilityEntry.getValue().writeNBT();
                 if (!nbt.isEmpty()) {
                     compound.put(abilityEntry.getKey().getName(), nbt);
                 }
@@ -170,9 +170,9 @@ public class AbilityCapability {
         }
 
         @Override
-        public void readNBT(INBT nbt) {
-            CompoundNBT compound = (CompoundNBT) nbt;
-            Set<String> keys = compound.keySet();
+        public void readNBT(Tag nbt) {
+            CompoundTag compound = (CompoundTag) nbt;
+            Set<String> keys = compound.getAllKeys();
             for (String abilityName : keys) {
                 nbtMap.put(abilityName, compound.get(abilityName));
             }
@@ -181,17 +181,17 @@ public class AbilityCapability {
 
     public static class AbilityStorage implements Capability.IStorage<IAbilityCapability> {
         @Override
-        public INBT writeNBT(Capability<AbilityCapability.IAbilityCapability> capability, AbilityCapability.IAbilityCapability instance, Direction side) {
+        public Tag writeNBT(Capability<AbilityCapability.IAbilityCapability> capability, AbilityCapability.IAbilityCapability instance, Direction side) {
             return instance.writeNBT();
         }
 
         @Override
-        public void readNBT(Capability<AbilityCapability.IAbilityCapability> capability, AbilityCapability.IAbilityCapability instance, Direction side, INBT nbt) {
+        public void readNBT(Capability<AbilityCapability.IAbilityCapability> capability, AbilityCapability.IAbilityCapability instance, Direction side, Tag nbt) {
             instance.readNBT(nbt);
         }
     }
 
-    public static class AbilityProvider implements ICapabilitySerializable<INBT>
+    public static class AbilityProvider implements ICapabilitySerializable<Tag>
     {
         @CapabilityInject(IAbilityCapability.class)
         public static final Capability<IAbilityCapability> ABILITY_CAPABILITY = null;
@@ -199,12 +199,12 @@ public class AbilityCapability {
         private final LazyOptional<IAbilityCapability> instance = LazyOptional.of(ABILITY_CAPABILITY::getDefaultInstance);
 
         @Override
-        public INBT serializeNBT() {
+        public Tag serializeNBT() {
             return ABILITY_CAPABILITY.getStorage().writeNBT(ABILITY_CAPABILITY, this.instance.orElseThrow(() -> new IllegalArgumentException("Lazy optional must not be empty")), null);
         }
 
         @Override
-        public void deserializeNBT(INBT nbt) {
+        public void deserializeNBT(Tag nbt) {
             ABILITY_CAPABILITY.getStorage().readNBT(ABILITY_CAPABILITY, this.instance.orElseThrow(() -> new IllegalArgumentException("Lazy optional must not be empty")), null, nbt);
         }
 

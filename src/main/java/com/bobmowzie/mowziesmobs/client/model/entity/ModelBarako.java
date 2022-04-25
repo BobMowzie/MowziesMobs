@@ -5,9 +5,9 @@ import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.util.math.MathHelper;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -69,246 +69,246 @@ public class ModelBarako<T extends EntityBarako> extends MowzieEntityModel<T> {
     public AdvancedModelRenderer betweenHands;
 
     public ModelBarako() {
-        this.textureWidth = 128;
-        this.textureHeight = 128;
+        this.texWidth = 128;
+        this.texHeight = 128;
         this.body = new AdvancedModelRenderer(this, 0, 0);
-        this.body.setRotationPoint(0.0F, 24.0F, -3.0F);
+        this.body.setPos(0.0F, 24.0F, -3.0F);
         this.body.addBox(-12.5F, -16.0F, -11.0F, 25, 16, 22, 0.0F);
         body.scaleChildren = true;
         this.teethTop = new AdvancedModelRenderer(this, 0, 120);
-        this.teethTop.setRotationPoint(0.0F, 0.0F, 1.001F);
+        this.teethTop.setPos(0.0F, 0.0F, 1.001F);
         this.teethTop.addBox(-4.0F, 0.0F, 0.0F, 8, 1, 1, 0.0F);
         teethTop.scaleChildren = true;
         this.maskBase = new AdvancedModelRenderer(this, 0, 0);
-        this.maskBase.setRotationPoint(0.0F, -5.0F, -6.0F);
+        this.maskBase.setPos(0.0F, -5.0F, -6.0F);
         this.maskBase.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         maskBase.scaleChildren = true;
         this.leftEar = new AdvancedModelRenderer(this, 38, 109);
         this.leftEar.mirror = true;
-        this.leftEar.setRotationPoint(6.0F, -2.0F, 0.0F);
+        this.leftEar.setPos(6.0F, -2.0F, 0.0F);
         this.leftEar.addBox(0.0F, 0.0F, 0.0F, 3, 6, 2, 0.0F);
         setRotateAngle(leftEar, 0.0F, -0.5235987755982988F, 0.0F);
         this.rightEarring = new AdvancedModelRenderer(this, 0, 84);
         this.rightEarring.mirror = true;
-        this.rightEarring.setRotationPoint(-2.5F, 6.0F, 1.0F);
+        this.rightEarring.setPos(-2.5F, 6.0F, 1.0F);
         this.rightEarring.addBox(-2.0F, 0.0F, 0.0F, 4, 4, 0, 0.0F);
         this.headdress3 = new AdvancedModelRenderer(this, 27, 76);
         this.headdress3.mirror = true;
-        this.headdress3.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.headdress3.setPos(0.0F, 0.0F, 0.0F);
         this.headdress3.addBox(-3.0F, -18.0F, 0.0F, 6, 12, 0, 0.0F);
         setRotateAngle(headdress3, 0.5235987755982988F, (float) Math.PI, 1.3962634015954636F);
         this.leftLowerArm = new AdvancedModelRenderer(this, 56, 38);
         this.leftLowerArm.mirror = true;
-        this.leftLowerArm.setRotationPoint(3.5F, 14.0F, 0.0F);
+        this.leftLowerArm.setPos(3.5F, 14.0F, 0.0F);
         this.leftLowerArm.addBox(-5.0F, 0.0F, -2.5F, 5, 11, 5, 0.0F);
         leftLowerArm.scaleChildren = true;
         setRotateAngle(leftLowerArm, 0.0F, 0.0F, 1.2217304763960306F);
         this.rightCalf = new AdvancedModelRenderer(this, 72, 0);
-        this.rightCalf.setRotationPoint(0.0F, 14.0F, -4.0F);
+        this.rightCalf.setPos(0.0F, 14.0F, -4.0F);
         this.rightCalf.addBox(-3.0F, 0.0F, 0.0F, 6, 10, 6, 0.0F);
         rightCalf.scaleChildren = true;
         setRotateAngle(rightCalf, 1.1838568316277536F, 0.0F, 0.0F);
         this.rightUpperArm = new AdvancedModelRenderer(this, 38, 88);
-        this.rightUpperArm.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.rightUpperArm.setPos(0.0F, 0.0F, 0.0F);
         this.rightUpperArm.addBox(-3.5F, 0.0F, -3.5F, 7, 14, 7, 0.0F);
         rightUpperArm.scaleChildren = true;
         setRotateAngle(rightUpperArm, -1.2217304763960306F, 1.0471975511965976F, 0.0F);
         this.lowerLip = new AdvancedModelRenderer(this, 50, 124);
         this.lowerLip.mirror = true;
-        this.lowerLip.setRotationPoint(0.0F, 4.0F, 0.0F);
+        this.lowerLip.setPos(0.0F, 4.0F, 0.0F);
         this.lowerLip.addBox(-6.0F, 0.0F, -2.0F, 12, 2, 2, 0.0F);
         this.lowerLip.scaleChildren = true;
         setRotateAngle(lowerLip, 0.0F, 0.0F, 3.141592653589793F);
         this.rightFoot = new AdvancedModelRenderer(this, 83, 27);
-        this.rightFoot.setRotationPoint(0.0F, 11.0F, 5.0F);
+        this.rightFoot.setPos(0.0F, 11.0F, 5.0F);
         this.rightFoot.addBox(-4.0F, -2.0F, -10.0F, 8, 4, 11, 0.0F);
         rightFoot.scaleChildren = true;
         setRotateAngle(rightFoot, -0.17453292519943295F, 0.0F, 0.0F);
         this.headdress2 = new AdvancedModelRenderer(this, 27, 76);
         this.headdress2.mirror = true;
-        this.headdress2.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.headdress2.setPos(0.0F, 0.0F, 0.0F);
         this.headdress2.addBox(-3.0F, -18.0F, 0.0F, 6, 12, 0, 0.0F);
         headdress2.scaleChildren = true;
         setRotateAngle(headdress2, 0.5235987755982988F, (float) Math.PI, 0.6981317007977318F);
         this.neckJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.neckJoint.setRotationPoint(0.0F, -8.0F, 10.0F);
+        this.neckJoint.setPos(0.0F, -8.0F, 10.0F);
         this.neckJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         neckJoint.scaleChildren = true;
         setRotateAngle(neckJoint, 0.2617993877991494F, 0.0F, 0.0F);
         this.rightThigh = new AdvancedModelRenderer(this, 39, 66);
-        this.rightThigh.setRotationPoint(-8.5F, -4.0F, 4.0F);
+        this.rightThigh.setPos(-8.5F, -4.0F, 4.0F);
         this.rightThigh.addBox(-4.0F, 0.0F, -4.0F, 8, 14, 8, 0.0F);
         rightThigh.scaleChildren = true;
         setRotateAngle(rightThigh, -1.3962634015954636F, 0.6108652381980153F, 0.0F);
         this.neck = new AdvancedModelRenderer(this, 0, 62);
-        this.neck.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.neck.setPos(0.0F, 0.0F, 0.0F);
         this.neck.addBox(-3.0F, -7.5F, -4.0F, 6, 10, 7, 0.0F);
         neck.scaleChildren = true;
         setRotateAngle(neck, 0.3490658503988659F, 0.0F, 0.0F);
         this.headdress4 = new AdvancedModelRenderer(this, 27, 76);
-        this.headdress4.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.headdress4.setPos(0.0F, 0.0F, 0.0F);
         this.headdress4.addBox(-3.0F, -18.0F, 0.0F, 6, 12, 0, 0.0F);
         setRotateAngle(headdress4, 0.5235987755982988F, (float) Math.PI, -0.6981317007977318F);
         this.forehead = new AdvancedModelRenderer(this, 0, 122);
-        this.forehead.setRotationPoint(0.0F, -6.0F, 0.0F);
+        this.forehead.setPos(0.0F, -6.0F, 0.0F);
         this.forehead.addBox(-6.0F, -0.0F, -2.0F, 12, 4, 2, 0.0F);
         this.leftUpperArm = new AdvancedModelRenderer(this, 38, 88);
         this.leftUpperArm.mirror = true;
-        this.leftUpperArm.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.leftUpperArm.setPos(0.0F, 0.0F, 0.0F);
         this.leftUpperArm.addBox(-3.5F, 0.0F, -3.5F, 7, 14, 7, 0.0F);
         leftUpperArm.scaleChildren = true;
         setRotateAngle(leftUpperArm, -1.2217304763960306F, -1.0471975511965976F, 0.0F);
         this.teethBottom = new AdvancedModelRenderer(this, 0, 120);
-        this.teethBottom.setRotationPoint(0.0F, 3.0F, 0.0F);
+        this.teethBottom.setPos(0.0F, 3.0F, 0.0F);
         this.teethBottom.addBox(-4.0F, -1.0F, 0.0F, 8, 1, 1, 0.0F);
         setRotateAngle(teethBottom, 3.141592653589793F, 0.0F, -3.141592653589793F);
         this.headdress5 = new AdvancedModelRenderer(this, 27, 76);
-        this.headdress5.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.headdress5.setPos(0.0F, 0.0F, 0.0F);
         this.headdress5.addBox(-3.0F, -18.0F, 0.0F, 6, 12, 0, 0.0F);
         setRotateAngle(headdress5, 0.5235987755982988F, (float) Math.PI, -1.3962634015954636F);
         this.leftFoot = new AdvancedModelRenderer(this, 83, 27);
         this.leftFoot.mirror = true;
-        this.leftFoot.setRotationPoint(0.0F, 11.0F, 5.0F);
+        this.leftFoot.setPos(0.0F, 11.0F, 5.0F);
         this.leftFoot.addBox(-4.0F, -2.0F, -10.0F, 8, 4, 11, 0.0F);
         setRotateAngle(leftFoot, -0.17453292519943295F, 0.0F, 0.0F);
         this.rightLowerArm = new AdvancedModelRenderer(this, 56, 38);
-        this.rightLowerArm.setRotationPoint(-3.5F, 14.0F, 0.0F);
+        this.rightLowerArm.setPos(-3.5F, 14.0F, 0.0F);
         this.rightLowerArm.addBox(0.0F, 0.0F, -2.5F, 5, 11, 5, 0.0F);
         rightLowerArm.scaleChildren = true;
         setRotateAngle(rightLowerArm, 0.0F, 0.0F, -1.2217304763960306F);
         this.leftCalf = new AdvancedModelRenderer(this, 72, 0);
         this.leftCalf.mirror = true;
-        this.leftCalf.setRotationPoint(0.0F, 14.0F, -4.0F);
+        this.leftCalf.setPos(0.0F, 14.0F, -4.0F);
         this.leftCalf.addBox(-3.0F, 0.0F, 0.0F, 6, 10, 6, 0.0F);
         leftCalf.scaleChildren = true;
         setRotateAngle(leftCalf, 1.1838568316277536F, 0.0F, 0.0F);
         this.rightHand = new AdvancedModelRenderer(this, 0, 43);
-        this.rightHand.setRotationPoint(2.5F, 11.0F, 0.0F);
+        this.rightHand.setPos(2.5F, 11.0F, 0.0F);
         this.rightHand.addBox(-3.0F, 0.0F, -1.5F, 6, 8, 3, 0.0F);
         setRotateAngle(rightHand, 1.0471975511965976F, 0.6981317007977318F, 0.0F);
         this.headdress1 = new AdvancedModelRenderer(this, 27, 76);
-        this.headdress1.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.headdress1.setPos(0.0F, 0.0F, 0.0F);
         this.headdress1.addBox(-3.0F, -18.0F, 0.0F, 6, 12, 0, 0.0F);
         setRotateAngle(headdress1, 0.5235987755982988F, (float) Math.PI, 0.0F);
         this.leftThigh = new AdvancedModelRenderer(this, 39, 66);
         this.leftThigh.mirror = true;
-        this.leftThigh.setRotationPoint(8.5F, -4.0F, 4.0F);
+        this.leftThigh.setPos(8.5F, -4.0F, 4.0F);
         this.leftThigh.addBox(-4.0F, 0.0F, -4.0F, 8, 14, 8, 0.0F);
         leftThigh.scaleChildren = true;
         setRotateAngle(leftThigh, -1.3962634015954636F, -0.6108652381980153F, 0.0F);
         this.jaw = new AdvancedModelRenderer(this, 48, 109);
-        this.jaw.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.jaw.setPos(0.0F, 0.0F, 0.0F);
         this.jaw.addBox(-6.0F, 0.0F, 0.0F, 12, 4, 7, 0.01F);
         this.jaw.scaleChildren = true;
         this.leftLip = new AdvancedModelRenderer(this, 26, 120);
         this.leftLip.mirror = true;
-        this.leftLip.setRotationPoint(6.0F, 0.0F, 0.0F);
+        this.leftLip.setPos(6.0F, 0.0F, 0.0F);
         this.leftLip.addBox(-2.0F, 0.0F, -2.0F, 2, 2, 2, 0.0F);
         leftLip.scaleChildren = true;
         this.maskMouth = new AdvancedModelRenderer(this, 0, 0);
-        this.maskMouth.setRotationPoint(0.0F, 5.0F, 0.0F);
+        this.maskMouth.setPos(0.0F, 5.0F, 0.0F);
         this.maskMouth.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         maskMouth.scaleChildren = true;
         this.nose = new AdvancedModelRenderer(this, 34, 117);
-        this.nose.setRotationPoint(0.0F, -4.0F, 0.0F);
+        this.nose.setPos(0.0F, -4.0F, 0.0F);
         this.nose.addBox(-2.0F, 0.0F, 0.0F, 4, 7, 4, 0.0F);
         setRotateAngle(nose, -0.5235987755982988F, 0.0F, 0.0F);
         this.rightArmJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.rightArmJoint.setRotationPoint(-6.0F, -6.0F, 9.0F);
+        this.rightArmJoint.setPos(-6.0F, -6.0F, 9.0F);
         this.rightArmJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         rightArmJoint.scaleChildren = true;
         setRotateAngle(rightArmJoint, 0.2617993877991494F, 0.0F, 0.0F);
         this.leftArmJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.leftArmJoint.setRotationPoint(6.0F, -6.0F, 9.0F);
+        this.leftArmJoint.setPos(6.0F, -6.0F, 9.0F);
         this.leftArmJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         leftArmJoint.scaleChildren = true;
         setRotateAngle(leftArmJoint, 0.2617993877991494F, 0.0F, 0.0F);
         this.headdress7 = new AdvancedModelRenderer(this, 27, 76);
-        this.headdress7.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.headdress7.setPos(0.0F, 0.0F, 0.0F);
         this.headdress7.addBox(-3.0F, -18.0F, 0.0F, 6, 12, 0, 0.0F);
         setRotateAngle(headdress7, 0.5235987755982988F, (float) Math.PI, -2.0943951023931953F);
         this.rightLip = new AdvancedModelRenderer(this, 26, 120);
-        this.rightLip.setRotationPoint(-6.0F, 0.0F, 0.0F);
+        this.rightLip.setPos(-6.0F, 0.0F, 0.0F);
         this.rightLip.addBox(0.0F, 0.0F, -2.0F, 2, 2, 2, 0.0F);
         leftLip.scaleChildren = true;
         this.upperLip = new AdvancedModelRenderer(this, 50, 124);
-        this.upperLip.setRotationPoint(0.0F, 0.0F, -2.0F);
+        this.upperLip.setPos(0.0F, 0.0F, -2.0F);
         this.upperLip.addBox(-6.0F, -2.0F, 0.0F, 12, 2, 2, 0.0F);
         upperLip.scaleChildren = true;
         this.leftHand = new AdvancedModelRenderer(this, 0, 43);
         this.leftHand.mirror = true;
-        this.leftHand.setRotationPoint(-2.5F, 11.0F, 0.0F);
+        this.leftHand.setPos(-2.5F, 11.0F, 0.0F);
         this.leftHand.addBox(-3.0F, 0.0F, -1.5F, 6, 8, 3, 0.0F);
         setRotateAngle(leftHand, 1.0471975511965976F, -0.6981317007977318F, 0.0F);
         this.rightEar = new AdvancedModelRenderer(this, 38, 109);
-        this.rightEar.setRotationPoint(-6.0F, -2.0F, 0.0F);
+        this.rightEar.setPos(-6.0F, -2.0F, 0.0F);
         this.rightEar.addBox(-3.0F, 0.0F, 0.0F, 3, 6, 2, 0.0F);
         setRotateAngle(rightEar, 0.0F, 0.5235987755982988F, 0.0F);
         this.headJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.headJoint.setRotationPoint(0.0F, -6.0F, 0.0F);
+        this.headJoint.setPos(0.0F, -6.0F, 0.0F);
         this.headJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         headJoint.scaleChildren = true;
         setRotateAngle(headJoint, -0.3490658503988659F, 0.0F, 0.0F);
         this.headdress6 = new AdvancedModelRenderer(this, 27, 76);
         this.headdress6.mirror = true;
-        this.headdress6.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.headdress6.setPos(0.0F, 0.0F, 0.0F);
         this.headdress6.addBox(-3.0F, -18.0F, 0.0F, 6, 12, 0, 0.0F);
         setRotateAngle(headdress6, 0.5235987755982988F, (float) Math.PI, 2.0943951023931953F);
         this.chest = new AdvancedModelRenderer(this, 2, 38);
-        this.chest.setRotationPoint(0.0F, -16.0F, -7.0F);
+        this.chest.setPos(0.0F, -16.0F, -7.0F);
         this.chest.addBox(-9.5F, -8.0F, 0.0F, 19, 8, 16, 0.0F);
         chest.scaleChildren = true;
         setRotateAngle(chest, -0.2617993877991494F, 0.0F, 0.0F);
         this.leftEarring = new AdvancedModelRenderer(this, 0, 84);
         this.leftEarring.mirror = true;
-        this.leftEarring.setRotationPoint(2.5F, 6.0F, 1.0F);
+        this.leftEarring.setPos(2.5F, 6.0F, 1.0F);
         this.leftEarring.addBox(-2.0F, 0.0F, 0.0F, 4, 4, 0, 0.0F);
         this.maskFace = new AdvancedModelRenderer(this, 0, 97);
-        this.maskFace.setRotationPoint(0.0F, 0.0F, -2.0F);
+        this.maskFace.setPos(0.0F, 0.0F, -2.0F);
         this.maskFace.addBox(-6.0F, -6.0F, 0.0F, 12, 15, 7, 0.0F);
         maskFace.scaleChildren = true;
         this.head = new AdvancedModelRenderer(this, 0, 79);
-        this.head.setRotationPoint(0.0F, 0.0F, -1.0F);
+        this.head.setPos(0.0F, 0.0F, -1.0F);
         this.head.addBox(-4.5F, -9.0F, -4.5F, 9, 9, 9, 0.0F);
         head.scaleChildren = true;
         
         hair1 = new AdvancedModelRenderer(this, 79, 121);
-        hair1.setRotationPoint(0.0F, -9.0F, -1.0F);
+        hair1.setPos(0.0F, -9.0F, -1.0F);
         head.addChild(hair1);
         setRotateAngle(hair1, 0.3491F, 0.0F, 0.0F);
         hair1.addBox(-9.0F, 0.0F, 0.0F, 18, 0, 7, 0.0F, false);
 
         hair2 = new AdvancedModelRenderer(this, 79, 121);
-        hair2.setRotationPoint(0.0F, -9.0F, 2.0F);
+        hair2.setPos(0.0F, -9.0F, 2.0F);
         head.addChild(hair2);
         hair2.addBox(-9.0F, 0.0F, 0.0F, 18, 0, 7, 0.0F, false);
 
         hair3 = new AdvancedModelRenderer(this, 79, 121);
-        hair3.setRotationPoint(0.0F, -9.0F, 4.5F);
+        hair3.setPos(0.0F, -9.0F, 4.5F);
         head.addChild(hair3);
         setRotateAngle(hair3, -0.7854F, 0.0F, 0.0F);
         hair3.addBox(-9.0F, 0.0F, 0.0F, 18, 0, 7, 0.0F, false);
 
         hair4 = new AdvancedModelRenderer(this, 79, 121);
-        hair4.setRotationPoint(0.0F, -7.0F, 4.5F);
+        hair4.setPos(0.0F, -7.0F, 4.5F);
         head.addChild(hair4);
         setRotateAngle(hair4, -1.2654F, 0.0F, 0.0F);
         hair4.addBox(-9.0F, 0.0F, 0.0F, 18, 0, 7, 0.0F, false);
 
         jiggleController = new AdvancedModelRenderer(this, 0, 0);
-        jiggleController.setRotationPoint(0, 0, 0);
+        jiggleController.setPos(0, 0, 0);
         jawScaler = new AdvancedModelRenderer(this, 0, 0);
-        jawScaler.setRotationPoint(1, 0, 0);
+        jawScaler.setPos(1, 0, 0);
         mouthScalerX = new AdvancedModelRenderer(this, 0, 0);
-        mouthScalerX.setRotationPoint(1, 0, 0);
+        mouthScalerX.setPos(1, 0, 0);
         mouthScalerY = new AdvancedModelRenderer(this, 0, 0);
-        mouthScalerY.setRotationPoint(1, 0, 0);
+        mouthScalerY.setPos(1, 0, 0);
         bellyScaler = new AdvancedModelRenderer(this, 0, 0);
-        bellyScaler.setRotationPoint(1, 0, 0);
+        bellyScaler.setPos(1, 0, 0);
         lookController = new AdvancedModelRenderer(this, 0, 0);
-        lookController.setRotationPoint(1, 0, 0);
+        lookController.setPos(1, 0, 0);
         betweenHands = new AdvancedModelRenderer(this, 0, 0);
-        betweenHands.setRotationPoint(0F, 9F, -20F);
+        betweenHands.setPos(0F, 9F, -20F);
         this.upperLip.addChild(this.teethTop);
         this.head.addChild(this.maskBase);
         this.maskBase.addChild(this.leftEar);
@@ -356,7 +356,7 @@ public class ModelBarako<T extends EntityBarako> extends MowzieEntityModel<T> {
     }
 
     @Override
-    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         this.body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
@@ -373,18 +373,18 @@ public class ModelBarako<T extends EntityBarako> extends MowzieEntityModel<T> {
             swing(leftThigh, 0.06f, 0.05f * liftLegs, true, 0, 0, frame, 1f);
         }
 
-        leftThigh.rotateAngleX -= 0.7 * liftLegs;
-        rightThigh.rotateAngleX -= 0.7 * liftLegs;
-        leftThigh.rotateAngleZ += 1.5 * liftLegs;
-        rightThigh.rotateAngleZ -= 1.5 * liftLegs;
-        leftThigh.rotateAngleY += 0.55 * liftLegs;
-        rightThigh.rotateAngleY -= 0.55 * liftLegs;
+        leftThigh.xRot -= 0.7 * liftLegs;
+        rightThigh.xRot -= 0.7 * liftLegs;
+        leftThigh.zRot += 1.5 * liftLegs;
+        rightThigh.zRot -= 1.5 * liftLegs;
+        leftThigh.yRot += 0.55 * liftLegs;
+        rightThigh.yRot -= 0.55 * liftLegs;
     }
 
     @Override
     protected void animate(EntityBarako entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
-        headYaw = MathHelper.wrapDegrees(headYaw);
-        headPitch = MathHelper.wrapDegrees(headPitch);
+        headYaw = Mth.wrapDegrees(headYaw);
+        headPitch = Mth.wrapDegrees(headPitch);
         if (headYaw > 70) {
             headYaw = 70f;
         }
@@ -1047,16 +1047,16 @@ public class ModelBarako<T extends EntityBarako> extends MowzieEntityModel<T> {
             animator.endKeyframe();
             animator.setStaticKeyframe(100);
 
-            swing(rightArmJoint, 2f, 0.05f * jiggleController.rotationPointY, false, 0, 0, frame, 1);
-            swing(leftArmJoint, 2f, 0.05f * jiggleController.rotationPointY, true, 0, 0, frame, 1);
-            walk(rightArmJoint, 2f, 0.05f * jiggleController.rotationPointY, false, 0, 0, frame, 1);
-            walk(leftArmJoint, 2f, 0.05f * jiggleController.rotationPointY, false, 0, 0, frame, 1);
-            swing(neck, 0.5f, 0.1f * jiggleController.rotationPointY, false, 0, 0, frame, 1);
-            swing(head, 0.5f, 0.1f * jiggleController.rotationPointY, false, 0, 0, frame, 1);
-            walk(leftThigh, 0.5f, 0.15f * jiggleController.rotationPointY * (1 - liftLegs), false, 0, 0, frame, 1);
-            walk(rightThigh, 0.5f, 0.15f * jiggleController.rotationPointY * (1 - liftLegs), true, 0, 0, frame, 1);
-            flap(body, 0.5f, 0.05f * jiggleController.rotationPointY * (1 - liftLegs), true, 0, 0, frame, 1);
-            jawScaler.rotationPointX += 0.1 * jiggleController.rotationPointY * Math.cos(frame * 2);
+            swing(rightArmJoint, 2f, 0.05f * jiggleController.y, false, 0, 0, frame, 1);
+            swing(leftArmJoint, 2f, 0.05f * jiggleController.y, true, 0, 0, frame, 1);
+            walk(rightArmJoint, 2f, 0.05f * jiggleController.y, false, 0, 0, frame, 1);
+            walk(leftArmJoint, 2f, 0.05f * jiggleController.y, false, 0, 0, frame, 1);
+            swing(neck, 0.5f, 0.1f * jiggleController.y, false, 0, 0, frame, 1);
+            swing(head, 0.5f, 0.1f * jiggleController.y, false, 0, 0, frame, 1);
+            walk(leftThigh, 0.5f, 0.15f * jiggleController.y * (1 - liftLegs), false, 0, 0, frame, 1);
+            walk(rightThigh, 0.5f, 0.15f * jiggleController.y * (1 - liftLegs), true, 0, 0, frame, 1);
+            flap(body, 0.5f, 0.05f * jiggleController.y * (1 - liftLegs), true, 0, 0, frame, 1);
+            jawScaler.x += 0.1 * jiggleController.y * Math.cos(frame * 2);
         }
 
         if (entity.getAnimation() == EntityBarako.BLESS_ANIMATION) {
@@ -1085,7 +1085,7 @@ public class ModelBarako<T extends EntityBarako> extends MowzieEntityModel<T> {
             animator.setStaticKeyframe(30);
             animator.resetKeyframe(15);
 
-            jawScaler.rotationPointX += 0.1 * jiggleController.rotationPointY * Math.cos(frame * 1.5);
+            jawScaler.x += 0.1 * jiggleController.y * Math.cos(frame * 1.5);
         }
 
         if (entity.getAnimation() == EntityBarako.HURT_ANIMATION) {
@@ -1199,33 +1199,33 @@ public class ModelBarako<T extends EntityBarako> extends MowzieEntityModel<T> {
             animator.endKeyframe();
             animator.resetKeyframe(10);
 
-            jawScaler.rotationPointX += 0.1 * jiggleController.rotationPointY * Math.cos(frame * 2.5);
+            jawScaler.x += 0.1 * jiggleController.y * Math.cos(frame * 2.5);
 
             animator.rotate(rightArmJoint, 0, -0.5f, 0.2f);
             animator.rotate(rightLowerArm, -0.1f, 0, -0.3f);
             animator.rotate(rightHand, -2.5f, -0.5f, -0.1f);
-            rightArmJoint.rotateAngleY -= 0.07 * jiggleController.rotationPointZ * Math.cos(frame * 3.2);
-            rightLowerArm.rotateAngleZ += 0.07 * jiggleController.rotationPointZ * Math.cos(frame * 3.2);
-            leftArmJoint.rotateAngleY += 0.07 * jiggleController.rotationPointZ * Math.cos(frame * 3.2);
-            leftLowerArm.rotateAngleZ -= 0.07 * jiggleController.rotationPointZ * Math.cos(frame * 3.2);
+            rightArmJoint.yRot -= 0.07 * jiggleController.z * Math.cos(frame * 3.2);
+            rightLowerArm.zRot += 0.07 * jiggleController.z * Math.cos(frame * 3.2);
+            leftArmJoint.yRot += 0.07 * jiggleController.z * Math.cos(frame * 3.2);
+            leftLowerArm.zRot -= 0.07 * jiggleController.z * Math.cos(frame * 3.2);
         }
 
         float jiggleSpeed = 2.5f;
-        float jiggleScale = (float) (jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame));
+        float jiggleScale = (float) (jiggleController.x * 0.1 * Math.cos(jiggleSpeed * frame));
         float breathScale = (float) (0.05 + 0.02 * Math.cos(0.06 * frame));
-        float scaler = bellyScaler.rotationPointX + jiggleScale + breathScale;
+        float scaler = bellyScaler.x + jiggleScale + breathScale;
         if (entity.getAnimation() == EntityBarako.ATTACK_ANIMATION || entity.getAnimation() == EntityBarako.SOLAR_BEAM_ANIMATION) {
-            headdress1.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame);
-            headdress2.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame);
-            headdress3.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame);
-            headdress4.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame);
-            headdress5.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame);
-            headdress6.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame);
-            headdress7.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame);
+            headdress1.xRot += jiggleController.x * 0.1 * Math.cos(jiggleSpeed * frame);
+            headdress2.xRot += jiggleController.x * 0.1 * Math.cos(jiggleSpeed * frame);
+            headdress3.xRot += jiggleController.x * 0.1 * Math.cos(jiggleSpeed * frame);
+            headdress4.xRot += jiggleController.x * 0.1 * Math.cos(jiggleSpeed * frame);
+            headdress5.xRot += jiggleController.x * 0.1 * Math.cos(jiggleSpeed * frame);
+            headdress6.xRot += jiggleController.x * 0.1 * Math.cos(jiggleSpeed * frame);
+            headdress7.xRot += jiggleController.x * 0.1 * Math.cos(jiggleSpeed * frame);
         }
         FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
         if (!(frozenCapability != null && frozenCapability.getFrozen()) || entity.getAnimation() == EntityBarako.DIE_ANIMATION) {
-            body.setScale(scaler * (1 - bellyScaler.rotationPointY), scaler * (1 - bellyScaler.rotationPointY), scaler * (1 - bellyScaler.rotationPointY));
+            body.setScale(scaler * (1 - bellyScaler.y), scaler * (1 - bellyScaler.y), scaler * (1 - bellyScaler.y));
             chest.setScale(1 / scaler, 1 / scaler, 1 / scaler);
             rightThigh.setScale(1 / scaler, 1 / scaler, 1 / scaler);
             leftThigh.setScale(1 / scaler, 1 / scaler, 1 / scaler);
@@ -1238,31 +1238,31 @@ public class ModelBarako<T extends EntityBarako> extends MowzieEntityModel<T> {
         }
 
         if (entity.getAnimation() != EntityBarako.SOLAR_BEAM_ANIMATION) {
-            faceTarget(headYaw * lookController.rotationPointX, headPitch * lookController.rotationPointX, 2.0F, neckJoint);
-            faceTarget(headYaw * lookController.rotationPointX, headPitch * lookController.rotationPointX, 2.0F, headJoint);
+            faceTarget(headYaw * lookController.x, headPitch * lookController.x, 2.0F, neckJoint);
+            faceTarget(headYaw * lookController.x, headPitch * lookController.x, 2.0F, headJoint);
         } else {
             faceTarget(headYaw, headPitch, 1.0F, head);
         }
 
-        chest.rotationPointY += jiggleController.rotationPointX * 1.5 * Math.cos(jiggleSpeed * frame);
-        chest.rotationPointZ += jiggleController.rotationPointX * 0.7 * Math.cos(jiggleSpeed * frame);
-        leftThigh.rotationPointX -= jiggleController.rotationPointX * 0.75 * Math.cos(jiggleSpeed * frame);
-        rightThigh.rotationPointX += jiggleController.rotationPointX * 0.75 * Math.cos(jiggleSpeed * frame);
-        leftThigh.rotationPointZ -= jiggleController.rotationPointX * 0.5 * Math.cos(jiggleSpeed * frame);
-        rightThigh.rotationPointZ -= jiggleController.rotationPointX * 0.5 * Math.cos(jiggleSpeed * frame);
-        leftThigh.rotationPointY += jiggleController.rotationPointX * 0.3 * Math.cos(jiggleSpeed * frame);
-        rightThigh.rotationPointY += jiggleController.rotationPointX * 0.3 * Math.cos(jiggleSpeed * frame);
-        body.rotationPointZ -= jiggleController.rotationPointX * 2 * Math.cos(jiggleSpeed * frame);
-        chest.rotationPointZ += jiggleController.rotationPointX * 2 * Math.cos(jiggleSpeed * frame);
-        leftThigh.rotationPointZ += jiggleController.rotationPointX * 2 * Math.cos(jiggleSpeed * frame);
-        rightThigh.rotationPointZ += jiggleController.rotationPointX * 2 * Math.cos(jiggleSpeed * frame);
+        chest.y += jiggleController.x * 1.5 * Math.cos(jiggleSpeed * frame);
+        chest.z += jiggleController.x * 0.7 * Math.cos(jiggleSpeed * frame);
+        leftThigh.x -= jiggleController.x * 0.75 * Math.cos(jiggleSpeed * frame);
+        rightThigh.x += jiggleController.x * 0.75 * Math.cos(jiggleSpeed * frame);
+        leftThigh.z -= jiggleController.x * 0.5 * Math.cos(jiggleSpeed * frame);
+        rightThigh.z -= jiggleController.x * 0.5 * Math.cos(jiggleSpeed * frame);
+        leftThigh.y += jiggleController.x * 0.3 * Math.cos(jiggleSpeed * frame);
+        rightThigh.y += jiggleController.x * 0.3 * Math.cos(jiggleSpeed * frame);
+        body.z -= jiggleController.x * 2 * Math.cos(jiggleSpeed * frame);
+        chest.z += jiggleController.x * 2 * Math.cos(jiggleSpeed * frame);
+        leftThigh.z += jiggleController.x * 2 * Math.cos(jiggleSpeed * frame);
+        rightThigh.z += jiggleController.x * 2 * Math.cos(jiggleSpeed * frame);
 
-        mouthScalerY.rotationPointX += eyebrows * 0.5f;
-        mouthScalerX.rotationPointX += eyebrows * 0.3f;
+        mouthScalerY.x += eyebrows * 0.5f;
+        mouthScalerX.x += eyebrows * 0.3f;
 
-        float jawScale = (float) (jawScaler.rotationPointX + 0.15 * jawScaler.rotationPointY * Math.cos(frame * 2.5));//(float) (1 + 1 * Math.pow(Math.sin(frame * 0.3), 2));
-        float mouthScaleX = mouthScalerX.rotationPointX;//(float) (1 - 0.25 * Math.pow(Math.sin(frame * 0.17), 2));
-        float mouthScaleY = mouthScalerY.rotationPointX;//(float) (1 - 0.25 * Math.pow(Math.sin(frame * 0.17), 2));
+        float jawScale = (float) (jawScaler.x + 0.15 * jawScaler.y * Math.cos(frame * 2.5));//(float) (1 + 1 * Math.pow(Math.sin(frame * 0.3), 2));
+        float mouthScaleX = mouthScalerX.x;//(float) (1 - 0.25 * Math.pow(Math.sin(frame * 0.17), 2));
+        float mouthScaleY = mouthScalerY.x;//(float) (1 - 0.25 * Math.pow(Math.sin(frame * 0.17), 2));
         float foreheadScale = (float) (1f + 0.25 * eyebrows);
         jaw.setScale(jaw.scaleX, jawScale, jaw.scaleZ);
         lowerLip.setScale(lowerLip.scaleX, 1 / jawScale, lowerLip.scaleZ);
@@ -1270,7 +1270,7 @@ public class ModelBarako<T extends EntityBarako> extends MowzieEntityModel<T> {
         rightLip.setScale(1 / mouthScaleX, 1 / jawScale * (jawScale * 4 - 2) / 2, rightLip.scaleZ);
         maskMouth.setScale(mouthScaleX, mouthScaleY, maskMouth.scaleZ);
         forehead.setScale(forehead.scaleX, foreheadScale, forehead.scaleZ);
-        maskBase.setScale(1 / (1 - bellyScaler.rotationPointY), 1 / (1 - bellyScaler.rotationPointY), 1 / (1 - bellyScaler.rotationPointY));
+        maskBase.setScale(1 / (1 - bellyScaler.y), 1 / (1 - bellyScaler.y), 1 / (1 - bellyScaler.y));
     }
 
     private void spawnAnimation(float liftLegs) {

@@ -10,21 +10,21 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.text.event.HoverEvent;
 
-public final class GuiBarakoTrade extends ContainerScreen<ContainerBarakoTrade> implements InventoryBarako.ChangeListener {
+public final class GuiBarakoTrade extends AbstractContainerScreen<ContainerBarakoTrade> implements InventoryBarako.ChangeListener {
     private static final ResourceLocation TEXTURE_TRADE = new ResourceLocation(MowziesMobs.MODID, "textures/gui/container/barako_trade.png");
     private static final ResourceLocation TEXTURE_REPLENISH = new ResourceLocation(MowziesMobs.MODID, "textures/gui/container/barako_replenish.png");
 
@@ -38,7 +38,7 @@ public final class GuiBarakoTrade extends ContainerScreen<ContainerBarakoTrade> 
 
     private boolean hasTraded;
 
-    public GuiBarakoTrade(ContainerBarakoTrade screenContainer, PlayerInventory inv, ITextComponent titleIn) {
+    public GuiBarakoTrade(ContainerBarakoTrade screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         this.barako = screenContainer.getBarako();
         this.inventory = screenContainer.getInventoryBarako();
@@ -50,8 +50,8 @@ public final class GuiBarakoTrade extends ContainerScreen<ContainerBarakoTrade> 
     protected void init() {
         super.init();
         buttons.clear();
-        String text = I18n.format(hasTraded ? "entity.mowziesmobs.barako.replenish.button.text" : "entity.mowziesmobs.barako.trade.button.text");
-        grantButton = addButton(new Button(guiLeft + 115, guiTop + 52, 56, 20, new TranslationTextComponent(text), this::actionPerformed));
+        String text = I18n.get(hasTraded ? "entity.mowziesmobs.barako.replenish.button.text" : "entity.mowziesmobs.barako.trade.button.text");
+        grantButton = addButton(new Button(leftPos + 115, topPos + 52, 56, 20, new TranslatableComponent(text), this::actionPerformed));
         grantButton.active = hasTraded;
         updateButton();
     }
@@ -61,13 +61,13 @@ public final class GuiBarakoTrade extends ContainerScreen<ContainerBarakoTrade> 
             hasTraded = true;
             updateButton();
             MowziesMobs.NETWORK.sendToServer(new MessageBarakoTrade(barako));
-            if (!Minecraft.getInstance().isIntegratedServerRunning()) {
-                PlayerEntity player = playerInventory.player;
+            if (!Minecraft.getInstance().isLocalServer()) {
+                Player player = inventory.player;
                 boolean satisfied = barako.hasTradedWith(player);
                 if (!satisfied) {
-                    if (barako.fulfillDesire(container.getSlot(0))) {
+                    if (barako.fulfillDesire(menu.getSlot(0))) {
                         barako.rememberTrade(player);
-                        container.detectAndSendChanges();
+                        menu.broadcastChanges();
                     }
                 }
             }
@@ -75,51 +75,51 @@ public final class GuiBarakoTrade extends ContainerScreen<ContainerBarakoTrade> 
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int x, int y) {
+    protected void renderBg(MatrixStack matrixStack, float partialTicks, int x, int y) {
         RenderSystem.color3f(1, 1, 1);
-        minecraft.getTextureManager().bindTexture(hasTraded ? TEXTURE_REPLENISH : TEXTURE_TRADE);
-        blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize);
-        InventoryScreen.drawEntityOnScreen(guiLeft + 33, guiTop + 56, 14, 0, 0, barako);
+        minecraft.getTextureManager().bind(hasTraded ? TEXTURE_REPLENISH : TEXTURE_TRADE);
+        blit(matrixStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        InventoryScreen.renderEntityInInventory(leftPos + 33, topPos + 56, 14, 0, 0, barako);
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int x, int y) {
-        String title = I18n.format("entity.mowziesmobs.barako.trade");
-        font.drawString(matrixStack, title, (xSize / 2f - font.getStringWidth(title) / 2f) + 30, 6, 0x404040);
-        font.drawString(matrixStack, I18n.format("container.inventory"), 8, ySize - 96 + 2, 0x404040);
+    protected void renderLabels(MatrixStack matrixStack, int x, int y) {
+        String title = I18n.get("entity.mowziesmobs.barako.trade");
+        font.draw(matrixStack, title, (imageWidth / 2f - font.width(title) / 2f) + 30, 6, 0x404040);
+        font.draw(matrixStack, I18n.get("container.inventory"), 8, imageHeight - 96 + 2, 0x404040);
     }
 
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
-        ItemStack inSlot = inventory.getStackInSlot(0);
-        matrixStack.push();
-        RenderHelper.enableStandardItemLighting();
+        this.renderTooltip(matrixStack, mouseX, mouseY);
+        ItemStack inSlot = inventory.getItem(0);
+        matrixStack.pushPose();
+        RenderHelper.turnBackOn();
         RenderSystem.disableLighting();
         RenderSystem.enableRescaleNormal();
         RenderSystem.enableColorMaterial();
         RenderSystem.enableLighting();
-        itemRenderer.zLevel = 100;
+        itemRenderer.blitOffset = 100;
         if (hasTraded) {
-            itemRenderer.renderItemAndEffectIntoGUI(output, guiLeft + 106, guiTop + 24);
-            itemRenderer.renderItemOverlays(font, output, guiLeft + 106, guiTop + 24);
-            if (isPointInRegion(106, 24, 16, 16, mouseX, mouseY)) {
+            itemRenderer.renderAndDecorateItem(output, leftPos + 106, topPos + 24);
+            itemRenderer.renderGuiItemDecorations(font, output, leftPos + 106, topPos + 24);
+            if (isHovering(106, 24, 16, 16, mouseX, mouseY)) {
                 renderTooltip(matrixStack, output, mouseX, mouseY);
             }
         }
         else {
-            itemRenderer.renderItemAndEffectIntoGUI(barako.getDesires(), guiLeft + 68, guiTop + 24);
-            itemRenderer.renderItemOverlays(font, barako.getDesires(), guiLeft + 68, guiTop + 24);
-            itemRenderer.renderItemAndEffectIntoGUI(output, guiLeft + 134, guiTop + 24);
-            itemRenderer.renderItemOverlays(font, output, guiLeft + 134, guiTop + 24);
-            if (isPointInRegion(68, 24, 16, 16, mouseX, mouseY)) {
+            itemRenderer.renderAndDecorateItem(barako.getDesires(), leftPos + 68, topPos + 24);
+            itemRenderer.renderGuiItemDecorations(font, barako.getDesires(), leftPos + 68, topPos + 24);
+            itemRenderer.renderAndDecorateItem(output, leftPos + 134, topPos + 24);
+            itemRenderer.renderGuiItemDecorations(font, output, leftPos + 134, topPos + 24);
+            if (isHovering(68, 24, 16, 16, mouseX, mouseY)) {
                 renderTooltip(matrixStack, barako.getDesires(), mouseX, mouseY);
-            } else if (isPointInRegion(134, 24, 16, 16, mouseX, mouseY)) {
+            } else if (isHovering(134, 24, 16, 16, mouseX, mouseY)) {
                 renderTooltip(matrixStack, output, mouseX, mouseY);
             }
         }
-        itemRenderer.zLevel = 0;
+        itemRenderer.blitOffset = 0;
         RenderSystem.disableLighting();
 
         if (grantButton.isMouseOver(mouseX, mouseY)) {
@@ -127,28 +127,28 @@ public final class GuiBarakoTrade extends ContainerScreen<ContainerBarakoTrade> 
         }
         RenderSystem.enableLighting();
         RenderSystem.enableDepthTest();
-        RenderHelper.enableStandardItemLighting();
-        matrixStack.pop();
+        RenderHelper.turnBackOn();
+        matrixStack.popPose();
     }
 
     @Override
 	public void onChange(IInventory inv) {
-        grantButton.active = hasTraded || barako.doesItemSatisfyDesire(inv.getStackInSlot(0));
+        grantButton.active = hasTraded || barako.doesItemSatisfyDesire(inv.getItem(0));
 	}
 
     private void updateButton() {
         if (hasTraded) {
-            grantButton.setMessage(new TranslationTextComponent(I18n.format("entity.mowziesmobs.barako.replenish.button.text")));
+            grantButton.setMessage(new TranslationTextComponent(I18n.get("entity.mowziesmobs.barako.replenish.button.text")));
             grantButton.setWidth(108);
-            grantButton.x = guiLeft + 63;
+            grantButton.x = leftPos + 63;
         }
         else {
-            grantButton.setMessage(new TranslationTextComponent(I18n.format("entity.mowziesmobs.barako.trade.button.text")));
+            grantButton.setMessage(new TranslationTextComponent(I18n.get("entity.mowziesmobs.barako.trade.button.text")));
         }
     }
 
     private Style getHoverText() {
-        TranslationTextComponent text = new TranslationTextComponent(I18n.format(hasTraded ? "entity.mowziesmobs.barako.replenish.button.hover" : "entity.mowziesmobs.barako.trade.button.hover"));
-        return text.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, text));
+        TranslationTextComponent text = new TranslationTextComponent(I18n.get(hasTraded ? "entity.mowziesmobs.barako.replenish.button.hover" : "entity.mowziesmobs.barako.trade.button.hover"));
+        return text.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, text));
     }
 }

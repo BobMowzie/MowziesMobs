@@ -1,29 +1,31 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.world.server.ServerBossInfo;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerBossEvent;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-public class MMBossInfoServer extends ServerBossInfo {
+import net.minecraft.world.BossEvent.BossBarOverlay;
+
+public class MMBossInfoServer extends ServerBossEvent {
     private final MowzieEntity entity;
 
-    private final Set<ServerPlayerEntity> unseen = new HashSet<>();
+    private final Set<ServerPlayer> unseen = new HashSet<>();
 
     public MMBossInfoServer(MowzieEntity entity) {
-        super(entity.getDisplayName(), entity.bossBarColor(), Overlay.PROGRESS);
+        super(entity.getDisplayName(), entity.bossBarColor(), BossBarOverlay.PROGRESS);
         this.setVisible(entity.hasBossBar());
         this.entity = entity;
     }
 
     public void update() {
         this.setPercent(this.entity.getHealth() / this.entity.getMaxHealth());
-        Iterator<ServerPlayerEntity> it = this.unseen.iterator();
+        Iterator<ServerPlayer> it = this.unseen.iterator();
         while (it.hasNext()) {
-            ServerPlayerEntity player = it.next();
-            if (this.entity.getEntitySenses().canSee(player)) {
+            ServerPlayer player = it.next();
+            if (this.entity.getSensing().canSee(player)) {
                 super.addPlayer(player);
                 it.remove();
             }
@@ -31,8 +33,8 @@ public class MMBossInfoServer extends ServerBossInfo {
     }
 
     @Override
-    public void addPlayer(ServerPlayerEntity player) {
-        if (this.entity.getEntitySenses().canSee(player)) {
+    public void addPlayer(ServerPlayer player) {
+        if (this.entity.getSensing().canSee(player)) {
             super.addPlayer(player);
         } else {
             this.unseen.add(player);
@@ -40,7 +42,7 @@ public class MMBossInfoServer extends ServerBossInfo {
     }
 
     @Override
-    public void removePlayer(ServerPlayerEntity player) {
+    public void removePlayer(ServerPlayer player) {
         super.removePlayer(player);
         this.unseen.remove(player);
     }

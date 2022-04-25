@@ -12,40 +12,48 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.*;
-import net.minecraft.block.material.PushReaction;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.monster.CreeperEntity;
-import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.potion.Effects;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.server.level.ServerLevel;
 
-public class EntityFoliaath extends MowzieEntity implements IMob {
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.world.level.block.state.BlockState;
+
+public class EntityFoliaath extends MowzieEntity implements Enemy {
     public static final Animation DIE_ANIMATION = Animation.create(50);
     public static final Animation HURT_ANIMATION = Animation.create(10);
     public static final Animation ATTACK_ANIMATION = Animation.create(14);
-    private static final DataParameter<Boolean> CAN_DESPAWN = EntityDataManager.createKey(EntityFoliaath.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Integer> ACTIVATE_TARGET = EntityDataManager.createKey(EntityFoliaath.class, DataSerializers.VARINT);
+    private static final EntityDataAccessor<Boolean> CAN_DESPAWN = SynchedEntityData.defineId(EntityFoliaath.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> ACTIVATE_TARGET = SynchedEntityData.defineId(EntityFoliaath.class, EntityDataSerializers.INT);
     private static final int ACTIVATE_DURATION = 30;
-    public IntermittentAnimation<EntityFoliaath> openMouth = new IntermittentAnimation<>(this, 15, 30, 50, !world.isRemote);
+    public IntermittentAnimation<EntityFoliaath> openMouth = new IntermittentAnimation<>(this, 15, 30, 50, !level.isClientSide);
     public ControlledAnimation activate = new ControlledAnimation(ACTIVATE_DURATION);
     public ControlledAnimation deathFlail = new ControlledAnimation(5);
     public ControlledAnimation stopDance = new ControlledAnimation(10);
@@ -55,29 +63,29 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     private double prevActivate;
     private int activateTarget;
 
-    public EntityFoliaath(EntityType<? extends EntityFoliaath> type, World world) {
+    public EntityFoliaath(EntityType<? extends EntityFoliaath> type, Level world) {
         super(type, world);
-        this.experienceValue = 5;
+        this.xpReward = 5;
         this.addIntermittentAnimation(openMouth);
     }
 
-    protected boolean canTriggerWalking() {
+    protected boolean isMovementNoisy() {
         return false;
     }
 
     @Override
-    public PushReaction getPushReaction() {
+    public PushReaction getPistonPushReaction() {
         return PushReaction.IGNORE;
     }
 
     @Override
-    public boolean isPushedByWater() {
+    public boolean isPushedByFluid() {
         return false;
     }
 
     @Override
-    public void addVelocity(double x, double y, double z) {
-        super.addVelocity(0, y, 0);
+    public void push(double x, double y, double z) {
+        super.push(0, y, 0);
     }
 
     @Override
@@ -87,28 +95,28 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         this.goalSelector.addGoal(1, new AnimationTakeDamage<>(this));
         this.goalSelector.addGoal(1, new AnimationDieAI<>(this));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, LivingEntity.class, 0, true, false, e ->
-                (CreatureEntity.class.isAssignableFrom(e.getClass()) || e instanceof PlayerEntity) && !(e instanceof EntityFoliaath || e instanceof EntityBabyFoliaath || e instanceof CreeperEntity)) {
+                (PathfinderMob.class.isAssignableFrom(e.getClass()) || e instanceof Player) && !(e instanceof EntityFoliaath || e instanceof EntityBabyFoliaath || e instanceof Creeper)) {
                     @Override
-                    public boolean shouldContinueExecuting() {
-                        findNearestTarget();
-                        if (nearestTarget != getAttackTarget()) return false;
-                        return super.shouldContinueExecuting();
+                    public boolean canContinueToUse() {
+                        findTarget();
+                        if (target != getTarget()) return false;
+                        return super.canContinueToUse();
                     }
                 }
         );
     }
 
     @Override
-    protected void registerData() {
-        super.registerData();
-        getDataManager().register(CAN_DESPAWN, true);
-        getDataManager().register(ACTIVATE_TARGET, 0);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        getEntityData().define(CAN_DESPAWN, true);
+        getEntityData().define(ACTIVATE_TARGET, 0);
     }
 
-    public static AttributeModifierMap.MutableAttribute createAttributes() {
-        return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 8)
-                .createMutableAttribute(Attributes.MAX_HEALTH, 10)
-                .createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1);
+    public static AttributeSupplier.Builder createAttributes() {
+        return MowzieEntity.createAttributes().add(Attributes.ATTACK_DAMAGE, 8)
+                .add(Attributes.MAX_HEALTH, 10)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 1);
     }
 
     @Override
@@ -122,7 +130,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     }
 
     @Override
-    public boolean canBePushed() {
+    public boolean isPushable() {
         return false;
     }
 
@@ -133,7 +141,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         deathFlail.updatePrevTimer();
         stopDance.updatePrevTimer();
         openMouth.updatePrevTimer();
-        setMotion(0, getMotion().y, 0);
+        setDeltaMovement(0, getDeltaMovement().y, 0);
         // Open mouth animation
         if (getAnimation() == NO_ANIMATION && !activate.canIncreaseTimer()) {
             openMouth.update();
@@ -172,7 +180,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         prevOpenMouth = openMouthTime;
 
         int activateTime = activate.getTimer();
-        if (!world.isRemote) {
+        if (!level.isClientSide) {
             SoundEvent sound = null;
             if (prevActivate - activateTime < 0) {
                 switch (activateTime) {
@@ -201,28 +209,28 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         prevActivate = activateTime;
 
         // Targetting, attacking, and activating
-        renderYawOffset = 0;
-        rotationYaw = 0;
+        yBodyRot = 0;
+        yRot = 0;
 
-        if (resettingTargetTimer > 0 && !world.isRemote) {
-            rotationYawHead = prevRotationYawHead;
+        if (resettingTargetTimer > 0 && !level.isClientSide) {
+            yHeadRot = yHeadRotO;
         }
 
-        if (getAttackTarget() != null) {
-            rotationYawHead = targetAngle;
+        if (getTarget() != null) {
+            yHeadRot = targetAngle;
 
-            if (targetDistance <= 4 && getAttackTarget().getPosY() - getPosY() >= -1 && getAttackTarget().getPosY() - getPosY() <= 2 && getAnimation() == NO_ANIMATION && active) {
+            if (targetDistance <= 4 && getTarget().getY() - getY() >= -1 && getTarget().getY() - getY() <= 2 && getAnimation() == NO_ANIMATION && active) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_ANIMATION);
             }
 
-            if (targetDistance <= 10.5 && getAttackTarget().getPosY() - getPosY() >= -1.5 && getAttackTarget().getPosY() - getPosY() <= 2) {
+            if (targetDistance <= 10.5 && getTarget().getY() - getY() >= -1.5 && getTarget().getY() - getY() <= 2) {
                 setActivateTarget(ACTIVATE_DURATION);
                 lastTimeDecrease = 0;
             } else if (lastTimeDecrease <= 30 && getAnimation() == NO_ANIMATION) {
                 setActivateTarget(0);
                 lastTimeDecrease++;
             }
-        } else if (!world.isRemote && lastTimeDecrease <= 30 && getAnimation() == NO_ANIMATION && resettingTargetTimer == 0) {
+        } else if (!level.isClientSide && lastTimeDecrease <= 30 && getAnimation() == NO_ANIMATION && resettingTargetTimer == 0) {
             setActivateTarget(0);
             lastTimeDecrease++;
         }
@@ -247,16 +255,16 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
             activate.increaseTimer(activateTime < activateTarget ? 1 : -2);
         }
 
-        if (!this.world.isRemote && this.world.getDifficulty() == Difficulty.PEACEFUL)
+        if (!this.level.isClientSide && this.level.getDifficulty() == Difficulty.PEACEFUL)
         {
             this.remove();
         }
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource damageSource, float amount) {
+    public boolean hurt(DamageSource damageSource, float amount) {
         openMouth.resetTimeRunning();
-        return (damageSource.canHarmInCreative() || active) && super.attackEntityFrom(damageSource, amount);
+        return (damageSource.isBypassInvul() || active) && super.hurt(damageSource, amount);
     }
 
     @Override
@@ -270,7 +278,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean isPickable() {
         return true;
     }
 
@@ -285,53 +293,53 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     }
 
     @Override
-    public boolean canSpawn(IWorld world, SpawnReason reason) {
-        Biome biome = world.getBiome(getPosition());
-        int i = MathHelper.floor(this.getPosX());
-        int j = MathHelper.floor(this.getBoundingBox().minY);
-        int k = MathHelper.floor(this.getPosZ());
+    public boolean checkSpawnRules(LevelAccessor world, MobSpawnType reason) {
+        Biome biome = world.getBiome(blockPosition());
+        int i = Mth.floor(this.getX());
+        int j = Mth.floor(this.getBoundingBox().minY);
+        int k = Mth.floor(this.getZ());
         BlockPos pos = new BlockPos(i, j, k);
-        Block floor = world.getBlockState(pos.down()).getBlock();
-        BlockState floorDown1 = world.getBlockState(pos.down(2));
-        BlockState floorDown2 = world.getBlockState(pos.down(3));
+        Block floor = world.getBlockState(pos.below()).getBlock();
+        BlockState floorDown1 = world.getBlockState(pos.below(2));
+        BlockState floorDown2 = world.getBlockState(pos.below(3));
         boolean notInTree = true;
-        BlockState topBlock = biome.getGenerationSettings().getSurfaceBuilder().get().getConfig().getTop();
+        BlockState topBlock = biome.getGenerationSettings().getSurfaceBuilder().get().config().getTopMaterial();
         if (floor instanceof LeavesBlock && floorDown1 != topBlock && floorDown2 != topBlock) notInTree = false;
-        return super.canSpawn(world, reason) && notInTree && getEntitiesNearby(AnimalEntity.class, 5, 5, 5, 5).isEmpty() && world.getDifficulty() != Difficulty.PEACEFUL;
+        return super.checkSpawnRules(world, reason) && notInTree && getEntitiesNearby(Animal.class, 5, 5, 5, 5).isEmpty() && world.getDifficulty() != Difficulty.PEACEFUL;
     }
 
     @Override
-    public void onKillEntity(ServerWorld world, LivingEntity killedEntity) {
-        this.addPotionEffect(new EffectInstance(Effects.REGENERATION, 300, 1, true, true));
-        super.onKillEntity(world, killedEntity);
+    public void killed(ServerLevel world, LivingEntity killedEntity) {
+        this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 300, 1, true, true));
+        super.killed(world, killedEntity);
     }
 
     @Override
-    public boolean preventDespawn() {
-        return !getDataManager().get(CAN_DESPAWN);
+    public boolean requiresCustomPersistence() {
+        return !getEntityData().get(CAN_DESPAWN);
     }
 
     public void setCanDespawn(boolean canDespawn) {
-        getDataManager().set(CAN_DESPAWN, canDespawn);
+        getEntityData().set(CAN_DESPAWN, canDespawn);
     }
 
     public int getActivateTarget() {
-        return getDataManager().get(ACTIVATE_TARGET);
+        return getEntityData().get(ACTIVATE_TARGET);
     }
 
     public void setActivateTarget(int activateTarget) {
-        getDataManager().set(ACTIVATE_TARGET, activateTarget);
+        getEntityData().set(ACTIVATE_TARGET, activateTarget);
     }
 
     @Override
-    public void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
-        compound.putBoolean("canDespawn", getDataManager().get(CAN_DESPAWN));
+    public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
+        compound.putBoolean("canDespawn", getEntityData().get(CAN_DESPAWN));
     }
 
     @Override
-    public void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
         setCanDespawn(compound.getBoolean("canDespawn"));
     }
 
@@ -346,7 +354,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     }
 
     @Override
-    protected ResourceLocation getLootTable() {
+    protected ResourceLocation getDefaultLootTable() {
         return LootTableHandler.FOLIAATH;
     }
 }

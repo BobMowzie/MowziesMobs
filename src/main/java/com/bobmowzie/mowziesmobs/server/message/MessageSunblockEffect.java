@@ -4,9 +4,9 @@ import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.LivingCapability;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
@@ -24,16 +24,16 @@ public class MessageSunblockEffect {
     }
 
     public MessageSunblockEffect(LivingEntity entity, boolean activate) {
-        entityID = entity.getEntityId();
+        entityID = entity.getId();
         this.hasSunblock = activate;
     }
 
-    public static void serialize(final MessageSunblockEffect message, final PacketBuffer buf) {
+    public static void serialize(final MessageSunblockEffect message, final FriendlyByteBuf buf) {
         buf.writeVarInt(message.entityID);
         buf.writeBoolean(message.hasSunblock);
     }
 
-    public static MessageSunblockEffect deserialize(final PacketBuffer buf) {
+    public static MessageSunblockEffect deserialize(final FriendlyByteBuf buf) {
         final MessageSunblockEffect message = new MessageSunblockEffect();
         message.entityID = buf.readVarInt();
         message.hasSunblock = buf.readBoolean();
@@ -45,8 +45,8 @@ public class MessageSunblockEffect {
         public void accept(final MessageSunblockEffect message, final Supplier<NetworkEvent.Context> contextSupplier) {
             final NetworkEvent.Context context = contextSupplier.get();
             context.enqueueWork(() -> {
-                if (Minecraft.getInstance().world != null) {
-                    Entity entity = Minecraft.getInstance().world.getEntityByID(message.entityID);
+                if (Minecraft.getInstance().level != null) {
+                    Entity entity = Minecraft.getInstance().level.getEntity(message.entityID);
                     if (entity instanceof LivingEntity) {
                         LivingEntity living = (LivingEntity) entity;
                         LivingCapability.ILivingCapability livingCapability = CapabilityHandler.getCapability(living, LivingCapability.LivingProvider.LIVING_CAPABILITY);

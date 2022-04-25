@@ -1,8 +1,8 @@
 package com.bobmowzie.mowziesmobs.client.model.tools;
 
 import com.bobmowzie.mowziesmobs.server.entity.IntermittentAnimatableEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.util.Mth;
 
 import java.util.Random;
 
@@ -133,7 +133,7 @@ public class IntermittentAnimation<T extends Entity & IntermittentAnimatableEnti
             } else {
                 if (rand.nextInt(startProbability) == 0) {
                     start();
-                    entity.world.setEntityState(entity, (byte) (entity.getOffsetEntityState() + id));
+                    entity.level.broadcastEntityEvent(entity, (byte) (entity.getOffsetEntityState() + id));
                 }
             }
         }
@@ -218,7 +218,7 @@ public class IntermittentAnimation<T extends Entity & IntermittentAnimatableEnti
      * 1.0F using a sine function. It is fast in the beginning and slow in the end.
      */
     public float getAnimationProgressSin() {
-        return MathHelper.sin(1.57079632679F * getAnimationFraction());
+        return Mth.sin(1.57079632679F * getAnimationFraction());
     }
 
     /**
@@ -226,12 +226,12 @@ public class IntermittentAnimation<T extends Entity & IntermittentAnimatableEnti
      * 1.0F using a sine function squared. It is very smooth.
      */
     public float getAnimationProgressSinSqrt() {
-        float result = MathHelper.sin(1.57079632679F * getAnimationFraction());
+        float result = Mth.sin(1.57079632679F * getAnimationFraction());
         return result * result;
     }
 
     public float getAnimationProgressSinSqrt(float partialTicks) {
-        float result = MathHelper.sin(1.57079632679F * getAnimationFraction(partialTicks));
+        float result = Mth.sin(1.57079632679F * getAnimationFraction(partialTicks));
         return result * result;
     }
 
@@ -240,21 +240,21 @@ public class IntermittentAnimation<T extends Entity & IntermittentAnimatableEnti
      * 1.0F using a sine function to the power of ten. It is slow in the beginning and fast in the end.
      */
     public float getAnimationProgressSinToTen() {
-        return (float) Math.pow(MathHelper.sin(1.57079632679F * getAnimationFraction()), 10);
+        return (float) Math.pow(Mth.sin(1.57079632679F * getAnimationFraction()), 10);
     }
 
     public float getAnimationProgressSinToTenWithoutReturn() {
         if (runDirection == -1) {
-            return MathHelper.sin(1.57079632679F * getAnimationFraction()) * MathHelper.sin(1.57079632679F * getAnimationFraction());
+            return Mth.sin(1.57079632679F * getAnimationFraction()) * Mth.sin(1.57079632679F * getAnimationFraction());
         }
-        return (float) Math.pow(MathHelper.sin(1.57079632679F * getAnimationFraction()), 10);
+        return (float) Math.pow(Mth.sin(1.57079632679F * getAnimationFraction()), 10);
     }
 
     public float getAnimationProgressSinToTenWithoutReturn(float partialTicks) {
         if (runDirection == -1) {
-            return MathHelper.sin(1.57079632679F * getAnimationFraction(partialTicks)) * MathHelper.sin(1.57079632679F * getAnimationFraction(partialTicks));
+            return Mth.sin(1.57079632679F * getAnimationFraction(partialTicks)) * Mth.sin(1.57079632679F * getAnimationFraction(partialTicks));
         }
-        return (float) Math.pow(MathHelper.sin(1.57079632679F * getAnimationFraction(partialTicks)), 10);
+        return (float) Math.pow(Mth.sin(1.57079632679F * getAnimationFraction(partialTicks)), 10);
     }
 
     /**
@@ -264,7 +264,7 @@ public class IntermittentAnimation<T extends Entity & IntermittentAnimatableEnti
      * @param i is the power of the sine function.
      */
     public float getAnimationProgressSinPowerOf(int i) {
-        return (float) Math.pow(MathHelper.sin(1.57079632679F * getAnimationFraction()), i);
+        return (float) Math.pow(Mth.sin(1.57079632679F * getAnimationFraction()), i);
     }
 
     /**
@@ -315,7 +315,7 @@ public class IntermittentAnimation<T extends Entity & IntermittentAnimatableEnti
      */
     public float getAnimationProgressTemporary() {
         float x = 6.28318530718F * getAnimationFraction();
-        return 0.5F - 0.5F * MathHelper.cos(x + MathHelper.sin(x));
+        return 0.5F - 0.5F * Mth.cos(x + Mth.sin(x));
     }
 
     /**
@@ -325,7 +325,7 @@ public class IntermittentAnimation<T extends Entity & IntermittentAnimatableEnti
      */
     public float getAnimationProgressTemporaryFS() {
         float x = 3.14159265359F * getAnimationFraction();
-        return MathHelper.sin(x + MathHelper.sin(x));
+        return Mth.sin(x + Mth.sin(x));
     }
 
     /**
@@ -335,7 +335,7 @@ public class IntermittentAnimation<T extends Entity & IntermittentAnimatableEnti
      */
     public float getAnimationProgressTemporaryInvesed() {
         float x = 6.28318530718F * getAnimationFraction();
-        return 0.5F + 0.5F * MathHelper.cos(x + MathHelper.sin(x));
+        return 0.5F + 0.5F * Mth.cos(x + Mth.sin(x));
     }
 
     public void updatePrevTimer() {

@@ -4,9 +4,9 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGrottol;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Created by BobMowzie on 5/8/2017.
@@ -14,17 +14,17 @@ import net.minecraft.util.ResourceLocation;
 public class RenderGrottol extends MobRenderer<EntityGrottol, ModelGrottol<EntityGrottol>> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/grottol.png");
 
-    public RenderGrottol(EntityRendererManager mgr) {
+    public RenderGrottol(EntityRenderDispatcher mgr) {
         super(mgr, new ModelGrottol<>(), 0.6f);
     }
 
     @Override
-    protected float getDeathMaxRotation(EntityGrottol entity) {
+    protected float getFlipDegrees(EntityGrottol entity) {
         return 0;
     }
 
     @Override
-    public ResourceLocation getEntityTexture(EntityGrottol entity) {
+    public ResourceLocation getTextureLocation(EntityGrottol entity) {
         return RenderGrottol.TEXTURE;
     }
 

@@ -1,10 +1,10 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa.trade;
 
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import java.util.Random;
@@ -39,9 +39,9 @@ public final class TradeStore {
         return null;
     }
 
-    public CompoundNBT serialize() {
-        CompoundNBT compound = new CompoundNBT();
-        ListNBT tradesList = new ListNBT();
+    public CompoundTag serialize() {
+        CompoundTag compound = new CompoundTag();
+        ListTag tradesList = new ListTag();
         for (Trade trade : trades) {
             tradesList.add(trade.serialize());
         }
@@ -49,8 +49,8 @@ public final class TradeStore {
         return compound;
     }
 
-    public static TradeStore deserialize(CompoundNBT compound) {
-        ListNBT tradesList = compound.getList("trades", NBT.TAG_COMPOUND);
+    public static TradeStore deserialize(CompoundTag compound) {
+        ListTag tradesList = compound.getList("trades", NBT.TAG_COMPOUND);
         int totalWeight = 0;
         ImmutableSet.Builder<Trade> trades = new ImmutableSet.Builder<>();
         for (int i = 0; i < tradesList.size(); i++) {
@@ -72,7 +72,7 @@ public final class TradeStore {
             return addTrade(input, inputCount, null, output, outputCount, null, weight);
         }
 
-        public Builder addTrade(Item input, int inputCount, CompoundNBT inputMeta, Item output, int outputCount, CompoundNBT outputMeta, int weight) {
+        public Builder addTrade(Item input, int inputCount, CompoundTag inputMeta, Item output, int outputCount, CompoundTag outputMeta, int weight) {
             return addTrade(new ItemStack(input, inputCount, inputMeta), new ItemStack(output, outputCount, outputMeta), weight);
         }
 

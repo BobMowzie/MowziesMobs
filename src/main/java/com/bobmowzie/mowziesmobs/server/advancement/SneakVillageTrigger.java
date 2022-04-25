@@ -3,14 +3,14 @@ package com.bobmowzie.mowziesmobs.server.advancement;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import net.minecraft.advancements.PlayerAdvancements;
-import net.minecraft.advancements.criterion.CriterionInstance;
-import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.loot.ConditionArrayParser;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.server.PlayerAdvancements;
+import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.resources.ResourceLocation;
 
-public class SneakVillageTrigger extends MMTrigger<CriterionInstance, SneakVillageTrigger.Listener> {
+public class SneakVillageTrigger extends MMTrigger<AbstractCriterionTriggerInstance, SneakVillageTrigger.Listener> {
     public static final ResourceLocation ID = new ResourceLocation(MowziesMobs.MODID, "sneak_village");
 
     public SneakVillageTrigger() {
@@ -27,12 +27,12 @@ public class SneakVillageTrigger extends MMTrigger<CriterionInstance, SneakVilla
     }
 
     @Override
-    public CriterionInstance deserialize(JsonObject object, ConditionArrayParser conditions) {
-        EntityPredicate.AndPredicate player = EntityPredicate.AndPredicate.deserializeJSONObject(object, "player", conditions);
+    public AbstractCriterionTriggerInstance createInstance(JsonObject object, DeserializationContext conditions) {
+        EntityPredicate.Composite player = EntityPredicate.Composite.fromJson(object, "player", conditions);
         return new SneakVillageTrigger.Instance(player);
     }
 
-    public void trigger(ServerPlayerEntity player) {
+    public void trigger(ServerPlayer player) {
         SneakVillageTrigger.Listener listeners = this.listeners.get(player.getAdvancements());
 
         if (listeners != null) {
@@ -40,19 +40,19 @@ public class SneakVillageTrigger extends MMTrigger<CriterionInstance, SneakVilla
         }
     }
 
-    static class Listener extends MMTrigger.Listener<CriterionInstance> {
+    static class Listener extends MMTrigger.Listener<AbstractCriterionTriggerInstance> {
 
         public Listener(PlayerAdvancements playerAdvancementsIn) {
             super(playerAdvancementsIn);
         }
 
         public void trigger() {
-            this.listeners.stream().findFirst().ifPresent(listener -> listener.grantCriterion(this.playerAdvancements));
+            this.listeners.stream().findFirst().ifPresent(listener -> listener.run(this.playerAdvancements));
         }
     }
 
-    public static class Instance extends CriterionInstance {
-        public Instance(EntityPredicate.AndPredicate player) {
+    public static class Instance extends AbstractCriterionTriggerInstance {
+        public Instance(EntityPredicate.Composite player) {
             super(SneakVillageTrigger.ID, player);
         }
     }

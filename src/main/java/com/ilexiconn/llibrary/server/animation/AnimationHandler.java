@@ -3,7 +3,7 @@ package com.ilexiconn.llibrary.server.animation;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.ilexiconn.llibrary.server.event.AnimationEvent;
 import com.ilexiconn.llibrary.server.network.AnimationMessage;
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -24,11 +24,11 @@ public enum AnimationHandler {
      * @param <T>       the entity type
      */
     public <T extends Entity & IAnimatedEntity> void sendAnimationMessage(T entity, Animation animation) {
-        if (entity.world.isRemote) {
+        if (entity.level.isClientSide) {
             return;
         }
         entity.setAnimation(animation);
-        MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new AnimationMessage(entity.getEntityId(), ArrayUtils.indexOf(entity.getAnimations(), animation)));
+        MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new AnimationMessage(entity.getId(), ArrayUtils.indexOf(entity.getAnimations(), animation)));
     }
 
     /**

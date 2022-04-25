@@ -1,19 +1,19 @@
 package com.bobmowzie.mowziesmobs.server.ai;
 
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.AvoidEntityGoal;
-import net.minecraft.entity.passive.TameableEntity;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
+import net.minecraft.world.entity.TamableAnimal;
 
 public class AvoidEntityIfNotTamedGoal<T extends LivingEntity> extends AvoidEntityGoal<T> {
-    public AvoidEntityIfNotTamedGoal(CreatureEntity entityIn, Class classToAvoidIn, float avoidDistanceIn, double farSpeedIn, double nearSpeedIn) {
+    public AvoidEntityIfNotTamedGoal(PathfinderMob entityIn, Class classToAvoidIn, float avoidDistanceIn, double farSpeedIn, double nearSpeedIn) {
         super(entityIn, classToAvoidIn, avoidDistanceIn, farSpeedIn, nearSpeedIn);
     }
 
     @Override
-    public boolean shouldExecute() {
+    public boolean canUse() {
         boolean isTamed;
-        isTamed = entity instanceof TameableEntity && ((TameableEntity) entity).isTamed();
-        return super.shouldExecute() && !isTamed;
+        isTamed = mob instanceof TamableAnimal && ((TamableAnimal) mob).isTame();
+        return super.canUse() && !isTamed;
     }
 }

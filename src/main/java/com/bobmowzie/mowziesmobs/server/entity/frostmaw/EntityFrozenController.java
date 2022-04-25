@@ -1,25 +1,25 @@
 package com.bobmowzie.mowziesmobs.server.entity.frostmaw;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 /**
  * Created by BobMowzie on 7/20/2017.
  */
 public class EntityFrozenController extends Entity {
-    public EntityFrozenController(EntityType<? extends EntityFrozenController> type, World world) {
+    public EntityFrozenController(EntityType<? extends EntityFrozenController> type, Level world) {
         super(type, world);
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (!world.isRemote && ticksExisted >= 70 && !isBeingRidden()) remove();
+        if (!level.isClientSide && tickCount >= 70 && !isVehicle()) remove();
 //        List<Entity> passengers = getPassengers();
 //        for (Entity passenger : passengers) {
 //            if (passenger instanceof LivingEntity) {
@@ -30,17 +30,17 @@ public class EntityFrozenController extends Entity {
     }
 
     @Override
-    protected void registerData() {
+    protected void defineSynchedData() {
 
     }
 
     @Override
-    protected void readAdditional(CompoundNBT compound) {
+    protected void readAdditionalSaveData(CompoundTag compound) {
 
     }
 
     @Override
-    protected void writeAdditional(CompoundNBT compound) {
+    protected void addAdditionalSaveData(CompoundTag compound) {
 
     }
 
@@ -55,12 +55,12 @@ public class EntityFrozenController extends Entity {
     }
 
     @Override
-    public double getMountedYOffset() {
+    public double getPassengersRidingOffset() {
         return 0;
     }
 
     @Override
-    public IPacket<?> createSpawnPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
@@ -70,11 +70,11 @@ public class EntityFrozenController extends Entity {
     }
 
     @Override
-    public void updatePassenger(Entity passenger) {
-        if (this.isPassenger(passenger))
+    public void positionRider(Entity passenger) {
+        if (this.hasPassenger(passenger))
         {
-            if (passenger instanceof PlayerEntity) passenger.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
-            else passenger.setPositionAndRotation(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, this.rotationPitch);
+            if (passenger instanceof Player) passenger.setPos(this.getX(), this.getY(), this.getZ());
+            else passenger.absMoveTo(this.getX(), this.getY(), this.getZ(), this.yRot, this.xRot);
         }
     }
 }

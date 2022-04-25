@@ -7,7 +7,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.pathfinding.PathPoint;
-import net.minecraft.pathfinding.WalkNodeProcessor;
+import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -16,7 +16,7 @@ import net.minecraft.util.math.MathHelper;
 import javax.annotation.Nullable;
 import java.util.Set;
 
-public class MMWalkNodeProcessor extends WalkNodeProcessor {
+public class MMWalkNodeProcessor extends WalkNodeEvaluator {
     /*@Override
     public PathPoint getStart() {
         int y;

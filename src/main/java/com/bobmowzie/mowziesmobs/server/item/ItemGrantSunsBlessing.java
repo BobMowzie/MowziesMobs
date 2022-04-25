@@ -2,16 +2,16 @@ package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -25,26 +25,26 @@ public class ItemGrantSunsBlessing extends Item {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand hand) {
-        playerIn.addPotionEffect(new EffectInstance(EffectHandler.SUNS_BLESSING, ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.effectDuration.get() * 60 * 20, 0, false, false));
-        return super.onItemRightClick(worldIn, playerIn, hand);
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand hand) {
+        playerIn.addEffect(new MobEffectInstance(EffectHandler.SUNS_BLESSING, ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.effectDuration.get() * 60 * 20, 0, false, false));
+        return super.use(worldIn, playerIn, hand);
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         int effectDuration = ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.effectDuration.get();
         int solarBeamCost = ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.solarBeamCost.get();
         tooltip.add(
-                new TranslationTextComponent(getTranslationKey() + ".text.0")
-                .appendString(" " + effectDuration + " ")
-                .appendSibling(new TranslationTextComponent(getTranslationKey() + ".text.1")).setStyle(ItemHandler.TOOLTIP_STYLE)
+                new TranslatableComponent(getDescriptionId() + ".text.0")
+                .append(" " + effectDuration + " ")
+                .append(new TranslatableComponent(getDescriptionId() + ".text.1")).setStyle(ItemHandler.TOOLTIP_STYLE)
         );
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.2").setStyle(ItemHandler.TOOLTIP_STYLE));
+        tooltip.add(new TranslatableComponent(getDescriptionId() + ".text.2").setStyle(ItemHandler.TOOLTIP_STYLE));
         tooltip.add(
-                new TranslationTextComponent(getTranslationKey() + ".text.3")
-                .appendString(" " + solarBeamCost + " ")
-                .appendSibling(new TranslationTextComponent(getTranslationKey() + ".text.4")).setStyle(ItemHandler.TOOLTIP_STYLE)
+                new TranslatableComponent(getDescriptionId() + ".text.3")
+                .append(" " + solarBeamCost + " ")
+                .append(new TranslatableComponent(getDescriptionId() + ".text.4")).setStyle(ItemHandler.TOOLTIP_STYLE)
         );
     }
 }

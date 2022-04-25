@@ -5,50 +5,50 @@ import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.math.vector.Vector3d;
 
-public class ModelBipedAnimated<T extends LivingEntity> extends BipedModel<T> {
+public class ModelBipedAnimated<T extends LivingEntity> extends HumanoidModel<T> {
     public ModelBipedAnimated(float modelSize) {
         super(modelSize);
-        this.bipedBody = new ModelRendererMatrix(bipedBody);
-        this.bipedHead = new ModelRendererMatrix(bipedHead);
-        this.bipedRightArm = new ModelRendererMatrix(bipedRightArm);
-        this.bipedLeftArm = new ModelRendererMatrix(bipedLeftArm);
-        this.bipedRightLeg = new ModelRendererMatrix(bipedRightLeg);
-        this.bipedLeftLeg = new ModelRendererMatrix(bipedLeftLeg);
+        this.body = new ModelRendererMatrix(body);
+        this.head = new ModelRendererMatrix(head);
+        this.rightArm = new ModelRendererMatrix(rightArm);
+        this.leftArm = new ModelRendererMatrix(leftArm);
+        this.rightLeg = new ModelRendererMatrix(rightLeg);
+        this.leftLeg = new ModelRendererMatrix(leftLeg);
     }
 
-    public static void copyFromGeckoModel(BipedModel<?> bipedModel, ModelGeckoPlayerThirdPerson geckoModel) {
-        ((ModelRendererMatrix)bipedModel.bipedBody).setWorldXform(geckoModel.bipedBody().getWorldSpaceXform());
-        ((ModelRendererMatrix)bipedModel.bipedBody).setWorldNormal(geckoModel.bipedBody().getWorldSpaceNormal());
+    public static void copyFromGeckoModel(HumanoidModel<?> bipedModel, ModelGeckoPlayerThirdPerson geckoModel) {
+        ((ModelRendererMatrix)bipedModel.body).setWorldXform(geckoModel.bipedBody().getWorldSpaceXform());
+        ((ModelRendererMatrix)bipedModel.body).setWorldNormal(geckoModel.bipedBody().getWorldSpaceNormal());
         
-        ((ModelRendererMatrix)bipedModel.bipedHead).setWorldXform(geckoModel.bipedHead().getWorldSpaceXform());
-        ((ModelRendererMatrix)bipedModel.bipedHead).setWorldNormal(geckoModel.bipedHead().getWorldSpaceNormal());
+        ((ModelRendererMatrix)bipedModel.head).setWorldXform(geckoModel.bipedHead().getWorldSpaceXform());
+        ((ModelRendererMatrix)bipedModel.head).setWorldNormal(geckoModel.bipedHead().getWorldSpaceNormal());
 
-        ((ModelRendererMatrix)bipedModel.bipedLeftLeg).setWorldXform(geckoModel.bipedLeftLeg().getWorldSpaceXform());
-        ((ModelRendererMatrix)bipedModel.bipedLeftLeg).setWorldNormal(geckoModel.bipedLeftLeg().getWorldSpaceNormal());
+        ((ModelRendererMatrix)bipedModel.leftLeg).setWorldXform(geckoModel.bipedLeftLeg().getWorldSpaceXform());
+        ((ModelRendererMatrix)bipedModel.leftLeg).setWorldNormal(geckoModel.bipedLeftLeg().getWorldSpaceNormal());
 
-        ((ModelRendererMatrix)bipedModel.bipedRightLeg).setWorldXform(geckoModel.bipedRightLeg().getWorldSpaceXform());
-        ((ModelRendererMatrix)bipedModel.bipedRightLeg).setWorldNormal(geckoModel.bipedRightLeg().getWorldSpaceNormal());
+        ((ModelRendererMatrix)bipedModel.rightLeg).setWorldXform(geckoModel.bipedRightLeg().getWorldSpaceXform());
+        ((ModelRendererMatrix)bipedModel.rightLeg).setWorldNormal(geckoModel.bipedRightLeg().getWorldSpaceNormal());
 
-        ((ModelRendererMatrix)bipedModel.bipedRightArm).setWorldXform(geckoModel.bipedRightArm().getWorldSpaceXform());
-        ((ModelRendererMatrix)bipedModel.bipedRightArm).setWorldNormal(geckoModel.bipedRightArm().getWorldSpaceNormal());
+        ((ModelRendererMatrix)bipedModel.rightArm).setWorldXform(geckoModel.bipedRightArm().getWorldSpaceXform());
+        ((ModelRendererMatrix)bipedModel.rightArm).setWorldNormal(geckoModel.bipedRightArm().getWorldSpaceNormal());
 
-        ((ModelRendererMatrix)bipedModel.bipedLeftArm).setWorldXform(geckoModel.bipedLeftArm().getWorldSpaceXform());
-        ((ModelRendererMatrix)bipedModel.bipedLeftArm).setWorldNormal(geckoModel.bipedLeftArm().getWorldSpaceNormal());
+        ((ModelRendererMatrix)bipedModel.leftArm).setWorldXform(geckoModel.bipedLeftArm().getWorldSpaceXform());
+        ((ModelRendererMatrix)bipedModel.leftArm).setWorldNormal(geckoModel.bipedLeftArm().getWorldSpaceNormal());
     }
 
-    public static void setUseMatrixMode(BipedModel<? extends LivingEntity> bipedModel, boolean useMatrixMode) {
-        ((ModelRendererMatrix)bipedModel.bipedBody).setUseMatrixMode(useMatrixMode);
-        ((ModelRendererMatrix)bipedModel.bipedHead).setUseMatrixMode(useMatrixMode);
-        ((ModelRendererMatrix)bipedModel.bipedLeftLeg).setUseMatrixMode(useMatrixMode);
-        ((ModelRendererMatrix)bipedModel.bipedRightLeg).setUseMatrixMode(useMatrixMode);
-        ((ModelRendererMatrix)bipedModel.bipedRightArm).setUseMatrixMode(useMatrixMode);
-        ((ModelRendererMatrix)bipedModel.bipedLeftArm).setUseMatrixMode(useMatrixMode);
+    public static void setUseMatrixMode(HumanoidModel<? extends LivingEntity> bipedModel, boolean useMatrixMode) {
+        ((ModelRendererMatrix)bipedModel.body).setUseMatrixMode(useMatrixMode);
+        ((ModelRendererMatrix)bipedModel.head).setUseMatrixMode(useMatrixMode);
+        ((ModelRendererMatrix)bipedModel.leftLeg).setUseMatrixMode(useMatrixMode);
+        ((ModelRendererMatrix)bipedModel.rightLeg).setUseMatrixMode(useMatrixMode);
+        ((ModelRendererMatrix)bipedModel.rightArm).setUseMatrixMode(useMatrixMode);
+        ((ModelRendererMatrix)bipedModel.leftArm).setUseMatrixMode(useMatrixMode);
     }
 }

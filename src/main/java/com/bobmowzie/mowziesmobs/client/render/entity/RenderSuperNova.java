@@ -4,16 +4,16 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelSuperNova;
 import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySuperNova;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class RenderSuperNova extends EntityRenderer<EntitySuperNova> {
     public static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/effects/super_nova.png");
@@ -37,23 +37,23 @@ public class RenderSuperNova extends EntityRenderer<EntitySuperNova> {
     };
     public ModelSuperNova model;
 
-    public RenderSuperNova(EntityRendererManager mgr) {
+    public RenderSuperNova(EntityRenderDispatcher mgr) {
         super(mgr);
         model = new ModelSuperNova();
     }
 
     @Override
-    public ResourceLocation getEntityTexture(EntitySuperNova entity) {
-        int index = entity.ticksExisted % TEXTURES.length;
+    public ResourceLocation getTextureLocation(EntitySuperNova entity) {
+        int index = entity.tickCount % TEXTURES.length;
         return TEXTURES[index];
     }
 
     @Override
-    public void render(EntitySuperNova entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        matrixStackIn.push();
-        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(MMRenderType.getGlowingEffect(this.getEntityTexture(entityIn)));
-        model.setRotationAngles(entityIn, 0, 0, entityIn.ticksExisted + partialTicks, 0, 0);
-        model.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
-        matrixStackIn.pop();
+    public void render(EntitySuperNova entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
+        matrixStackIn.pushPose();
+        VertexConsumer ivertexbuilder = bufferIn.getBuffer(MMRenderType.getGlowingEffect(this.getTextureLocation(entityIn)));
+        model.setupAnim(entityIn, 0, 0, entityIn.tickCount + partialTicks, 0, 0);
+        model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
+        matrixStackIn.popPose();
     }
 }

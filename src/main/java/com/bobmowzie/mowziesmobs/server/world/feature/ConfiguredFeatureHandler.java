@@ -3,28 +3,28 @@ package com.bobmowzie.mowziesmobs.server.world.feature;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.world.BiomeChecker;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.WorldGenRegistries;
-import net.minecraft.world.gen.FlatGenerationSettings;
-import net.minecraft.world.gen.feature.IFeatureConfig;
-import net.minecraft.world.gen.feature.StructureFeature;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.world.level.levelgen.flat.FlatLevelGeneratorSettings;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 
 public class ConfiguredFeatureHandler {
-    public static StructureFeature<?, ?> CONFIGURED_WROUGHT_CHAMBER = FeatureHandler.WROUGHTNAUT_CHAMBER.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG);
-    public static StructureFeature<?, ?> CONFIGURED_BARAKOA_VILLAGE = FeatureHandler.BARAKOA_VILLAGE.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG);
-    public static StructureFeature<?, ?> CONFIGURED_FROSTMAW = FeatureHandler.FROSTMAW.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG);
+    public static ConfiguredStructureFeature<?, ?> CONFIGURED_WROUGHT_CHAMBER = FeatureHandler.WROUGHTNAUT_CHAMBER.get().configured(FeatureConfiguration.NONE);
+    public static ConfiguredStructureFeature<?, ?> CONFIGURED_BARAKOA_VILLAGE = FeatureHandler.BARAKOA_VILLAGE.get().configured(FeatureConfiguration.NONE);
+    public static ConfiguredStructureFeature<?, ?> CONFIGURED_FROSTMAW = FeatureHandler.FROSTMAW.get().configured(FeatureConfiguration.NONE);
 
     public static void registerConfiguredStructures() {
-        Registry<StructureFeature<?, ?>> registry = WorldGenRegistries.CONFIGURED_STRUCTURE_FEATURE;
+        Registry<ConfiguredStructureFeature<?, ?>> registry = BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE;
         Registry.register(registry, new ResourceLocation(MowziesMobs.MODID, "configured_wrought_chamber"), CONFIGURED_WROUGHT_CHAMBER);
         Registry.register(registry, new ResourceLocation(MowziesMobs.MODID, "configured_barakoa_village"), CONFIGURED_BARAKOA_VILLAGE);
         Registry.register(registry, new ResourceLocation(MowziesMobs.MODID, "configured_frostmaw_spawn"), CONFIGURED_FROSTMAW);
 
-        FlatGenerationSettings.STRUCTURES.put(FeatureHandler.WROUGHTNAUT_CHAMBER.get(), CONFIGURED_WROUGHT_CHAMBER);
-        FlatGenerationSettings.STRUCTURES.put(FeatureHandler.BARAKOA_VILLAGE.get(), CONFIGURED_BARAKOA_VILLAGE);
-        FlatGenerationSettings.STRUCTURES.put(FeatureHandler.FROSTMAW.get(), CONFIGURED_FROSTMAW);
+        FlatLevelGeneratorSettings.STRUCTURE_FEATURES.put(FeatureHandler.WROUGHTNAUT_CHAMBER.get(), CONFIGURED_WROUGHT_CHAMBER);
+        FlatLevelGeneratorSettings.STRUCTURE_FEATURES.put(FeatureHandler.BARAKOA_VILLAGE.get(), CONFIGURED_BARAKOA_VILLAGE);
+        FlatLevelGeneratorSettings.STRUCTURE_FEATURES.put(FeatureHandler.FROSTMAW.get(), CONFIGURED_FROSTMAW);
     }
 
     public static void onBiomeLoading(BiomeLoadingEvent event) {

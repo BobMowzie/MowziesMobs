@@ -1,76 +1,76 @@
 package com.bobmowzie.mowziesmobs.server.ai;
 
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import net.minecraft.block.BlockState;
-import net.minecraft.pathfinding.GroundPathNavigator;
-import net.minecraft.pathfinding.Path;
-import net.minecraft.pathfinding.PathFinder;
-import net.minecraft.pathfinding.PathNodeType;
-import net.minecraft.pathfinding.PathType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.level.pathfinder.PathFinder;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 
 import java.util.Objects;
 
-public class MMPathNavigateGround extends GroundPathNavigator {
-    public MMPathNavigateGround(MowzieEntity entity, World world) {
+public class MMPathNavigateGround extends GroundPathNavigation {
+    public MMPathNavigateGround(MowzieEntity entity, Level world) {
         super(entity, world);
     }
 
     @Override
-    protected PathFinder getPathFinder(int maxVisitedNodes) {
-        this.nodeProcessor = new MMWalkNodeProcessor();
-        this.nodeProcessor.setCanEnterDoors(true);
-        return new MMPathFinder(this.nodeProcessor, maxVisitedNodes);
+    protected PathFinder createPathFinder(int maxVisitedNodes) {
+        this.nodeEvaluator = new MMWalkNodeProcessor();
+        this.nodeEvaluator.setCanPassDoors(true);
+        return new MMPathFinder(this.nodeEvaluator, maxVisitedNodes);
     }
 
     @Override
-    protected void pathFollow() {
-        Path path = Objects.requireNonNull(this.currentPath);
-        Vector3d entityPos = this.getEntityPosition();
-        int pathLength = path.getCurrentPathLength();
-        for (int i = path.getCurrentPathIndex(); i < path.getCurrentPathLength(); i++) {
-            if (path.getPathPointFromIndex(i).y != Math.floor(entityPos.y)) {
+    protected void followThePath() {
+        Path path = Objects.requireNonNull(this.path);
+        Vec3 entityPos = this.getTempMobPos();
+        int pathLength = path.getNodeCount();
+        for (int i = path.getNextNodeIndex(); i < path.getNodeCount(); i++) {
+            if (path.getNode(i).y != Math.floor(entityPos.y)) {
                 pathLength = i;
                 break;
             }
         }
-        final Vector3d base = entityPos.add(-this.entity.getWidth() * 0.5F, 0.0F, -this.entity.getWidth() * 0.5F);
-        final Vector3d max = base.add(this.entity.getWidth(), this.entity.getHeight(), this.entity.getWidth());
-        if (this.tryShortcut(path, new Vector3d(this.entity.getPosX(), this.entity.getPosY(), this.entity.getPosZ()), pathLength, base, max)) {
-            if (this.isAt(path, 0.5F) || this.atElevationChange(path) && this.isAt(path, this.entity.getWidth() * 0.5F)) {
-                path.setCurrentPathIndex(path.getCurrentPathIndex() + 1);
+        final Vec3 base = entityPos.add(-this.mob.getBbWidth() * 0.5F, 0.0F, -this.mob.getBbWidth() * 0.5F);
+        final Vec3 max = base.add(this.mob.getBbWidth(), this.mob.getBbHeight(), this.mob.getBbWidth());
+        if (this.tryShortcut(path, new Vec3(this.mob.getX(), this.mob.getY(), this.mob.getZ()), pathLength, base, max)) {
+            if (this.isAt(path, 0.5F) || this.atElevationChange(path) && this.isAt(path, this.mob.getBbWidth() * 0.5F)) {
+                path.setNextNodeIndex(path.getNextNodeIndex() + 1);
             }
         }
-        this.checkForStuck(entityPos);
+        this.doStuckDetection(entityPos);
     }
 
     private boolean isAt(Path path, float threshold) {
-        final Vector3d pathPos = path.getPosition(this.entity);
-        return MathHelper.abs((float) (this.entity.getPosX() - pathPos.x)) < threshold &&
-                MathHelper.abs((float) (this.entity.getPosZ() - pathPos.z)) < threshold &&
-                Math.abs(this.entity.getPosY() - pathPos.y) < 1.0D;
+        final Vec3 pathPos = path.getNextEntityPos(this.mob);
+        return Mth.abs((float) (this.mob.getX() - pathPos.x)) < threshold &&
+                Mth.abs((float) (this.mob.getZ() - pathPos.z)) < threshold &&
+                Math.abs(this.mob.getY() - pathPos.y) < 1.0D;
     }
 
     private boolean atElevationChange(Path path) {
-        final int curr = path.getCurrentPathIndex();
-        final int end = Math.min(path.getCurrentPathLength(), curr + MathHelper.ceil(this.entity.getWidth() * 0.5F) + 1);
-        final int currY = path.getPathPointFromIndex(curr).y;
+        final int curr = path.getNextNodeIndex();
+        final int end = Math.min(path.getNodeCount(), curr + Mth.ceil(this.mob.getBbWidth() * 0.5F) + 1);
+        final int currY = path.getNode(curr).y;
         for (int i = curr + 1; i < end; i++) {
-            if (path.getPathPointFromIndex(i).y != currY) {
+            if (path.getNode(i).y != currY) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean tryShortcut(Path path, Vector3d entityPos, int pathLength, Vector3d base, Vector3d max) {
-        for (int i = pathLength; --i > path.getCurrentPathIndex(); ) {
-            final Vector3d vec = path.getVectorFromIndex(this.entity, i).subtract(entityPos);
+    private boolean tryShortcut(Path path, Vec3 entityPos, int pathLength, Vec3 base, Vec3 max) {
+        for (int i = pathLength; --i > path.getNextNodeIndex(); ) {
+            final Vec3 vec = path.getEntityPosAtNode(this.mob, i).subtract(entityPos);
             if (this.sweep(vec, base, max)) {
-                path.setCurrentPathIndex(i);
+                path.setNextNodeIndex(i);
                 return false;
             }
         }
@@ -78,14 +78,14 @@ public class MMPathNavigateGround extends GroundPathNavigator {
     }
 
     @Override
-    protected boolean isDirectPathBetweenPoints(Vector3d start, Vector3d end, int sizeX, int sizeY, int sizeZ) {
+    protected boolean canMoveDirectly(Vec3 start, Vec3 end, int sizeX, int sizeY, int sizeZ) {
         return true;
     }
 
     static final float EPSILON = 1.0E-8F;
 
     // Based off of https://github.com/andyhall/voxel-aabb-sweep/blob/d3ef85b19c10e4c9d2395c186f9661b052c50dc7/index.js
-    private boolean sweep(Vector3d vec, Vector3d base, Vector3d max) {
+    private boolean sweep(Vec3 vec, Vec3 base, Vec3 max) {
         float t = 0.0F;
         float max_t = (float) vec.length();
         if (max_t < EPSILON) return true;
@@ -105,11 +105,11 @@ public class MMPathNavigateGround extends GroundPathNavigator {
             ldi[i] = leadEdgeToInt(lead, step[i]);
             tri[i] = trailEdgeToInt(tr[i], step[i]);
             normed[i] = value / max_t;
-            tDelta[i] = MathHelper.abs(max_t / value);
+            tDelta[i] = Mth.abs(max_t / value);
             float dist = dir ? (ldi[i] + 1 - lead) : (lead - ldi[i]);
             tNext[i] = tDelta[i] < Float.POSITIVE_INFINITY ? tDelta[i] * dist : Float.POSITIVE_INFINITY;
         }
-        final BlockPos.Mutable pos = new BlockPos.Mutable();
+        final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
         do {
             // stepForward
             int axis = (tNext[0] < tNext[1]) ?
@@ -136,15 +136,15 @@ public class MMPathNavigateGround extends GroundPathNavigator {
             for (int x = x0; x != x1; x += stepx) {
                 for (int z = z0; z != z1; z += stepz) {
                     for (int y = y0; y != y1; y += stepy) {
-                        BlockState block = this.world.getBlockState(pos.setPos(x, y, z));
-                        if (!block.allowsMovement(this.world, pos, PathType.LAND)) return false;
+                        BlockState block = this.level.getBlockState(pos.set(x, y, z));
+                        if (!block.isPathfindable(this.level, pos, PathComputationType.LAND)) return false;
                     }
-                    PathNodeType below = this.nodeProcessor.determineNodeType(this.world, x, y0 - 1, z, this.entity, 1, 1, 1, true, true);
-                    if (below == PathNodeType.WATER || below == PathNodeType.LAVA || below == PathNodeType.OPEN) return false;
-                    PathNodeType in = this.nodeProcessor.determineNodeType(this.world, x, y0, z, this.entity, 1, y1 - y0, 1, true, true);
-                    float priority = this.entity.getPathPriority(in);
+                    BlockPathTypes below = this.nodeEvaluator.getBlockPathType(this.level, x, y0 - 1, z, this.mob, 1, 1, 1, true, true);
+                    if (below == BlockPathTypes.WATER || below == BlockPathTypes.LAVA || below == BlockPathTypes.OPEN) return false;
+                    BlockPathTypes in = this.nodeEvaluator.getBlockPathType(this.level, x, y0, z, this.mob, 1, y1 - y0, 1, true, true);
+                    float priority = this.mob.getPathfindingMalus(in);
                     if (priority < 0.0F || priority >= 8.0F) return false;
-                    if (in == PathNodeType.DAMAGE_FIRE || in == PathNodeType.DANGER_FIRE || in == PathNodeType.DAMAGE_OTHER) return false;
+                    if (in == BlockPathTypes.DAMAGE_FIRE || in == BlockPathTypes.DANGER_FIRE || in == BlockPathTypes.DAMAGE_OTHER) return false;
                 }
             }
         } while (t <= max_t);
@@ -152,14 +152,14 @@ public class MMPathNavigateGround extends GroundPathNavigator {
     }
 
     static int leadEdgeToInt(float coord, int step) {
-        return MathHelper.floor(coord - step * EPSILON);
+        return Mth.floor(coord - step * EPSILON);
     }
 
     static int trailEdgeToInt(float coord, int step) {
-        return MathHelper.floor(coord + step * EPSILON);
+        return Mth.floor(coord + step * EPSILON);
     }
 
-    static float element(Vector3d v, int i) {
+    static float element(Vec3 v, int i) {
         switch (i) {
             case 0: return (float) v.x;
             case 1: return (float) v.y;

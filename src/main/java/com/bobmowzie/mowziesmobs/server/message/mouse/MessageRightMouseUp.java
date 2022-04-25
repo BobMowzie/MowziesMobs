@@ -6,8 +6,8 @@ import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.power.Power;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
@@ -19,11 +19,11 @@ import java.util.function.Supplier;
 public class MessageRightMouseUp {
     public MessageRightMouseUp() {}
 
-    public static void serialize(final MessageRightMouseUp message, final PacketBuffer buf) {
+    public static void serialize(final MessageRightMouseUp message, final FriendlyByteBuf buf) {
 
     }
 
-    public static MessageRightMouseUp deserialize(final PacketBuffer buf) {
+    public static MessageRightMouseUp deserialize(final FriendlyByteBuf buf) {
         final MessageRightMouseUp message = new MessageRightMouseUp();
         return message;
     }
@@ -32,12 +32,12 @@ public class MessageRightMouseUp {
         @Override
         public void accept(final MessageRightMouseUp message, final Supplier<NetworkEvent.Context> contextSupplier) {
             final NetworkEvent.Context context = contextSupplier.get();
-            final ServerPlayerEntity player = context.getSender();
+            final ServerPlayer player = context.getSender();
             context.enqueueWork(() -> this.accept(message, player));
             context.setPacketHandled(true);
         }
 
-        private void accept(final MessageRightMouseUp message, final ServerPlayerEntity player) {
+        private void accept(final MessageRightMouseUp message, final ServerPlayer player) {
             if (player != null) {
                 PlayerCapability.IPlayerCapability capability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
                 if (capability != null) {

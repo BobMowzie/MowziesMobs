@@ -3,23 +3,23 @@ package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.IServerWorld;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.structure.StructureManager;
-import net.minecraft.world.gen.feature.structure.StructurePiece;
-import net.minecraft.world.gen.feature.structure.TemplateStructurePiece;
-import net.minecraft.world.gen.feature.template.PlacementSettings;
-import net.minecraft.world.gen.feature.template.Template;
-import net.minecraft.world.gen.feature.template.TemplateManager;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.StructureFeatureManager;
+import net.minecraft.world.level.levelgen.structure.StructurePiece;
+import net.minecraft.world.level.levelgen.structure.TemplateStructurePiece;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
 
 import java.util.List;
 import java.util.Map;
@@ -33,9 +33,9 @@ public class FrostmawPieces {
             FROSTMAW, new BlockPos(0, 1, 0)
     );
 
-    public static void start(TemplateManager manager, BlockPos pos, Rotation rot, List<StructurePiece> pieces, Random rand) {
+    public static void start(StructureManager manager, BlockPos pos, Rotation rot, List<StructurePiece> pieces, Random rand) {
         BlockPos rotationOffset = new BlockPos(0, 0, 0).rotate(rot);
-        BlockPos blockPos = rotationOffset.add(pos);
+        BlockPos blockPos = rotationOffset.offset(pos);
         pieces.add(new FrostmawPieces.Piece(manager, FROSTMAW, blockPos, rot));
     }
 
@@ -44,7 +44,7 @@ public class FrostmawPieces {
         private final Rotation rotation;
 
 
-        public Piece(TemplateManager templateManagerIn, ResourceLocation resourceLocationIn, BlockPos pos, Rotation rotationIn) {
+        public Piece(StructureManager templateManagerIn, ResourceLocation resourceLocationIn, BlockPos pos, Rotation rotationIn) {
             super(FeatureHandler.FROSTMAW_PIECE, 0);
             this.resourceLocation = resourceLocationIn;
             this.templatePosition = pos;
@@ -53,7 +53,7 @@ public class FrostmawPieces {
         }
 
 
-        public Piece(TemplateManager templateManagerIn, CompoundNBT tagCompound) {
+        public Piece(StructureManager templateManagerIn, CompoundTag tagCompound) {
             super(FeatureHandler.FROSTMAW_PIECE, tagCompound);
             this.resourceLocation = new ResourceLocation(tagCompound.getString("Template"));
             this.rotation = Rotation.valueOf(tagCompound.getString("Rot"));
@@ -61,9 +61,9 @@ public class FrostmawPieces {
         }
 
 
-        private void setupPiece(TemplateManager templateManager) {
-            Template template = templateManager.getTemplateDefaulted(this.resourceLocation);
-            PlacementSettings placementsettings = (new PlacementSettings()).setRotation(this.rotation).setMirror(Mirror.NONE);
+        private void setupPiece(StructureManager templateManager) {
+            StructureTemplate template = templateManager.getOrCreate(this.resourceLocation);
+            StructurePlaceSettings placementsettings = (new StructurePlaceSettings()).setRotation(this.rotation).setMirror(Mirror.NONE);
             this.setup(template, this.templatePosition, placementsettings);
         }
 
@@ -72,8 +72,8 @@ public class FrostmawPieces {
          * (abstract) Helper method to read subclass data from NBT
          */
         @Override
-        protected void readAdditional(CompoundNBT tagCompound) {
-            super.readAdditional(tagCompound);
+        protected void addAdditionalSaveData(CompoundTag tagCompound) {
+            super.addAdditionalSaveData(tagCompound);
             tagCompound.putString("Template", this.resourceLocation.toString());
             tagCompound.putString("Rot", this.rotation.name());
         }
@@ -90,17 +90,17 @@ public class FrostmawPieces {
          * rare block spawns under the floor, or what item an Item Frame will have.
          */
         @Override
-        protected void handleDataMarker(String function, BlockPos pos, IServerWorld worldIn, Random rand, MutableBoundingBox sbb) {
+        protected void handleDataMarker(String function, BlockPos pos, ServerLevelAccessor worldIn, Random rand, BoundingBox sbb) {
 
         }
 
         @Override
-        public boolean func_230383_a_(ISeedReader p_230383_1_, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, MutableBoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
-            this.placeSettings.setRotation(this.rotation).setMirror(Mirror.NONE).func_237133_d_(true);
+        public boolean postProcess(WorldGenLevel p_230383_1_, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, BoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+            this.placeSettings.setRotation(this.rotation).setMirror(Mirror.NONE).setFinalizeEntities(true);
             BlockPos blockpos = FrostmawPieces.OFFSET.get(this.resourceLocation);
-            this.templatePosition.add(Template.transformedBlockPos(placeSettings, new BlockPos(0 - blockpos.getX(), blockpos.getY(), 0 - blockpos.getZ())));
+            this.templatePosition.offset(StructureTemplate.calculateRelativePosition(placeSettings, new BlockPos(0 - blockpos.getX(), blockpos.getY(), 0 - blockpos.getZ())));
 
-            return super.func_230383_a_(p_230383_1_, p_230383_2_, p_230383_3_, p_230383_4_, p_230383_5_, p_230383_6_, p_230383_7_);
+            return super.postProcess(p_230383_1_, p_230383_2_, p_230383_3_, p_230383_4_, p_230383_5_, p_230383_6_, p_230383_7_);
         }
     }
 }

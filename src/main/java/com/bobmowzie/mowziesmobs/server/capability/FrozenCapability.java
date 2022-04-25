@@ -7,20 +7,20 @@ import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.particles.BlockParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -90,9 +90,9 @@ public class FrozenCapability {
 
         void tick(LivingEntity entity);
 
-        INBT writeNBT();
+        Tag writeNBT();
 
-        void readNBT(INBT nbt);
+        void readNBT(Tag nbt);
     }
 
     public static class FrozenCapabilityImp implements IFrozenCapability {
@@ -240,7 +240,7 @@ public class FrozenCapability {
 
         @Override
         public void addFreezeProgress(LivingEntity entity, float amount) {
-            if (!entity.world.isRemote && !entity.isPotionActive(EffectHandler.FROZEN)) {
+            if (!entity.level.isClientSide && !entity.hasEffect(EffectHandler.FROZEN)) {
                 freezeProgress += amount;
                 freezeDecayDelay = MAX_FREEZE_DECAY_DELAY;
             }
@@ -250,34 +250,34 @@ public class FrozenCapability {
         public void onFreeze(LivingEntity entity) {
             if (entity != null) {
                 frozen = true;
-                frozenController = new EntityFrozenController(EntityHandler.FROZEN_CONTROLLER.get(), entity.world);
-                frozenController.setPositionAndRotation(entity.getPosX(), entity.getPosY(), entity.getPosZ(), entity.rotationYaw, entity.rotationPitch);
-                entity.world.addEntity(frozenController);
-                frozenController.setRenderYawOffset(entity.renderYawOffset);
-                frozenYaw = entity.rotationYaw;
-                frozenPitch = entity.rotationPitch;
-                frozenYawHead = entity.rotationYawHead;
+                frozenController = new EntityFrozenController(EntityHandler.FROZEN_CONTROLLER.get(), entity.level);
+                frozenController.absMoveTo(entity.getX(), entity.getY(), entity.getZ(), entity.yRot, entity.xRot);
+                entity.level.addFreshEntity(frozenController);
+                frozenController.setYBodyRot(entity.yBodyRot);
+                frozenYaw = entity.yRot;
+                frozenPitch = entity.xRot;
+                frozenYawHead = entity.yHeadRot;
                 frozenLimbSwingAmount = 0;//entity.limbSwingAmount;
-                frozenRenderYawOffset = entity.renderYawOffset;
-                frozenSwingProgress = entity.swingProgress;
+                frozenRenderYawOffset = entity.yBodyRot;
+                frozenSwingProgress = entity.attackAnim;
                 entity.startRiding(frozenController, true);
-                entity.resetActiveHand();
+                entity.stopUsingItem();
 
-                if (entity instanceof MobEntity) {
-                    MobEntity mobEntity = (MobEntity) entity;
-                    if (mobEntity.getAttackTarget() != null) setPreAttackTarget(mobEntity.getAttackTarget().getUniqueID());
-                    prevHasAI = !((MobEntity) entity).isAIDisabled();
-                    mobEntity.setNoAI(true);
+                if (entity instanceof Mob) {
+                    Mob mobEntity = (Mob) entity;
+                    if (mobEntity.getTarget() != null) setPreAttackTarget(mobEntity.getTarget().getUUID());
+                    prevHasAI = !((Mob) entity).isNoAi();
+                    mobEntity.setNoAi(true);
                 }
 
-                if (entity.world.isRemote) {
-                    int particleCount = (int) (10 + 1 * entity.getHeight() * entity.getWidth() * entity.getWidth());
+                if (entity.level.isClientSide) {
+                    int particleCount = (int) (10 + 1 * entity.getBbHeight() * entity.getBbWidth() * entity.getBbWidth());
                     for (int i = 0; i < particleCount; i++) {
-                        double snowX = entity.getPosX() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                        double snowZ = entity.getPosZ() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                        double snowY = entity.getPosY() + entity.getHeight() * entity.getRNG().nextFloat();
-                        Vector3d motion = new Vector3d(snowX - entity.getPosX(), snowY - (entity.getPosY() + entity.getHeight() / 2), snowZ - entity.getPosZ()).normalize();
-                        entity.world.addParticle(new ParticleSnowFlake.SnowflakeData(40, false), snowX, snowY, snowZ, 0.1d * motion.x, 0.1d * motion.y, 0.1d * motion.z);
+                        double snowX = entity.getX() + entity.getBbWidth() * entity.getRandom().nextFloat() - entity.getBbWidth() / 2;
+                        double snowZ = entity.getZ() + entity.getBbWidth() * entity.getRandom().nextFloat() - entity.getBbWidth() / 2;
+                        double snowY = entity.getY() + entity.getBbHeight() * entity.getRandom().nextFloat();
+                        Vec3 motion = new Vec3(snowX - entity.getX(), snowY - (entity.getY() + entity.getBbHeight() / 2), snowZ - entity.getZ()).normalize();
+                        entity.level.addParticle(new ParticleSnowFlake.SnowflakeData(40, false), snowX, snowY, snowZ, 0.1d * motion.x, 0.1d * motion.y, 0.1d * motion.z);
                     }
                 }
                 entity.playSound(MMSounds.ENTITY_FROSTMAW_FROZEN_CRASH.get(), 1, 1);
@@ -289,32 +289,32 @@ public class FrozenCapability {
             if (entity != null) {
                 freezeProgress = 0;
                 if (frozen) {
-                    entity.removeActivePotionEffect(EffectHandler.FROZEN);
+                    entity.removeEffectNoUpdate(EffectHandler.FROZEN);
                     frozen = false;
                     if (frozenController != null) {
-                        Vector3d oldPosition = entity.getPositionVec();
+                        Vec3 oldPosition = entity.position();
                         entity.stopRiding();
-                        entity.setPositionAndUpdate(oldPosition.getX(), oldPosition.getY(), oldPosition.getZ());
+                        entity.teleportTo(oldPosition.x(), oldPosition.y(), oldPosition.z());
                         frozenController.remove();
                     }
                     entity.playSound(MMSounds.ENTITY_FROSTMAW_FROZEN_CRASH.get(), 1, 0.5f);
-                    if (entity.world.isRemote) {
-                        int particleCount = (int) (10 + 1 * entity.getHeight() * entity.getWidth() * entity.getWidth());
+                    if (entity.level.isClientSide) {
+                        int particleCount = (int) (10 + 1 * entity.getBbHeight() * entity.getBbWidth() * entity.getBbWidth());
                         for (int i = 0; i < particleCount; i++) {
-                            double particleX = entity.getPosX() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                            double particleZ = entity.getPosZ() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                            double particleY = entity.getPosY() + entity.getHeight() * entity.getRNG().nextFloat() + 0.3f;
-                            entity.world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, Blocks.ICE.getDefaultState()), particleX, particleY, particleZ, 0, 0, 0);
+                            double particleX = entity.getX() + entity.getBbWidth() * entity.getRandom().nextFloat() - entity.getBbWidth() / 2;
+                            double particleZ = entity.getZ() + entity.getBbWidth() * entity.getRandom().nextFloat() - entity.getBbWidth() / 2;
+                            double particleY = entity.getY() + entity.getBbHeight() * entity.getRandom().nextFloat() + 0.3f;
+                            entity.level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.ICE.defaultBlockState()), particleX, particleY, particleZ, 0, 0, 0);
                         }
                     }
-                    if (entity instanceof MobEntity) {
-                        if (((MobEntity) entity).isAIDisabled() && prevHasAI) {
-                            ((MobEntity) entity).setNoAI(false);
+                    if (entity instanceof Mob) {
+                        if (((Mob) entity).isNoAi() && prevHasAI) {
+                            ((Mob) entity).setNoAi(false);
                         }
                         if (getPreAttackTarget() != null) {
-                            PlayerEntity target = entity.world.getPlayerByUuid(getPreAttackTarget());
+                            Player target = entity.level.getPlayerByUUID(getPreAttackTarget());
                             if (target != null) {
-                                ((MobEntity) entity).setAttackTarget(target);
+                                ((Mob) entity).setTarget(target);
                             }
                         }
                     }
@@ -325,36 +325,36 @@ public class FrozenCapability {
         @Override
         public void tick(LivingEntity entity) {
             // Freeze logic
-            if (getFreezeProgress() >= 1 && !entity.isPotionActive(EffectHandler.FROZEN)) {
-                entity.addPotionEffect(new EffectInstance(EffectHandler.FROZEN, 50, 0, false, false));
+            if (getFreezeProgress() >= 1 && !entity.hasEffect(EffectHandler.FROZEN)) {
+                entity.addEffect(new MobEffectInstance(EffectHandler.FROZEN, 50, 0, false, false));
                 freezeProgress = 1f;
             } else if (freezeProgress > 0) {
-                entity.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 9, MathHelper.floor(freezeProgress * 5 + 1), false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 9, Mth.floor(freezeProgress * 5 + 1), false, false));
             }
 
             if (frozenController == null) {
-                Entity riding = entity.getRidingEntity();
+                Entity riding = entity.getVehicle();
                 if (riding instanceof EntityFrozenController) frozenController = (EntityFrozenController) riding;
             }
 
             if (frozen) {
-                entity.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 2, 50, false, false));
-                entity.setSneaking(false);
+                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 2, 50, false, false));
+                entity.setShiftKeyDown(false);
 
-                if (entity.world.isRemote && entity.ticksExisted % 2 == 0) {
-                    double cloudX = entity.getPosX() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                    double cloudZ = entity.getPosZ() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                    double cloudY = entity.getPosY() + entity.getHeight() * entity.getRNG().nextFloat();
-                    entity.world.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f, 0.75f, 1f, 15f, 25, ParticleCloud.EnumCloudBehavior.CONSTANT, 1f), cloudX, cloudY, cloudZ, 0f, -0.01f, 0f);
+                if (entity.level.isClientSide && entity.tickCount % 2 == 0) {
+                    double cloudX = entity.getX() + entity.getBbWidth() * entity.getRandom().nextFloat() - entity.getBbWidth() / 2;
+                    double cloudZ = entity.getZ() + entity.getBbWidth() * entity.getRandom().nextFloat() - entity.getBbWidth() / 2;
+                    double cloudY = entity.getY() + entity.getBbHeight() * entity.getRandom().nextFloat();
+                    entity.level.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f, 0.75f, 1f, 15f, 25, ParticleCloud.EnumCloudBehavior.CONSTANT, 1f), cloudX, cloudY, cloudZ, 0f, -0.01f, 0f);
 
-                    double snowX = entity.getPosX() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                    double snowZ = entity.getPosZ() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                    double snowY = entity.getPosY() + entity.getHeight() * entity.getRNG().nextFloat();
-                    entity.world.addParticle(new ParticleSnowFlake.SnowflakeData(40, false), snowX, snowY, snowZ, 0d, -0.01d, 0d);
+                    double snowX = entity.getX() + entity.getBbWidth() * entity.getRandom().nextFloat() - entity.getBbWidth() / 2;
+                    double snowZ = entity.getZ() + entity.getBbWidth() * entity.getRandom().nextFloat() - entity.getBbWidth() / 2;
+                    double snowY = entity.getY() + entity.getBbHeight() * entity.getRandom().nextFloat();
+                    entity.level.addParticle(new ParticleSnowFlake.SnowflakeData(40, false), snowX, snowY, snowZ, 0d, -0.01d, 0d);
                 }
             }
             else {
-                if (!entity.world.isRemote && getPrevFrozen()) {
+                if (!entity.level.isClientSide && getPrevFrozen()) {
                     onUnfreeze(entity);
                 }
             }
@@ -366,12 +366,12 @@ public class FrozenCapability {
             else {
                 freezeDecayDelay--;
             }
-            prevFrozen = entity.isPotionActive(EffectHandler.FROZEN);
+            prevFrozen = entity.hasEffect(EffectHandler.FROZEN);
         }
 
         @Override
-        public INBT writeNBT() {
-            CompoundNBT compound = new CompoundNBT();
+        public Tag writeNBT() {
+            CompoundTag compound = new CompoundTag();
             compound.putFloat("freezeProgress", getFreezeProgress());
             compound.putInt("freezeDecayDelay", getFreezeDecayDelay());
             compound.putFloat("frozenLimbSwingAmount", getFrozenLimbSwingAmount());
@@ -382,7 +382,7 @@ public class FrozenCapability {
             compound.putFloat("frozenYawHead", getFrozenYawHead());
             compound.putBoolean("prevHasAI", prevHasAI());
             if (getPreAttackTarget() != null) {
-                compound.putUniqueId("prevAttackTarget", getPreAttackTarget());
+                compound.putUUID("prevAttackTarget", getPreAttackTarget());
             }
             compound.putBoolean("frozen", frozen);
             compound.putBoolean("prevFrozen", prevFrozen);
@@ -390,8 +390,8 @@ public class FrozenCapability {
         }
 
         @Override
-        public void readNBT(INBT nbt) {
-            CompoundNBT compound = (CompoundNBT) nbt;
+        public void readNBT(Tag nbt) {
+            CompoundTag compound = (CompoundTag) nbt;
             setFreezeProgress(compound.getFloat("freezeProgress"));
             setFreezeDecayDelay(compound.getInt("freezeDecayDelay"));
             setFrozenLimbSwingAmount(compound.getFloat("frozenLimbSwingAmount"));
@@ -402,7 +402,7 @@ public class FrozenCapability {
             setFrozenYawHead(compound.getFloat("frozenYawHead"));
             setPrevHasAI(compound.getBoolean("prevHasAI"));
             try {
-                setPreAttackTarget(compound.getUniqueId("prevAttackTarget"));
+                setPreAttackTarget(compound.getUUID("prevAttackTarget"));
             }
             catch (NullPointerException ignored) {}
             frozen = compound.getBoolean("frozen");
@@ -412,17 +412,17 @@ public class FrozenCapability {
 
     public static class FrozenStorage implements Capability.IStorage<IFrozenCapability> {
         @Override
-        public INBT writeNBT(Capability<IFrozenCapability> capability, IFrozenCapability instance, Direction side) {
+        public Tag writeNBT(Capability<IFrozenCapability> capability, IFrozenCapability instance, Direction side) {
             return instance.writeNBT();
         }
 
         @Override
-        public void readNBT(Capability<IFrozenCapability> capability, IFrozenCapability instance, Direction side, INBT nbt) {
+        public void readNBT(Capability<IFrozenCapability> capability, IFrozenCapability instance, Direction side, Tag nbt) {
             instance.readNBT(nbt);
         }
     }
 
-    public static class FrozenProvider implements ICapabilitySerializable<INBT>
+    public static class FrozenProvider implements ICapabilitySerializable<Tag>
     {
         @CapabilityInject(IFrozenCapability.class)
         public static final Capability<IFrozenCapability> FROZEN_CAPABILITY = null;
@@ -430,12 +430,12 @@ public class FrozenCapability {
         private final LazyOptional<IFrozenCapability> instance = LazyOptional.of(FROZEN_CAPABILITY::getDefaultInstance);
 
         @Override
-        public INBT serializeNBT() {
+        public Tag serializeNBT() {
             return FROZEN_CAPABILITY.getStorage().writeNBT(FROZEN_CAPABILITY, this.instance.orElseThrow(() -> new IllegalArgumentException("Lazy optional must not be empty")), null);
         }
 
         @Override
-        public void deserializeNBT(INBT nbt) {
+        public void deserializeNBT(Tag nbt) {
             FROZEN_CAPABILITY.getStorage().readNBT(FROZEN_CAPABILITY, this.instance.orElseThrow(() -> new IllegalArgumentException("Lazy optional must not be empty")), null, nbt);
         }
 

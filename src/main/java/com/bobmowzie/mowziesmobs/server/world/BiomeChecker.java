@@ -1,9 +1,9 @@
 package com.bobmowzie.mowziesmobs.server.world;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -32,7 +32,7 @@ public class BiomeChecker {
             }
         }
 
-        private boolean acceptsBiome(RegistryKey<Biome> biome) {
+        private boolean acceptsBiome(ResourceKey<Biome> biome) {
             Set<BiomeDictionary.Type> thisTypes = BiomeDictionary.getTypes(biome);
             for (int i = 0; i < neededTypes.length; i++) {
                 if (neededTypes[i] == null) continue;
@@ -63,7 +63,7 @@ public class BiomeChecker {
             BiomeCombo biomeCombo = new BiomeCombo(biomeComboString);
             biomeCombos.add(biomeCombo);
         }
-        RegistryKey<Biome> biomeRegistryKey = RegistryKey.getOrCreateKey(ForgeRegistries.Keys.BIOMES, biomeName);
+        ResourceKey<Biome> biomeRegistryKey = ResourceKey.create(ForgeRegistries.Keys.BIOMES, biomeName);
         for (BiomeCombo biomeCombo : biomeCombos) {
             if (biomeCombo.acceptsBiome(biomeRegistryKey)) return true;
         }

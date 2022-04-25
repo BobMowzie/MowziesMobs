@@ -1,5 +1,5 @@
 package com.bobmowzie.mowziesmobs.client.particle.util;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 
 public abstract class ParticleRotation {
     public void setPrevValues() {
@@ -37,9 +37,9 @@ public abstract class ParticleRotation {
     }
 
     public static class OrientVector extends ParticleRotation {
-        public Vector3d orientation;
-        public Vector3d prevOrientation;
-        public OrientVector(Vector3d orientation) {
+        public Vec3 orientation;
+        public Vec3 prevOrientation;
+        public OrientVector(Vec3 orientation) {
             this.orientation = this.prevOrientation = orientation;
         }
 

@@ -2,18 +2,25 @@ package com.ilexiconn.llibrary.client.model.tools;
 
 
 import com.bobmowzie.mowziesmobs.client.render.MowzieRenderUtils;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
-import net.minecraft.client.renderer.model.Model;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.model.Model;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraft.util.math.vector.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
+import com.mojang.math.Vector4f;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * An enhanced ModelRenderer
@@ -22,7 +29,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * @since 1.0.0
  */
 @OnlyIn(Dist.CLIENT)
-public class AdvancedModelRenderer extends ModelRenderer {
+public class AdvancedModelRenderer extends ModelPart {
     private static final float MINIMUM_SCALE = 0.000001f;
 
     public float defaultRotationX, defaultRotationY, defaultRotationZ;
@@ -37,7 +44,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
     private boolean isHidden = false;
 
     public ObjectList<ModelPart> cubeList;
-    public ObjectList<ModelRenderer> childModels;
+    public ObjectList<ModelPart> childModels;
     public int textureOffsetX, textureOffsetY;
     private float textureWidth;
     private float textureHeight;
@@ -52,8 +59,8 @@ public class AdvancedModelRenderer extends ModelRenderer {
     public AdvancedModelRenderer(Model model, int textureOffsetX, int textureOffsetY) {
         super(model, textureOffsetX, textureOffsetY);
         this.model = model;
-        this.textureWidth = model.textureWidth;
-        this.textureHeight = model.textureHeight;
+        this.textureWidth = model.texWidth;
+        this.textureHeight = model.texHeight;
         this.textureOffsetX = textureOffsetX;
         this.textureOffsetY = textureOffsetY;
         this.cubeList = new ObjectArrayList<>();
@@ -62,12 +69,12 @@ public class AdvancedModelRenderer extends ModelRenderer {
 
     public AdvancedModelRenderer(AdvancedModelRenderer copyFrom) {
         this(copyFrom.getAdvancedModel(), copyFrom.textureOffsetX, copyFrom.textureOffsetY);
-        this.rotationPointX = copyFrom.rotationPointX;
-        this.rotationPointY = copyFrom.rotationPointY;
-        this.rotationPointZ = copyFrom.rotationPointZ;
-        this.rotateAngleX = copyFrom.rotateAngleX;
-        this.rotateAngleY = copyFrom.rotateAngleY;
-        this.rotateAngleZ = copyFrom.rotateAngleZ;
+        this.x = copyFrom.x;
+        this.y = copyFrom.y;
+        this.z = copyFrom.z;
+        this.xRot = copyFrom.xRot;
+        this.yRot = copyFrom.yRot;
+        this.zRot = copyFrom.zRot;
         this.scaleX = copyFrom.scaleX;
         this.scaleY = copyFrom.scaleY;
         this.scaleZ = copyFrom.scaleZ;
@@ -84,17 +91,17 @@ public class AdvancedModelRenderer extends ModelRenderer {
     }
 
     @Override
-    public ModelRenderer setTextureSize(int textureWidthIn, int textureHeightIn) {
+    public ModelPart setTexSize(int textureWidthIn, int textureHeightIn) {
         textureWidth = textureWidthIn;
         textureHeight = textureHeightIn;
-        return super.setTextureSize(textureWidthIn, textureHeightIn);
+        return super.setTexSize(textureWidthIn, textureHeightIn);
     }
 
     @Override
-    public ModelRenderer setTextureOffset(int x, int y) {
+    public ModelPart texOffs(int x, int y) {
         textureOffsetX = x;
         textureOffsetY = y;
-        return super.setTextureOffset(x, y);
+        return super.texOffs(x, y);
     }
 
     /*public AdvancedModelRenderer add3DTexture(float posX, float posY, float posZ, int width, int height) {
@@ -103,7 +110,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
     }*/
 
     public AdvancedModelRenderer addBox(String partName, float x, float y, float z, int width, int height, int depth, float delta, int texX, int texY) {
-      this.setTextureOffset(texX, texY);
+      this.texOffs(texX, texY);
       this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, (float)width, (float)height, (float)depth, delta, delta, delta, this.mirror, false);
       return this;
    }
@@ -208,30 +215,30 @@ public class AdvancedModelRenderer extends ModelRenderer {
      * Sets this ModelRenderer's default pose to the current pose.
      */
     public void updateDefaultPose() {
-        this.defaultRotationX = this.rotateAngleX;
-        this.defaultRotationY = this.rotateAngleY;
-        this.defaultRotationZ = this.rotateAngleZ;
+        this.defaultRotationX = this.xRot;
+        this.defaultRotationY = this.yRot;
+        this.defaultRotationZ = this.zRot;
 
-        this.defaultPositionX = this.rotationPointX;
-        this.defaultPositionY = this.rotationPointY;
-        this.defaultPositionZ = this.rotationPointZ;
+        this.defaultPositionX = this.x;
+        this.defaultPositionY = this.y;
+        this.defaultPositionZ = this.z;
     }
 
     /**
      * Sets the current pose to the previously set default pose.
      */
     public void resetToDefaultPose() {
-        this.rotateAngleX = this.defaultRotationX;
-        this.rotateAngleY = this.defaultRotationY;
-        this.rotateAngleZ = this.defaultRotationZ;
+        this.xRot = this.defaultRotationX;
+        this.yRot = this.defaultRotationY;
+        this.zRot = this.defaultRotationZ;
 
-        this.rotationPointX = this.defaultPositionX;
-        this.rotationPointY = this.defaultPositionY;
-        this.rotationPointZ = this.defaultPositionZ;
+        this.x = this.defaultPositionX;
+        this.y = this.defaultPositionY;
+        this.z = this.defaultPositionZ;
     }
 
     @Override
-    public void addChild(ModelRenderer renderer) {
+    public void addChild(ModelPart renderer) {
         super.addChild(renderer);
         this.childModels.add(renderer);
         if (renderer instanceof AdvancedModelRenderer) {
@@ -258,39 +265,39 @@ public class AdvancedModelRenderer extends ModelRenderer {
 
 
     @Override
-    public void translateRotate(MatrixStack matrixStackIn) {
+    public void translateAndRotate(PoseStack matrixStackIn) {
         AdvancedModelRenderer parent = getParent();
         if (parent != null && !parent.scaleChildren) {
             matrixStackIn.scale(1.f / parent.scaleX, 1.f / parent.scaleY, 1.f / parent.scaleZ);
         }
-        super.translateRotate(matrixStackIn);
+        super.translateAndRotate(matrixStackIn);
         matrixStackIn.scale(scaleX, scaleY, scaleZ);
     }
 
     // Copied from parent class
     @Override
-    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        if (this.showModel) {
+    public void render(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        if (this.visible) {
             if (!this.cubeList.isEmpty() || !this.childModels.isEmpty()) {
-                matrixStackIn.push();
+                matrixStackIn.pushPose();
 
-                this.translateRotate(matrixStackIn);
-                if (!isHidden) this.doRender(matrixStackIn.getLast(), bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha * opacity);
+                this.translateAndRotate(matrixStackIn);
+                if (!isHidden) this.doRender(matrixStackIn.last(), bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha * opacity);
 
                 // Render children
-                for(ModelRenderer modelrenderer : this.childModels) {
+                for(ModelPart modelrenderer : this.childModels) {
                     modelrenderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }
 
-                matrixStackIn.pop();
+                matrixStackIn.popPose();
             }
         }
     }
 
     // Copied from parent class
-    protected void doRender(MatrixStack.Entry matrixEntryIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        Matrix4f matrix4f = matrixEntryIn.getMatrix();
-        Matrix3f matrix3f = matrixEntryIn.getNormal();
+    protected void doRender(PoseStack.Pose matrixEntryIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        Matrix4f matrix4f = matrixEntryIn.pose();
+        Matrix3f matrix3f = matrixEntryIn.normal();
         if (mat3Override != null) matrix3f = mat3Override;
         if (mat4Override != null) matrix4f = mat4Override;
 
@@ -305,7 +312,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
 
     private float calculateRotation(float speed, float degree, boolean invert, float offset, float weight, float f, float f1) {
         float movementScale = this.model instanceof AdvancedModelBase ? ((AdvancedModelBase<?>)this.model).getMovementScale() : 1;
-        float rotation = (MathHelper.cos(f * (speed * movementScale) + offset) * (degree * movementScale) * f1) + (weight * f1);
+        float rotation = (Mth.cos(f * (speed * movementScale) + offset) * (degree * movementScale) * f1) + (weight * f1);
         return invert ? -rotation : rotation;
     }
 
@@ -321,7 +328,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
      * @param walkAmount is the walk speed
      */
     public void walk(float speed, float degree, boolean invert, float offset, float weight, float walk, float walkAmount) {
-        this.rotateAngleX += this.calculateRotation(speed, degree, invert, offset, weight, walk, walkAmount);
+        this.xRot += this.calculateRotation(speed, degree, invert, offset, weight, walk, walkAmount);
     }
 
     /**
@@ -336,7 +343,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
      * @param flapAmount is the flap speed
      */
     public void flap(float speed, float degree, boolean invert, float offset, float weight, float flap, float flapAmount) {
-        this.rotateAngleZ += this.calculateRotation(speed, degree, invert, offset, weight, flap, flapAmount);
+        this.zRot += this.calculateRotation(speed, degree, invert, offset, weight, flap, flapAmount);
     }
 
     /**
@@ -351,7 +358,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
      * @param swingAmount is the swing speed
      */
     public void swing(float speed, float degree, boolean invert, float offset, float weight, float swing, float swingAmount) {
-        this.rotateAngleY += this.calculateRotation(speed, degree, invert, offset, weight, swing, swingAmount);
+        this.yRot += this.calculateRotation(speed, degree, invert, offset, weight, swing, swingAmount);
     }
 
     /**
@@ -371,17 +378,17 @@ public class AdvancedModelRenderer extends ModelRenderer {
         if (bounce) {
             bob = (float) -Math.abs((Math.sin(f * speed) * f1 * degree));
         }
-        this.rotationPointY += bob;
+        this.y += bob;
     }
 
     public void transitionTo(AdvancedModelRenderer to, float timer, float maxTime) {
-        this.rotateAngleX += ((to.rotateAngleX - this.rotateAngleX) / maxTime) * timer;
-        this.rotateAngleY += ((to.rotateAngleY - this.rotateAngleY) / maxTime) * timer;
-        this.rotateAngleZ += ((to.rotateAngleZ - this.rotateAngleZ) / maxTime) * timer;
+        this.xRot += ((to.xRot - this.xRot) / maxTime) * timer;
+        this.yRot += ((to.yRot - this.yRot) / maxTime) * timer;
+        this.zRot += ((to.zRot - this.zRot) / maxTime) * timer;
 
-        this.rotationPointX += ((to.rotationPointX - this.rotationPointX) / maxTime) * timer;
-        this.rotationPointY += ((to.rotationPointY - this.rotationPointY) / maxTime) * timer;
-        this.rotationPointZ += ((to.rotationPointZ - this.rotationPointZ) / maxTime) * timer;
+        this.x += ((to.x - this.x) / maxTime) * timer;
+        this.y += ((to.y - this.y) / maxTime) * timer;
+        this.z += ((to.z - this.z) / maxTime) * timer;
     }
 
     public void setMatrixOverrides(Matrix3f mat3Override, Matrix4f mat4Override) {
@@ -394,55 +401,55 @@ public class AdvancedModelRenderer extends ModelRenderer {
         mat4Override = null;
     }
 
-    public void getMatrixStack(MatrixStack matrixStack) {
+    public void getMatrixStack(PoseStack matrixStack) {
         AdvancedModelRenderer parent = getParent();
         if (parent != null) parent.getMatrixStack(matrixStack);
-        translateRotate(matrixStack);
+        translateAndRotate(matrixStack);
     }
 
-    public Vector3d getWorldPos(Entity entity, float delta) {
-        MatrixStack matrixStack = new MatrixStack();
-        float dx = (float) (entity.lastTickPosX + (entity.getPosX() - entity.lastTickPosX) * delta);
-        float dy = (float) (entity.lastTickPosY + (entity.getPosY() - entity.lastTickPosY) * delta);
-        float dz = (float) (entity.lastTickPosZ + (entity.getPosZ() - entity.lastTickPosZ) * delta);
+    public Vec3 getWorldPos(Entity entity, float delta) {
+        PoseStack matrixStack = new PoseStack();
+        float dx = (float) (entity.xOld + (entity.getX() - entity.xOld) * delta);
+        float dy = (float) (entity.yOld + (entity.getY() - entity.yOld) * delta);
+        float dz = (float) (entity.zOld + (entity.getZ() - entity.zOld) * delta);
         matrixStack.translate(dx, dy, dz);
-        float dYaw = MathHelper.interpolateAngle(delta, entity.prevRotationYaw, entity.rotationYaw);
-        matrixStack.rotate(new Quaternion(0, -dYaw + 180, 0, true));
+        float dYaw = Mth.rotLerp(delta, entity.yRotO, entity.yRot);
+        matrixStack.mulPose(new Quaternion(0, -dYaw + 180, 0, true));
         matrixStack.scale(-1, -1, 1);
         matrixStack.translate(0, -1.5f, 0);
         MowzieRenderUtils.matrixStackFromModel(matrixStack, this);
-        MatrixStack.Entry matrixEntry = matrixStack.getLast();
-        Matrix4f matrix4f = matrixEntry.getMatrix();
+        PoseStack.Pose matrixEntry = matrixStack.last();
+        Matrix4f matrix4f = matrixEntry.pose();
 
         Vector4f vec = new Vector4f(0, 0, 0, 1);
         vec.transform(matrix4f);
-        return new Vector3d(vec.getX(), vec.getY(), vec.getZ());
+        return new Vec3(vec.x(), vec.y(), vec.z());
     }
 
-    public void setWorldPos(Entity entity, Vector3d worldPos, float delta) {
-        MatrixStack matrixStack = new MatrixStack();
-        float dx = (float) (entity.lastTickPosX + (entity.getPosX() - entity.lastTickPosX) * delta);
-        float dy = (float) (entity.lastTickPosY + (entity.getPosY() - entity.lastTickPosY) * delta);
-        float dz = (float) (entity.lastTickPosZ + (entity.getPosZ() - entity.lastTickPosZ) * delta);
+    public void setWorldPos(Entity entity, Vec3 worldPos, float delta) {
+        PoseStack matrixStack = new PoseStack();
+        float dx = (float) (entity.xOld + (entity.getX() - entity.xOld) * delta);
+        float dy = (float) (entity.yOld + (entity.getY() - entity.yOld) * delta);
+        float dz = (float) (entity.zOld + (entity.getZ() - entity.zOld) * delta);
         matrixStack.translate(dx, dy, dz);
-        float dYaw = MathHelper.interpolateAngle(delta, entity.prevRotationYaw, entity.rotationYaw);
-        matrixStack.rotate(new Quaternion(0, -dYaw + 180, 0, true));
+        float dYaw = Mth.rotLerp(delta, entity.yRotO, entity.yRot);
+        matrixStack.mulPose(new Quaternion(0, -dYaw + 180, 0, true));
         matrixStack.scale(-1, -1, 1);
         matrixStack.translate(0, -1.5f, 0);
-        MatrixStack.Entry matrixEntry = matrixStack.getLast();
-        Matrix4f matrix4f = matrixEntry.getMatrix();
+        PoseStack.Pose matrixEntry = matrixStack.last();
+        Matrix4f matrix4f = matrixEntry.pose();
         matrix4f.invert();
 
-        Vector4f vec = new Vector4f((float) worldPos.getX(), (float) worldPos.getY(), (float) worldPos.getZ(), 1);
+        Vector4f vec = new Vector4f((float) worldPos.x(), (float) worldPos.y(), (float) worldPos.z(), 1);
         vec.transform(matrix4f);
-        rotationPointX = vec.getX() * 16;
-        rotationPointY = vec.getY() * 16;
-        rotationPointZ = vec.getZ() * 16;
+        x = vec.x() * 16;
+        y = vec.y() * 16;
+        z = vec.z() * 16;
     }
 
     @OnlyIn(Dist.CLIENT)
     public abstract static class ModelPart {
-        public void render(Matrix4f mat4, Matrix3f mat3, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        public void render(Matrix4f mat4, Matrix3f mat3, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 
         }
     }
@@ -507,22 +514,22 @@ public class AdvancedModelRenderer extends ModelRenderer {
         }
 
         @Override
-        public void render(Matrix4f matrix4f, Matrix3f matrix3f, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        public void render(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
             for(AdvancedModelRenderer.TexturedQuad modelrenderer$texturedquad : quads) {
                 Vector3f vector3f = modelrenderer$texturedquad.normal.copy();
                 vector3f.transform(matrix3f);
-                float f = vector3f.getX();
-                float f1 = vector3f.getY();
-                float f2 = vector3f.getZ();
+                float f = vector3f.x();
+                float f1 = vector3f.y();
+                float f2 = vector3f.z();
 
                 for(int i = 0; i < 4; ++i) {
                     AdvancedModelRenderer.PositionTextureVertex modelrenderer$positiontexturevertex = modelrenderer$texturedquad.vertexPositions[i];
-                    float f3 = modelrenderer$positiontexturevertex.position.getX() / 16.0F;
-                    float f4 = modelrenderer$positiontexturevertex.position.getY() / 16.0F;
-                    float f5 = modelrenderer$positiontexturevertex.position.getZ() / 16.0F;
+                    float f3 = modelrenderer$positiontexturevertex.position.x() / 16.0F;
+                    float f4 = modelrenderer$positiontexturevertex.position.y() / 16.0F;
+                    float f5 = modelrenderer$positiontexturevertex.position.z() / 16.0F;
                     Vector4f vector4f = new Vector4f(f3, f4, f5, 1.0F);
                     vector4f.transform(matrix4f);
-                    bufferIn.addVertex(vector4f.getX(), vector4f.getY(), vector4f.getZ(), red, green, blue, alpha, modelrenderer$positiontexturevertex.textureU, modelrenderer$positiontexturevertex.textureV, packedOverlayIn, packedLightIn, f, f1, f2);
+                    bufferIn.vertex(vector4f.x(), vector4f.y(), vector4f.z(), red, green, blue, alpha, modelrenderer$positiontexturevertex.textureU, modelrenderer$positiontexturevertex.textureV, packedOverlayIn, packedLightIn, f, f1, f2);
                 }
             }
         }
@@ -572,7 +579,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
                 }
             }
 
-            this.normal = directionIn.toVector3f();
+            this.normal = directionIn.step();
             if (mirrorIn) {
                 this.normal.mul(-1.0F, 1.0F, 1.0F);
             }

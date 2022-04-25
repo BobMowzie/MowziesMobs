@@ -3,20 +3,26 @@ package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 import com.bobmowzie.mowziesmobs.server.ai.NearestAttackableTargetPredicateGoal;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.Level;
+
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 
 public class EntityBarakoayaToPlayer extends EntityBarakoanToPlayer {
 
-    public EntityBarakoayaToPlayer(EntityType<? extends EntityBarakoayaToPlayer> type, World world) {
+    public EntityBarakoayaToPlayer(EntityType<? extends EntityBarakoayaToPlayer> type, Level world) {
         this(type, world, null);
     }
 
-    public EntityBarakoayaToPlayer(EntityType<? extends EntityBarakoayaToPlayer> type, World world, PlayerEntity leader) {
+    public EntityBarakoayaToPlayer(EntityType<? extends EntityBarakoayaToPlayer> type, Level world, Player leader) {
         super(type, world, leader);
         setMask(MaskType.FAITH);
         setWeapon(3);
@@ -31,39 +37,39 @@ public class EntityBarakoayaToPlayer extends EntityBarakoanToPlayer {
     @Override
     protected void registerTargetGoals() {
         super.registerTargetGoals();
-        this.targetSelector.addGoal(2, new NearestAttackableTargetPredicateGoal<PlayerEntity>(this, PlayerEntity.class, 0, true, true, (new EntityPredicate()).setDistance(getAttributeValue(Attributes.FOLLOW_RANGE)).setCustomPredicate(target -> {
+        this.targetSelector.addGoal(2, new NearestAttackableTargetPredicateGoal<Player>(this, Player.class, 0, true, true, (new TargetingConditions()).range(getAttributeValue(Attributes.FOLLOW_RANGE)).selector(target -> {
             if (!active) return false;
             if (target != getLeader()) return false;
             return healAICheckTarget(target);
-        }).allowFriendlyFire().allowInvulnerable().setSkipAttackChecks().setUseInvisibilityCheck()) {
+        }).allowSameTeam().allowInvulnerable().allowNonAttackable().ignoreInvisibilityTesting()) {
             @Override
-            public boolean shouldContinueExecuting() {
-                LivingEntity livingentity = this.goalOwner.getAttackTarget();
+            public boolean canContinueToUse() {
+                LivingEntity livingentity = this.mob.getTarget();
                 if (livingentity == null) {
-                    livingentity = this.target;
+                    livingentity = this.targetMob;
                 }
-                return super.shouldContinueExecuting() && this.goalOwner instanceof EntityBarakoayaToPlayer && ((EntityBarakoayaToPlayer)this.goalOwner).healAICheckTarget(livingentity);
+                return super.canContinueToUse() && this.mob instanceof EntityBarakoayaToPlayer && ((EntityBarakoayaToPlayer)this.mob).healAICheckTarget(livingentity);
             }
 
             @Override
-            public void startExecuting() {
-                targetEntitySelector.setIgnoresLineOfSight().allowInvulnerable().allowFriendlyFire().setSkipAttackChecks().setUseInvisibilityCheck();
-                super.startExecuting();
+            public void start() {
+                targetConditions.allowUnseeable().allowInvulnerable().allowSameTeam().allowNonAttackable().ignoreInvisibilityTesting();
+                super.start();
             }
         });
     }
 
     private boolean healAICheckTarget(LivingEntity livingentity) {
         if (livingentity != getLeader()) return false;
-        boolean targetHasTarget = livingentity.getLastAttackedEntity() != null && (livingentity.ticksExisted - livingentity.getLastAttackedEntityTime() < 120 || livingentity.getDistanceSq(livingentity.getLastAttackedEntity()) < 256);
-        if (livingentity.getLastAttackedEntity() instanceof EntityBarakoanToPlayer) targetHasTarget = false;
+        boolean targetHasTarget = livingentity.getLastHurtMob() != null && (livingentity.tickCount - livingentity.getLastHurtMobTimestamp() < 120 || livingentity.distanceToSqr(livingentity.getLastHurtMob()) < 256);
+        if (livingentity.getLastHurtMob() instanceof EntityBarakoanToPlayer) targetHasTarget = false;
         boolean canHeal = this.canHeal(livingentity);
-        boolean survivalMode = !livingentity.isSpectator() && !((PlayerEntity)livingentity).isCreative();
+        boolean survivalMode = !livingentity.isSpectator() && !((Player)livingentity).isCreative();
         return (livingentity.getHealth() < livingentity.getMaxHealth() || targetHasTarget) && canHeal && survivalMode;
     }
 
     public boolean canHeal(LivingEntity entity) {
-        return entity == leader && entity != null && getDistanceSq(entity) < 256.0;
+        return entity == leader && entity != null && distanceToSqr(entity) < 256.0;
     }
 
     @Override
@@ -73,16 +79,16 @@ public class EntityBarakoayaToPlayer extends EntityBarakoanToPlayer {
 
     @Override
     protected void sunBlockTarget() {
-        LivingEntity target = getAttackTarget();
+        LivingEntity target = getTarget();
         if (target != null && target == getLeader()) {
             EffectHandler.addOrCombineEffect(target, EffectHandler.SUNBLOCK, 20, 0, true, false);
         }
     }
 
     @Override
-    public ILivingEntityData onInitialSpawn(IServerWorld world, DifficultyInstance difficulty, SpawnReason reason, ILivingEntityData livingData, CompoundNBT compound) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType reason, SpawnGroupData livingData, CompoundTag compound) {
         setMask(MaskType.FAITH);
         setWeapon(3);
-        return super.onInitialSpawn(world, difficulty, reason, livingData, compound);
+        return super.finalizeSpawn(world, difficulty, reason, livingData, compound);
     }
 }

@@ -3,12 +3,12 @@ package com.bobmowzie.mowziesmobs.server.entity.sculptor;
 import com.bobmowzie.mowziesmobs.server.entity.IAnimationTickable;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.ilexiconn.llibrary.server.animation.Animation;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -25,7 +25,7 @@ public class EntitySculptor extends MowzieEntity implements IAnimatable, IAnimat
 
     private AnimationFactory factory = new AnimationFactory(this);
 
-    public EntitySculptor(EntityType<? extends MowzieEntity> type, World world) {
+    public EntitySculptor(EntityType<? extends MowzieEntity> type, Level world) {
         super(type, world);
     }
 
@@ -35,15 +35,15 @@ public class EntitySculptor extends MowzieEntity implements IAnimatable, IAnimat
 //        goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
     }
 
-    public static AttributeModifierMap.MutableAttribute createAttributes() {
-        return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 10)
-                .createMutableAttribute(Attributes.MAX_HEALTH, 40)
-                .createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1);
+    public static AttributeSupplier.Builder createAttributes() {
+        return MowzieEntity.createAttributes().add(Attributes.ATTACK_DAMAGE, 10)
+                .add(Attributes.MAX_HEALTH, 40)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 1);
     }
 
     @Override
     public int tickTimer() {
-        return ticksExisted;
+        return tickCount;
     }
 
     @Override

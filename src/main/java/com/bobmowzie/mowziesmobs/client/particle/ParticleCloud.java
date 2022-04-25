@@ -1,22 +1,22 @@
 package com.bobmowzie.mowziesmobs.client.particle;
 
 import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.IParticleData;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.particles.ItemParticleData;
-import net.minecraft.particles.ParticleType;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -27,7 +27,7 @@ import java.util.Optional;
 /**
  * Created by BobMowzie on 6/2/2017.
  */
-public class ParticleCloud extends SpriteTexturedParticle {
+public class ParticleCloud extends TextureSheetParticle {
     private final float red;
     private final float green;
     private final float blue;
@@ -41,66 +41,66 @@ public class ParticleCloud extends SpriteTexturedParticle {
         CONSTANT
     }
 
-    public ParticleCloud(ClientWorld world, double x, double y, double z, double vx, double vy, double vz, double r, double g, double b, double scale, int duration, EnumCloudBehavior behavior, double airDrag) {
+    public ParticleCloud(ClientLevel world, double x, double y, double z, double vx, double vy, double vz, double r, double g, double b, double scale, int duration, EnumCloudBehavior behavior, double airDrag) {
         super(world, x, y, z);
         this.scale = (float) scale * 0.5f * 0.1f;
-        maxAge = duration;
-        motionX = vx * 0.5;
-        motionY = vy * 0.5;
-        motionZ = vz * 0.5;
+        lifetime = duration;
+        xd = vx * 0.5;
+        yd = vy * 0.5;
+        zd = vz * 0.5;
         red = (float) r;
         green = (float) g;
         blue = (float) b;
         this.behavior = behavior;
-        particleAngle = prevParticleAngle = (float) (rand.nextInt(4) * Math.PI/2);
+        roll = oRoll = (float) (random.nextInt(4) * Math.PI/2);
         this.airDrag = (float) airDrag;
     }
 
     @Override
-    public IParticleRenderType getRenderType() {
+    public ParticleRenderType getRenderType() {
         return MMRenderType.PARTICLE_SHEET_TRANSLUCENT_NO_DEPTH;
     }
 
     @Override
     public void tick() {
         super.tick();
-        motionX *= airDrag;
-        motionY *= airDrag;
-        motionZ *= airDrag;
+        xd *= airDrag;
+        yd *= airDrag;
+        zd *= airDrag;
     }
 
     @Override
-    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
-        float var = (age + partialTicks)/(float)maxAge;
-        particleAlpha = 0.2f * ((float) (1 - Math.exp(5 * (var - 1)) - Math.pow(2000, -var)));
-        if (particleAlpha < 0.01) particleAlpha = 0.01f;
-        if (behavior == EnumCloudBehavior.SHRINK) this.particleScale = scale * ((1 - 0.7f * var) + 0.3f);
-        else if (behavior == EnumCloudBehavior.GROW) this.particleScale = scale * ((0.7f * var) + 0.3f);
-        else this.particleScale = scale;
+    public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
+        float var = (age + partialTicks)/(float)lifetime;
+        alpha = 0.2f * ((float) (1 - Math.exp(5 * (var - 1)) - Math.pow(2000, -var)));
+        if (alpha < 0.01) alpha = 0.01f;
+        if (behavior == EnumCloudBehavior.SHRINK) this.quadSize = scale * ((1 - 0.7f * var) + 0.3f);
+        else if (behavior == EnumCloudBehavior.GROW) this.quadSize = scale * ((0.7f * var) + 0.3f);
+        else this.quadSize = scale;
 
-        super.renderParticle(buffer, renderInfo, partialTicks);
+        super.render(buffer, renderInfo, partialTicks);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static final class CloudFactory implements IParticleFactory<CloudData> {
-        private final IAnimatedSprite spriteSet;
+    public static final class CloudFactory implements ParticleProvider<CloudData> {
+        private final SpriteSet spriteSet;
 
-        public CloudFactory(IAnimatedSprite sprite) {
+        public CloudFactory(SpriteSet sprite) {
             this.spriteSet = sprite;
         }
 
         @Override
-        public Particle makeParticle(CloudData typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(CloudData typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ParticleCloud particleCloud = new ParticleCloud(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn.getR(), typeIn.getG(), typeIn.getB(), typeIn.getScale(), typeIn.getDuration(), typeIn.getBehavior(), typeIn.getAirDrag());
-            particleCloud.selectSpriteWithAge(spriteSet);
+            particleCloud.setSpriteFromAge(spriteSet);
             particleCloud.setColor(typeIn.getR(), typeIn.getG(), typeIn.getB());
             return particleCloud;
         }
     }
 
-    public static class CloudData implements IParticleData {
-        public static final IParticleData.IDeserializer<ParticleCloud.CloudData> DESERIALIZER = new IParticleData.IDeserializer<ParticleCloud.CloudData>() {
-            public ParticleCloud.CloudData deserialize(ParticleType<ParticleCloud.CloudData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
+    public static class CloudData implements ParticleOptions {
+        public static final ParticleOptions.Deserializer<ParticleCloud.CloudData> DESERIALIZER = new ParticleOptions.Deserializer<ParticleCloud.CloudData>() {
+            public ParticleCloud.CloudData fromCommand(ParticleType<ParticleCloud.CloudData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
                 reader.expect(' ');
                 float r = (float) reader.readDouble();
                 reader.expect(' ');
@@ -116,7 +116,7 @@ public class ParticleCloud extends SpriteTexturedParticle {
                 return new ParticleCloud.CloudData(particleTypeIn, r, g, b, scale, duration, EnumCloudBehavior.CONSTANT, airDrag);
             }
 
-            public ParticleCloud.CloudData read(ParticleType<ParticleCloud.CloudData> particleTypeIn, PacketBuffer buffer) {
+            public ParticleCloud.CloudData fromNetwork(ParticleType<ParticleCloud.CloudData> particleTypeIn, FriendlyByteBuf buffer) {
                 return new ParticleCloud.CloudData(particleTypeIn, buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readInt(), EnumCloudBehavior.CONSTANT, buffer.readFloat());
             }
         };
@@ -143,7 +143,7 @@ public class ParticleCloud extends SpriteTexturedParticle {
         }
 
         @Override
-        public void write(PacketBuffer buffer) {
+        public void writeToNetwork(FriendlyByteBuf buffer) {
             buffer.writeFloat(this.r);
             buffer.writeFloat(this.g);
             buffer.writeFloat(this.b);
@@ -154,7 +154,7 @@ public class ParticleCloud extends SpriteTexturedParticle {
 
         @SuppressWarnings("deprecation")
         @Override
-        public String getParameters() {
+        public String writeToString() {
             return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %d %.2f", Registry.PARTICLE_TYPE.getKey(this.getType()),
                     this.r, this.g, this.b, this.scale, this.duration, this.airDrag);
         }

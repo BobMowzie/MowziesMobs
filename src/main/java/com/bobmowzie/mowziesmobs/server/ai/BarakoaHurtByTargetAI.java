@@ -2,13 +2,13 @@ package com.bobmowzie.mowziesmobs.server.ai;
 
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.EntityPredicate;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.TargetGoal;
-import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.target.TargetGoal;
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class BarakoaHurtByTargetAI extends TargetGoal
     private int revengeTimerOld;
     private final Class<?>[] excludedReinforcementTypes;
 
-    public BarakoaHurtByTargetAI(CreatureEntity creatureIn, boolean entityCallsForHelpIn, Class<?>... excludedReinforcementTypes)
+    public BarakoaHurtByTargetAI(PathfinderMob creatureIn, boolean entityCallsForHelpIn, Class<?>... excludedReinforcementTypes)
     {
         super(creatureIn, true);
         this.entityCallsForHelp = entityCallsForHelpIn;
@@ -29,21 +29,21 @@ public class BarakoaHurtByTargetAI extends TargetGoal
     /**
      * Returns whether the EntityAIBase should begin execution.
      */
-    public boolean shouldExecute()
+    public boolean canUse()
     {
-        int i = this.goalOwner.getRevengeTimer();
-        LivingEntity entitylivingbase = this.goalOwner.getRevengeTarget();
-        return i != this.revengeTimerOld && entitylivingbase != null && this.isSuitableTarget(entitylivingbase, EntityPredicate.DEFAULT);
+        int i = this.mob.getLastHurtByMobTimestamp();
+        LivingEntity entitylivingbase = this.mob.getLastHurtByMob();
+        return i != this.revengeTimerOld && entitylivingbase != null && this.canAttack(entitylivingbase, TargetingConditions.DEFAULT);
     }
 
     /**
      * Execute a one shot task or start executing a continuous task
      */
-    public void startExecuting()
+    public void start()
     {
-        this.goalOwner.setAttackTarget(this.goalOwner.getRevengeTarget());
-        this.target = this.goalOwner.getAttackTarget();
-        this.revengeTimerOld = this.goalOwner.getRevengeTimer();
+        this.mob.setTarget(this.mob.getLastHurtByMob());
+        this.targetMob = this.mob.getTarget();
+        this.revengeTimerOld = this.mob.getLastHurtByMobTimestamp();
         this.unseenMemoryTicks = 300;
 
         if (this.entityCallsForHelp)
@@ -51,32 +51,32 @@ public class BarakoaHurtByTargetAI extends TargetGoal
             this.alertOthers();
         }
 
-        super.startExecuting();
+        super.start();
     }
 
     protected void alertOthers()
     {
-        double d0 = this.getTargetDistance();
+        double d0 = this.getFollowDistance();
 
-        List<CreatureEntity> nearby = this.goalOwner.world.getLoadedEntitiesWithinAABB(EntityBarakoa.class, (new AxisAlignedBB(this.goalOwner.getPosX(), this.goalOwner.getPosY(), this.goalOwner.getPosZ(), this.goalOwner.getPosX() + 1.0D, this.goalOwner.getPosY() + 1.0D, this.goalOwner.getPosZ() + 1.0D)).grow(d0, 10.0D, d0), e ->
+        List<PathfinderMob> nearby = this.mob.level.getLoadedEntitiesOfClass(EntityBarakoa.class, (new AABB(this.mob.getX(), this.mob.getY(), this.mob.getZ(), this.mob.getX() + 1.0D, this.mob.getY() + 1.0D, this.mob.getZ() + 1.0D)).inflate(d0, 10.0D, d0), e ->
                 ((EntityBarakoa)e).isBarakoDevoted());
-        nearby.addAll(this.goalOwner.world.getLoadedEntitiesWithinAABB(EntityBarako.class, (new AxisAlignedBB(this.goalOwner.getPosX(), this.goalOwner.getPosY(), this.goalOwner.getPosZ(), this.goalOwner.getPosX() + 1.0D, this.goalOwner.getPosY() + 1.0D, this.goalOwner.getPosZ() + 1.0D)).grow(d0, 10.0D, d0)));
-        for (CreatureEntity entitycreature : nearby)
+        nearby.addAll(this.mob.level.getLoadedEntitiesOfClass(EntityBarako.class, (new AABB(this.mob.getX(), this.mob.getY(), this.mob.getZ(), this.mob.getX() + 1.0D, this.mob.getY() + 1.0D, this.mob.getZ() + 1.0D)).inflate(d0, 10.0D, d0)));
+        for (PathfinderMob entitycreature : nearby)
         {
-            if (this.goalOwner != entitycreature && !(entitycreature.getAttackTarget() instanceof PlayerEntity) && (!(this.goalOwner instanceof TameableEntity) || ((TameableEntity)this.goalOwner).getOwner() == ((TameableEntity)entitycreature).getOwner()) && this.goalOwner.getRevengeTarget() != null && !entitycreature.isOnSameTeam(this.goalOwner.getRevengeTarget()))
+            if (this.mob != entitycreature && !(entitycreature.getTarget() instanceof Player) && (!(this.mob instanceof TamableAnimal) || ((TamableAnimal)this.mob).getOwner() == ((TamableAnimal)entitycreature).getOwner()) && this.mob.getLastHurtByMob() != null && !entitycreature.isAlliedTo(this.mob.getLastHurtByMob()))
             {
-                this.setEntityAttackTarget(entitycreature, this.goalOwner.getRevengeTarget());
+                this.setEntityAttackTarget(entitycreature, this.mob.getLastHurtByMob());
             }
         }
     }
 
-    protected void setEntityAttackTarget(CreatureEntity creatureIn, LivingEntity entityLivingBaseIn)
+    protected void setEntityAttackTarget(PathfinderMob creatureIn, LivingEntity entityLivingBaseIn)
     {
-        creatureIn.setAttackTarget(entityLivingBaseIn);
+        creatureIn.setTarget(entityLivingBaseIn);
     }
 
     @Override
-    protected double getTargetDistance() {
-        return super.getTargetDistance() * 1.7;
+    protected double getFollowDistance() {
+        return super.getFollowDistance() * 1.7;
     }
 }

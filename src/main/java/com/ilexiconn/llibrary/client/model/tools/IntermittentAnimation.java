@@ -1,8 +1,8 @@
 package com.ilexiconn.llibrary.client.model.tools;
 
 import com.ilexiconn.llibrary.server.entity.IIntermittentEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -134,7 +134,7 @@ public class IntermittentAnimation<T extends Entity & IIntermittentEntity> {
             } else {
                 if (this.rand.nextInt(this.startProbability) == 0) {
                     this.start();
-                    this.entity.world.setEntityState(this.entity, (byte) (this.entity.getOffsetEntityState() + this.id));
+                    this.entity.level.broadcastEntityEvent(this.entity, (byte) (this.entity.getOffsetEntityState() + this.id));
                 }
             }
         }
@@ -211,7 +211,7 @@ public class IntermittentAnimation<T extends Entity & IIntermittentEntity> {
      * 1.0F using a sine function. It is fast in the beginning and slow in the end.
      */
     public float getAnimationProgressSin() {
-        return MathHelper.sin(1.57079632679F * this.getAnimationFraction());
+        return Mth.sin(1.57079632679F * this.getAnimationFraction());
     }
 
     /**
@@ -219,7 +219,7 @@ public class IntermittentAnimation<T extends Entity & IIntermittentEntity> {
      * 1.0F using a sine function squared. It is very smooth.
      */
     public float getAnimationProgressSinSqrt() {
-        float result = MathHelper.sin(1.57079632679F * this.getAnimationFraction());
+        float result = Mth.sin(1.57079632679F * this.getAnimationFraction());
         return result * result;
     }
 
@@ -228,14 +228,14 @@ public class IntermittentAnimation<T extends Entity & IIntermittentEntity> {
      * 1.0F using a sine function to the power of ten. It is slow in the beginning and fast in the end.
      */
     public float getAnimationProgressSinToTen() {
-        return (float) Math.pow(MathHelper.sin(1.57079632679F * this.getAnimationFraction()), 10);
+        return (float) Math.pow(Mth.sin(1.57079632679F * this.getAnimationFraction()), 10);
     }
 
     public float getAnimationProgressSinToTenWithoutReturn() {
         if (this.runDirection == -1) {
-            return MathHelper.sin(1.57079632679F * this.getAnimationFraction()) * MathHelper.sin(1.57079632679F * this.getAnimationFraction());
+            return Mth.sin(1.57079632679F * this.getAnimationFraction()) * Mth.sin(1.57079632679F * this.getAnimationFraction());
         }
-        return (float) Math.pow(MathHelper.sin(1.57079632679F * this.getAnimationFraction()), 10);
+        return (float) Math.pow(Mth.sin(1.57079632679F * this.getAnimationFraction()), 10);
     }
 
     /**
@@ -245,7 +245,7 @@ public class IntermittentAnimation<T extends Entity & IIntermittentEntity> {
      * @param i is the power of the sine function.
      */
     public float getAnimationProgressSinPowerOf(int i) {
-        return (float) Math.pow(MathHelper.sin(1.57079632679F * this.getAnimationFraction()), i);
+        return (float) Math.pow(Mth.sin(1.57079632679F * this.getAnimationFraction()), i);
     }
 
     /**
@@ -296,7 +296,7 @@ public class IntermittentAnimation<T extends Entity & IIntermittentEntity> {
      */
     public float getAnimationProgressTemporary() {
         float x = 6.28318530718F * this.getAnimationFraction();
-        return 0.5F - 0.5F * MathHelper.cos(x + MathHelper.sin(x));
+        return 0.5F - 0.5F * Mth.cos(x + Mth.sin(x));
     }
 
     /**
@@ -306,7 +306,7 @@ public class IntermittentAnimation<T extends Entity & IIntermittentEntity> {
      */
     public float getAnimationProgressTemporaryFS() {
         float x = 3.14159265359F * this.getAnimationFraction();
-        return MathHelper.sin(x + MathHelper.sin(x));
+        return Mth.sin(x + Mth.sin(x));
     }
 
     /**
@@ -316,6 +316,6 @@ public class IntermittentAnimation<T extends Entity & IIntermittentEntity> {
      */
     public float getAnimationProgressTemporaryInvesed() {
         float x = 6.28318530718F * this.getAnimationFraction();
-        return 0.5F + 0.5F * MathHelper.cos(x + MathHelper.sin(x));
+        return 0.5F + 0.5F * Mth.cos(x + Mth.sin(x));
     }
 }

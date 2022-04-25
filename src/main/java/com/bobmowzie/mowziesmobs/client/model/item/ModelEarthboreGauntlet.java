@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.client.model.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.item.ItemEarthboreGauntlet;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class ModelEarthboreGauntlet extends AnimatedGeoModel<ItemEarthboreGauntlet> {

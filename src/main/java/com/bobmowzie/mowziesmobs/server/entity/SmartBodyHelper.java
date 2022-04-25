@@ -1,15 +1,15 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
-import net.minecraft.entity.ai.controller.BodyController;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.entity.ai.control.BodyRotationControl;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.util.Mth;
 
-public class SmartBodyHelper extends BodyController {
+public class SmartBodyHelper extends BodyRotationControl {
 	private static final float MAX_ROTATE = 75;
 
 	private static final int HISTORY_SIZE = 10;
 
-	private final MobEntity entity;
+	private final Mob entity;
 
 	private int rotateTime;
 
@@ -19,34 +19,34 @@ public class SmartBodyHelper extends BodyController {
 
     private final double[] histPosZ = new double[HISTORY_SIZE];
 
-	public SmartBodyHelper(MobEntity entity) {
+	public SmartBodyHelper(Mob entity) {
 		super(entity);
 		this.entity = entity;
 	}
 
 	@Override
-	public void updateRenderAngles() {
+	public void clientTick() {
         for (int i = histPosX.length - 1; i > 0; i--) {
             histPosX[i] = histPosX[i - 1];
             histPosZ[i] = histPosZ[i - 1];
         }
-        histPosX[0] = entity.getPosX();
-        histPosZ[0] = entity.getPosZ();
+        histPosX[0] = entity.getX();
+        histPosZ[0] = entity.getZ();
         double dx = delta(histPosX);
         double dz = delta(histPosZ);
         double distSq = dx * dx + dz * dz;
 		if (distSq > 2.5e-7) {
-			double moveAngle = (float) MathHelper.atan2(dz, dx) * (180 / (float) Math.PI) - 90;
-			entity.renderYawOffset += MathHelper.wrapDegrees(moveAngle - entity.renderYawOffset) * 0.6F;
+			double moveAngle = (float) Mth.atan2(dz, dx) * (180 / (float) Math.PI) - 90;
+			entity.yBodyRot += Mth.wrapDegrees(moveAngle - entity.yBodyRot) * 0.6F;
 //			this.entity.renderYawOffset = this.entity.rotationYaw;
 //			this.entity.rotationYawHead = approach(this.entity.renderYawOffset, this.entity.rotationYawHead, 75.0F);
-			this.targetYawHead = this.entity.rotationYawHead;
+			this.targetYawHead = this.entity.yHeadRot;
 			this.rotateTime = 0;
-        } else if (entity.getPassengers().isEmpty() || !(entity.getPassengers().get(0) instanceof MobEntity)) {
+        } else if (entity.getPassengers().isEmpty() || !(entity.getPassengers().get(0) instanceof Mob)) {
 			float limit = MAX_ROTATE;
-			if (Math.abs(entity.rotationYawHead - targetYawHead) > 15) {
+			if (Math.abs(entity.yHeadRot - targetYawHead) > 15) {
 				rotateTime = 0;
-				targetYawHead = entity.rotationYawHead;
+				targetYawHead = entity.yHeadRot;
 			} else {
 				rotateTime++;
 				final int speed = 10;
@@ -54,7 +54,7 @@ public class SmartBodyHelper extends BodyController {
 					limit = Math.max(1 - (rotateTime - speed) / (float) speed, 0) * MAX_ROTATE;
 				}
 			}
-			entity.renderYawOffset = approach(entity.rotationYawHead, entity.renderYawOffset, limit);
+			entity.yBodyRot = approach(entity.yHeadRot, entity.yBodyRot, limit);
 		}
 	}
 
@@ -71,7 +71,7 @@ public class SmartBodyHelper extends BodyController {
     }
 
 	public static float approach(float target, float current, float limit) {
-		float delta = MathHelper.wrapDegrees(current - target);
+		float delta = Mth.wrapDegrees(current - target);
 		if (delta < -limit) {
 			delta = -limit;
 		} else if (delta >= limit) {

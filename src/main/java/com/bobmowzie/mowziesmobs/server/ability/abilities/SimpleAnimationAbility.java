@@ -4,8 +4,8 @@ import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.HandSide;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.HumanoidArm;
 
 public class SimpleAnimationAbility extends Ability {
     private String animationName;
@@ -34,7 +34,7 @@ public class SimpleAnimationAbility extends Ability {
     public void start() {
         super.start();
         if (separateLeftAndRight) {
-            boolean handSide = getUser().getPrimaryHand() == HandSide.RIGHT;
+            boolean handSide = getUser().getMainArm() == HumanoidArm.RIGHT;
             playAnimation(animationName + "_" + (handSide ? "right" : "left"), GeckoPlayer.Perspective.THIRD_PERSON, false);
             playAnimation(animationName, GeckoPlayer.Perspective.FIRST_PERSON, false);
         }
@@ -42,6 +42,6 @@ public class SimpleAnimationAbility extends Ability {
             playAnimation(animationName, false);
         }
         if (lockHeldItemMainHand)
-            heldItemMainHandVisualOverride = getUser().getHeldItemMainhand();
+            heldItemMainHandVisualOverride = getUser().getMainHandItem();
     }
 }

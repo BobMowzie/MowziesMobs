@@ -16,19 +16,19 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.item.*;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
-import net.minecraft.client.MainWindow;
+import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.settings.PointOfView;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.CameraType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
@@ -36,7 +36,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fml.LogicalSide;
 import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
 
@@ -49,7 +49,7 @@ public enum ClientEventHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onHandRender(RenderHandEvent event) {
         if (!ConfigHandler.CLIENT.customPlayerAnims.get()) return;
-        PlayerEntity player = Minecraft.getInstance().player;
+        Player player = Minecraft.getInstance().player;
         if (player == null) return;
         boolean shouldAnimate = false;
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
@@ -67,12 +67,12 @@ public enum ClientEventHandler {
 //                        if (!geckoFirstPersonModel.isUsingSmallArms() && ((AbstractClientPlayerEntity) player).getSkinType().equals("slim")) {
                             firstPersonRenderer.setSmallArms();
 //                        }
-                        event.setCanceled(geckoFirstPersonModel.resourceForModelId((AbstractClientPlayerEntity) player));
+                        event.setCanceled(geckoFirstPersonModel.resourceForModelId((AbstractClientPlayer) player));
 
                         if (event.isCanceled()) {
                             float delta = event.getPartialTicks();
-                            float f1 = MathHelper.lerp(delta, player.prevRotationPitch, player.rotationPitch);
-                            firstPersonRenderer.renderItemInFirstPerson((AbstractClientPlayerEntity) player, f1, delta, event.getHand(), event.getSwingProgress(), event.getItemStack(), event.getEquipProgress(), event.getMatrixStack(), event.getBuffers(), event.getLight(), geckoPlayer);
+                            float f1 = Mth.lerp(delta, player.xRotO, player.xRot);
+                            firstPersonRenderer.renderItemInFirstPerson((AbstractClientPlayer) player, f1, delta, event.getHand(), event.getSwingProgress(), event.getItemStack(), event.getEquipProgress(), event.getMatrixStack(), event.getBuffers(), event.getLight(), geckoPlayer);
                         }
                     }
                 }
@@ -82,9 +82,9 @@ public enum ClientEventHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void renderLivingEvent(RenderLivingEvent.Pre<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>> event) {
-        if (event.getEntity() instanceof PlayerEntity) {
+        if (event.getEntity() instanceof Player) {
             if (!ConfigHandler.CLIENT.customPlayerAnims.get()) return;
-            PlayerEntity player = (PlayerEntity) event.getEntity();
+            Player player = (Player) event.getEntity();
             if (player == null) return;
             float delta = event.getPartialRenderTick();
             AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
@@ -98,14 +98,14 @@ public enum ClientEventHandler {
                         GeckoRenderPlayer animatedPlayerRenderer = (GeckoRenderPlayer) geckoPlayer.getPlayerRenderer();
 
                         if (geckoPlayerModel != null && animatedPlayerRenderer != null) {
-                            if (!geckoPlayerModel.isUsingSmallArms() && ((AbstractClientPlayerEntity) player).getSkinType().equals("slim")) {
+                            if (!geckoPlayerModel.isUsingSmallArms() && ((AbstractClientPlayer) player).getModelName().equals("slim")) {
                                 animatedPlayerRenderer.setSmallArms();
                             }
 
-                            event.setCanceled(geckoPlayerModel.resourceForModelId((AbstractClientPlayerEntity) player));
+                            event.setCanceled(geckoPlayerModel.resourceForModelId((AbstractClientPlayer) player));
 
                             if (event.isCanceled()) {
-                                animatedPlayerRenderer.render((AbstractClientPlayerEntity) event.getEntity(), event.getEntity().rotationYaw, delta, event.getMatrixStack(), event.getBuffers(), event.getLight(), geckoPlayer);
+                                animatedPlayerRenderer.render((AbstractClientPlayer) event.getEntity(), event.getEntity().yRot, delta, event.getMatrixStack(), event.getBuffers(), event.getLight(), geckoPlayer);
                             }
                         }
                     }
@@ -116,7 +116,7 @@ public enum ClientEventHandler {
 
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event) {
-        PlayerEntity player = Minecraft.getInstance().player;
+        Player player = Minecraft.getInstance().player;
 //        if (player != null) {
 //            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
 //            if (playerCapability != null && playerCapability.getGeomancy().canUse(player) && playerCapability.getGeomancy().isSpawningBoulder() && playerCapability.getGeomancy().getSpawnBoulderCharge() > 2) {
@@ -134,12 +134,12 @@ public enum ClientEventHandler {
 //            }
         FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(player, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
         if (frozenCapability != null && frozenCapability.getFrozen() && frozenCapability.getPrevFrozen()) {
-            player.rotationYaw = frozenCapability.getFrozenYaw();
-            player.rotationPitch = frozenCapability.getFrozenPitch();
-            player.rotationYawHead = frozenCapability.getFrozenYawHead();
-            player.prevRotationYaw = player.rotationYaw;
-            player.prevRotationPitch = player.rotationPitch;
-            player.prevRotationYawHead = player.rotationYawHead;
+            player.yRot = frozenCapability.getFrozenYaw();
+            player.xRot = frozenCapability.getFrozenPitch();
+            player.yHeadRot = frozenCapability.getFrozenYawHead();
+            player.yRotO = player.yRot;
+            player.xRotO = player.xRot;
+            player.yHeadRotO = player.yHeadRot;
         }
     }
 
@@ -148,13 +148,13 @@ public enum ClientEventHandler {
         LivingEntity entity = event.getEntity();
         FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
         if (frozenCapability != null && frozenCapability.getFrozen() && frozenCapability.getPrevFrozen()) {
-            entity.rotationYaw = entity.prevRotationYaw = frozenCapability.getFrozenYaw();
-            entity.rotationPitch = entity.prevRotationPitch = frozenCapability.getFrozenPitch();
-            entity.rotationYawHead = entity.prevRotationYawHead = frozenCapability.getFrozenYawHead();
-            entity.renderYawOffset = entity.prevRenderYawOffset = frozenCapability.getFrozenRenderYawOffset();
-            entity.swingProgress = entity.prevSwingProgress = frozenCapability.getFrozenSwingProgress();
-            entity.limbSwingAmount = entity.prevLimbSwingAmount = frozenCapability.getFrozenLimbSwingAmount();
-            entity.setSneaking(false);
+            entity.yRot = entity.yRotO = frozenCapability.getFrozenYaw();
+            entity.xRot = entity.xRotO = frozenCapability.getFrozenPitch();
+            entity.yHeadRot = entity.yHeadRotO = frozenCapability.getFrozenYawHead();
+            entity.yBodyRot = entity.yBodyRotO = frozenCapability.getFrozenRenderYawOffset();
+            entity.attackAnim = entity.oAttackAnim = frozenCapability.getFrozenSwingProgress();
+            entity.animationSpeed = entity.animationSpeedOld = frozenCapability.getFrozenLimbSwingAmount();
+            entity.setShiftKeyDown(false);
         }
     }
 
@@ -200,10 +200,10 @@ public enum ClientEventHandler {
             }*/
             if (Minecraft.getInstance().player != null) {
                 FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(Minecraft.getInstance().player, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
-                if (frozenCapability != null && frozenCapability.getFrozen() && Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON) {
-                    Minecraft.getInstance().getTextureManager().bindTexture(FROZEN_BLUR);
-                    MainWindow res = e.getWindow();
-                    AbstractGui.blit(e.getMatrixStack(), 0, 0, 0, 0, res.getScaledWidth(), res.getScaledHeight(), res.getScaledWidth(), res.getScaledHeight());
+                if (frozenCapability != null && frozenCapability.getFrozen() && Minecraft.getInstance().options.getCameraType() == CameraType.FIRST_PERSON) {
+                    Minecraft.getInstance().getTextureManager().bind(FROZEN_BLUR);
+                    Window res = e.getWindow();
+                    GuiComponent.blit(e.getMatrixStack(), 0, 0, 0, 0, res.getGuiScaledWidth(), res.getGuiScaledHeight(), res.getGuiScaledWidth(), res.getGuiScaledHeight());
                 }
             }
         }
@@ -212,14 +212,14 @@ public enum ClientEventHandler {
     // Remove frozen overlay
     @SubscribeEvent
     public void onRenderHUD(RenderGameOverlayEvent.Pre event) {
-        ClientPlayerEntity player = Minecraft.getInstance().player;
+        LocalPlayer player = Minecraft.getInstance().player;
         if (player != null && player.isPassenger()) {
-            if (player.getRidingEntity() instanceof EntityFrozenController) {
+            if (player.getVehicle() instanceof EntityFrozenController) {
                 if (event.getType().equals(RenderGameOverlayEvent.ElementType.HEALTHMOUNT)) {
                     event.setCanceled(true);
                 }
                 if (event.getType().equals(RenderGameOverlayEvent.ElementType.ALL)) {
-                    Minecraft.getInstance().ingameGUI.setOverlayMessage(new TranslationTextComponent(""), false);
+                    Minecraft.getInstance().gui.setOverlayMessage(new TranslatableComponent(""), false);
                 }
             }
         }
@@ -227,9 +227,9 @@ public enum ClientEventHandler {
 
     @SubscribeEvent
     public void updateFOV(FOVUpdateEvent event) {
-        PlayerEntity player = event.getEntity();
-        if (player.isHandActive() && player.getActiveItemStack().getItem() instanceof ItemBlowgun) {
-            int i = player.getItemInUseMaxCount();
+        Player player = event.getEntity();
+        if (player.isUsingItem() && player.getUseItem().getItem() instanceof ItemBlowgun) {
+            int i = player.getTicksUsingItem();
             float f1 = (float)i / 5.0F;
             if (f1 > 1.0F) {
                 f1 = 1.0F;
@@ -243,23 +243,23 @@ public enum ClientEventHandler {
 
     @SubscribeEvent
     public void onSetupCamera(EntityViewRenderEvent.CameraSetup event) {
-        PlayerEntity player = Minecraft.getInstance().player;
-        float delta = Minecraft.getInstance().getRenderPartialTicks();
-        float ticksExistedDelta = player.ticksExisted + delta;
+        Player player = Minecraft.getInstance().player;
+        float delta = Minecraft.getInstance().getFrameTime();
+        float ticksExistedDelta = player.tickCount + delta;
         if (player != null) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
             if (playerCapability != null && playerCapability.getGeomancy().canUse(player) && playerCapability.getGeomancy().isSpawningBoulder() && playerCapability.getGeomancy().getSpawnBoulderCharge() > 2) {
-                Vector3d lookPos = playerCapability.getGeomancy().getLookPos();
-                Vector3d playerEyes = player.getEyePosition(delta);
-                Vector3d vec = playerEyes.subtract(lookPos).normalize();
+                Vec3 lookPos = playerCapability.getGeomancy().getLookPos();
+                Vec3 playerEyes = player.getEyePosition(delta);
+                Vec3 vec = playerEyes.subtract(lookPos).normalize();
                 float yaw = (float) Math.atan2(vec.z, vec.x);
                 float pitch = (float) Math.asin(vec.y);
-                player.rotationYaw = (float) (yaw * 180f/Math.PI + 90);
-                player.rotationPitch = (float) (pitch * 180f/Math.PI);
-                player.rotationYawHead = player.rotationYaw;
-                player.prevRotationYaw = player.rotationYaw;
-                player.prevRotationPitch = player.rotationPitch;
-                player.prevRotationYawHead = player.rotationYawHead;
+                player.yRot = (float) (yaw * 180f/Math.PI + 90);
+                player.xRot = (float) (pitch * 180f/Math.PI);
+                player.yHeadRot = player.yRot;
+                player.yRotO = player.yRot;
+                player.xRotO = player.xRot;
+                player.yHeadRotO = player.yHeadRot;
                 event.setPitch(pitch);
                 event.setYaw(yaw);
             }
@@ -278,8 +278,8 @@ public enum ClientEventHandler {
 
             if (ConfigHandler.CLIENT.doCameraShakes.get()) {
                 float shakeAmplitude = 0;
-                for (EntityCameraShake cameraShake : player.world.getEntitiesWithinAABB(EntityCameraShake.class, player.getBoundingBox().grow(20, 20, 20))) {
-                    if (cameraShake.getDistance(player) < cameraShake.getRadius()) {
+                for (EntityCameraShake cameraShake : player.level.getEntitiesOfClass(EntityCameraShake.class, player.getBoundingBox().inflate(20, 20, 20))) {
+                    if (cameraShake.distanceTo(player) < cameraShake.getRadius()) {
                         shakeAmplitude += cameraShake.getShakeAmount(player, delta);
                     }
                 }
@@ -296,7 +296,7 @@ public enum ClientEventHandler {
         if (event.phase == TickEvent.Phase.START || event.player == null) {
             return;
         }
-        PlayerEntity player = event.player;
+        Player player = event.player;
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
         if (playerCapability != null && event.side == LogicalSide.CLIENT) {
             GeckoPlayer geckoPlayer = playerCapability.getGeckoPlayer();

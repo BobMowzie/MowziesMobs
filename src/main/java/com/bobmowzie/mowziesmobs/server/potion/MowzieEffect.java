@@ -1,19 +1,19 @@
 package com.bobmowzie.mowziesmobs.server.potion;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.resources.ResourceLocation;
 
-public class MowzieEffect extends Effect {
+public class MowzieEffect extends MobEffect {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/gui/container/potions.png");
 
-    public MowzieEffect(EffectType type, int liquidColor) {
+    public MowzieEffect(MobEffectCategory type, int liquidColor) {
         super(type, liquidColor);
     }
 
     @Override
-    public boolean isReady(int id, int amplifier) {
+    public boolean isDurationEffectTick(int id, int amplifier) {
         return true;
     }
 }

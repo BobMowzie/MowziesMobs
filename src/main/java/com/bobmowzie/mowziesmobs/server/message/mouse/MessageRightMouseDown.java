@@ -7,8 +7,8 @@ import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.power.Power;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
@@ -20,11 +20,11 @@ import java.util.function.Supplier;
 public class MessageRightMouseDown {
     public MessageRightMouseDown() {}
 
-    public static void serialize(final MessageRightMouseDown message, final PacketBuffer buf) {
+    public static void serialize(final MessageRightMouseDown message, final FriendlyByteBuf buf) {
 
     }
 
-    public static MessageRightMouseDown deserialize(final PacketBuffer buf) {
+    public static MessageRightMouseDown deserialize(final FriendlyByteBuf buf) {
         final MessageRightMouseDown message = new MessageRightMouseDown();
         return message;
     }
@@ -33,12 +33,12 @@ public class MessageRightMouseDown {
         @Override
         public void accept(final MessageRightMouseDown message, final Supplier<NetworkEvent.Context> contextSupplier) {
             final NetworkEvent.Context context = contextSupplier.get();
-            final ServerPlayerEntity player = context.getSender();
+            final ServerPlayer player = context.getSender();
             context.enqueueWork(() -> this.accept(message, player));
             context.setPacketHandled(true);
         }
 
-        private void accept(final MessageRightMouseDown message, final ServerPlayerEntity player) {
+        private void accept(final MessageRightMouseDown message, final ServerPlayer player) {
             if (player != null) {
                 PlayerCapability.IPlayerCapability capability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
                 if (capability != null) {

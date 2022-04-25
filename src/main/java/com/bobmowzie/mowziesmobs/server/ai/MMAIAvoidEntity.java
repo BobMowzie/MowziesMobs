@@ -2,19 +2,21 @@ package com.bobmowzie.mowziesmobs.server.ai;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.RandomPositionGenerator;
-import net.minecraft.pathfinding.Path;
-import net.minecraft.util.EntityPredicates;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.util.RandomPos;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
 import java.util.List;
 
-public class MMAIAvoidEntity<U extends CreatureEntity, T extends Entity> extends Goal {
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
+
+public class MMAIAvoidEntity<U extends PathfinderMob, T extends Entity> extends Goal {
     private static final double NEAR_DISTANCE = 7.0D;
     
     protected final U entity;
@@ -50,10 +52,10 @@ public class MMAIAvoidEntity<U extends CreatureEntity, T extends Entity> extends
     public MMAIAvoidEntity(U entity, Class<T> avoidedEntityType, Predicate<? super T> predicate, float evadeDistance, double farSpeed, double nearSpeed, int numChecks, int horizontalEvasion, int verticalEvasion) {
         this.entity = entity;
         this.selector = e -> e != null &&
-            EntityPredicates.CAN_AI_TARGET.test(e) &&
+            EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(e) &&
             e.isAlive() &&
-            entity.getEntitySenses().canSee(e) &&
-            !entity.isOnSameTeam(e) &&
+            entity.getSensing().canSee(e) &&
+            !entity.isAlliedTo(e) &&
             predicate.test(e);
         this.avoidedEntityType = avoidedEntityType;
         this.evadeDistance = evadeDistance;
@@ -62,21 +64,21 @@ public class MMAIAvoidEntity<U extends CreatureEntity, T extends Entity> extends
         this.numChecks = numChecks;
         this.horizontalEvasion = horizontalEvasion;
         this.verticalEvasion = verticalEvasion;
-        setMutexFlags(EnumSet.of(Flag.MOVE));
+        setFlags(EnumSet.of(Flag.MOVE));
     }
 
     @Override
-    public boolean shouldExecute() {
-        List<T> entities = entity.world.getEntitiesWithinAABB(avoidedEntityType, entity.getBoundingBox().grow(evadeDistance, 3.0D, evadeDistance), selector);
+    public boolean canUse() {
+        List<T> entities = entity.level.getEntitiesOfClass(avoidedEntityType, entity.getBoundingBox().inflate(evadeDistance, 3.0D, evadeDistance), selector);
         if (entities.isEmpty()) {
             onSafe();
             return false;
         }
         entityEvading = entities.get(0);
         for (int n = 0; n < numChecks; n++) {
-            Vector3d pos = RandomPositionGenerator.findRandomTargetBlockAwayFrom(entity, horizontalEvasion, verticalEvasion, entityEvading.getPositionVec());
-            if (pos != null && !(entityEvading.getDistanceSq(pos.x, pos.y, pos.z) < entityEvading.getDistanceSq(entity))) {
-                entityPathEntity = entity.getNavigator().getPathToPos(new BlockPos(pos), 0);
+            Vec3 pos = RandomPos.getPosAvoid(entity, horizontalEvasion, verticalEvasion, entityEvading.position());
+            if (pos != null && !(entityEvading.distanceToSqr(pos.x, pos.y, pos.z) < entityEvading.distanceToSqr(entity))) {
+                entityPathEntity = entity.getNavigation().createPath(new BlockPos(pos), 0);
                 if (entityPathEntity != null) {
                     return true;
                 }
@@ -91,22 +93,22 @@ public class MMAIAvoidEntity<U extends CreatureEntity, T extends Entity> extends
     protected void onPathNotFound() {}
 
     @Override
-    public boolean shouldContinueExecuting() {
-        return !entity.getNavigator().noPath();
+    public boolean canContinueToUse() {
+        return !entity.getNavigation().isDone();
     }
 
     @Override
-    public void startExecuting() {
-        entity.getNavigator().setPath(entityPathEntity, farSpeed);
+    public void start() {
+        entity.getNavigation().moveTo(entityPathEntity, farSpeed);
     }
 
     @Override
-    public void resetTask() {
+    public void stop() {
         entityEvading = null;
     }
 
     @Override
     public void tick() {
-        entity.getNavigator().setSpeed(entity.getDistanceSq(entityEvading) < NEAR_DISTANCE * NEAR_DISTANCE ? nearSpeed : farSpeed);
+        entity.getNavigation().setSpeedModifier(entity.distanceToSqr(entityEvading) < NEAR_DISTANCE * NEAR_DISTANCE ? nearSpeed : farSpeed);
     }
 }

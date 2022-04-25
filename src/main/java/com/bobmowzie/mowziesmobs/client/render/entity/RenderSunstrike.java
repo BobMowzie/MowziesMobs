@@ -3,23 +3,23 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix3f;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Quaternion;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -51,68 +51,68 @@ public class RenderSunstrike extends EntityRenderer<EntitySunstrike> {
     private static final float SCORCH_MIN_V = 16f / TEXTURE_HEIGHT;
     private static final float SCORCH_MAX_V = SCORCH_MIN_V + RING_FRAME_SIZE / TEXTURE_HEIGHT;
 
-    public RenderSunstrike(EntityRendererManager mgr) {
+    public RenderSunstrike(EntityRenderDispatcher mgr) {
         super(mgr);
     }
 
     @Override
-    public ResourceLocation getEntityTexture(EntitySunstrike entity) {
+    public ResourceLocation getTextureLocation(EntitySunstrike entity) {
         return RenderSunstrike.TEXTURE;
     }
 
     @Override
-    public void render(EntitySunstrike sunstrike, float entityYaw, float delta, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        float maxY = (float) (MAX_HEIGHT - sunstrike.getPosY());
+    public void render(EntitySunstrike sunstrike, float entityYaw, float delta, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
+        float maxY = (float) (MAX_HEIGHT - sunstrike.getY());
         if (maxY < 0) {
             return;
         }
         RANDOMIZER.setSeed(sunstrike.getVariant());
         boolean isLingering = sunstrike.isLingering(delta);
         boolean isStriking = sunstrike.isStriking(delta);
-        matrixStackIn.push();
-        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(MMRenderType.getGlowingEffect(RenderSunstrike.TEXTURE));
+        matrixStackIn.pushPose();
+        VertexConsumer ivertexbuilder = bufferIn.getBuffer(MMRenderType.getGlowingEffect(RenderSunstrike.TEXTURE));
         if (isLingering) {
             drawScorch(sunstrike, delta, matrixStackIn, ivertexbuilder, packedLightIn);
         } else if (isStriking) {
             drawStrike(sunstrike, maxY, delta, matrixStackIn, ivertexbuilder, packedLightIn);
         }
-        matrixStackIn.pop();
+        matrixStackIn.popPose();
     }
 
-    private void drawScorch(EntitySunstrike sunstrike, float delta, MatrixStack matrixStack, IVertexBuilder builder, int packedLightIn) {
-        World world = sunstrike.getEntityWorld();
-        double ex = sunstrike.lastTickPosX + (sunstrike.getPosX() - sunstrike.lastTickPosX) * delta;
-        double ey = sunstrike.lastTickPosY + (sunstrike.getPosY() - sunstrike.lastTickPosY) * delta;
-        double ez = sunstrike.lastTickPosZ + (sunstrike.getPosZ() - sunstrike.lastTickPosZ) * delta;
-        int minX = MathHelper.floor(ex - LINGER_RADIUS);
-        int maxX = MathHelper.floor(ex + LINGER_RADIUS);
-        int minY = MathHelper.floor(ey - LINGER_RADIUS);
-        int maxY = MathHelper.floor(ey);
-        int minZ = MathHelper.floor(ez - LINGER_RADIUS);
-        int maxZ = MathHelper.floor(ez + LINGER_RADIUS);
-        float opacityMultiplier = (0.6F + RANDOMIZER.nextFloat() * 0.2F) * world.getLight(new BlockPos(ex, ey, ez));
+    private void drawScorch(EntitySunstrike sunstrike, float delta, PoseStack matrixStack, VertexConsumer builder, int packedLightIn) {
+        Level world = sunstrike.getCommandSenderWorld();
+        double ex = sunstrike.xOld + (sunstrike.getX() - sunstrike.xOld) * delta;
+        double ey = sunstrike.yOld + (sunstrike.getY() - sunstrike.yOld) * delta;
+        double ez = sunstrike.zOld + (sunstrike.getZ() - sunstrike.zOld) * delta;
+        int minX = Mth.floor(ex - LINGER_RADIUS);
+        int maxX = Mth.floor(ex + LINGER_RADIUS);
+        int minY = Mth.floor(ey - LINGER_RADIUS);
+        int maxY = Mth.floor(ey);
+        int minZ = Mth.floor(ez - LINGER_RADIUS);
+        int maxZ = Mth.floor(ez + LINGER_RADIUS);
+        float opacityMultiplier = (0.6F + RANDOMIZER.nextFloat() * 0.2F) * world.getMaxLocalRawBrightness(new BlockPos(ex, ey, ez));
         byte mirrorX = (byte) (RANDOMIZER.nextBoolean() ? -1 : 1);
         byte mirrorZ = (byte) (RANDOMIZER.nextBoolean() ? -1 : 1);
-        for (BlockPos pos : BlockPos.getAllInBoxMutable(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ))) {
-            BlockState block = world.getBlockState(pos.down());
-            if (block.getMaterial() != Material.AIR && world.getLight(pos) > 3) {
+        for (BlockPos pos : BlockPos.betweenClosed(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ))) {
+            BlockState block = world.getBlockState(pos.below());
+            if (block.getMaterial() != Material.AIR && world.getMaxLocalRawBrightness(pos) > 3) {
                 drawScorchBlock(world, block, pos, ex, ey, ez, opacityMultiplier, mirrorX, mirrorZ, matrixStack, builder, packedLightIn);
             }
         }
     }
 
-    private void drawScorchBlock(World world, BlockState block, BlockPos pos, double ex, double ey, double ez, float opacityMultiplier, byte mirrorX, byte mirrorZ, MatrixStack matrixStack, IVertexBuilder builder, int packedLightIn) {
-        MatrixStack.Entry matrixstack$entry = matrixStack.getLast();
-        Matrix4f matrix4f = matrixstack$entry.getMatrix();
-        Matrix3f matrix3f = matrixstack$entry.getNormal();
-        if (block.isNormalCube(world, pos)) {
+    private void drawScorchBlock(Level world, BlockState block, BlockPos pos, double ex, double ey, double ez, float opacityMultiplier, byte mirrorX, byte mirrorZ, PoseStack matrixStack, VertexConsumer builder, int packedLightIn) {
+        PoseStack.Pose matrixstack$entry = matrixStack.last();
+        Matrix4f matrix4f = matrixstack$entry.pose();
+        Matrix3f matrix3f = matrixstack$entry.normal();
+        if (block.isRedstoneConductor(world, pos)) {
             int bx = pos.getX(), by = pos.getY(), bz = pos.getZ();
             float opacity = (float) ((1 - (ey - by) / 2) * opacityMultiplier);
             if (opacity >= 0) {
                 if (opacity > 1) {
                     opacity = 1;
                 }
-                AxisAlignedBB aabb = block.getCollisionShape(world, pos).getBoundingBox();
+                AABB aabb = block.getBlockSupportShape(world, pos).bounds();
                 float minX = (float) (bx + aabb.minX - ex);
                 float maxX = (float) (bx + aabb.maxX - ex);
                 float y = (float) (by + aabb.minY - ey + 0.015625f);
@@ -130,7 +130,7 @@ public class RenderSunstrike extends EntityRenderer<EntitySunstrike> {
         }
     }
 
-    private void drawStrike(EntitySunstrike sunstrike, float maxY, float delta, MatrixStack matrixStack, IVertexBuilder builder, int packedLightIn) {
+    private void drawStrike(EntitySunstrike sunstrike, float maxY, float delta, PoseStack matrixStack, VertexConsumer builder, int packedLightIn) {
         float drawTime = sunstrike.getStrikeDrawTime(delta);
         float strikeTime = sunstrike.getStrikeDamageTime(delta);
         boolean drawing = sunstrike.isStrikeDrawing(delta);
@@ -139,11 +139,11 @@ public class RenderSunstrike extends EntityRenderer<EntitySunstrike> {
             opacity *= DRAW_OPACITY_MULTIPLER;
         }
         drawRing(drawing, drawTime, strikeTime, opacity, matrixStack, builder, packedLightIn);
-        matrixStack.rotate(new Quaternion(0, -Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getYaw(), 0, true));
+        matrixStack.mulPose(new Quaternion(0, -Minecraft.getInstance().gameRenderer.getMainCamera().getYRot(), 0, true));
         drawBeam(drawing, drawTime, strikeTime, opacity, maxY, matrixStack, builder, packedLightIn);
     }
 
-    private void drawRing(boolean drawing, float drawTime, float strikeTime, float opacity, MatrixStack matrixStack, IVertexBuilder builder, int packedLightIn) {
+    private void drawRing(boolean drawing, float drawTime, float strikeTime, float opacity, PoseStack matrixStack, VertexConsumer builder, int packedLightIn) {
         int frame = (int) (((drawing ? drawTime : strikeTime) * (RING_FRAME_COUNT + 1)));
         if (frame > RING_FRAME_COUNT) {
             frame = RING_FRAME_COUNT;
@@ -153,16 +153,16 @@ public class RenderSunstrike extends EntityRenderer<EntitySunstrike> {
         float minV = drawing ? 0 : RING_FRAME_SIZE / TEXTURE_HEIGHT;
         float maxV = minV + RING_FRAME_SIZE / TEXTURE_HEIGHT;
         float offset = PIXEL_SCALE * RING_RADIUS * (frame % 2);
-        MatrixStack.Entry matrixstack$entry = matrixStack.getLast();
-        Matrix4f matrix4f = matrixstack$entry.getMatrix();
-        Matrix3f matrix3f = matrixstack$entry.getNormal();
+        PoseStack.Pose matrixstack$entry = matrixStack.last();
+        Matrix4f matrix4f = matrixstack$entry.pose();
+        Matrix3f matrix3f = matrixstack$entry.normal();
         drawVertex(matrix4f, matrix3f, builder, -RING_RADIUS + offset, 0, -RING_RADIUS + offset, minU, minV, opacity, packedLightIn);
         drawVertex(matrix4f, matrix3f, builder, -RING_RADIUS + offset, 0, RING_RADIUS + offset, minU, maxV, opacity, packedLightIn);
         drawVertex(matrix4f, matrix3f, builder, RING_RADIUS + offset, 0, RING_RADIUS + offset, maxU, maxV, opacity, packedLightIn);
         drawVertex(matrix4f, matrix3f, builder, RING_RADIUS + offset, 0, -RING_RADIUS + offset, maxU, minV, opacity, packedLightIn);
     }
 
-    private void drawBeam(boolean drawing, float drawTime, float strikeTime, float opacity, float maxY, MatrixStack matrixStack, IVertexBuilder builder, int packedLightIn) {
+    private void drawBeam(boolean drawing, float drawTime, float strikeTime, float opacity, float maxY, PoseStack matrixStack, VertexConsumer builder, int packedLightIn) {
         int frame = drawing ? 0 : (int) (strikeTime * (BREAM_FRAME_COUNT + 1));
         if (frame > BREAM_FRAME_COUNT) {
             frame = BREAM_FRAME_COUNT;
@@ -173,16 +173,16 @@ public class RenderSunstrike extends EntityRenderer<EntitySunstrike> {
         }
         float minV = frame / TEXTURE_HEIGHT;
         float maxV = (frame + 1) / TEXTURE_HEIGHT;
-        MatrixStack.Entry matrixstack$entry = matrixStack.getLast();
-        Matrix4f matrix4f = matrixstack$entry.getMatrix();
-        Matrix3f matrix3f = matrixstack$entry.getNormal();
+        PoseStack.Pose matrixstack$entry = matrixStack.last();
+        Matrix4f matrix4f = matrixstack$entry.pose();
+        Matrix3f matrix3f = matrixstack$entry.normal();
         drawVertex(matrix4f, matrix3f, builder, -radius, 0, 0, BEAM_MIN_U, minV, opacity, packedLightIn);
         drawVertex(matrix4f, matrix3f, builder, -radius, maxY, 0, BEAM_MIN_U, maxV, opacity, packedLightIn);
         drawVertex(matrix4f, matrix3f, builder, radius, maxY, 0, BEAM_MAX_U, maxV, opacity, packedLightIn);
         drawVertex(matrix4f, matrix3f, builder, radius, 0, 0, BEAM_MAX_U, minV, opacity, packedLightIn);
     }
 
-    public void drawVertex(Matrix4f matrix, Matrix3f normals, IVertexBuilder vertexBuilder, float offsetX, float offsetY, float offsetZ, float textureX, float textureY, float alpha, int packedLightIn) {
-        vertexBuilder.pos(matrix, offsetX, offsetY, offsetZ).color(1, 1, 1, 1 * alpha).tex(textureX, textureY).overlay(OverlayTexture.NO_OVERLAY).lightmap(packedLightIn).normal(normals, 0.0F, 1.0F, 0.0F).endVertex();
+    public void drawVertex(Matrix4f matrix, Matrix3f normals, VertexConsumer vertexBuilder, float offsetX, float offsetY, float offsetZ, float textureX, float textureY, float alpha, int packedLightIn) {
+        vertexBuilder.vertex(matrix, offsetX, offsetY, offsetZ).color(1, 1, 1, 1 * alpha).uv(textureX, textureY).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLightIn).normal(normals, 0.0F, 1.0F, 0.0F).endVertex();
     }
 }

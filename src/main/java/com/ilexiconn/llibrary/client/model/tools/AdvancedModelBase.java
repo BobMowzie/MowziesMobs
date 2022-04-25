@@ -4,11 +4,11 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.system.MathUtil;
@@ -24,7 +24,7 @@ import java.util.function.Function;
  */
 @OnlyIn(Dist.CLIENT)
 public abstract class AdvancedModelBase<T extends Entity> extends EntityModel<T> {
-    public final List<ModelRenderer> boxList = Lists.newArrayList();
+    public final List<ModelPart> boxList = Lists.newArrayList();
 
     private float movementScale = 1.0F;
 
@@ -57,7 +57,7 @@ public abstract class AdvancedModelBase<T extends Entity> extends EntityModel<T>
     }
 
     @Override
-    public void accept(ModelRenderer modelRenderer) {
+    public void accept(ModelPart modelRenderer) {
         boxList.add(modelRenderer);
     }
 
@@ -74,8 +74,8 @@ public abstract class AdvancedModelBase<T extends Entity> extends EntityModel<T>
         float yawAmount = (float) (Math.toRadians(yaw) / actualRotationDivisor);
         float pitchAmount = (float) (Math.toRadians(pitch) / actualRotationDivisor);
         for (AdvancedModelRenderer box : boxes) {
-            box.rotateAngleY += yawAmount;
-            box.rotateAngleX += pitchAmount;
+            box.yRot += yawAmount;
+            box.xRot += pitchAmount;
         }
     }
 
@@ -92,7 +92,7 @@ public abstract class AdvancedModelBase<T extends Entity> extends EntityModel<T>
     public void chainSwing(AdvancedModelRenderer[] boxes, float speed, float degree, double rootOffset, float swing, float swingAmount) {
         float offset = this.calculateChainOffset(rootOffset, boxes);
         for (int index = 0; index < boxes.length; index++) {
-            boxes[index].rotateAngleY += this.calculateChainRotation(speed, degree, swing, swingAmount, offset, index);
+            boxes[index].yRot += this.calculateChainRotation(speed, degree, swing, swingAmount, offset, index);
         }
     }
 
@@ -109,7 +109,7 @@ public abstract class AdvancedModelBase<T extends Entity> extends EntityModel<T>
     public void chainWave(AdvancedModelRenderer[] boxes, float speed, float degree, double rootOffset, float swing, float swingAmount) {
         float offset = this.calculateChainOffset(rootOffset, boxes);
         for (int index = 0; index < boxes.length; index++) {
-            boxes[index].rotateAngleX += this.calculateChainRotation(speed, degree, swing, swingAmount, offset, index);
+            boxes[index].xRot += this.calculateChainRotation(speed, degree, swing, swingAmount, offset, index);
         }
     }
 
@@ -126,12 +126,12 @@ public abstract class AdvancedModelBase<T extends Entity> extends EntityModel<T>
     public void chainFlap(AdvancedModelRenderer[] boxes, float speed, float degree, double rootOffset, float swing, float swingAmount) {
         float offset = this.calculateChainOffset(rootOffset, boxes);
         for (int index = 0; index < boxes.length; index++) {
-            boxes[index].rotateAngleZ += this.calculateChainRotation(speed, degree, swing, swingAmount, offset, index);
+            boxes[index].zRot += this.calculateChainRotation(speed, degree, swing, swingAmount, offset, index);
         }
     }
 
     private float calculateChainRotation(float speed, float degree, float swing, float swingAmount, float offset, int boxIndex) {
-        return MathHelper.cos(swing * (speed * this.movementScale) + offset * boxIndex) * swingAmount * (degree * this.movementScale);
+        return Mth.cos(swing * (speed * this.movementScale) + offset * boxIndex) * swingAmount * (degree * this.movementScale);
     }
 
     private float calculateChainOffset(double rootOffset, AdvancedModelRenderer... boxes) {
@@ -227,9 +227,9 @@ public abstract class AdvancedModelBase<T extends Entity> extends EntityModel<T>
      */
     public float moveBox(float speed, float degree, boolean bounce, float f, float f1) {
         if (bounce) {
-            return -MathHelper.abs((MathHelper.sin(f * speed) * f1 * degree));
+            return -Mth.abs((Mth.sin(f * speed) * f1 * degree));
         } else {
-            return MathHelper.sin(f * speed) * f1 * degree - f1 * degree;
+            return Mth.sin(f * speed) * f1 * degree - f1 * degree;
         }
     }
 }

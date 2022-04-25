@@ -5,14 +5,16 @@ import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.play.server.SEntityVelocityPacket;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.util.DamageSource;
 
 import java.util.EnumSet;
 import java.util.List;
+
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class AnimationRadiusAttack<T extends MowzieEntity & IAnimatedEntity> extends SimpleAnimationAI<T> {
     private final float radius;
@@ -28,7 +30,7 @@ public class AnimationRadiusAttack<T extends MowzieEntity & IAnimatedEntity> ext
         this.applyKnockbackMultiplier = applyKnockbackMultiplier;
         this.damageFrame = damageFrame;
         this.pureapplyKnockback = pureapplyKnockback;
-        this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.JUMP, Flag.LOOK));
+        this.setFlags(EnumSet.of(Flag.MOVE, Flag.JUMP, Flag.LOOK));
     }
 
     @Override
@@ -42,13 +44,13 @@ public class AnimationRadiusAttack<T extends MowzieEntity & IAnimatedEntity> ext
                 }
                 entity.attackEntityAsMob(aHit, damageMultiplier, applyKnockbackMultiplier);
                 if (pureapplyKnockback && !aHit.isInvulnerable()) {
-                    if (aHit instanceof PlayerEntity && ((PlayerEntity)aHit).abilities.disableDamage) continue;
+                    if (aHit instanceof Player && ((Player)aHit).abilities.invulnerable) continue;
                     double angle = entity.getAngleBetweenEntities(entity, aHit);
                     double x = applyKnockbackMultiplier * Math.cos(Math.toRadians(angle - 90));
                     double z = applyKnockbackMultiplier * Math.sin(Math.toRadians(angle - 90));
-                    aHit.setMotion(x, 0.3, z);
-                    if (aHit instanceof ServerPlayerEntity) {
-                        ((ServerPlayerEntity) aHit).connection.sendPacket(new SEntityVelocityPacket(aHit));
+                    aHit.setDeltaMovement(x, 0.3, z);
+                    if (aHit instanceof ServerPlayer) {
+                        ((ServerPlayer) aHit).connection.send(new ClientboundSetEntityMotionPacket(aHit));
                     }
                 }
             }

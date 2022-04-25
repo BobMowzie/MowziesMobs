@@ -3,24 +3,24 @@ package com.bobmowzie.mowziesmobs.server.item;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityBabyFoliaath;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -30,52 +30,52 @@ public class ItemFoliaathSeed extends Item {
         super(properties);
     }
 
-    public Entity spawnCreature(IServerWorld world, MobEntity entity, double x, double y, double z) {
+    public Entity spawnCreature(ServerLevelAccessor world, Mob entity, double x, double y, double z) {
         if (entity != null) {
-            entity.setLocationAndAngles(x + 0.5, y, z + 0.5, world.getWorld().rand.nextFloat() * 360 - 180, 0);
-            entity.rotationYawHead = entity.rotationYaw;
-            entity.renderYawOffset = entity.rotationYaw;
-            entity.onInitialSpawn(world, world.getDifficultyForLocation(entity.getPosition()), SpawnReason.MOB_SUMMONED, null, null);
-            if (!entity.canSpawn(world, SpawnReason.MOB_SUMMONED)) {
+            entity.moveTo(x + 0.5, y, z + 0.5, world.getLevel().random.nextFloat() * 360 - 180, 0);
+            entity.yHeadRot = entity.yRot;
+            entity.yBodyRot = entity.yRot;
+            entity.finalizeSpawn(world, world.getCurrentDifficultyAt(entity.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
+            if (!entity.checkSpawnRules(world, MobSpawnType.MOB_SUMMONED)) {
                 return null;
             }
-            world.addEntity(entity);
+            world.addFreshEntity(entity);
         }
         return entity;
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        PlayerEntity player = context.getPlayer();
-        if (player == null) return ActionResultType.FAIL;
-        Hand hand = context.getHand();
-        Direction facing = context.getFace();
-        ItemStack stack = player.getHeldItem(hand);
-        BlockPos pos = context.getPos();
-        World world = context.getWorld();
-        if (world.isRemote) {
-            return ActionResultType.SUCCESS;
-        } else if (!player.canPlayerEdit(pos.offset(facing), facing, stack)) {
-            return ActionResultType.FAIL;
+    public InteractionResult useOn(UseOnContext context) {
+        Player player = context.getPlayer();
+        if (player == null) return InteractionResult.FAIL;
+        InteractionHand hand = context.getHand();
+        Direction facing = context.getClickedFace();
+        ItemStack stack = player.getItemInHand(hand);
+        BlockPos pos = context.getClickedPos();
+        Level world = context.getLevel();
+        if (world.isClientSide) {
+            return InteractionResult.SUCCESS;
+        } else if (!player.mayUseItemAt(pos.relative(facing), facing, stack)) {
+            return InteractionResult.FAIL;
         }
-        Entity entity = spawnCreature((ServerWorld) world, new EntityBabyFoliaath(EntityHandler.BABY_FOLIAATH.get(), world), pos.getX(), pos.getY() + 1, pos.getZ());
+        Entity entity = spawnCreature((ServerLevel) world, new EntityBabyFoliaath(EntityHandler.BABY_FOLIAATH.get(), world), pos.getX(), pos.getY() + 1, pos.getZ());
         if (entity != null) {
-            if (entity instanceof LivingEntity && stack.hasDisplayName()) {
-                entity.setCustomName(stack.getDisplayName());
+            if (entity instanceof LivingEntity && stack.hasCustomHoverName()) {
+                entity.setCustomName(stack.getHoverName());
             }
             if (!player.isCreative()) {
                 stack.shrink(1);
             }
         }
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.0").setStyle(ItemHandler.TOOLTIP_STYLE));
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.1").setStyle(ItemHandler.TOOLTIP_STYLE));
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.2").setStyle(ItemHandler.TOOLTIP_STYLE));
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.3").setStyle(ItemHandler.TOOLTIP_STYLE));
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
+        tooltip.add(new TranslatableComponent(getDescriptionId() + ".text.0").setStyle(ItemHandler.TOOLTIP_STYLE));
+        tooltip.add(new TranslatableComponent(getDescriptionId() + ".text.1").setStyle(ItemHandler.TOOLTIP_STYLE));
+        tooltip.add(new TranslatableComponent(getDescriptionId() + ".text.2").setStyle(ItemHandler.TOOLTIP_STYLE));
+        tooltip.add(new TranslatableComponent(getDescriptionId() + ".text.3").setStyle(ItemHandler.TOOLTIP_STYLE));
     }
 }

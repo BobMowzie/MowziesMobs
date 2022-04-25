@@ -3,11 +3,13 @@ package com.bobmowzie.mowziesmobs.client.sound;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.ilexiconn.llibrary.client.model.tools.ControlledAnimation;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.TickableSound;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvent;
 
-public class BossMusicSound extends TickableSound {
+import net.minecraft.client.resources.sounds.SoundInstance.Attenuation;
+
+public class BossMusicSound extends AbstractTickableSoundInstance {
     private MowzieEntity boss;
     private int ticksExisted = 0;
     private int timeUntilFade;
@@ -16,16 +18,16 @@ public class BossMusicSound extends TickableSound {
     ControlledAnimation volumeControl;
 
     public BossMusicSound(SoundEvent sound, MowzieEntity boss) {
-        super(sound, SoundCategory.MUSIC);
+        super(sound, SoundSource.MUSIC);
         this.boss = boss;
         this.soundEvent = sound;
-        this.attenuationType = AttenuationType.NONE;
-        this.repeat = true;
-        this.repeatDelay = 0;
+        this.attenuation = Attenuation.NONE;
+        this.looping = true;
+        this.delay = 0;
         this.priority = true;
-        this.x = boss.getPosX();
-        this.y = boss.getPosY();
-        this.z = boss.getPosZ();
+        this.x = boss.getX();
+        this.y = boss.getY();
+        this.z = boss.getZ();
 
         volumeControl = new ControlledAnimation(40);
         volumeControl.setTimer(20);
@@ -33,7 +35,7 @@ public class BossMusicSound extends TickableSound {
         timeUntilFade = 80;
     }
 
-    public boolean shouldPlaySound() {
+    public boolean canPlaySound() {
         return BossMusicPlayer.bossMusic == this;
     }
 
@@ -53,14 +55,14 @@ public class BossMusicSound extends TickableSound {
         }
 
         if (volumeControl.getAnimationFraction() < 0.025) {
-            finishPlaying();
+            stop();
             BossMusicPlayer.bossMusic = null;
         }
 
         volume = volumeControl.getAnimationFraction();
 
         if (ticksExisted % 100 == 0) {
-            Minecraft.getInstance().getMusicTicker().stop();
+            Minecraft.getInstance().getMusicManager().stopPlaying();
         }
         ticksExisted++;
     }

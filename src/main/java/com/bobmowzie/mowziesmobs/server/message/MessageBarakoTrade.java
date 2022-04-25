@@ -6,12 +6,12 @@ import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoTrade;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.potion.EffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
@@ -28,14 +28,14 @@ public class MessageBarakoTrade {
     }
 
     public MessageBarakoTrade(LivingEntity sender) {
-        entityID = sender.getEntityId();
+        entityID = sender.getId();
     }
 
-    public static void serialize(final MessageBarakoTrade message, final PacketBuffer buf) {
+    public static void serialize(final MessageBarakoTrade message, final FriendlyByteBuf buf) {
         buf.writeVarInt(message.entityID);
     }
 
-    public static MessageBarakoTrade deserialize(final PacketBuffer buf) {
+    public static MessageBarakoTrade deserialize(final FriendlyByteBuf buf) {
         final MessageBarakoTrade message = new MessageBarakoTrade();
         message.entityID = buf.readVarInt();
         return message;
@@ -45,10 +45,10 @@ public class MessageBarakoTrade {
         @Override
         public void accept(final MessageBarakoTrade message, final Supplier<NetworkEvent.Context> contextSupplier) {
             final NetworkEvent.Context context = contextSupplier.get();
-            final ServerPlayerEntity player = context.getSender();
+            final ServerPlayer player = context.getSender();
             context.enqueueWork(() -> {
                 if (player != null) {
-                    Entity entity = player.world.getEntityByID(message.entityID);
+                    Entity entity = player.level.getEntity(message.entityID);
                     if (!(entity instanceof EntityBarako)) {
                         return;
                     }
@@ -56,7 +56,7 @@ public class MessageBarakoTrade {
                     if (barako.getCustomer() != player) {
                         return;
                     }
-                    Container container = player.openContainer;
+                    AbstractContainerMenu container = player.containerMenu;
                     if (!(container instanceof ContainerBarakoTrade)) {
                         return;
                     }
@@ -65,11 +65,11 @@ public class MessageBarakoTrade {
                         if (satisfied = barako.fulfillDesire(container.getSlot(0))) {
                             barako.rememberTrade(player);
                             ((ContainerBarakoTrade) container).returnItems();
-                            container.detectAndSendChanges();
+                            container.broadcastChanges();
                         }
                     }
                     if (satisfied) {
-                        player.addPotionEffect(new EffectInstance(EffectHandler.SUNS_BLESSING, ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.effectDuration.get() * 60 * 20, 0, false, false));
+                        player.addEffect(new MobEffectInstance(EffectHandler.SUNS_BLESSING, ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.effectDuration.get() * 60 * 20, 0, false, false));
                         if (barako.getAnimation() != EntityBarako.BLESS_ANIMATION) {
                             barako.setAnimationTick(0);
                             AnimationHandler.INSTANCE.sendAnimationMessage(barako, EntityBarako.BLESS_ANIMATION);

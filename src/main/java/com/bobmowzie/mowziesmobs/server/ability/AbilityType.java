@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.ability;
 
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.entity.LivingEntity;
 
 public class AbilityType<T extends Ability> implements Comparable<AbilityType<T>> {
     private final IFactory<T> factory;

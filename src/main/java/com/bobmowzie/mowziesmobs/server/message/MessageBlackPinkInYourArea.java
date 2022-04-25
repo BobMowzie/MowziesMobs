@@ -2,15 +2,15 @@ package com.bobmowzie.mowziesmobs.server.message;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.block.BlockGrottol;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
@@ -21,19 +21,19 @@ public final class MessageBlackPinkInYourArea {
 
     public MessageBlackPinkInYourArea() {}
 
-    public MessageBlackPinkInYourArea(AbstractMinecartEntity minecart) {
-        this(minecart.getEntityId());
+    public MessageBlackPinkInYourArea(AbstractMinecart minecart) {
+        this(minecart.getId());
     }
 
     private MessageBlackPinkInYourArea(int entityId) {
         this.entityID = entityId;
     }
 
-    public static void serialize(final MessageBlackPinkInYourArea message, final PacketBuffer buf) {
+    public static void serialize(final MessageBlackPinkInYourArea message, final FriendlyByteBuf buf) {
         buf.writeVarInt(message.entityID);
     }
 
-    public static MessageBlackPinkInYourArea deserialize(final PacketBuffer buf) {
+    public static MessageBlackPinkInYourArea deserialize(final FriendlyByteBuf buf) {
         final MessageBlackPinkInYourArea message = new MessageBlackPinkInYourArea();
         message.entityID = buf.readVarInt();
         return message;
@@ -44,23 +44,23 @@ public final class MessageBlackPinkInYourArea {
         public void accept(final MessageBlackPinkInYourArea message, final Supplier<NetworkEvent.Context> contextSupplier) {
             final NetworkEvent.Context context = contextSupplier.get();
             context.enqueueWork(() -> {
-                ClientWorld world = Minecraft.getInstance().world;
-                Entity entity = world.getEntityByID(message.entityID);
-                if (entity instanceof AbstractMinecartEntity) {
-                    AbstractMinecartEntity minecart = (AbstractMinecartEntity) entity;
+                ClientLevel world = Minecraft.getInstance().level;
+                Entity entity = world.getEntity(message.entityID);
+                if (entity instanceof AbstractMinecart) {
+                    AbstractMinecart minecart = (AbstractMinecart) entity;
                     MowziesMobs.PROXY.playBlackPinkSound(minecart);
-                    BlockState state = Blocks.STONE.getDefaultState()
-                            .with(BlockGrottol.VARIANT, BlockGrottol.Variant.BLACK_PINK);
-                    BlockPos pos = minecart.getPosition();
+                    BlockState state = Blocks.STONE.defaultBlockState()
+                            .setValue(BlockGrottol.VARIANT, BlockGrottol.Variant.BLACK_PINK);
+                    BlockPos pos = minecart.blockPosition();
                     final float scale = 0.75F;
-                    double x = minecart.getPosX(),
-                            y = minecart.getPosY() + 0.375F + 0.5F + (minecart.getDefaultDisplayTileOffset() - 8) / 16.0F * scale,
-                            z = minecart.getPosZ();
+                    double x = minecart.getX(),
+                            y = minecart.getY() + 0.375F + 0.5F + (minecart.getDefaultDisplayOffset() - 8) / 16.0F * scale,
+                            z = minecart.getZ();
                     SoundType sound = state.getBlock().getSoundType(state, world, pos, minecart);
-                    world.playSound(
+                    world.playLocalSound(
                             x, y, z,
                             sound.getBreakSound(),
-                            minecart.getSoundCategory(),
+                            minecart.getSoundSource(),
                             (sound.getVolume() + 1.0F) / 2.0F,
                             sound.getPitch() * 0.8F,
                             false

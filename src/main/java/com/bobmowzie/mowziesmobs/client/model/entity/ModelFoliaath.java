@@ -5,9 +5,9 @@ import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.util.math.MathHelper;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -56,132 +56,132 @@ public class ModelFoliaath<T extends EntityFoliaath> extends MowzieEntityModel<T
     private float activeProgress;
 
     public ModelFoliaath() {
-        textureWidth = 128;
-        textureHeight = 64;
+        texWidth = 128;
+        texHeight = 64;
 
         headBase = new AdvancedModelRenderer(this, 80, 15);
-        headBase.setRotationPoint(0.0F, -10.0F, 0.0F);
+        headBase.setPos(0.0F, -10.0F, 0.0F);
         headBase.addBox(-3.0F, -3.0F, 0.0F, 6, 6, 2, 0.0F);
         setRotateAngle(headBase, 1.3658946726107624F, 0.0F, 0.0F);
         leaf6Head = new AdvancedModelRenderer(this, 0, 18);
-        leaf6Head.setRotationPoint(0.0F, 0.0F, 2.0F);
+        leaf6Head.setPos(0.0F, 0.0F, 2.0F);
         leaf6Head.addBox(-3.5F, -19.0F, 0.0F, 7, 19, 0, 0.0F);
         setRotateAngle(leaf6Head, 0.6829473363053812F, 0.0F, 3.9269908169872414F);
         bigLeaf3End = new AdvancedModelRenderer(this, 64, 0);
-        bigLeaf3End.setRotationPoint(0.0F, -14.0F, 0.0F);
+        bigLeaf3End.setPos(0.0F, -14.0F, 0.0F);
         bigLeaf3End.addBox(-4.0F, -14.0F, 0.0F, 8, 14, 0, 0.0F);
         setRotateAngle(bigLeaf3End, -1.2292353921796064F, 0.0F, 0.0F);
         stem1Base = new AdvancedModelRenderer(this, 0, 0);
-        stem1Base.setRotationPoint(0.0F, 24.0F, 0.0F);
+        stem1Base.setPos(0.0F, 24.0F, 0.0F);
         stem1Base.addBox(-1.5F, -15.0F, -1.5F, 3, 15, 3, 0.0F);
         setRotateAngle(stem1Base, 0.136659280431156F, 0.0F, 0.0F);
         stem1Joint = new AdvancedModelRenderer(this, 0, 0);
-        stem1Joint.setRotationPoint(0.0F, 24.0F, 0.0F);
+        stem1Joint.setPos(0.0F, 24.0F, 0.0F);
         stem1Joint.addBox(0F, 0F, 0F, 0, 0, 0, 0.0F);
         setRotateAngle(stem1Joint, 0.0F, 0.0F, 0.0F);
         teethBottom2 = new AdvancedModelRenderer(this, 15, 22);
-        teethBottom2.setRotationPoint(0.0F, 0.0F, 0.0F);
+        teethBottom2.setPos(0.0F, 0.0F, 0.0F);
         teethBottom2.addBox(-3.0F, 0.0F, 0.0F, 6, 3, 7, 0.0F);
         tongue1Base = new AdvancedModelRenderer(this, 40, 26);
-        tongue1Base.setRotationPoint(0.0F, 0.0F, 2.0F);
+        tongue1Base.setPos(0.0F, 0.0F, 2.0F);
         tongue1Base.addBox(-3.0F, -1.0F, 0.0F, 6, 2, 6, 0.0F);
         bigLeaf2Base = new AdvancedModelRenderer(this, 64, 14);
-        bigLeaf2Base.setRotationPoint(0.0F, 24.0F, 0.0F);
+        bigLeaf2Base.setPos(0.0F, 24.0F, 0.0F);
         bigLeaf2Base.addBox(-4.0F, -14.0F, 0.0F, 8, 14, 0, 0.0F);
         setRotateAngle(bigLeaf2Base, -0.6829473363053812F, 2.356194490192345F, 0.0F);
         mouthBack = new AdvancedModelRenderer(this, 54, 37);
-        mouthBack.setRotationPoint(0.0F, -0.5F, 2.0F);
+        mouthBack.setPos(0.0F, -0.5F, 2.0F);
         mouthBack.addBox(-6.0F, -4.5F, 0.0F, 12, 9, 2, 0.0F);
         bigLeaf1End = new AdvancedModelRenderer(this, 64, 0);
-        bigLeaf1End.setRotationPoint(0.0F, -14.0F, 0.0F);
+        bigLeaf1End.setPos(0.0F, -14.0F, 0.0F);
         bigLeaf1End.addBox(-4.0F, -14.0F, 0.0F, 8, 14, 0, 0.0F);
         setRotateAngle(bigLeaf1End, -1.2292353921796064F, 0.0F, 0.0F);
         leaf4Head = new AdvancedModelRenderer(this, 0, 18);
-        leaf4Head.setRotationPoint(0.0F, 0.0F, 2.0F);
+        leaf4Head.setPos(0.0F, 0.0F, 2.0F);
         leaf4Head.addBox(-3.5F, -19.0F, 0.0F, 7, 19, 0, 0.0F);
         setRotateAngle(leaf4Head, 0.6829473363053812F, 0.0F, 2.356194490192345F);
         mouthBottom2 = new AdvancedModelRenderer(this, 36, 16);
-        mouthBottom2.setRotationPoint(0.0F, 0.0F, 12.0F);
+        mouthBottom2.setPos(0.0F, 0.0F, 12.0F);
         mouthBottom2.addBox(-3.0F, -2.0F, 0.0F, 6, 2, 7, 0.0F);
         leaf5Head = new AdvancedModelRenderer(this, 0, 18);
-        leaf5Head.setRotationPoint(0.0F, 0.0F, 2.0F);
+        leaf5Head.setPos(0.0F, 0.0F, 2.0F);
         leaf5Head.addBox(-3.5F, -19.0F, 0.0F, 7, 19, 0, 0.0F);
         setRotateAngle(leaf5Head, 0.6829473363053812F, 0.0F, 3.141592653589793F);
         leaf3Head = new AdvancedModelRenderer(this, 0, 18);
-        leaf3Head.setRotationPoint(0.0F, 0.0F, 2.0F);
+        leaf3Head.setPos(0.0F, 0.0F, 2.0F);
         leaf3Head.addBox(-3.5F, -19.0F, 0.0F, 7, 19, 0, 0.0F);
         setRotateAngle(leaf3Head, 0.6829473363053812F, 0.0F, 1.5707963267948966F);
         bigLeaf1Base = new AdvancedModelRenderer(this, 64, 14);
-        bigLeaf1Base.setRotationPoint(0.0F, 24.0F, 0.0F);
+        bigLeaf1Base.setPos(0.0F, 24.0F, 0.0F);
         bigLeaf1Base.addBox(-4.0F, -14.0F, 0.0F, 8, 14, 0, 0.0F);
         setRotateAngle(bigLeaf1Base, -0.6829473363053812F, 0.7853981633974483F, 0.0F);
         bigLeaf4End = new AdvancedModelRenderer(this, 64, 0);
-        bigLeaf4End.setRotationPoint(0.0F, -14.0F, 0.0F);
+        bigLeaf4End.setPos(0.0F, -14.0F, 0.0F);
         bigLeaf4End.addBox(-4.0F, -14.0F, 0.0F, 8, 14, 0, 0.0F);
         setRotateAngle(bigLeaf4End, -1.2292353921796064F, 0.0F, 0.0F);
         mouthBottom1 = new AdvancedModelRenderer(this, 16, 0);
-        mouthBottom1.setRotationPoint(0.0F, 1.0F, 2.0F);
+        mouthBottom1.setPos(0.0F, 1.0F, 2.0F);
         mouthBottom1.addBox(-6.0F, -4.0F, 0.0F, 12, 4, 12, 0.0F);
         setRotateAngle(mouthBottom1, 0.0F, 0.0F, 3.141592653589793F);
         leaf8Head = new AdvancedModelRenderer(this, 0, 18);
-        leaf8Head.setRotationPoint(0.0F, 0.0F, 2.0F);
+        leaf8Head.setPos(0.0F, 0.0F, 2.0F);
         leaf8Head.addBox(-3.5F, -19.0F, 0.0F, 7, 19, 0, 0.0F);
         setRotateAngle(leaf8Head, 0.6829473363053812F, 0.0F, 5.497787143782138F);
         leaf2Head = new AdvancedModelRenderer(this, 0, 18);
-        leaf2Head.setRotationPoint(0.0F, 0.0F, 2.0F);
+        leaf2Head.setPos(0.0F, 0.0F, 2.0F);
         leaf2Head.addBox(-3.5F, -19.0F, 0.0F, 7, 19, 0, 0.0F);
         setRotateAngle(leaf2Head, 0.6829473363053812F, 0.0F, 0.7853981633974483F);
         teethBottom1 = new AdvancedModelRenderer(this, 80, 0);
-        teethBottom1.setRotationPoint(0.0F, 0.0F, 0.0F);
+        teethBottom1.setPos(0.0F, 0.0F, 0.0F);
         teethBottom1.addBox(-6.0F, 0.0F, 0.0F, 12, 3, 12, 0.0F);
         tongue3 = new AdvancedModelRenderer(this, 80, 24);
-        tongue3.setRotationPoint(0.0F, 0.0F, 6.0F);
+        tongue3.setPos(0.0F, 0.0F, 6.0F);
         tongue3.addBox(-2.0F, -1.0F, 0.0F, 4, 2, 5, 0.0F);
         leaf1Head = new AdvancedModelRenderer(this, 0, 18);
-        leaf1Head.setRotationPoint(0.0F, 0.0F, 2.0F);
+        leaf1Head.setPos(0.0F, 0.0F, 2.0F);
         leaf1Head.addBox(-3.5F, -19.0F, 0.0F, 7, 19, 0, 0.0F);
         setRotateAngle(leaf1Head, 0.6829473363053812F, 0.0F, 0.0F);
         teethTop2 = new AdvancedModelRenderer(this, 15, 22);
-        teethTop2.setRotationPoint(0.0F, 0.0F, 0.0F);
+        teethTop2.setPos(0.0F, 0.0F, 0.0F);
         teethTop2.addBox(-3.0F, 0.0F, 0.0F, 6, 3, 7, 0.0F);
         stem3 = new AdvancedModelRenderer(this, 0, 0);
-        stem3.setRotationPoint(0.0F, -15.0F, 0.0F);
+        stem3.setPos(0.0F, -15.0F, 0.0F);
         stem3.addBox(-1.5F, -13.0F, -1.5F, 3, 13, 3, 0.0F);
         setRotateAngle(stem3, -1.1383037381507017F, 0.0F, 0.0F);
         stem2 = new AdvancedModelRenderer(this, 0, 0);
-        stem2.setRotationPoint(0.0F, -15.0F, 0.0F);
+        stem2.setPos(0.0F, -15.0F, 0.0F);
         stem2.addBox(-1.5F, -15.0F, -1.5F, 3, 15, 3, 0.0F);
         setRotateAngle(stem2, 0.36425021489121656F, 0.0F, 0.0F);
         bigLeaf3Base = new AdvancedModelRenderer(this, 64, 14);
-        bigLeaf3Base.setRotationPoint(0.0F, 24.0F, 0.0F);
+        bigLeaf3Base.setPos(0.0F, 24.0F, 0.0F);
         bigLeaf3Base.addBox(-4.0F, -14.0F, 0.0F, 8, 14, 0, 0.0F);
         setRotateAngle(bigLeaf3Base, -0.6829473363053812F, 3.9269908169872414F, 0.0F);
         bigLeaf4Base = new AdvancedModelRenderer(this, 64, 14);
-        bigLeaf4Base.setRotationPoint(0.0F, 24.0F, 0.0F);
+        bigLeaf4Base.setPos(0.0F, 24.0F, 0.0F);
         bigLeaf4Base.addBox(-4.0F, -14.0F, 0.0F, 8, 14, 0, 0.0F);
         setRotateAngle(bigLeaf4Base, -0.6829473363053812F, 5.497787143782138F, 0.0F);
         tongue2 = new AdvancedModelRenderer(this, 40, 26);
-        tongue2.setRotationPoint(0.0F, 0.0F, 6.0F);
+        tongue2.setPos(0.0F, 0.0F, 6.0F);
         tongue2.addBox(-3.0F, -1.0F, 0.0F, 6, 2, 6, 0.0F);
         mouthTop2 = new AdvancedModelRenderer(this, 36, 16);
-        mouthTop2.setRotationPoint(0.0F, 0.0F, 12.0F);
+        mouthTop2.setPos(0.0F, 0.0F, 12.0F);
         mouthTop2.addBox(-3.0F, -2.0F, 0.0F, 6, 2, 7, 0.0F);
         bigLeaf2End = new AdvancedModelRenderer(this, 64, 0);
-        bigLeaf2End.setRotationPoint(0.0F, -14.0F, 0.0F);
+        bigLeaf2End.setPos(0.0F, -14.0F, 0.0F);
         bigLeaf2End.addBox(-4.0F, -14.0F, 0.0F, 8, 14, 0, 0.0F);
         setRotateAngle(bigLeaf2End, -1.2292353921796064F, 0.0F, 0.0F);
         stem4 = new AdvancedModelRenderer(this, 0, 0);
-        stem4.setRotationPoint(0.0F, -13.0F, 0.0F);
+        stem4.setPos(0.0F, -13.0F, 0.0F);
         stem4.addBox(-1.5F, -10.0F, -1.5F, 3, 10, 3, 0.0F);
         setRotateAngle(stem4, -0.9105382707654417F, 0.0F, 0.0F);
         teethTop1 = new AdvancedModelRenderer(this, 80, 0);
-        teethTop1.setRotationPoint(0.0F, 0.0F, 0.0F);
+        teethTop1.setPos(0.0F, 0.0F, 0.0F);
         teethTop1.addBox(-6.0F, 0.0F, 0.0F, 12, 3, 12, 0.0F);
         mouthTop1 = new AdvancedModelRenderer(this, 16, 0);
-        mouthTop1.setRotationPoint(0.0F, -2.0F, 2.0F);
+        mouthTop1.setPos(0.0F, -2.0F, 2.0F);
         mouthTop1.addBox(-6.0F, -4.0F, 0.0F, 12, 4, 12, 0.0F);
         leaf7Head = new AdvancedModelRenderer(this, 0, 18);
-        leaf7Head.setRotationPoint(0.0F, 0.0F, 2.0F);
+        leaf7Head.setPos(0.0F, 0.0F, 2.0F);
         leaf7Head.addBox(-3.5F, -19.0F, 0.0F, 7, 19, 0, 0.0F);
         setRotateAngle(leaf7Head, 0.6829473363053812F, 0.0F, 4.71238898038469F);
         stem4.addChild(headBase);
@@ -221,41 +221,41 @@ public class ModelFoliaath<T extends EntityFoliaath> extends MowzieEntityModel<T
         leafParts3 = new AdvancedModelRenderer[]{bigLeaf3End, bigLeaf3Base};
         leafParts4 = new AdvancedModelRenderer[]{bigLeaf4End, bigLeaf4Base};
 
-        stem1Joint.rotationPointY += 2;
-        stem1Joint.rotateAngleX += 0.05;
-        stem2.rotateAngleX += 0.3;
-        stem3.rotateAngleX += -0.1;
-        headBase.rotateAngleX += -0.35;
-        stem1Base.setRotationPoint(0, 0, 0);
+        stem1Joint.y += 2;
+        stem1Joint.xRot += 0.05;
+        stem2.xRot += 0.3;
+        stem3.xRot += -0.1;
+        headBase.xRot += -0.35;
+        stem1Base.setPos(0, 0, 0);
 
         updateDefaultPose();
     }
 
     @Override
-    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         float leafScale = 1.25F;
-        bigLeaf2Base.rotationPointY -= 3.5;
-        bigLeaf1Base.rotationPointY -= 3.5;
-        bigLeaf3Base.rotationPointY -= 3.5;
-        bigLeaf4Base.rotationPointY -= 3.5;
-        matrixStackIn.push();
+        bigLeaf2Base.y -= 3.5;
+        bigLeaf1Base.y -= 3.5;
+        bigLeaf3Base.y -= 3.5;
+        bigLeaf4Base.y -= 3.5;
+        matrixStackIn.pushPose();
         matrixStackIn.scale(leafScale, leafScale, leafScale);
         bigLeaf2Base.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         bigLeaf1Base.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         bigLeaf3Base.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         bigLeaf4Base.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        matrixStackIn.pop();
-        matrixStackIn.push();
+        matrixStackIn.popPose();
+        matrixStackIn.pushPose();
         matrixStackIn.translate(0, 1.4F - 1.4F * activeProgress, 0);
         matrixStackIn.scale(activeProgress, activeProgress, activeProgress);
         stem1Joint.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        matrixStackIn.pop();
+        matrixStackIn.popPose();
     }
 
     public void setDefaultAngles(EntityFoliaath entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
         resetToDefaultPose();
 
-        stem1Joint.rotateAngleY += (headYaw / (180f / (float) Math.PI));
+        stem1Joint.yRot += (headYaw / (180f / (float) Math.PI));
 
         activeProgress = entity.activate.getAnimationProgressSinSqrt(delta);
         float activeIntermittent = entity.activate.getAnimationProgressSinSqrt(delta) - entity.activate.getAnimationProgressSinToTenWithoutReturn(delta);
@@ -273,7 +273,7 @@ public class ModelFoliaath<T extends EntityFoliaath> extends MowzieEntityModel<T
             walk(stem3, 0.5F * globalSpeed, 0.07F * (activeComplete - stopDance), false, 1F, 0F, frame, 1F);
             walk(stem4, 0.5F * globalSpeed, 0.05F * (activeComplete - stopDance), false, 1.5F, 0F, frame, 1F);
             walk(headBase, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), true, 1.3F, 0F, frame, 1F);
-            headBase.rotateAngleY += rotateBox(0.25F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 0F, 0F, frame, 1F);
+            headBase.yRot += rotateBox(0.25F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 0F, 0F, frame, 1F);
             walk(leaf1Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, frame, 1F);
             walk(leaf2Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, frame, 1F);
             walk(leaf3Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, frame, 1F);
@@ -291,35 +291,35 @@ public class ModelFoliaath<T extends EntityFoliaath> extends MowzieEntityModel<T
             float openMouthProgress = entity.openMouth.getAnimationProgressSinSqrt(delta);
             float openMouthIntermittent = entity.openMouth.getAnimationProgressSinSqrt(delta) - entity.openMouth.getAnimationProgressSinToTenWithoutReturn(delta);
             float headLeafRotation = 0.2F * openMouthProgress - 0.8F * openMouthIntermittent;
-            mouthTop1.rotateAngleX -= 0.3 * openMouthIntermittent;
-            mouthBottom1.rotateAngleX -= 0.3 * openMouthIntermittent;
-            mouthTop2.rotateAngleX += 0.3 * openMouthIntermittent;
-            mouthBottom2.rotateAngleX += 0.3 * openMouthIntermittent;
-            stem2.rotateAngleX += 0.9 * openMouthIntermittent;
-            stem3.rotateAngleX -= 0.6 * openMouthIntermittent;
-            stem4.rotateAngleX -= 0.6 * openMouthIntermittent;
-            headBase.rotateAngleX += 0.6 * openMouthIntermittent;
+            mouthTop1.xRot -= 0.3 * openMouthIntermittent;
+            mouthBottom1.xRot -= 0.3 * openMouthIntermittent;
+            mouthTop2.xRot += 0.3 * openMouthIntermittent;
+            mouthBottom2.xRot += 0.3 * openMouthIntermittent;
+            stem2.xRot += 0.9 * openMouthIntermittent;
+            stem3.xRot -= 0.6 * openMouthIntermittent;
+            stem4.xRot -= 0.6 * openMouthIntermittent;
+            headBase.xRot += 0.6 * openMouthIntermittent;
             flap(headBase, 1.5F, 0.6F * openMouthIntermittent, false, 0F, 0F, frame, 1F);
-            mouthTop1.rotateAngleX += 0.15 * openMouthProgress;
-            mouthBottom1.rotateAngleX += 0.15 * openMouthProgress;
+            mouthTop1.xRot += 0.15 * openMouthProgress;
+            mouthBottom1.xRot += 0.15 * openMouthProgress;
             chainWave(tongueParts, 0.5F * globalSpeed, -0.15F * (openMouthProgress - openMouthIntermittent), -2, frame, 1F);
-            tongue1Base.rotateAngleY += 0.3 * (openMouthProgress - openMouthIntermittent);
-            tongue2.rotateAngleY += 0.4 * (openMouthProgress - openMouthIntermittent);
-            tongue2.rotateAngleX -= 0.1 * (openMouthProgress - openMouthIntermittent);
-            tongue3.rotateAngleX -= 0.5 * (openMouthProgress - openMouthIntermittent);
-            stem1Base.rotateAngleX -= 0.2 * openMouthProgress;
-            stem2.rotateAngleX -= 0.1 * openMouthProgress;
-            stem3.rotateAngleX -= 0.1 * openMouthProgress;
-            stem4.rotateAngleX -= 0.1 * openMouthProgress;
-            headBase.rotateAngleX += 0.6 * openMouthProgress;
-            leaf1Head.rotateAngleX -= headLeafRotation;
-            leaf2Head.rotateAngleX -= headLeafRotation;
-            leaf3Head.rotateAngleX -= headLeafRotation;
-            leaf4Head.rotateAngleX -= headLeafRotation;
-            leaf5Head.rotateAngleX -= headLeafRotation;
-            leaf6Head.rotateAngleX -= headLeafRotation;
-            leaf7Head.rotateAngleX -= headLeafRotation;
-            leaf8Head.rotateAngleX -= headLeafRotation;
+            tongue1Base.yRot += 0.3 * (openMouthProgress - openMouthIntermittent);
+            tongue2.yRot += 0.4 * (openMouthProgress - openMouthIntermittent);
+            tongue2.xRot -= 0.1 * (openMouthProgress - openMouthIntermittent);
+            tongue3.xRot -= 0.5 * (openMouthProgress - openMouthIntermittent);
+            stem1Base.xRot -= 0.2 * openMouthProgress;
+            stem2.xRot -= 0.1 * openMouthProgress;
+            stem3.xRot -= 0.1 * openMouthProgress;
+            stem4.xRot -= 0.1 * openMouthProgress;
+            headBase.xRot += 0.6 * openMouthProgress;
+            leaf1Head.xRot -= headLeafRotation;
+            leaf2Head.xRot -= headLeafRotation;
+            leaf3Head.xRot -= headLeafRotation;
+            leaf4Head.xRot -= headLeafRotation;
+            leaf5Head.xRot -= headLeafRotation;
+            leaf6Head.xRot -= headLeafRotation;
+            leaf7Head.xRot -= headLeafRotation;
+            leaf8Head.xRot -= headLeafRotation;
         }
 
         //Activate Animation
@@ -329,13 +329,13 @@ public class ModelFoliaath<T extends EntityFoliaath> extends MowzieEntityModel<T
         chainWave(leafParts2, 1.5F, 0.1F * 2 * activeIntermittent, 0, frame, 1F);
         chainWave(leafParts3, 1.5F, 0.1F * 2 * activeIntermittent, 0, frame, 1F);
         chainWave(leafParts4, 1.5F, 0.1F * 2 * activeIntermittent, 0, frame, 1F);
-        stem1Base.rotateAngleX -= 0.1 * 2 * activeIntermittent;
-        stem2.rotateAngleX -= 0.5 * 2 * activeIntermittent;
-        stem3.rotateAngleX += 0.9 * 2 * activeIntermittent;
-        stem4.rotateAngleX += 0.6 * 2 * activeIntermittent;
-        headBase.rotateAngleX += 0.6 * 2 * activeIntermittent;
-        mouthTop1.rotateAngleX += 0.4 * 2 * activeIntermittent;
-        mouthBottom1.rotateAngleX += 0.4 * 2 * activeIntermittent;
+        stem1Base.xRot -= 0.1 * 2 * activeIntermittent;
+        stem2.xRot -= 0.5 * 2 * activeIntermittent;
+        stem3.xRot += 0.9 * 2 * activeIntermittent;
+        stem4.xRot += 0.6 * 2 * activeIntermittent;
+        headBase.xRot += 0.6 * 2 * activeIntermittent;
+        mouthTop1.xRot += 0.4 * 2 * activeIntermittent;
+        mouthBottom1.xRot += 0.4 * 2 * activeIntermittent;
     }
 
     @Override
@@ -486,9 +486,9 @@ public class ModelFoliaath<T extends EntityFoliaath> extends MowzieEntityModel<T
 
     public float rotateBox(float speed, float degree, boolean invert, float offset, float weight, float f, float f1) {
         if (invert) {
-            return -MathHelper.cos(f * speed + offset) * degree * f1 + weight * f1;
+            return -Mth.cos(f * speed + offset) * degree * f1 + weight * f1;
         } else {
-            return MathHelper.cos(f * speed + offset) * degree * f1 + weight * f1;
+            return Mth.cos(f * speed + offset) * degree * f1 + weight * f1;
         }
     }
 }

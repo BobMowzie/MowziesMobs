@@ -6,9 +6,9 @@ import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Function;
 
@@ -24,8 +24,8 @@ public abstract class MowzieEntityModel<T extends MowzieEntity> extends Advanced
     }
 
     @Override
-    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        float delta = ageInTicks - entityIn.ticksExisted;
+    public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        float delta = ageInTicks - entityIn.tickCount;
         this.animator.update(entityIn, delta);
         this.animate(entityIn, limbSwing, limbSwingAmount, netHeadYaw, headPitch, delta);
     }
@@ -37,9 +37,9 @@ public abstract class MowzieEntityModel<T extends MowzieEntity> extends Advanced
 
     protected abstract void animate(T entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta);
 
-    protected static void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
+    protected static void setRotateAngle(ModelPart modelRenderer, float x, float y, float z) {
+        modelRenderer.xRot = x;
+        modelRenderer.yRot = y;
+        modelRenderer.zRot = z;
     }
 }

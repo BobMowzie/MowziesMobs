@@ -4,7 +4,7 @@ import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.monster.*;
@@ -15,17 +15,19 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 import java.util.Optional;
 import java.util.UUID;
 
-public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> implements LeaderSunstrikeImmune, IMob {
-    public EntityBarakoanToBarakoana(EntityType<? extends EntityBarakoanToBarakoana> type, World world) {
+import net.minecraft.world.entity.monster.Enemy;
+
+public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> implements LeaderSunstrikeImmune, Enemy {
+    public EntityBarakoanToBarakoana(EntityType<? extends EntityBarakoanToBarakoana> type, Level world) {
         this(type, world, null);
     }
 
-    public EntityBarakoanToBarakoana(EntityType<? extends EntityBarakoanToBarakoana> type, World world, EntityBarakoana leader) {
+    public EntityBarakoanToBarakoana(EntityType<? extends EntityBarakoanToBarakoana> type, Level world, EntityBarakoana leader) {
         super(type, world, EntityBarakoana.class, leader);
     }
 
@@ -39,10 +41,10 @@ public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> i
     public void tick() {
         super.tick();
         if (leader != null) {
-            setAttackTarget(leader.getAttackTarget());
+            setTarget(leader.getTarget());
         }
 
-        if (!this.world.isRemote && this.world.getDifficulty() == Difficulty.PEACEFUL)
+        if (!this.level.isClientSide && this.level.getDifficulty() == Difficulty.PEACEFUL)
         {
             this.remove();
         }
@@ -75,7 +77,7 @@ public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> i
     public void removeLeader() {
         this.setLeaderUUID(ABSENT_LEADER);
         this.leader = null;
-        this.setAttackTarget(null);
+        this.setTarget(null);
     }
 
     @Override

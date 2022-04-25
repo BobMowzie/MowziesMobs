@@ -6,21 +6,21 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 public class SunstrikeAbility extends Ability {
     private static final double REACH = 15;
     private final static int SUNSTRIKE_RECOVERY = 20;
 
-    protected BlockRayTraceResult rayTrace;
+    protected BlockHitResult rayTrace;
 
     public SunstrikeAbility(AbilityType<SunstrikeAbility> abilityType, LivingEntity user) {
         super(abilityType, user, new AbilitySection[] {
@@ -29,19 +29,19 @@ public class SunstrikeAbility extends Ability {
         });
     }
 
-    private static BlockRayTraceResult rayTrace(LivingEntity entity, double reach) {
-        Vector3d pos = entity.getEyePosition(0);
-        Vector3d segment = entity.getLookVec();
+    private static BlockHitResult rayTrace(LivingEntity entity, double reach) {
+        Vec3 pos = entity.getEyePosition(0);
+        Vec3 segment = entity.getLookAngle();
         segment = pos.add(segment.x * reach, segment.y * reach, segment.z * reach);
-        return entity.world.rayTraceBlocks(new RayTraceContext(pos, segment, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, entity));
+        return entity.level.clip(new ClipContext(pos, segment, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity));
     }
 
     @Override
     public boolean tryAbility() {
         super.tryAbility();
         LivingEntity user = getUser();
-        BlockRayTraceResult raytrace = rayTrace(user, REACH);
-        if (raytrace.getType() == RayTraceResult.Type.BLOCK && raytrace.getFace() == Direction.UP) {
+        BlockHitResult raytrace = rayTrace(user, REACH);
+        if (raytrace.getType() == HitResult.Type.BLOCK && raytrace.getDirection() == Direction.UP) {
             this.rayTrace = raytrace;
             return true;
         }
@@ -52,19 +52,19 @@ public class SunstrikeAbility extends Ability {
     public void start() {
         super.start();
         LivingEntity user = getUser();
-        if (!user.world.isRemote()) {
-            BlockPos hit = rayTrace.getPos();
-            EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE.get(), user.world, user, hit.getX(), hit.getY(), hit.getZ());
+        if (!user.level.isClientSide()) {
+            BlockPos hit = rayTrace.getBlockPos();
+            EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE.get(), user.level, user, hit.getX(), hit.getY(), hit.getZ());
             sunstrike.onSummon();
-            user.world.addEntity(sunstrike);
+            user.level.addFreshEntity(sunstrike);
         }
         playAnimation("sunstrike", false);
     }
 
     @Override
     public boolean canUse() {
-        if (getUser() instanceof PlayerEntity && !((PlayerEntity)getUser()).inventory.getCurrentItem().isEmpty()) return false;
-        return getUser().isPotionActive(EffectHandler.SUNS_BLESSING) && super.canUse();
+        if (getUser() instanceof Player && !((Player)getUser()).inventory.getSelected().isEmpty()) return false;
+        return getUser().hasEffect(EffectHandler.SUNS_BLESSING) && super.canUse();
     }
 
     @Override

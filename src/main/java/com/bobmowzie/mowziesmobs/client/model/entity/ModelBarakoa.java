@@ -7,9 +7,9 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.util.math.MathHelper;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -71,218 +71,218 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
     private MaskType maskType;
 
     public ModelBarakoa() {
-        this.textureWidth = 128;
-        this.textureHeight = 64;
+        this.texWidth = 128;
+        this.texHeight = 64;
         this.footLeft = new AdvancedModelRenderer(this, 21, 53);
-        this.footLeft.setRotationPoint(0.0F, 5.5F, 0.0F);
+        this.footLeft.setPos(0.0F, 5.5F, 0.0F);
         this.footLeft.addBox(-2.5F, 0.5F, -7.0F, 5, 2, 9, 0.0F);
         setRotateAngle(footLeft, -0.5235987755982988F, 0.0F, 0.0F);
         this.thighLeft = new AdvancedModelRenderer(this, 41, 52);
         this.thighLeft.mirror = true;
-        this.thighLeft.setRotationPoint(0, 0, 0);
+        this.thighLeft.setPos(0, 0, 0);
         this.thighLeft.addBox(-1.0F, 0.0F, -1.0F, 2, 8, 2, 0.0F);
         setRotateAngle(thighLeft, -0.7853981633974483F, -0.6981317007977318F, 0.0F);
         this.thighLeftJoint = new AdvancedModelRenderer(this, 41, 52);
         this.thighLeftJoint.mirror = true;
-        this.thighLeftJoint.setRotationPoint(4.0F, 0.0F, 0.0F);
+        this.thighLeftJoint.setPos(4.0F, 0.0F, 0.0F);
         this.thighLeftJoint.addBox(0, 0, 0, 0, 0, 0, 0.0F);
         setRotateAngle(thighLeftJoint, 0, 0, 0.0F);
         this.spearBase = new AdvancedModelRenderer(this, 0, 0);
-        this.spearBase.setRotationPoint(0.0F, 3.0F, 0.0F);
+        this.spearBase.setPos(0.0F, 3.0F, 0.0F);
         this.spearBase.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         this.loinClothBack = new AdvancedModelRenderer(this, 32, 27);
-        this.loinClothBack.setRotationPoint(0.0F, 2.0F, 2.0F);
+        this.loinClothBack.setPos(0.0F, 2.0F, 2.0F);
         this.loinClothBack.addBox(-4.0F, 0.0F, 0.0F, 8, 7, 0, 0.0F);
         setRotateAngle(loinClothBack, 0.17453292519943295F, 0.0F, 0.0F);
         this.loinClothFront = new AdvancedModelRenderer(this, 32, 27);
-        this.loinClothFront.setRotationPoint(0.0F, 2.0F, -6.0F);
+        this.loinClothFront.setPos(0.0F, 2.0F, -6.0F);
         this.loinClothFront.addBox(-4.0F, 0.0F, 0.0F, 8, 7, 0, 0.0F);
         setRotateAngle(loinClothFront, -0.17453292519943295F, 0.0F, 0.0F);
         this.thighRight = new AdvancedModelRenderer(this, 41, 52);
-        this.thighRight.setRotationPoint(0, 0, 0);
+        this.thighRight.setPos(0, 0, 0);
         this.thighRight.addBox(-1.0F, 0.0F, -1.0F, 2, 8, 2, 0.0F);
         setRotateAngle(thighRight, -0.7853981633974483F, 0.6981317007977318F, 0.0F);
         this.thighRightJoint = new AdvancedModelRenderer(this, 41, 52);
-        this.thighRightJoint.setRotationPoint(-4.0F, 0.0F, 0.0F);
+        this.thighRightJoint.setPos(-4.0F, 0.0F, 0.0F);
         this.thighRightJoint.addBox(0, 0, 0, 0, 0, 0, 0.0F);
         setRotateAngle(thighRightJoint, 0, 0, 0);
         this.armLowerLeft = new AdvancedModelRenderer(this, 12, 55);
         this.armLowerLeft.mirror = true;
-        this.armLowerLeft.setRotationPoint(0.0F, 8.0F, 0.0F);
+        this.armLowerLeft.setPos(0.0F, 8.0F, 0.0F);
         this.armLowerLeft.addBox(-1.0F, 0.0F, -1.0F, 2, 7, 2, 0.0F);
         setRotateAngle(armLowerLeft, -1.0471975511965976F, 0.0F, 0.0F);
         this.armLowerRight = new AdvancedModelRenderer(this, 12, 55);
-        this.armLowerRight.setRotationPoint(0.0F, 8.0F, 0.0F);
+        this.armLowerRight.setPos(0.0F, 8.0F, 0.0F);
         this.armLowerRight.addBox(-1.0F, 0.0F, -1.0F, 2, 7, 2, 0.0F);
         setRotateAngle(armLowerRight, -1.0471975511965976F, 0.0F, 0.0F);
         this.earringRight = new AdvancedModelRenderer(this, 0, 29);
-        this.earringRight.setRotationPoint(-3.0F, 4.0F, 0.5F);
+        this.earringRight.setPos(-3.0F, 4.0F, 0.5F);
         this.earringRight.addBox(-2.5F, 0.0F, 0.0F, 5, 5, 0, 0.0F);
         this.neckJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.neckJoint.setRotationPoint(0.0F, -4.0F, 1.0F);
+        this.neckJoint.setPos(0.0F, -4.0F, 1.0F);
         this.neckJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(neckJoint, 0.3490658503988659F, 0.0F, 0.0F);
         this.armUpperLeft = new AdvancedModelRenderer(this, 41, 52);
         this.armUpperLeft.mirror = true;
-        this.armUpperLeft.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.armUpperLeft.setPos(0.0F, 0.0F, 0.0F);
         this.armUpperLeft.addBox(-1.0F, 0.0F, -1.0F, 2, 8, 2, 0.0F);
         setRotateAngle(armUpperLeft, 0.0F, 0.0F, -0.9599310885968813F);
         this.spear = new AdvancedModelRenderer(this, 66, 0);
-        this.spear.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.spear.setPos(0.0F, 0.0F, 0.0F);
         this.bone = new AdvancedModelRenderer(this, 66, 0);
-        this.bone.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.bone.setPos(0.0F, 0.0F, 0.0F);
         this.staff = new AdvancedModelRenderer(this, 66, 0);
-        this.staff.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.staff.setPos(0.0F, 0.0F, 0.0F);
         this.staffEnd = new AdvancedModelRenderer(this, 0, 0);
-        this.staffEnd.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.staffEnd.setPos(0.0F, 0.0F, 0.0F);
         this.earLeft = new AdvancedModelRenderer(this, 48, 0);
-        this.earLeft.setRotationPoint(4.0F, -4.0F, -3.0F);
+        this.earLeft.setPos(4.0F, -4.0F, -3.0F);
         this.earLeft.addBox(0.0F, -2.0F, 0.0F, 4, 6, 1, 0.0F);
         setRotateAngle(earLeft, 0.0F, -0.3490658503988659F, 0.0F);
         this.maskLeft = new AdvancedModelRenderer(this, 48, 18);
-        this.maskLeft.setRotationPoint(0.0F, 0.0F, -1.0F);
+        this.maskLeft.setPos(0.0F, 0.0F, -1.0F);
         this.maskLeft.addBox(-7.0F, -8.0F, 0.0F, 7, 14, 2, 0.0F);
         setRotateAngle(maskLeft, 0.0F, 0.4363323129985824F, 0.0F);
         this.calfLeft = new AdvancedModelRenderer(this, 12, 55);
         this.calfLeft.mirror = true;
-        this.calfLeft.setRotationPoint(0.0F, 8.0F, 0.0F);
+        this.calfLeft.setPos(0.0F, 8.0F, 0.0F);
         this.calfLeft.addBox(-1.0F, 0.0F, -1.0F, 2, 7, 2, 0.0F);
         setRotateAngle(calfLeft, 1.3089969389957472F, 0.0F, 0.0F);
         this.handLeft = new AdvancedModelRenderer(this, 0, 55);
         this.handLeft.mirror = true;
-        this.handLeft.setRotationPoint(0.0F, 7.0F, 0.0F);
+        this.handLeft.setPos(0.0F, 7.0F, 0.0F);
         this.handLeft.addBox(-1.0F, 0.0F, -2.0F, 2, 5, 4, 0.0F);
         setRotateAngle(handLeft, 0.0F, 0.0F, 0.7853981633974483F);
         this.calfRight = new AdvancedModelRenderer(this, 12, 55);
-        this.calfRight.setRotationPoint(0.0F, 8.0F, 0.0F);
+        this.calfRight.setPos(0.0F, 8.0F, 0.0F);
         this.calfRight.addBox(-1.0F, 0.0F, -1.0F, 2, 7, 2, 0.0F);
         setRotateAngle(calfRight, 1.3089969389957472F, 0.0F, 0.0F);
         this.shield = new AdvancedModelRenderer(this, 66, 40);
-        this.shield.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.shield.setPos(0.0F, 0.0F, 0.0F);
         this.shield.addBox(1.0F, -6.0F, -6.0F, 2, 12, 12, 0.0F);
         setRotateAngle(shield, 0.7853981633974483F, 0.0F, 0.0F);
         this.handRight = new AdvancedModelRenderer(this, 0, 55);
-        this.handRight.setRotationPoint(0.0F, 7.0F, 0.0F);
+        this.handRight.setPos(0.0F, 7.0F, 0.0F);
         this.handRight.addBox(-1.0F, 0.0F, -2.0F, 2, 5, 4, 0.0F);
         setRotateAngle(handRight, 0.0F, 0.0F, -0.7853981633974483F);
         this.maskBase = new AdvancedModelRenderer(this, 0, 0);
-        this.maskBase.setRotationPoint(0.0F, -3.0F, -8.0F);
+        this.maskBase.setPos(0.0F, -3.0F, -8.0F);
         this.maskBase.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         this.neck = new AdvancedModelRenderer(this, 49, 52);
-        this.neck.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.neck.setPos(0.0F, 0.0F, 0.0F);
         this.neck.addBox(-1.5F, -9.0F, -1.5F, 3, 9, 3, 0.0F);
         setRotateAngle(neck, 0.3665191429188092F, 0.0F, 0.0F);
         this.modelCore = new AdvancedModelRenderer(this, 0, 0);
-        this.modelCore.setRotationPoint(0.0F, 24.0F, 0.0F);
+        this.modelCore.setPos(0.0F, 24.0F, 0.0F);
         this.modelCore.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         this.head = new AdvancedModelRenderer(this, 34, 34);
-        this.head.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.head.setPos(0.0F, 0.0F, 0.0F);
         this.head.addBox(-4.0F, -7.0F, -7.0F, 8, 8, 8, 0.0F);
         this.footRight = new AdvancedModelRenderer(this, 21, 53);
         this.footRight.mirror = true;
-        this.footRight.setRotationPoint(0.0F, 5.5F, 0.0F);
+        this.footRight.setPos(0.0F, 5.5F, 0.0F);
         this.footRight.addBox(-2.5F, 0.5F, -7.0F, 5, 2, 9, 0.0F);
         setRotateAngle(footRight, -0.5235987755982988F, 0.0F, 0.0F);
         this.armRightJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.armRightJoint.setRotationPoint(-3.5F, -4.5F, 0.0F);
+        this.armRightJoint.setPos(-3.5F, -4.5F, 0.0F);
         this.armRightJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(armRightJoint, 0.3490658503988659F, 0.3490658503988659F, 0.0F);
         this.earRight = new AdvancedModelRenderer(this, 48, 0);
         this.earRight.mirror = true;
-        this.earRight.setRotationPoint(-4.0F, -4.0F, -3.0F);
+        this.earRight.setPos(-4.0F, -4.0F, -3.0F);
         this.earRight.addBox(-4.0F, -2.0F, 0.0F, 4, 6, 1, 0.0F);
         setRotateAngle(earRight, 0.0F, 0.3490658503988659F, 0.0F);
         this.shieldBase = new AdvancedModelRenderer(this, 0, 0);
-        this.shieldBase.setRotationPoint(0.0F, 7.0F, 0.0F);
+        this.shieldBase.setPos(0.0F, 7.0F, 0.0F);
         this.shieldBase.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         this.armLeftJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.armLeftJoint.setRotationPoint(3.5F, -4.5F, 0.0F);
+        this.armLeftJoint.setPos(3.5F, -4.5F, 0.0F);
         this.armLeftJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(armLeftJoint, 0.3490658503988659F, -0.3490658503988659F, 0.0F);
         this.earringLeft = new AdvancedModelRenderer(this, 0, 29);
-        this.earringLeft.setRotationPoint(3.0F, 4.0F, 0.5F);
+        this.earringLeft.setPos(3.0F, 4.0F, 0.5F);
         this.earringLeft.addBox(-2.5F, 0.0F, 0.0F, 5, 5, 0, 0.0F);
         this.armUpperRight = new AdvancedModelRenderer(this, 41, 52);
-        this.armUpperRight.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.armUpperRight.setPos(0.0F, 0.0F, 0.0F);
         this.armUpperRight.addBox(-1.0F, 0.0F, -1.0F, 2, 8, 2, 0.0F);
         setRotateAngle(armUpperRight, 0.0F, 0.0F, 0.9599310885968813F);
         this.headJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.headJoint.setRotationPoint(0.0F, -7.0F, 1.0F);
+        this.headJoint.setPos(0.0F, -7.0F, 1.0F);
         this.headJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(headJoint, -0.3665191429188092F, 0.0F, 0.0F);
         this.chest = new AdvancedModelRenderer(this, 0, 42);
-        this.chest.setRotationPoint(0.0F, -4.0F, -3.0F);
+        this.chest.setPos(0.0F, -4.0F, -3.0F);
         this.chest.addBox(-4.0F, -5.0F, -3.5F, 8, 5, 7, 0.0F);
         setRotateAngle(chest, -0.3490658503988659F, 0.0F, 0.0F);
         this.body = new AdvancedModelRenderer(this, 0, 24);
-        this.body.setRotationPoint(0.0F, -13.0F, 2.0F);
+        this.body.setPos(0.0F, -13.0F, 2.0F);
         this.body.addBox(-5.5F, -6.0F, -8.0F, 11, 8, 10, 0.0F);
         this.maskRight = new AdvancedModelRenderer(this, 48, 18);
         this.maskRight.mirror = true;
-        this.maskRight.setRotationPoint(0.0F, 0.0F, -1.0F);
+        this.maskRight.setPos(0.0F, 0.0F, -1.0F);
         this.maskRight.addBox(0.0F, -8.0F, 0.0F, 7, 14, 2, 0.0F);
         setRotateAngle(maskRight, 0.0F, -0.4363323129985824F, 0.0F);
         this.mane = new AdvancedModelRenderer(this, 0, 0);
-        this.mane.setRotationPoint(0.0F, -2.0F, 4.0F);
+        this.mane.setPos(0.0F, -2.0F, 4.0F);
         this.mane.addBox(-12.0F, -12.0F, 0.0F, 24, 24, 0, 0.0F);
         setRotateAngle(mane, 0, (float) Math.PI, 0);
         this.scaler = new AdvancedModelRenderer(this, 0, 0);
-        this.scaler.setRotationPoint(0.0F, 0, 0F);
+        this.scaler.setPos(0.0F, 0, 0F);
         this.flailer = new AdvancedModelRenderer(this, 0, 0);
-        this.flailer.setRotationPoint(0.0F, 0, 0F);
+        this.flailer.setPos(0.0F, 0, 0F);
         this.blowgun = new AdvancedModelRenderer(this, 82, 0);
-        this.blowgun.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.blowgun.setPos(0.0F, 0.0F, 0.0F);
 //        this.blowgun.add3DTexture(-4, -4, 0.5F, 15, 15);
         this.talker = new AdvancedModelRenderer(this, 0, 0);
-        this.talker.setRotationPoint(0, 0, 0);
+        this.talker.setPos(0, 0, 0);
 
         earPointLeft = new AdvancedModelRenderer(this, 48, 7);
-        earPointLeft.setRotationPoint(3.0F, 0.0F, 0.9995F);
+        earPointLeft.setPos(3.0F, 0.0F, 0.9995F);
         earPointLeft.setScale(1f, 1f, 0.999f);
         earLeft.addChild(earPointLeft);
         setRotateAngle(earPointLeft, 0.0F, 0.0F, -0.1745F);
         earPointLeft.addBox(0.5F, -1.9F, -1.0F, 3, 2, 1, 0.0F, false);
 
         earPointRight = new AdvancedModelRenderer(this, 48, 7);
-        earPointRight.setRotationPoint(-3.0F, 0.0F, 0.9995F);
+        earPointRight.setPos(-3.0F, 0.0F, 0.9995F);
         earPointRight.setScale(1f, 1f, 0.999f);
         earRight.addChild(earPointRight);
         setRotateAngle(earPointRight, 0.0F, 0.0F, 0.1745F);
         earPointRight.addBox(-3.5F, -1.9F, -1.0F, 3, 2, 1, 0.0F, false);
 
         hair1 = new AdvancedModelRenderer(this, 87, 50);
-        hair1.setRotationPoint(0.0F, -7.0F, -4.0F);
+        hair1.setPos(0.0F, -7.0F, -4.0F);
         head.addChild(hair1);
         setRotateAngle(hair1, 0.3491F, 0.0F, 0.0F);
         hair1.addBox(-7.0F, 0.0F, 0.0F, 14, 0, 7, 0.0F, false);
 
         hair2 = new AdvancedModelRenderer(this, 87, 57);
-        hair2.setRotationPoint(0.0F, -7.0F, -1.5F);
+        hair2.setPos(0.0F, -7.0F, -1.5F);
         head.addChild(hair2);
         setRotateAngle(hair2, 0.0436F, 0.0F, 0.0F);
         hair2.addBox(-7.0F, 0.0F, 0.0F, 14, 0, 7, 0.0F, false);
 
         hair3 = new AdvancedModelRenderer(this, 87, 50);
-        hair3.setRotationPoint(0.0F, -7.0F, 1.0F);
+        hair3.setPos(0.0F, -7.0F, 1.0F);
         head.addChild(hair3);
         setRotateAngle(hair3, -0.7418F, 0.0F, 0.0F);
         hair3.addBox(-7.0F, 0.0F, 0.0F, 14, 0, 7, 0.0F, false);
 
         hair4 = new AdvancedModelRenderer(this, 87, 50);
-        hair4.setRotationPoint(0.0F, -6.0F, 1.0F);
+        hair4.setPos(0.0F, -6.0F, 1.0F);
         head.addChild(hair4);
         setRotateAngle(hair4, -1.2217F, 0.0F, 0.0F);
         hair4.addBox(-7.0F, 0.0F, 0.0F, 14, 0, 7, 0.0F, false);
 
         mouthLeft = new AdvancedModelRenderer(this);
-        mouthLeft.setRotationPoint(0.0F, -1.0F, 0.0F);
+        mouthLeft.setPos(0.0F, -1.0F, 0.0F);
         maskLeft.addChild(mouthLeft);
-        mouthLeft.setTextureOffset(58, 34).addBox(-7.0F, 0.0F, -0.0005F, 7, 7, 0, false);
+        mouthLeft.texOffs(58, 34).addBox(-7.0F, 0.0F, -0.0005F, 7, 7, 0, false);
 
         mouthRight = new AdvancedModelRenderer(this);
-        mouthRight.setRotationPoint(0.0F, -1.0F, 0.0F);
+        mouthRight.setPos(0.0F, -1.0F, 0.0F);
         maskRight.addChild(mouthRight);
-        mouthRight.setTextureOffset(58, 34).addBox(0.0F, 0.0F, -0.0005F, 7, 7, 0, true);
+        mouthRight.texOffs(58, 34).addBox(0.0F, 0.0F, -0.0005F, 7, 7, 0, true);
 
         this.calfLeft.addChild(this.footLeft);
         this.body.addChild(this.thighLeftJoint);
@@ -369,21 +369,21 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
     }
 
     @Override
-    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        matrixStackIn.push();
+    public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        matrixStackIn.pushPose();
         if (maskType == MaskType.FURY || maskType == MaskType.FAITH) {
             modelCore.setScale(0.85f);
         } else {
             modelCore.setScale(0.75f);
         }
         this.modelCore.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        matrixStackIn.pop();
+        matrixStackIn.popPose();
     }
 
     public void setDefaultAngles(EntityBarakoa entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
         maskType = entity.getMask();
-        headYaw = MathHelper.wrapDegrees(headYaw);
-        headPitch = MathHelper.wrapDegrees(headPitch);
+        headYaw = Mth.wrapDegrees(headYaw);
+        headPitch = Mth.wrapDegrees(headPitch);
         resetToDefaultPose();
 //                f = entity.ticksExisted;
 //                f1 = 0.5f;
@@ -393,51 +393,51 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         spear.setScale(1.25f);
         staff.setScale(1f);
 
-        bone.rotateAngleZ -= Math.PI;
-        bone.rotateAngleX += Math.PI / 2f + 0.1;
-        bone.rotationPointY -= 1.5;
-        bone.rotationPointZ -= 10.5;
+        bone.zRot -= Math.PI;
+        bone.xRot += Math.PI / 2f + 0.1;
+        bone.y -= 1.5;
+        bone.z -= 10.5;
 
-        staff.rotateAngleZ -= Math.PI;
-        staff.rotateAngleX -= Math.PI / 2f;
-        staff.rotationPointY += 2;
-        staff.rotationPointZ -= 1;
+        staff.zRot -= Math.PI;
+        staff.xRot -= Math.PI / 2f;
+        staff.y += 2;
+        staff.z -= 1;
 
-        staffEnd.rotationPointZ -= 12;
+        staffEnd.z -= 12;
 
-        spear.rotateAngleZ -= Math.PI;
-        spear.rotateAngleX -= Math.PI / 2f;
-        spear.rotateAngleY -= 0.2f;
-        spear.rotationPointY += 1.5;
-        spear.rotationPointZ -= 2;
+        spear.zRot -= Math.PI;
+        spear.xRot -= Math.PI / 2f;
+        spear.yRot -= 0.2f;
+        spear.y += 1.5;
+        spear.z -= 2;
 
-        blowgun.rotateAngleX += Math.PI / 2f;
-        blowgun.rotationPointY += 1;
+        blowgun.xRot += Math.PI / 2f;
+        blowgun.y += 1;
 
         if (entity.getWeapon() == 0) {
             if (entity.getMask() == MaskType.FURY) {
-                spear.showModel = true;
-                bone.showModel = false;
-                staff.showModel = false;
+                spear.visible = true;
+                bone.visible = false;
+                staff.visible = false;
             }
             else {
-                bone.showModel = true;
-                spear.showModel = false;
-                staff.showModel = false;
+                bone.visible = true;
+                spear.visible = false;
+                staff.visible = false;
             }
-            blowgun.showModel = false;
+            blowgun.visible = false;
         }
         else if (entity.getWeapon() == 1) {
-            spear.showModel = false;
-            bone.showModel = false;
-            blowgun.showModel = true;
-            staff.showModel = false;
+            spear.visible = false;
+            bone.visible = false;
+            blowgun.visible = true;
+            staff.visible = false;
         }
         else {
-            spear.showModel = false;
-            bone.showModel = false;
-            blowgun.showModel = false;
-            staff.showModel = true;
+            spear.visible = false;
+            bone.visible = false;
+            blowgun.visible = false;
+            staff.visible = true;
         }
 
         if (!entity.active) {
@@ -460,11 +460,11 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         boolean frozen = frozenCapability != null && frozenCapability.getFrozen();
 
         if (entity.getMask() == MaskType.FURY) {
-            armLeftJoint.rotateAngleX -= 0.2;
-            armLeftJoint.rotateAngleY += 1.3;
-            armLowerLeft.rotateAngleX -= 0.2;
-            armLowerLeft.rotateAngleY += 0.2;
-            armLowerLeft.rotateAngleZ += 1;
+            armLeftJoint.xRot -= 0.2;
+            armLeftJoint.yRot += 1.3;
+            armLowerLeft.xRot -= 0.2;
+            armLowerLeft.yRot += 0.2;
+            armLowerLeft.zRot += 1;
 
             if (!frozen) {
                 flap(armUpperLeft, 1 * globalSpeed, 0.1f * globalHeight, false, 0.5f, 0, limbSwing, limbSwingAmount);
@@ -475,7 +475,7 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
                 flap(armUpperLeft, 1 * globalSpeed, 0.3f * globalHeight, false, 0.5f, 0, limbSwing, limbSwingAmount);
                 walk(armUpperLeft, 0.5f * globalSpeed, 0.7f * globalDegree, true, 0, 0, limbSwing, limbSwingAmount);
             }
-            spearBase.rotationPointZ += 1.5;
+            spearBase.z += 1.5;
         }
 
         if (!frozen) {
@@ -499,8 +499,8 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
             walk(calfRight, 0.5f * globalSpeed, 1.2f * globalDegree, true, -1.5f, -0.3f * globalDegree, limbSwing, limbSwingAmount);
             walk(footLeft, 0.5f * globalSpeed, 1.2f * globalDegree, false, -3f, 0.15f * globalDegree, limbSwing, limbSwingAmount);
             walk(footRight, 0.5f * globalSpeed, 1.2f * globalDegree, true, -3f, -0.15f * globalDegree, limbSwing, limbSwingAmount);
-            thighLeft.rotateAngleY += 1f * limbSwingAmount * globalDegree;
-            thighRight.rotateAngleY -= 1f * limbSwingAmount * globalDegree;
+            thighLeft.yRot += 1f * limbSwingAmount * globalDegree;
+            thighRight.yRot -= 1f * limbSwingAmount * globalDegree;
             walk(neck, 1 * globalSpeed, 0.2f * globalHeight, true, 0.5f, 0.5f * globalDegree, limbSwing, limbSwingAmount);
             walk(head, 1 * globalSpeed, 0f * globalHeight, true, 0.5f, -0.5f * globalDegree, limbSwing, limbSwingAmount);
             flap(armUpperRight, 1 * globalSpeed, 0.3f * globalHeight, true, 0.5f, 0, limbSwing, limbSwingAmount);
@@ -524,8 +524,8 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
 
         //Dancing
         float danceSpeed = 1.4f;
-        thighLeft.rotateAngleY -= 0.6f * dance;
-        thighRight.rotateAngleY += 0.6f * dance;
+        thighLeft.yRot -= 0.6f * dance;
+        thighRight.yRot += 0.6f * dance;
         bob(modelCore, 0.3f * danceSpeed, 10f * dance, true, frame, 1f);
         flap(modelCore, 0.3f * danceSpeed, 0.5f * dance, false, 0, 0, frame, 1f);
         walk(thighLeft, 0.3f * danceSpeed, 0.6f * dance, false, 0, -0.6f * dance, frame, 1f);
@@ -534,11 +534,11 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         walk(thighRight, 0.3f * danceSpeed, 0.6f * dance, true, 0, 0.6f * dance, frame, 1f);
         walk(calfRight, 0.3f * danceSpeed, 0.5f * dance, false, 0, 0.6f * dance, frame, 1f);
         walk(footRight, 0.3f * danceSpeed, 0.2f * dance, false, 0, 0.5f * dance, frame, 1f);
-        armRightJoint.rotateAngleX -= 1.7 * dance;
-        handRight.rotateAngleX += 1 * dance;
+        armRightJoint.xRot -= 1.7 * dance;
+        handRight.xRot += 1 * dance;
         walk(armUpperRight, 1.2f * danceSpeed, 0.5f * dance, false, 0, -0.3f * dance, frame, 1f);
         walk(armLowerRight, 1.2f * danceSpeed, 0.5f * dance, true, 0, 0, frame, 1f);
-        armLeftJoint.rotateAngleX -= 1.7 * dance;
+        armLeftJoint.xRot -= 1.7 * dance;
         walk(armUpperLeft, 1.2f * danceSpeed, 0.5f * dance, false, 0, -0.3f * dance, frame, 1f);
         walk(armLowerLeft, 1.2f * danceSpeed, 0.5f * dance, true, 0, 0, frame, 1f);
         flap(neck, 0.3f * danceSpeed, 0.2f * dance, true, 0, 0, frame, 1f);
@@ -546,11 +546,11 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         walk(loinClothFront, 0.6f * danceSpeed, 0.6f * dance, true, 1, 0.4f * dance, frame, 1f);
         walk(loinClothBack, 0.6f * danceSpeed, 0.6f * dance, false, 1, 0.4f * dance, frame, 1f);
         if (entity.getMask() == MaskType.FURY) {
-            armLeftJoint.rotateAngleX += 0.2 * dance;
-            armLeftJoint.rotateAngleY -= 1.3 * dance;
-            armLowerLeft.rotateAngleX += 0.2 * dance;
-            armLowerLeft.rotateAngleY -= 0.2 * dance;
-            armLowerLeft.rotateAngleZ -= 1 * dance;
+            armLeftJoint.xRot += 0.2 * dance;
+            armLeftJoint.yRot -= 1.3 * dance;
+            armLowerLeft.xRot += 0.2 * dance;
+            armLowerLeft.yRot -= 0.2 * dance;
+            armLowerLeft.zRot -= 1 * dance;
         }
     }
 
@@ -696,11 +696,11 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
             animator.endKeyframe();
             animator.setStaticKeyframe(20);
 
-            armLeftJoint.rotateAngleX += 0.2 * flailer.rotationPointX;
-            armLeftJoint.rotateAngleY -= 1.3 * flailer.rotationPointX;
-            armLowerLeft.rotateAngleX += 0.2 * flailer.rotationPointX;
-            armLowerLeft.rotateAngleY -= 0.2 * flailer.rotationPointX;
-            armLowerLeft.rotateAngleZ -= 1 * flailer.rotationPointX;
+            armLeftJoint.xRot += 0.2 * flailer.x;
+            armLeftJoint.yRot -= 1.3 * flailer.x;
+            armLowerLeft.xRot += 0.2 * flailer.x;
+            armLowerLeft.yRot -= 0.2 * flailer.x;
+            armLowerLeft.zRot -= 1 * flailer.x;
         } else {
             animator.setAnimation(EntityBarakoa.ATTACK_ANIMATION);
             animator.setStaticKeyframe(3);
@@ -940,23 +940,23 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         animator.endKeyframe();
         animator.resetKeyframe(6);
 
-        float heal = talker.rotationPointY;
-        float wandWave = talker.rotationPointZ;
+        float heal = talker.y;
+        float wandWave = talker.z;
         float healAnimSpeed = 0.4f;
         flap(modelCore, 0.6f * healAnimSpeed, 0.1f * heal, false, 0, 0, frame, 1f);
         flap(body, 0.6f * healAnimSpeed, 0.1f * heal, false, -0.5f, 0, frame, 1f);
         flap(chest, 0.6f * healAnimSpeed, 0.1f * heal, false, -1f, 0, frame, 1f);
         flap(head, 0.6f * healAnimSpeed, 0.1f * heal, false, -1.5f, 0, frame, 1f);
-        armUpperRight.rotateAngleZ += 0.4f * heal;
-        armUpperRight.rotateAngleX -= 1.7f * heal;
-        armLowerRight.rotateAngleX += 0.3f * heal;
-        handRight.rotateAngleX += 0.3f * heal;
-        handRight.rotateAngleY += 2f * heal;
-        armUpperLeft.rotateAngleZ -= 0.6f * heal;
-        armUpperLeft.rotateAngleX -= 1.3f * heal;
-        armLowerLeft.rotateAngleX -= 0.4f * heal;
-        handLeft.rotateAngleX += 0.3f * heal;
-        handLeft.rotateAngleY -= 1.8f * heal;
+        armUpperRight.zRot += 0.4f * heal;
+        armUpperRight.xRot -= 1.7f * heal;
+        armLowerRight.xRot += 0.3f * heal;
+        handRight.xRot += 0.3f * heal;
+        handRight.yRot += 2f * heal;
+        armUpperLeft.zRot -= 0.6f * heal;
+        armUpperLeft.xRot -= 1.3f * heal;
+        armLowerLeft.xRot -= 0.4f * heal;
+        handLeft.xRot += 0.3f * heal;
+        handLeft.yRot -= 1.8f * heal;
         flap(thighLeftJoint, 0.6f * healAnimSpeed, 0.1f * heal, true, 0, 0, frame, 1f);
         flap(thighLeftJoint, 0.6f * healAnimSpeed, 0.1f * heal, true, -0.5f, 0, frame, 1f);
         flap(thighRightJoint, 0.6f * healAnimSpeed, 0.1f * heal, true, 0, 0, frame, 1f);
@@ -970,10 +970,10 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         walk(footRight, 0.6f * healAnimSpeed, 0.1f * heal, false, 0, 0, frame, 1f);
         walk(footRight, 0.6f * healAnimSpeed, 0.1f * heal, false, -0.5f, 0, frame, 1f);
         float f = (float) (Math.cos(frame * 0.6f * healAnimSpeed) * 0.1f * heal);
-        thighLeftJoint.rotationPointZ -= f * 5;
-        thighLeftJoint.rotationPointX -= f * 5;
-        thighRightJoint.rotationPointZ += f * 5;
-        thighRightJoint.rotationPointX -= f * 5;
+        thighLeftJoint.z -= f * 5;
+        thighLeftJoint.x -= f * 5;
+        thighRightJoint.z += f * 5;
+        thighRightJoint.x -= f * 5;
 
         float waveFrame = entity.getAnimationTick() + delta;
         float offset = -1f;
@@ -1027,54 +1027,54 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         animator.setStaticKeyframe(9);
         animator.resetKeyframe(9);
 
-        float ballCurl = (float) Math.pow(talker.rotateAngleX, 7);
-        float ballCurl2 = (float) Math.pow(talker.rotateAngleX, 15);
-        body.rotateAngleX += ballCurl * 4;
-        neck.rotateAngleX += ballCurl * 0.5;
-        head.rotateAngleX += ballCurl * 0.5;
-        armUpperLeft.rotateAngleX -= 1 * ballCurl;
-        armUpperRight.rotateAngleX -= 1 * ballCurl;
-        armLowerLeft.rotateAngleX -= 1 * ballCurl;
-        armLowerRight.rotateAngleX -= 1 * ballCurl;
-        thighLeftJoint.rotateAngleX -= 1 * ballCurl;
-        thighRightJoint.rotateAngleX -= 1 * ballCurl;
-        calfLeft.rotateAngleX += 0.5 * ballCurl;
-        calfRight.rotateAngleX += 0.5 * ballCurl;
+        float ballCurl = (float) Math.pow(talker.xRot, 7);
+        float ballCurl2 = (float) Math.pow(talker.xRot, 15);
+        body.xRot += ballCurl * 4;
+        neck.xRot += ballCurl * 0.5;
+        head.xRot += ballCurl * 0.5;
+        armUpperLeft.xRot -= 1 * ballCurl;
+        armUpperRight.xRot -= 1 * ballCurl;
+        armLowerLeft.xRot -= 1 * ballCurl;
+        armLowerRight.xRot -= 1 * ballCurl;
+        thighLeftJoint.xRot -= 1 * ballCurl;
+        thighRightJoint.xRot -= 1 * ballCurl;
+        calfLeft.xRot += 0.5 * ballCurl;
+        calfRight.xRot += 0.5 * ballCurl;
 
         //Inactive
         if (!entity.active) {
-            scaler.rotationPointX += 0.999f;
-            head.rotateAngleX -= 1.58f;
-            body.rotationPointY += 9f;
-            body.rotationPointZ += 5f;
+            scaler.x += 0.999f;
+            head.xRot -= 1.58f;
+            body.y += 9f;
+            body.z += 5f;
             if (!entity.isOnGround() && !entity.isInLava() && !entity.isInWater()) {
-                body.rotateAngleX += 0.4f * frame;
+                body.xRot += 0.4f * frame;
             }
         }
 
         float flailSpeed = 2.3f;
-        bob(modelCore, 0.3f * flailSpeed, 10f * flailer.rotationPointX, true, frame, 1f);
-        walk(thighLeft, 0.3f * flailSpeed, 0.6f * flailer.rotationPointX, false, 0, -0.3f * flailer.rotationPointX, frame, 1f);
-        walk(calfLeft, 0.3f * flailSpeed, 0.5f * flailer.rotationPointX, true, 0, 0.3f * flailer.rotationPointX, frame, 1f);
-        walk(footLeft, 0.3f * flailSpeed, 0.2f * flailer.rotationPointX, true, 0, 0, frame, 1f);
-        walk(thighRight, 0.3f * flailSpeed, 0.6f * flailer.rotationPointX, true, 0, 0.3f * flailer.rotationPointX, frame, 1f);
-        walk(calfRight, 0.3f * flailSpeed, 0.5f * flailer.rotationPointX, false, 0, -0.3f * flailer.rotationPointX, frame, 1f);
-        walk(footRight, 0.3f * flailSpeed, 0.2f * flailer.rotationPointX, false, 0, 0, frame, 1f);
-        armRightJoint.rotateAngleX -= 1.7 * flailer.rotationPointX;
-        handRight.rotateAngleX += 1 * flailer.rotationPointX;
-        walk(armUpperRight, 0.6f * flailSpeed, 0.5f * flailer.rotationPointX, false, 0, -0.3f * flailer.rotationPointX, frame, 1f);
-        walk(armLowerRight, 0.6f * flailSpeed, 0.5f * flailer.rotationPointX, true, 0, 0, frame, 1f);
-        armLeftJoint.rotateAngleX -= 1.7 * flailer.rotationPointX;
-        walk(armUpperLeft, 0.6f * flailSpeed, 0.5f * flailer.rotationPointX, false, 0, -0.3f * flailer.rotationPointX, frame, 1f);
-        walk(armLowerLeft, 0.6f * flailSpeed, 0.5f * flailer.rotationPointX, true, 0, 0, frame, 1f);
+        bob(modelCore, 0.3f * flailSpeed, 10f * flailer.x, true, frame, 1f);
+        walk(thighLeft, 0.3f * flailSpeed, 0.6f * flailer.x, false, 0, -0.3f * flailer.x, frame, 1f);
+        walk(calfLeft, 0.3f * flailSpeed, 0.5f * flailer.x, true, 0, 0.3f * flailer.x, frame, 1f);
+        walk(footLeft, 0.3f * flailSpeed, 0.2f * flailer.x, true, 0, 0, frame, 1f);
+        walk(thighRight, 0.3f * flailSpeed, 0.6f * flailer.x, true, 0, 0.3f * flailer.x, frame, 1f);
+        walk(calfRight, 0.3f * flailSpeed, 0.5f * flailer.x, false, 0, -0.3f * flailer.x, frame, 1f);
+        walk(footRight, 0.3f * flailSpeed, 0.2f * flailer.x, false, 0, 0, frame, 1f);
+        armRightJoint.xRot -= 1.7 * flailer.x;
+        handRight.xRot += 1 * flailer.x;
+        walk(armUpperRight, 0.6f * flailSpeed, 0.5f * flailer.x, false, 0, -0.3f * flailer.x, frame, 1f);
+        walk(armLowerRight, 0.6f * flailSpeed, 0.5f * flailer.x, true, 0, 0, frame, 1f);
+        armLeftJoint.xRot -= 1.7 * flailer.x;
+        walk(armUpperLeft, 0.6f * flailSpeed, 0.5f * flailer.x, false, 0, -0.3f * flailer.x, frame, 1f);
+        walk(armLowerLeft, 0.6f * flailSpeed, 0.5f * flailer.x, true, 0, 0, frame, 1f);
 
-        float scale = 1 - scaler.rotationPointX;
+        float scale = 1 - scaler.x;
         body.setScale(scale, scale, scale);
         body.setScale(body.scaleX * (1 - ballCurl2), body.scaleY * (1 - ballCurl2), body.scaleZ * (1 - ballCurl2));
         maskBase.setScale(1 / scale, 1 / scale, 1 / scale);
 
 
-        float talk = talker.rotationPointX;
+        float talk = talker.x;
         float dance = entity.dancing.getAnimationProgressSinSqrt();
         FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
         boolean frozen = frozenCapability != null && frozenCapability.getFrozen();
@@ -1094,19 +1094,19 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
 
             
             if (Math.sin(frame * 1.8f) * (talk + dance) > 0.1f) {
-                mouthLeft.showModel = true;
-                mouthRight.showModel = true;
+                mouthLeft.visible = true;
+                mouthRight.visible = true;
             }
             else {
-                mouthLeft.showModel = false;
-                mouthRight.showModel = false;
+                mouthLeft.visible = false;
+                mouthRight.visible = false;
             }
             if (entity.getMask() == MaskType.FURY) {
-                armLeftJoint.rotateAngleX += 0.2 * talk;
-                armLeftJoint.rotateAngleY -= 1.3 * talk;
-                armLowerLeft.rotateAngleX += 0.2 * talk;
-                armLowerLeft.rotateAngleY -= 0.2 * talk;
-                armLowerLeft.rotateAngleZ -= 1 * talk;
+                armLeftJoint.xRot += 0.2 * talk;
+                armLeftJoint.yRot -= 1.3 * talk;
+                armLowerLeft.xRot += 0.2 * talk;
+                armLowerLeft.yRot -= 0.2 * talk;
+                armLowerLeft.zRot -= 1 * talk;
             }
         }
     }

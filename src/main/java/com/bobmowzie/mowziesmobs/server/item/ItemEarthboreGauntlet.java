@@ -4,19 +4,19 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.google.common.collect.Sets;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTier;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tiers;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.fml.network.PacketDistributor;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -32,6 +32,8 @@ import software.bernie.geckolib3.util.GeckoLibUtil;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import net.minecraft.world.item.Item.Properties;
+
 /**
  * Created by BobMowzie on 6/6/2017.
  */
@@ -44,32 +46,32 @@ public class ItemEarthboreGauntlet extends MowzieToolItem implements IAnimatable
     public AnimationFactory factory = new AnimationFactory(this);
 
     public ItemEarthboreGauntlet(Properties properties) {
-        super(-2 + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.toolConfig.attackDamage.get().floatValue(), -4f + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.toolConfig.attackSpeed.get().floatValue(), ItemTier.STONE, Sets.newHashSet(), properties);
+        super(-2 + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.toolConfig.attackDamage.get().floatValue(), -4f + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.toolConfig.attackSpeed.get().floatValue(), Tiers.STONE, Sets.newHashSet(), properties);
         GeckoLibNetwork.registerSyncable(this);
     }
 
     @Override
-    public boolean isDamageable() {
+    public boolean canBeDepleted() {
         return true;
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-        ItemStack stack = playerIn.getHeldItem(handIn);
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
+        ItemStack stack = playerIn.getItemInHand(handIn);
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(playerIn);
         if (abilityCapability != null) {
-            playerIn.setActiveHand(handIn);
-            if (stack.getDamage() + 5 < stack.getMaxDamage() || ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.breakable.get()) {
-                if (!worldIn.isRemote()) AbilityHandler.INSTANCE.sendAbilityMessage(playerIn, AbilityHandler.TUNNELING_ABILITY);
-                showDurabilityBar(playerIn.getHeldItem(handIn));
-                playerIn.setActiveHand(handIn);
-                return new ActionResult<ItemStack>(ActionResultType.SUCCESS, playerIn.getHeldItem(handIn));
+            playerIn.startUsingItem(handIn);
+            if (stack.getDamageValue() + 5 < stack.getMaxDamage() || ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.breakable.get()) {
+                if (!worldIn.isClientSide()) AbilityHandler.INSTANCE.sendAbilityMessage(playerIn, AbilityHandler.TUNNELING_ABILITY);
+                showDurabilityBar(playerIn.getItemInHand(handIn));
+                playerIn.startUsingItem(handIn);
+                return new InteractionResultHolder<ItemStack>(InteractionResult.SUCCESS, playerIn.getItemInHand(handIn));
             }
             else {
                 abilityCapability.getAbilityMap().get(AbilityHandler.TUNNELING_ABILITY).end();
             }
         }
-        return super.onItemRightClick(worldIn, playerIn, handIn);
+        return super.use(worldIn, playerIn, handIn);
     }
 
     public int getUseDuration(ItemStack stack) {
@@ -87,14 +89,14 @@ public class ItemEarthboreGauntlet extends MowzieToolItem implements IAnimatable
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.0").setStyle(ItemHandler.TOOLTIP_STYLE));
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.1").setStyle(ItemHandler.TOOLTIP_STYLE));
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.2").setStyle(ItemHandler.TOOLTIP_STYLE));
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.3").setStyle(ItemHandler.TOOLTIP_STYLE));
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
+        tooltip.add(new TranslatableComponent(getDescriptionId() + ".text.0").setStyle(ItemHandler.TOOLTIP_STYLE));
+        tooltip.add(new TranslatableComponent(getDescriptionId() + ".text.1").setStyle(ItemHandler.TOOLTIP_STYLE));
+        tooltip.add(new TranslatableComponent(getDescriptionId() + ".text.2").setStyle(ItemHandler.TOOLTIP_STYLE));
+        tooltip.add(new TranslatableComponent(getDescriptionId() + ".text.3").setStyle(ItemHandler.TOOLTIP_STYLE));
         if (!ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.breakable.get()) {
-            tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.4").setStyle(ItemHandler.TOOLTIP_STYLE));
+            tooltip.add(new TranslatableComponent(getDescriptionId() + ".text.4").setStyle(ItemHandler.TOOLTIP_STYLE));
         }
     }
 
@@ -117,7 +119,7 @@ public class ItemEarthboreGauntlet extends MowzieToolItem implements IAnimatable
     public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(entity);
         if (abilityCapability != null && abilityCapability.getActiveAbility() == null) {
-            if (entity.getActiveItemStack() != stack) {
+            if (entity.getUseItem() != stack) {
                 playAnimation(entity, stack, ANIM_FIST);
             }
         }
@@ -147,14 +149,14 @@ public class ItemEarthboreGauntlet extends MowzieToolItem implements IAnimatable
         }
     }
 
-    public void playAnimation(LivingEntity entity, Hand hand, int state) {
-        ItemStack stack = entity.getHeldItem(hand);
+    public void playAnimation(LivingEntity entity, InteractionHand hand, int state) {
+        ItemStack stack = entity.getItemInHand(hand);
         playAnimation(entity, stack, state);
     }
 
     public void playAnimation(LivingEntity entity, ItemStack stack, int state) {
-        if (!entity.world.isRemote) {
-            int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerWorld)entity.world);
+        if (!entity.level.isClientSide) {
+            int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel)entity.level);
             PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> {
                 return entity;
             });

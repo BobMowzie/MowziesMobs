@@ -1,11 +1,13 @@
 package com.bobmowzie.mowziesmobs.client.particle.util;
 
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
+import com.mojang.math.Quaternion;
+import net.minecraft.world.phys.Vec3;
+import com.mojang.math.Vector3f;
+
+import net.minecraft.client.Camera;
 
 public abstract class ParticleComponent {
     public ParticleComponent() {
@@ -28,7 +30,7 @@ public abstract class ParticleComponent {
 
     }
 
-    public void postRender(AdvancedParticleBase particle, IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks, int lightmap) {
+    public void postRender(AdvancedParticleBase particle, VertexConsumer buffer, Camera renderInfo, float partialTicks, int lightmap) {
 
     }
 
@@ -149,14 +151,14 @@ public abstract class ParticleComponent {
 
         @Override
         public void preRender(AdvancedParticleBase particle, float partialTicks) {
-            float ageFrac = (particle.getAge() + partialTicks) / particle.getMaxAge();
+            float ageFrac = (particle.getAge() + partialTicks) / particle.getLifetime();
             float value = animData.evaluate(ageFrac);
             applyRender(particle, value);
         }
 
         @Override
         public void preUpdate(AdvancedParticleBase particle) {
-            float ageFrac = particle.getAge() / particle.getMaxAge();
+            float ageFrac = particle.getAge() / particle.getLifetime();
             float value = animData.evaluate(ageFrac);
             applyUpdate(particle, value);
         }
@@ -245,23 +247,23 @@ public abstract class ParticleComponent {
     }
 
     public static class PinLocation extends ParticleComponent {
-        private final Vector3d[] location;
+        private final Vec3[] location;
 
-        public PinLocation(Vector3d[] location) {
+        public PinLocation(Vec3[] location) {
             this.location = location;
         }
 
         @Override
         public void init(AdvancedParticleBase particle) {
             if (location != null && location.length > 0) {
-                particle.setPosition(location[0].x, location[0].y, location[0].z);
+                particle.setPos(location[0].x, location[0].y, location[0].z);
             }
         }
 
         @Override
         public void preUpdate(AdvancedParticleBase particle) {
             if (location != null && location.length > 0) {
-                particle.setPosition(location[0].x, location[0].y, location[0].z);
+                particle.setPos(location[0].x, location[0].y, location[0].z);
             }
         }
     }
@@ -273,13 +275,13 @@ public abstract class ParticleComponent {
             SIMULATED,
         }
 
-        private final Vector3d[] location;
+        private final Vec3[] location;
         private final float strength;
         private final float killDist;
         private final EnumAttractorBehavior behavior;
-        private Vector3d startLocation;
+        private Vec3 startLocation;
 
-        public Attractor(Vector3d[] location, float strength, float killDist, EnumAttractorBehavior behavior) {
+        public Attractor(Vec3[] location, float strength, float killDist, EnumAttractorBehavior behavior) {
             this.location = location;
             this.strength = strength;
             this.killDist = killDist;
@@ -288,23 +290,23 @@ public abstract class ParticleComponent {
 
         @Override
         public void init(AdvancedParticleBase particle) {
-            startLocation = new Vector3d(particle.getPosX(), particle.getPosY(), particle.getPosZ());
+            startLocation = new Vec3(particle.getPosX(), particle.getPosY(), particle.getPosZ());
         }
 
         @Override
         public void preUpdate(AdvancedParticleBase particle) {
-            float ageFrac = particle.getAge() / (particle.getMaxAge() - 1);
+            float ageFrac = particle.getAge() / (particle.getLifetime() - 1);
             if (location.length > 0) {
-                Vector3d destinationVec = location[0];
-                Vector3d currPos = new Vector3d(particle.getPosX(), particle.getPosY(), particle.getPosZ());
-                Vector3d diff = destinationVec.subtract(currPos);
-                if (diff.length() < killDist) particle.setExpired();
+                Vec3 destinationVec = location[0];
+                Vec3 currPos = new Vec3(particle.getPosX(), particle.getPosY(), particle.getPosZ());
+                Vec3 diff = destinationVec.subtract(currPos);
+                if (diff.length() < killDist) particle.remove();
                 if (behavior == EnumAttractorBehavior.EXPONENTIAL) {
-                    Vector3d path = destinationVec.subtract(startLocation).scale(Math.pow(ageFrac, strength)).add(startLocation).subtract(currPos);
+                    Vec3 path = destinationVec.subtract(startLocation).scale(Math.pow(ageFrac, strength)).add(startLocation).subtract(currPos);
                     particle.move(path.x, path.y, path.z);
                 }
                 else if (behavior == EnumAttractorBehavior.LINEAR) {
-                    Vector3d path = destinationVec.subtract(startLocation).scale(ageFrac).add(startLocation).subtract(currPos);
+                    Vec3 path = destinationVec.subtract(startLocation).scale(ageFrac).add(startLocation).subtract(currPos);
                     particle.move(path.x, path.y, path.z);
                 }
                 else {
@@ -319,7 +321,7 @@ public abstract class ParticleComponent {
     }
 
     public static class Orbit extends ParticleComponent {
-        private final Vector3d[] location;
+        private final Vec3[] location;
         private final AnimData phase;
         private final AnimData radius;
         private final AnimData axisX;
@@ -327,7 +329,7 @@ public abstract class ParticleComponent {
         private final AnimData axisZ;
         private final boolean faceCamera;
 
-        public Orbit(Vector3d[] location, AnimData phase, AnimData radius, AnimData axisX, AnimData axisY, AnimData axisZ, boolean faceCamera) {
+        public Orbit(Vec3[] location, AnimData phase, AnimData radius, AnimData axisX, AnimData axisY, AnimData axisZ, boolean faceCamera) {
             this.location = location;
             this.phase = phase;
             this.radius = radius;
@@ -344,7 +346,7 @@ public abstract class ParticleComponent {
 
         @Override
         public void preUpdate(AdvancedParticleBase particle) {
-            float ageFrac = particle.getAge() / particle.getMaxAge();
+            float ageFrac = particle.getAge() / particle.getLifetime();
             apply(particle, ageFrac);
         }
 
@@ -353,7 +355,7 @@ public abstract class ParticleComponent {
             float r = radius.evaluate(t);
             Vector3f axis;
             if (faceCamera && Minecraft.getInstance().player != null) {
-                axis = new Vector3f(Minecraft.getInstance().player.getLookVec());
+                axis = new Vector3f(Minecraft.getInstance().player.getLookAngle());
                 axis.normalize();
             }
             else {
@@ -376,7 +378,7 @@ public abstract class ParticleComponent {
             if (location.length > 0 && location[0] != null) {
                 newPos.add((float)location[0].x, (float)location[0].y, (float)location[0].z);
             }
-            particle.setPosition(newPos.getX(), newPos.getY(), newPos.getZ());
+            particle.setPos(newPos.x(), newPos.y(), newPos.z());
         }
     }
 
@@ -405,7 +407,7 @@ public abstract class ParticleComponent {
                 }
                 else if (particle.rotation instanceof ParticleRotation.OrientVector) {
                     ParticleRotation.OrientVector orientRot = (ParticleRotation.OrientVector) particle.rotation;
-                    orientRot.orientation = new Vector3d(dx, dy, dz).normalize();
+                    orientRot.orientation = new Vec3(dx, dy, dz).normalize();
                 }
             }
         }

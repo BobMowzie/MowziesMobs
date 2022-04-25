@@ -7,9 +7,9 @@ import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.message.MessageInterruptAbility;
 import com.bobmowzie.mowziesmobs.server.message.MessagePlayerUseAbility;
 import com.bobmowzie.mowziesmobs.server.message.MessageUseAbility;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fml.network.PacketDistributor;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -59,7 +59,7 @@ public enum AbilityHandler {
     }
 
     public <T extends LivingEntity> void sendAbilityMessage(T entity, AbilityType<?> abilityType) {
-        if (entity.world.isRemote) {
+        if (entity.level.isClientSide) {
             return;
         }
         AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability(entity);
@@ -67,13 +67,13 @@ public enum AbilityHandler {
             Ability instance = abilityCapability.getAbilityMap().get(abilityType);
             if (instance.canUse()) {
                 abilityCapability.activateAbility(entity, abilityType);
-                MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new MessageUseAbility(entity.getEntityId(), ArrayUtils.indexOf(abilityCapability.getAbilityTypesOnEntity(entity), abilityType)));
+                MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new MessageUseAbility(entity.getId(), ArrayUtils.indexOf(abilityCapability.getAbilityTypesOnEntity(entity), abilityType)));
             }
         }
     }
 
     public <T extends LivingEntity> void sendInterruptAbilityMessage(T entity, AbilityType<?> abilityType) {
-        if (entity.world.isRemote) {
+        if (entity.level.isClientSide) {
             return;
         }
         AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability(entity);
@@ -81,13 +81,13 @@ public enum AbilityHandler {
             Ability instance = abilityCapability.getAbilityMap().get(abilityType);
             if (instance.isUsing()) {
                 instance.interrupt();
-                MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new MessageInterruptAbility(entity.getEntityId(), ArrayUtils.indexOf(abilityCapability.getAbilityTypesOnEntity(entity), abilityType)));
+                MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new MessageInterruptAbility(entity.getId(), ArrayUtils.indexOf(abilityCapability.getAbilityTypesOnEntity(entity), abilityType)));
             }
         }
     }
 
-    public <T extends PlayerEntity> void sendPlayerTryAbilityMessage(T entity, AbilityType<?> ability) {
-        if (!(entity.world.isRemote && entity instanceof ClientPlayerEntity)) {
+    public <T extends Player> void sendPlayerTryAbilityMessage(T entity, AbilityType<?> ability) {
+        if (!(entity.level.isClientSide && entity instanceof LocalPlayer)) {
             return;
         }
         AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability(entity);

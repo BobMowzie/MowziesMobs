@@ -7,42 +7,56 @@ import com.bobmowzie.mowziesmobs.server.world.spawn.SpawnHandler;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
-import net.minecraft.block.Block;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.*;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.ai.attributes.*;
-import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.ParticleTypes;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.*;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.settings.StructureSeparationSettings;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.StructureFeatureConfiguration;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fmllegacy.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class MowzieEntity extends CreatureEntity implements IEntityAdditionalSpawnData, IAnimatedEntity, IntermittentAnimatableEntity {
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.levelgen.WorldgenRandom;
+
+public abstract class MowzieEntity extends PathfinderMob implements IEntityAdditionalSpawnData, IAnimatedEntity, IntermittentAnimatableEntity {
     private static final byte START_IA_HEALTH_UPDATE_ID = 4;
     private static final byte MUSIC_PLAY_ID = 67;
     private static final byte MUSIC_STOP_ID = 68;
@@ -60,7 +74,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     public boolean hurtInterruptsAnimation = false;
 
     @OnlyIn(Dist.CLIENT)
-    public Vector3d[] socketPosArray;
+    public Vec3[] socketPosArray;
 
     protected boolean prevOnGround;
     protected boolean prevPrevOnGround;
@@ -68,39 +82,39 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     
     private int killDataRecentlyHit;
     private DamageSource killDataCause;
-    private PlayerEntity killDataAttackingPlayer;
+    private Player killDataAttackingPlayer;
 
     private final MMBossInfoServer bossInfo = new MMBossInfoServer(this);
 
     private static final UUID HEALTH_CONFIG_MODIFIER_UUID = UUID.fromString("eff1c400-910c-11ec-b909-0242ac120002");
     private static final UUID ATTACK_CONFIG_MODIFIER_UUID = UUID.fromString("f76a7c90-910c-11ec-b909-0242ac120002");
 
-    public MowzieEntity(EntityType<? extends MowzieEntity> type, World world) {
+    public MowzieEntity(EntityType<? extends MowzieEntity> type, Level world) {
         super(type, world);
-        if (world.isRemote) {
-            socketPosArray = new Vector3d[]{};
+        if (world.isClientSide) {
+            socketPosArray = new Vec3[]{};
         }
 
         // Load config attribute multipliers
         ConfigHandler.CombatConfig combatConfig = getCombatConfig();
         if (combatConfig != null) {
-            ModifiableAttributeInstance maxHealthAttr = getAttribute(Attributes.MAX_HEALTH);
+            AttributeInstance maxHealthAttr = getAttribute(Attributes.MAX_HEALTH);
             if (maxHealthAttr != null) {
                 double difference = maxHealthAttr.getBaseValue() * getCombatConfig().healthMultiplier.get() - maxHealthAttr.getBaseValue();
-                maxHealthAttr.applyNonPersistentModifier(new AttributeModifier(HEALTH_CONFIG_MODIFIER_UUID, "Health config multiplier", difference, AttributeModifier.Operation.ADDITION));
+                maxHealthAttr.addTransientModifier(new AttributeModifier(HEALTH_CONFIG_MODIFIER_UUID, "Health config multiplier", difference, AttributeModifier.Operation.ADDITION));
                 this.setHealth(this.getMaxHealth());
             }
 
-            ModifiableAttributeInstance attackDamageAttr = getAttribute(Attributes.ATTACK_DAMAGE);
+            AttributeInstance attackDamageAttr = getAttribute(Attributes.ATTACK_DAMAGE);
             if (attackDamageAttr != null) {
                 double difference = attackDamageAttr.getBaseValue() * getCombatConfig().attackMultiplier.get() - attackDamageAttr.getBaseValue();
-                attackDamageAttr.applyNonPersistentModifier(new AttributeModifier(ATTACK_CONFIG_MODIFIER_UUID, "Attack config multiplier", difference, AttributeModifier.Operation.ADDITION));
+                attackDamageAttr.addTransientModifier(new AttributeModifier(ATTACK_CONFIG_MODIFIER_UUID, "Attack config multiplier", difference, AttributeModifier.Operation.ADDITION));
             }
         }
     }
 
-    public static AttributeModifierMap.MutableAttribute createAttributes() {
-        return MobEntity.func_233666_p_().createMutableAttribute(Attributes.ATTACK_DAMAGE);
+    public static AttributeSupplier.Builder createAttributes() {
+        return Mob.createMobAttributes().add(Attributes.ATTACK_DAMAGE);
     }
 
     protected ConfigHandler.SpawnConfig getSpawnConfig() {
@@ -111,14 +125,14 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         return null;
     }
 
-    public static boolean spawnPredicate(EntityType type, IWorld world, SpawnReason reason, BlockPos spawnPos, Random rand) {
+    public static boolean spawnPredicate(EntityType type, LevelAccessor world, MobSpawnType reason, BlockPos spawnPos, Random rand) {
         ConfigHandler.SpawnConfig spawnConfig = SpawnHandler.spawnConfigs.get(type);
         if (spawnConfig != null) {
             if (rand.nextDouble() > spawnConfig.extraRarity.get()) return false;
 
             // Dimension check
             List<? extends String> dimensionNames = spawnConfig.dimensions.get();
-            ResourceLocation currDimensionName = ((ServerWorld)world).getDimensionKey().getLocation();
+            ResourceLocation currDimensionName = ((ServerLevel)world).dimension().location();
             if (!dimensionNames.contains(currDimensionName.toString())) {
                 return false;
             }
@@ -134,12 +148,12 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
             }
 
             // Light level check
-            if (spawnConfig.needsDarkness.get() && !MonsterEntity.isValidLightLevel((IServerWorld) world, spawnPos, rand)) {
+            if (spawnConfig.needsDarkness.get() && !Monster.isDarkEnoughToSpawn((ServerLevelAccessor) world, spawnPos, rand)) {
                 return false;
             }
 
             // Block check
-            Block block = world.getBlockState(spawnPos.down()).getBlock();
+            Block block = world.getBlockState(spawnPos.below()).getBlock();
             ResourceLocation blockName = block.getRegistryName();
             List<? extends String> allowedBlocks = spawnConfig.allowedBlocks.get();
             List<? extends String> allowedBlockTags = spawnConfig.allowedBlockTags.get();
@@ -148,32 +162,32 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
             if (!allowedBlockTags.isEmpty() && !isBlockTagAllowed(allowedBlockTags, block)) return false;
 
             // See sky
-            if (spawnConfig.needsSeeSky.get() && !world.canBlockSeeSky(spawnPos)) {
+            if (spawnConfig.needsSeeSky.get() && !world.canSeeSkyFromBelowWater(spawnPos)) {
                 return false;
             }
-            if (spawnConfig.needsCantSeeSky.get() && world.canBlockSeeSky(spawnPos)) {
+            if (spawnConfig.needsCantSeeSky.get() && world.canSeeSkyFromBelowWater(spawnPos)) {
                 return false;
             }
 
             List<? extends String> avoidStructures = spawnConfig.avoidStructures.get();
             for (String structureName : avoidStructures) {
-                Structure<?> structure = ForgeRegistries.STRUCTURE_FEATURES.getValue(new ResourceLocation(structureName));
+                StructureFeature<?> structure = ForgeRegistries.STRUCTURE_FEATURES.getValue(new ResourceLocation(structureName));
                 if (structure == null) continue;
-                BlockPos pos = ((ServerWorld) world).getStructureLocation(structure, spawnPos, 3, false);
+                BlockPos pos = ((ServerLevel) world).findNearestMapFeature(structure, spawnPos, 3, false);
                 if (pos == null) continue;
-                double dist = spawnPos.add(0, -spawnPos.getY(), 0).distanceSq(pos);
+                double dist = spawnPos.offset(0, -spawnPos.getY(), 0).distSqr(pos);
                 if (dist < 900) return false;
             }
         }
         return true;
     }
 
-    private static boolean structureNearby(Structure structure, ChunkGenerator chunkGenerator, long seed, SharedSeedRandom chunkRandom, int chunkX, int chunkY) {
-        StructureSeparationSettings structureseparationsettings = chunkGenerator.func_235957_b_().func_236197_a_(structure);
+    private static boolean structureNearby(StructureFeature structure, ChunkGenerator chunkGenerator, long seed, WorldgenRandom chunkRandom, int chunkX, int chunkY) {
+        StructureFeatureConfiguration structureseparationsettings = chunkGenerator.getSettings().getConfig(structure);
         if (structureseparationsettings != null) {
             for (int i = chunkX - 10; i <= chunkX + 10; ++i) {
                 for (int j = chunkY - 10; j <= chunkY + 10; ++j) {
-                    ChunkPos chunkpos = structure.getChunkPosForStructure(structureseparationsettings, seed, chunkRandom, i, j);
+                    ChunkPos chunkpos = structure.getPotentialFeatureChunk(structureseparationsettings, seed, chunkRandom, i, j);
                     if (i == chunkpos.x && j == chunkpos.z) {
                         return true;
                     }
@@ -186,13 +200,13 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
 
     private static boolean isBlockTagAllowed(List<? extends String> allowedBlockTags, Block block) {
         for (String allowedBlockTag : allowedBlockTags) {
-            if (BlockTags.getCollection().getTagByID(new ResourceLocation(allowedBlockTag)).contains(block)) return true;
+            if (BlockTags.getAllTags().getTagOrEmpty(new ResourceLocation(allowedBlockTag)).contains(block)) return true;
         }
         return false;
     }
 
     protected boolean isWithinDistance(BlockPos pos, int distance) {
-        return pos.withinDistance(this.getPosition(), (double)distance);
+        return pos.closerThan(this.blockPosition(), (double)distance);
     }
 
     @Override
@@ -203,54 +217,54 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         frame++;
         if (getAnimation() != NO_ANIMATION) {
             animationTick++;
-            if (world.isRemote && animationTick >= animation.getDuration()) {
+            if (level.isClientSide && animationTick >= animation.getDuration()) {
                 setAnimation(NO_ANIMATION);
             }
         }
-        if (ticksExisted % 4 == 0) bossInfo.update();
-        if (getAttackTarget() != null) {
-            targetDistance = getDistance(getAttackTarget()) - getAttackTarget().getWidth() / 2f;
-            targetAngle = (float) getAngleBetweenEntities(this, getAttackTarget());
+        if (tickCount % 4 == 0) bossInfo.update();
+        if (getTarget() != null) {
+            targetDistance = distanceTo(getTarget()) - getTarget().getBbWidth() / 2f;
+            targetAngle = (float) getAngleBetweenEntities(this, getTarget());
         }
-        willLandSoon = !onGround && world.hasNoCollisions(getBoundingBox().offset(getMotion()));
+        willLandSoon = !onGround && level.noCollision(getBoundingBox().move(getDeltaMovement()));
 
-        if (!world.isRemote && getBossMusic() != null) {
+        if (!level.isClientSide && getBossMusic() != null) {
             if (canPlayMusic()) {
-                this.world.setEntityState(this, MUSIC_PLAY_ID);
+                this.level.broadcastEntityEvent(this, MUSIC_PLAY_ID);
             }
             else {
-                this.world.setEntityState(this, MUSIC_STOP_ID);
+                this.level.broadcastEntityEvent(this, MUSIC_STOP_ID);
             }
         }
     }
 
     protected boolean canPlayMusic() {
-        return !isSilent() && getAttackTarget() instanceof PlayerEntity;
+        return !isSilent() && getTarget() instanceof Player;
     }
 
-    public boolean canPlayerHearMusic(PlayerEntity player) {
+    public boolean canPlayerHearMusic(Player player) {
         return player != null
                 && canAttack(player)
-                && getDistance(player) < 2500;
+                && distanceTo(player) < 2500;
     }
 
     @Override
-    protected void updateAITasks() {
-        super.updateAITasks();
+    protected void customServerAiStep() {
+        super.customServerAiStep();
     }
 
     protected void onAnimationFinish(Animation animation) {}
 
     @Override
-    public void writeSpawnData(PacketBuffer buf) {
+    public void writeSpawnData(FriendlyByteBuf buf) {
         buf.writeInt(ArrayUtils.indexOf(this.getAnimations(), this.getAnimation()));
         buf.writeInt(this.getAnimationTick());
     }
 
     @Override
-    public void readSpawnData(PacketBuffer buf) {
-        prevRotationYaw = rotationYaw;
-        prevRenderYawOffset = renderYawOffset = prevRotationYawHead = rotationYawHead;
+    public void readSpawnData(FriendlyByteBuf buf) {
+        yRotO = yRot;
+        yBodyRotO = yBodyRot = yHeadRotO = yHeadRot;
         int animOrdinal = buf.readInt();
         int animTick = buf.readInt();
         this.setAnimation(animOrdinal == -1 ? IAnimatedEntity.NO_ANIMATION : this.getAnimations()[animOrdinal]);
@@ -258,15 +272,15 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     }
 
     @Override
-    public boolean attackEntityAsMob(Entity entityIn) {
+    public boolean doHurtTarget(Entity entityIn) {
         return this.attackEntityAsMob(entityIn, 1.0F, 1.0f);
     }
 
     @Override
-    public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, ILivingEntityData spawnDataIn, CompoundNBT dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
 //        System.out.println("Spawned " + getName().getString() + " at " + getPosition());
 //        System.out.println("Block " + world.getBlockState(getPosition().down()).toString());
-        return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
 
     public boolean attackEntityAsMob(Entity entityIn, float damageMultiplier, float applyKnockbackMultiplier) {
@@ -277,37 +291,37 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         float f = (float)this.getAttribute(Attributes.ATTACK_DAMAGE).getValue() * damageMultiplier;
         float f1 = (float)this.getAttribute(Attributes.ATTACK_KNOCKBACK).getValue() * applyKnockbackMultiplier;
         if (entityIn instanceof LivingEntity) {
-            f += EnchantmentHelper.getModifierForCreature(this.getHeldItemMainhand(), ((LivingEntity)entityIn).getCreatureAttribute());
-            f1 += (float)EnchantmentHelper.getKnockbackModifier(this);
+            f += EnchantmentHelper.getDamageBonus(this.getMainHandItem(), ((LivingEntity)entityIn).getMobType());
+            f1 += (float)EnchantmentHelper.getKnockbackBonus(this);
         }
 
-        int i = EnchantmentHelper.getFireAspectModifier(this);
+        int i = EnchantmentHelper.getFireAspect(this);
         if (i > 0) {
-            entityIn.setFire(i * 4);
+            entityIn.setSecondsOnFire(i * 4);
         }
 
-        boolean flag = entityIn.attackEntityFrom(DamageSource.causeMobDamage(this), f);
+        boolean flag = entityIn.hurt(DamageSource.mobAttack(this), f);
         if (flag) {
             if (f1 > 0.0F && entityIn instanceof LivingEntity) {
-                ((LivingEntity)entityIn).applyKnockback(f1 * 0.5F, MathHelper.sin(this.rotationYaw * ((float)Math.PI / 180F)), -MathHelper.cos(this.rotationYaw * ((float)Math.PI / 180F)));
-                this.setMotion(this.getMotion().mul(0.6D, 1.0D, 0.6D));
+                ((LivingEntity)entityIn).knockback(f1 * 0.5F, Mth.sin(this.yRot * ((float)Math.PI / 180F)), -Mth.cos(this.yRot * ((float)Math.PI / 180F)));
+                this.setDeltaMovement(this.getDeltaMovement().multiply(0.6D, 1.0D, 0.6D));
             }
 
-            if (entityIn instanceof PlayerEntity) {
-                PlayerEntity playerentity = (PlayerEntity)entityIn;
-                ItemStack itemstack = this.getHeldItemMainhand();
-                ItemStack itemstack1 = playerentity.isHandActive() ? playerentity.getActiveItemStack() : ItemStack.EMPTY;
+            if (entityIn instanceof Player) {
+                Player playerentity = (Player)entityIn;
+                ItemStack itemstack = this.getMainHandItem();
+                ItemStack itemstack1 = playerentity.isUsingItem() ? playerentity.getUseItem() : ItemStack.EMPTY;
                 if (((!itemstack.isEmpty() && itemstack.canDisableShield(itemstack1, playerentity, this)) || canDisableShield) && !itemstack1.isEmpty() && itemstack1.isShield(playerentity)) {
-                    float f2 = 0.25F + (float)EnchantmentHelper.getEfficiencyModifier(this) * 0.05F;
-                    if (this.rand.nextFloat() < f2) {
-                        playerentity.getCooldownTracker().setCooldown(itemstack.getItem(), 100);
-                        this.world.setEntityState(playerentity, (byte)30);
+                    float f2 = 0.25F + (float)EnchantmentHelper.getBlockEfficiency(this) * 0.05F;
+                    if (this.random.nextFloat() < f2) {
+                        playerentity.getCooldowns().addCooldown(itemstack.getItem(), 100);
+                        this.level.broadcastEntityEvent(playerentity, (byte)30);
                     }
                 }
             }
 
-            this.applyEnchantments(this, entityIn);
-            this.setLastAttackedEntity(entityIn);
+            this.doEnchantDamageEffects(this, entityIn);
+            this.setLastHurtMob(entityIn);
         }
 
         return flag;
@@ -318,18 +332,18 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     }
 
     public double getAngleBetweenEntities(Entity first, Entity second) {
-        return Math.atan2(second.getPosZ() - first.getPosZ(), second.getPosX() - first.getPosX()) * (180 / Math.PI) + 90;
+        return Math.atan2(second.getZ() - first.getZ(), second.getX() - first.getX()) * (180 / Math.PI) + 90;
     }
 
-    public List<PlayerEntity> getPlayersNearby(double distanceX, double distanceY, double distanceZ, double radius) {
-        List<Entity> nearbyEntities = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(distanceX, distanceY, distanceZ));
-        List<PlayerEntity> listEntityPlayers = nearbyEntities.stream().filter(entityNeighbor -> entityNeighbor instanceof PlayerEntity && getDistance(entityNeighbor) <= radius + entityNeighbor.getWidth() / 2f).map(entityNeighbor -> (PlayerEntity) entityNeighbor).collect(Collectors.toList());
+    public List<Player> getPlayersNearby(double distanceX, double distanceY, double distanceZ, double radius) {
+        List<Entity> nearbyEntities = level.getEntities(this, getBoundingBox().inflate(distanceX, distanceY, distanceZ));
+        List<Player> listEntityPlayers = nearbyEntities.stream().filter(entityNeighbor -> entityNeighbor instanceof Player && distanceTo(entityNeighbor) <= radius + entityNeighbor.getBbWidth() / 2f).map(entityNeighbor -> (Player) entityNeighbor).collect(Collectors.toList());
         return listEntityPlayers;
     }
 
     public List<LivingEntity> getAttackableEntityLivingBaseNearby(double distanceX, double distanceY, double distanceZ, double radius) {
-        List<Entity> nearbyEntities = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(distanceX, distanceY, distanceZ));
-        List<LivingEntity> listEntityLivingBase = nearbyEntities.stream().filter(entityNeighbor -> entityNeighbor instanceof LivingEntity && ((LivingEntity)entityNeighbor).attackable() && (!(entityNeighbor instanceof PlayerEntity) || !((PlayerEntity)entityNeighbor).isCreative()) && getDistance(entityNeighbor) <= radius + entityNeighbor.getWidth() / 2f).map(entityNeighbor -> (LivingEntity) entityNeighbor).collect(Collectors.toList());
+        List<Entity> nearbyEntities = level.getEntities(this, getBoundingBox().inflate(distanceX, distanceY, distanceZ));
+        List<LivingEntity> listEntityLivingBase = nearbyEntities.stream().filter(entityNeighbor -> entityNeighbor instanceof LivingEntity && ((LivingEntity)entityNeighbor).attackable() && (!(entityNeighbor instanceof Player) || !((Player)entityNeighbor).isCreative()) && distanceTo(entityNeighbor) <= radius + entityNeighbor.getBbWidth() / 2f).map(entityNeighbor -> (LivingEntity) entityNeighbor).collect(Collectors.toList());
         return listEntityLivingBase;
     }
 
@@ -338,11 +352,11 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double r) {
-        return world.getEntitiesWithinAABB(entityClass, getBoundingBox().grow(r, r, r), e -> e != this && getDistance(e) <= r + e.getWidth() / 2f);
+        return level.getEntitiesOfClass(entityClass, getBoundingBox().inflate(r, r, r), e -> e != this && distanceTo(e) <= r + e.getBbWidth() / 2f);
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double dX, double dY, double dZ, double r) {
-        return world.getEntitiesWithinAABB(entityClass, getBoundingBox().grow(dX, dY, dZ), e -> e != this && getDistance(e) <= r + e.getWidth() / 2f && e.getPosY() <= getPosY() + dY);
+        return level.getEntitiesOfClass(entityClass, getBoundingBox().inflate(dX, dY, dZ), e -> e != this && distanceTo(e) <= r + e.getBbWidth() / 2f && e.getY() <= getY() + dY);
     }
 
     @Override
@@ -363,19 +377,19 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
 
         ++this.deathTime;
         if (this.deathTime == deathDuration) {
-            attackingPlayer = killDataAttackingPlayer;
-            recentlyHit = killDataRecentlyHit;
-            if (!world.isRemote() && dropAfterDeathAnim && killDataCause != null) {
-                spawnDrops(killDataCause);
+            lastHurtByPlayer = killDataAttackingPlayer;
+            lastHurtByPlayerTime = killDataRecentlyHit;
+            if (!level.isClientSide() && dropAfterDeathAnim && killDataCause != null) {
+                dropAllDeathLoot(killDataCause);
             }
 
             this.remove(false);
 
             for(int i = 0; i < 20; ++i) {
-                double d0 = this.rand.nextGaussian() * 0.02D;
-                double d1 = this.rand.nextGaussian() * 0.02D;
-                double d2 = this.rand.nextGaussian() * 0.02D;
-                this.world.addParticle(ParticleTypes.POOF, this.getPosXRandom(1.0D), this.getPosYRandom(), this.getPosZRandom(1.0D), d0, d1, d2);
+                double d0 = this.random.nextGaussian() * 0.02D;
+                double d1 = this.random.nextGaussian() * 0.02D;
+                double d2 = this.random.nextGaussian() * 0.02D;
+                this.level.addParticle(ParticleTypes.POOF, this.getRandomX(1.0D), this.getRandomY(), this.getRandomZ(1.0D), d0, d1, d2);
             }
         }
     }
@@ -383,47 +397,47 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     protected void onDeathAIUpdate() {}
 
     @Override
-    protected final void onDeathUpdate() {}
+    protected final void tickDeath() {}
 
     @Override
-    public void onDeath(DamageSource cause) // TODO copy from entityLiving
+    public void die(DamageSource cause) // TODO copy from entityLiving
     {
         if (net.minecraftforge.common.ForgeHooks.onLivingDeath(this, cause)) return;
         if (!this.dead) {
-            Entity entity = cause.getTrueSource();
-            LivingEntity livingentity = this.getAttackingEntity();
-            if (this.scoreValue >= 0 && livingentity != null) {
-                livingentity.awardKillScore(this, this.scoreValue, cause);
+            Entity entity = cause.getEntity();
+            LivingEntity livingentity = this.getKillCredit();
+            if (this.deathScore >= 0 && livingentity != null) {
+                livingentity.awardKillScore(this, this.deathScore, cause);
             }
 
             if (this.isSleeping()) {
-                this.wakeUp();
+                this.stopSleeping();
             }
 
             this.dead = true;
-            this.getCombatTracker().reset();
-            if (this.world instanceof ServerWorld) {
+            this.getCombatTracker().recheckStatus();
+            if (this.level instanceof ServerLevel) {
                 if (entity != null) {
-                    entity.onKillEntity((ServerWorld)this.world, this);
+                    entity.killed((ServerLevel)this.level, this);
                 }
 
                 if (!dropAfterDeathAnim)
-                    this.spawnDrops(cause);
+                    this.dropAllDeathLoot(cause);
                 this.createWitherRose(livingentity);
             }
             killDataCause = cause;
-            killDataRecentlyHit = this.recentlyHit;
-            killDataAttackingPlayer = attackingPlayer;
+            killDataRecentlyHit = this.lastHurtByPlayerTime;
+            killDataAttackingPlayer = lastHurtByPlayer;
 
-            this.world.setEntityState(this, (byte)3);
+            this.level.broadcastEntityEvent(this, (byte)3);
             this.setPose(Pose.DYING);
             bossInfo.update();
         }
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource source, float damage) {
-        boolean attack = super.attackEntityFrom(source, damage);
+    public boolean hurt(DamageSource source, float damage) {
+        boolean attack = super.hurt(source, damage);
         if (attack) {
             if (getHealth() > 0.0F && (getAnimation() == NO_ANIMATION || hurtInterruptsAnimation) && playsHurtAnimation) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, getHurtAnimation());
@@ -440,7 +454,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     }
 
     @Override
-    public void handleStatusUpdate(byte id) {
+    public void handleEntityEvent(byte id) {
         if (id >= START_IA_HEALTH_UPDATE_ID && id - START_IA_HEALTH_UPDATE_ID < intermittentAnimations.size()) {
             intermittentAnimations.get(id - START_IA_HEALTH_UPDATE_ID).start();
         }
@@ -450,7 +464,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         else if (id == MUSIC_STOP_ID) {
             BossMusicPlayer.stopBossMusic(this);
         }
-        else super.handleStatusUpdate(id);
+        else super.handleEntityEvent(id);
     }
 
     @Override
@@ -461,16 +475,16 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     public void circleEntity(Entity target, float radius, float speed, boolean direction, int circleFrame, float offset, float moveSpeedMultiplier) {
         int directionInt = direction ? 1 : -1;
         double t = directionInt * circleFrame * 0.5 * speed / radius + offset;
-        Vector3d movePos = target.getPositionVec().add(radius * Math.cos(t), 0, radius * Math.sin(t));
-        this.getNavigator().tryMoveToXYZ(movePos.getX(), movePos.getY(), movePos.getZ(), speed * moveSpeedMultiplier);
+        Vec3 movePos = target.position().add(radius * Math.cos(t), 0, radius * Math.sin(t));
+        this.getNavigation().moveTo(movePos.x(), movePos.y(), movePos.z(), speed * moveSpeedMultiplier);
     }
 
     protected void repelEntities(float x, float y, float z, float radius) {
         List<LivingEntity> nearbyEntities = getEntityLivingBaseNearby(x, y, z, radius);
         for (Entity entity : nearbyEntities) {
-            if (entity.canBeCollidedWith() && !entity.noClip) {
+            if (entity.isPickable() && !entity.noPhysics) {
                 double angle = (getAngleBetweenEntities(this, entity) + 90) * Math.PI / 180;
-                entity.setMotion(-0.1 * Math.cos(angle), entity.getMotion().y, -0.1 * Math.sin(angle));
+                entity.setDeltaMovement(-0.1 * Math.cos(angle), entity.getDeltaMovement().y, -0.1 * Math.sin(angle));
             }
         }
     }
@@ -504,27 +518,27 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     public abstract Animation getHurtAnimation();
 
     @Override
-    public void addTrackingPlayer(ServerPlayerEntity player) {
-        super.addTrackingPlayer(player);
+    public void startSeenByPlayer(ServerPlayer player) {
+        super.startSeenByPlayer(player);
         this.bossInfo.addPlayer(player);
     }
 
     @Override
-    public void removeTrackingPlayer(ServerPlayerEntity player) {
-        super.removeTrackingPlayer(player);
+    public void stopSeenByPlayer(ServerPlayer player) {
+        super.stopSeenByPlayer(player);
         this.bossInfo.removePlayer(player);
     }
 
     @Override
-    public void read(CompoundNBT compound) {
-        super.read(compound);
+    public void load(CompoundTag compound) {
+        super.load(compound);
         if (this.hasCustomName()) {
             this.bossInfo.setName(this.getDisplayName());
         }
     }
 
     @Override
-    public void setCustomName(ITextComponent name) {
+    public void setCustomName(Component name) {
         super.setCustomName(name);
         this.bossInfo.setName(this.getDisplayName());
     }
@@ -533,12 +547,12 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         return false;
     }
 
-    protected BossInfo.Color bossBarColor() {
-        return BossInfo.Color.PURPLE;
+    protected BossEvent.BossBarColor bossBarColor() {
+        return BossEvent.BossBarColor.PURPLE;
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void setSocketPosArray(int index, Vector3d pos) {
+    public void setSocketPosArray(int index, Vec3 pos) {
         if (socketPosArray != null && socketPosArray.length > index) {
             socketPosArray[index] = pos;
         }
@@ -550,15 +564,15 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
 
     // TODO: Copied from parent classes
     @Override
-    public void applyEntityCollision(Entity entityIn) {
+    public void push(Entity entityIn) {
         if (!this.isSleeping()) {
-            if (!this.isRidingSameEntity(entityIn)) {
-                if (!entityIn.noClip && !this.noClip) {
-                    double d0 = entityIn.getPosX() - this.getPosX();
-                    double d1 = entityIn.getPosZ() - this.getPosZ();
-                    double d2 = MathHelper.absMax(d0, d1);
+            if (!this.isPassengerOfSameVehicle(entityIn)) {
+                if (!entityIn.noPhysics && !this.noPhysics) {
+                    double d0 = entityIn.getX() - this.getX();
+                    double d1 = entityIn.getZ() - this.getZ();
+                    double d2 = Mth.absMax(d0, d1);
                     if (d2 >= (double)0.01F) {
-                        d2 = (double)MathHelper.sqrt(d2);
+                        d2 = (double)Mth.sqrt(d2);
                         d0 = d0 / d2;
                         d1 = d1 / d2;
                         double d3 = 1.0D / d2;
@@ -570,16 +584,16 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
                         d1 = d1 * d3;
                         d0 = d0 * (double)0.05F;
                         d1 = d1 * (double)0.05F;
-                        d0 = d0 * (double)(1.0F - this.entityCollisionReduction);
-                        d1 = d1 * (double)(1.0F - this.entityCollisionReduction);
-                        if (!this.isBeingRidden()) {
+                        d0 = d0 * (double)(1.0F - this.pushthrough);
+                        d1 = d1 * (double)(1.0F - this.pushthrough);
+                        if (!this.isVehicle()) {
                             if (canBePushedByEntity(entityIn)) {
-                                this.addVelocity(-d0, 0.0D, -d1);
+                                this.push(-d0, 0.0D, -d1);
                             }
                         }
 
-                        if (!entityIn.isBeingRidden()) {
-                            entityIn.addVelocity(d0, 0.0D, d1);
+                        if (!entityIn.isVehicle()) {
+                            entityIn.push(d0, 0.0D, d1);
                         }
                     }
 

@@ -3,28 +3,28 @@ package com.bobmowzie.mowziesmobs.client.render.entity.layer;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelWroughtnaut;
 import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.entity.IEntityRenderer;
-import net.minecraft.client.renderer.entity.LivingRenderer;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.client.renderer.entity.model.EntityModel;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.model.EntityModel;
 
-public class WroughtnautEyesLayer<T extends EntityWroughtnaut> extends LayerRenderer<T, ModelWroughtnaut<T>> {
+public class WroughtnautEyesLayer<T extends EntityWroughtnaut> extends RenderLayer<T, ModelWroughtnaut<T>> {
     private final EntityModel<T> model = new ModelWroughtnaut<>(true);
 
-    public WroughtnautEyesLayer(IEntityRenderer<T, ModelWroughtnaut<T>> renderer) {
+    public WroughtnautEyesLayer(RenderLayerParent<T, ModelWroughtnaut<T>> renderer) {
         super(renderer);
     }
 
-    public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         if (!entitylivingbaseIn.isInvisible()) {
-            this.getEntityModel().copyModelAttributesTo(this.model);
-            this.model.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks);
-            this.model.setRotationAngles(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-            IVertexBuilder ivertexbuilder = bufferIn.getBuffer(MMRenderType.getEyes(this.getEntityTexture(entitylivingbaseIn)));
-            this.model.render(matrixStackIn, ivertexbuilder, packedLightIn, LivingRenderer.getPackedOverlay(entitylivingbaseIn, 0.0F), 1.0F, 1.0F, 1.0F, 1.0F);
+            this.getParentModel().copyPropertiesTo(this.model);
+            this.model.prepareMobModel(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks);
+            this.model.setupAnim(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+            VertexConsumer ivertexbuilder = bufferIn.getBuffer(MMRenderType.eyes(this.getTextureLocation(entitylivingbaseIn)));
+            this.model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0.0F), 1.0F, 1.0F, 1.0F, 1.0F);
         }
     }
 }

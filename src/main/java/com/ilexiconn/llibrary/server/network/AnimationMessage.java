@@ -2,7 +2,7 @@ package com.ilexiconn.llibrary.server.network;
 
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
@@ -21,12 +21,12 @@ public class AnimationMessage {
         this.index = index;
     }
 
-    public static void serialize(final AnimationMessage message, final PacketBuffer buf) {
+    public static void serialize(final AnimationMessage message, final FriendlyByteBuf buf) {
         buf.writeVarInt(message.entityID);
         buf.writeVarInt(message.index);
     }
 
-    public static AnimationMessage deserialize(final PacketBuffer buf) {
+    public static AnimationMessage deserialize(final FriendlyByteBuf buf) {
         final AnimationMessage message = new AnimationMessage();
         message.entityID = buf.readVarInt();
         message.index = buf.readVarInt();
@@ -38,7 +38,7 @@ public class AnimationMessage {
         public void accept(final AnimationMessage message, final Supplier<NetworkEvent.Context> contextSupplier) {
             final NetworkEvent.Context context = contextSupplier.get();
             context.enqueueWork(() -> {
-                IAnimatedEntity entity = (IAnimatedEntity) Minecraft.getInstance().world.getEntityByID(message.entityID);
+                IAnimatedEntity entity = (IAnimatedEntity) Minecraft.getInstance().level.getEntity(message.entityID);
                 if (entity != null) {
                     if (message.index == -1) {
                         entity.setAnimation(IAnimatedEntity.NO_ANIMATION);

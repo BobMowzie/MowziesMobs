@@ -1,23 +1,23 @@
 package com.bobmowzie.mowziesmobs.server.potion;
 
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FenceBlock;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.potion.EffectType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.FenceBlock;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.effect.MobEffectCategory;
 
 public class EffectGeomancy extends MowzieEffect {
     public EffectGeomancy() {
-        super(EffectType.BENEFICIAL, 0xCDFF78);
+        super(MobEffectCategory.BENEFICIAL, 0xCDFF78);
     }
 
     public static boolean isBlockDiggable(BlockState blockState) {
         Material mat = blockState.getMaterial();
-        if (mat != Material.ORGANIC
-                && mat != Material.EARTH
-                && mat != Material.ROCK
+        if (mat != Material.GRASS
+                && mat != Material.DIRT
+                && mat != Material.STONE
                 && mat != Material.CLAY
                 && mat != Material.SAND
         ) {
@@ -38,6 +38,6 @@ public class EffectGeomancy extends MowzieEffect {
     }
 
     public static boolean canUse(LivingEntity entity) {
-        return entity.getHeldItemMainhand().isEmpty() && entity.isPotionActive(EffectHandler.GEOMANCY);
+        return entity.getMainHandItem().isEmpty() && entity.hasEffect(EffectHandler.GEOMANCY);
     }
 }

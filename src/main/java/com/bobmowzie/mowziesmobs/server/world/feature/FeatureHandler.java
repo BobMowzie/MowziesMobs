@@ -7,21 +7,21 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.Codec;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.registry.DynamicRegistries;
 import net.minecraft.util.registry.MutableRegistry;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.WorldGenRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.world.DimensionType;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.FlatChunkGenerator;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.FlatLevelSource;
 import net.minecraft.world.gen.feature.*;
-import net.minecraft.world.gen.feature.structure.IStructurePieceType;
-import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.settings.DimensionStructuresSettings;
-import net.minecraft.world.gen.settings.StructureSeparationSettings;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.levelgen.feature.StructurePieceType;
+import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.StructureSettings;
+import net.minecraft.world.level.levelgen.feature.configurations.StructureFeatureConfiguration;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -36,55 +36,57 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 // Adapted from TelepathicGrunt's structure tutorial repo: https://github.com/TelepathicGrunt/StructureTutorialMod
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+
 public class FeatureHandler {
-    public static final DeferredRegister<Structure<?>> REG = DeferredRegister.create(ForgeRegistries.STRUCTURE_FEATURES, MowziesMobs.MODID);
+    public static final DeferredRegister<StructureFeature<?>> REG = DeferredRegister.create(ForgeRegistries.STRUCTURE_FEATURES, MowziesMobs.MODID);
 
-    public static RegistryObject<Structure<NoFeatureConfig>> WROUGHTNAUT_CHAMBER = registerStructure("wrought_chamber", () -> (new WroughtnautChamberStructure(NoFeatureConfig.CODEC)));
-    public static IStructurePieceType WROUGHTNAUT_CHAMBER_PIECE = IStructurePieceType.register(WroughtnautChamberPieces.Piece::new, MowziesMobs.MODID + "wrought_chamber_template");
+    public static RegistryObject<StructureFeature<NoneFeatureConfiguration>> WROUGHTNAUT_CHAMBER = registerStructure("wrought_chamber", () -> (new WroughtnautChamberStructure(NoneFeatureConfiguration.CODEC)));
+    public static StructurePieceType WROUGHTNAUT_CHAMBER_PIECE = StructurePieceType.setPieceId(WroughtnautChamberPieces.Piece::new, MowziesMobs.MODID + "wrought_chamber_template");
 
-    public static RegistryObject<Structure<NoFeatureConfig>> BARAKOA_VILLAGE = registerStructure("barakoa_village", () -> (new BarakoaVillageStructure(NoFeatureConfig.CODEC)));
-    public static IStructurePieceType BARAKOA_VILLAGE_PIECE = IStructurePieceType.register(BarakoaVillagePieces.Piece::new, MowziesMobs.MODID + "barakoa_village_template");
-    public static IStructurePieceType BARAKOA_VILLAGE_HOUSE = IStructurePieceType.register(BarakoaVillagePieces.HousePiece::new, MowziesMobs.MODID + "barakoa_village_house");
-    public static IStructurePieceType BARAKOA_VILLAGE_FIREPIT = IStructurePieceType.register(BarakoaVillagePieces.FirepitPiece::new, MowziesMobs.MODID + "barakoa_village_firepit");
-    public static IStructurePieceType BARAKOA_VILLAGE_STAKE = IStructurePieceType.register(BarakoaVillagePieces.StakePiece::new, MowziesMobs.MODID + "barakoa_village_stake");
-    public static IStructurePieceType BARAKOA_VILLAGE_ALTAR = IStructurePieceType.register(BarakoaVillagePieces.AltarPiece::new, MowziesMobs.MODID + "barakoa_village_altar");
+    public static RegistryObject<StructureFeature<NoneFeatureConfiguration>> BARAKOA_VILLAGE = registerStructure("barakoa_village", () -> (new BarakoaVillageStructure(NoneFeatureConfiguration.CODEC)));
+    public static StructurePieceType BARAKOA_VILLAGE_PIECE = StructurePieceType.setPieceId(BarakoaVillagePieces.Piece::new, MowziesMobs.MODID + "barakoa_village_template");
+    public static StructurePieceType BARAKOA_VILLAGE_HOUSE = StructurePieceType.setPieceId(BarakoaVillagePieces.HousePiece::new, MowziesMobs.MODID + "barakoa_village_house");
+    public static StructurePieceType BARAKOA_VILLAGE_FIREPIT = StructurePieceType.setPieceId(BarakoaVillagePieces.FirepitPiece::new, MowziesMobs.MODID + "barakoa_village_firepit");
+    public static StructurePieceType BARAKOA_VILLAGE_STAKE = StructurePieceType.setPieceId(BarakoaVillagePieces.StakePiece::new, MowziesMobs.MODID + "barakoa_village_stake");
+    public static StructurePieceType BARAKOA_VILLAGE_ALTAR = StructurePieceType.setPieceId(BarakoaVillagePieces.AltarPiece::new, MowziesMobs.MODID + "barakoa_village_altar");
 
-    public static RegistryObject<Structure<NoFeatureConfig>> FROSTMAW = registerStructure("frostmaw_spawn", () -> (new FrostmawStructure(NoFeatureConfig.CODEC)));
-    public static IStructurePieceType FROSTMAW_PIECE = IStructurePieceType.register(FrostmawPieces.Piece::new, MowziesMobs.MODID + "frostmaw_template");
+    public static RegistryObject<StructureFeature<NoneFeatureConfiguration>> FROSTMAW = registerStructure("frostmaw_spawn", () -> (new FrostmawStructure(NoneFeatureConfiguration.CODEC)));
+    public static StructurePieceType FROSTMAW_PIECE = StructurePieceType.setPieceId(FrostmawPieces.Piece::new, MowziesMobs.MODID + "frostmaw_template");
 
-    private static <T extends Structure<?>> RegistryObject<T> registerStructure(String name, Supplier<T> structure) {
+    private static <T extends StructureFeature<?>> RegistryObject<T> registerStructure(String name, Supplier<T> structure) {
         return REG.register(name, structure);
     }
 
     public static void setupStructures() {
-        setupMapSpacingAndLand(WROUGHTNAUT_CHAMBER.get(), new StructureSeparationSettings(ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig.generationDistance.get(), ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig.generationSeparation.get(),123555789), false);
-        setupMapSpacingAndLand(BARAKOA_VILLAGE.get(), new StructureSeparationSettings(ConfigHandler.COMMON.MOBS.BARAKO.generationConfig.generationDistance.get(), ConfigHandler.COMMON.MOBS.BARAKO.generationConfig.generationSeparation.get(),123444789), false);
-        setupMapSpacingAndLand(FROSTMAW.get(), new StructureSeparationSettings(ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig.generationDistance.get(), ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig.generationSeparation.get(),1237654789), true);
+        setupMapSpacingAndLand(WROUGHTNAUT_CHAMBER.get(), new StructureFeatureConfiguration(ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig.generationDistance.get(), ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig.generationSeparation.get(),123555789), false);
+        setupMapSpacingAndLand(BARAKOA_VILLAGE.get(), new StructureFeatureConfiguration(ConfigHandler.COMMON.MOBS.BARAKO.generationConfig.generationDistance.get(), ConfigHandler.COMMON.MOBS.BARAKO.generationConfig.generationSeparation.get(),123444789), false);
+        setupMapSpacingAndLand(FROSTMAW.get(), new StructureFeatureConfiguration(ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig.generationDistance.get(), ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig.generationSeparation.get(),1237654789), true);
     }
 
-    public static <F extends Structure<?>> void setupMapSpacingAndLand(F structure, StructureSeparationSettings structureSeparationSettings, boolean transformSurroundingLand) {
-        Structure.NAME_STRUCTURE_BIMAP.put(structure.getRegistryName().toString(), structure);
+    public static <F extends StructureFeature<?>> void setupMapSpacingAndLand(F structure, StructureFeatureConfiguration structureSeparationSettings, boolean transformSurroundingLand) {
+        StructureFeature.STRUCTURES_REGISTRY.put(structure.getRegistryName().toString(), structure);
 
         if (transformSurroundingLand) {
-            Structure.field_236384_t_ =
-                    ImmutableList.<Structure<?>>builder()
-                            .addAll(Structure.field_236384_t_)
+            StructureFeature.NOISE_AFFECTING_FEATURES =
+                    ImmutableList.<StructureFeature<?>>builder()
+                            .addAll(StructureFeature.NOISE_AFFECTING_FEATURES)
                             .add(structure)
                             .build();
         }
 
-        DimensionStructuresSettings.field_236191_b_ =
-                ImmutableMap.<Structure<?>, StructureSeparationSettings>builder()
-                        .putAll(DimensionStructuresSettings.field_236191_b_)
+        StructureSettings.DEFAULTS =
+                ImmutableMap.<StructureFeature<?>, StructureFeatureConfiguration>builder()
+                        .putAll(StructureSettings.DEFAULTS)
                         .put(structure, structureSeparationSettings)
                         .build();
 
-        WorldGenRegistries.NOISE_SETTINGS.getEntries().forEach(settings -> {
-            Map<Structure<?>, StructureSeparationSettings> structureMap = settings.getValue().getStructures().func_236195_a_();
+        BuiltinRegistries.NOISE_GENERATOR_SETTINGS.entrySet().forEach(settings -> {
+            Map<StructureFeature<?>, StructureFeatureConfiguration> structureMap = settings.getValue().structureSettings().structureConfig();
             if (structureMap instanceof ImmutableMap) {
-                Map<Structure<?>, StructureSeparationSettings> tempMap = new HashMap<>(structureMap);
+                Map<StructureFeature<?>, StructureFeatureConfiguration> tempMap = new HashMap<>(structureMap);
                 tempMap.put(structure, structureSeparationSettings);
-                settings.getValue().getStructures().field_236193_d_ = tempMap;
+                settings.getValue().structureSettings().structureConfig = tempMap;
             }
             else {
                 structureMap.put(structure, structureSeparationSettings);
@@ -94,38 +96,38 @@ public class FeatureHandler {
 
     private static Method GETCODEC_METHOD;
     public static void addDimensionalSpacing(final WorldEvent.Load event) {
-        if(event.getWorld() instanceof ServerWorld){
-            ServerWorld serverWorld = (ServerWorld)event.getWorld();
+        if(event.getWorld() instanceof ServerLevel){
+            ServerLevel serverWorld = (ServerLevel)event.getWorld();
 
             // Skip Terraforged worlds
             try {
-                if(GETCODEC_METHOD == null) GETCODEC_METHOD = ObfuscationReflectionHelper.findMethod(ChunkGenerator.class, "func_230347_a_");
-                ResourceLocation cgRL = Registry.CHUNK_GENERATOR_CODEC.getKey((Codec<? extends ChunkGenerator>) GETCODEC_METHOD.invoke(serverWorld.getChunkProvider().generator));
+                if(GETCODEC_METHOD == null) GETCODEC_METHOD = ObfuscationReflectionHelper.findMethod(ChunkGenerator.class, "codec");
+                ResourceLocation cgRL = Registry.CHUNK_GENERATOR.getKey((Codec<? extends ChunkGenerator>) GETCODEC_METHOD.invoke(serverWorld.getChunkSource().generator));
                 if(cgRL != null && cgRL.getNamespace().equals("terraforged")) return;
             }
             catch(Exception e){
-                MowziesMobs.LOGGER.error("Was unable to check if " + serverWorld.getDimensionKey().getLocation() + " is using Terraforged's ChunkGenerator.");
+                MowziesMobs.LOGGER.error("Was unable to check if " + serverWorld.dimension().location() + " is using Terraforged's ChunkGenerator.");
             }
 
-            if(serverWorld.getChunkProvider().getChunkGenerator() instanceof FlatChunkGenerator &&
-                    serverWorld.getDimensionKey().equals(World.OVERWORLD)){
+            if(serverWorld.getChunkSource().getGenerator() instanceof FlatLevelSource &&
+                    serverWorld.dimension().equals(Level.OVERWORLD)){
                 return;
             }
 
             // Put structure spacing
-            Map<Structure<?>, StructureSeparationSettings> tempMap = new HashMap<>(serverWorld.getChunkProvider().generator.func_235957_b_().func_236195_a_());
+            Map<StructureFeature<?>, StructureFeatureConfiguration> tempMap = new HashMap<>(serverWorld.getChunkSource().generator.getSettings().structureConfig());
             addStructureSpacing(WROUGHTNAUT_CHAMBER.get(), tempMap, serverWorld, ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig);
             addStructureSpacing(BARAKOA_VILLAGE.get(), tempMap, serverWorld, ConfigHandler.COMMON.MOBS.BARAKO.generationConfig);
             addStructureSpacing(FROSTMAW.get(), tempMap, serverWorld, ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig);
-            serverWorld.getChunkProvider().generator.func_235957_b_().field_236193_d_ = tempMap;
+            serverWorld.getChunkSource().generator.getSettings().structureConfig = tempMap;
         }
     }
 
-    private static void addStructureSpacing(Structure<NoFeatureConfig> structure, Map<Structure<?>, StructureSeparationSettings> tempMap, ServerWorld world, ConfigHandler.GenerationConfig generationConfig) {
+    private static void addStructureSpacing(StructureFeature<NoneFeatureConfiguration> structure, Map<StructureFeature<?>, StructureFeatureConfiguration> tempMap, ServerLevel world, ConfigHandler.GenerationConfig generationConfig) {
         List<? extends String> dimensionNames = generationConfig.dimensions.get();
-        ResourceLocation currDimensionName = world.getDimensionKey().getLocation();
+        ResourceLocation currDimensionName = world.dimension().location();
         if (dimensionNames.contains(currDimensionName.toString())) {
-            tempMap.putIfAbsent(structure, DimensionStructuresSettings.field_236191_b_.get(structure));
+            tempMap.putIfAbsent(structure, StructureSettings.DEFAULTS.get(structure));
         }
         else {
             tempMap.remove(structure);

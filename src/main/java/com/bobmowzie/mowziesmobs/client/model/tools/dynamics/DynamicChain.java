@@ -1,53 +1,53 @@
 package com.bobmowzie.mowziesmobs.client.model.tools.dynamics;
 
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Created by BobMowzie on 8/30/2018.
  */
 public class DynamicChain {
-    private Vector3d[] p;
-    private Vector3d[] v;
-    private Vector3d[] a;
-    private Vector3d[] F;
+    private Vec3[] p;
+    private Vec3[] v;
+    private Vec3[] a;
+    private Vec3[] F;
     private float[] m;
     private float[] d;
-    private Vector3d[] T;
-    private Vector3d[] r;
-    private Vector3d[] rv;
-    private Vector3d[] ra;
+    private Vec3[] T;
+    private Vec3[] r;
+    private Vec3[] rv;
+    private Vec3[] ra;
     private final Entity entity;
-    private Vector3d prevP;
-    private Vector3d prevV;
+    private Vec3 prevP;
+    private Vec3 prevV;
 
-    private Vector3d[] pOrig;
+    private Vec3[] pOrig;
     private int prevUpdateTick;
 
     public DynamicChain(Entity entity) {
         this.entity = entity;
-        p = new Vector3d[0];
-        v = new Vector3d[0];
-        a = new Vector3d[0];
-        F = new Vector3d[0];
+        p = new Vec3[0];
+        v = new Vec3[0];
+        a = new Vec3[0];
+        F = new Vec3[0];
         m = new float[0];
         d = new float[0];
-        T = new Vector3d[0];
-        ra = new Vector3d[0];
-        rv = new Vector3d[0];
-        r = new Vector3d[0];
-        pOrig = new Vector3d[0];
+        T = new Vec3[0];
+        ra = new Vec3[0];
+        rv = new Vec3[0];
+        r = new Vec3[0];
+        pOrig = new Vec3[0];
         prevUpdateTick = -1;
     }
 
     public void updateBendConstraint(float gravityAmount, float stiffness, float stiffnessFalloff, float damping, int numUpdates, boolean useFloor) {
-        Vector3d[] prevPos = new Vector3d[p.length];
-        Vector3d[] prevVel = new Vector3d[v.length];
+        Vec3[] prevPos = new Vec3[p.length];
+        Vec3[] prevVel = new Vec3[v.length];
         for (int i = 0; i < p.length; i++) {
             prevPos[i] = p[i];
             prevVel[i] = v[i];
@@ -55,14 +55,14 @@ public class DynamicChain {
         for (int j = 0; j < numUpdates; j++) {
             for (int i = 0; i < p.length - 1; i++) {
                 if (i == 0) {
-                    Vector3d root = pOrig[i]; //origModelRenderers[i].getWorldPos(entity, LLibrary.PROXY.getPartialTicks());
+                    Vec3 root = pOrig[i]; //origModelRenderers[i].getWorldPos(entity, LLibrary.PROXY.getPartialTicks());
 
                     p[i] = root;
                     v[i] = p[i].subtract(prevPos[i]);
                     a[i] = v[i].subtract(prevVel[i]);
                 }
 
-                Vector3d target = angleBetween(
+                Vec3 target = angleBetween(
                         pOrig[i], //origModelRenderers[i].getWorldPos(entity, LLibrary.PROXY.getPartialTicks()),
                         pOrig[i + 1]); //origModelRenderers[i + 1].getWorldPos(entity, LLibrary.PROXY.getPartialTicks()));
                 //float gravity = 1 - (float) Math.pow(1 - gravityAmount, (i + 1));
@@ -72,12 +72,12 @@ public class DynamicChain {
 
                 T[i] = wrapAngles(r[i].subtract(target)).scale(-stiffness/(Math.pow(i + 1, stiffnessFalloff)));
                 double down = Math.PI/2;
-                Vector3d gravityVec = wrapAngles(new Vector3d(
+                Vec3 gravityVec = wrapAngles(new Vec3(
                         0,
                         gravityAmount * d[i+1] * m[i+1] * (Math.sin(down - r[i].y + down)),
                         0));
-                Vector3d floorVec = new Vector3d(0, 1 * d[i+1] * m[i+1] * (Math.sin(Math.PI/2 - r[i].y + Math.PI/2)), 0);
-                if (useFloor && entity.isOnGround() && p[i+1].y < entity.getPosY()) {
+                Vec3 floorVec = new Vec3(0, 1 * d[i+1] * m[i+1] * (Math.sin(Math.PI/2 - r[i].y + Math.PI/2)), 0);
+                if (useFloor && entity.isOnGround() && p[i+1].y < entity.getY()) {
                     T[i] = T[i].subtract(floorVec);
                 }
                 T[i] = wrapAngles(T[i].add(gravityVec));
@@ -101,17 +101,17 @@ public class DynamicChain {
                 v[i] = v[i].add(a[i].scale(1/((float)numUpdates)));
                 p[i] = p[i].add(v[i].scale(1/((float)numUpdates)));
 
-                Vector3d disp;
+                Vec3 disp;
                 if (i == 0) {
-                    Vector3d root = pOrig[i]; //origModelRenderers[i].getWorldPos(entity, LLibrary.PROXY.getPartialTicks());
+                    Vec3 root = pOrig[i]; //origModelRenderers[i].getWorldPos(entity, LLibrary.PROXY.getPartialTicks());
                     disp = p[i].subtract(root);
                 } else {
                     disp = p[i].subtract(p[i - 1]);
                 }
                 disp = disp.normalize().scale(disp.length() - d[i]);
-                Vector3d damp = v[i].scale(dampAmount);
-                Vector3d gravity = new Vector3d(0, -gravityAmount, 0);
-                Vector3d attract = pOrig[0].subtract(p[i]); //origModelRenderers[i].getWorldPos(entity, LLibrary.PROXY.getPartialTicks()).subtract(p[i]);
+                Vec3 damp = v[i].scale(dampAmount);
+                Vec3 gravity = new Vec3(0, -gravityAmount, 0);
+                Vec3 attract = pOrig[0].subtract(p[i]); //origModelRenderers[i].getWorldPos(entity, LLibrary.PROXY.getPartialTicks()).subtract(p[i]);
                 F[i] = disp.scale(-stiffness * (disp.length())).add(gravity.scale(m[i])).subtract(damp);
                 if (i == 0 || doAttract) {
                     F[i] = F[i].add(attract.scale(1 / (1 + i * i * attractFalloff)));
@@ -128,27 +128,27 @@ public class DynamicChain {
     }
 
     public void setChain(AdvancedModelRenderer[] chainOrig, AdvancedModelRenderer[] chainDynamic) {
-        p = new Vector3d[chainOrig.length];
-        v = new Vector3d[chainOrig.length];
-        a = new Vector3d[chainOrig.length];
-        F = new Vector3d[chainOrig.length];
+        p = new Vec3[chainOrig.length];
+        v = new Vec3[chainOrig.length];
+        a = new Vec3[chainOrig.length];
+        F = new Vec3[chainOrig.length];
         m = new float[chainOrig.length];
         d = new float[chainOrig.length];
-        T = new Vector3d[chainOrig.length];
-        r = new Vector3d[chainOrig.length];
-        rv = new Vector3d[chainOrig.length];
-        ra = new Vector3d[chainOrig.length];
-        pOrig = new Vector3d[chainOrig.length];
+        T = new Vec3[chainOrig.length];
+        r = new Vec3[chainOrig.length];
+        rv = new Vec3[chainOrig.length];
+        ra = new Vec3[chainOrig.length];
+        pOrig = new Vec3[chainOrig.length];
         for (int i = 0; i < chainOrig.length; i++) {
             pOrig[i] = chainOrig[i].getWorldPos(entity, 0);
             p[i] = pOrig[i];
-            v[i] = new Vector3d(0, 0, 0);
-            a[i] = new Vector3d(0, 0, 0);
-            F[i] = new Vector3d(0, 0, 0);
-            T[i] = new Vector3d(0, 0, 0);
-            r[i] = new Vector3d(0, 0, 0);
-            rv[i] = new Vector3d(0, 0, 0);
-            ra[i] = new Vector3d(0, 0, 0);
+            v[i] = new Vec3(0, 0, 0);
+            a[i] = new Vec3(0, 0, 0);
+            F[i] = new Vec3(0, 0, 0);
+            T[i] = new Vec3(0, 0, 0);
+            r[i] = new Vec3(0, 0, 0);
+            rv[i] = new Vec3(0, 0, 0);
+            ra[i] = new Vec3(0, 0, 0);
             m[i] = 0.5f + 0.5f/(i+1);
             if (i > 0) {
                 d[i] = (float)p[i].distanceTo(p[i-1]);
@@ -156,7 +156,7 @@ public class DynamicChain {
             else {
                 d[i] = 1f;
             }
-            chainOrig[i].showModel = false;
+            chainOrig[i].visible = false;
         }
 
         for (int i = 0; i < chainOrig.length - 1; i++) {
@@ -178,36 +178,36 @@ public class DynamicChain {
             setChain(chainOrig, chainDynamic);
         }
 
-        if (prevUpdateTick != entity.ticksExisted) {
+        if (prevUpdateTick != entity.tickCount) {
             for (int i = 0; i < chainOrig.length; i++) {
                 pOrig[i] = chainOrig[i].getWorldPos(entity, delta);
             }
 
             updateBendConstraint(gravityAmount, stiffness, stiffnessFalloff, damping, numUpdates, useFloor);
 
-            prevUpdateTick = entity.ticksExisted;
+            prevUpdateTick = entity.tickCount;
         }
 
         if (chainDynamic == null) return;
-        if (Minecraft.getInstance().isGamePaused()) delta = 0.5f;
+        if (Minecraft.getInstance().isPaused()) delta = 0.5f;
         for (int i = chainDynamic.length - 1; i >= 0; i--) {
             if (chainDynamic[i] == null) return;
-            Vector3d renderPos = p[i].add(v[i].scale(delta)).add(a[i].scale(0.5 * delta * delta));
+            Vec3 renderPos = p[i].add(v[i].scale(delta)).add(a[i].scale(0.5 * delta * delta));
             chainDynamic[i].setWorldPos(entity, renderPos, delta);
 
             if (i < chainDynamic.length - 1) {
-                Vector3d p1 = new Vector3d(chainDynamic[i].rotationPointX, chainDynamic[i].rotationPointY, chainDynamic[i].rotationPointZ);
-                Vector3d p2 = new Vector3d(chainDynamic[i+1].rotationPointX, chainDynamic[i+1].rotationPointY, chainDynamic[i+1].rotationPointZ);
-                Vector3d diff = p2.subtract(p1);
+                Vec3 p1 = new Vec3(chainDynamic[i].x, chainDynamic[i].y, chainDynamic[i].z);
+                Vec3 p2 = new Vec3(chainDynamic[i+1].x, chainDynamic[i+1].y, chainDynamic[i+1].z);
+                Vec3 diff = p2.subtract(p1);
                 float yaw = (float)Math.atan2(diff.x, diff.z);
                 float pitch = -(float)Math.asin(diff.y/diff.length());
-                chainDynamic[i].rotateAngleY = chainDynamic[i].defaultRotationY + yaw;
-                chainDynamic[i].rotateAngleX = chainDynamic[i].defaultRotationZ + pitch;
-                chainDynamic[i].rotateAngleZ = (float) r[i].z;
+                chainDynamic[i].yRot = chainDynamic[i].defaultRotationY + yaw;
+                chainDynamic[i].xRot = chainDynamic[i].defaultRotationZ + pitch;
+                chainDynamic[i].zRot = (float) r[i].z;
 
-                Vector3d diffRotated = diff;
-                diffRotated = diffRotated.rotateYaw(yaw);
-                diffRotated = diffRotated.rotatePitch(pitch);
+                Vec3 diffRotated = diff;
+                diffRotated = diffRotated.yRot(yaw);
+                diffRotated = diffRotated.xRot(pitch);
 //                System.out.println(diffRotated);
 //                dynModelRenderers[i].setScale(1, 1, 1);
 //                dynModelRenderers[i].setScale(1, 1, 1 + (float)diffRotated.z/16);
@@ -215,7 +215,7 @@ public class DynamicChain {
         }
     }
 
-    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha, AdvancedModelRenderer[] dynModelRenderers) {
+    public void render(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha, AdvancedModelRenderer[] dynModelRenderers) {
         if (dynModelRenderers == null) return;
         for (int i = 0; i < dynModelRenderers.length - 1; i++) {
             if (dynModelRenderers[i] == null) return;
@@ -223,15 +223,15 @@ public class DynamicChain {
         }
     }
 
-    private static Vector3d fromPitchYaw(float pitch, float yaw) {
-        float f = MathHelper.cos(-yaw - (float)Math.PI);
-        float f1 = MathHelper.sin(-yaw - (float)Math.PI);
-        float f2 = -MathHelper.cos(-pitch);
-        float f3 = MathHelper.sin(-pitch);
-        return new Vector3d(f1 * f2, f3, f * f2);
+    private static Vec3 fromPitchYaw(float pitch, float yaw) {
+        float f = Mth.cos(-yaw - (float)Math.PI);
+        float f1 = Mth.sin(-yaw - (float)Math.PI);
+        float f2 = -Mth.cos(-pitch);
+        float f3 = Mth.sin(-pitch);
+        return new Vec3(f1 * f2, f3, f * f2);
     }
 
-    private static Vector3d angleBetween(Vector3d p1, Vector3d p2) {
+    private static Vec3 angleBetween(Vec3 p1, Vec3 p2) {
 //        Quaternion q = new Quaternion();
 //        Vector3d v1 = p2.subtract(p1);
 //        Vector3d v2 = new Vector3d(1, 0, 0);
@@ -246,9 +246,9 @@ public class DynamicChain {
         float dx = (float) (p2.x - p1.x);
         float dy = (float) (p2.y - p1.y);
 
-        float yaw = (float) MathHelper.atan2(dz, dx);
-        float pitch = (float) MathHelper.atan2(Math.sqrt(dz * dz + dx * dx), dy);
-        return wrapAngles(new Vector3d(yaw, pitch, 0));
+        float yaw = (float) Mth.atan2(dz, dx);
+        float pitch = (float) Mth.atan2(Math.sqrt(dz * dz + dx * dx), dy);
+        return wrapAngles(new Vec3(yaw, pitch, 0));
 
 //        Vector3d vec1 = p2.subtract(p1);
 //        Vector3d vec2 = new Vector3d(1, 0, 0);
@@ -278,7 +278,7 @@ public class DynamicChain {
 //        return toPitchYaw(p1.subtract(p2).normalize());
     }
 
-    public static Vector3d toPitchYaw(Vector3d vector)
+    public static Vec3 toPitchYaw(Vec3 vector)
     {
 //        float f = MathHelper.cos(-p_189986_1_ * 0.017453292F - (float)Math.PI);
 //        float f1 = MathHelper.sin(-p_189986_1_ * 0.017453292F - (float)Math.PI);
@@ -293,10 +293,10 @@ public class DynamicChain {
         double f1 = vector.x/f2;
         double yaw = -Math.asin(f1) + Math.PI/2;
 
-        return wrapAngles(new Vector3d(yaw, pitch, 0));
+        return wrapAngles(new Vec3(yaw, pitch, 0));
     }
 
-    private static Vector3d toEuler(Vector3d axis, double angle) {
+    private static Vec3 toEuler(Vec3 axis, double angle) {
         //System.out.println(axis + ", " + angle);
         double s=Math.sin(angle);
         double c=Math.cos(angle);
@@ -326,10 +326,10 @@ public class DynamicChain {
             roll = Math.atan2(x * s - y * z * t, 1 - (x * x + z * z) * t);
         }
 
-        return new Vector3d(yaw, pitch, roll);
+        return new Vec3(yaw, pitch, roll);
     }
 
-    private static Vector3d wrapAngles(Vector3d r) {
+    private static Vec3 wrapAngles(Vec3 r) {
 //        double x = Math.toRadians(MathHelper.wrapDegrees(Math.toDegrees(r.x)));
 //        double y = Math.toRadians(MathHelper.wrapDegrees(Math.toDegrees(r.y)));
 //        double z = Math.toRadians(MathHelper.wrapDegrees(Math.toDegrees(r.z)));
@@ -347,13 +347,13 @@ public class DynamicChain {
         while (z > Math.PI) z -= 2 * Math.PI;
         while (z < -Math.PI) z += 2 * Math.PI;
 
-        return new Vector3d(x,y,z);
+        return new Vec3(x,y,z);
     }
 
-    private static Vector3d multiply(Vector3d u, Vector3d v, boolean preserveDir) {
+    private static Vec3 multiply(Vec3 u, Vec3 v, boolean preserveDir) {
         if (preserveDir) {
-            return new Vector3d(u.x * Math.abs(v.x), u.y * Math.abs(v.y), u.z * Math.abs(v.z));
+            return new Vec3(u.x * Math.abs(v.x), u.y * Math.abs(v.y), u.z * Math.abs(v.z));
         }
-        return new Vector3d(u.x * v.x, u.y * v.y, u.z * v.z);
+        return new Vec3(u.x * v.x, u.y * v.y, u.z * v.z);
     }
 }

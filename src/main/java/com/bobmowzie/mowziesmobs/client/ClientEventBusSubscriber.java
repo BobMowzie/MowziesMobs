@@ -9,9 +9,9 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerHandler;
 import com.bobmowzie.mowziesmobs.server.item.ModSpawnEggItem;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.entity.EntityType;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -59,8 +59,8 @@ public class ClientEventBusSubscriber {
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BLOCK_SWAPPER.get(), RenderNothing::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.CAMERA_SHAKE.get(), RenderNothing::new);
 
-        ScreenManager.registerFactory(ContainerHandler.CONTAINER_BARAKOAYA_TRADE, GuiBarakoayaTrade::new);
-        ScreenManager.registerFactory(ContainerHandler.CONTAINER_BARAKO_TRADE, GuiBarakoTrade::new);
+        MenuScreens.register(ContainerHandler.CONTAINER_BARAKOAYA_TRADE, GuiBarakoayaTrade::new);
+        MenuScreens.register(ContainerHandler.CONTAINER_BARAKO_TRADE, GuiBarakoTrade::new);
     }
 
     @SubscribeEvent

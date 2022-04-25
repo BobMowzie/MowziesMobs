@@ -4,13 +4,13 @@ import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoMo
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection.*;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
@@ -63,7 +63,7 @@ public class Ability {
         this.sectionTrack = sectionTrack;
         this.cooldownMax = cooldownMax;
         this.rand = new Random();
-        if (user.world.isRemote) {
+        if (user.level.isClientSide) {
             this.activeThirdPersonAnimation = new AnimationBuilder().addAnimation("idle");
             heldItemMainHandVisualOverride = null;
             heldItemOffHandVisualOverride = null;
@@ -85,7 +85,7 @@ public class Ability {
     }
 
     public void playAnimation(String animationName, GeckoPlayer.Perspective perspective, boolean shouldLoop) {
-        if (getUser() instanceof PlayerEntity && getUser().world.isRemote()) {
+        if (getUser() instanceof Player && getUser().level.isClientSide()) {
             AnimationBuilder newActiveAnimation = new AnimationBuilder().addAnimation(animationName, shouldLoop);
             if (perspective == GeckoPlayer.Perspective.FIRST_PERSON) {
                 activeFirstPersonAnimation = newActiveAnimation;
@@ -93,8 +93,8 @@ public class Ability {
             else {
                 activeThirdPersonAnimation = newActiveAnimation;
             }
-            MowzieAnimationController<GeckoPlayer> controller = GeckoPlayer.getAnimationController((PlayerEntity) getUser(), perspective);
-            GeckoPlayer geckoPlayer = GeckoPlayer.getGeckoPlayer((PlayerEntity) getUser(), perspective);
+            MowzieAnimationController<GeckoPlayer> controller = GeckoPlayer.getAnimationController((Player) getUser(), perspective);
+            GeckoPlayer geckoPlayer = GeckoPlayer.getGeckoPlayer((Player) getUser(), perspective);
             if (controller != null && geckoPlayer != null) {
                 controller.playAnimation(geckoPlayer, newActiveAnimation);
             }
@@ -108,7 +108,7 @@ public class Ability {
 
     public void tick() {
         if (isUsing()) {
-            if (getUser().isServerWorld() && !canContinueUsing()) AbilityHandler.INSTANCE.sendInterruptAbilityMessage(getUser(), this.abilityType);
+            if (getUser().isEffectiveAi() && !canContinueUsing()) AbilityHandler.INSTANCE.sendInterruptAbilityMessage(getUser(), this.abilityType);
 
             tickUsing();
 
@@ -144,7 +144,7 @@ public class Ability {
         currentSectionIndex = 0;
         if (!runsInBackground()) abilityCapability.setActiveAbility(null);
 
-        if (getUser().world.isRemote) {
+        if (getUser().level.isClientSide) {
             heldItemMainHandVisualOverride = null;
             heldItemOffHandVisualOverride = null;
             firstPersonMainHandDisplay = HandDisplay.DEFAULT;
@@ -311,11 +311,11 @@ public class Ability {
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(LivingEntity player, Class<T> entityClass, double r) {
-        return player.world.getEntitiesWithinAABB(entityClass, player.getBoundingBox().grow(r, r, r), e -> e != player && player.getDistance(e) <= r);
+        return player.level.getEntitiesOfClass(entityClass, player.getBoundingBox().inflate(r, r, r), e -> e != player && player.distanceTo(e) <= r);
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(LivingEntity player, Class<T> entityClass, double dX, double dY, double dZ, double r) {
-        return player.world.getEntitiesWithinAABB(entityClass, player.getBoundingBox().grow(dX, dY, dZ), e -> e != player && player.getDistance(e) <= r);
+        return player.level.getEntitiesOfClass(entityClass, player.getBoundingBox().inflate(dX, dY, dZ), e -> e != player && player.distanceTo(e) <= r);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -338,8 +338,8 @@ public class Ability {
         return firstPersonOffHandDisplay;
     }
 
-    public CompoundNBT writeNBT() {
-        CompoundNBT compound = new CompoundNBT();
+    public CompoundTag writeNBT() {
+        CompoundTag compound = new CompoundTag();
         if (isUsing()) {
             compound.putInt("ticks_in_use", ticksInUse);
             compound.putInt("ticks_in_section", ticksInSection);
@@ -351,8 +351,8 @@ public class Ability {
         return compound;
     }
 
-    public void readNBT(INBT nbt) {
-        CompoundNBT compound = (CompoundNBT) nbt;
+    public void readNBT(Tag nbt) {
+        CompoundTag compound = (CompoundTag) nbt;
         isUsing = compound.contains("ticks_in_use");
         if (isUsing) {
             ticksInUse = compound.getInt("ticks_in_use");
@@ -401,27 +401,27 @@ public class Ability {
 
     }
 
-    public void onRightMouseDown(PlayerEntity player) {
+    public void onRightMouseDown(Player player) {
 
     }
 
-    public void onLeftMouseDown(PlayerEntity player) {
+    public void onLeftMouseDown(Player player) {
 
     }
 
-    public void onRightMouseUp(PlayerEntity player) {
+    public void onRightMouseUp(Player player) {
 
     }
 
-    public void onLeftMouseUp(PlayerEntity player) {
+    public void onLeftMouseUp(Player player) {
 
     }
 
-    public void onSneakDown(PlayerEntity player) {
+    public void onSneakDown(Player player) {
 
     }
 
-    public void onSneakUp(PlayerEntity player) {
+    public void onSneakUp(Player player) {
 
     }
 

@@ -1,22 +1,24 @@
 package com.bobmowzie.mowziesmobs.server.ai;
 
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.RandomPositionGenerator;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.pathfinding.Path;
-import net.minecraft.pathfinding.PathNavigator;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.util.RandomPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.util.EntityPredicates;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Predicate;
 
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
+
 public final class EntityAIAvoidEntity<T extends Entity> extends Goal {
-    private final CreatureEntity entity;
+    private final PathfinderMob entity;
 
     private final Class<T> avoidClass;
 
@@ -26,63 +28,63 @@ public final class EntityAIAvoidEntity<T extends Entity> extends Goal {
 
     private final double speed;
 
-    private final PathNavigator navigator;
+    private final PathNavigation navigator;
 
     private T avoiding;
 
     private Path path;
 
-    public EntityAIAvoidEntity(CreatureEntity entity, Class<T> avoidClass, float distance, double speed) {
+    public EntityAIAvoidEntity(PathfinderMob entity, Class<T> avoidClass, float distance, double speed) {
         this(entity, avoidClass, e -> true, distance, speed);
     }
 
-    public EntityAIAvoidEntity(CreatureEntity entity, Class<T> avoidClass, Predicate<? super T> predicate, float distance, double speed) {
+    public EntityAIAvoidEntity(PathfinderMob entity, Class<T> avoidClass, Predicate<? super T> predicate, float distance, double speed) {
         this.entity = entity;
         this.avoidClass = avoidClass;
         this.distance = distance;
-        Predicate<T> visible = e -> e.isAlive() && entity.getEntitySenses().canSee(e);
-        Predicate<T> targetable = e -> !(e instanceof PlayerEntity) || !e.isSpectator() && !((PlayerEntity)e).isCreative();
+        Predicate<T> visible = e -> e.isAlive() && entity.getSensing().canSee(e);
+        Predicate<T> targetable = e -> !(e instanceof Player) || !e.isSpectator() && !((Player)e).isCreative();
         this.predicate = targetable.and(predicate).and(visible);
         this.speed = speed;
-        navigator = entity.getNavigator();
-        this.setMutexFlags(EnumSet.of(Flag.MOVE));
+        navigator = entity.getNavigation();
+        this.setFlags(EnumSet.of(Flag.MOVE));
     }
 
     @Override
-    public boolean shouldExecute() {
-        List<T> entities = entity.world.getEntitiesWithinAABB(avoidClass, entity.getBoundingBox().grow(distance, 3, distance), predicate);
+    public boolean canUse() {
+        List<T> entities = entity.level.getEntitiesOfClass(avoidClass, entity.getBoundingBox().inflate(distance, 3, distance), predicate);
         if (entities.isEmpty()) {
             return false;
         }
-        avoiding = entities.get(entity.getRNG().nextInt(entities.size()));
-        Vector3d pos = RandomPositionGenerator.findRandomTargetBlockAwayFrom(entity, (int) (distance + 1), (int) (distance / 2 + 1), new Vector3d(avoiding.getPosX(), avoiding.getPosY(), avoiding.getPosZ()));
+        avoiding = entities.get(entity.getRandom().nextInt(entities.size()));
+        Vec3 pos = RandomPos.getPosAvoid(entity, (int) (distance + 1), (int) (distance / 2 + 1), new Vec3(avoiding.getX(), avoiding.getY(), avoiding.getZ()));
         if (pos == null) {
             return false;
         }
-        if (avoiding.getDistanceSq(pos.x, pos.y, pos.z) < avoiding.getDistanceSq(entity)) {
+        if (avoiding.distanceToSqr(pos.x, pos.y, pos.z) < avoiding.distanceToSqr(entity)) {
             return false;
         }
-        path = navigator.getPathToPos(new BlockPos(pos), 0);
+        path = navigator.createPath(new BlockPos(pos), 0);
         return path != null;
     }
 
     @Override
-    public boolean shouldContinueExecuting() {
-        return !navigator.noPath();
+    public boolean canContinueToUse() {
+        return !navigator.isDone();
     }
 
     @Override
-    public void startExecuting() {
-        navigator.setPath(path, speed);
+    public void start() {
+        navigator.moveTo(path, speed);
     }
 
     @Override
-    public void resetTask() {
+    public void stop() {
         avoiding = null;
     }
 
     @Override
     public void tick() {
-        entity.getNavigator().setSpeed(speed);
+        entity.getNavigation().setSpeedModifier(speed);
     }
 }

@@ -4,9 +4,9 @@ import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.capability.LivingCapability;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
@@ -24,16 +24,16 @@ public class MessageFreezeEffect {
     }
 
     public MessageFreezeEffect(LivingEntity entity, boolean activate) {
-        entityID = entity.getEntityId();
+        entityID = entity.getId();
         this.isFrozen = activate;
     }
 
-    public static void serialize(final MessageFreezeEffect message, final PacketBuffer buf) {
+    public static void serialize(final MessageFreezeEffect message, final FriendlyByteBuf buf) {
         buf.writeVarInt(message.entityID);
         buf.writeBoolean(message.isFrozen);
     }
 
-    public static MessageFreezeEffect deserialize(final PacketBuffer buf) {
+    public static MessageFreezeEffect deserialize(final FriendlyByteBuf buf) {
         final MessageFreezeEffect message = new MessageFreezeEffect();
         message.entityID = buf.readVarInt();
         message.isFrozen = buf.readBoolean();
@@ -45,8 +45,8 @@ public class MessageFreezeEffect {
         public void accept(final MessageFreezeEffect message, final Supplier<NetworkEvent.Context> contextSupplier) {
             final NetworkEvent.Context context = contextSupplier.get();
             context.enqueueWork(() -> {
-                if (Minecraft.getInstance().world != null) {
-                    Entity entity = Minecraft.getInstance().world.getEntityByID(message.entityID);
+                if (Minecraft.getInstance().level != null) {
+                    Entity entity = Minecraft.getInstance().level.getEntity(message.entityID);
                     if (entity instanceof LivingEntity) {
                         LivingEntity living = (LivingEntity) entity;
                         FrozenCapability.IFrozenCapability livingCapability = CapabilityHandler.getCapability(living, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);

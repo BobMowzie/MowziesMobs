@@ -5,30 +5,45 @@ import com.bobmowzie.mowziesmobs.server.ai.AvoidProjectilesGoal;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.AvoidEntityGoal;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.DamageSource;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.util.math.*;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.Level;
 
 import java.util.EnumSet;
+
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
 
 public class EntityBarakoaya extends EntityBarakoaVillager {
     public boolean hasTriedOrSucceededTeleport = true;
     private int teleportAttempts = 0;
 
-    public EntityBarakoaya(EntityType<? extends EntityBarakoaVillager> type, World world) {
+    public EntityBarakoaya(EntityType<? extends EntityBarakoaVillager> type, Level world) {
         super(type, world);
         setWeapon(3);
         setMask(MaskType.FAITH);
@@ -38,25 +53,25 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(4, new HealTargetGoal(this));
-        this.goalSelector.addGoal(6, new AvoidEntityGoal<PlayerEntity>(this, PlayerEntity.class, 50.0F, 0.8D, 0.6D, target -> {
-            if (target instanceof PlayerEntity) {
-                if (this.world.getDifficulty() == Difficulty.PEACEFUL) return false;
-                if (getAttackTarget() == target) return true;
-                if (getAttackTarget() instanceof EntityBarako) return false;
+        this.goalSelector.addGoal(6, new AvoidEntityGoal<Player>(this, Player.class, 50.0F, 0.8D, 0.6D, target -> {
+            if (target instanceof Player) {
+                if (this.level.getDifficulty() == Difficulty.PEACEFUL) return false;
+                if (getTarget() == target) return true;
+                if (getTarget() instanceof EntityBarako) return false;
                 if (getAnimation() != NO_ANIMATION) return false;
-                ItemStack headArmorStack = ((PlayerEntity) target).inventory.armorInventory.get(3);
+                ItemStack headArmorStack = ((Player) target).inventory.armor.get(3);
                 return !(headArmorStack.getItem() instanceof BarakoaMask) || target == getMisbehavedPlayer();
             }
             return true;
         }){
             @Override
-            public void resetTask() {
-                super.resetTask();
+            public void stop() {
+                super.stop();
                 setMisbehavedPlayerId(null);
             }
         });
         this.goalSelector.addGoal(1, new TeleportToSafeSpotGoal(this));
-        this.goalSelector.addGoal(1, new AvoidProjectilesGoal(this, ProjectileEntity.class, target -> {
+        this.goalSelector.addGoal(1, new AvoidProjectilesGoal(this, Projectile.class, target -> {
             return getAnimation() == HEAL_LOOP_ANIMATION || getAnimation() == HEAL_START_ANIMATION;
         }, 3.0F, 0.8D, 0.6D));
     }
@@ -64,35 +79,35 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
     @Override
     protected void registerTargetGoals() {
         super.registerTargetGoals();
-        this.targetSelector.addGoal(2, new NearestAttackableTargetPredicateGoal<EntityBarako>(this, EntityBarako.class, 0, false, false, (new EntityPredicate()).setDistance(getAttributeValue(Attributes.FOLLOW_RANGE) * 2).setCustomPredicate(target -> {
+        this.targetSelector.addGoal(2, new NearestAttackableTargetPredicateGoal<EntityBarako>(this, EntityBarako.class, 0, false, false, (new TargetingConditions()).range(getAttributeValue(Attributes.FOLLOW_RANGE) * 2).selector(target -> {
             if (!active) return false;
-            if (target instanceof MobEntity) {
-                return ((MobEntity) target).getAttackTarget() != null || target.getHealth() < target.getMaxHealth();
+            if (target instanceof Mob) {
+                return ((Mob) target).getTarget() != null || target.getHealth() < target.getMaxHealth();
             }
             return false;
-        }).allowFriendlyFire().allowInvulnerable().setSkipAttackChecks().setIgnoresLineOfSight().setUseInvisibilityCheck()) {
+        }).allowSameTeam().allowInvulnerable().allowNonAttackable().allowUnseeable().ignoreInvisibilityTesting()) {
             @Override
-            public boolean shouldContinueExecuting() {
-                LivingEntity livingentity = this.goalOwner.getAttackTarget();
+            public boolean canContinueToUse() {
+                LivingEntity livingentity = this.mob.getTarget();
                 if (livingentity == null) {
-                    livingentity = this.target;
+                    livingentity = this.targetMob;
                 }
                 boolean targetHasTarget = false;
-                if (livingentity instanceof MobEntity) targetHasTarget = ((MobEntity)livingentity).getAttackTarget() != null;
+                if (livingentity instanceof Mob) targetHasTarget = ((Mob)livingentity).getTarget() != null;
                 boolean canHeal = true;
-                if (this.goalOwner instanceof EntityBarakoa) canHeal = ((EntityBarakoa)this.goalOwner).canHeal(livingentity);
-                return super.shouldContinueExecuting() && (livingentity.getHealth() < livingentity.getMaxHealth() || targetHasTarget) && canHeal;
+                if (this.mob instanceof EntityBarakoa) canHeal = ((EntityBarakoa)this.mob).canHeal(livingentity);
+                return super.canContinueToUse() && (livingentity.getHealth() < livingentity.getMaxHealth() || targetHasTarget) && canHeal;
             }
 
             @Override
-            protected double getTargetDistance() {
-                return super.getTargetDistance() * 2;
+            protected double getFollowDistance() {
+                return super.getFollowDistance() * 2;
             }
 
             @Override
-            public void startExecuting() {
-                targetEntitySelector.setIgnoresLineOfSight().allowInvulnerable().allowFriendlyFire().setSkipAttackChecks().setUseInvisibilityCheck();
-                super.startExecuting();
+            public void start() {
+                targetConditions.allowUnseeable().allowInvulnerable().allowSameTeam().allowNonAttackable().ignoreInvisibilityTesting();
+                super.start();
             }
         });
     }
@@ -100,8 +115,8 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
     @Override
     public void tick() {
         super.tick();
-        if (active && teleportAttempts > 3 && (getAttackTarget() == null || !getAttackTarget().isAlive())) hasTriedOrSucceededTeleport = true;
-        if (getAnimation() == HEAL_LOOP_ANIMATION && !canHeal(getAttackTarget())) AnimationHandler.INSTANCE.sendAnimationMessage(this, HEAL_STOP_ANIMATION);
+        if (active && teleportAttempts > 3 && (getTarget() == null || !getTarget().isAlive())) hasTriedOrSucceededTeleport = true;
+        if (getAnimation() == HEAL_LOOP_ANIMATION && !canHeal(getTarget())) AnimationHandler.INSTANCE.sendAnimationMessage(this, HEAL_STOP_ANIMATION);
 
 //        if (getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, HEAL_START_ANIMATION);
     }
@@ -121,14 +136,14 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
 
         public TeleportToSafeSpotGoal(EntityBarakoaya entityIn) {
             this.entity = entityIn;
-            this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE));
+            this.setFlags(EnumSet.of(Goal.Flag.MOVE));
         }
 
         @Override
-        public boolean shouldExecute() {
+        public boolean canUse() {
             if (!entity.active) return false;
             if (entity.getAnimation() == TELEPORT_ANIMATION) return false;
-            if (entity.getAttackTarget() != null && entity.canHeal(entity.getAttackTarget()) && (
+            if (entity.getTarget() != null && entity.canHeal(entity.getTarget()) && (
                     (entity.targetDistance >= 0 && entity.targetDistance < 7) || !hasTriedOrSucceededTeleport
             )) {
                 return findTeleportLocation();
@@ -137,8 +152,8 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
         }
 
         @Override
-        public void startExecuting() {
-            super.startExecuting();
+        public void start() {
+            super.start();
             hasTriedOrSucceededTeleport = true;
             AnimationHandler.INSTANCE.sendAnimationMessage(entity, TELEPORT_ANIMATION);
         }
@@ -147,42 +162,42 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
             int i;
             int j;
             int k;
-            if (entity.getMaximumHomeDistance() > -1) {
-                i = MathHelper.floor(entity.getHomePosition().getX());
-                j = MathHelper.floor(entity.getHomePosition().getY());
-                k = MathHelper.floor(entity.getHomePosition().getZ());
+            if (entity.getRestrictRadius() > -1) {
+                i = Mth.floor(entity.getRestrictCenter().getX());
+                j = Mth.floor(entity.getRestrictCenter().getY());
+                k = Mth.floor(entity.getRestrictCenter().getZ());
             }
-            else if (entity.getAttackTarget() != null) {
-                i = MathHelper.floor(entity.getAttackTarget().getPosX());
-                j = MathHelper.floor(entity.getAttackTarget().getPosY());
-                k = MathHelper.floor(entity.getAttackTarget().getPosZ());
+            else if (entity.getTarget() != null) {
+                i = Mth.floor(entity.getTarget().getX());
+                j = Mth.floor(entity.getTarget().getY());
+                k = Mth.floor(entity.getTarget().getZ());
             }
             else {
-                i = MathHelper.floor(entity.getPosX());
-                j = MathHelper.floor(entity.getPosY());
-                k = MathHelper.floor(entity.getPosZ());
+                i = Mth.floor(entity.getX());
+                j = Mth.floor(entity.getY());
+                k = Mth.floor(entity.getZ());
             }
             boolean foundPosition = false;
             for(int l = 0; l < 50; ++l) {
-                double radius = Math.pow(rand.nextFloat(), 1.35) * 25;
-                double angle = rand.nextFloat() * Math.PI * 2;
+                double radius = Math.pow(random.nextFloat(), 1.35) * 25;
+                double angle = random.nextFloat() * Math.PI * 2;
                 int i1 = i + (int)(Math.cos(angle) * radius);
-                int j1 = j + MathHelper.nextInt(entity.rand, 0, 15) * MathHelper.nextInt(entity.rand, -1, 1);
+                int j1 = j + Mth.nextInt(entity.random, 0, 15) * Mth.nextInt(entity.random, -1, 1);
                 int k1 = k + (int)(Math.sin(angle) * radius);
                 BlockPos blockpos = new BlockPos(i1, j1, k1);
-                Vector3d newPos = new Vector3d(i1, j1, k1);
-                Vector3d offset = newPos.subtract(entity.getPositionVec());
-                AxisAlignedBB newBB = entity.getBoundingBox().offset(offset);
-                if (testBlock(blockpos, newBB) && entity.world.getEntitiesWithinAABB(EntityBarako.class, newBB.grow(7)).isEmpty()) {
+                Vec3 newPos = new Vec3(i1, j1, k1);
+                Vec3 offset = newPos.subtract(entity.position());
+                AABB newBB = entity.getBoundingBox().move(offset);
+                if (testBlock(blockpos, newBB) && entity.level.getEntitiesOfClass(EntityBarako.class, newBB.inflate(7)).isEmpty()) {
                     entity.teleportDestination = newPos.add(0, 0, 0);
                     if (entity.teleportAttempts >= 3) foundPosition = true;
-                    if (entity.world.getEntitiesWithinAABB(EntityBarakoaya.class, newBB.grow(5)).isEmpty()) {
+                    if (entity.level.getEntitiesOfClass(EntityBarakoaya.class, newBB.inflate(5)).isEmpty()) {
                         if (entity.teleportAttempts >= 2) foundPosition = true;
-                        if (!entity.world.isPlayerWithin(i1, j1, k1, 5) && !entity.world.containsAnyLiquid(newBB)) {
+                        if (!entity.level.hasNearbyAlivePlayer(i1, j1, k1, 5) && !entity.level.containsAnyLiquid(newBB)) {
                             if (entity.teleportAttempts >= 1) foundPosition = true;
-                            LivingEntity target = getAttackTarget();
-                            if (target instanceof MobEntity && ((MobEntity) target).getAttackTarget() != null) {
-                                if (!canEntityBeSeenFromLocation(((MobEntity) target).getAttackTarget(), newPos)) {
+                            LivingEntity target = getTarget();
+                            if (target instanceof Mob && ((Mob) target).getTarget() != null) {
+                                if (!canEntityBeSeenFromLocation(((Mob) target).getTarget(), newPos)) {
                                     return true;
                                 }
                             } else return true;
@@ -195,18 +210,18 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
             return foundPosition;
         }
 
-        public boolean canEntityBeSeenFromLocation(Entity entityIn, Vector3d location) {
-            Vector3d vector3d = new Vector3d(location.getX(), location.getY() + entity.getEyeHeight(), location.getZ());
-            Vector3d vector3d1 = new Vector3d(entityIn.getPosX(), entityIn.getPosYEye(), entityIn.getPosZ());
-            return entity.world.rayTraceBlocks(new RayTraceContext(vector3d, vector3d1, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, entity)).getType() != RayTraceResult.Type.BLOCK;
+        public boolean canEntityBeSeenFromLocation(Entity entityIn, Vec3 location) {
+            Vec3 vector3d = new Vec3(location.x(), location.y() + entity.getEyeHeight(), location.z());
+            Vec3 vector3d1 = new Vec3(entityIn.getX(), entityIn.getEyeY(), entityIn.getZ());
+            return entity.level.clip(new ClipContext(vector3d, vector3d1, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity)).getType() != HitResult.Type.BLOCK;
         }
 
-        public boolean testBlock(BlockPos blockpos, AxisAlignedBB aabb) {
-            World world = entity.world;
-            if (world.isBlockLoaded(blockpos)) {
-                BlockPos blockpos1 = blockpos.down();
+        public boolean testBlock(BlockPos blockpos, AABB aabb) {
+            Level world = entity.level;
+            if (world.hasChunkAt(blockpos)) {
+                BlockPos blockpos1 = blockpos.below();
                 BlockState blockstate = world.getBlockState(blockpos1);
-                return blockstate.getMaterial().isSolid() && blockstate.getMaterial().blocksMovement() && world.hasNoCollisions(aabb);
+                return blockstate.getMaterial().isSolid() && blockstate.getMaterial().blocksMotion() && world.noCollision(aabb);
             }
             return false;
         }
@@ -217,39 +232,39 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
 
         public HealTargetGoal(EntityBarakoa entityIn) {
             this.entity = entityIn;
-            this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE, Flag.LOOK));
+            this.setFlags(EnumSet.of(Goal.Flag.MOVE, Flag.LOOK));
         }
 
         @Override
-        public boolean shouldContinueExecuting() {
-            return entity.canHeal(entity.getAttackTarget());
+        public boolean canContinueToUse() {
+            return entity.canHeal(entity.getTarget());
         }
 
         @Override
-        public boolean shouldExecute() {
+        public boolean canUse() {
             if (!entity.active) return false;
-            return entity.canHeal(entity.getAttackTarget());
+            return entity.canHeal(entity.getTarget());
         }
 
         @Override
-        public void startExecuting() {
-            super.startExecuting();
+        public void start() {
+            super.start();
             AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityBarakoa.HEAL_START_ANIMATION);
         }
 
         @Override
-        public void resetTask() {
-            super.resetTask();
+        public void stop() {
+            super.stop();
 //            if (entity.getAnimation() == HEAL_LOOP_ANIMATION || entity.getAnimation() == HEAL_START_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityBarakoa.HEAL_STOP_ANIMATION);
         }
     }
 
     @Override
     protected void sunBlockTarget() {
-        LivingEntity target = getAttackTarget();
+        LivingEntity target = getTarget();
         if (target != null) {
             EffectHandler.addOrCombineEffect(target, EffectHandler.SUNBLOCK, 20, 0, true, false);
-            if (target.ticksExisted % 20 == 0) target.heal(0.15f);
+            if (target.tickCount % 20 == 0) target.heal(0.15f);
         }
     }
     
@@ -260,16 +275,16 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
     }
 
     @Override
-    public void setFire(int seconds) {
+    public void setSecondsOnFire(int seconds) {
         boolean teleporting = getAnimation() == TELEPORT_ANIMATION && getAnimationTick() <= 16;
         if (!active || teleporting || !hasTriedOrSucceededTeleport) return;
-        super.setFire(seconds);
+        super.setSecondsOnFire(seconds);
     }
 
     @Override
-    public ILivingEntityData onInitialSpawn(IServerWorld world, DifficultyInstance difficulty, SpawnReason reason, ILivingEntityData livingData, CompoundNBT compound) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType reason, SpawnGroupData livingData, CompoundTag compound) {
         setMask(MaskType.FAITH);
         setWeapon(3);
-        return super.onInitialSpawn(world, difficulty, reason, livingData, compound);
+        return super.finalizeSpawn(world, difficulty, reason, livingData, compound);
     }
 }

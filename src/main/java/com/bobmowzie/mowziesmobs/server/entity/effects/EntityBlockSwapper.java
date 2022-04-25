@@ -1,22 +1,22 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.network.play.server.SSpawnObjectPacket;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
@@ -27,30 +27,30 @@ import java.util.Optional;
  * Created by BobMowzie on 7/8/2018.
  */
 public class EntityBlockSwapper extends Entity {
-    private static final DataParameter<Optional<BlockState>> ORIG_BLOCK_STATE = EntityDataManager.createKey(EntityBlockSwapper.class, DataSerializers.OPTIONAL_BLOCK_STATE);
-    private static final DataParameter<Integer> RESTORE_TIME = EntityDataManager.createKey(EntityBlockSwapper.class, DataSerializers.VARINT);
-    private static final DataParameter<BlockPos> POS = EntityDataManager.createKey(EntityBlockSwapper.class, DataSerializers.BLOCK_POS);
+    private static final EntityDataAccessor<Optional<BlockState>> ORIG_BLOCK_STATE = SynchedEntityData.defineId(EntityBlockSwapper.class, EntityDataSerializers.BLOCK_STATE);
+    private static final EntityDataAccessor<Integer> RESTORE_TIME = SynchedEntityData.defineId(EntityBlockSwapper.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<BlockPos> POS = SynchedEntityData.defineId(EntityBlockSwapper.class, EntityDataSerializers.BLOCK_POS);
     private int duration;
     private final boolean breakParticlesEnd;
     private BlockPos pos;
 
-    public EntityBlockSwapper(EntityType<? extends EntityBlockSwapper> type, World world) {
+    public EntityBlockSwapper(EntityType<? extends EntityBlockSwapper> type, Level world) {
         super(type, world);
         breakParticlesEnd = false;
     }
 
-    public EntityBlockSwapper(EntityType<? extends EntityBlockSwapper> type, World world, BlockPos pos, BlockState newBlock, int duration, boolean breakParticlesStart, boolean breakParticlesEnd) {
+    public EntityBlockSwapper(EntityType<? extends EntityBlockSwapper> type, Level world, BlockPos pos, BlockState newBlock, int duration, boolean breakParticlesStart, boolean breakParticlesEnd) {
         super(type, world);
         setStorePos(pos);
         setRestoreTime(duration);
         this.breakParticlesEnd = breakParticlesEnd;
-        setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
-        if (!world.isRemote) {
+        setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+        if (!world.isClientSide) {
             setOrigBlock(world.getBlockState(pos));
             if (breakParticlesStart) world.destroyBlock(pos, false);
-            world.setBlockState(pos, newBlock, 19);
+            world.setBlock(pos, newBlock, 19);
         }
-        List<EntityBlockSwapper> swappers = world.getEntitiesWithinAABB(EntityBlockSwapper.class, getBoundingBox());
+        List<EntityBlockSwapper> swappers = world.getEntitiesOfClass(EntityBlockSwapper.class, getBoundingBox());
         if (!swappers.isEmpty()) {
             EntityBlockSwapper swapper = swappers.get(0);
             setOrigBlock(swapper.getOrigBlock());
@@ -58,57 +58,57 @@ public class EntityBlockSwapper extends Entity {
         }
     }
 
-    public static void swapBlock(World world, BlockPos pos, BlockState newBlock, int duration, boolean breakParticlesStart, boolean breakParticlesEnd) {
-        if (!world.isRemote) {
+    public static void swapBlock(Level world, BlockPos pos, BlockState newBlock, int duration, boolean breakParticlesStart, boolean breakParticlesEnd) {
+        if (!world.isClientSide) {
             EntityBlockSwapper swapper = new EntityBlockSwapper(EntityHandler.BLOCK_SWAPPER.get(), world, pos, newBlock, duration, breakParticlesStart, breakParticlesEnd);
-            world.addEntity(swapper);
+            world.addFreshEntity(swapper);
         }
     }
 
     @Override
-    public boolean isInRangeToRender3d(double p_145770_1_, double p_145770_3_, double p_145770_5_) {
+    public boolean shouldRender(double p_145770_1_, double p_145770_3_, double p_145770_5_) {
         return false;
     }
 
     @Override
-    protected void registerData() {
-        getDataManager().register(ORIG_BLOCK_STATE, Optional.of(Blocks.DIRT.getDefaultState()));
-        getDataManager().register(RESTORE_TIME, 20);
-        getDataManager().register(POS, new BlockPos(0, 0, 0));
+    protected void defineSynchedData() {
+        getEntityData().define(ORIG_BLOCK_STATE, Optional.of(Blocks.DIRT.defaultBlockState()));
+        getEntityData().define(RESTORE_TIME, 20);
+        getEntityData().define(POS, new BlockPos(0, 0, 0));
     }
 
     public int getRestoreTime() {
-        return dataManager.get(RESTORE_TIME);
+        return entityData.get(RESTORE_TIME);
     }
 
     public void setRestoreTime(int restoreTime) {
-        dataManager.set(RESTORE_TIME, restoreTime);
+        entityData.set(RESTORE_TIME, restoreTime);
         duration = restoreTime;
     }
 
     public BlockPos getStorePos() {
-        return dataManager.get(POS);
+        return entityData.get(POS);
     }
 
     public void setStorePos(BlockPos bpos) {
-        dataManager.set(POS, bpos);
+        entityData.set(POS, bpos);
         pos = bpos;
     }
 
     @Nullable
     public BlockState getOrigBlock() {
-        Optional<BlockState> opState = getDataManager().get(ORIG_BLOCK_STATE);
+        Optional<BlockState> opState = getEntityData().get(ORIG_BLOCK_STATE);
         return opState.orElse(null);
     }
 
     public void setOrigBlock(BlockState block) {
-        getDataManager().set(ORIG_BLOCK_STATE, Optional.of(block));
+        getEntityData().set(ORIG_BLOCK_STATE, Optional.of(block));
     }
 
     public void restoreBlock() {
-        if (!world.isRemote) {
-            if (breakParticlesEnd) world.destroyBlock(pos, false);
-            world.setBlockState(pos, getOrigBlock(), 19);
+        if (!level.isClientSide) {
+            if (breakParticlesEnd) level.destroyBlock(pos, false);
+            level.setBlock(pos, getOrigBlock(), 19);
             remove();
         }
     }
@@ -116,13 +116,13 @@ public class EntityBlockSwapper extends Entity {
     @Override
     public void tick() {
         super.tick();
-        if (ticksExisted > duration && world.getEntitiesWithinAABB(PlayerEntity.class, getBoundingBox()).isEmpty()) restoreBlock();
+        if (tickCount > duration && level.getEntitiesOfClass(Player.class, getBoundingBox()).isEmpty()) restoreBlock();
     }
 
     @Override
-    public void writeAdditional(CompoundNBT compound) {
-        Optional<BlockState> blockOption = getDataManager().get(ORIG_BLOCK_STATE);
-        blockOption.ifPresent(blockState -> compound.put("block", NBTUtil.writeBlockState(blockState)));
+    public void addAdditionalSaveData(CompoundTag compound) {
+        Optional<BlockState> blockOption = getEntityData().get(ORIG_BLOCK_STATE);
+        blockOption.ifPresent(blockState -> compound.put("block", NbtUtils.writeBlockState(blockState)));
         compound.putInt("restoreTime", getRestoreTime());
         compound.putInt("storePosX", getStorePos().getX());
         compound.putInt("storePosY", getStorePos().getY());
@@ -130,10 +130,10 @@ public class EntityBlockSwapper extends Entity {
     }
 
     @Override
-    public void readAdditional(CompoundNBT compound) {
-        INBT blockNBT = compound.get("block");
+    public void readAdditionalSaveData(CompoundTag compound) {
+        Tag blockNBT = compound.get("block");
         if (blockNBT != null) {
-            BlockState blockState = NBTUtil.readBlockState((CompoundNBT) blockNBT);
+            BlockState blockState = NbtUtils.readBlockState((CompoundTag) blockNBT);
             setOrigBlock(blockState);
         }
         setRestoreTime(compound.getInt("restoreTime"));
@@ -145,7 +145,7 @@ public class EntityBlockSwapper extends Entity {
     }
 
     @Override
-    public IPacket<?> createSpawnPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

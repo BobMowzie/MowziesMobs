@@ -1,8 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.ability;
 
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
@@ -12,7 +12,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class AbilityCommonEventHandler {
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.RightClickEmpty event) {
-        PlayerEntity player = event.getPlayer();
+        Player player = event.getPlayer();
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
         if (abilityCapability != null) {
             for (Ability ability : abilityCapability.getAbilities()) {
@@ -23,7 +23,7 @@ public class AbilityCommonEventHandler {
 
     @SubscribeEvent
     public void onPlayerRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-        PlayerEntity player = event.getPlayer();
+        Player player = event.getPlayer();
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
         if (abilityCapability != null) {
             for (Ability ability : abilityCapability.getAbilities()) {
@@ -34,7 +34,7 @@ public class AbilityCommonEventHandler {
 
     @SubscribeEvent
     public void onPlayerRightClickItem(PlayerInteractEvent.RightClickItem event) {
-        PlayerEntity player = event.getPlayer();
+        Player player = event.getPlayer();
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
         if (abilityCapability != null) {
             for (Ability ability : abilityCapability.getAbilities()) {
@@ -45,7 +45,7 @@ public class AbilityCommonEventHandler {
 
     @SubscribeEvent
     public void onPlayerRightClickEntity(PlayerInteractEvent.EntityInteract event) {
-        PlayerEntity player = event.getPlayer();
+        Player player = event.getPlayer();
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
         if (abilityCapability != null) {
             for (Ability ability : abilityCapability.getAbilities()) {
@@ -56,7 +56,7 @@ public class AbilityCommonEventHandler {
 
     @SubscribeEvent
     public void onPlayerLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event) {
-        PlayerEntity player = event.getPlayer();
+        Player player = event.getPlayer();
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
         if (abilityCapability != null) {
             for (Ability ability : abilityCapability.getAbilities()) {
@@ -67,7 +67,7 @@ public class AbilityCommonEventHandler {
 
     @SubscribeEvent
     public void onPlayerLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
-        PlayerEntity player = event.getPlayer();
+        Player player = event.getPlayer();
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
         if (abilityCapability != null) {
             for (Ability ability : abilityCapability.getAbilities()) {
@@ -78,7 +78,7 @@ public class AbilityCommonEventHandler {
 
     @SubscribeEvent
     public void onLeftClickEntity(AttackEntityEvent event) {
-        PlayerEntity player = event.getPlayer();
+        Player player = event.getPlayer();
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
         if (abilityCapability != null) {
             for (Ability ability : abilityCapability.getAbilities()) {

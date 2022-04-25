@@ -1,22 +1,22 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
-import net.minecraft.block.material.PushReaction;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.network.play.server.SSpawnObjectPacket;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
@@ -27,59 +27,59 @@ import java.util.List;
  */
 public abstract class EntityMagicEffect extends Entity {
     public LivingEntity caster;
-    private static final DataParameter<Integer> CASTER = EntityDataManager.createKey(EntityMagicEffect.class, DataSerializers.VARINT);
+    private static final EntityDataAccessor<Integer> CASTER = SynchedEntityData.defineId(EntityMagicEffect.class, EntityDataSerializers.INT);
 
-    public EntityMagicEffect(EntityType<? extends EntityMagicEffect> type, World worldIn) {
+    public EntityMagicEffect(EntityType<? extends EntityMagicEffect> type, Level worldIn) {
         super(type, worldIn);
     }
 
     @Override
-    public PushReaction getPushReaction() {
+    public PushReaction getPistonPushReaction() {
         return PushReaction.IGNORE;
     }
 
     @Override
-    protected void registerData() {
-        getDataManager().register(CASTER, -1);
+    protected void defineSynchedData() {
+        getEntityData().define(CASTER, -1);
     }
 
     public int getCasterID() {
-        return getDataManager().get(CASTER);
+        return getEntityData().get(CASTER);
     }
 
     public void setCasterID(int id) {
-        getDataManager().set(CASTER, id);
+        getEntityData().set(CASTER, id);
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean isPickable() {
         return false;
     }
 
     @Override
-    public void applyEntityCollision(Entity entityIn) {
+    public void push(Entity entityIn) {
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (ticksExisted == 1) {
-            caster = (LivingEntity) world.getEntityByID(getCasterID());
+        if (tickCount == 1) {
+            caster = (LivingEntity) level.getEntity(getCasterID());
         }
     }
 
     @Override
-    public IPacket<?> createSpawnPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
-    protected void readAdditional(CompoundNBT compound) {
+    protected void readAdditionalSaveData(CompoundTag compound) {
 
     }
 
     @Override
-    protected void writeAdditional(CompoundNBT compound) {
+    protected void addAdditionalSaveData(CompoundTag compound) {
 
     }
 
@@ -88,21 +88,21 @@ public abstract class EntityMagicEffect extends Entity {
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double r) {
-        return world.getEntitiesWithinAABB(entityClass, getBoundingBox().grow(r, r, r), e -> e != this && getDistance(e) <= r + e.getWidth() / 2f);
+        return level.getEntitiesOfClass(entityClass, getBoundingBox().inflate(r, r, r), e -> e != this && distanceTo(e) <= r + e.getBbWidth() / 2f);
     }
 
     public <T extends Entity> List<T> getEntitiesNearbyCube(Class<T> entityClass, double r) {
-        return world.getEntitiesWithinAABB(entityClass, getBoundingBox().grow(r, r, r), e -> e != this);
+        return level.getEntitiesOfClass(entityClass, getBoundingBox().inflate(r, r, r), e -> e != this);
     }
 
     public boolean raytraceCheckEntity(Entity entity) {
-        Vector3d from = this.getPositionVec();
+        Vec3 from = this.position();
         int numChecks = 3;
         for (int i = 0; i < numChecks; i++) {
-            float increment = entity.getHeight() / (numChecks + 1);
-            Vector3d to = entity.getPositionVec().add(0, increment * (i + 1), 0);
-            BlockRayTraceResult result = world.rayTraceBlocks(new RayTraceContext(from, to, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
-            if (result.getType() != RayTraceResult.Type.BLOCK) {
+            float increment = entity.getBbHeight() / (numChecks + 1);
+            Vec3 to = entity.position().add(0, increment * (i + 1), 0);
+            BlockHitResult result = level.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+            if (result.getType() != HitResult.Type.BLOCK) {
                 return true;
             }
         }

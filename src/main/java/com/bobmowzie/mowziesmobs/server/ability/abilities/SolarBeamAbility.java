@@ -7,11 +7,13 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+
+import com.bobmowzie.mowziesmobs.server.ability.Ability.HandDisplay;
 
 public class SolarBeamAbility extends Ability {
     protected EntitySolarBeam solarBeam;
@@ -28,18 +30,18 @@ public class SolarBeamAbility extends Ability {
     public void start() {
         super.start();
         LivingEntity user = getUser();
-        if (!getUser().world.isRemote()) {
-            EntitySolarBeam solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM.get(), user.world, user, user.getPosX(), user.getPosY() + 1.2f, user.getPosZ(), (float) ((user.rotationYawHead + 90) * Math.PI / 180), (float) (-user.rotationPitch * Math.PI / 180), 55);
+        if (!getUser().level.isClientSide()) {
+            EntitySolarBeam solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM.get(), user.level, user, user.getX(), user.getY() + 1.2f, user.getZ(), (float) ((user.yHeadRot + 90) * Math.PI / 180), (float) (-user.xRot * Math.PI / 180), 55);
             solarBeam.setHasPlayer(true);
-            user.world.addEntity(solarBeam);
-            user.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 80, 2, false, false));
-            EffectInstance sunsBlessingInstance = user.getActivePotionEffect(EffectHandler.SUNS_BLESSING);
+            user.level.addFreshEntity(solarBeam);
+            user.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 2, false, false));
+            MobEffectInstance sunsBlessingInstance = user.getEffect(EffectHandler.SUNS_BLESSING);
             if (sunsBlessingInstance != null) {
                 int duration = sunsBlessingInstance.getDuration();
-                user.removePotionEffect(EffectHandler.SUNS_BLESSING);
+                user.removeEffect(EffectHandler.SUNS_BLESSING);
                 int solarBeamCost = ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.solarBeamCost.get() * 60 * 20;
                 if (duration - solarBeamCost > 0) {
-                    user.addPotionEffect(new EffectInstance(EffectHandler.SUNS_BLESSING, duration - solarBeamCost, 0, false, false));
+                    user.addEffect(new MobEffectInstance(EffectHandler.SUNS_BLESSING, duration - solarBeamCost, 0, false, false));
                 }
             }
 
@@ -62,7 +64,7 @@ public class SolarBeamAbility extends Ability {
 
     @Override
     public boolean canUse() {
-        if (getUser() instanceof PlayerEntity && !((PlayerEntity)getUser()).inventory.getCurrentItem().isEmpty()) return false;
-        return getUser().isPotionActive(EffectHandler.SUNS_BLESSING) && super.canUse();
+        if (getUser() instanceof Player && !((Player)getUser()).inventory.getSelected().isEmpty()) return false;
+        return getUser().hasEffect(EffectHandler.SUNS_BLESSING) && super.canUse();
     }
 }

@@ -5,6 +5,11 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.util.math.vector.*;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector4f;
+import net.minecraft.world.phys.Vec3;
+
 public class MowzieGeoBone extends GeoBone {
     private Matrix4f modelSpaceXform;
     private boolean trackXform;
@@ -43,23 +48,23 @@ public class MowzieGeoBone extends GeoBone {
         return modelSpaceXform;
     }
 
-    public Vector3d getModelPosition() {
+    public Vec3 getModelPosition() {
         Matrix4f matrix = getModelSpaceXform();
         Vector4f vec = new Vector4f(0, 0, 0, 1);
         vec.transform(matrix);
-        return new Vector3d(-vec.getX() * 16f, vec.getY() * 16f, vec.getZ() * 16f);
+        return new Vec3(-vec.x() * 16f, vec.y() * 16f, vec.z() * 16f);
     }
 
-    public void setModelPosition(Vector3d pos) {
+    public void setModelPosition(Vec3 pos) {
         // TODO: Doesn't work on bones with parent transforms
         MowzieGeoBone parent = getParent();
         Matrix4f identity = new Matrix4f();
         identity.setIdentity();
         Matrix4f matrix = parent == null ? identity : parent.getModelSpaceXform().copy();
         matrix.invert();
-        Vector4f vec = new Vector4f(-(float) pos.getX() / 16f, (float) pos.getY() / 16f, (float) pos.getZ() / 16f, 1);
+        Vector4f vec = new Vector4f(-(float) pos.x() / 16f, (float) pos.y() / 16f, (float) pos.z() / 16f, 1);
         vec.transform(matrix);
-        setPosition(-vec.getX() * 16f, vec.getY() * 16f, vec.getZ() * 16f);
+        setPosition(-vec.x() * 16f, vec.y() * 16f, vec.z() * 16f);
     }
 
     public Matrix4f getModelRotationMat() {
@@ -89,8 +94,8 @@ public class MowzieGeoBone extends GeoBone {
     }
 
     // Position utils
-    public void addPosition(Vector3d vec) {
-        addPosition((float) vec.getX(), (float) vec.getY(), (float) vec.getZ());
+    public void addPosition(Vec3 vec) {
+        addPosition((float) vec.x(), (float) vec.y(), (float) vec.z());
     }
 
     public void addPosition(float x, float y, float z) {
@@ -111,8 +116,8 @@ public class MowzieGeoBone extends GeoBone {
         setPositionZ(getPositionZ() + z);
     }
 
-    public void setPosition(Vector3d vec) {
-        setPosition((float) vec.getX(), (float) vec.getY(), (float) vec.getZ());
+    public void setPosition(Vec3 vec) {
+        setPosition((float) vec.x(), (float) vec.y(), (float) vec.z());
     }
 
     public void setPosition(float x, float y, float z) {
@@ -121,13 +126,13 @@ public class MowzieGeoBone extends GeoBone {
         setPositionZ(z);
     }
 
-    public Vector3d getPosition() {
-        return new Vector3d(getPositionX(), getPositionY(), getPositionZ());
+    public Vec3 getPosition() {
+        return new Vec3(getPositionX(), getPositionY(), getPositionZ());
     }
 
     // Rotation utils
-    public void addRotation(Vector3d vec) {
-        addRotation((float) vec.getX(), (float) vec.getY(), (float) vec.getZ());
+    public void addRotation(Vec3 vec) {
+        addRotation((float) vec.x(), (float) vec.y(), (float) vec.z());
     }
 
     public void addRotation(float x, float y, float z) {
@@ -148,8 +153,8 @@ public class MowzieGeoBone extends GeoBone {
         setRotationZ(getRotationZ() + z);
     }
 
-    public void setRotation(Vector3d vec) {
-        setRotation((float) vec.getX(), (float) vec.getY(), (float) vec.getZ());
+    public void setRotation(Vec3 vec) {
+        setRotation((float) vec.x(), (float) vec.y(), (float) vec.z());
     }
 
     public void setRotation(float x, float y, float z) {
@@ -158,13 +163,13 @@ public class MowzieGeoBone extends GeoBone {
         setRotationZ(z);
     }
 
-    public Vector3d getRotation() {
-        return new Vector3d(getRotationX(), getRotationY(), getRotationZ());
+    public Vec3 getRotation() {
+        return new Vec3(getRotationX(), getRotationY(), getRotationZ());
     }
 
     // Scale utils
-    public void multiplyScale(Vector3d vec) {
-        multiplyScale((float) vec.getX(), (float) vec.getY(), (float) vec.getZ());
+    public void multiplyScale(Vec3 vec) {
+        multiplyScale((float) vec.x(), (float) vec.y(), (float) vec.z());
     }
 
     public void multiplyScale(float x, float y, float z) {
@@ -173,8 +178,8 @@ public class MowzieGeoBone extends GeoBone {
         setScaleZ(getScaleZ() * z);
     }
 
-    public void setScale(Vector3d vec) {
-        setScale((float) vec.getX(), (float) vec.getY(), (float) vec.getZ());
+    public void setScale(Vec3 vec) {
+        setScale((float) vec.x(), (float) vec.y(), (float) vec.z());
     }
 
     public void setScale(float x, float y, float z) {
@@ -183,8 +188,8 @@ public class MowzieGeoBone extends GeoBone {
         setScaleZ(z);
     }
 
-    public Vector3d getScale() {
-        return new Vector3d(getScaleX(), getScaleY(), getScaleZ());
+    public Vec3 getScale() {
+        return new Vec3(getScaleX(), getScaleY(), getScaleZ());
     }
 
     public void addRotationOffsetFromBone(MowzieGeoBone source) {

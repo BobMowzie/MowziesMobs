@@ -4,35 +4,40 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.ClientProxy;
 import com.bobmowzie.mowziesmobs.client.model.armor.WroughtHelmModel;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.item.*;
 import net.minecraft.item.ArmorItem;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.ArmorMaterials;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+
 public class ItemWroughtHelm extends MowzieArmorItem {
     private static final WroughtHelmMaterial ARMOR_WROUGHT_HELM = new WroughtHelmMaterial();
 
     public ItemWroughtHelm(Item.Properties properties) {
-        super(ARMOR_WROUGHT_HELM, EquipmentSlotType.HEAD, properties);
+        super(ARMOR_WROUGHT_HELM, EquipmentSlot.HEAD, properties);
     }
 
     @Override
-    public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
-        if (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable.get()) return super.getIsRepairable(toRepair, repair);
+    public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
+        if (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable.get()) return super.isValidRepairItem(toRepair, repair);
         return false;
     }
 
@@ -42,7 +47,7 @@ public class ItemWroughtHelm extends MowzieArmorItem {
     }
 
     @Override
-    public boolean isDamageable() {
+    public boolean canBeDepleted() {
         return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable.get();
     }
 
@@ -64,14 +69,14 @@ public class ItemWroughtHelm extends MowzieArmorItem {
     @OnlyIn(Dist.CLIENT)
     @Nullable
     @Override
-    public <A extends BipedModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, A _default) {
+    public <A extends HumanoidModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, A _default) {
         WroughtHelmModel<?> model = MowziesMobs.PROXY.getWroughtHelmModel();
-        model.bipedHeadwear.showModel = armorSlot == EquipmentSlotType.HEAD;
+        model.hat.visible = armorSlot == EquipmentSlot.HEAD;
 
         if (_default != null) {
-            model.isChild = _default.isChild;
-            model.isSneak = _default.isSneak;
-            model.isSitting = _default.isSitting;
+            model.young = _default.young;
+            model.crouching = _default.crouching;
+            model.riding = _default.riding;
             model.rightArmPose = _default.rightArmPose;
             model.leftArmPose = _default.leftArmPose;
         }
@@ -81,14 +86,14 @@ public class ItemWroughtHelm extends MowzieArmorItem {
 
     @Nullable
     @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
+    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
         return new ResourceLocation(MowziesMobs.MODID, "textures/item/wrought_helmet.png").toString();
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.0").setStyle(ItemHandler.TOOLTIP_STYLE));
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
+        tooltip.add(new TranslatableComponent(getDescriptionId() + ".text.0").setStyle(ItemHandler.TOOLTIP_STYLE));
     }
 
     @Override
@@ -96,31 +101,31 @@ public class ItemWroughtHelm extends MowzieArmorItem {
         return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorConfig;
     }
 
-    private static class WroughtHelmMaterial implements IArmorMaterial {
+    private static class WroughtHelmMaterial implements ArmorMaterial {
 
         @Override
-        public int getDurability(EquipmentSlotType equipmentSlotType) {
-            return ArmorMaterial.IRON.getDurability(equipmentSlotType);
+        public int getDurabilityForSlot(EquipmentSlot equipmentSlotType) {
+            return ArmorMaterials.IRON.getDurabilityForSlot(equipmentSlotType);
         }
 
         @Override
-        public int getDamageReductionAmount(EquipmentSlotType equipmentSlotType) {
+        public int getDefenseForSlot(EquipmentSlot equipmentSlotType) {
             return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorConfig.damageReduction.get();
         }
 
         @Override
-        public int getEnchantability() {
-            return ArmorMaterial.IRON.getEnchantability();
+        public int getEnchantmentValue() {
+            return ArmorMaterials.IRON.getEnchantmentValue();
         }
 
         @Override
-        public SoundEvent getSoundEvent() {
-            return ArmorMaterial.IRON.getSoundEvent();
+        public SoundEvent getEquipSound() {
+            return ArmorMaterials.IRON.getEquipSound();
         }
 
         @Override
-        public Ingredient getRepairMaterial() {
-            return ArmorMaterial.IRON.getRepairMaterial();
+        public Ingredient getRepairIngredient() {
+            return ArmorMaterials.IRON.getRepairIngredient();
         }
 
         @Override

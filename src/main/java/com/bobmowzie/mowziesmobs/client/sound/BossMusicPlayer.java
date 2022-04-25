@@ -3,9 +3,9 @@ package com.bobmowzie.mowziesmobs.client.sound;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvent;
 
 public class BossMusicPlayer {
     public static BossMusicSound bossMusic;
@@ -15,9 +15,9 @@ public class BossMusicPlayer {
 
         SoundEvent soundEvent = entity.getBossMusic();
         if (soundEvent != null && entity.isAlive()) {
-            PlayerEntity player = Minecraft.getInstance().player;
+            Player player = Minecraft.getInstance().player;
             if (bossMusic != null) {
-                float f2 = Minecraft.getInstance().gameSettings.getSoundLevel(SoundCategory.MUSIC);
+                float f2 = Minecraft.getInstance().options.getSoundSourceVolume(SoundSource.MUSIC);
                 if (f2 <= 0) {
                     bossMusic = null;
                 }
@@ -33,8 +33,8 @@ public class BossMusicPlayer {
                     bossMusic = new BossMusicSound(entity.getBossMusic(), entity);
                 }
             }
-            if (bossMusic != null && !Minecraft.getInstance().getSoundHandler().isPlaying(bossMusic)) {
-                Minecraft.getInstance().getSoundHandler().play(bossMusic);
+            if (bossMusic != null && !Minecraft.getInstance().getSoundManager().isActive(bossMusic)) {
+                Minecraft.getInstance().getSoundManager().play(bossMusic);
             }
         }
     }

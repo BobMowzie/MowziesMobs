@@ -9,12 +9,12 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
-import net.minecraft.util.Hand;
+import net.minecraft.world.InteractionHand;
 
 public class IceBreathAbility extends Ability {
     protected EntityIceBreath iceBreath;
@@ -31,21 +31,21 @@ public class IceBreathAbility extends Ability {
     public void start() {
         super.start();
         LivingEntity user = getUser();
-        if (!getUser().world.isRemote()) {
-            EntityIceBreath iceBreath = new EntityIceBreath(EntityHandler.ICE_BREATH.get(), user.world, user);
-            iceBreath.setPositionAndRotation(user.getPosX(), user.getPosY() + user.getEyeHeight() - 0.5f, user.getPosZ(), user.rotationYaw, user.rotationPitch);
-            user.world.addEntity(iceBreath);
+        if (!getUser().level.isClientSide()) {
+            EntityIceBreath iceBreath = new EntityIceBreath(EntityHandler.ICE_BREATH.get(), user.level, user);
+            iceBreath.absMoveTo(user.getX(), user.getY() + user.getEyeHeight() - 0.5f, user.getZ(), user.yRot, user.xRot);
+            user.level.addFreshEntity(iceBreath);
             this.iceBreath = iceBreath;
         }
         playAnimation("ice_breath_start", false);
 
-        if (getUser().getActiveHand() == Hand.MAIN_HAND) {
-            heldItemMainHandVisualOverride = getUser().getHeldItemMainhand();
+        if (getUser().getUsedItemHand() == InteractionHand.MAIN_HAND) {
+            heldItemMainHandVisualOverride = getUser().getMainHandItem();
             heldItemOffHandVisualOverride = ItemStack.EMPTY;
             firstPersonOffHandDisplay = Ability.HandDisplay.DONT_RENDER;
         }
         else {
-            heldItemOffHandVisualOverride = getUser().getHeldItemOffhand();
+            heldItemOffHandVisualOverride = getUser().getOffhandItem();
             heldItemMainHandVisualOverride = ItemStack.EMPTY;
             firstPersonMainHandDisplay = Ability.HandDisplay.DONT_RENDER;
         }
@@ -64,10 +64,10 @@ public class IceBreathAbility extends Ability {
     }
 
     private boolean checkIceCrystal() {
-        ItemStack stack = getUser().getActiveItemStack();
+        ItemStack stack = getUser().getUseItem();
         if (getTicksInUse() <= 1) return true;
         if (stack.getItem() != ItemHandler.ICE_CRYSTAL) return false;
-        return stack.getDamage() + 5 < stack.getMaxDamage() || ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable.get();
+        return stack.getDamageValue() + 5 < stack.getMaxDamage() || ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable.get();
     }
 
     @Override
