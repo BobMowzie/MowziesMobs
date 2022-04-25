@@ -1,25 +1,26 @@
 buildscript {
     repositories {
         maven {
-            url "http://files.minecraftforge.net/maven"
+            url "https://files.minecraftforge.net/maven"
         }
         jcenter()
         mavenCentral()
     }
     dependencies {
-        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "3.+", changing: true
+        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "5.1.+", changing: true
     }
 }
 
 apply plugin: "net.minecraftforge.gradle"
+apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
 
 version = "1.5.24"
 group = "com.bobmowzie.mowziesmobs"
 archivesBaseName = "mowziesmobs"
-sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+java.toolchain.languageVersion = JavaLanguageVersion.of(16)
 
 minecraft {
-    mappings channel: "snapshot", version: "20210309-1.16.5"
+    mappings channel: "official", version: "1.17.1"
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
     runs {
         client {
@@ -46,31 +47,29 @@ minecraft {
 jar {
     manifest {
         attributes([
-            "Specification-Title": "mowziesmobs",
-            "Specification-Vendor": "BobMowzie",
-            "Specification-Version": "1",
-            "Implementation-Title": "mowziesmobs",
-            "Implementation-Version": "${project.version}",
-            "Implementation-Vendor" : "BobMowzie",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                "Specification-Title": "mowziesmobs",
+                "Specification-Vendor": "BobMowzie",
+                "Specification-Version": "1",
+                "Implementation-Title": "mowziesmobs",
+                "Implementation-Version": "${project.version}",
+                "Implementation-Vendor" : "BobMowzie",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
 }
 
 repositories {
     maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
-//    maven { url "https://www.cursemaven.com" }
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:1.16.5-36.2.20"
-    implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.16.5:3.0.57')
-//    implementation fg.deobf("curse.maven:iceandfire-264231:3361256")
+    minecraft "net.minecraftforge:forge:1.17.1-37.1.1"
+    implementation fg.deobf('software.bernie.geckolib:geckolib-1.17.1:3.0.10')
 }
 
 processResources {
     def vars = [
-        "version": project.version
+            "version": project.version
     ]
     inputs.properties(vars)
     from(sourceSets.main.resources.srcDirs) {
