@@ -2,11 +2,8 @@ package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
-import com.google.common.collect.Sets;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.control.LookControl;
-import net.minecraft.entity.ai.goal.GoalSelector;
-import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -19,8 +16,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.Level;
 
-import java.util.Random;
-import java.util.Set;
 import java.util.UUID;
 
 public class ItemCapturedGrottol extends Item {

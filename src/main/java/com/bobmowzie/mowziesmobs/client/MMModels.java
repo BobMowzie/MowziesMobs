@@ -3,7 +3,6 @@ package com.bobmowzie.mowziesmobs.client;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;

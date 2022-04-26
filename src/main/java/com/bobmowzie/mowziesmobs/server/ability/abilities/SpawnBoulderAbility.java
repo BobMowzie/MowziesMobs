@@ -140,8 +140,8 @@ public class SpawnBoulderAbility extends Ability {
             Vec3 vec = playerEyes.subtract(lookPos).normalize();
             float yaw = (float) Math.atan2(vec.z, vec.x);
             float pitch = (float) Math.asin(vec.y);
-            getUser().yRot = (float) (yaw * 180f / Math.PI + 90);
-            getUser().xRot = (float) (pitch * 180f / Math.PI);
+            getUser().setYRot((float) (yaw * 180f / Math.PI + 90));
+            getUser().setXRot((float) (pitch * 180f / Math.PI));
         }
         spawnBoulderCharge = 0;
     }
@@ -195,11 +195,11 @@ public class SpawnBoulderAbility extends Ability {
             Vec3 vec = playerEyes.subtract(lookPos).normalize();
             float yaw = (float) Math.atan2(vec.z, vec.x);
             float pitch = (float) Math.asin(vec.y);
-            getUser().yRot = (float) (yaw * 180f / Math.PI + 90);
-            getUser().xRot = (float) (pitch * 180f / Math.PI);
-            getUser().yHeadRot = getUser().yRot;
-            getUser().yRotO = getUser().yRot;
-            getUser().xRotO = getUser().xRot;
+            getUser().setYRot((float) (yaw * 180f / Math.PI + 90));
+            getUser().setXRot((float) (pitch * 180f / Math.PI));
+            getUser().yHeadRot = getUser().getYRot();
+            getUser().yRotO = getUser().getYRot();
+            getUser().xRotO = getUser().getXRot();
             getUser().yHeadRotO = getUser().yHeadRot;
         }
     }

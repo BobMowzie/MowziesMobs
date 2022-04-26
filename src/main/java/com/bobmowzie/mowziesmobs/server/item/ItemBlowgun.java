@@ -1,21 +1,13 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.minecraft.client.audio.Sound;
-import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.item.*;
 import net.minecraft.stats.Stats;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -45,7 +37,7 @@ public class ItemBlowgun extends BowItem {
     {
         if (entityLiving instanceof Player) {
             Player playerentity = (Player)entityLiving;
-            boolean flag = playerentity.abilities.instabuild || EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, stack) > 0;
+            boolean flag = playerentity.getAbilities().instabuild || EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, stack) > 0;
             ItemStack itemstack = playerentity.getProjectile(stack);
 
             int i = this.getUseDuration(stack) - timeLeft;
@@ -59,12 +51,12 @@ public class ItemBlowgun extends BowItem {
 
                 float f = getArrowVelocity(i);
                 if (!((double)f < 0.1D)) {
-                    boolean flag1 = playerentity.abilities.instabuild || (itemstack.getItem() instanceof ItemDart && ((ItemDart)itemstack.getItem()).isInfinite(itemstack, stack, playerentity));
+                    boolean flag1 = playerentity.getAbilities().instabuild || (itemstack.getItem() instanceof ItemDart && ((ItemDart)itemstack.getItem()).isInfinite(itemstack, stack, playerentity));
                     if (!worldIn.isClientSide) {
                         ArrowItem arrowitem = (ArrowItem)(itemstack.getItem() instanceof ItemDart ? itemstack.getItem() : ItemHandler.DART);
                         AbstractArrow abstractarrowentity = arrowitem.createArrow(worldIn, itemstack, playerentity);
                         abstractarrowentity = customArrow(abstractarrowentity);
-                        abstractarrowentity.shootFromRotation(playerentity, playerentity.xRot, playerentity.yRot, 0.0F, f * 1.1F /*ALTERED FROM PARENT*/, 1.0F);
+                        abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(), 0.0F, f * 1.1F /*ALTERED FROM PARENT*/, 1.0F);
                         if (f == 1.0F) {
                             abstractarrowentity.setCritArrow(true);
                         }
@@ -86,18 +78,18 @@ public class ItemBlowgun extends BowItem {
                         stack.hurtAndBreak(1, playerentity, (player) -> {
                             player.broadcastBreakEvent(playerentity.getUsedItemHand());
                         });
-                        if (flag1 || playerentity.abilities.instabuild && (itemstack.getItem() == Items.SPECTRAL_ARROW || itemstack.getItem() == Items.TIPPED_ARROW)) {
+                        if (flag1 || playerentity.getAbilities().instabuild && (itemstack.getItem() == Items.SPECTRAL_ARROW || itemstack.getItem() == Items.TIPPED_ARROW)) {
                             abstractarrowentity.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
                         }
 
                         worldIn.addFreshEntity(abstractarrowentity);
                     }
 
-                    worldIn.playSound((Player)null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), MMSounds.ENTITY_BARAKOA_BLOWDART.get(), SoundSource.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F) + f * 0.5F); //CHANGED FROM PARENT CLASS
-                    if (!flag1 && !playerentity.abilities.instabuild) {
+                    worldIn.playSound((Player)null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), MMSounds.ENTITY_BARAKOA_BLOWDART.get(), SoundSource.PLAYERS, 1.0F, 1.0F / (playerentity.getRandom().nextFloat() * 0.4F + 1.2F) + f * 0.5F); //CHANGED FROM PARENT CLASS
+                    if (!flag1 && !playerentity.getAbilities().instabuild) {
                         itemstack.shrink(1);
                         if (itemstack.isEmpty()) {
-                            playerentity.inventory.removeItem(itemstack);
+                            playerentity.getInventory().removeItem(itemstack);
                         }
                     }
 

@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.ai.animation;
 
-import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
@@ -11,7 +10,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.phys.Vec3;
 
-import javax.management.Attribute;
 import java.util.List;
 
 public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
@@ -61,7 +59,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
             if (entity.getAnimationTick() < 23 && entityTarget != null) {
                 entity.lookAt(entityTarget, 30F, 30F);
             } else {
-                entity.yRot = entity.yRotO;
+                entity.setYRot(entity.yRotO);
             }
             if (entity.getAnimationTick() == 6) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_CREAK.get(), 0.5F, 1);
@@ -102,7 +100,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
             if (entity.getAnimationTick() < 7 && entityTarget != null) {
                 entity.lookAt(entityTarget, 30F, 30F);
             } else {
-                entity.yRot = entity.yRotO;
+                entity.setYRot(entity.yRotO);
             }
             if (entity.getAnimationTick() == 10) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 1.2F, 1);
@@ -143,7 +141,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
             if (entity.getAnimationTick() < 22 && entityTarget != null) {
                 entity.lookAt(entityTarget, 30F, 30F);
             } else {
-                entity.yRot = entity.yRotO;
+                entity.setYRot(entity.yRotO);
             }
             if (entity.getAnimationTick() == 20) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 1.2F, 0.9f);

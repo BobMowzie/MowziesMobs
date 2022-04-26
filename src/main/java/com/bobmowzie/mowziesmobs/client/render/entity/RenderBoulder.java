@@ -5,17 +5,12 @@ import com.bobmowzie.mowziesmobs.client.render.entity.layer.BlockLayer;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -34,7 +29,7 @@ public class RenderBoulder extends EntityRenderer<EntityBoulder> {
 
     ModelBoulder model;
 
-    public RenderBoulder(EntityRenderDispatcher mgr) {
+    public RenderBoulder(EntityRendererProvider.Context mgr) {
         super(mgr);
         model = new ModelBoulder();
         texMap = new TreeMap<String, ResourceLocation>();

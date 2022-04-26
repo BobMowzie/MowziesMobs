@@ -3,7 +3,6 @@ package com.bobmowzie.mowziesmobs.server.entity;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
-import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -18,7 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 public class EntityDart extends Arrow {
     public EntityDart(EntityType<? extends EntityDart> type, Level world) {

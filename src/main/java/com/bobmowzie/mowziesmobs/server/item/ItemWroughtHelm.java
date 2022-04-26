@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.ClientProxy;
 import com.bobmowzie.mowziesmobs.client.model.armor.WroughtHelmModel;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import net.minecraft.client.model.HumanoidModel;
@@ -9,8 +8,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.item.*;
-import net.minecraft.item.ArmorItem;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;

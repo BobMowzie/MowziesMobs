@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.ability.abilities;
 
-import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
@@ -8,9 +7,7 @@ import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.util.HandSide;
 
-import static com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack.SWING_DURATION_HOR;
 import static com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack.SWING_DURATION_VER;
 
 public class WroughtAxeSlamAbility extends Ability {
@@ -29,7 +26,7 @@ public class WroughtAxeSlamAbility extends Ability {
         super.start();
         if (!getUser().level.isClientSide()) {
             EntityAxeAttack axeAttack = new EntityAxeAttack(EntityHandler.AXE_ATTACK.get(), getUser().level, getUser(), true);
-            axeAttack.absMoveTo(getUser().getX(), getUser().getY(), getUser().getZ(), getUser().yRot, getUser().xRot);
+            axeAttack.absMoveTo(getUser().getX(), getUser().getY(), getUser().getZ(), getUser().yRot, getUser().getXRot());
             getUser().level.addFreshEntity(axeAttack);
             this.axeAttack = axeAttack;
         }

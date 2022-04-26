@@ -27,13 +27,11 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.entity.monster.*;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
@@ -53,7 +51,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.players.OldUsersConverter;
 import net.minecraft.util.*;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.*;
@@ -302,8 +299,8 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             direction = getDirection();
         }
         if (!(getAnimation() == ATTACK_ANIMATION && getAnimationTick() >= 12 && getAnimationTick() <= 14)) this.repelEntities(1.2f, 1.2f, 1.2f, 1.2f);
-        this.yRot = (direction - 1) * 90;
-        this.yBodyRot = yRot;
+        this.setYRot((direction - 1) * 90);
+        this.yBodyRot = getYRot();
 //        this.posX = prevPosX;
 //        this.posZ = prevPosZ;
 

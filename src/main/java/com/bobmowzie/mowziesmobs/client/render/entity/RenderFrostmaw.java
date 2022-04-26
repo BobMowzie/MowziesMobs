@@ -8,8 +8,8 @@ import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
@@ -20,7 +20,7 @@ import net.minecraft.world.phys.Vec3;
 public class RenderFrostmaw extends MobRenderer<EntityFrostmaw, ModelFrostmaw<EntityFrostmaw>> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/frostmaw.png");
 
-    public RenderFrostmaw(EntityRenderDispatcher mgr) {
+    public RenderFrostmaw(EntityRendererProvider.Context mgr) {
         super(mgr, new ModelFrostmaw<>(), 3.5f);
         addLayer(new ItemLayer<>(this, getModel().iceCrystalHand, ItemHandler.ICE_CRYSTAL.getDefaultInstance(), ItemTransforms.TransformType.GROUND));
         addLayer(new ItemLayer<>(this, getModel().iceCrystal, ItemHandler.ICE_CRYSTAL.getDefaultInstance(), ItemTransforms.TransformType.GROUND));

@@ -7,7 +7,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import com.mojang.brigadier.StringReader;
-import net.minecraft.util.Rotation;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.core.Registry;
 import net.minecraftforge.api.distmarker.Dist;

@@ -5,12 +5,12 @@ import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.AABB;
@@ -51,7 +51,7 @@ public class RenderSunstrike extends EntityRenderer<EntitySunstrike> {
     private static final float SCORCH_MIN_V = 16f / TEXTURE_HEIGHT;
     private static final float SCORCH_MAX_V = SCORCH_MIN_V + RING_FRAME_SIZE / TEXTURE_HEIGHT;
 
-    public RenderSunstrike(EntityRenderDispatcher mgr) {
+    public RenderSunstrike(EntityRendererProvider.Context mgr) {
         super(mgr);
     }
 

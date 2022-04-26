@@ -27,7 +27,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.util.math.vector.*;
 import net.minecraft.ChatFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -178,7 +177,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
             f2 = f1 - f;
         }
 
-        float f6 = Mth.lerp(partialTicks, entityIn.xRotO, entityIn.xRot);
+        float f6 = Mth.lerp(partialTicks, entityIn.xRotO, entityIn.getXRot());
         if (entityIn.getPose() == Pose.SLEEPING) {
             Direction direction = entityIn.getBedOrientation();
             if (direction != null) {
@@ -279,7 +278,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
             float f1 = (float)entityLiving.getFallFlyingTicks() + partialTicks;
             float f2 = Mth.clamp(f1 * f1 / 100.0F, 0.0F, 1.0F);
             if (!entityLiving.isAutoSpinAttack()) {
-                matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(f2 * (-90.0F - entityLiving.xRot)));
+                matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(f2 * (-90.0F - entityLiving.getXRot())));
             }
 
             Vec3 vector3d = entityLiving.getViewVector(partialTicks);

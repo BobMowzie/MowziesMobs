@@ -10,7 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.resources.ResourceLocation;
@@ -26,7 +26,7 @@ public class RenderAxeAttack extends EntityRenderer<EntityAxeAttack> {
 
     ModelAxeAttack model;
 
-    public RenderAxeAttack(EntityRenderDispatcher mgr) {
+    public RenderAxeAttack(EntityRendererProvider.Context mgr) {
         super(mgr);
         model = new ModelAxeAttack();
     }

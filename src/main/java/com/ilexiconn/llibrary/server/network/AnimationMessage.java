@@ -3,7 +3,7 @@ package com.ilexiconn.llibrary.server.network;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;

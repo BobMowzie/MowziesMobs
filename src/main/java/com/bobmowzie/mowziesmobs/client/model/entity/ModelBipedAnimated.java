@@ -1,16 +1,8 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ModelRendererMatrix;
-import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
-import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.HandSide;
-import net.minecraft.util.math.vector.Vector3d;
 
 public class ModelBipedAnimated<T extends LivingEntity> extends HumanoidModel<T> {
     public ModelBipedAnimated(float modelSize) {

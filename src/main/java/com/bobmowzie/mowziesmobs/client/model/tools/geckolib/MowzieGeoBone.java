@@ -1,8 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.model.tools.geckolib;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.RigUtils;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.util.math.vector.*;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 
 import com.mojang.math.Matrix3f;

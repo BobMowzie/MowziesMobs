@@ -24,14 +24,10 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.core.Direction;
-import net.minecraft.util.math.*;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.network.NetworkHooks;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 import net.minecraft.util.Mth;
@@ -39,6 +35,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.fmllegacy.common.registry.IEntityAdditionalSpawnData;
 
 public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnData {
     public static final int STRIKE_EXPLOSION = 35;

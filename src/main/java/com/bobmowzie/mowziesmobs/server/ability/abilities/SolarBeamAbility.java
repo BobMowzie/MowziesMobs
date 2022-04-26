@@ -13,8 +13,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 
-import com.bobmowzie.mowziesmobs.server.ability.Ability.HandDisplay;
-
 public class SolarBeamAbility extends Ability {
     protected EntitySolarBeam solarBeam;
 
@@ -31,7 +29,7 @@ public class SolarBeamAbility extends Ability {
         super.start();
         LivingEntity user = getUser();
         if (!getUser().level.isClientSide()) {
-            EntitySolarBeam solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM.get(), user.level, user, user.getX(), user.getY() + 1.2f, user.getZ(), (float) ((user.yHeadRot + 90) * Math.PI / 180), (float) (-user.xRot * Math.PI / 180), 55);
+            EntitySolarBeam solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM.get(), user.level, user, user.getX(), user.getY() + 1.2f, user.getZ(), (float) ((user.yHeadRot + 90) * Math.PI / 180), (float) (-user.getXRot() * Math.PI / 180), 55);
             solarBeam.setHasPlayer(true);
             user.level.addFreshEntity(solarBeam);
             user.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 2, false, false));

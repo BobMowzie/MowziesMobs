@@ -29,12 +29,10 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.core.Direction;
-import net.minecraft.util.math.*;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkHooks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +42,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 
 public class EntitySolarBeam extends Entity {
     public static final double RADIUS_BARAKO = 30;
@@ -124,7 +121,7 @@ public class EntitySolarBeam extends Entity {
         }
         if (caster != null) {
             renderYaw = (float) ((caster.yHeadRot + 90.0d) * Math.PI / 180.0d);
-            renderPitch = (float) (-caster.xRot * Math.PI / 180.0d);
+            renderPitch = (float) (-caster.getXRot() * Math.PI / 180.0d);
         }
 
         if (!on && appear.getTimer() == 0) {

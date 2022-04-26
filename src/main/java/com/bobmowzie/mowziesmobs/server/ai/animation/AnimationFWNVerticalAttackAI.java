@@ -33,7 +33,7 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
             entity.lookAt(entityTarget, 30F, 30F);
         }
         else {
-            entity.yRot = entity.yRotO;
+            entity.setYRot(entity.yRotO);
         }
 
         if (entity.getAnimationTick() == 6) {
@@ -74,7 +74,7 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
         }
         if (entity.getAnimationTick() > 26 && entity.getAnimationTick() < 85) {
             entity.vulnerable = true;
-            entity.yRot = entity.yRotO;
+            entity.setYRot(entity.yRotO);
             entity.yBodyRot = entity.yBodyRotO;
         } else {
             entity.vulnerable = false;

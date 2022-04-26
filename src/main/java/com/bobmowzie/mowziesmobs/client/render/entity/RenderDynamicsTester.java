@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelDynamicsTester;
 import com.bobmowzie.mowziesmobs.server.entity.EntityDynamicsTester;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 
@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 public class RenderDynamicsTester extends MobRenderer<EntityDynamicsTester, ModelDynamicsTester<EntityDynamicsTester>> {
     private static final ResourceLocation TEXTURE_STONE = new ResourceLocation("textures/blocks/stone.png");
 
-    public RenderDynamicsTester(EntityRenderDispatcher mgr) {
+    public RenderDynamicsTester(EntityRendererProvider.Context mgr) {
         super(mgr, new ModelDynamicsTester<>(), 0.5f);
     }
 

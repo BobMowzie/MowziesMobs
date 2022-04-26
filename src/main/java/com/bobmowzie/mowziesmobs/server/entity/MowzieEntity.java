@@ -263,7 +263,7 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
 
     @Override
     public void readSpawnData(FriendlyByteBuf buf) {
-        yRotO = yRot;
+        yRotO = getYRot();
         yBodyRotO = yBodyRot = yHeadRotO = yHeadRot;
         int animOrdinal = buf.readInt();
         int animTick = buf.readInt();
@@ -273,7 +273,7 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
 
     @Override
     public boolean doHurtTarget(Entity entityIn) {
-        return this.attackEntityAsMob(entityIn, 1.0F, 1.0f);
+        return this.doHurtTarget(entityIn, 1.0F, 1.0f);
     }
 
     @Override
@@ -283,11 +283,11 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
         return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
 
-    public boolean attackEntityAsMob(Entity entityIn, float damageMultiplier, float applyKnockbackMultiplier) {
-        return attackEntityAsMob(entityIn, damageMultiplier, applyKnockbackMultiplier, false);
+    public boolean doHurtTarget(Entity entityIn, float damageMultiplier, float applyKnockbackMultiplier) {
+        return doHurtTarget(entityIn, damageMultiplier, applyKnockbackMultiplier, false);
     }
 
-    public boolean attackEntityAsMob(Entity entityIn, float damageMultiplier, float applyKnockbackMultiplier, boolean canDisableShield) { // TODO copy from mob class
+    public boolean doHurtTarget(Entity entityIn, float damageMultiplier, float applyKnockbackMultiplier, boolean canDisableShield) { // TODO copy from mob class
         float f = (float)this.getAttribute(Attributes.ATTACK_DAMAGE).getValue() * damageMultiplier;
         float f1 = (float)this.getAttribute(Attributes.ATTACK_KNOCKBACK).getValue() * applyKnockbackMultiplier;
         if (entityIn instanceof LivingEntity) {
@@ -303,21 +303,13 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
         boolean flag = entityIn.hurt(DamageSource.mobAttack(this), f);
         if (flag) {
             if (f1 > 0.0F && entityIn instanceof LivingEntity) {
-                ((LivingEntity)entityIn).knockback(f1 * 0.5F, Mth.sin(this.yRot * ((float)Math.PI / 180F)), -Mth.cos(this.yRot * ((float)Math.PI / 180F)));
+                ((LivingEntity)entityIn).knockback(f1 * 0.5F, Mth.sin(this.getYRot() * ((float)Math.PI / 180F)), -Mth.cos(this.getYRot() * ((float)Math.PI / 180F)));
                 this.setDeltaMovement(this.getDeltaMovement().multiply(0.6D, 1.0D, 0.6D));
             }
 
             if (entityIn instanceof Player) {
-                Player playerentity = (Player)entityIn;
-                ItemStack itemstack = this.getMainHandItem();
-                ItemStack itemstack1 = playerentity.isUsingItem() ? playerentity.getUseItem() : ItemStack.EMPTY;
-                if (((!itemstack.isEmpty() && itemstack.canDisableShield(itemstack1, playerentity, this)) || canDisableShield) && !itemstack1.isEmpty() && itemstack1.isShield(playerentity)) {
-                    float f2 = 0.25F + (float)EnchantmentHelper.getBlockEfficiency(this) * 0.05F;
-                    if (this.random.nextFloat() < f2) {
-                        playerentity.getCooldowns().addCooldown(itemstack.getItem(), 100);
-                        this.level.broadcastEntityEvent(playerentity, (byte)30);
-                    }
-                }
+                Player player = (Player)entityIn;
+                this.maybeDisableShield(player, this.getMainHandItem(), player.isUsingItem() ? player.getUseItem() : ItemStack.EMPTY);
             }
 
             this.doEnchantDamageEffects(this, entityIn);

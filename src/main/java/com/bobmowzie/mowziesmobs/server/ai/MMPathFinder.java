@@ -9,12 +9,10 @@ import net.minecraft.world.level.pathfinder.Node;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.IWorldReader;
 import net.minecraft.world.level.PathNavigationRegion;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 

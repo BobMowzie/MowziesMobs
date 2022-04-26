@@ -12,7 +12,6 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBlockSwapper;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityFallingBlock;
 import com.bobmowzie.mowziesmobs.server.message.MessagePlayerStartSummonBoulder;
-import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.FenceBlock;
@@ -26,7 +25,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.util.math.*;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraft.world.phys.Vec3;
@@ -73,7 +71,7 @@ public class PowerGeomancy extends Power {
         //Tunneling
         if (tunneling) {
             player.fallDistance = 0;
-            player.abilities.flying = false;
+            player.getAbilities().flying = false;
             boolean underground = !player.level.getEntitiesOfClass(EntityBlockSwapper.class, player.getBoundingBox()).isEmpty();
             if (player.isOnGround() && !underground) tunneling = false;
             Vec3 lookVec = player.getLookAngle();
@@ -271,8 +269,8 @@ public class PowerGeomancy extends Power {
             Vec3 vec = playerEyes.subtract(getLookPos()).normalize();
             float yaw = (float) Math.atan2(vec.z, vec.x);
             float pitch = (float) Math.asin(vec.y);
-            player.yRot = (float) (yaw * 180f / Math.PI + 90);
-            player.xRot = (float) (pitch * 180f / Math.PI);
+            player.setYRot((float) (yaw * 180f / Math.PI + 90));
+            player.setXRot((float) (pitch * 180f / Math.PI));
         }
 
         spawnBoulderCooldown = 10;
@@ -309,7 +307,7 @@ public class PowerGeomancy extends Power {
                 && blockState.getBlock() != Blocks.ENDER_CHEST
                 && blockState.getBlock() != Blocks.SLIME_BLOCK
                 && blockState.getBlock() != Blocks.HOPPER
-                && !blockState.hasTileEntity();
+                && !blockState.hasBlockEntity();
     }
 
     public void startSpawningBoulder(Player player) {

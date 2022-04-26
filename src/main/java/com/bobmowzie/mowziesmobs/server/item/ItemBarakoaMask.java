@@ -15,10 +15,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraft.util.*;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
@@ -61,7 +59,7 @@ public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask {
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        ItemStack headStack = player.inventory.armor.get(3);
+        ItemStack headStack = player.getInventory().armor.get(3);
         if (headStack.getItem() instanceof ItemBarakoMask) {
             if (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get() && !player.isCreative()) headStack.hurtAndBreak(2, player, p -> p.broadcastBreakEvent(hand));
             boolean didSpawn = spawnBarakoa(type, stack, player,(float)stack.getDamageValue() / (float)stack.getMaxDamage());

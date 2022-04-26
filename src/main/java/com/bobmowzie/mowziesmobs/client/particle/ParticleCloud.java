@@ -8,21 +8,15 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.Camera;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.particles.ItemParticleData;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.Registry;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Locale;
-import java.util.Optional;
 
 /**
  * Created by BobMowzie on 6/2/2017.

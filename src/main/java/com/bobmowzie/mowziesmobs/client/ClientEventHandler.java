@@ -15,7 +15,6 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.item.*;
-import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -25,7 +24,6 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.CameraType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.util.Hand;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -38,7 +36,6 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fml.LogicalSide;
-import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
 
 @OnlyIn(Dist.CLIENT)
 public enum ClientEventHandler {
@@ -71,7 +68,7 @@ public enum ClientEventHandler {
 
                         if (event.isCanceled()) {
                             float delta = event.getPartialTicks();
-                            float f1 = Mth.lerp(delta, player.xRotO, player.xRot);
+                            float f1 = Mth.lerp(delta, player.xRotO, player.getXRot());
                             firstPersonRenderer.renderItemInFirstPerson((AbstractClientPlayer) player, f1, delta, event.getHand(), event.getSwingProgress(), event.getItemStack(), event.getEquipProgress(), event.getMatrixStack(), event.getBuffers(), event.getLight(), geckoPlayer);
                         }
                     }
@@ -134,11 +131,11 @@ public enum ClientEventHandler {
 //            }
         FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(player, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
         if (frozenCapability != null && frozenCapability.getFrozen() && frozenCapability.getPrevFrozen()) {
-            player.yRot = frozenCapability.getFrozenYaw();
-            player.xRot = frozenCapability.getFrozenPitch();
+            player.setYRot(frozenCapability.getFrozenYaw());
+            player.setXRot(frozenCapability.getFrozenPitch());
             player.yHeadRot = frozenCapability.getFrozenYawHead();
-            player.yRotO = player.yRot;
-            player.xRotO = player.xRot;
+            player.yRotO = player.getYRot();
+            player.xRotO = player.getXRot();
             player.yHeadRotO = player.yHeadRot;
         }
     }
@@ -148,8 +145,8 @@ public enum ClientEventHandler {
         LivingEntity entity = event.getEntity();
         FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
         if (frozenCapability != null && frozenCapability.getFrozen() && frozenCapability.getPrevFrozen()) {
-            entity.yRot = entity.yRotO = frozenCapability.getFrozenYaw();
-            entity.xRot = entity.xRotO = frozenCapability.getFrozenPitch();
+            entity.setYRot(entity.yRotO = frozenCapability.getFrozenYaw());
+            entity.setXRot(entity.xRotO = frozenCapability.getFrozenPitch());
             entity.yHeadRot = entity.yHeadRotO = frozenCapability.getFrozenYawHead();
             entity.yBodyRot = entity.yBodyRotO = frozenCapability.getFrozenRenderYawOffset();
             entity.attackAnim = entity.oAttackAnim = frozenCapability.getFrozenSwingProgress();
@@ -164,40 +161,6 @@ public enum ClientEventHandler {
         final int pointStart = 1200;
         final int timePerMillis = 22;
         if (e.getType() == ElementType.POTION_ICONS) {
-            /*long now = System.currentTimeMillis();
-            if (now - lastWroughtnautHitTime < 500) {
-                int t = (int) (now - startWroughtnautHitTime);
-                int progress = t / timePerMillis;
-                int time = startTime - progress;
-                if (time < 0) {
-                    startWroughtnautHitTime = now;
-                    progress = 0;
-                    time = startTime;
-                }
-                int points = pointStart + progress * 50;
-                Minecraft.getInstance().getTextureManager().bindTexture(MARIO);
-                MainWindow res = e.getWindow();
-                int offsetY = 16;
-                int col = res.getScaledWidth() / 4;
-                // MARIO
-                int marioOffsetX = col / 2 - 18;
-                AbstractGui.blit(marioOffsetX, offsetY, 0, 16, 39, 7, 64, 64);
-                // points
-                drawMarioNumber(marioOffsetX, offsetY + 8, points, 6);
-                // Coin
-                int coinOffsetX = col + col / 2 - 15;
-                int coinU = 40 + ((int) (Math.max(0, MathHelper.sin(t * 0.005F)) * 2 + 0.5F)) * 6;
-                AbstractGui.blit(coinOffsetX, offsetY + 8, coinU, 8, 5, 8, 64, 64);
-                // x02
-                AbstractGui.blit(coinOffsetX + 9, offsetY + 8, 16, 8, 23, 7, 64, 64);
-                // WORLD 1-1
-                AbstractGui.blit(col * 2 + col / 2 - 19, offsetY, 0, 24, 39, 15, 64, 64);
-                // TIME
-                int timeOffsetX = col * 3 + col / 2 - 15;
-                AbstractGui.blit(timeOffsetX, offsetY, 0, 40, 30, 7, 64, 64);
-                // Time
-                drawMarioNumber(timeOffsetX + 8, offsetY + 8, time, 3);
-            }*/
             if (Minecraft.getInstance().player != null) {
                 FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(Minecraft.getInstance().player, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
                 if (frozenCapability != null && frozenCapability.getFrozen() && Minecraft.getInstance().options.getCameraType() == CameraType.FIRST_PERSON) {
@@ -254,11 +217,11 @@ public enum ClientEventHandler {
                 Vec3 vec = playerEyes.subtract(lookPos).normalize();
                 float yaw = (float) Math.atan2(vec.z, vec.x);
                 float pitch = (float) Math.asin(vec.y);
-                player.yRot = (float) (yaw * 180f/Math.PI + 90);
-                player.xRot = (float) (pitch * 180f/Math.PI);
-                player.yHeadRot = player.yRot;
-                player.yRotO = player.yRot;
-                player.xRotO = player.xRot;
+                player.setYRot((float) (yaw * 180f/Math.PI + 90));
+                player.setXRot((float) (pitch * 180f/Math.PI));
+                player.yHeadRot = player.getYRot();
+                player.yRotO = player.getYRot();
+                player.xRotO = player.getXRot();
                 player.yHeadRotO = player.yHeadRot;
                 event.setPitch(pitch);
                 event.setYaw(yaw);

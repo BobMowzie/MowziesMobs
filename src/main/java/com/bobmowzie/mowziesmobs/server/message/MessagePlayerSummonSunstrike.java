@@ -7,9 +7,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.Direction;
-import net.minecraft.util.math.*;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -18,6 +16,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 public class MessagePlayerSummonSunstrike {
     private static final double REACH = 15;
@@ -48,7 +47,7 @@ public class MessagePlayerSummonSunstrike {
             final ServerPlayer player = context.getSender();
             context.enqueueWork(() -> {
                 BlockHitResult raytrace = rayTrace(player, REACH);
-                if (raytrace.getType() == HitResult.Type.BLOCK && raytrace.getDirection() == Direction.UP && player.inventory.getSelected().isEmpty() && player.hasEffect(EffectHandler.SUNS_BLESSING)) {
+                if (raytrace.getType() == HitResult.Type.BLOCK && raytrace.getDirection() == Direction.UP && player.getInventory().getSelected().isEmpty() && player.hasEffect(EffectHandler.SUNS_BLESSING)) {
                     BlockPos hit = raytrace.getBlockPos();
                     EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE.get(), player.level, player, hit.getX(), hit.getY(), hit.getZ());
                     sunstrike.onSummon();

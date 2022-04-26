@@ -14,7 +14,6 @@ import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.item.*;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.Style;
 import net.minecraft.ChatFormatting;

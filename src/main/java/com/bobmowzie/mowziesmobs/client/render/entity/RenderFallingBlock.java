@@ -6,14 +6,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import com.mojang.math.Quaternion;
 
 public class RenderFallingBlock extends EntityRenderer<EntityFallingBlock> {
-    public RenderFallingBlock(EntityRenderDispatcher mgr) {
+    public RenderFallingBlock(EntityRendererProvider.Context mgr) {
         super(mgr);
     }
 
@@ -24,7 +24,7 @@ public class RenderFallingBlock extends EntityRenderer<EntityFallingBlock> {
         matrixStackIn.translate(0, 0.5f, 0);
         if (entityIn.getMode() == EntityFallingBlock.EnumFallingBlockMode.MOBILE) {
             matrixStackIn.mulPose(new Quaternion(0, Mth.lerp(partialTicks, entityIn.yRotO, entityIn.yRot), 0, true));
-            matrixStackIn.mulPose(new Quaternion(Mth.lerp(partialTicks, entityIn.xRotO, entityIn.xRot), 0, 0, true));
+            matrixStackIn.mulPose(new Quaternion(Mth.lerp(partialTicks, entityIn.xRotO, entityIn.getXRot()), 0, 0, true));
         }
         else {
             matrixStackIn.translate(0, Mth.lerp(partialTicks, entityIn.prevAnimY, entityIn.animY), 0);

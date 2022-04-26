@@ -29,7 +29,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.material.Material;
-import net.minecraft.entity.*;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.decoration.ItemFrame;
@@ -64,7 +63,6 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +74,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 
 public final class ServerEventHandler {
 
@@ -143,7 +142,7 @@ public final class ServerEventHandler {
             if (entity instanceof Mob) {
                 Mob mob = (Mob) entity;
                 if (mob.getTarget() instanceof EntityBarako && mob.getTarget().hasEffect(EffectHandler.SUNBLOCK)) {
-                    EntityBarakoaya sunblocker = mob.level.getNearestLoadedEntity(EntityBarakoaya.class, TargetingConditions.DEFAULT, mob, mob.getX(), mob.getY() + mob.getEyeHeight(), mob.getZ(), mob.getBoundingBox().inflate(40.0D, 15.0D, 40.0D));
+                    EntityBarakoaya sunblocker = mob.level.getNearestEntity(EntityBarakoaya.class, TargetingConditions.DEFAULT, mob, mob.getX(), mob.getY() + mob.getEyeHeight(), mob.getZ(), mob.getBoundingBox().inflate(40.0D, 15.0D, 40.0D));
                     mob.setTarget(sunblocker);
                 }
             }
@@ -415,7 +414,7 @@ public final class ServerEventHandler {
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
         if (playerCapability != null) {
 
-            if (event.getWorld().isClientSide && player.inventory.getSelected().isEmpty() && player.hasEffect(EffectHandler.SUNS_BLESSING)) {
+            if (event.getWorld().isClientSide && player.getInventory().getSelected().isEmpty() && player.hasEffect(EffectHandler.SUNS_BLESSING)) {
                 if (player.isShiftKeyDown()) {
                     AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getPlayer(), AbilityHandler.SOLAR_BEAM_ABILITY);
                 } else {
@@ -481,7 +480,7 @@ public final class ServerEventHandler {
                 aggroBarakoa(player);
             }
 
-            if (event.getSide() == LogicalSide.CLIENT && player.inventory.getSelected().isEmpty() && player.hasEffect(EffectHandler.SUNS_BLESSING)) {
+            if (event.getSide() == LogicalSide.CLIENT && player.getInventory().getSelected().isEmpty() && player.hasEffect(EffectHandler.SUNS_BLESSING)) {
                 if (player.isShiftKeyDown()) {
                     AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getPlayer(), AbilityHandler.SOLAR_BEAM_ABILITY);
                 } else {

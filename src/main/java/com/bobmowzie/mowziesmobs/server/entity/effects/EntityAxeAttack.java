@@ -14,19 +14,14 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.entity.item.ArmorStandEntity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.animal.Parrot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.block.Blocks;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.item.SwordItem;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.particles.BlockParticleData;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.potion.Effects;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.sounds.SoundEvents;
@@ -35,12 +30,10 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.util.math.*;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -85,7 +78,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
         super.tick();
         if (caster != null) {
             if (!caster.isAlive()) remove();
-            absMoveTo(caster.getX(), caster.getY() + caster.getEyeHeight(), caster.getZ(), caster.yRot, caster.xRot);
+            absMoveTo(caster.getX(), caster.getY() + caster.getEyeHeight(), caster.getZ(), caster.yRot, caster.getXRot());
         }
         if (!level.isClientSide && tickCount == 7) playSound(MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 0.7F, 1.1f);
         if (!level.isClientSide && caster != null) {

@@ -10,7 +10,7 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
@@ -28,7 +28,7 @@ public class RenderBarako extends MobRenderer<EntityBarako, ModelBarako<EntityBa
     private static final int BURST_FRAME_COUNT = 10;
     private static final int BURST_START_FRAME = 12;
 
-    public RenderBarako(EntityRenderDispatcher mgr) {
+    public RenderBarako(EntityRendererProvider.Context mgr) {
         super(mgr, new ModelBarako<>(), 1.0F);
         addLayer(new SunblockLayer<>(this));
     }

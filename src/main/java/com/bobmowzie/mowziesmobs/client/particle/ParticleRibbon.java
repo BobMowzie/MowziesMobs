@@ -14,7 +14,6 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.util.math.MathHelper;
 import com.mojang.math.Matrix4f;
 import net.minecraft.world.phys.Vec3;
 import com.mojang.math.Vector4f;

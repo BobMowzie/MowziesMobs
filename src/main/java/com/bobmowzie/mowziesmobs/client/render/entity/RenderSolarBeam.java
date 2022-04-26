@@ -3,16 +3,13 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.CameraType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.core.Direction;
@@ -33,7 +30,7 @@ public class RenderSolarBeam extends EntityRenderer<EntitySolarBeam> {
     private static final float BEAM_RADIUS = 1;
     private boolean clearerView = false;
 
-    public RenderSolarBeam(EntityRenderDispatcher mgr) {
+    public RenderSolarBeam(EntityRendererProvider.Context mgr) {
         super(mgr);
     }
 

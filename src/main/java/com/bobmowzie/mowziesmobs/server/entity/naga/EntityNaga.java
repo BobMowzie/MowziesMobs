@@ -17,21 +17,18 @@ import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.entity.*;
 import net.minecraft.world.entity.ai.util.RandomPos;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
-import net.minecraft.entity.ai.goal.*;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.effect.MobEffects;
@@ -44,20 +41,15 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.util.math.*;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
-
-import net.minecraft.world.entity.ai.control.MoveControl.Operation;
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
@@ -946,7 +938,7 @@ public class EntityNaga extends MowzieEntity implements RangedAttackMob, Enemy, 
             if (this.parentEntity.getTarget() == null)
             {
                 Vec3 motion = this.parentEntity.getDeltaMovement();
-                this.parentEntity.yRot = -((float)Mth.atan2(motion.x, motion.z)) * (180F / (float)Math.PI);
+                this.parentEntity.setYRot(-((float)Mth.atan2(motion.x, motion.z)) * (180F / (float)Math.PI));
                 this.parentEntity.yBodyRot = this.parentEntity.yRot;
             }
             else
@@ -956,7 +948,7 @@ public class EntityNaga extends MowzieEntity implements RangedAttackMob, Enemy, 
                 {
                     double d1 = entitylivingbase.getX() - this.parentEntity.getX();
                     double d2 = entitylivingbase.getZ() - this.parentEntity.getZ();
-                    this.parentEntity.yRot = -((float)Mth.atan2(d1, d2)) * (180F / (float)Math.PI);
+                    this.parentEntity.setYRot(-((float)Mth.atan2(d1, d2)) * (180F / (float)Math.PI));
                     this.parentEntity.yBodyRot = this.parentEntity.yRot;
                 }
             }
@@ -1235,7 +1227,7 @@ public class EntityNaga extends MowzieEntity implements RangedAttackMob, Enemy, 
                     float desiredRotationYaw = (float) Mth.atan2((double) orbitOffsetDiffZ, (double) orbitOffsetDiffX);
                     float rotationYawWrapped = Mth.wrapDegrees(EntityNaga.this.yRot + 90.0F);
                     float desiredRotationYawWrapped = Mth.wrapDegrees(desiredRotationYaw * 57.295776F);
-                    EntityNaga.this.yRot = Mth.approachDegrees(rotationYawWrapped, desiredRotationYawWrapped, 4.0F) - 90.0F;
+                    EntityNaga.this.setYRot(Mth.approachDegrees(rotationYawWrapped, desiredRotationYawWrapped, 4.0F) - 90.0F);
                     float newBanking = MowzieMathUtil.approachDegreesSmooth(getBanking(), getPrevBanking(), EntityNaga.this.yRot - rotationYaw, 0.5f, 0.1f);
                     setPrevBanking(getBanking());
                     setBanking(newBanking);
@@ -1247,7 +1239,7 @@ public class EntityNaga extends MowzieEntity implements RangedAttackMob, Enemy, 
 //                }
 
                     float desiredPitch = (float) (-(Mth.atan2((double) (-orbitOffsetDiffY), horizontalDistToOrbitOffset) * 57.2957763671875D));
-                    EntityNaga.this.xRot = Mth.approachDegrees(EntityNaga.this.xRot, desiredPitch, 8);
+                    EntityNaga.this.setXRot(Mth.approachDegrees(EntityNaga.this.xRot, desiredPitch, 8));
                     float rotationYaw1 = EntityNaga.this.yRot + 90.0F;
                     double xMotion = (double) (this.speedFactor * Mth.cos(rotationYaw1 * 0.017453292F)) * Math.abs((double) orbitOffsetDiffX / distToOrbitOffset);
                     double yMotion = (double) (this.speedFactor * Mth.sin(rotationYaw1 * 0.017453292F)) * Math.abs((double) orbitOffsetDiffZ / distToOrbitOffset);

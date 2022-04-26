@@ -36,9 +36,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.EnumSet;
 import java.util.Random;
 
-import net.minecraft.world.entity.ai.control.MoveControl.Operation;
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
-
 /**
  * Created by BobMowzie on 7/24/2018.
  */

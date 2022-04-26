@@ -55,10 +55,10 @@ public class AnimationSpawnBarakoa extends SimpleAnimationAI<EntityBarako> {
             if (angle < 0) {
                 angle = angle + 360;
             }
-            if (angle - entity.yRot > 70) {
-                angle = 70 + entity.yRot;
-            } else if (angle - entity.yRot < -70) {
-                angle = -70 + entity.yRot;
+            if (angle - entity.getYRot() > 70) {
+                angle = 70 + entity.getYRot();
+            } else if (angle - entity.getYRot() < -70) {
+                angle = -70 + entity.getYRot();
             }
             EntityBarakoaVillager barakoa;
             if (spawnSunblockers) {

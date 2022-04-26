@@ -2,18 +2,7 @@ package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
-import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
-import net.minecraft.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.monster.*;
-import net.minecraft.entity.passive.*;
-import net.minecraft.entity.passive.ChickenEntity;
-import net.minecraft.entity.passive.SheepEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.Level;
 

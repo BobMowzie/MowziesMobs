@@ -1,10 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.model.tools;
 
 import net.minecraft.util.Mth;
-import net.minecraft.util.math.vector.*;
 import software.bernie.geckolib3.core.processor.IBone;
-
-import java.util.Arrays;
 
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;

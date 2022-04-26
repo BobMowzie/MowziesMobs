@@ -10,7 +10,7 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.world.item.Items;
@@ -34,7 +34,7 @@ public class RenderBarakoa extends MobRenderer<EntityBarakoa, ModelBarakoa<Entit
         }
     }
 
-    public RenderBarakoa(EntityRenderDispatcher mgr) {
+    public RenderBarakoa(EntityRendererProvider.Context mgr) {
         super(mgr, new ModelBarakoa<>(), 0.6F);
         addLayer(new ItemLayer(this, getModel().bone, Items.BONE.getDefaultInstance(), ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND));
         addLayer(new ItemLayer(this, getModel().spear, ItemHandler.SPEAR.getDefaultInstance(), ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND));

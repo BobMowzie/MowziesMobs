@@ -5,8 +5,8 @@ import com.bobmowzie.mowziesmobs.client.model.entity.ModelFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -15,7 +15,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class RenderFoliaath extends MobRenderer<EntityFoliaath, ModelFoliaath<EntityFoliaath>> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/foliaath.png");
 
-    public RenderFoliaath(EntityRenderDispatcher mgr) {
+    public RenderFoliaath(EntityRendererProvider.Context mgr) {
         super(mgr, new ModelFoliaath<>(), 0);
     }
 

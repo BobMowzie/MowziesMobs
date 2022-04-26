@@ -8,7 +8,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import com.mojang.math.Quaternion;
@@ -18,7 +18,7 @@ public class RenderPoisonBall extends EntityRenderer<EntityPoisonBall> {
     public static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/effects/poison_ball.png");
     public ModelPoisonBall model;
 
-    public RenderPoisonBall(EntityRenderDispatcher mgr) {
+    public RenderPoisonBall(EntityRendererProvider.Context mgr) {
         super(mgr);
         model = new ModelPoisonBall();
     }

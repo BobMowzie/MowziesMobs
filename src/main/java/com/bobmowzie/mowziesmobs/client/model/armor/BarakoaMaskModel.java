@@ -37,7 +37,7 @@ public class BarakoaMaskModel<T extends LivingEntity> extends HumanoidModel<T> {
         this.maneBack = new ModelPart(this, 0, 0);
         this.maneBack.setPos(0.0F, -2.0F, 3.999F);
         this.maneBack.addBox(-12.0F, -12.0F, 0.0F, 24, 24, 0, 0.0F);
-        this.maneBack.yRot = (float) Math.PI;
+        this.maneBack.setYRot((float) Math.PI);
         this.maskBase.addChild(this.maskLeft);
         this.maskBase.addChild(this.maskRight);
         this.maskBase.addChild(this.mane);

@@ -5,7 +5,6 @@ import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.client.model.tools.ControlledAnimation;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
-import net.minecraft.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.sounds.SoundSource;
 import net.minecraftforge.api.distmarker.Dist;

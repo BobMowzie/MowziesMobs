@@ -10,14 +10,12 @@ import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.common.util.NonNullSupplier;
-import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.world.item.Item.Properties;
+import net.minecraftforge.fmllegacy.RegistryObject;
 
 /**
  * Exists to work around a limitation with Spawn Eggs: Spawn Eggs require an

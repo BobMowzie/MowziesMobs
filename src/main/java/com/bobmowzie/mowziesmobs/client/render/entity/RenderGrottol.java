@@ -3,9 +3,8 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGrottol;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.entity.Entity;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -14,7 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 public class RenderGrottol extends MobRenderer<EntityGrottol, ModelGrottol<EntityGrottol>> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/grottol.png");
 
-    public RenderGrottol(EntityRenderDispatcher mgr) {
+    public RenderGrottol(EntityRendererProvider.Context mgr) {
         super(mgr, new ModelGrottol<>(), 0.6f);
     }
 

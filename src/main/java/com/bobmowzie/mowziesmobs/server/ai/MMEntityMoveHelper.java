@@ -36,8 +36,8 @@ public class MMEntityMoveHelper extends MoveControl
             f4 = f1 / f4;
             f2 = f2 * f4;
             f3 = f3 * f4;
-            float f5 = Mth.sin(this.mob.yRot * 0.017453292F);
-            float f6 = Mth.cos(this.mob.yRot * 0.017453292F);
+            float f5 = Mth.sin(this.mob.getYRot() * 0.017453292F);
+            float f6 = Mth.cos(this.mob.getYRot() * 0.017453292F);
             float f7 = f2 * f6 - f3 * f5;
             float f8 = f3 * f6 + f2 * f5;
             PathNavigation pathnavigate = this.mob.getNavigation();
@@ -74,7 +74,7 @@ public class MMEntityMoveHelper extends MoveControl
             }
 
             float f9 = (float)(Mth.atan2(d1, d0) * (180D / Math.PI)) - 90.0F;
-            this.mob.yRot = this.rotlerp(this.mob.yRot, f9, maxRotate);
+            this.mob.setYRot(this.rotlerp(this.mob.yRot, f9, maxRotate));
             this.mob.setSpeed((float)(this.speedModifier * this.mob.getAttribute(Attributes.MOVEMENT_SPEED).getValue()));
 
             if (d2 > (double)this.mob.maxUpStep && d0 * d0 + d1 * d1 < (double)Math.max(1.0F, this.mob.getBbWidth()))

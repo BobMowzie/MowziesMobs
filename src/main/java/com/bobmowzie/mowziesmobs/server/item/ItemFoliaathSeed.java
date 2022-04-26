@@ -2,7 +2,6 @@ package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityBabyFoliaath;
-import net.minecraft.block.BlockState;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
@@ -33,8 +32,8 @@ public class ItemFoliaathSeed extends Item {
     public Entity spawnCreature(ServerLevelAccessor world, Mob entity, double x, double y, double z) {
         if (entity != null) {
             entity.moveTo(x + 0.5, y, z + 0.5, world.getLevel().random.nextFloat() * 360 - 180, 0);
-            entity.yHeadRot = entity.yRot;
-            entity.yBodyRot = entity.yRot;
+            entity.yHeadRot = entity.getYRot();
+            entity.yBodyRot = entity.getYRot();
             entity.finalizeSpawn(world, world.getCurrentDifficultyAt(entity.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
             if (!entity.checkSpawnRules(world, MobSpawnType.MOB_SUMMONED)) {
                 return null;

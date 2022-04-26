@@ -6,14 +6,9 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
 import net.minecraft.world.InteractionHand;
 
 public class IceBreathAbility extends Ability {
@@ -33,7 +28,7 @@ public class IceBreathAbility extends Ability {
         LivingEntity user = getUser();
         if (!getUser().level.isClientSide()) {
             EntityIceBreath iceBreath = new EntityIceBreath(EntityHandler.ICE_BREATH.get(), user.level, user);
-            iceBreath.absMoveTo(user.getX(), user.getY() + user.getEyeHeight() - 0.5f, user.getZ(), user.yRot, user.xRot);
+            iceBreath.absMoveTo(user.getX(), user.getY() + user.getEyeHeight() - 0.5f, user.getZ(), user.yRot, user.getXRot());
             user.level.addFreshEntity(iceBreath);
             this.iceBreath = iceBreath;
         }

@@ -1,29 +1,18 @@
 package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.mojang.serialization.Codec;
-import net.minecraft.util.*;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
-import net.minecraft.world.gen.feature.structure.*;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
-import org.apache.logging.log4j.Level;
 
 // Edited from Telepathic Grunt's base code
-
-import net.minecraft.world.level.levelgen.feature.StructureFeature.StructureStartFactory;
 
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;

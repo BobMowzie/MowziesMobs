@@ -6,7 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 /**
  * Created by BobMowzie on 7/20/2017.
@@ -74,7 +74,7 @@ public class EntityFrozenController extends Entity {
         if (this.hasPassenger(passenger))
         {
             if (passenger instanceof Player) passenger.setPos(this.getX(), this.getY(), this.getZ());
-            else passenger.absMoveTo(this.getX(), this.getY(), this.getZ(), this.yRot, this.xRot);
+            else passenger.absMoveTo(this.getX(), this.getY(), this.getZ(), this.yRot, this.getXRot());
         }
     }
 }
