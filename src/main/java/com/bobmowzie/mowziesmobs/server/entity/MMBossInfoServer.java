@@ -27,7 +27,7 @@ public class MMBossInfoServer extends ServerBossEvent {
             ServerPlayer player = it.next();
             if (this.entity.getSensing().canSee(player)) {
                 super.addPlayer(player);
-                it.remove();
+                it.discard() ;
             }
         }
     }

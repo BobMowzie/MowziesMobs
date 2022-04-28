@@ -109,7 +109,7 @@ public class EntityIceBall extends EntityMagicEffect {
                 level.addParticle(new ParticleRing.RingData(yaw, pitch, 20, 0.9f, 0.9f, 1f, 0.4f, scale * 16f, false, ParticleRing.EnumRingBehavior.GROW), x, y, z, 0, 0, 0);
             }
         }
-        if (tickCount > 50) remove();
+        if (tickCount > 50) discard() ;
     }
 
     @Override
@@ -147,6 +147,6 @@ public class EntityIceBall extends EntityMagicEffect {
                 level.addParticle(new ParticleSnowFlake.SnowflakeData(40, false), getX() + particlePos.x, getY() + particlePos.y, getZ() + particlePos.z, particlePos.x, particlePos.y, particlePos.z);
             }
         }
-        remove();
+        discard() ;
     }
 }

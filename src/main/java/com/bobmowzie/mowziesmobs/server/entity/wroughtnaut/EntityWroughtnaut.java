@@ -39,7 +39,6 @@ import net.minecraft.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.*;
-import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -264,14 +263,14 @@ public class EntityWroughtnaut extends MowzieEntity implements Enemy {
 //            posX = prevPosX;
 //            posZ = prevPosZ;
             setDeltaMovement(0, getDeltaMovement().y, 0);
-            yRot = yRotO;
+            setYRot(yRotO);
         }
 //        else if (world.isRemote && leftEyePos != null && rightEyePos != null) {
 //            MowzieParticleBase.spawnParticle(world, MMParticle.EYE, leftEyePos.x, leftEyePos.y, leftEyePos.z, 0, 0, 0, false, leftEyeRot.y + 1.5708, 0, 0, 0, 5f, 0.8f, 0.1f, 0.1f, 1f, 1, 10, false, new ParticleComponent[]{new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1, 0), false)});
 //            MowzieParticleBase.spawnParticle(world, MMParticle.EYE, rightEyePos.x, rightEyePos.y, rightEyePos.z, 0, 0, 0, false, rightEyeRot.y, 0, 0, 0, 5f, 0.8f, 0.1f, 0.1f, 1f, 1, 10, false, new ParticleComponent[]{new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1, 0), false)});
 //        }
         if (getAnimation() != NO_ANIMATION || !isActive()) {
-            yHeadRot = yBodyRot = yRot;
+            yHeadRot = yBodyRot = getYRot();
         }
 
         if (!isAlwaysActive() && getTarget() == null && getNavigation().isDone() && !isAtRestPos() && isActive()) updateRestPos();
@@ -589,7 +588,7 @@ public class EntityWroughtnaut extends MowzieEntity implements Enemy {
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        if (compound.contains("restPos", NBT.TAG_COMPOUND)) {
+        if (compound.contains("restPos")) {
             setRestPos(NbtUtils.readBlockPos(compound.getCompound("restPos")));
         }
         setActive(compound.getBoolean("active"));

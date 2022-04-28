@@ -39,6 +39,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 /**
  * Created by BobMowzie on 4/14/2017.
@@ -282,7 +283,7 @@ public class EntityBoulder extends Entity {
     }
 
     private void explode() {
-        remove();
+        discard();
         for (int i = 0; i < 40 * getBbWidth(); i++) {
             Vec3 particlePos = new Vec3(random.nextFloat() * 0.7 * getBbWidth(), 0, 0);
             particlePos = particlePos.yRot((float)(random.nextFloat() * 2 * Math.PI));
@@ -407,7 +408,7 @@ public class EntityBoulder extends Entity {
                     && EffectGeomancy.canUse((Player)entityIn)) {
                 Player player = (Player) entityIn;
                 if (ridingEntities.contains(player)) {
-                    Vec3 lateralLookVec = Vec3.directionFromRotation(0, player.yRot).normalize();
+                    Vec3 lateralLookVec = Vec3.directionFromRotation(0, player.getYRot()).normalize();
                     setDeltaMovement(speed * 0.5 * lateralLookVec.x, getDeltaMovement().y, speed * 0.5 * lateralLookVec.z);
                 } else {
                     setDeltaMovement(player.getLookAngle().scale(speed * 0.5));

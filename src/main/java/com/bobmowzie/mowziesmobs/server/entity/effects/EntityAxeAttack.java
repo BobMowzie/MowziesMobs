@@ -77,15 +77,15 @@ public class EntityAxeAttack extends EntityMagicEffect {
     public void tick() {
         super.tick();
         if (caster != null) {
-            if (!caster.isAlive()) remove();
-            absMoveTo(caster.getX(), caster.getY() + caster.getEyeHeight(), caster.getZ(), caster.yRot, caster.getXRot());
+            if (!caster.isAlive()) discard();
+            absMoveTo(caster.getX(), caster.getY() + caster.getEyeHeight(), caster.getZ(), caster.getYRot(), caster.getXRot());
         }
         if (!level.isClientSide && tickCount == 7) playSound(MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 0.7F, 1.1f);
         if (!level.isClientSide && caster != null) {
             if (!getVertical() && tickCount == SWING_DURATION_HOR /2 - 1) dealDamage(7.0f * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f, 4f, 160, 1.2f);
             else if (getVertical() && tickCount == SWING_DURATION_VER /2 - 1) {
                 dealDamage(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue(), 4.5f, 40, 0.8f);
-                quakeAngle = yRot;
+                quakeAngle = getYRot();
                 quakeBB = getBoundingBox().move(0, -caster.getEyeHeight(), 0);
                 playSound(MMSounds.ENTITY_WROUGHT_AXE_LAND.get(), 0.3F, 0.5F);
                 playSound(SoundEvents.GENERIC_EXPLODE, 2, 0.9F + random.nextFloat() * 0.1F);
@@ -153,7 +153,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
                         BlockPos abovePos = new BlockPos(pos).above();
                         BlockState block = level.getBlockState(pos);
                         BlockState blockAbove = level.getBlockState(abovePos);
-                        if (block.getMaterial() != Material.AIR && block.isRedstoneConductor(level, pos) && !block.getBlock().hasTileEntity(block) && !blockAbove.getMaterial().blocksMotion()) {
+                        if (block.getMaterial() != Material.AIR && block.isRedstoneConductor(level, pos) && !block.hasBlockEntity() && !blockAbove.getMaterial().blocksMotion()) {
                             EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK.get(), level, block, 0.3f);
                             fallingBlock.setPos(hitX + 0.5, hitY + 1, hitZ + 0.5);
                             level.addFreshEntity(fallingBlock);
@@ -162,7 +162,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
                 }
             }
         }
-        if (tickCount > SWING_DURATION_HOR) remove();
+        if (tickCount > SWING_DURATION_HOR) discard();
     }
 
     private void dealDamage(float damage, float range, float arc, float applyKnockback) {
@@ -170,7 +170,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
         List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(range, 2, range, range);
         for (LivingEntity entityHit : entitiesHit) {
             float entityHitAngle = (float) ((Math.atan2(entityHit.getZ() - getZ(), entityHit.getX() - getX()) * (180 / Math.PI) - 90) % 360);
-            float entityAttackingAngle = yRot % 360;
+            float entityAttackingAngle = getYRot() % 360;
             if (entityHitAngle < 0) {
                 entityHitAngle += 360;
             }
@@ -213,11 +213,6 @@ public class EntityAxeAttack extends EntityMagicEffect {
         List<Entity> list = level.getEntities(this, getBoundingBox().inflate(distanceX, distanceY, distanceZ));
         ArrayList<LivingEntity> nearEntities = list.stream().filter(entityNeighbor -> entityNeighbor instanceof LivingEntity && distanceTo(entityNeighbor) <= radius + entityNeighbor.getBbWidth() / 2f).map(entityNeighbor -> (LivingEntity) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
         return nearEntities;
-    }
-
-    @Override
-    public void remove() {
-        super.remove();
     }
 
     public LivingEntity getCaster() {
@@ -286,9 +281,9 @@ public class EntityAxeAttack extends EntityMagicEffect {
                     if (flag5) {
                         if (i > 0) {
                             if (targetEntity instanceof LivingEntity) {
-                                ((LivingEntity)targetEntity).knockback((float)i * 0.5F * knockbackMult, (double)Mth.sin(player.yRot * ((float)Math.PI / 180F)), (double)(-Mth.cos(player.yRot * ((float)Math.PI / 180F))));
+                                ((LivingEntity)targetEntity).knockback((float)i * 0.5F * knockbackMult, (double)Mth.sin(player.getYRot() * ((float)Math.PI / 180F)), (double)(-Mth.cos(player.getYRot() * ((float)Math.PI / 180F))));
                             } else {
-                                targetEntity.push((double)(-Mth.sin(player.yRot * ((float)Math.PI / 180F)) * (float)i * 0.5F * knockbackMult), 0.1D, (double)(Mth.cos(player.yRot * ((float)Math.PI / 180F)) * (float)i * 0.5F * knockbackMult));
+                                targetEntity.push((double)(-Mth.sin(player.getYRot() * ((float)Math.PI / 180F)) * (float)i * 0.5F * knockbackMult), 0.1D, (double)(Mth.cos(player.getYRot() * ((float)Math.PI / 180F)) * (float)i * 0.5F * knockbackMult));
                             }
 
                             player.setDeltaMovement(player.getDeltaMovement().multiply(0.6D, 1.0D, 0.6D));

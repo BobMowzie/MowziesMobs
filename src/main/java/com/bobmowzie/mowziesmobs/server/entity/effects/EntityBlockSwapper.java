@@ -15,6 +15,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -51,7 +52,7 @@ public class EntityBlockSwapper extends Entity {
         if (!swappers.isEmpty()) {
             EntityBlockSwapper swapper = swappers.get(0);
             setOrigBlock(swapper.getOrigBlock());
-            swapper.remove();
+            swapper.discard();
         }
     }
 
@@ -106,7 +107,7 @@ public class EntityBlockSwapper extends Entity {
         if (!level.isClientSide) {
             if (breakParticlesEnd) level.destroyBlock(pos, false);
             level.setBlock(pos, getOrigBlock(), 19);
-            remove();
+            discard();
         }
     }
 

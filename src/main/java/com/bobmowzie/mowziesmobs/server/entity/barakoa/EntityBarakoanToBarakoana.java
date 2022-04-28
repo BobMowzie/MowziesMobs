@@ -35,7 +35,7 @@ public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> i
 
         if (!this.level.isClientSide && this.level.getDifficulty() == Difficulty.PEACEFUL)
         {
-            this.remove();
+            this.discard() ;
         }
     }
 

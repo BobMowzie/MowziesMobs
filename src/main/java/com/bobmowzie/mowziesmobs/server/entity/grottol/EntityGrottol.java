@@ -232,7 +232,7 @@ public class EntityGrottol extends MowzieEntity {
                             0.05D
                         );
                     }
-                    remove();
+                    discard() ;
                     if (player instanceof ServerPlayer) AdvancementHandler.GROTTOL_KILL_SILK_TOUCH_TRIGGER.trigger((ServerPlayer) player);
                 }
                 return true;
@@ -246,7 +246,7 @@ public class EntityGrottol extends MowzieEntity {
         Entity entity = source.getEntity();
         if (entity instanceof Player) {
             Player player = (Player) entity;
-            if (player.getMainHandItem().isCorrectToolForDrops(Blocks.DIAMOND_ORE.defaultBlockState()) || player.getMainHandItem().getItem().is(TagHandler.Items.CAN_HIT_GROTTOL)) {
+            if (player.getMainHandItem().isCorrectToolForDrops(Blocks.DIAMOND_ORE.defaultBlockState()) || player.getMainHandItem().is(TagHandler.Items.CAN_HIT_GROTTOL)) {
                 if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, player.getMainHandItem()) > 0) {
                     death = EnumDeathType.FORTUNE_PICKAXE;
                     if (player instanceof ServerPlayer) AdvancementHandler.GROTTOL_KILL_FORTUNE_TRIGGER.trigger((ServerPlayer) player);
@@ -347,7 +347,7 @@ public class EntityGrottol extends MowzieEntity {
     @Override
     protected void onAnimationFinish(Animation animation) {
         if (animation == BURROW_ANIMATION) {
-            remove();
+            discard() ;
         }
     }
 

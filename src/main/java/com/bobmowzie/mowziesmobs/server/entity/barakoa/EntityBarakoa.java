@@ -508,7 +508,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements RangedAttack
             active = true;
         }
         if (animation == DEACTIVATE_ANIMATION) {
-            remove();
+            discard() ;
             ItemBarakoaMask mask = ItemHandler.BARAKOA_MASK_FURY;
             switch (getMask()) {
                 case BLISS:

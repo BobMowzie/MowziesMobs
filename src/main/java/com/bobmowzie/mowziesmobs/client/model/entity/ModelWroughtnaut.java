@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import com.ilexiconn.llibrary.client.model.tools.BasicModelRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.geom.ModelPart;
@@ -91,287 +92,287 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
     }
 
     public ModelWroughtnaut(boolean eyesLayer) {
-        this.texWidth = 128;
-        this.texHeight = 128;
+        this.textureWidth = 128;
+        this.textureHeight = 128;
 
         this.axeHandle = new AdvancedModelRenderer(this, 0, 22);
-        this.axeHandle.setPos(3.0F, 0.0F, 1.0F);
+        this.axeHandle.setRotationPoint(3.0F, 0.0F, 1.0F);
         this.axeHandle.addBox(-1.5F, -44.0F, -1.5F, 3, 50, 3, 0.0F);
         this.stomach = new AdvancedModelRenderer(this, 80, 63);
-        this.stomach.setPos(0.0F, 0.0F, 0.0F);
+        this.stomach.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.stomach.addBox(-6.0F, -13.7F, -6.0F, 12, 17, 12, 0.0F);
         setRotateAngle(stomach, 0.0F, 0.7853981633974483F, 0.0F);
         this.elbowRight = new AdvancedModelRenderer(this, 70, 24);
-        this.elbowRight.setPos(0.0F, 0.0F, -1.4F);
+        this.elbowRight.setRotationPoint(0.0F, 0.0F, -1.4F);
         this.elbowRight.addBox(-3.0F, -3.0F, 0.0F, 6, 6, 5, 0.0F);
         this.calfRight = new AdvancedModelRenderer(this, 0, 75);
-        this.calfRight.setPos(0.0F, 0.0F, 0.0F);
+        this.calfRight.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.calfRight.addBox(-4.5F, 0.0F, -0.5F, 5, 12, 5, 0.0F);
         setRotateAngle(calfRight, 0.0F, 0.7853981633974483F, 0.0F);
         this.lowerArmRightJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.lowerArmRightJoint.setPos(15.0F, 0.0F, 0.0F);
+        this.lowerArmRightJoint.setRotationPoint(15.0F, 0.0F, 0.0F);
         this.lowerArmRightJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(lowerArmRightJoint, 0.7853981633974483F, 0.0F, 0.0F);
         this.kneeLeft = new AdvancedModelRenderer(this, 24, 80);
-        this.kneeLeft.setPos(0.0F, 13.0F, 0.0F);
+        this.kneeLeft.setRotationPoint(0.0F, 13.0F, 0.0F);
         this.kneeLeft.addBox(-3.0F, -1.7F, -3.0F, 6, 4, 6, 0.0F);
         setRotateAngle(kneeLeft, -0.5235987755982988F, -0.7853981633974483F, 0.0F);
         this.elbowLeftJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.elbowLeftJoint.setPos(15.0F, -1.6F, -1.7F);
+        this.elbowLeftJoint.setRotationPoint(15.0F, -1.6F, -1.7F);
         this.elbowLeftJoint.addBox(-3.0F, -3.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(elbowLeftJoint, -0.7853981633974483F, 0.0F, 0.0F);
         this.upperArmLeft = new AdvancedModelRenderer(this, 24, 40);
-        this.upperArmLeft.setPos(0.0F, 0.0F, 0.0F);
+        this.upperArmLeft.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.upperArmLeft.addBox(-5.0F, -4.0F, -4.0F, 20, 8, 8, 0.0F);
         setRotateAngle(upperArmLeft, 0.7853981633974483F, 0.0F, 0.0F);
         this.handLeftJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.handLeftJoint.setPos(16.0F, 1.0F, 1.0F);
+        this.handLeftJoint.setRotationPoint(16.0F, 1.0F, 1.0F);
         this.handLeftJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(handLeftJoint, 0.7853981633974483F, 0.0F, 0.0F);
         this.lowerArmLeft = new AdvancedModelRenderer(this, 86, 29);
-        this.lowerArmLeft.setPos(0.0F, -1.5F, 0.0F);
+        this.lowerArmLeft.setRotationPoint(0.0F, -1.5F, 0.0F);
         this.lowerArmLeft.addBox(0.0F, -2.0F, -2.0F, 15, 6, 6, 0.0F);
         setRotateAngle(lowerArmLeft, -0.7853981633974483F, 0.0F, 0.0F);
         this.shoulderRightJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.shoulderRightJoint.setPos(10.0F, 4.0F, 14.9F);
+        this.shoulderRightJoint.setRotationPoint(10.0F, 4.0F, 14.9F);
         this.shoulderRightJoint.addBox(-4.0F, -7.0F, -5.0F, 0, 0, 0, 0.0F);
         setRotateAngle(shoulderRightJoint, -1.0471975511965976F, 0.0F, 0.0F);
         this.groinBack = new AdvancedModelRenderer(this, 0, 92);
-        this.groinBack.setPos(0.0F, 0.0F, 7.0F);
+        this.groinBack.setRotationPoint(0.0F, 0.0F, 7.0F);
         this.groinBack.addBox(-5.0F, 0.0F, -1.0F, 10, 12, 2, 0.0F);
         setRotateAngle(groinBack, 0.17453292519943295F, 0.0F, 0.0F);
         this.thighLeftJoint2 = new AdvancedModelRenderer(this, 0, 0);
-        this.thighLeftJoint2.setPos(0.0F, 0.0F, 0.0F);
+        this.thighLeftJoint2.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.thighLeftJoint2.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(thighLeftJoint2, -0.8726646259971648F, 0.0F, 0.0F);
         this.helmet = new AdvancedModelRenderer(this, 32, 20);
-        this.helmet.setPos(0.0F, 0.0F, 0.0F);
+        this.helmet.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.helmet.addBox(-4.0F, -10.0F, -4.0F, 8, 12, 8, 0.0F);
         this.lowerArmRight = new AdvancedModelRenderer(this, 86, 29);
-        this.lowerArmRight.setPos(0.0F, 1.5F, 0.0F);
+        this.lowerArmRight.setRotationPoint(0.0F, 1.5F, 0.0F);
         this.lowerArmRight.addBox(0.0F, -4.0F, -4.0F, 15, 6, 6, 0.0F);
         setRotateAngle(lowerArmRight, -0.7853981633974483F, 0.0F, 0.0F);
         this.handLeft = new AdvancedModelRenderer(this, 98, 14);
-        this.handLeft.setPos(0.0F, 0.0F, 0.0F);
+        this.handLeft.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.handLeft.addBox(-2.0F, -4.0F, -2.0F, 8, 8, 7, 0.0F);
         setRotateAngle(handLeft, 0.0F, 0.7853981633974483F, 0.0F);
         this.calfLeftJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.calfLeftJoint.setPos(0.0F, 14.5F, 0.0F);
+        this.calfLeftJoint.setRotationPoint(0.0F, 14.5F, 0.0F);
         this.calfLeftJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(calfLeftJoint, 1.5707963267948966F, -0.7853981633974483F, 0.0F);
         this.chestJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.chestJoint.setPos(0.0F, -14.0F, 0.0F);
+        this.chestJoint.setRotationPoint(0.0F, -14.0F, 0.0F);
         this.chestJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(chestJoint, 0.0F, -0.7853981633974483F, 0.0F);
         this.tuskRight2 = new AdvancedModelRenderer(this, 110, 97);
-        this.tuskRight2.setPos(6.0F, 1.5F, 0.0F);
+        this.tuskRight2.setRotationPoint(6.0F, 1.5F, 0.0F);
         this.tuskRight2.addBox(0.0F, -2.0F, -1.0F, 7, 2, 2, 0.0F);
         setRotateAngle(tuskRight2, 0.0F, 0.0F, -0.8726646259971648F);
         this.groinJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.groinJoint.setPos(0.0F, 6.0F, 0.0F);
+        this.groinJoint.setRotationPoint(0.0F, 6.0F, 0.0F);
         this.groinJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(groinJoint, 0.0F, -0.7853981633974483F, 0.0F);
         this.upperArmRightJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.upperArmRightJoint.setPos(5.0F, 1.0F, 1.0F);
+        this.upperArmRightJoint.setRotationPoint(5.0F, 1.0F, 1.0F);
         this.upperArmRightJoint.addBox(0.0F, -4.0F, -4.0F, 0, 0, 0, 0.0F);
         this.axeBladeRight3 = new AdvancedModelRenderer(this, 56, 0);
-        this.axeBladeRight3.setPos(17.7F, 2.3F, -0.01F);
+        this.axeBladeRight3.setRotationPoint(17.7F, 2.3F, -0.01F);
         this.axeBladeRight3.addBox(-5.5F, 0.0F, -1.0F, 11, 17, 2, 0.0F);
         setRotateAngle(axeBladeRight3, 0.0F, 0.0F, 2.6179938779914944F);
         this.footRightJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.footRightJoint.setPos(-2.0F, 11.0F, 2.0F);
+        this.footRightJoint.setRotationPoint(-2.0F, 11.0F, 2.0F);
         this.footRightJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(footRightJoint, 0.0F, -0.7853981633974483F, 0.0F);
         this.head = new AdvancedModelRenderer(this, 0, 0);
-        this.head.setPos(0.0F, 0.0F, 0.0F);
+        this.head.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.head.addBox(-3.0F, -9.0F, -3.0F, 6, 10, 6, 0.0F);
         setRotateAngle(head, 0.0F, 0.7853981633974483F, 0.0F);
         this.hornLeft1 = new AdvancedModelRenderer(this, 12, 17);
-        this.hornLeft1.setPos(-2.5F, -8.05F, -3.0F);
+        this.hornLeft1.setRotationPoint(-2.5F, -8.05F, -3.0F);
         this.hornLeft1.addBox(-1.5F, -1.5F, -8.0F, 3, 3, 8, 0.0F);
         setRotateAngle(hornLeft1, -0.3490658503988659F, 0.0F, 0.0F);
         this.thighRightJoint2 = new AdvancedModelRenderer(this, 0, 0);
-        this.thighRightJoint2.setPos(0.0F, 0.0F, 0.0F);
+        this.thighRightJoint2.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.thighRightJoint2.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(thighRightJoint2, -0.8726646259971648F, 0.0F, 0.0F);
         this.thighRightJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.thighRightJoint.setPos(5.0F, 0.0F, 0.0F);
+        this.thighRightJoint.setRotationPoint(5.0F, 0.0F, 0.0F);
         this.thighRightJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(thighRightJoint, 0.0F, -0.7853981633974483F, 0.0F);
         this.tuskLeft1 = new AdvancedModelRenderer(this, 13, 60);
-        this.tuskLeft1.setPos(-2.5F, 0.5F, -3.0F);
+        this.tuskLeft1.setRotationPoint(-2.5F, 0.5F, -3.0F);
         this.tuskLeft1.addBox(-1.5F, -1.5F, -6.0F, 3, 3, 6, 0.0F);
         setRotateAngle(tuskLeft1, 0.4363323129985824F, 0.0F, 0.0F);
         this.kneeRight = new AdvancedModelRenderer(this, 24, 80);
-        this.kneeRight.setPos(0.0F, 13.0F, 0.0F);
+        this.kneeRight.setRotationPoint(0.0F, 13.0F, 0.0F);
         this.kneeRight.addBox(-3.0F, -1.7F, -3.0F, 6, 4, 6, 0.0F);
         setRotateAngle(kneeRight, -0.5235987755982988F, -0.7853981633974483F, 0.0F);
         this.axeBladeLeft1 = new AdvancedModelRenderer(this, 84, 0);
-        this.axeBladeLeft1.setPos(0.0F, 0.0F, 0.0F);
+        this.axeBladeLeft1.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.axeBladeLeft1.addBox(0.0F, -4.5F, -1.0F, 10, 8, 2, 0.0F);
         this.waist = new AdvancedModelRenderer(this, 64, 41);
-        this.waist.setPos(0.0F, 0.0F, 0.0F);
+        this.waist.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.waist.addBox(-8.0F, 0.0F, -8.0F, 16, 6, 16, 0.0F);
         setRotateAngle(waist, 0.0F, 0.7853981633974483F, 0.0F);
         this.hornLeft2 = new AdvancedModelRenderer(this, 30, 0);
-        this.hornLeft2.setPos(-1.0F, 1.5F, -8.0F);
+        this.hornLeft2.setRotationPoint(-1.0F, 1.5F, -8.0F);
         this.hornLeft2.addBox(0.0F, -2.0F, -11.0F, 2, 2, 11, 0.0F);
         setRotateAngle(hornLeft2, -1.2217304763960306F, 0.0F, 0.0F);
         this.shoulderLeft = new AdvancedModelRenderer(this, 21, 56);
         this.shoulderLeft.mirror = true;
-        this.shoulderLeft.setPos(0.0F, 0.0F, 1.0F);
+        this.shoulderLeft.setRotationPoint(0.0F, 0.0F, 1.0F);
         this.shoulderLeft.addBox(-4.0F, -7.0F, -7.5F, 15, 10, 13, 0.0F);
         setRotateAngle(shoulderLeft, 0.0F, 3.141592653589793F, 0.0F);
         this.axeBladeRight = new AdvancedModelRenderer(this, 0, 0);
-        this.axeBladeRight.setPos(0.0F, -37.0F, 0.0F);
+        this.axeBladeRight.setRotationPoint(0.0F, -37.0F, 0.0F);
         this.axeBladeRight.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(axeBladeRight, 0.0F, -0.7853981633974483F, 0.0F);
         this.calfLeft = new AdvancedModelRenderer(this, 0, 75);
-        this.calfLeft.setPos(0.0F, 0.0F, 0.0F);
+        this.calfLeft.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.calfLeft.addBox(-4.5F, 0.0F, -0.5F, 5, 12, 5, 0.0F);
         setRotateAngle(calfLeft, 0.0F, 0.7853981633974483F, 0.0F);
         this.elbowRightJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.elbowRightJoint.setPos(15.0F, 1.6F, 1.7F);
+        this.elbowRightJoint.setRotationPoint(15.0F, 1.6F, 1.7F);
         this.elbowRightJoint.addBox(-3.0F, -3.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(elbowRightJoint, -0.7853981633974483F, 0.0F, 0.0F);
         this.axeBladeLeft = new AdvancedModelRenderer(this, 0, 0);
-        this.axeBladeLeft.setPos(0.0F, -37.0F, 0.0F);
+        this.axeBladeLeft.setRotationPoint(0.0F, -37.0F, 0.0F);
         this.axeBladeLeft.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(axeBladeLeft, 0.0F, -3.9269908169872414F, 0.0F);
         this.thighRight = new AdvancedModelRenderer(this, 26, 90);
-        this.thighRight.setPos(0.0F, 0.0F, 0.0F);
+        this.thighRight.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.thighRight.addBox(-3.5F, 0.0F, -3.5F, 7, 13, 7, 0.0F);
         setRotateAngle(thighRight, 0.0F, 0.7853981633974483F, 0.0F);
         this.shoulderRight = new AdvancedModelRenderer(this, 21, 56);
-        this.shoulderRight.setPos(0.0F, 0.0F, 1.0F);
+        this.shoulderRight.setRotationPoint(0.0F, 0.0F, 1.0F);
         this.shoulderRight.addBox(-4.0F, -7.0F, -5.5F, 15, 10, 13, 0.0F);
         this.axeBladeRight1 = new AdvancedModelRenderer(this, 84, 0);
-        this.axeBladeRight1.setPos(0.0F, 0.0F, 0.0F);
+        this.axeBladeRight1.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.axeBladeRight1.addBox(0.0F, -4.5F, -1.0F, 10, 8, 2, 0.0F);
         this.hornRight2 = new AdvancedModelRenderer(this, 16, 44);
-        this.hornRight2.setPos(8.0F, 1.5F, 0.0F);
+        this.hornRight2.setRotationPoint(8.0F, 1.5F, 0.0F);
         this.hornRight2.addBox(0.0F, -2.0F, -1.0F, 6, 2, 2, 0.0F);
         setRotateAngle(hornRight2, 0.0F, 0.0F, -1.2217304763960306F);
         this.thighLeftJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.thighLeftJoint.setPos(-5.0F, 0.0F, 0.0F);
+        this.thighLeftJoint.setRotationPoint(-5.0F, 0.0F, 0.0F);
         this.thighLeftJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(thighLeftJoint, 0.0F, 0.7853981633974483F, 0.0F);
         this.axeBladeLeft3 = new AdvancedModelRenderer(this, 56, 0);
-        this.axeBladeLeft3.setPos(17.7F, 2.3F, -0.01F);
+        this.axeBladeLeft3.setRotationPoint(17.7F, 2.3F, -0.01F);
         this.axeBladeLeft3.addBox(-5.5F, 0.0F, -1.0F, 11, 17, 2, 0.01F);
         setRotateAngle(axeBladeLeft3, 0.0F, 0.0F, 2.6179938779914944F);
         this.footLeftJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.footLeftJoint.setPos(-2.0F, 11.0F, 2.0F);
+        this.footLeftJoint.setRotationPoint(-2.0F, 11.0F, 2.0F);
         this.footLeftJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(footLeftJoint, 0.0F, -0.7853981633974483F, 0.0F);
         this.chest = new AdvancedModelRenderer(this, 36, 92);
-        this.chest.setPos(0.0F, 0.0F, -9.0F);
+        this.chest.setRotationPoint(0.0F, 0.0F, -9.0F);
         this.chest.addBox(-14.0F, 0.0F, 0.0F, 28, 18, 18, 0.0F);
         setRotateAngle(chest, 0.7853981633974483F, 0.0F, 0.0F);
         this.tuskLeft2 = new AdvancedModelRenderer(this, 110, 101);
-        this.tuskLeft2.setPos(-1.0F, 1.5F, -6.0F);
+        this.tuskLeft2.setRotationPoint(-1.0F, 1.5F, -6.0F);
         this.tuskLeft2.addBox(0.0F, -2.0F, -7.0F, 2, 2, 7, 0.0F);
         setRotateAngle(tuskLeft2, -0.8726646259971648F, 0.0F, 0.0F);
         this.upperArmLeftJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.upperArmLeftJoint.setPos(5.0F, 1.0F, -1.0F);
+        this.upperArmLeftJoint.setRotationPoint(5.0F, 1.0F, -1.0F);
         this.upperArmLeftJoint.addBox(0.0F, -4.0F, -4.0F, 0, 0, 0, 0.0F);
         this.axeBase = new AdvancedModelRenderer(this, 0, 0);
-        this.axeBase.setPos(0.0F, 0.0F, 0.0F);
+        this.axeBase.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.axeBase.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         this.handRightJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.handRightJoint.setPos(16.0F, -1.0F, -1.0F);
+        this.handRightJoint.setRotationPoint(16.0F, -1.0F, -1.0F);
         this.handRightJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(handRightJoint, 0.7853981633974483F, 0.0F, 0.0F);
         this.footLeft = new AdvancedModelRenderer(this, 48, 79);
-        this.footLeft.setPos(0.0F, 0.0F, 0.0F);
+        this.footLeft.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.footLeft.addBox(-3.0F, 0.0F, -8.0F, 6, 3, 10, 0.0F);
         setRotateAngle(footLeft, -0.6981317007977318F, 0.0F, 0.0F);
         this.handRight = new AdvancedModelRenderer(this, 98, 14);
-        this.handRight.setPos(0.0F, 0.0F, 0.0F);
+        this.handRight.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.handRight.addBox(-2.0F, -4.0F, -2.0F, 8, 8, 7, 0.0F);
         setRotateAngle(handRight, 0.0F, 0.7853981633974483F, 0.0F);
         this.lowerArmLeftJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.lowerArmLeftJoint.setPos(15.0F, 0.0F, 0.0F);
+        this.lowerArmLeftJoint.setRotationPoint(15.0F, 0.0F, 0.0F);
         this.lowerArmLeftJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(lowerArmLeftJoint, 0.7853981633974483F, 0.0F, 0.0F);
         this.hornRight1 = new AdvancedModelRenderer(this, 34, 13);
-        this.hornRight1.setPos(3.0F, -8.05F, 2.5F);
+        this.hornRight1.setRotationPoint(3.0F, -8.05F, 2.5F);
         this.hornRight1.addBox(0.0F, -1.5F, -1.5F, 8, 3, 3, 0.0F);
         setRotateAngle(hornRight1, 0.0F, 0.0F, -0.3490658503988659F);
         this.tuskRight1 = new AdvancedModelRenderer(this, 64, 63);
-        this.tuskRight1.setPos(3.0F, 0.5F, 2.5F);
+        this.tuskRight1.setRotationPoint(3.0F, 0.5F, 2.5F);
         this.tuskRight1.addBox(0.0F, -1.5F, -1.5F, 6, 3, 3, 0.0F);
         setRotateAngle(tuskRight1, 0.0F, 0.0F, 0.4363323129985824F);
         this.footRight = new AdvancedModelRenderer(this, 48, 79);
-        this.footRight.setPos(0.0F, 0.0F, 0.0F);
+        this.footRight.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.footRight.addBox(-3.0F, 0.0F, -8.0F, 6, 3, 10, 0.0F);
         setRotateAngle(footRight, -0.6981317007977318F, 0.0F, 0.0F);
         this.thighLeft = new AdvancedModelRenderer(this, 26, 90);
-        this.thighLeft.setPos(0.0F, 0.0F, 0.0F);
+        this.thighLeft.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.thighLeft.addBox(-3.5F, 0.0F, -3.5F, 7, 13, 7, 0.0F);
         setRotateAngle(thighLeft, 0.0F, 0.7853981633974483F, 0.0F);
         this.groinFront = new AdvancedModelRenderer(this, 0, 92);
-        this.groinFront.setPos(0.0F, 0.0F, -7.0F);
+        this.groinFront.setRotationPoint(0.0F, 0.0F, -7.0F);
         this.groinFront.addBox(-5.0F, 0.0F, -1.0F, 10, 12, 2, 0.0F);
         setRotateAngle(groinFront, -0.17453292519943295F, 0.0F, 0.0F);
         this.elbowLeft = new AdvancedModelRenderer(this, 70, 24);
-        this.elbowLeft.setPos(0.0F, 0.0F, -3.6F);
+        this.elbowLeft.setRotationPoint(0.0F, 0.0F, -3.6F);
         this.elbowLeft.addBox(-3.0F, -3.0F, 0.0F, 6, 6, 5, 0.0F);
         this.axeBladeRight2 = new AdvancedModelRenderer(this, 56, 0);
         this.axeBladeRight2.mirror = true;
-        this.axeBladeRight2.setPos(17.7F, -3.2F, 0.01F);
+        this.axeBladeRight2.setRotationPoint(17.7F, -3.2F, 0.01F);
         this.axeBladeRight2.addBox(-5.5F, 0.0F, -1.0F, 11, 17, 2, 0.0F);
         setRotateAngle(axeBladeRight2, 0.0F, 0.0F, 0.5235987755982988F);
         this.shoulderLeftJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.shoulderLeftJoint.setPos(-10.0F, 4.0F, 14.9F);
+        this.shoulderLeftJoint.setRotationPoint(-10.0F, 4.0F, 14.9F);
         this.shoulderLeftJoint.addBox(-4.0F, -7.0F, -5.0F, 0, 0, 0, 0.0F);
         setRotateAngle(shoulderLeftJoint, -1.0471975511965976F, 0.0F, 0.0F);
         this.stomachJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.stomachJoint.setPos(0.0F, 0.0F, 0.0F);
+        this.stomachJoint.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.stomachJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(stomachJoint, 0.2617993877991494F, -0.7853981633974483F, 0.0F);
         this.axeBladeLeft2 = new AdvancedModelRenderer(this, 56, 0);
         this.axeBladeLeft2.mirror = true;
-        this.axeBladeLeft2.setPos(17.7F, -3.2F, 0.01F);
+        this.axeBladeLeft2.setRotationPoint(17.7F, -3.2F, 0.01F);
         this.axeBladeLeft2.addBox(-5.5F, 0.0F, -1.0F, 11, 17, 2, 0.0F);
         setRotateAngle(axeBladeLeft2, 0.0F, 0.0F, 0.5235987755982988F);
         this.calfRightJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.calfRightJoint.setPos(0.0F, 14.5F, 0.0F);
+        this.calfRightJoint.setRotationPoint(0.0F, 14.5F, 0.0F);
         this.calfRightJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(calfRightJoint, 1.5707963267948966F, -0.7853981633974483F, 0.0F);
         this.upperArmRight = new AdvancedModelRenderer(this, 24, 40);
-        this.upperArmRight.setPos(0.0F, 0.0F, 0.0F);
+        this.upperArmRight.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.upperArmRight.addBox(-5.0F, -4.0F, -4.0F, 20, 8, 8, 0.0F);
         setRotateAngle(upperArmRight, 0.7853981633974483F, 0.0F, 0.0F);
         this.groin = new AdvancedModelRenderer(this, 0, 106);
-        this.groin.setPos(0.0F, 4.0F, 0.0F);
+        this.groin.setRotationPoint(0.0F, 4.0F, 0.0F);
         this.groin.addBox(-3.0F, -5.5F, -5.5F, 6, 11, 11, 0.0F);
         setRotateAngle(groin, -0.7853981633974483F, 0.0F, 0.0F);
         this.neck = new AdvancedModelRenderer(this, 0, 0);
-        this.neck.setPos(0.0F, -1.4F, 15.1F);
+        this.neck.setRotationPoint(0.0F, -1.4F, 15.1F);
         this.neck.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(neck, -1.0471975511965976F, 0.0F, 0.0F);
         this.waistBendController = new AdvancedModelRenderer(this, 0, 0);
-        this.waistBendController.setPos(0.0F, 0F, 0F);
+        this.waistBendController.setRotationPoint(0.0F, 0F, 0F);
         this.waistBendController.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(waistBendController, 0.0F, 0.0F, 0.0F);
         this.swordJoint = new AdvancedModelRenderer(this, 0, 0);
-        this.swordJoint.setPos(0F, -3F, 10F);
+        this.swordJoint.setRotationPoint(0F, -3F, 10F);
         this.swordJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(swordJoint, 0.0F, -0.7853981633974483F, 0.0F);
         this.sword = new AdvancedModelRenderer(this, 82, 10);
-        this.sword.setPos(0F, 0F, 0F);
+        this.sword.setRotationPoint(0F, 0F, 0F);
 //        this.sword.add3DTexture(-11f, 0, -11f, 11, 11);
         setRotateAngle(sword, 0.0F, 0F, 0.0F);
         this.rootBox = new AdvancedModelRenderer(this, 0, 0);
-        this.rootBox.setPos(0.0F, -1.0F, 0.0F);
+        this.rootBox.setRotationPoint(0.0F, -1.0F, 0.0F);
         this.rootBox.addBox(0F, 0F, 0F, 0, 0, 0, 0.0F);
         setRotateAngle(rootBox, 0.0F, 0F, 0.0F);
         this.eyeLeft = new AdvancedModelRenderer(this, 0, 0);
-        this.eyeLeft.setPos(-4, -4, 4);
+        this.eyeLeft.setRotationPoint(-4, -4, 4);
         this.eyeLeft.addBox(-1, -0.5F, 0, 2, 1, 0, 0.0F);
         this.eyeRight = new AdvancedModelRenderer(this, 0, 0);
-        this.eyeRight.setPos(4, -4, 4);
+        this.eyeRight.setRotationPoint(4, -4, 4);
         this.eyeRight.addBox(-1, -0.5F, 0, 2, 1, 0, 0.0F);
         eyeRightSocket = new AdvancedModelRenderer(this, 0, 0);
         eyeLeftSocket = new AdvancedModelRenderer(this, 0, 0);
@@ -450,7 +451,7 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
         head.addChild(eyeLeftSocket);
 
         if (eyesLayer) {
-            for (ModelPart box : boxList) {
+            for (BasicModelRenderer box : boxList) {
                 if (box instanceof AdvancedModelRenderer) {
                     ((AdvancedModelRenderer)box).setIsHidden(true);
                 }
@@ -460,19 +461,19 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
         }
 
         //Corrections
-        groin.yRot -= 45 * Math.PI / 180;
-        eyeRight.z -= 7.2;
-        eyeLeft.z -= 4;
-        eyeRight.x -= 4;
-        eyeLeft.x += 7.2;
-        eyeRight.y -= 1;
-        eyeLeft.y -= 1;
-        eyeLeft.yRot -= Math.PI / 2f;
+        groin.rotateAngleY -= 45 * Math.PI / 180;
+        eyeRight.rotationPointZ -= 7.2;
+        eyeLeft.rotationPointZ -= 4;
+        eyeRight.rotationPointX -= 4;
+        eyeLeft.rotationPointX += 7.2;
+        eyeRight.rotationPointY -= 1;
+        eyeLeft.rotationPointY -= 1;
+        eyeLeft.rotateAngleY -= Math.PI / 2f;
         
-        eyeLeftSocket.setPos(eyeLeft.x, eyeLeft.y, eyeLeft.z);
-        setRotateAngle(eyeLeft, eyeLeft.xRot, eyeLeft.yRot, eyeLeft.zRot);
-        eyeRightSocket.setPos(eyeRight.x, eyeRight.y, eyeRight.z);
-        setRotateAngle(eyeRight, eyeRight.xRot, eyeRight.yRot, eyeRight.zRot);
+        eyeLeftSocket.setRotationPoint(eyeLeft.rotationPointX, eyeLeft.rotationPointY, eyeLeft.rotationPointZ);
+        setRotateAngle(eyeLeft, eyeLeft.rotateAngleX, eyeLeft.rotateAngleY, eyeLeft.rotateAngleZ);
+        eyeRightSocket.setRotationPoint(eyeRight.rotationPointX, eyeRight.rotationPointY, eyeRight.rotationPointZ);
+        setRotateAngle(eyeRight, eyeRight.rotateAngleX, eyeRight.rotateAngleY, eyeRight.rotateAngleZ);
 
         updateDefaultPose();
     }
@@ -486,68 +487,68 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
         resetToDefaultPose();
 
         if (entity.isActive()) {
-            eyeLeft.visible = true;
-            eyeRight.visible = true;
+            eyeLeft.showModel = true;
+            eyeRight.showModel = true;
         }
         else {
-            eyeLeft.visible = false;
-            eyeRight.visible = false;
+            eyeLeft.showModel = false;
+            eyeRight.showModel = false;
         }
 
         if (entity.getAnimation() != EntityWroughtnaut.ACTIVATE_ANIMATION && entity.getAnimation() != EntityWroughtnaut.DEACTIVATE_ANIMATION) {
             if (entity.isActive()) {
-                shoulderLeft.zRot -= 0.4;
-                shoulderRight.zRot += 0.35;
-                shoulderLeft.yRot -= 0.3;
-                shoulderRight.yRot += 0.2;
-                upperArmLeft.zRot += 0.5;
-                upperArmRight.zRot += 0.5;
-                upperArmLeft.yRot -= 0.5;
-                upperArmRight.yRot += 0.3;
-                lowerArmLeft.zRot += 1.5;
-                lowerArmRight.zRot -= 1.3;
-                lowerArmLeft.yRot += 0.3;
-                lowerArmRight.yRot += 0.7;
-                handRight.zRot += 0.3;
-                handRight.xRot -= 0.2;
-                handLeftJoint.xRot += 1.6;
-                handLeftJoint.zRot -= 0.5;
-                axeHandle.yRot += 0.8;
+                shoulderLeft.rotateAngleZ -= 0.4;
+                shoulderRight.rotateAngleZ += 0.35;
+                shoulderLeft.rotateAngleY -= 0.3;
+                shoulderRight.rotateAngleY += 0.2;
+                upperArmLeft.rotateAngleZ += 0.5;
+                upperArmRight.rotateAngleZ += 0.5;
+                upperArmLeft.rotateAngleY -= 0.5;
+                upperArmRight.rotateAngleY += 0.3;
+                lowerArmLeft.rotateAngleZ += 1.5;
+                lowerArmRight.rotateAngleZ -= 1.3;
+                lowerArmLeft.rotateAngleY += 0.3;
+                lowerArmRight.rotateAngleY += 0.7;
+                handRight.rotateAngleZ += 0.3;
+                handRight.rotateAngleX -= 0.2;
+                handLeftJoint.rotateAngleX += 1.6;
+                handLeftJoint.rotateAngleZ -= 0.5;
+                axeHandle.rotateAngleY += 0.8;
 
                 float y = Mth.wrapDegrees(headYaw) / (180f / (float) Math.PI);
-                head.yRot += Mth.clamp(y, (float) -Math.PI / 4, (float) Math.PI / 4);
-                neck.xRot += (headPitch > 0.0F ? headPitch * 1.4F : headPitch) / (180f / (float) Math.PI);
+                head.rotateAngleY += Mth.clamp(y, (float) -Math.PI / 4, (float) Math.PI / 4);
+                neck.rotateAngleX += (headPitch > 0.0F ? headPitch * 1.4F : headPitch) / (180f / (float) Math.PI);
             } else {
-                shoulderLeft.zRot -= 0.4;
-                shoulderRight.zRot += 0.4;
-                shoulderLeft.yRot -= 0.4;
-                shoulderRight.yRot += 0.4;
-                upperArmLeft.zRot += 0.5;
-                upperArmRight.zRot += 0.5;
-                upperArmLeft.yRot -= 0.5;
-                upperArmRight.yRot += 0.5;
-                lowerArmLeft.zRot += 1.5;
-                lowerArmRight.zRot -= 1.5;
-                lowerArmLeft.yRot += 1;
-                lowerArmRight.yRot += 1;
-                axeBase.y += 30;
-                axeBase.z += 3.5;
-                axeBase.yRot += 0.35;
-                handRight.xRot -= 0.9;
-                handRightJoint.zRot -= 0.88;
-                handRightJoint.xRot -= 0.2;
-                handLeftJoint.yRot -= 0.3;
-                handLeftJoint.xRot += 0.8;
-                neck.xRot += 0.5;
-                rootBox.y -= 5;
-                thighRightJoint.xRot += 0.35;
-                thighRightJoint.yRot += 0.5;
-                thighLeftJoint.xRot += 0.35;
-                thighLeftJoint.yRot -= 0.5;
-                calfRightJoint.xRot -= 0.6;
-                calfLeftJoint.xRot -= 0.6;
-                footLeft.xRot += 0.25;
-                footRight.xRot += 0.25;
+                shoulderLeft.rotateAngleZ -= 0.4;
+                shoulderRight.rotateAngleZ += 0.4;
+                shoulderLeft.rotateAngleY -= 0.4;
+                shoulderRight.rotateAngleY += 0.4;
+                upperArmLeft.rotateAngleZ += 0.5;
+                upperArmRight.rotateAngleZ += 0.5;
+                upperArmLeft.rotateAngleY -= 0.5;
+                upperArmRight.rotateAngleY += 0.5;
+                lowerArmLeft.rotateAngleZ += 1.5;
+                lowerArmRight.rotateAngleZ -= 1.5;
+                lowerArmLeft.rotateAngleY += 1;
+                lowerArmRight.rotateAngleY += 1;
+                axeBase.rotationPointY += 30;
+                axeBase.rotationPointZ += 3.5;
+                axeBase.rotateAngleY += 0.35;
+                handRight.rotateAngleX -= 0.9;
+                handRightJoint.rotateAngleZ -= 0.88;
+                handRightJoint.rotateAngleX -= 0.2;
+                handLeftJoint.rotateAngleY -= 0.3;
+                handLeftJoint.rotateAngleX += 0.8;
+                neck.rotateAngleX += 0.5;
+                rootBox.rotationPointY -= 5;
+                thighRightJoint.rotateAngleX += 0.35;
+                thighRightJoint.rotateAngleY += 0.5;
+                thighLeftJoint.rotateAngleX += 0.35;
+                thighLeftJoint.rotateAngleY -= 0.5;
+                calfRightJoint.rotateAngleX -= 0.6;
+                calfLeftJoint.rotateAngleX -= 0.6;
+                footLeft.rotateAngleX += 0.25;
+                footRight.rotateAngleX += 0.25;
             }
         }
 
@@ -561,7 +562,7 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
         float height = 2F;
 
         //groinJoint.rotationPointY -= 1 * limbSwingAmount;
-        waist.z -= limbSwingAmount * 3f * Math.pow(Math.sin(globalSpeed * (frame - 13)), 2);
+        waist.rotationPointZ -= limbSwingAmount * 3f * Math.pow(Math.sin(globalSpeed * (frame - 13)), 2);
         bob(waist, 2F * globalSpeed, 1 * height, false, limbSwing, limbSwingAmount);
         swing(waist, 1F * globalSpeed, 0.3F * globalDegree, false, 0, 0, limbSwing, limbSwingAmount);
         swing(stomachJoint, 1F * globalSpeed, 0.6F * globalDegree, true, 0, 0, limbSwing, limbSwingAmount);
@@ -590,22 +591,22 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
         flap(handLeft, 2 * globalSpeed, 0.2F, false, -0.5F, 0.5F, limbSwing, limbSwingAmount);
         walk(lowerArmLeftJoint, 2 * globalSpeed, 0.1F, true, -0.5F, 0, limbSwing, limbSwingAmount);
         walk(handLeft, 2 * globalSpeed, 0.2F, false, -0.5F, 0.6F, limbSwing, limbSwingAmount);
-        lowerArmLeftJoint.yRot -= 0.65F * limbSwingAmount;
+        lowerArmLeftJoint.rotateAngleY -= 0.65F * limbSwingAmount;
 
 //        sword.rotationPointZ += 4;
 //        sword.rotationPointX -= 5;
 //        sword.rotationPointY -= 3;
-        swordJoint.x += 2;
+        swordJoint.rotationPointX += 2;
 //        swordJoint.rotationPointY -= 5;
-        swordJoint.z -= 3;
-        swordJoint.yRot += 1.3;
-        swordJoint.xRot -= 0.5;
-        swordJoint.zRot -= 0.5;
+        swordJoint.rotationPointZ -= 3;
+        swordJoint.rotateAngleY += 1.3;
+        swordJoint.rotateAngleX -= 0.5;
+        swordJoint.rotateAngleZ -= 0.5;
 //
 //        sword.rotateAngleY += Math.PI / 2;
-        sword.x -= 8;
-        sword.z -= 5.5;
-        sword.y -= 5;
+        sword.rotationPointX -= 8;
+        sword.rotationPointZ -= 5.5;
+        sword.rotationPointY -= 5;
 
         sword.setScale(1.7f);
     }
@@ -684,10 +685,10 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
                 animator.endKeyframe();
                 animator.setStaticKeyframe(8);
                 animator.resetKeyframe(10);
-                float frame = waistBendController.x;
+                float frame = waistBendController.rotationPointX;
                 if (entity.getAnimationTick() <= 33) {
-                    stomachJoint.xRot += 0.06 * -frame * (frame - 7);
-                    neck.xRot -= 0.06 * -frame * (frame - 7);
+                    stomachJoint.rotateAngleX += 0.06 * -frame * (frame - 7);
+                    neck.rotateAngleX -= 0.06 * -frame * (frame - 7);
                 }
             }else {
                 animator.setAnimation(EntityWroughtnaut.ATTACK_ANIMATION);
@@ -757,10 +758,10 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
                 animator.endKeyframe();
                 animator.setStaticKeyframe(8);
                 animator.resetKeyframe(10);
-                float frame = waistBendController.x;
+                float frame = waistBendController.rotationPointX;
                 if (entity.getAnimationTick() <= 33) {
-                    stomachJoint.xRot += 0.06 * -frame * (frame - 7);
-                    neck.xRot -= 0.06 * -frame * (frame - 7);
+                    stomachJoint.rotateAngleX += 0.06 * -frame * (frame - 7);
+                    neck.rotateAngleX -= 0.06 * -frame * (frame - 7);
                 }
             }
         }
@@ -833,10 +834,10 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
                 animator.endKeyframe();
                 animator.setStaticKeyframe(8);
                 animator.resetKeyframe(10);
-                float frame = waistBendController.x;
+                float frame = waistBendController.rotationPointX;
                 if (entity.getAnimationTick() > 11 && entity.getAnimationTick() < 18) {
-                    stomachJoint.xRot += 0.06 * -frame * (frame - 7);
-                    neck.xRot -= 0.06 * -frame * (frame - 7);
+                    stomachJoint.rotateAngleX += 0.06 * -frame * (frame - 7);
+                    neck.rotateAngleX -= 0.06 * -frame * (frame - 7);
                 }
             } else {
                 animator.setAnimation(EntityWroughtnaut.ATTACK_TWICE_ANIMATION);
@@ -905,10 +906,10 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
                 animator.endKeyframe();
                 animator.setStaticKeyframe(8);
                 animator.resetKeyframe(10);
-                float frame = waistBendController.x;
+                float frame = waistBendController.rotationPointX;
                 if (entity.getAnimationTick() > 11 && entity.getAnimationTick() < 18) {
-                    stomachJoint.xRot += 0.06 * -frame * (frame - 7);
-                    neck.xRot -= 0.06 * -frame * (frame - 7);
+                    stomachJoint.rotateAngleX += 0.06 * -frame * (frame - 7);
+                    neck.rotateAngleX -= 0.06 * -frame * (frame - 7);
                 }
             }
         }
@@ -1167,10 +1168,10 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
 
                 animator.resetKeyframe(15);
             }
-            float frame = waistBendController.x;
+            float frame = waistBendController.rotationPointX;
             if (entity.getAnimationTick() > 14 && entity.getAnimationTick() < 33) {
-                stomachJoint.xRot += 0.05 * -frame * (frame - 7);
-                neck.xRot -= 0.05 * -frame * (frame - 7);
+                stomachJoint.rotateAngleX += 0.05 * -frame * (frame - 7);
+                neck.rotateAngleX -= 0.05 * -frame * (frame - 7);
             }
         }
         else if (entity.getAnimation() == EntityWroughtnaut.VERTICAL_ATTACK_ANIMATION) {
@@ -1416,7 +1417,7 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
             animator.setStaticKeyframe(3);
 
             animator.resetKeyframe(10);
-            neck.xRot += Math.sin(entityFrame * 2) * waistBendController.x * 0.1;
+            neck.rotateAngleX += Math.sin(entityFrame * 2) * waistBendController.rotationPointX * 0.1;
         } else if (entity.getAnimation() == EntityWroughtnaut.HURT_ANIMATION) {
             animator.setAnimation(EntityWroughtnaut.HURT_ANIMATION);
             animator.startKeyframe(0);
@@ -1608,10 +1609,10 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
 
             animator.setStaticKeyframe(40);
 
-            swing(stomachJoint, 0.5F, 0.2F * waistBendController.x, false, 0, 0, entityFrame, 1F);
-            walk(neck, 1.5F, 0.1F * waistBendController.x, false, 0F, 0,entityFrame, 1F);
-            swing(shoulderRight, 1.5F, 0.05F * waistBendController.x, true, 0F, 0, entityFrame, 1F);
-            swing(shoulderLeft, 1.5F, 0.05F * waistBendController.x, false, 0F, 0, entityFrame, 1F);
+            swing(stomachJoint, 0.5F, 0.2F * waistBendController.rotationPointX, false, 0, 0, entityFrame, 1F);
+            walk(neck, 1.5F, 0.1F * waistBendController.rotationPointX, false, 0F, 0,entityFrame, 1F);
+            swing(shoulderRight, 1.5F, 0.05F * waistBendController.rotationPointX, true, 0F, 0, entityFrame, 1F);
+            swing(shoulderLeft, 1.5F, 0.05F * waistBendController.rotationPointX, false, 0F, 0, entityFrame, 1F);
         } else if (entity.getAnimation() == EntityWroughtnaut.ACTIVATE_ANIMATION) {
             animator.setAnimation(EntityWroughtnaut.ACTIVATE_ANIMATION);
             animator.startKeyframe(0);
@@ -1674,16 +1675,16 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
 
             animator.setStaticKeyframe(20);
 
-            float frame = waistBendController.x;
+            float frame = waistBendController.rotationPointX;
             if (entity.getAnimationTick() <= 27) {
-                thighRightJoint.xRot += 0.01 * frame * (frame - 13);
-                calfRightJoint.xRot -= 0.02 * frame * (frame - 13);
+                thighRightJoint.rotateAngleX += 0.01 * frame * (frame - 13);
+                calfRightJoint.rotateAngleX -= 0.02 * frame * (frame - 13);
             }
             if (entity.getAnimationTick() >= 28) {
-                thighLeftJoint.xRot += 0.01 * (frame - 13) * (frame - 26);
-                calfLeftJoint.xRot -= 0.02 * (frame - 13) * (frame - 26);
+                thighLeftJoint.rotateAngleX += 0.01 * (frame - 13) * (frame - 26);
+                calfLeftJoint.rotateAngleX -= 0.02 * (frame - 13) * (frame - 26);
             }
-            rootBox.zRot -= 0.05 * frame * (frame - 13) * (frame - 26) / 845;
+            rootBox.rotateAngleZ -= 0.05 * frame * (frame - 13) * (frame - 26) / 845;
         } else if (entity.getAnimation() == EntityWroughtnaut.DEACTIVATE_ANIMATION) {
             animator.setAnimation(EntityWroughtnaut.DEACTIVATE_ANIMATION);
             animator.startKeyframe(0);

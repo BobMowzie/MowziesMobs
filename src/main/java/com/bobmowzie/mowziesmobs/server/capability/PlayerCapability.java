@@ -423,7 +423,7 @@ public class PlayerCapability {
             for (int l = 0; l <= 4; ++l) {
                 for (int i1 = 0; i1 <= 4; ++i1) {
                     if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && barakoan.isTeleportFriendlyBlock(x, z, y, l, i1)) {
-                        barakoan.moveTo((float) (x + l) + 0.5F, y, (float) (z + i1) + 0.5F, barakoan.yRot, barakoan.xRot);
+                        barakoan.moveTo((float) (x + l) + 0.5F, y, (float) (z + i1) + 0.5F, barakoan.getYRot(), barakoan.getXRot());
                         barakoan.getNavigation().stop();
                         return;
                     }

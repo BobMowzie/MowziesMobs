@@ -48,7 +48,7 @@ public class RenderAxeAttack extends EntityRenderer<EntityAxeAttack> {
                 Vec3 playerPos = prevPlayerPos.add(player.position().subtract(prevPlayerPos).scale(delta));
                 Vec3 deltaPos = axePos.subtract(playerPos).scale(-1);
                 matrixStackIn.translate(deltaPos.x(), deltaPos.y(), deltaPos.z());
-                matrixStackIn.mulPose(new Quaternion(new Vector3f(0, -1, 0), player.yRot, true));
+                matrixStackIn.mulPose(new Quaternion(new Vector3f(0, -1, 0), player.getYRot(), true));
                 VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entitySolid(TEXTURE));
                 model.setupAnim(axe, 0, 0, axe.tickCount + delta, 0, 0);
                 model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);

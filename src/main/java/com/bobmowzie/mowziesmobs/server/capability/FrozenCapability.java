@@ -251,7 +251,7 @@ public class FrozenCapability {
             if (entity != null) {
                 frozen = true;
                 frozenController = new EntityFrozenController(EntityHandler.FROZEN_CONTROLLER.get(), entity.level);
-                frozenController.absMoveTo(entity.getX(), entity.getY(), entity.getZ(), entity.yRot, entity.xRot);
+                frozenController.absMoveTo(entity.getX(), entity.getY(), entity.getZ(), entity.getYRot(), entity.getXRot());
                 entity.level.addFreshEntity(frozenController);
                 frozenController.setYBodyRot(entity.yBodyRot);
                 frozenYaw = entity.yRot;
@@ -295,7 +295,7 @@ public class FrozenCapability {
                         Vec3 oldPosition = entity.position();
                         entity.stopRiding();
                         entity.teleportTo(oldPosition.x(), oldPosition.y(), oldPosition.z());
-                        frozenController.remove();
+                        frozenController.discard() ;
                     }
                     entity.playSound(MMSounds.ENTITY_FROSTMAW_FROZEN_CRASH.get(), 1, 0.5f);
                     if (entity.level.isClientSide) {

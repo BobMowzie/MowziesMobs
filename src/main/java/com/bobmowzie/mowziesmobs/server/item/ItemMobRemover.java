@@ -22,7 +22,7 @@ public class ItemMobRemover extends Item {
     public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
         if (entity instanceof MowzieEntity) {
             if (!entity.level.isClientSide) {
-                entity.remove();
+                entity.discard() ;
             }
             return true;
         }

@@ -1,9 +1,9 @@
 package com.bobmowzie.mowziesmobs.client.model.tools;
 
 import com.ilexiconn.llibrary.client.model.Transform;
+import com.ilexiconn.llibrary.client.model.tools.BasicModelRenderer;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
-import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -21,8 +21,8 @@ public class MMModelAnimator {
     private float delta;
     private boolean correctAnimation;
     private IAnimatedEntity entity;
-    private final HashMap<ModelPart, Transform> transformMap;
-    private final HashMap<ModelPart, Transform> prevTransformMap;
+    private final HashMap<BasicModelRenderer, Transform> transformMap;
+    private final HashMap<BasicModelRenderer, Transform> prevTransformMap;
 
     private MMModelAnimator() {
         this.tempTick = 0;
@@ -113,7 +113,7 @@ public class MMModelAnimator {
      * @param y   the y rotation
      * @param z   the z rotation
      */
-    public void rotate(ModelPart box, float x, float y, float z) {
+    public void rotate(BasicModelRenderer box, float x, float y, float z) {
         if (!this.correctAnimation) {
             return;
         }
@@ -128,14 +128,14 @@ public class MMModelAnimator {
      * @param y   the y offset
      * @param z   the z offset
      */
-    public void move(ModelPart box, float x, float y, float z) {
+    public void move(BasicModelRenderer box, float x, float y, float z) {
         if (!this.correctAnimation) {
             return;
         }
         this.getTransform(box).addOffset(x, y, z);
     }
 
-    private Transform getTransform(ModelPart box) {
+    private Transform getTransform(BasicModelRenderer box) {
         return this.transformMap.computeIfAbsent(box, b -> new Transform());
     }
 
@@ -154,35 +154,35 @@ public class MMModelAnimator {
 
         if (animationTick >= this.prevTempTick && animationTick < this.tempTick) {
             if (stationary) {
-                for (ModelPart box : this.prevTransformMap.keySet()) {
+                for (BasicModelRenderer box : this.prevTransformMap.keySet()) {
                     Transform transform = this.prevTransformMap.get(box);
-                    box.xRot += transform.getRotationX();
-                    box.yRot += transform.getRotationY();
-                    box.zRot += transform.getRotationZ();
-                    box.x += transform.getOffsetX();
-                    box.y += transform.getOffsetY();
-                    box.z += transform.getOffsetZ();
+                    box.rotateAngleX += transform.getRotationX();
+                    box.rotateAngleY += transform.getRotationY();
+                    box.rotateAngleZ += transform.getRotationZ();
+                    box.rotationPointX += transform.getOffsetX();
+                    box.rotationPointY += transform.getOffsetY();
+                    box.rotationPointZ += transform.getOffsetZ();
                 }
             } else {
                 float tick = (animationTick - this.prevTempTick + this.delta) / (this.tempTick - this.prevTempTick);
                 float inc = Mth.sin((float) (tick * Math.PI / 2.0F)), dec = 1.0F - inc;
-                for (ModelPart box : this.prevTransformMap.keySet()) {
+                for (BasicModelRenderer box : this.prevTransformMap.keySet()) {
                     Transform transform = this.prevTransformMap.get(box);
-                    box.xRot += dec * transform.getRotationX();
-                    box.yRot += dec * transform.getRotationY();
-                    box.zRot += dec * transform.getRotationZ();
-                    box.x += dec * transform.getOffsetX();
-                    box.y += dec * transform.getOffsetY();
-                    box.z += dec * transform.getOffsetZ();
+                    box.rotateAngleX += dec * transform.getRotationX();
+                    box.rotateAngleY += dec * transform.getRotationY();
+                    box.rotateAngleZ += dec * transform.getRotationZ();
+                    box.rotationPointX += dec * transform.getOffsetX();
+                    box.rotationPointY += dec * transform.getOffsetY();
+                    box.rotationPointZ += dec * transform.getOffsetZ();
                 }
-                for (ModelPart box : this.transformMap.keySet()) {
+                for (BasicModelRenderer box : this.transformMap.keySet()) {
                     Transform transform = this.transformMap.get(box);
-                    box.xRot += inc * transform.getRotationX();
-                    box.yRot += inc * transform.getRotationY();
-                    box.zRot += inc * transform.getRotationZ();
-                    box.x += inc * transform.getOffsetX();
-                    box.y += inc * transform.getOffsetY();
-                    box.z += inc * transform.getOffsetZ();
+                    box.rotateAngleX += inc * transform.getRotationX();
+                    box.rotateAngleY += inc * transform.getRotationY();
+                    box.rotateAngleZ += inc * transform.getRotationZ();
+                    box.rotationPointX += inc * transform.getOffsetX();
+                    box.rotationPointY += inc * transform.getOffsetY();
+                    box.rotationPointZ += inc * transform.getOffsetZ();
                 }
             }
         }

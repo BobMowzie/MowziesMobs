@@ -28,7 +28,7 @@ public class IceBreathAbility extends Ability {
         LivingEntity user = getUser();
         if (!getUser().level.isClientSide()) {
             EntityIceBreath iceBreath = new EntityIceBreath(EntityHandler.ICE_BREATH.get(), user.level, user);
-            iceBreath.absMoveTo(user.getX(), user.getY() + user.getEyeHeight() - 0.5f, user.getZ(), user.yRot, user.getXRot());
+            iceBreath.absMoveTo(user.getX(), user.getY() + user.getEyeHeight() - 0.5f, user.getZ(), user.getYRot(), user.getXRot());
             user.level.addFreshEntity(iceBreath);
             this.iceBreath = iceBreath;
         }
@@ -55,7 +55,7 @@ public class IceBreathAbility extends Ability {
     @Override
     public void end() {
         super.end();
-        if (iceBreath != null) iceBreath.remove();
+        if (iceBreath != null) iceBreath.discard() ;
     }
 
     private boolean checkIceCrystal() {

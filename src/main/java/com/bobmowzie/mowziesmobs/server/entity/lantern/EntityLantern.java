@@ -106,7 +106,7 @@ public class EntityLantern extends MowzieEntity {
                 }
             }
             else {
-                if (getMoveHelperController().getAction() == MoveControl.Operation.MOVE_TO) {
+                if (getMoveHelperController().isMovingTo()) {
                     Vec3 lvt_1_1_ = new Vec3(getMoveControl().getWantedX() - this.getX(), getMoveControl().getWantedY() - this.getY(), getMoveControl().getWantedZ() - this.getZ());
                     double lvt_2_1_ = lvt_1_1_.length();
                     lvt_1_1_ = lvt_1_1_.normalize();
@@ -188,13 +188,13 @@ public class EntityLantern extends MowzieEntity {
             BlockPos ground = new BlockPos(this.getX(), this.getBoundingBox().minY - 1.0D, this.getZ());
             float f = 0.91F;
             if (this.isOnGround()) {
-                f = this.level.getBlockState(ground).getSlipperiness(level, ground, this) * 0.91F;
+                f = this.level.getBlockState(ground).getFriction(level, ground, this) * 0.91F;
             }
 
             float f1 = 0.16277137F / (f * f * f);
             f = 0.91F;
             if (this.isOnGround()) {
-                f = this.level.getBlockState(ground).getSlipperiness(level, ground, this) * 0.91F;
+                f = this.level.getBlockState(ground).getFriction(level, ground, this) * 0.91F;
             }
 
             this.moveRelative(this.isOnGround() ? 0.1F * f1 : 0.02F, movement);
@@ -205,7 +205,7 @@ public class EntityLantern extends MowzieEntity {
         this.animationSpeedOld = this.animationSpeed;
         double d1 = this.getX() - this.xo;
         double d0 = this.getZ() - this.zo;
-        float f2 = Mth.sqrt(d1 * d1 + d0 * d0) * 4.0F;
+        float f2 = Mth.sqrt((float) (d1 * d1 + d0 * d0)) * 4.0F;
         if (f2 > 1.0F) {
             f2 = 1.0F;
         }
@@ -330,8 +330,8 @@ public class EntityLantern extends MowzieEntity {
             return true;
         }
 
-        public Operation getAction() {
-            return operation;
+        public boolean isMovingTo() {
+            return operation == Operation.MOVE_TO;
         }
     }
 }

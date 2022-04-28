@@ -255,7 +255,7 @@ public class EntityFoliaath extends MowzieEntity implements Enemy {
 
         if (!this.level.isClientSide && this.level.getDifficulty() == Difficulty.PEACEFUL)
         {
-            this.remove();
+            this.discard() ;
         }
     }
 

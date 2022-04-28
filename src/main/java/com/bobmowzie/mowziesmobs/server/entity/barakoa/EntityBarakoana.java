@@ -84,16 +84,16 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
 
         if (!this.level.isClientSide && this.level.getDifficulty() == Difficulty.PEACEFUL)
         {
-            this.remove();
+            this.discard() ;
         }
     }
 
     @Override
-    public void remove() {
+    public void discard()  {
         if (tickCount == 0) {
             pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
         }
-        super.remove();
+        super.discard() ;
     }
 
     @Override
@@ -194,7 +194,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     @Override
     public void checkDespawn() {
         if (this.level.getDifficulty() == Difficulty.PEACEFUL && this.shouldDespawnInPeaceful()) {
-            this.remove();
+            this.discard() ;
         } else if (!this.isPersistenceRequired() && !this.requiresCustomPersistence()) {
             Entity entity = this.level.getNearestPlayer(this, -1.0D);
             net.minecraftforge.eventbus.api.Event.Result result = net.minecraftforge.event.ForgeEventFactory.canEntityDespawn(this);
@@ -202,19 +202,19 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
                 noActionTime = 0;
                 entity = null;
             } else if (result == net.minecraftforge.eventbus.api.Event.Result.ALLOW) {
-                this.remove();
+                this.discard() ;
                 entity = null;
             }
             if (entity != null) {
                 double d0 = entity.distanceToSqr(this);
                 if (d0 > 16384.0D && this.removeWhenFarAway(d0) && pack != null) {
                     pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
-                    this.remove();
+                    this.discard() ;
                 }
 
                 if (this.noActionTime > 600 && this.random.nextInt(800) == 0 && d0 > 1024.0D && this.removeWhenFarAway(d0) && pack != null) {
                     pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
-                    this.remove();
+                    this.discard() ;
                 } else if (d0 < 1024.0D) {
                     this.noActionTime = 0;
                 }

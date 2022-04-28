@@ -17,8 +17,8 @@ public class WroughtHelmModel<T extends LivingEntity> extends HumanoidModel<T> {
 
     public WroughtHelmModel() {
         super(0.0f);
-        this.texWidth = 64;
-        this.texHeight = 32;
+//        this.texWidth = 64;
+//        this.texHeight = 32;
         head.cubes.clear();
 
         shape1 = new ModelPart(this);

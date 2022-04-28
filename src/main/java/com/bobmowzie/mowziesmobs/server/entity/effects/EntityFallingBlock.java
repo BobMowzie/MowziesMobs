@@ -75,14 +75,14 @@ public class EntityFallingBlock extends Entity {
             else xRot += 15;
             this.move(MoverType.SELF, this.getDeltaMovement());
 
-            if (tickCount > getDuration()) remove();
+            if (tickCount > getDuration()) discard() ;
         }
         else {
             float animVY = getAnimVY();
             prevAnimY = animY;
             animY += animVY;
             setAnimVY(animVY - GRAVITY);
-            if (animY < -0.5) remove();
+            if (animY < -0.5) discard() ;
         }
     }
 

@@ -19,12 +19,12 @@ public class EntityFrozenController extends Entity {
     @Override
     public void tick() {
         super.tick();
-        if (!level.isClientSide && tickCount >= 70 && !isVehicle()) remove();
+        if (!level.isClientSide && tickCount >= 70 && !isVehicle()) discard() ;
 //        List<Entity> passengers = getPassengers();
 //        for (Entity passenger : passengers) {
 //            if (passenger instanceof LivingEntity) {
 //                LivingEntity livingEntity = (LivingEntity)passenger;
-//                if (!livingEntity.isPotionActive(PotionHandler.FROZEN)) remove();
+//                if (!livingEntity.isPotionActive(PotionHandler.FROZEN)) discard() ;
 //            }
 //        }
     }
@@ -74,7 +74,7 @@ public class EntityFrozenController extends Entity {
         if (this.hasPassenger(passenger))
         {
             if (passenger instanceof Player) passenger.setPos(this.getX(), this.getY(), this.getZ());
-            else passenger.absMoveTo(this.getX(), this.getY(), this.getZ(), this.yRot, this.getXRot());
+            else passenger.absMoveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
         }
     }
 }

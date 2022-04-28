@@ -87,7 +87,7 @@ public enum FrozenRenderHandler {
     private void renderArmFirstPersonFrozen(PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, float equippedProgress, float swingProgress, HumanoidArm side) {
         Minecraft mc = Minecraft.getInstance();
         EntityRenderDispatcher renderManager = mc.getEntityRenderDispatcher();
-        Minecraft.getInstance().getTextureManager().bind(FROZEN_TEXTURE);
+        Minecraft.getInstance().getTextureManager().bindForSetup(FROZEN_TEXTURE);
         boolean flag = side != HumanoidArm.LEFT;
         float f = flag ? 1.0F : -1.0F;
         float f1 = Mth.sqrt(swingProgress);
@@ -101,7 +101,7 @@ public enum FrozenRenderHandler {
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(f * f6 * 70.0F));
         matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(f * f5 * -20.0F));
         AbstractClientPlayer abstractclientplayerentity = mc.player;
-        mc.getTextureManager().bind(abstractclientplayerentity.getSkinTextureLocation());
+        mc.getTextureManager().bindForSetup(abstractclientplayerentity.getSkinTextureLocation());
         matrixStackIn.translate(f * -1.0F, 3.6F, 3.5D);
         matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(f * 120.0F));
         matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(200.0F));

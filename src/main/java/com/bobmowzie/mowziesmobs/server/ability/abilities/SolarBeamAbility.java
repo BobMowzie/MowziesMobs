@@ -57,7 +57,7 @@ public class SolarBeamAbility extends Ability {
     @Override
     public void end() {
         super.end();
-        if (solarBeam != null) solarBeam.remove();
+        if (solarBeam != null) solarBeam.discard() ;
     }
 
     @Override

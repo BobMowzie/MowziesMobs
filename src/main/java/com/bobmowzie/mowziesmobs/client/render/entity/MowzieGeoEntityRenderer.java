@@ -1,12 +1,11 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.RigUtils;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.resources.ResourceLocation;
 import com.mojang.math.Matrix3f;
@@ -23,7 +22,7 @@ import java.util.Iterator;
 public abstract class MowzieGeoEntityRenderer<T extends LivingEntity & IAnimatable> extends GeoEntityRenderer<T> {
     private Matrix4f renderEarlyMat = new Matrix4f();
 
-    protected MowzieGeoEntityRenderer(EntityRenderDispatcher renderManager, AnimatedGeoModel<T> modelProvider) {
+    protected MowzieGeoEntityRenderer(EntityRendererProvider.Context renderManager, AnimatedGeoModel<T> modelProvider) {
         super(renderManager, modelProvider);
     }
 
@@ -60,7 +59,7 @@ public abstract class MowzieGeoEntityRenderer<T extends LivingEntity & IAnimatab
                 Matrix4f renderEarlyMatInvert = renderEarlyMat.copy();
                 renderEarlyMatInvert.invert();
                 matBone.multiplyBackward(renderEarlyMatInvert);
-                mowzieBone.getModelSpaceXform().set(matBone);
+                mowzieBone.getModelSpaceXform().load(matBone);
             }
         }
         RenderUtils.moveBackFromPivot(bone, stack);

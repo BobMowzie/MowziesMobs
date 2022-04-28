@@ -52,16 +52,16 @@ public class EntityIceBreath extends EntityMagicEffect {
                 MowziesMobs.PROXY.playIceBreathSound(this);
             }
         }
-        if (caster == null) this.remove();
-        if (caster != null && !caster.isAlive()) this.remove();
+        if (caster == null) this.discard() ;
+        if (caster != null && !caster.isAlive()) this.discard() ;
         if (tickCount == 1) playSound(MMSounds.ENTITY_FROSTMAW_ICEBREATH_START.get(), 1, 0.6f);
         if (caster instanceof Player) {
             Player player = (Player) caster;
-            absMoveTo(player.getX(), player.getY() + player.getStandingEyeHeight(player.getPose(), player.getDimensions(player.getPose())) - 0.5f, player.getZ(), player.yRot, player.xRot);
+            absMoveTo(player.getX(), player.getY() + player.getStandingEyeHeight(player.getPose(), player.getDimensions(player.getPose())) - 0.5f, player.getZ(), player.getYRot(), player.getXRot());
         }
 
-        float yaw = (float) Math.toRadians(-yRot);
-        float pitch = (float) Math.toRadians(-xRot);
+        float yaw = (float) Math.toRadians(-getYRot());
+        float pitch = (float) Math.toRadians(-getXRot());
         float spread = 0.25f;
         float speed = 0.56f;
         float xComp = (float) (Math.sin(yaw) * Math.cos(pitch));
@@ -89,7 +89,7 @@ public class EntityIceBreath extends EntityMagicEffect {
         if (tickCount > 10) hitEntities();
         if (tickCount > 10) freezeBlocks();
 
-        if (tickCount > 65 && !(caster instanceof Player)) remove();
+        if (tickCount > 65 && !(caster instanceof Player)) discard() ;
     }
 
     public void hitEntities() {
@@ -105,7 +105,7 @@ public class EntityIceBreath extends EntityMagicEffect {
             if (freezeImmune.contains(mobName.toString())) continue;
 
             float entityHitYaw = (float) ((Math.atan2(entityHit.getZ() - getZ(), entityHit.getX() - getX()) * (180 / Math.PI) - 90) % 360);
-            float entityAttackingYaw = yRot % 360;
+            float entityAttackingYaw = getYRot() % 360;
             if (entityHitYaw < 0) {
                 entityHitYaw += 360;
             }
@@ -117,7 +117,7 @@ public class EntityIceBreath extends EntityMagicEffect {
             float xzDistance = (float) Math.sqrt((entityHit.getZ() - getZ()) * (entityHit.getZ() - getZ()) + (entityHit.getX() - getX()) * (entityHit.getX() - getX()));
             double hitY = entityHit.getY() + entityHit.getBbHeight() / 2.0;
             float entityHitPitch = (float) ((Math.atan2((hitY - getY()), xzDistance) * (180 / Math.PI)) % 360);
-            float entityAttackingPitch = -xRot % 360;
+            float entityAttackingPitch = -getXRot() % 360;
             if (entityHitPitch < 0) {
                 entityHitPitch += 360;
             }
@@ -159,7 +159,7 @@ public class EntityIceBreath extends EntityMagicEffect {
                     }
 
                     float blockHitYaw = (float) ((Math.atan2(pos.getZ() - getZ(), pos.getX() - getX()) * (180 / Math.PI) - 90) % 360);
-                    float entityAttackingYaw = yRot % 360;
+                    float entityAttackingYaw = getYRot() % 360;
                     if (blockHitYaw < 0) {
                         blockHitYaw += 360;
                     }
@@ -170,7 +170,7 @@ public class EntityIceBreath extends EntityMagicEffect {
 
                     float xzDistance = (float) Math.sqrt((pos.getZ() - getZ()) * (pos.getZ() - getZ()) + (pos.getX() - getX()) * (pos.getX() - getX()));
                     float blockHitPitch = (float) ((Math.atan2((pos.getY() - getY()), xzDistance) * (180 / Math.PI)) % 360);
-                    float entityAttackingPitch = -xRot % 360;
+                    float entityAttackingPitch = -getXRot() % 360;
                     if (blockHitPitch < 0) {
                         blockHitPitch += 360;
                     }

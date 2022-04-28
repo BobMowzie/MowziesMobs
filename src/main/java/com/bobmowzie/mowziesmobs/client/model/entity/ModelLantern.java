@@ -35,83 +35,83 @@ public class ModelLantern<T extends EntityLantern> extends MowzieEntityModel<T> 
     }
 
     public ModelLantern(boolean isGelLayer) {
-        this.texWidth = 64;
-        this.texHeight = 64;
+        this.textureWidth = 64;
+        this.textureHeight = 64;
         this.leaf1 = new AdvancedModelRenderer(this, -16, 42);
         this.leaf1.mirror = true;
-        this.leaf1.setPos(0.0F, 0.0F, 2.0F);
+        this.leaf1.setRotationPoint(0.0F, 0.0F, 2.0F);
         this.leaf1.addBox(-6.0F, 0.0F, -16.0F, 12, 0, 16, 0.0F);
         setRotateAngle(leaf1, -0.2617993877991494F, 3.141592653589793F, 0.0F);
         this.stem2 = new AdvancedModelRenderer(this, 0, 20);
-        this.stem2.setPos(0.0F, -3.0F, 0.0F);
+        this.stem2.setRotationPoint(0.0F, -3.0F, 0.0F);
         this.stem2.addBox(0.0F, -10.0F, -5.0F, 0, 10, 10, 0.0F);
         setRotateAngle(stem2, 0.0F, 0.7853981633974483F, 0.0F);
         this.body = new AdvancedModelRenderer(this, 1, 0);
-        this.body.setPos(0.0F, 11.0F, 0.0F);
+        this.body.setRotationPoint(0.0F, 11.0F, 0.0F);
         this.body.addBox(-7.5F, -7.5F, -7.5F, 15, 15, 15, 0.0F);
         this.center = new AdvancedModelRenderer(this, 40, 51);
-        this.center.setPos(0.0F, 11.0F, 0.0F);
+        this.center.setRotationPoint(0.0F, 11.0F, 0.0F);
         this.center.addBox(-3F, -3F, -3F, 6, 6, 6, 0.0F);
         this.bottomBit4 = new AdvancedModelRenderer(this, 46, 0);
-        this.bottomBit4.setPos(0.0F, 0.0F, 0.0F);
+        this.bottomBit4.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.bottomBit4.addBox(-2.0F, 0.0F, -2.0F, 4, 7, 4, 0.0F);
         setRotateAngle(bottomBit4, 1.0471975511965976F, 4.71238898038469F, 0.0F);
         this.leaf4 = new AdvancedModelRenderer(this, 8, 30);
-        this.leaf4.setPos(2.0F, 0.0F, 0.0F);
+        this.leaf4.setRotationPoint(2.0F, 0.0F, 0.0F);
         this.leaf4.addBox(0.0F, 0.0F, -6.0F, 16, 0, 12, 0.0F);
         setRotateAngle(leaf4, 0.0F, 0.0F, -0.2617993877991494F);
         this.leaf2 = new AdvancedModelRenderer(this, 8, 30);
-        this.leaf2.setPos(-2.0F, 0.0F, 0.0F);
+        this.leaf2.setRotationPoint(-2.0F, 0.0F, 0.0F);
         this.leaf2.addBox(0.0F, 0.0F, -6.0F, 16, 0, 12, 0.0F);
         setRotateAngle(leaf2, 0.0F, 3.141592653589793F, 0.2617993877991494F);
         this.bubble3 = new AdvancedModelRenderer(this, 0, 0);
-        this.bubble3.setPos(-2.0F, 4.0F, -2.9F);
+        this.bubble3.setRotationPoint(-2.0F, 4.0F, -2.9F);
         this.bubble3.addBox(-1.5F, -1.5F, -1.5F, 3, 3, 3, 0.0F);
         setRotateAngle(bubble3, -0.091106186954104F, 1.7756979809790308F, 0.40980330836826856F);
         this.bubble4 = new AdvancedModelRenderer(this, 0, 0);
-        this.bubble4.setPos(3.0F, -1.8F, -2.4F);
+        this.bubble4.setRotationPoint(3.0F, -1.8F, -2.4F);
         this.bubble4.addBox(-1.5F, -1.5F, -1.5F, 3, 3, 3, 0.0F);
         setRotateAngle(bubble4, -0.7740535232594852F, 0.136659280431156F, 0.40980330836826856F);
         this.bubble1 = new AdvancedModelRenderer(this, 0, 7);
-        this.bubble1.setPos(2.6F, 2.5F, 2.8F);
+        this.bubble1.setRotationPoint(2.6F, 2.5F, 2.8F);
         this.bubble1.addBox(-2.0F, -2.0F, -2.0F, 4, 4, 4, 0.0F);
         setRotateAngle(bubble1, 0.27314402793711257F, 0.6829473363053812F, 0.5462880558742251F);
         this.bottomBit3 = new AdvancedModelRenderer(this, 46, 0);
-        this.bottomBit3.setPos(0.0F, 0.0F, 0.0F);
+        this.bottomBit3.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.bottomBit3.addBox(-2.0F, 0.0F, -2.0F, 4, 7, 4, 0.0F);
         setRotateAngle(bottomBit3, 1.0471975511965976F, 3.141592653589793F, 0.0F);
         this.stem1 = new AdvancedModelRenderer(this, 40, 42);
-        this.stem1.setPos(0.0F, 0.0F, 0.0F);
+        this.stem1.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.stem1.addBox(-3.0F, -3.0F, -3.0F, 6, 3, 6, 0.0F);
         this.bubble2 = new AdvancedModelRenderer(this, 0, 7);
-        this.bubble2.setPos(-2.8F, -3.0F, 1.8F);
+        this.bubble2.setRotationPoint(-2.8F, -3.0F, 1.8F);
         this.bubble2.addBox(-2.0F, -2.0F, -2.0F, 4, 4, 4, 0.0F);
         setRotateAngle(bubble2, 1.3203415791337103F, 1.5025539530419183F, 0.5462880558742251F);
         this.bottomBit2 = new AdvancedModelRenderer(this, 46, 0);
-        this.bottomBit2.setPos(0.0F, 0.0F, 0.0F);
+        this.bottomBit2.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.bottomBit2.addBox(-2.0F, 0.0F, -2.0F, 4, 7, 4, 0.0F);
         setRotateAngle(bottomBit2, 1.0471975511965976F, 1.5707963267948966F, 0.0F);
         this.bottomBit1 = new AdvancedModelRenderer(this, 46, 0);
-        this.bottomBit1.setPos(0.0F, 0.0F, 0.0F);
+        this.bottomBit1.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.bottomBit1.addBox(-2.0F, 0.0F, -2.0F, 4, 7, 4, 0.0F);
         setRotateAngle(bottomBit1, 1.0471975511965976F, 0.0F, 0.0F);
         this.leaf3 = new AdvancedModelRenderer(this, -16, 42);
-        this.leaf3.setPos(0.0F, 0.0F, -2.0F);
+        this.leaf3.setRotationPoint(0.0F, 0.0F, -2.0F);
         this.leaf3.addBox(-6.0F, 0.0F, -16.0F, 12, 0, 16, 0.0F);
         setRotateAngle(leaf3, -0.2617993877991494F, 0.0F, 0.0F);
         this.bottomBits = new AdvancedModelRenderer(this, 0, 0);
-        this.bottomBits.setPos(0.0F, 7.5F, 0.0F);
+        this.bottomBits.setRotationPoint(0.0F, 7.5F, 0.0F);
         this.bottomBits.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(bottomBits, 0.0F, 0.7853981633974483F, 0.0F);
         this.stem = new AdvancedModelRenderer(this, 0, 0);
-        this.stem.setPos(0.0F, -7.51F, 0.0F);
+        this.stem.setRotationPoint(0.0F, -7.51F, 0.0F);
         this.stem.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(stem, 0.0F, 0.7853981633974483F, 0.0F);
         this.bubbles = new AdvancedModelRenderer(this, 0, 0);
-        this.bubbles.setPos(0.0F, 11.0F, 0.0F);
+        this.bubbles.setRotationPoint(0.0F, 11.0F, 0.0F);
         this.bubbles.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         this.scaleController = new AdvancedModelRenderer(this, 0, 0);
-        this.scaleController.setPos(1, 1, 1);
+        this.scaleController.setRotationPoint(1, 1, 1);
         this.stem.addChild(this.leaf1);
         this.stem1.addChild(this.stem2);
         this.bottomBits.addChild(this.bottomBit4);
@@ -129,12 +129,12 @@ public class ModelLantern<T extends EntityLantern> extends MowzieEntityModel<T> 
         this.bubbles.addChild(bubble3);
         this.bubbles.addChild(bubble4);
 
-        leaf1.x += 0.5;
-        leaf2.z -= 0.5;
-        leaf3.x += 0.5;
-        leaf4.z += 0.5;
-        stem2.x += 0.3536;
-        stem2.z += 0.3536;
+        leaf1.rotationPointX += 0.5;
+        leaf2.rotationPointZ -= 0.5;
+        leaf3.rotationPointX += 0.5;
+        leaf4.rotationPointZ += 0.5;
+        stem2.rotationPointX += 0.3536;
+        stem2.rotationPointZ += 0.3536;
 
         updateDefaultPose();
 
@@ -151,11 +151,11 @@ public class ModelLantern<T extends EntityLantern> extends MowzieEntityModel<T> 
             stem.setIsHidden(true);
         }
         else {
-            stem.visible = true;
+            stem.showModel = true;
             body.setIsHidden(true);
-            bubbles.visible = false;
-            bottomBits.visible = false;
-            center.visible = false;
+            bubbles.showModel = false;
+            bottomBits.showModel = false;
+            center.showModel = false;
         }
     }
 
@@ -168,20 +168,20 @@ public class ModelLantern<T extends EntityLantern> extends MowzieEntityModel<T> 
 
     public void setDefaultAngles() {
         resetToDefaultPose();
-        this.body.setPos(0.0F, 11.0F, 0.0F);
-        this.center.setPos(0.0F, 11.0F, 0.0F);
-        this.bottomBit2.setPos(0.0F, 0.0F, 0.0F);
+        this.body.setRotationPoint(0.0F, 11.0F, 0.0F);
+        this.center.setRotationPoint(0.0F, 11.0F, 0.0F);
+        this.bottomBit2.setRotationPoint(0.0F, 0.0F, 0.0F);
         setRotateAngle(bottomBit2, 1.0471975511965976F, 1.5707963267948966F, 0.0F);
-        this.bottomBit1.setPos(0.0F, 0.0F, 0.0F);
+        this.bottomBit1.setRotationPoint(0.0F, 0.0F, 0.0F);
         setRotateAngle(bottomBit1, 1.0471975511965976F, 0.0F, 0.0F);
-        this.bottomBit3.setPos(0.0F, 0.0F, 0.0F);
+        this.bottomBit3.setRotationPoint(0.0F, 0.0F, 0.0F);
         setRotateAngle(bottomBit3, 1.0471975511965976F, 3.141592653589793F, 0.0F);
-        this.bottomBit4.setPos(0.0F, 0.0F, 0.0F);
+        this.bottomBit4.setRotationPoint(0.0F, 0.0F, 0.0F);
         setRotateAngle(bottomBit4, 1.0471975511965976F, 4.71238898038469F, 0.0F);
 
-        body.xRot = 0;
-        bubbles.xRot = 0;
-        center.xRot = 0;
+        body.rotateAngleX = 0;
+        bubbles.rotateAngleX = 0;
+        center.rotateAngleX = 0;
     }
 
     @Override
@@ -235,9 +235,9 @@ public class ModelLantern<T extends EntityLantern> extends MowzieEntityModel<T> 
             animator.endKeyframe();
         }
 
-        body.setScale(scaleController.x, scaleController.y, scaleController.z);
+        body.setScale(scaleController.rotationPointX, scaleController.rotationPointY, scaleController.rotationPointZ);
         bubbles.setShouldScaleChildren(true);
-        bubbles.setScale(scaleController.x, scaleController.y, scaleController.z);
-        center.setScale(scaleController.x * 2, scaleController.y * 2, scaleController.z * 2);
+        bubbles.setScale(scaleController.rotationPointX, scaleController.rotationPointY, scaleController.rotationPointZ);
+        center.setScale(scaleController.rotationPointX * 2, scaleController.rotationPointY * 2, scaleController.rotationPointZ * 2);
     }
 }

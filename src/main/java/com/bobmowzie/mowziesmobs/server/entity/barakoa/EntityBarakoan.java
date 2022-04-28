@@ -77,7 +77,7 @@ public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarak
                 addAsPackMember();
             }
         }
-        if (shouldSetDead) remove();
+        if (shouldSetDead) discard() ;
     }
 
     @Override
@@ -107,11 +107,11 @@ public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarak
     }
 
     @Override
-    public void remove() {
+    public void discard()  {
         if (leader != null) {
             removeAsPackMember();
         }
-        super.remove();
+        super.discard() ;
     }
 
     public L getLeader() {

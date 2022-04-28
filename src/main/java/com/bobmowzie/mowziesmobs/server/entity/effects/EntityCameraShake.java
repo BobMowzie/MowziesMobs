@@ -14,6 +14,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 public class EntityCameraShake extends Entity {
     private static final EntityDataAccessor<Float> RADIUS = SynchedEntityData.defineId(EntityCameraShake.class, EntityDataSerializers.FLOAT);
@@ -47,7 +48,7 @@ public class EntityCameraShake extends Entity {
     @Override
     public void tick() {
         super.tick();
-        if (tickCount > getDuration() + getFadeDuration()) remove();
+        if (tickCount > getDuration() + getFadeDuration()) discard() ;
     }
 
     @Override

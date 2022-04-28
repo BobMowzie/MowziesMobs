@@ -74,7 +74,7 @@ public class MMEntityMoveHelper extends MoveControl
             }
 
             float f9 = (float)(Mth.atan2(d1, d0) * (180D / Math.PI)) - 90.0F;
-            this.mob.setYRot(this.rotlerp(this.mob.yRot, f9, maxRotate));
+            this.mob.setYRot(this.rotlerp(this.mob.getYRot(), f9, maxRotate));
             this.mob.setSpeed((float)(this.speedModifier * this.mob.getAttribute(Attributes.MOVEMENT_SPEED).getValue()));
 
             if (d2 > (double)this.mob.maxUpStep && d0 * d0 + d1 * d1 < (double)Math.max(1.0F, this.mob.getBbWidth()))

@@ -3,9 +3,9 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySuperNova;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import com.ilexiconn.llibrary.client.model.tools.BasicModelRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.model.geom.ModelPart;
 
 public class ModelSuperNova<T extends EntitySuperNova> extends AdvancedModelBase<T> {
 	private final AdvancedModelRenderer body1;
@@ -14,22 +14,22 @@ public class ModelSuperNova<T extends EntitySuperNova> extends AdvancedModelBase
 	private final AdvancedModelRenderer body4;
 
 	public ModelSuperNova() {
-		texWidth = 64;
-		texHeight = 64;
+		textureWidth = 64;
+		textureHeight = 64;
 
 		body1 = new AdvancedModelRenderer(this, 0, 0);
-		body1.setPos(0.0F, 16.0F, 0.0F);
+		body1.setRotationPoint(0.0F, 16.0F, 0.0F);
 		body1.addBox(-32.0F, -32.0F, -32.0F, 64, 64, 64, 0.0F, false);
 		body2 = new AdvancedModelRenderer(this, 0, 0);
-		body2.setPos(0.0F, 16.0F, 0.0F);
+		body2.setRotationPoint(0.0F, 16.0F, 0.0F);
 		body2.addBox(-32.0F, -32.0F, -32.0F, 64, 64, 64, 0.0F, false);
 		setRotationAngle(body2, (float)Math.PI / 2, (float)Math.PI / 2, (float)Math.PI / 2);
 		body3 = new AdvancedModelRenderer(this, 0, 0);
-		body3.setPos(0.0F, 16.0F, 0.0F);
+		body3.setRotationPoint(0.0F, 16.0F, 0.0F);
 		body3.addBox(-32.0F, -32.0F, -32.0F, 64, 64, 64, 0.0F, false);
 		setRotationAngle(body3, (float)Math.PI, (float)Math.PI, (float)Math.PI);
 		body4 = new AdvancedModelRenderer(this, 0, 0);
-		body4.setPos(0.0F, 16.0F, 0.0F);
+		body4.setRotationPoint(0.0F, 16.0F, 0.0F);
 		body4.addBox(-32.0F, -32.0F, -32.0F, 64, 64, 64, 0.0F, false);
 		setRotationAngle(body4, 1.5f * (float)Math.PI, 1.5f * (float)Math.PI, 1.5f * (float)Math.PI);
 	}
@@ -58,9 +58,9 @@ public class ModelSuperNova<T extends EntitySuperNova> extends AdvancedModelBase
 		body1.setScale(scale, scale, scale);
 	}
 
-	public void setRotationAngle(ModelPart modelRenderer, float x, float y, float z) {
-		modelRenderer.xRot = x;
-		modelRenderer.yRot = y;
-		modelRenderer.zRot = z;
+	public void setRotationAngle(BasicModelRenderer modelRenderer, float x, float y, float z) {
+		modelRenderer.rotateAngleX = x;
+		modelRenderer.rotateAngleY = y;
+		modelRenderer.rotateAngleZ = z;
 	}
 }

@@ -52,7 +52,7 @@ public class EntityPoisonBall extends EntityMagicEffect {
         setDeltaMovement(getDeltaMovement().subtract(0, GRAVITY, 0));
         move(MoverType.SELF, getDeltaMovement());
 
-        yRot = -((float) Mth.atan2(getDeltaMovement().x, getDeltaMovement().z)) * (180F / (float)Math.PI);
+        setYRot(-((float) Mth.atan2(getDeltaMovement().x, getDeltaMovement().z)) * (180F / (float)Math.PI));
 
         List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(1);
         if (!entitiesHit.isEmpty()) {
@@ -105,7 +105,7 @@ public class EntityPoisonBall extends EntityMagicEffect {
                 }
             }
         }
-        if (tickCount > 50) remove();
+        if (tickCount > 50) discard() ;
     }
 
     private void explode() {
@@ -150,6 +150,6 @@ public class EntityPoisonBall extends EntityMagicEffect {
             }
         }
 
-        remove();
+        discard() ;
     }
 }

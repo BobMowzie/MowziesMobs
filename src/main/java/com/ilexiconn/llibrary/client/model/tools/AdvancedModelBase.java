@@ -20,8 +20,7 @@ import java.util.function.Function;
  * @since 1.0.0
  */
 @OnlyIn(Dist.CLIENT)
-public abstract class AdvancedModelBase<T extends Entity> extends EntityModel<T> {
-    public final List<ModelPart> boxList = Lists.newArrayList();
+public abstract class AdvancedModelBase<T extends Entity> extends BasicModelBase<T> {
 
     private float movementScale = 1.0F;
 
@@ -53,11 +52,6 @@ public abstract class AdvancedModelBase<T extends Entity> extends EntityModel<T>
         });
     }
 
-    @Override
-    public void accept(ModelPart modelRenderer) {
-        boxList.add(modelRenderer);
-    }
-
     /**
      * Rotates the given boxes to face a given target
      *
@@ -71,8 +65,8 @@ public abstract class AdvancedModelBase<T extends Entity> extends EntityModel<T>
         float yawAmount = (float) (Math.toRadians(yaw) / actualRotationDivisor);
         float pitchAmount = (float) (Math.toRadians(pitch) / actualRotationDivisor);
         for (AdvancedModelRenderer box : boxes) {
-            box.yRot += yawAmount;
-            box.xRot += pitchAmount;
+            box.rotateAngleY += yawAmount;
+            box.rotateAngleX += pitchAmount;
         }
     }
 
@@ -89,7 +83,7 @@ public abstract class AdvancedModelBase<T extends Entity> extends EntityModel<T>
     public void chainSwing(AdvancedModelRenderer[] boxes, float speed, float degree, double rootOffset, float swing, float swingAmount) {
         float offset = this.calculateChainOffset(rootOffset, boxes);
         for (int index = 0; index < boxes.length; index++) {
-            boxes[index].yRot += this.calculateChainRotation(speed, degree, swing, swingAmount, offset, index);
+            boxes[index].rotateAngleY += this.calculateChainRotation(speed, degree, swing, swingAmount, offset, index);
         }
     }
 
@@ -106,7 +100,7 @@ public abstract class AdvancedModelBase<T extends Entity> extends EntityModel<T>
     public void chainWave(AdvancedModelRenderer[] boxes, float speed, float degree, double rootOffset, float swing, float swingAmount) {
         float offset = this.calculateChainOffset(rootOffset, boxes);
         for (int index = 0; index < boxes.length; index++) {
-            boxes[index].xRot += this.calculateChainRotation(speed, degree, swing, swingAmount, offset, index);
+            boxes[index].rotateAngleX += this.calculateChainRotation(speed, degree, swing, swingAmount, offset, index);
         }
     }
 
@@ -123,7 +117,7 @@ public abstract class AdvancedModelBase<T extends Entity> extends EntityModel<T>
     public void chainFlap(AdvancedModelRenderer[] boxes, float speed, float degree, double rootOffset, float swing, float swingAmount) {
         float offset = this.calculateChainOffset(rootOffset, boxes);
         for (int index = 0; index < boxes.length; index++) {
-            boxes[index].zRot += this.calculateChainRotation(speed, degree, swing, swingAmount, offset, index);
+            boxes[index].rotateAngleZ += this.calculateChainRotation(speed, degree, swing, swingAmount, offset, index);
         }
     }
 

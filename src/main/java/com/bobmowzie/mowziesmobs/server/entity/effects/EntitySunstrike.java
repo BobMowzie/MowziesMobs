@@ -36,6 +36,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.fmllegacy.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnData {
     public static final int STRIKE_EXPLOSION = 35;
@@ -161,7 +162,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         } else {
             this.moveDownToGround();
             if (strikeTime >= STRIKE_LINGER || !level.canSeeSkyFromBelowWater(blockPosition())) {
-                this.remove();
+                this.discard() ;
             } else if (strikeTime == STRIKE_EXPLOSION) {
                 this.damageEntityLivingBaseNearby(3);
             }
@@ -176,7 +177,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
             if (hitResult.getDirection() == Direction.UP) {
                 BlockState hitBlock = level.getBlockState(hitResult.getBlockPos());
                 if (strikeTime > STRIKE_LENGTH && hitBlock != level.getBlockState(blockPosition().below())) {
-                    this.remove();
+                    this.discard() ;
                 }
                 if (hitBlock.getBlock() instanceof SlabBlock && hitBlock.getValue(BlockStateProperties.SLAB_TYPE) == SlabType.BOTTOM) {
                     this.setPos(getX(), hitResult.getBlockPos().getY() + 1.0625F - 0.5f, getZ());

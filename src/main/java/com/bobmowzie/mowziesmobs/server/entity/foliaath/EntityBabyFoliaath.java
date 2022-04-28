@@ -141,7 +141,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
                 adultFoliaath.setPos(getX(), getY(), getZ());
                 adultFoliaath.setCanDespawn(false);
                 level.addFreshEntity(adultFoliaath);
-                remove();
+                discard() ;
             }
         }
     }
@@ -174,7 +174,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
         for (int i = 0; i < 10; i++) {
             level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.JUNGLE_LEAVES.defaultBlockState()), getX(), getY() + 0.2, getZ(), 0, 0, 0);
         }
-        remove();
+        discard() ;
     }
 
     @Override

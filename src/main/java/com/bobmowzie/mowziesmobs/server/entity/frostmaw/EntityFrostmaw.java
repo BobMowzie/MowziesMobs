@@ -248,8 +248,8 @@ public class EntityFrostmaw extends MowzieEntity implements Enemy {
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void discard()  {
+        super.discard() ;
     }
 
     @Override

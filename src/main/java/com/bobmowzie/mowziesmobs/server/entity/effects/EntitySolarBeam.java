@@ -29,6 +29,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.core.Direction;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
@@ -42,6 +43,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 public class EntitySolarBeam extends Entity {
     public static final double RADIUS_BARAKO = 30;
@@ -125,7 +127,7 @@ public class EntitySolarBeam extends Entity {
         }
 
         if (!on && appear.getTimer() == 0) {
-            this.remove();
+            this.discard() ;
         }
         if (on && tickCount > 20) {
             appear.increaseTimer();
@@ -133,7 +135,7 @@ public class EntitySolarBeam extends Entity {
             appear.decreaseTimer();
         }
 
-        if (caster != null && !caster.isAlive()) remove();
+        if (caster != null && !caster.isAlive()) discard() ;
 
         if (level.isClientSide && tickCount <= 10 && caster != null) {
             int particleCount = 8;
@@ -321,8 +323,8 @@ public class EntitySolarBeam extends Entity {
         }
     }
 
-    public HitResult raytraceEntities(Level world, Vec3 from, Vec3 to, boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock) {
-        HitResult result = new HitResult();
+    public SolarbeamHitResult raytraceEntities(Level world, Vec3 from, Vec3 to, boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock) {
+        SolarbeamHitResult result = new SolarbeamHitResult();
         result.setBlockHit(world.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this)));
         if (result.blockHit != null) {
             Vec3 hitVec = result.blockHit.getLocation();
@@ -374,14 +376,14 @@ public class EntitySolarBeam extends Entity {
 
     private void updateWithPlayer() {
         this.setYaw((float) ((caster.yHeadRot + 90) * Math.PI / 180.0d));
-        this.setPitch((float) (-caster.xRot * Math.PI / 180.0d));
+        this.setPitch((float) (-caster.getXRot() * Math.PI / 180.0d));
         Vec3 vecOffset = caster.getLookAngle().normalize().scale(1);
         this.setPos(caster.getX() + vecOffset.x(), caster.getY() + 1.2f + vecOffset.y(), caster.getZ() + vecOffset.z());
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void remove(RemovalReason reason) {
+        super.remove(reason);
         if (caster instanceof Player) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(caster, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
             if (playerCapability != null) {
@@ -390,7 +392,7 @@ public class EntitySolarBeam extends Entity {
         }
     }
 
-    public static class HitResult {
+    public static class SolarbeamHitResult {
         private BlockHitResult blockHit;
 
         private final List<LivingEntity> entities = new ArrayList<>();

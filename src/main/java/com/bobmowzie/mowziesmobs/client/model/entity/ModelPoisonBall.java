@@ -13,15 +13,15 @@ public class ModelPoisonBall<T extends EntityPoisonBall> extends AdvancedModelBa
 	private final AdvancedModelRenderer outer;
 
 	public ModelPoisonBall() {
-		texWidth = 32;
-		texHeight = 32;
+		textureWidth = 32;
+		textureHeight = 32;
 
 		inner = new AdvancedModelRenderer(this, 0, 16);
-		inner.setPos(0.0F, 3.5F, 0.0F);
+		inner.setRotationPoint(0.0F, 3.5F, 0.0F);
 		inner.addBox(-3.0F, -3.0F, -3.0F, 6, 6, 6, 0.0F, false);
 
 		outer = new AdvancedModelRenderer(this, 0, 0);
-		outer.setPos(0.0F, 3.5F, 0.0F);
+		outer.setRotationPoint(0.0F, 3.5F, 0.0F);
 		outer.addBox(-4.0F, -4.0F, -4.0F, 8, 8, 8, 0.0F, false);
 
 		inner.setOpacity(1f);
@@ -45,14 +45,14 @@ public class ModelPoisonBall<T extends EntityPoisonBall> extends AdvancedModelBa
 			double a = dv.y / d;
 			a = Math.max(-1, Math.min(1, a));
 			float pitch = -(float) Math.asin(a);
-			inner.xRot = pitch + (float)Math.PI / 2f;
-			outer.xRot = pitch + (float)Math.PI / 2f;
+			inner.rotateAngleX = pitch + (float)Math.PI / 2f;
+			outer.rotateAngleX = pitch + (float)Math.PI / 2f;
 		}
 	}
 
 	public void setRotationAngle(ModelPart modelRenderer, float x, float y, float z) {
-		modelRenderer.xRot = x;
-		modelRenderer.yRot = y;
-		modelRenderer.zRot = z;
+		modelRenderer.x = x;
+		modelRenderer.y = y;
+		modelRenderer.z = z;
 	}
 }
