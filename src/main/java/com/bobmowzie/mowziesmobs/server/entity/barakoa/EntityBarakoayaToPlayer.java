@@ -36,11 +36,11 @@ public class EntityBarakoayaToPlayer extends EntityBarakoanToPlayer {
     @Override
     protected void registerTargetGoals() {
         super.registerTargetGoals();
-        this.targetSelector.addGoal(2, new NearestAttackableTargetPredicateGoal<Player>(this, Player.class, 0, true, true, (new TargetingConditions()).range(getAttributeValue(Attributes.FOLLOW_RANGE)).selector(target -> {
+        this.targetSelector.addGoal(2, new NearestAttackableTargetPredicateGoal<Player>(this, Player.class, 0, true, true, TargetingConditions.forNonCombat().range(getAttributeValue(Attributes.FOLLOW_RANGE)).selector(target -> {
             if (!active) return false;
             if (target != getLeader()) return false;
             return healAICheckTarget(target);
-        }).allowSameTeam().allowInvulnerable().allowNonAttackable().ignoreInvisibilityTesting()) {
+        }).ignoreInvisibilityTesting()) {
             @Override
             public boolean canContinueToUse() {
                 LivingEntity livingentity = this.mob.getTarget();
@@ -48,12 +48,6 @@ public class EntityBarakoayaToPlayer extends EntityBarakoanToPlayer {
                     livingentity = this.targetMob;
                 }
                 return super.canContinueToUse() && this.mob instanceof EntityBarakoayaToPlayer && ((EntityBarakoayaToPlayer)this.mob).healAICheckTarget(livingentity);
-            }
-
-            @Override
-            public void start() {
-                targetConditions.allowUnseeable().allowInvulnerable().allowSameTeam().allowNonAttackable().ignoreInvisibilityTesting();
-                super.start();
             }
         });
     }

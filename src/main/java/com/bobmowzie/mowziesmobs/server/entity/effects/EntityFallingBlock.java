@@ -13,6 +13,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 import java.util.Optional;
 
@@ -55,8 +56,8 @@ public class EntityFallingBlock extends Entity {
 
     @Override
     public void onAddedToWorld() {
-        if (getDeltaMovement().x() > 0 || getDeltaMovement().z() > 0) yRot = (float) ((180f/Math.PI) * Math.atan2(getDeltaMovement().x(), getDeltaMovement().z()));
-        xRot += random.nextFloat() * 360;
+        if (getDeltaMovement().x() > 0 || getDeltaMovement().z() > 0) setYRot((float) ((180f/Math.PI) * Math.atan2(getDeltaMovement().x(), getDeltaMovement().z())));
+        setXRot(getXRot() + random.nextFloat() * 360);
         super.onAddedToWorld();
     }
 
@@ -72,7 +73,7 @@ public class EntityFallingBlock extends Entity {
         if (getMode() == EnumFallingBlockMode.MOBILE) {
             setDeltaMovement(getDeltaMovement().subtract(0, GRAVITY, 0));
             if (onGround) setDeltaMovement(getDeltaMovement().scale(0.7));
-            else xRot += 15;
+            else setXRot(getXRot() + 15);
             this.move(MoverType.SELF, this.getDeltaMovement());
 
             if (tickCount > getDuration()) discard() ;

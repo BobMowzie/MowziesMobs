@@ -150,13 +150,13 @@ public abstract class EntityBarakoa extends MowzieEntity implements RangedAttack
         goalSelector.addGoal(3, new AnimationTakeDamage<>(this));
         goalSelector.addGoal(4, new SimpleAnimationAI<EntityBarakoa>(this, IDLE_ANIMATION, false, true) {
             private LivingEntity talkTarget;
-            private final TargetingConditions pred = new TargetingConditions().allowSameTeam().allowInvulnerable().range(8).allowNonAttackable();
+            private final TargetingConditions pred = TargetingConditions.forNonCombat().range(8);
 
             @Override
             public void start() {
                 super.start();
-                LivingEntity player = this.entity.level.getNearestLoadedEntity(Player.class, pred, entity, entity.getX(), entity.getY() + entity.getEyeHeight(), entity.getZ(), this.entity.getBoundingBox().inflate(8.0D, 3.0D, 8.0D));
-                LivingEntity barakoa = this.entity.level.getNearestLoadedEntity(EntityBarakoa.class, pred, this.entity, entity.getX(), entity.getY() + entity.getEyeHeight(), entity.getZ(), this.entity.getBoundingBox().inflate(8.0D, 3.0D, 8.0D));
+                LivingEntity player = this.entity.level.getNearestEntity(Player.class, pred, entity, entity.getX(), entity.getY() + entity.getEyeHeight(), entity.getZ(), this.entity.getBoundingBox().inflate(8.0D, 3.0D, 8.0D));
+                LivingEntity barakoa = this.entity.level.getNearestEntity(EntityBarakoa.class, pred, this.entity, entity.getX(), entity.getY() + entity.getEyeHeight(), entity.getZ(), this.entity.getBoundingBox().inflate(8.0D, 3.0D, 8.0D));
                 if (player == null) talkTarget = barakoa;
                 else if (barakoa == null) talkTarget = player;
                 else if (random.nextBoolean()) talkTarget = player;
@@ -255,7 +255,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements RangedAttack
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Player.class, 0, true, true, target -> {
             if (target instanceof Player) {
                 if (this.level.getDifficulty() == Difficulty.PEACEFUL) return false;
-                ItemStack headArmorStack = ((Player) target).inventory.armor.get(3);
+                ItemStack headArmorStack = ((Player) target).getInventory().armor.get(3);
                 return !(headArmorStack.getItem() instanceof BarakoaMask);
             }
             return true;
@@ -324,13 +324,13 @@ public abstract class EntityBarakoa extends MowzieEntity implements RangedAttack
                     updateCircling();
                 }
             }
-            if (random.nextInt(80) == 0 && timeSinceAttack == 80 && getSensing().canSee(getTarget())) {
+            if (random.nextInt(80) == 0 && timeSinceAttack == 80 && getSensing().hasLineOfSight(getTarget())) {
                 attacking = true;
                 if (getAnimation() == NO_ANIMATION && getWeapon() == 0) {
                     getNavigation().moveTo(getTarget(), 0.5);
                 }
             }
-            if (attacking && getAnimation() == NO_ANIMATION && getSensing().canSee(getTarget())) {
+            if (attacking && getAnimation() == NO_ANIMATION && getSensing().hasLineOfSight(getTarget())) {
                 if (targetDistance <= 2.5 && getWeapon() == 0) {
                     attacking = false;
                     timeSinceAttack = 0;
@@ -389,8 +389,8 @@ public abstract class EntityBarakoa extends MowzieEntity implements RangedAttack
         active = getActive();
         if (!active) {
             getNavigation().stop();
-            yRot = yRotO;
-            yBodyRot = yRot;
+            setYRot(yRotO);
+            yBodyRot = getYRot();
             if ((onGround || isInWater() || isInLava()) && getAnimation() == NO_ANIMATION) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);
                 playSound(MMSounds.ENTITY_BARAKOA_EMERGE.get(), 1, 1);
@@ -626,7 +626,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements RangedAttack
         double dx = targetPos.x() - this.getX();
         double dy = target.getBoundingBox().minY + (double)(target.getBbHeight() / 3.0F) - dart.position().y();
         double dz = targetPos.z() - this.getZ();
-        double dist = Mth.sqrt(dx * dx + dz * dz);
+        double dist = Mth.sqrt((float) (dx * dx + dz * dz));
         dart.shoot(dx, dy + dist * 0.2D, dz, 1.6F, 1);
         int i = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, this.getItemInHand(InteractionHand.MAIN_HAND));
         int j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.PUNCH_ARROWS, this.getItemInHand(InteractionHand.MAIN_HAND));
@@ -700,10 +700,11 @@ public abstract class EntityBarakoa extends MowzieEntity implements RangedAttack
         return active;
     }
 
+
     @Override
-    public boolean causeFallDamage(float distance, float damageMultipler) {
+    public boolean causeFallDamage(float distance, float damageMultipler, DamageSource source) {
         if (active) {
-            return super.causeFallDamage(distance, damageMultipler);
+            return super.causeFallDamage(distance, damageMultipler, source);
         }
         return false;
     }

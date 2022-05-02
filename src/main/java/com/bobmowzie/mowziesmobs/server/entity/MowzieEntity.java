@@ -7,6 +7,8 @@ import com.bobmowzie.mowziesmobs.server.world.spawn.SpawnHandler;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.entity.PathfinderMob;
@@ -287,7 +289,7 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
         return doHurtTarget(entityIn, damageMultiplier, applyKnockbackMultiplier, false);
     }
 
-    public boolean doHurtTarget(Entity entityIn, float damageMultiplier, float applyKnockbackMultiplier, boolean canDisableShield) { // TODO copy from mob class
+    public boolean doHurtTarget(Entity entityIn, float damageMultiplier, float applyKnockbackMultiplier, boolean canDisableShield) { // Copied from mob class
         float f = (float)this.getAttribute(Attributes.ATTACK_DAMAGE).getValue() * damageMultiplier;
         float f1 = (float)this.getAttribute(Attributes.ATTACK_KNOCKBACK).getValue() * applyKnockbackMultiplier;
         if (entityIn instanceof LivingEntity) {
@@ -309,7 +311,7 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
 
             if (entityIn instanceof Player) {
                 Player player = (Player)entityIn;
-                this.maybeDisableShield(player, this.getMainHandItem(), player.isUsingItem() ? player.getUseItem() : ItemStack.EMPTY);
+                if (canDisableShield) this.maybeDisableShield(player, player.isUsingItem() ? player.getUseItem() : ItemStack.EMPTY);
             }
 
             this.doEnchantDamageEffects(this, entityIn);
@@ -317,6 +319,16 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
         }
 
         return flag;
+    }
+
+    private void maybeDisableShield(Player player, ItemStack itemStackBlock) { // Copied from mob class
+        if (!itemStackBlock.isEmpty() && itemStackBlock.is(Items.SHIELD)) {
+            float f = 0.25F + (float)EnchantmentHelper.getBlockEfficiency(this) * 0.05F;
+            if (this.random.nextFloat() < f) {
+                player.getCooldowns().addCooldown(Items.SHIELD, 100);
+                this.level.broadcastEntityEvent(player, (byte)30);
+            }
+        }
     }
 
     public float getHealthRatio() {
@@ -352,77 +364,37 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
     }
 
     @Override
-    public void baseTick() {
-        super.baseTick();
-        if (getHealth() <= 0.0F) {
-            Animation death;
-            if ((death = getDeathAnimation()) != null) {
-                onDeathUpdate(death.getDuration() - 20);   
-            } else {
-                onDeathUpdate(20);
-            }
-        }
-    }
-
-    private void onDeathUpdate(int deathDuration) { // TODO copy from entityLiving
-        onDeathAIUpdate();
-
+    protected void tickDeath() { // Copied from entityLiving
         ++this.deathTime;
-        if (this.deathTime == deathDuration) {
+        int deathDuration = 20;
+        Animation death;
+        if ((death = getDeathAnimation()) != null) {
+            deathDuration = death.getDuration() - 20;
+        }
+        if (this.deathTime == deathDuration && !this.level.isClientSide()) {
             lastHurtByPlayer = killDataAttackingPlayer;
             lastHurtByPlayerTime = killDataRecentlyHit;
             if (!level.isClientSide() && dropAfterDeathAnim && killDataCause != null) {
                 dropAllDeathLoot(killDataCause);
             }
-
-            this.remove(false);
-
-            for(int i = 0; i < 20; ++i) {
-                double d0 = this.random.nextGaussian() * 0.02D;
-                double d1 = this.random.nextGaussian() * 0.02D;
-                double d2 = this.random.nextGaussian() * 0.02D;
-                this.level.addParticle(ParticleTypes.POOF, this.getRandomX(1.0D), this.getRandomY(), this.getRandomZ(1.0D), d0, d1, d2);
-            }
+            this.level.broadcastEntityEvent(this, (byte)60);
+            this.remove(Entity.RemovalReason.KILLED);
         }
     }
 
-    protected void onDeathAIUpdate() {}
+    @Override
+    protected void dropAllDeathLoot(DamageSource source) {
+        if (!dropAfterDeathAnim && deathTime > 0)
+        super.dropAllDeathLoot(source);
+    }
 
     @Override
-    protected final void tickDeath() {}
-
-    @Override
-    public void die(DamageSource cause) // TODO copy from entityLiving
-    {
-        if (net.minecraftforge.common.ForgeHooks.onLivingDeath(this, cause)) return;
-        if (!this.dead) {
-            Entity entity = cause.getEntity();
-            LivingEntity livingentity = this.getKillCredit();
-            if (this.deathScore >= 0 && livingentity != null) {
-                livingentity.awardKillScore(this, this.deathScore, cause);
-            }
-
-            if (this.isSleeping()) {
-                this.stopSleeping();
-            }
-
-            this.dead = true;
-            this.getCombatTracker().recheckStatus();
-            if (this.level instanceof ServerLevel) {
-                if (entity != null) {
-                    entity.killed((ServerLevel)this.level, this);
-                }
-
-                if (!dropAfterDeathAnim)
-                    this.dropAllDeathLoot(cause);
-                this.createWitherRose(livingentity);
-            }
+    public void die(DamageSource cause) {
+        super.die(cause);
+        if (!this.isRemoved() && !this.dead) {
             killDataCause = cause;
             killDataRecentlyHit = this.lastHurtByPlayerTime;
             killDataAttackingPlayer = lastHurtByPlayer;
-
-            this.level.broadcastEntityEvent(this, (byte)3);
-            this.setPose(Pose.DYING);
             bossInfo.update();
         }
     }
@@ -564,7 +536,7 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
                     double d1 = entityIn.getZ() - this.getZ();
                     double d2 = Mth.absMax(d0, d1);
                     if (d2 >= (double)0.01F) {
-                        d2 = (double)Mth.sqrt(d2);
+                        d2 = Math.sqrt(d2);
                         d0 = d0 / d2;
                         d1 = d1 / d2;
                         double d3 = 1.0D / d2;
@@ -576,8 +548,6 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
                         d1 = d1 * d3;
                         d0 = d0 * (double)0.05F;
                         d1 = d1 * (double)0.05F;
-                        d0 = d0 * (double)(1.0F - this.pushthrough);
-                        d1 = d1 * (double)(1.0F - this.pushthrough);
                         if (!this.isVehicle()) {
                             if (canBePushedByEntity(entityIn)) {
                                 this.push(-d0, 0.0D, -d1);

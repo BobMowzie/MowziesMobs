@@ -208,7 +208,7 @@ public class EntityFoliaath extends MowzieEntity implements Enemy {
 
         // Targetting, attacking, and activating
         yBodyRot = 0;
-        yRot = 0;
+        setYRot(0);
 
         if (resettingTargetTimer > 0 && !level.isClientSide) {
             yHeadRot = yHeadRotO;

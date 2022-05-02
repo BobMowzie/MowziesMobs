@@ -615,8 +615,8 @@ public class EntityNaga extends MowzieEntity implements RangedAttackMob, Enemy, 
     }
 
     @Override
-    protected void onDeathAIUpdate() {
-        super.onDeathAIUpdate();
+    protected void tickDeath() {
+        super.tickDeath();
         if (deathTime == 15 && movement != EnumNagaMovement.FALLEN) movement = EnumNagaMovement.FALLING;
     }
 

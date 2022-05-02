@@ -57,7 +57,7 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
                 if (getTarget() == target) return true;
                 if (getTarget() instanceof EntityBarako) return false;
                 if (getAnimation() != NO_ANIMATION) return false;
-                ItemStack headArmorStack = ((Player) target).inventory.armor.get(3);
+                ItemStack headArmorStack = ((Player) target).getInventory().armor.get(3);
                 return !(headArmorStack.getItem() instanceof BarakoaMask) || target == getMisbehavedPlayer();
             }
             return true;
@@ -77,13 +77,13 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
     @Override
     protected void registerTargetGoals() {
         super.registerTargetGoals();
-        this.targetSelector.addGoal(2, new NearestAttackableTargetPredicateGoal<EntityBarako>(this, EntityBarako.class, 0, false, false, (new TargetingConditions()).range(getAttributeValue(Attributes.FOLLOW_RANGE) * 2).selector(target -> {
+        this.targetSelector.addGoal(2, new NearestAttackableTargetPredicateGoal<EntityBarako>(this, EntityBarako.class, 0, false, false, TargetingConditions.forNonCombat().range(getAttributeValue(Attributes.FOLLOW_RANGE) * 2).selector(target -> {
             if (!active) return false;
             if (target instanceof Mob) {
                 return ((Mob) target).getTarget() != null || target.getHealth() < target.getMaxHealth();
             }
             return false;
-        }).allowSameTeam().allowInvulnerable().allowNonAttackable().allowUnseeable().ignoreInvisibilityTesting()) {
+        }).ignoreLineOfSight().ignoreInvisibilityTesting()) {
             @Override
             public boolean canContinueToUse() {
                 LivingEntity livingentity = this.mob.getTarget();
@@ -100,12 +100,6 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
             @Override
             protected double getFollowDistance() {
                 return super.getFollowDistance() * 2;
-            }
-
-            @Override
-            public void start() {
-                targetConditions.allowUnseeable().allowInvulnerable().allowSameTeam().allowNonAttackable().ignoreInvisibilityTesting();
-                super.start();
             }
         });
     }

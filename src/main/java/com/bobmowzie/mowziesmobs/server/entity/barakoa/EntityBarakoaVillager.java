@@ -103,7 +103,7 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<Player>(this, Player.class, 0, true, true, target -> {
             if (target instanceof Player) {
                 if (this.level.getDifficulty() == Difficulty.PEACEFUL) return false;
-                ItemStack headArmorStack = ((Player) target).inventory.armor.get(3);
+                ItemStack headArmorStack = ((Player) target).getInventory().armor.get(3);
                 return !(headArmorStack.getItem() instanceof BarakoaMask) || target == getMisbehavedPlayer();
             }
             return true;
@@ -214,7 +214,7 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
         if (isTrading()) {
             return false;
         }
-        ItemStack headStack = player.inventory.armor.get(3);
+        ItemStack headStack = player.getInventory().armor.get(3);
         return headStack.getItem() instanceof BarakoaMask && isOfferingTrade();
     }
 

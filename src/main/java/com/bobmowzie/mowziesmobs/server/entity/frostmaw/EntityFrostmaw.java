@@ -129,7 +129,7 @@ public class EntityFrostmaw extends MowzieEntity implements Enemy {
             socketPosArray = new Vec3[] {new Vec3(0, 0, 0), new Vec3(0, 0, 0), new Vec3(0, 0, 0)};
         active = false;
         playsHurtAnimation = false;
-        yRot = yBodyRot = random.nextFloat() * 360;
+        setYRot(yBodyRot = random.nextFloat() * 360);
         xpReward = 60;
 
         moveControl = new MMEntityMoveHelper(this, 7);
@@ -238,21 +238,6 @@ public class EntityFrostmaw extends MowzieEntity implements Enemy {
     }
 
     @Override
-    public void onAddedToWorld() {
-        super.onAddedToWorld();
-    }
-
-    @Override
-    public void onRemovedFromWorld() {
-        super.onRemovedFromWorld();
-    }
-
-    @Override
-    public void discard()  {
-        super.discard() ;
-    }
-
-    @Override
     public void playAmbientSound() {
         if (!active) return;
         int i = random.nextInt(4);
@@ -288,7 +273,7 @@ public class EntityFrostmaw extends MowzieEntity implements Enemy {
     public void tick() {
 //        if (ticksExisted == 1)
 //            System.out.println("Spawned " + getName().getFormattedText() + " at " + getPosition());
-        yRot = yBodyRot;
+        setYRot(yBodyRot);
         super.tick();
         this.repelEntities(3.8f, 3.8f, 3.8f, 3.8f);
 
@@ -348,14 +333,14 @@ public class EntityFrostmaw extends MowzieEntity implements Enemy {
                 if (getAnimationTick() == 87) {
                     playSound(MMSounds.ENTITY_FROSTMAW_LAND.get(), 3, 1f);
                     float radius = 4;
-                    float slamPosX = (float) (getX() + radius * Math.cos(Math.toRadians(yRot + 90)));
-                    float slamPosZ = (float) (getZ() + radius * Math.sin(Math.toRadians(yRot + 90)));
+                    float slamPosX = (float) (getX() + radius * Math.cos(Math.toRadians(getYRot() + 90)));
+                    float slamPosZ = (float) (getZ() + radius * Math.sin(Math.toRadians(getYRot() + 90)));
                     if (level.isClientSide) level.addParticle(new ParticleRing.RingData(0f, (float)Math.PI/2f, 17, 1f, 1f, 1f, 1f, 60f, false, ParticleRing.EnumRingBehavior.GROW), slamPosX, getY() + 0.2f, slamPosZ, 0, 0, 0);
                     AABB hitBox = new AABB(new BlockPos(slamPosX - 0.5f, getY(), slamPosZ - 0.5f)).inflate(3, 3, 3);
                     List<LivingEntity> entitiesHit = level.getEntitiesOfClass(LivingEntity.class, hitBox);
                     for (LivingEntity entity: entitiesHit) {
                         if (entity != this) {
-                            attackEntityAsMob(entity, 4f, 1);
+                            doHurtTarget(entity, 4f, 1);
                             if (entity.isBlocking()) entity.getUseItem().hurtAndBreak(400, entity, p -> p.broadcastBreakEvent(entity.getUsedItemHand()));
                         }
                     }
@@ -381,24 +366,24 @@ public class EntityFrostmaw extends MowzieEntity implements Enemy {
                     lookAt(getTarget(), 30, 30);
                 }
                 Vec3 mouthPos = new Vec3(2.3, 2.65, 0);
-                mouthPos = mouthPos.yRot((float)Math.toRadians(-yRot - 90));
+                mouthPos = mouthPos.yRot((float)Math.toRadians(-getYRot() - 90));
                 mouthPos = mouthPos.add(position());
-                mouthPos = mouthPos.add(new Vec3(0, 0, 1).xRot((float)Math.toRadians(-xRot)).yRot((float)Math.toRadians(-yHeadRot)));
+                mouthPos = mouthPos.add(new Vec3(0, 0, 1).xRot((float)Math.toRadians(-getXRot())).yRot((float)Math.toRadians(-yHeadRot)));
                 if (getAnimationTick() == 13) {
                     iceBreath = new EntityIceBreath(EntityHandler.ICE_BREATH.get(), level, this);
-                    iceBreath.absMoveTo(mouthPos.x, mouthPos.y, mouthPos.z, yHeadRot, xRot + 10);
+                    iceBreath.absMoveTo(mouthPos.x, mouthPos.y, mouthPos.z, yHeadRot, getXRot() + 10);
                     if (!level.isClientSide) level.addFreshEntity(iceBreath);
                 }
                 if (iceBreath != null)
-                    iceBreath.absMoveTo(mouthPos.x, mouthPos.y, mouthPos.z, yHeadRot, xRot + 10);
+                    iceBreath.absMoveTo(mouthPos.x, mouthPos.y, mouthPos.z, yHeadRot, getXRot() + 10);
             }
 
             if (getAnimation() == ICE_BALL_ANIMATION) {
                 if (getTarget() != null) lookControl.setLookAt(getTarget(), 15, 15);
                 Vec3 projectilePos = new Vec3(2.0, 1.9, 0);
-                projectilePos = projectilePos.yRot((float)Math.toRadians(-yRot - 90));
+                projectilePos = projectilePos.yRot((float)Math.toRadians(-getYRot()- 90));
                 projectilePos = projectilePos.add(position());
-                projectilePos = projectilePos.add(new Vec3(0, 0, 1).xRot((float)Math.toRadians(-xRot)).yRot((float)Math.toRadians(-yHeadRot)));
+                projectilePos = projectilePos.add(new Vec3(0, 0, 1).xRot((float)Math.toRadians(-getXRot())).yRot((float)Math.toRadians(-yHeadRot)));
                 if (level.isClientSide) {
                     Vec3 mouthPos = socketPosArray[2];
                     if (getAnimationTick() < 12) {
@@ -425,7 +410,7 @@ public class EntityFrostmaw extends MowzieEntity implements Enemy {
                     playSound(MMSounds.ENTITY_FROSTMAW_ICEBALL_SHOOT.get(), 2, 0.7f);
 
                     EntityIceBall iceBall = new EntityIceBall(EntityHandler.ICE_BALL.get(), level, this);
-                    iceBall.absMoveTo(projectilePos.x, projectilePos.y, projectilePos.z, yHeadRot, xRot + 10);
+                    iceBall.absMoveTo(projectilePos.x, projectilePos.y, projectilePos.z, yHeadRot, getXRot() + 10);
                     float projSpeed = 1.6f;
                     if (getTarget() != null) {
                         float ticksUntilHit = targetDistance / projSpeed;
@@ -534,10 +519,10 @@ public class EntityFrostmaw extends MowzieEntity implements Enemy {
 
             if (ConfigHandler.COMMON.MOBS.FROSTMAW.stealableIceCrystal.get() && getHasCrystal() && tickCount > 20 && getAnimation() == NO_ANIMATION) {
                 Vec3 crystalPos = new Vec3(1.6, 0.4, 1.8);
-                crystalPos = crystalPos.yRot((float) Math.toRadians(-yRot - 90));
+                crystalPos = crystalPos.yRot((float) Math.toRadians(-getYRot() - 90));
                 crystalPos = crystalPos.add(position());
                 for (Player player : getPlayersNearby(8, 8, 8, 8)) {
-                    if (player.position().distanceTo(crystalPos) <= 1.8 && (player.isCreative() || player.isInvisible()) && !isInventoryFull(player.inventory)) {
+                    if (player.position().distanceTo(crystalPos) <= 1.8 && (player.isCreative() || player.isInvisible()) && !isInventoryFull(player.getInventory())) {
                         ItemHandlerHelper.giveItemToPlayer(player, new ItemStack(ItemHandler.ICE_CRYSTAL));
                         setHasCrystal(false);
                         if (level.getDifficulty() != Difficulty.PEACEFUL) {
@@ -594,7 +579,7 @@ public class EntityFrostmaw extends MowzieEntity implements Enemy {
         if (slamCooldown > 0) slamCooldown--;
         if (shouldDodgeMeasure > 0 && tickCount % 7 == 0) shouldDodgeMeasure--;
         if (dodgeCooldown > 0) dodgeCooldown--;
-        yRotO = yRot;
+        yRotO = getYRot();
     }
 
     private void doRoarEffects() {
@@ -814,8 +799,8 @@ public class EntityFrostmaw extends MowzieEntity implements Enemy {
     }
 
     @Override
-    protected void onDeathAIUpdate() {
-        super.onDeathAIUpdate();
+    protected void tickDeath() {
+        super.tickDeath();
         if (getAnimationTick() == 5) {
             playSound(MMSounds.ENTITY_FROSTMAW_DIE.get(), 2.5f, 1);
         } else if (getAnimationTick() == 53) {

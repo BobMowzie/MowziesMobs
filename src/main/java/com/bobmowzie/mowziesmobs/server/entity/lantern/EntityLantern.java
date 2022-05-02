@@ -153,8 +153,8 @@ public class EntityLantern extends MowzieEntity {
     }
 
     @Override
-    protected void onDeathAIUpdate() {
-        super.onDeathAIUpdate();
+    protected void tickDeath() {
+        super.tickDeath();
         if (getAnimationTick() == 1 && level.isClientSide) {
             for (int i = 0; i < 8; i++) {
                 level.addParticle(ParticleTypes.ITEM_SLIME, getX(), getY(), getZ(), 0.2 * (random.nextFloat() - 0.5), 0.2 * (random.nextFloat() - 0.5), 0.2 * (random.nextFloat() - 0.5));
@@ -165,10 +165,7 @@ public class EntityLantern extends MowzieEntity {
         if (getAnimationTick() == 2) playSound(MMSounds.ENTITY_LANTERN_POP.get(), 1f, 0.8f + random.nextFloat() * 0.4f);
     }
 
-    public void fall(float distance, float damageMultiplier)
-    {
-    }
-
+    @Override
     protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos)
     {
     }

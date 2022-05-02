@@ -89,11 +89,12 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     }
 
     @Override
-    public void discard()  {
+    public void remove(RemovalReason reason) {
         if (tickCount == 0) {
             pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
         }
-        super.discard() ;
+        pack.forEach(EntityBarakoanToBarakoana::removeLeader);
+        super.remove(reason);
     }
 
     @Override
@@ -165,12 +166,6 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     }
 
     @Override
-    public void remove(boolean keepData) {
-        super.remove(keepData);
-        pack.forEach(EntityBarakoanToBarakoana::removeLeader);
-    }
-
-    @Override
     protected ConfigHandler.SpawnConfig getSpawnConfig() {
         return ConfigHandler.COMMON.MOBS.BARAKOA.spawnConfig;
     }
@@ -193,6 +188,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
 
     @Override
     public void checkDespawn() {
+        super.checkDespawn();
         if (this.level.getDifficulty() == Difficulty.PEACEFUL && this.shouldDespawnInPeaceful()) {
             this.discard() ;
         } else if (!this.isPersistenceRequired() && !this.requiresCustomPersistence()) {
@@ -216,6 +212,43 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
                     pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
                     this.discard() ;
                 } else if (d0 < 1024.0D) {
+                    this.noActionTime = 0;
+                }
+            }
+
+        } else {
+            this.noActionTime = 0;
+        }
+
+
+        if (this.level.getDifficulty() == Difficulty.PEACEFUL && this.shouldDespawnInPeaceful()) {
+            this.discard();
+        } else if (!this.isPersistenceRequired() && !this.requiresCustomPersistence()) {
+            Entity entity = this.level.getNearestPlayer(this, -1.0D);
+            net.minecraftforge.eventbus.api.Event.Result result = net.minecraftforge.event.ForgeEventFactory.canEntityDespawn(this);
+            if (result == net.minecraftforge.eventbus.api.Event.Result.DENY) {
+                noActionTime = 0;
+                entity = null;
+            } else if (result == net.minecraftforge.eventbus.api.Event.Result.ALLOW) {
+                if (pack != null) pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
+                this.discard();
+                entity = null;
+            }
+            if (entity != null) {
+                double d0 = entity.distanceToSqr(this);
+                int i = this.getType().getCategory().getDespawnDistance();
+                int j = i * i;
+                if (d0 > (double)j && this.removeWhenFarAway(d0)) {
+                    if (pack != null) pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
+                    this.discard();
+                }
+
+                int k = this.getType().getCategory().getNoDespawnDistance();
+                int l = k * k;
+                if (this.noActionTime > 600 && this.random.nextInt(800) == 0 && d0 > (double)l && this.removeWhenFarAway(d0)) {
+                    if (pack != null) pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
+                    this.discard();
+                } else if (d0 < (double)l) {
                     this.noActionTime = 0;
                 }
             }
