@@ -95,7 +95,7 @@ public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 	@Nullable
 	public static GeckoPlayer getGeckoPlayer(Player player, Perspective perspective) {
 		if (perspective == Perspective.FIRST_PERSON) return GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON;
-		PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+		PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
 		if (playerCapability != null) {
 			return playerCapability.getGeckoPlayer();
 		}
@@ -103,7 +103,7 @@ public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 	}
 
 	public static MowzieAnimationController<GeckoPlayer> getAnimationController(Player player, Perspective perspective) {
-		PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+		PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
 		if (playerCapability != null) {
 			GeckoPlayer geckoPlayer;
 			if (perspective == Perspective.FIRST_PERSON) geckoPlayer = GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON;

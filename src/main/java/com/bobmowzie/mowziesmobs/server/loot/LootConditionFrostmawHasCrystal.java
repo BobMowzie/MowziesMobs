@@ -6,12 +6,10 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.storage.loot.Serializer;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditions;
-
 import java.util.Set;
-
-
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -24,6 +22,7 @@ public class LootConditionFrostmawHasCrystal implements LootItemCondition {
     private LootConditionFrostmawHasCrystal() {
     }
 
+    @Override
     public LootItemConditionType getType() {
         return LootItemConditions.KILLED_BY_PLAYER;
     }
@@ -34,8 +33,7 @@ public class LootConditionFrostmawHasCrystal implements LootItemCondition {
 
     public boolean test(LootContext context) {
         Entity entity = context.getParamOrNull(LootContextParams.THIS_ENTITY);
-        if (entity instanceof EntityFrostmaw) {
-            EntityFrostmaw frostmaw = (EntityFrostmaw) entity;
+        if (entity instanceof EntityFrostmaw frostmaw) {
             return frostmaw.getHasCrystal();
         }
         return false;
@@ -47,14 +45,13 @@ public class LootConditionFrostmawHasCrystal implements LootItemCondition {
         };
     }
 
-    public static class Serializer implements Serializer<LootConditionFrostmawHasCrystal> {
-        public Serializer() {
+    public static class ConditionSerializer implements Serializer<LootConditionFrostmawHasCrystal> {
+        @Override
+        public void serialize(JsonObject json, LootConditionFrostmawHasCrystal value, JsonSerializationContext context) {
         }
 
-        public void serialize(JsonObject p_230424_1_, LootConditionFrostmawHasCrystal p_230424_2_, JsonSerializationContext p_230424_3_) {
-        }
-
-        public LootConditionFrostmawHasCrystal deserialize(JsonObject p_230423_1_, JsonDeserializationContext p_230423_2_) {
+        @Override
+        public LootConditionFrostmawHasCrystal deserialize(JsonObject json, JsonDeserializationContext context) {
             return LootConditionFrostmawHasCrystal.INSTANCE;
         }
     }

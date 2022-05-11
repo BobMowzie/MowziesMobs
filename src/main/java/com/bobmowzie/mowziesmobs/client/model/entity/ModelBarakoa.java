@@ -456,7 +456,7 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
             faceTarget(headYaw, headPitch, 2.0F, head);
         }
         float frame = entity.frame + delta;
-        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.FROZEN_CAPABILITY);
         boolean frozen = frozenCapability != null && frozenCapability.getFrozen();
 
         if (entity.getMask() == MaskType.FURY) {
@@ -1076,7 +1076,7 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
 
         float talk = talker.rotationPointX;
         float dance = entity.dancing.getAnimationProgressSinSqrt();
-        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.FROZEN_CAPABILITY);
         boolean frozen = frozenCapability != null && frozenCapability.getFrozen();
         if (!frozen) {
             walk(head, 1.5f, 0.1f * talk, false, 0, -0.5f * talk, frame, 1f);

@@ -39,7 +39,7 @@ public class MessageLeftMouseDown {
 
         private void accept(final MessageLeftMouseDown message, final ServerPlayer player) {
             if (player != null) {
-                PlayerCapability.IPlayerCapability capability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+                PlayerCapability.IPlayerCapability capability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
                 if (capability != null) {
                     capability.setMouseLeftDown(true);
                     Power[] powers = capability.getPowers();

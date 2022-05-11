@@ -46,7 +46,7 @@ public enum AbilityHandler {
 
     @Nullable
     public AbilityCapability.IAbilityCapability getAbilityCapability(LivingEntity entity) {
-        return CapabilityHandler.getCapability(entity, AbilityCapability.AbilityProvider.ABILITY_CAPABILITY);
+        return CapabilityHandler.getCapability(entity, CapabilityHandler.ABILITY_CAPABILITY);
     }
 
     @Nullable

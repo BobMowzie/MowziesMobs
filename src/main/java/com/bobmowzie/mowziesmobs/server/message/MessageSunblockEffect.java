@@ -48,7 +48,7 @@ public class MessageSunblockEffect {
                     Entity entity = Minecraft.getInstance().level.getEntity(message.entityID);
                     if (entity instanceof LivingEntity) {
                         LivingEntity living = (LivingEntity) entity;
-                        LivingCapability.ILivingCapability livingCapability = CapabilityHandler.getCapability(living, LivingCapability.LivingProvider.LIVING_CAPABILITY);
+                        LivingCapability.ILivingCapability livingCapability = CapabilityHandler.getCapability(living, CapabilityHandler.LIVING_CAPABILITY);
                         if (livingCapability != null) {
                             livingCapability.setHasSunblock(message.hasSunblock);
                         }

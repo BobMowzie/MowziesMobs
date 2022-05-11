@@ -22,7 +22,7 @@ public class SunblockLayer<T extends LivingEntity, M extends EntityModel<T>> ext
     }
 
     public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        LivingCapability.ILivingCapability livingCapability = CapabilityHandler.getCapability(entitylivingbaseIn, LivingCapability.LivingProvider.LIVING_CAPABILITY);
+        LivingCapability.ILivingCapability livingCapability = CapabilityHandler.getCapability(entitylivingbaseIn, CapabilityHandler.LIVING_CAPABILITY);
         if (livingCapability != null && livingCapability.getHasSunblock()) {
             float f = (float) entitylivingbaseIn.tickCount + partialTicks;
             EntityModel<T> entitymodel = this.getParentModel();

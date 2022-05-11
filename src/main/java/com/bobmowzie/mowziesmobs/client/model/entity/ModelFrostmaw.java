@@ -1667,7 +1667,7 @@ public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T
                 walk(rightFoot, 0.5f * globalSpeed, 0.4f * globalDegreeBi, true, -1.5f, -0.4f * globalDegreeBi, limbSwing, limbSwingAmount);
 
                 //Idle
-                FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+                FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.FROZEN_CAPABILITY);
                 boolean frozen = frozenCapability != null && frozenCapability.getFrozen();
                 if (!frozen && (entity.getAnimation() != EntityFrostmaw.SLAM_ANIMATION || entity.getAnimationTick() < 118) && entity.getAnimation() != EntityFrostmaw.DIE_ANIMATION) {
                     walk(waist, 0.08f, 0.05f, false, 0, 0, frame, 1);

@@ -42,7 +42,7 @@ public class MessageUseAbility {
             context.enqueueWork(() -> {
                 LivingEntity entity = (LivingEntity) Minecraft.getInstance().level.getEntity(message.entityID);
                 if (entity != null) {
-                    AbilityCapability.IAbilityCapability abilityCapability = CapabilityHandler.getCapability(entity, AbilityCapability.AbilityProvider.ABILITY_CAPABILITY);
+                    AbilityCapability.IAbilityCapability abilityCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.ABILITY_CAPABILITY);
                     if (abilityCapability != null) {
                         abilityCapability.activateAbility(entity, abilityCapability.getAbilityTypesOnEntity(entity)[message.index]);
                     }

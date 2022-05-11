@@ -130,7 +130,7 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<Player> {
     }
 
     private PlayerCapability.IPlayerCapability getPlayerCapability() {
-        return CapabilityHandler.getCapability(leader, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        return CapabilityHandler.getCapability(leader, CapabilityHandler.PLAYER_CAPABILITY);
     }
 
     @Override

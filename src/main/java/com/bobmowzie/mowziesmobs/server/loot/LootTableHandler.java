@@ -33,8 +33,8 @@ public class LootTableHandler {
 
     public static void init() {
 //        CHECK_FROSTMAW_CRYSTAL = registerFunction("mowziesmobs:has_crystal", new LootFunctionCheckFrostmawCrystal.Serializer());
-        GROTTOL_DEATH_TYPE = registerFunction("mowziesmobs:grottol_death_type", new LootFunctionGrottolDeathType.Serializer());
-        FROSTMAW_HAS_CRYSTAL = registerCondition("mowziesmobs:has_crystal", new LootConditionFrostmawHasCrystal.Serializer());
+        GROTTOL_DEATH_TYPE = registerFunction("mowziesmobs:grottol_death_type", new LootFunctionGrottolDeathType.FunctionSerializer());
+        FROSTMAW_HAS_CRYSTAL = registerCondition("mowziesmobs:has_crystal", new LootConditionFrostmawHasCrystal.ConditionSerializer());
     }
 
     private static ResourceLocation register(String id) {

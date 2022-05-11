@@ -48,7 +48,7 @@ public class MessageFreezeEffect {
                     Entity entity = Minecraft.getInstance().level.getEntity(message.entityID);
                     if (entity instanceof LivingEntity) {
                         LivingEntity living = (LivingEntity) entity;
-                        FrozenCapability.IFrozenCapability livingCapability = CapabilityHandler.getCapability(living, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+                        FrozenCapability.IFrozenCapability livingCapability = CapabilityHandler.getCapability(living, CapabilityHandler.FROZEN_CAPABILITY);
                         if (livingCapability != null) {
                             if (message.isFrozen) livingCapability.onFreeze(living);
                             else livingCapability.onUnfreeze(living);

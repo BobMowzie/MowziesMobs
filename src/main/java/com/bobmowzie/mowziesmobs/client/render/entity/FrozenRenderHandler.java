@@ -46,7 +46,7 @@ public enum FrozenRenderHandler {
 
         @Override
         public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, LivingEntity living, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(living, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(living, CapabilityHandler.FROZEN_CAPABILITY);
             if (frozenCapability != null && frozenCapability.getFrozen()) {
                 EntityModel model = this.renderer.getModel();
 
@@ -64,7 +64,7 @@ public enum FrozenRenderHandler {
         Player player = Minecraft.getInstance().player;
 
         if(player != null) {
-            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(player, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(player, CapabilityHandler.FROZEN_CAPABILITY);
             if (frozenCapability != null && frozenCapability.getFrozen()) {
                 boolean isMainHand = event.getHand() == InteractionHand.MAIN_HAND;
                 if (isMainHand && !player.isInvisible() && event.getItemStack().isEmpty()) {

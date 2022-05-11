@@ -684,7 +684,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         float nonHoverAnim = 1f - hoverAnim;
 
         float flapAnim = entity.prevFlapAnimFrac + (entity.flapAnimFrac - entity.prevFlapAnimFrac) * partial;
-        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.FROZEN_CAPABILITY);
         boolean frozen = frozenCapability != null && frozenCapability.getFrozen();
         if (!frozen) {
             //Hover anim
@@ -778,7 +778,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         this.setDefaultAngle(entity, limbSwing, limbSwingAmount, headYaw, headPitch, delta);
         float frame = entity.frame + delta;
 
-        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.FROZEN_CAPABILITY);
         boolean frozen = frozenCapability != null && frozenCapability.getFrozen();
         if (!frozen) {
 

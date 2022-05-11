@@ -86,7 +86,7 @@ public final class ServerEventHandler {
         }
 
         if (event.getEntity() instanceof Player) {
-            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability((Player) event.getEntity(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability((Player) event.getEntity(), CapabilityHandler.PLAYER_CAPABILITY);
             if (playerCapability != null) playerCapability.addedToWorld(event);
         }
 
@@ -147,15 +147,15 @@ public final class ServerEventHandler {
                 }
             }
 
-            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.FROZEN_CAPABILITY);
             if (frozenCapability != null) {
                 frozenCapability.tick(entity);
             }
-            LivingCapability.ILivingCapability livingCapability = CapabilityHandler.getCapability(entity, LivingCapability.LivingProvider.LIVING_CAPABILITY);
+            LivingCapability.ILivingCapability livingCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.LIVING_CAPABILITY);
             if (livingCapability != null) {
                 livingCapability.tick(entity);
             }
-            AbilityCapability.IAbilityCapability abilityCapability = CapabilityHandler.getCapability(entity, AbilityCapability.AbilityProvider.ABILITY_CAPABILITY);
+            AbilityCapability.IAbilityCapability abilityCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.ABILITY_CAPABILITY);
             if (abilityCapability != null) {
                 abilityCapability.tick(entity);
             }
@@ -173,7 +173,7 @@ public final class ServerEventHandler {
         if (event.getPotionEffect().getEffect() == EffectHandler.FROZEN) {
             if (!event.getEntity().level.isClientSide()) {
                 MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageFreezeEffect(event.getEntityLiving(), true));
-                FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(event.getEntity(), FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+                FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(event.getEntity(), CapabilityHandler.FROZEN_CAPABILITY);
                 if (frozenCapability != null) {
                     frozenCapability.onFreeze(event.getEntityLiving());
                 }
@@ -188,7 +188,7 @@ public final class ServerEventHandler {
         }
         if (!event.getEntity().level.isClientSide() && event.getPotion() == EffectHandler.FROZEN) {
             MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageFreezeEffect(event.getEntityLiving(), false));
-            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(event.getEntity(), FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(event.getEntity(), CapabilityHandler.FROZEN_CAPABILITY);
             if (frozenCapability != null) {
                 frozenCapability.onUnfreeze(event.getEntityLiving());
             }
@@ -203,7 +203,7 @@ public final class ServerEventHandler {
         }
         if (!event.getEntity().level.isClientSide() && effectInstance != null && effectInstance.getEffect() == EffectHandler.FROZEN) {
             MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageFreezeEffect(event.getEntityLiving(), false));
-            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(event.getEntity(), FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(event.getEntity(), CapabilityHandler.FROZEN_CAPABILITY);
             if (frozenCapability != null) {
                 frozenCapability.onUnfreeze(event.getEntityLiving());
             }
@@ -238,13 +238,13 @@ public final class ServerEventHandler {
         if (event.getSource().isFire()) {
             event.getEntityLiving().removeEffectNoUpdate(EffectHandler.FROZEN);
             MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageFreezeEffect(event.getEntityLiving(), false));
-            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(event.getEntityLiving(), FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(event.getEntityLiving(), CapabilityHandler.FROZEN_CAPABILITY);
             if (frozenCapability != null) {
                 frozenCapability.onUnfreeze(event.getEntityLiving());
             }
         }
         if (event.getEntity() instanceof Player) {
-            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), CapabilityHandler.PLAYER_CAPABILITY);
             if (playerCapability != null) {
                 Power[] powers = playerCapability.getPowers();
                 for (Power power : powers) {
@@ -255,7 +255,7 @@ public final class ServerEventHandler {
 
         if (event.getEntityLiving() != null) {
             LivingEntity living = event.getEntityLiving();
-            LivingCapability.ILivingCapability capability = CapabilityHandler.getCapability(living, LivingCapability.LivingProvider.LIVING_CAPABILITY);
+            LivingCapability.ILivingCapability capability = CapabilityHandler.getCapability(living, CapabilityHandler.LIVING_CAPABILITY);
             if (capability != null) {
                 capability.setLastDamage(event.getAmount());
             }
@@ -268,7 +268,7 @@ public final class ServerEventHandler {
             return;
         }
         Player player = event.player;
-        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
         if (playerCapability != null) {
             playerCapability.tick(event);
 
@@ -295,7 +295,7 @@ public final class ServerEventHandler {
 
         if (living instanceof Player) {
             Player player = (Player) living;
-            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
             if (playerCapability != null && event.isCancelable()) {
                 if (
                         playerCapability.getUsingSolarBeam() ||
@@ -411,7 +411,7 @@ public final class ServerEventHandler {
         }
 
         Player player = event.getPlayer();
-        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
         if (playerCapability != null) {
 
             if (event.getWorld().isClientSide && player.getInventory().getSelected().isEmpty() && player.hasEffect(EffectHandler.SUNS_BLESSING)) {
@@ -442,7 +442,7 @@ public final class ServerEventHandler {
             return;
         }
 
-        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getPlayer(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getPlayer(), CapabilityHandler.PLAYER_CAPABILITY);
         if (playerCapability != null) {
             Power[] powers = playerCapability.getPowers();
             for (Power power : powers) {
@@ -469,7 +469,7 @@ public final class ServerEventHandler {
             aggroBarakoa(player);
         }
 
-        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
         if (playerCapability != null) {
 
             ItemStack item = event.getItemStack();
@@ -502,7 +502,7 @@ public final class ServerEventHandler {
     public void onPlayerLeftClick(PlayerInteractEvent.LeftClickEmpty event) {
         double range = 6.5;
         Player player = event.getPlayer();
-        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
         if (player.getMainHandItem() != null && player.getMainHandItem().getItem() == ItemHandler.SPEAR) {
             LivingEntity entityHit = ItemSpear.raytraceEntities(player.getCommandSenderWorld(), player, range);
             if (entityHit != null) {
@@ -522,7 +522,7 @@ public final class ServerEventHandler {
         LivingEntity entity = event.getEntityLiving();
         if (entity.getHealth() <= event.getAmount() && entity.hasEffect(EffectHandler.FROZEN)) {
             entity.removeEffectNoUpdate(EffectHandler.FROZEN);
-            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.FROZEN_CAPABILITY);
             MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageFreezeEffect(event.getEntityLiving(), false));
             if (frozenCapability != null) {
                 frozenCapability.onUnfreeze(entity);
@@ -543,7 +543,7 @@ public final class ServerEventHandler {
             return;
         }
 
-        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getPlayer(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getPlayer(), CapabilityHandler.PLAYER_CAPABILITY);
         if (playerCapability != null) {
             Power[] powers = playerCapability.getPowers();
             for (Power power : powers) {
@@ -566,7 +566,7 @@ public final class ServerEventHandler {
             return;
         }
 
-        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
         if (playerCapability != null) {
             Power[] powers = playerCapability.getPowers();
             for (Power power : powers) {
@@ -585,7 +585,7 @@ public final class ServerEventHandler {
         }
 
         if (event.getEntity() instanceof Player) {
-            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), CapabilityHandler.PLAYER_CAPABILITY);
             if (playerCapability != null) {
                 Power[] powers = playerCapability.getPowers();
                 for (Power power : powers) {
@@ -609,7 +609,7 @@ public final class ServerEventHandler {
                 return;
             }
 
-            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getPlayer(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getPlayer(), CapabilityHandler.PLAYER_CAPABILITY);
             if (playerCapability != null) {
                 playerCapability.setPrevCooledAttackStrength(event.getPlayer().getAttackStrengthScale(0.5f));
 
@@ -647,7 +647,7 @@ public final class ServerEventHandler {
     public void checkCritEvent(CriticalHitEvent event) {
         ItemStack weapon = event.getPlayer().getMainHandItem();
         Player attacker = event.getPlayer();
-        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getPlayer(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getPlayer(), CapabilityHandler.PLAYER_CAPABILITY);
         if (playerCapability != null && playerCapability.getPrevCooledAttackStrength() == 1.0f && !weapon.isEmpty() && event.getTarget() instanceof LivingEntity) {
             LivingEntity target = (LivingEntity)event.getTarget();
             if (weapon.getItem() instanceof ItemNagaFangDagger) {

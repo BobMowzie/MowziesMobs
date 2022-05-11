@@ -30,7 +30,7 @@ public class MessagePlayerStartSummonBoulder {
             final ServerPlayer player = context.getSender();
             context.enqueueWork(() -> {
                 if (player != null) {
-                    PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+                    PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
                     if (playerCapability != null) {
                         PowerGeomancy geomancy = playerCapability.getGeomancy();
                         geomancy.startSpawningBoulder(player);

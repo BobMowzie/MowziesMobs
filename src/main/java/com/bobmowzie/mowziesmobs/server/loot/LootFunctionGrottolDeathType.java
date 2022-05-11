@@ -20,8 +20,7 @@ public class LootFunctionGrottolDeathType extends LootItemConditionalFunction {
     @Override
     protected ItemStack run(ItemStack stack, LootContext context) {
         Entity entity = context.getParamOrNull(LootContextParams.THIS_ENTITY);
-        if (entity instanceof EntityGrottol) {
-            EntityGrottol grottol = (EntityGrottol)entity;
+        if (entity instanceof EntityGrottol grottol) {
             EntityGrottol.EnumDeathType deathType = grottol.getDeathType();
             if (deathType == EntityGrottol.EnumDeathType.NORMAL) {
                 stack.setCount(0);
@@ -37,11 +36,8 @@ public class LootFunctionGrottolDeathType extends LootItemConditionalFunction {
         return null;
     }
 
-    public static class Serializer extends LootItemConditionalFunction.Serializer<LootFunctionGrottolDeathType> {
-        public Serializer() {
-            super();
-        }
-
+    public static class FunctionSerializer extends LootItemConditionalFunction.Serializer<LootFunctionGrottolDeathType> {
+        @Override
         public void serialize(JsonObject object, LootFunctionGrottolDeathType functionClazz, JsonSerializationContext serializationContext) {
         }
 

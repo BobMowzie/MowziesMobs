@@ -72,7 +72,7 @@ public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask {
     }
 
     private boolean spawnBarakoa(MaskType mask, ItemStack stack, Player player, float durability) {
-        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
         if (playerCapability != null && playerCapability.getPackSize() < 10) {
             player.playSound(MMSounds.ENTITY_BARAKO_BELLY.get(), 1.5f, 1);
             player.playSound(MMSounds.ENTITY_BARAKOA_BLOWDART.get(), 1.5f, 0.5f);

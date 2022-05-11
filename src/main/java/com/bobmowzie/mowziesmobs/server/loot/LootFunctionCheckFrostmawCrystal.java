@@ -18,8 +18,7 @@ public class LootFunctionCheckFrostmawCrystal extends LootItemConditionalFunctio
     @Override
     protected ItemStack run(ItemStack stack, LootContext context) {
         Entity entity = context.getParamOrNull(LootContextParams.THIS_ENTITY);
-        if (entity instanceof EntityFrostmaw) {
-            EntityFrostmaw frostmaw = (EntityFrostmaw)entity;
+        if (entity instanceof EntityFrostmaw frostmaw) {
             if (!frostmaw.getHasCrystal()) {
                 stack.setCount(0);
             }
@@ -32,11 +31,9 @@ public class LootFunctionCheckFrostmawCrystal extends LootItemConditionalFunctio
         return LootTableHandler.CHECK_FROSTMAW_CRYSTAL;
     }
 
-    public static class Serializer extends LootItemConditionalFunction.Serializer<LootFunctionCheckFrostmawCrystal> {
-        public Serializer() {
-            super();
-        }
+    public static class FunctionSerializer extends LootItemConditionalFunction.Serializer<LootFunctionCheckFrostmawCrystal> {
 
+        @Override
         public void serialize(JsonObject object, LootFunctionCheckFrostmawCrystal function, JsonSerializationContext serializationContext) {
         }
 

@@ -41,13 +41,13 @@ public class ItemWroughtAxe extends MowzieAxeItem {
 
     @Override
     public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
-        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
         return playerCapability == null || (!playerCapability.getAxeCanAttack() && playerCapability.getUntilAxeSwing() > 0);
     }
 
     @Override
     public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
-        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(entity, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.PLAYER_CAPABILITY);
         return playerCapability != null && playerCapability.getUntilAxeSwing() > 0;
     }
 
@@ -68,7 +68,7 @@ public class ItemWroughtAxe extends MowzieAxeItem {
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         if (hand == InteractionHand.MAIN_HAND && player.getAttackStrengthScale(0.5F) == 1.0f) {
-            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
             if (playerCapability != null && playerCapability.getUntilAxeSwing() <= 0) {
                 boolean verticalAttack = player.isShiftKeyDown() && player.isOnGround();
                 if (verticalAttack)

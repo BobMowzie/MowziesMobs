@@ -138,7 +138,7 @@ public class EntityIceBreath extends EntityMagicEffect {
 
                 if (entityHit.hurt(DamageSource.indirectMagic(this, caster), damage)) {
                     entityHit.setDeltaMovement(entityHit.getDeltaMovement().multiply(0.25, 1, 0.25));
-                    FrozenCapability.IFrozenCapability capability = CapabilityHandler.getCapability(entityHit, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+                    FrozenCapability.IFrozenCapability capability = CapabilityHandler.getCapability(entityHit, CapabilityHandler.FROZEN_CAPABILITY);
                     if (capability != null) capability.addFreezeProgress(entityHit, 0.23f);
                 }
             }

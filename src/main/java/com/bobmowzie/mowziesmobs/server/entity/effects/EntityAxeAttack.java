@@ -183,7 +183,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
                 // Do raycast check to prevent damaging through walls
                 if (!raytraceCheckEntity(entityHit)) continue;
 
-                PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(caster, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+                PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(caster, CapabilityHandler.PLAYER_CAPABILITY);
                 if (playerCapability != null) {
                     playerCapability.setAxeCanAttack(true);
                     if (caster instanceof Player) attackTargetEntityWithCurrentItem(entityHit, (Player)caster, damage / ItemHandler.WROUGHT_AXE.getAttackDamage(), applyKnockback);

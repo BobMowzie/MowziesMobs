@@ -57,7 +57,7 @@ public enum ClientEventHandler {
         if (abilityCapability != null) shouldAnimate = abilityCapability.getActiveAbility() != null;
 //        shouldAnimate = (player.ticksExisted / 20) % 2 == 0;
         if (shouldAnimate) {
-            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
             if (playerCapability != null) {
                 GeckoPlayer.GeckoPlayerFirstPerson geckoPlayer = GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON;
                 if (geckoPlayer != null) {
@@ -91,7 +91,7 @@ public enum ClientEventHandler {
             AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
 //        shouldAnimate = (player.ticksExisted / 20) % 2 == 0;
             if (abilityCapability != null && abilityCapability.getActiveAbility() != null) {
-                PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+                PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), CapabilityHandler.PLAYER_CAPABILITY);
                 if (playerCapability != null) {
                     GeckoPlayer.GeckoPlayerThirdPerson geckoPlayer = playerCapability.getGeckoPlayer();
                     if (geckoPlayer != null) {
@@ -119,7 +119,7 @@ public enum ClientEventHandler {
     public void onRenderTick(TickEvent.RenderTickEvent event) {
         Player player = Minecraft.getInstance().player;
 //        if (player != null) {
-//            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+//            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
 //            if (playerCapability != null && playerCapability.getGeomancy().canUse(player) && playerCapability.getGeomancy().isSpawningBoulder() && playerCapability.getGeomancy().getSpawnBoulderCharge() > 2) {
 //                Vector3d lookPos = playerCapability.getGeomancy().getLookPos();
 //                Vector3d playerEyes = player.getEyePosition(Minecraft.getInstance().getRenderPartialTicks());
@@ -133,7 +133,7 @@ public enum ClientEventHandler {
 //                player.prevRotationPitch = player.rotationPitch;
 //                player.prevRotationYawHead = player.rotationYawHead;
 //            }
-        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(player, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(player, CapabilityHandler.FROZEN_CAPABILITY);
         if (frozenCapability != null && frozenCapability.getFrozen() && frozenCapability.getPrevFrozen()) {
             player.setYRot(frozenCapability.getFrozenYaw());
             player.setXRot(frozenCapability.getFrozenPitch());
@@ -147,7 +147,7 @@ public enum ClientEventHandler {
     @SubscribeEvent
     public void onRenderLiving(RenderLivingEvent.Pre event) {
         LivingEntity entity = event.getEntity();
-        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.FROZEN_CAPABILITY);
         if (frozenCapability != null && frozenCapability.getFrozen() && frozenCapability.getPrevFrozen()) {
             entity.setYRot(entity.yRotO = frozenCapability.getFrozenYaw());
             entity.setXRot(entity.xRotO = frozenCapability.getFrozenPitch());
@@ -166,7 +166,7 @@ public enum ClientEventHandler {
         final int timePerMillis = 22;
         if (e.getOverlay() == ForgeIngameGui.FROSTBITE_ELEMENT) {   // TODO port to use vanilla frostbite overlay
             if (Minecraft.getInstance().player != null) {
-                FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(Minecraft.getInstance().player, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+                FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(Minecraft.getInstance().player, CapabilityHandler.FROZEN_CAPABILITY);
                 if (frozenCapability != null && frozenCapability.getFrozen() && Minecraft.getInstance().options.getCameraType() == CameraType.FIRST_PERSON) {
                     Minecraft.getInstance().getTextureManager().bindForSetup(FROZEN_BLUR);
                     Window res = e.getWindow();
@@ -235,7 +235,7 @@ public enum ClientEventHandler {
             return;
         }
         Player player = event.player;
-        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
         if (playerCapability != null && event.side == LogicalSide.CLIENT) {
             GeckoPlayer geckoPlayer = playerCapability.getGeckoPlayer();
             if (geckoPlayer != null) geckoPlayer.tick();
