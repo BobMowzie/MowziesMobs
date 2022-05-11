@@ -13,7 +13,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -22,16 +21,18 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public class FrozenCapability {
     public static int MAX_FREEZE_DECAY_DELAY = 10;
 
-    public interface IFrozenCapability {
+    public interface IFrozenCapability extends INBTSerializable<CompoundTag> {
         boolean getFrozen();
 
         float getFreezeProgress();
@@ -89,10 +90,6 @@ public class FrozenCapability {
         void onUnfreeze(LivingEntity entity);
 
         void tick(LivingEntity entity);
-
-        Tag writeNBT();
-
-        void readNBT(Tag nbt);
     }
 
     public static class FrozenCapabilityImp implements IFrozenCapability {
@@ -254,8 +251,8 @@ public class FrozenCapability {
                 frozenController.absMoveTo(entity.getX(), entity.getY(), entity.getZ(), entity.getYRot(), entity.getXRot());
                 entity.level.addFreshEntity(frozenController);
                 frozenController.setYBodyRot(entity.yBodyRot);
-                frozenYaw = entity.yRot;
-                frozenPitch = entity.xRot;
+                frozenYaw = entity.getYRot();
+                frozenPitch = entity.getXRot();
                 frozenYawHead = entity.yHeadRot;
                 frozenLimbSwingAmount = 0;//entity.limbSwingAmount;
                 frozenRenderYawOffset = entity.yBodyRot;
@@ -370,7 +367,7 @@ public class FrozenCapability {
         }
 
         @Override
-        public Tag writeNBT() {
+        public CompoundTag serializeNBT() {
             CompoundTag compound = new CompoundTag();
             compound.putFloat("freezeProgress", getFreezeProgress());
             compound.putInt("freezeDecayDelay", getFreezeDecayDelay());
@@ -390,8 +387,7 @@ public class FrozenCapability {
         }
 
         @Override
-        public void readNBT(Tag nbt) {
-            CompoundTag compound = (CompoundTag) nbt;
+        public void deserializeNBT(CompoundTag compound) {
             setFreezeProgress(compound.getFloat("freezeProgress"));
             setFreezeDecayDelay(compound.getInt("freezeDecayDelay"));
             setFrozenLimbSwingAmount(compound.getFloat("frozenLimbSwingAmount"));
@@ -410,38 +406,24 @@ public class FrozenCapability {
         }
     }
 
-    public static class FrozenStorage implements Capability.IStorage<IFrozenCapability> {
-        @Override
-        public Tag writeNBT(Capability<IFrozenCapability> capability, IFrozenCapability instance, Direction side) {
-            return instance.writeNBT();
-        }
-
-        @Override
-        public void readNBT(Capability<IFrozenCapability> capability, IFrozenCapability instance, Direction side, Tag nbt) {
-            instance.readNBT(nbt);
-        }
-    }
-
-    public static class FrozenProvider implements ICapabilitySerializable<Tag>
+    public static class FrozenProvider implements ICapabilityProvider, ICapabilitySerializable<CompoundTag>
     {
-        @CapabilityInject(IFrozenCapability.class)
-        public static final Capability<IFrozenCapability> FROZEN_CAPABILITY = null;
-
-        private final LazyOptional<IFrozenCapability> instance = LazyOptional.of(FROZEN_CAPABILITY::getDefaultInstance);
+        private final LazyOptional<FrozenCapability.IFrozenCapability> instance = LazyOptional.of(FrozenCapability.FrozenCapabilityImp::new);
 
         @Override
-        public Tag serializeNBT() {
-            return FROZEN_CAPABILITY.getStorage().writeNBT(FROZEN_CAPABILITY, this.instance.orElseThrow(() -> new IllegalArgumentException("Lazy optional must not be empty")), null);
+        public CompoundTag serializeNBT() {
+            return instance.orElseThrow(NullPointerException::new).serializeNBT();
         }
 
         @Override
-        public void deserializeNBT(Tag nbt) {
-            FROZEN_CAPABILITY.getStorage().readNBT(FROZEN_CAPABILITY, this.instance.orElseThrow(() -> new IllegalArgumentException("Lazy optional must not be empty")), null, nbt);
+        public void deserializeNBT(CompoundTag nbt) {
+            instance.orElseThrow(NullPointerException::new).deserializeNBT(nbt);
         }
 
+        @Nonnull
         @Override
-        public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-            return cap == FROZEN_CAPABILITY ? instance.cast() : LazyOptional.empty();
+        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side) {
+            return CapabilityHandler.FROZEN_CAPABILITY.orEmpty(cap, instance.cast());
         }
     }
 }

@@ -39,9 +39,9 @@ public class AnimationRadiusAttack<T extends MowzieEntity & IAnimatedEntity> ext
                 if (entity instanceof EntityBarako && aHit instanceof LeaderSunstrikeImmune) {
                     continue;
                 }
-                entity.attackEntityAsMob(aHit, damageMultiplier, applyKnockbackMultiplier);
+                entity.doHurtTarget(aHit, damageMultiplier, applyKnockbackMultiplier);
                 if (pureapplyKnockback && !aHit.isInvulnerable()) {
-                    if (aHit instanceof Player && ((Player)aHit).abilities.invulnerable) continue;
+                    if (aHit instanceof Player && ((Player)aHit).getAbilities().invulnerable) continue;
                     double angle = entity.getAngleBetweenEntities(entity, aHit);
                     double x = applyKnockbackMultiplier * Math.cos(Math.toRadians(angle - 90));
                     double z = applyKnockbackMultiplier * Math.sin(Math.toRadians(angle - 90));

@@ -53,7 +53,7 @@ public class ItemCapturedGrottol extends Item {
             lookAtPlayer(grottol, player);
             grottol.finalizeSpawn((ServerLevelAccessor) world, world.getCurrentDifficultyAt(location), MobSpawnType.MOB_SUMMONED, null, null);
             world.addFreshEntity(grottol);
-            if (!player.abilities.instabuild) {
+            if (!player.getAbilities().instabuild) {
                 stack.shrink(1);
             }
         }

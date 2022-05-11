@@ -90,7 +90,7 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                         BlockPos abovePos = new BlockPos(pos).above();
                         BlockState block = world.getBlockState(pos);
                         BlockState blockAbove = world.getBlockState(abovePos);
-                        if (block.getMaterial() != Material.AIR && block.isRedstoneConductor(world, pos) && !block.getBlock().hasTileEntity(block) && !blockAbove.getMaterial().blocksMotion()) {
+                        if (block.getMaterial() != Material.AIR && block.isRedstoneConductor(world, pos) && !block.hasBlockEntity() && !blockAbove.getMaterial().blocksMotion()) {
                             EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK.get(), world, block, (float) (0.4 + factor * 0.2));
                             fallingBlock.setPos(hitX + 0.5, hitY + 1, hitZ + 0.5);
                             world.addFreshEntity(fallingBlock);

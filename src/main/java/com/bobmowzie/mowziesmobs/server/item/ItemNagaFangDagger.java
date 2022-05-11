@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.google.common.collect.Sets;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
@@ -21,7 +22,7 @@ import java.util.List;
 
 public class ItemNagaFangDagger extends MowzieToolItem {
     public ItemNagaFangDagger(Item.Properties properties) {
-        super(-2 + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.toolConfig.attackDamage.get().floatValue(), -4f + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.toolConfig.attackSpeed.get().floatValue(), Tiers.STONE, Sets.newHashSet(), properties);
+        super(-2 + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.toolConfig.attackDamage.get().floatValue(), -4f + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.toolConfig.attackSpeed.get().floatValue(), Tiers.STONE, Tag.fromSet(Sets.newHashSet()), properties);
     }
 
     @Override

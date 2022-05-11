@@ -9,8 +9,6 @@ import net.minecraft.world.entity.LivingEntity;
 
 import java.util.EnumSet;
 
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
-
 public class AnimationSolarBeam<T extends MowzieEntity & IAnimatedEntity> extends SimpleAnimationAI<T> {
     protected LivingEntity entityTarget;
 
@@ -32,15 +30,15 @@ public class AnimationSolarBeam<T extends MowzieEntity & IAnimatedEntity> extend
         super.tick();
         float radius1 = 0.8f;
         if (entity.getAnimationTick() == 4 && !entity.level.isClientSide) {
-            solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM.get(), entity.level, entity, entity.getX() + radius1 * Math.sin(-entity.getYRot() * Math.PI / 180), entity.getY() + 1.4, entity.getZ() + radius1 * Math.cos(-entity.yRot * Math.PI / 180), (float) ((entity.yHeadRot + 90) * Math.PI / 180), (float) (-entity.getXRot() * Math.PI / 180), 55);
+            solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM.get(), entity.level, entity, entity.getX() + radius1 * Math.sin(-entity.getYRot() * Math.PI / 180), entity.getY() + 1.4, entity.getZ() + radius1 * Math.cos(-entity.getYRot() * Math.PI / 180), (float) ((entity.yHeadRot + 90) * Math.PI / 180), (float) (-entity.getXRot() * Math.PI / 180), 55);
             entity.level.addFreshEntity(solarBeam);
         }
         if (entity.getAnimationTick() >= 4) {
             if (solarBeam != null) {
                 float radius2 = 1.1f;
-                double x = entity.getX() + radius1 * Math.sin(-entity.yRot * Math.PI / 180) + radius2 * Math.sin(-entity.yHeadRot * Math.PI / 180) * Math.cos(-entity.getXRot() * Math.PI / 180);
+                double x = entity.getX() + radius1 * Math.sin(-entity.getYRot() * Math.PI / 180) + radius2 * Math.sin(-entity.yHeadRot * Math.PI / 180) * Math.cos(-entity.getXRot() * Math.PI / 180);
                 double y = entity.getY() + 1.4 + radius2 * Math.sin(-entity.getXRot() * Math.PI / 180);
-                double z = entity.getZ() + radius1 * Math.cos(-entity.yRot * Math.PI / 180) + radius2 * Math.cos(-entity.yHeadRot * Math.PI / 180) * Math.cos(-entity.getXRot() * Math.PI / 180);
+                double z = entity.getZ() + radius1 * Math.cos(-entity.getYRot() * Math.PI / 180) + radius2 * Math.cos(-entity.yHeadRot * Math.PI / 180) * Math.cos(-entity.getXRot() * Math.PI / 180);
                 solarBeam.setPos(x, y, z);
 
                 float yaw = entity.yHeadRot + 90;

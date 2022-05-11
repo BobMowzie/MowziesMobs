@@ -78,7 +78,7 @@ public class ItemWroughtAxe extends MowzieAxeItem {
                 playerCapability.setVerticalSwing(verticalAttack);
                 playerCapability.setUntilAxeSwing(30);
                 player.startUsingItem(hand);
-                if (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable.get() && !player.abilities.instabuild) player.getItemInHand(hand).hurtAndBreak(2, player, p -> p.broadcastBreakEvent(hand));
+                if (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable.get() && !player.getAbilities().instabuild) player.getItemInHand(hand).hurtAndBreak(2, player, p -> p.broadcastBreakEvent(hand));
             }
             return new InteractionResultHolder<ItemStack>(InteractionResult.SUCCESS, player.getItemInHand(hand));
         }

@@ -30,11 +30,10 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fml.LogicalSide;
 
 @OnlyIn(Dist.CLIENT)
@@ -42,6 +41,11 @@ public enum ClientEventHandler {
     INSTANCE;
 
     private static final ResourceLocation FROZEN_BLUR = new ResourceLocation(MowziesMobs.MODID, "textures/gui/frozenblur.png");
+
+    @SubscribeEvent
+    public void onAddLayers(EntityRenderersEvent.AddLayers event) {
+        //event.getEntityModels().bakeLayer()   TODO
+    }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onHandRender(RenderHandEvent event) {
@@ -102,7 +106,7 @@ public enum ClientEventHandler {
                             event.setCanceled(geckoPlayerModel.resourceForModelId((AbstractClientPlayer) player));
 
                             if (event.isCanceled()) {
-                                animatedPlayerRenderer.render((AbstractClientPlayer) event.getEntity(), event.getEntity().yRot, delta, event.getMatrixStack(), event.getBuffers(), event.getLight(), geckoPlayer);
+                                animatedPlayerRenderer.render((AbstractClientPlayer) event.getEntity(), event.getEntity().getYRot(), delta, event.getMatrixStack(), event.getBuffers(), event.getLight(), geckoPlayer);
                             }
                         }
                     }
@@ -156,15 +160,15 @@ public enum ClientEventHandler {
     }
 
     @SubscribeEvent
-    public void onRenderOverlay(RenderGameOverlayEvent.Post e) {
+    public void onRenderOverlay(RenderGameOverlayEvent.PostLayer e) {
         final int startTime = 210;
         final int pointStart = 1200;
         final int timePerMillis = 22;
-        if (e.getType() == ElementType.POTION_ICONS) {
+        if (e.getOverlay() == ForgeIngameGui.FROSTBITE_ELEMENT) {   // TODO port to use vanilla frostbite overlay
             if (Minecraft.getInstance().player != null) {
                 FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(Minecraft.getInstance().player, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
                 if (frozenCapability != null && frozenCapability.getFrozen() && Minecraft.getInstance().options.getCameraType() == CameraType.FIRST_PERSON) {
-                    Minecraft.getInstance().getTextureManager().bind(FROZEN_BLUR);
+                    Minecraft.getInstance().getTextureManager().bindForSetup(FROZEN_BLUR);
                     Window res = e.getWindow();
                     GuiComponent.blit(e.getMatrixStack(), 0, 0, 0, 0, res.getGuiScaledWidth(), res.getGuiScaledHeight(), res.getGuiScaledWidth(), res.getGuiScaledHeight());
                 }
@@ -174,11 +178,11 @@ public enum ClientEventHandler {
 
     // Remove frozen overlay
     @SubscribeEvent
-    public void onRenderHUD(RenderGameOverlayEvent.Pre event) {
+    public void onRenderHUD(RenderGameOverlayEvent.PreLayer event) {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player != null && player.isPassenger()) {
             if (player.getVehicle() instanceof EntityFrozenController) {
-                if (event.getType().equals(RenderGameOverlayEvent.ElementType.HEALTHMOUNT)) {
+                if (event.getOverlay() == ForgeIngameGui.MOUNT_HEALTH_ELEMENT) {
                     event.setCanceled(true);
                 }
                 if (event.getType().equals(RenderGameOverlayEvent.ElementType.ALL)) {
@@ -210,35 +214,6 @@ public enum ClientEventHandler {
         float delta = Minecraft.getInstance().getFrameTime();
         float ticksExistedDelta = player.tickCount + delta;
         if (player != null) {
-            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-            if (playerCapability != null && playerCapability.getGeomancy().canUse(player) && playerCapability.getGeomancy().isSpawningBoulder() && playerCapability.getGeomancy().getSpawnBoulderCharge() > 2) {
-                Vec3 lookPos = playerCapability.getGeomancy().getLookPos();
-                Vec3 playerEyes = player.getEyePosition(delta);
-                Vec3 vec = playerEyes.subtract(lookPos).normalize();
-                float yaw = (float) Math.atan2(vec.z, vec.x);
-                float pitch = (float) Math.asin(vec.y);
-                player.setYRot((float) (yaw * 180f/Math.PI + 90));
-                player.setXRot((float) (pitch * 180f/Math.PI));
-                player.yHeadRot = player.getYRot();
-                player.yRotO = player.getYRot();
-                player.xRotO = player.getXRot();
-                player.yHeadRotO = player.yHeadRot;
-                event.setPitch(pitch);
-                event.setYaw(yaw);
-            }
-            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(player, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
-            if (frozenCapability != null && frozenCapability.getFrozen() && frozenCapability.getPrevFrozen()) {
-//                player.rotationYaw = frozenCapability.getFrozenYaw();
-//                player.rotationPitch = frozenCapability.getFrozenPitch();
-//                player.rotationYawHead = frozenCapability.getFrozenYawHead();
-//                player.prevRotationYaw = player.rotationYaw;
-//                player.prevRotationPitch = player.rotationPitch;
-//                player.prevRotationYawHead = player.rotationYawHead;
-//
-//                event.setPitch(frozenCapability.getFrozenPitch());
-//                event.setYaw(frozenCapability.getFrozenYaw());
-            }
-
             if (ConfigHandler.CLIENT.doCameraShakes.get()) {
                 float shakeAmplitude = 0;
                 for (EntityCameraShake cameraShake : player.level.getEntitiesOfClass(EntityCameraShake.class, player.getBoundingBox().inflate(20, 20, 20))) {

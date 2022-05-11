@@ -147,7 +147,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 1.2F, 0.9f);
             } else if (entity.getAnimationTick() == 24) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_GRUNT_3.get(), 1.5F, 1.13f);
-                entity.move(MoverType.SELF, new Vec3(Math.cos(Math.toRadians(entity.yRot + 90)), 0, Math.sin(Math.toRadians(entity.yRot + 90))));
+                entity.move(MoverType.SELF, new Vec3(Math.cos(Math.toRadians(entity.getYRot() + 90)), 0, Math.sin(Math.toRadians(entity.getYRot() + 90))));
                 List<LivingEntity> entitiesHit = entity.getEntityLivingBaseNearby(range + 0.2, 3, range + 0.2, range + 0.2);
                 float damage = (float)entity.getAttribute(Attributes.ATTACK_DAMAGE).getValue();
                 boolean hit = false;

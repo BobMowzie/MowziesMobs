@@ -16,8 +16,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -28,11 +31,12 @@ import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 public class AbilityCapability {
 
-    public interface IAbilityCapability {
+    public interface IAbilityCapability extends INBTSerializable<CompoundTag> {
 
         void activateAbility(LivingEntity entity, AbilityType<?> ability);
 
@@ -61,10 +65,6 @@ public class AbilityCapability {
          <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e, GeckoPlayer.Perspective perspective);
 
         void codeAnimations(MowzieAnimatedGeoModel<? extends IAnimatable> model, float partialTick);
-
-        Tag writeNBT();
-
-        void readNBT(Tag nbt);
     }
 
     public static class AbilityCapabilityImp implements IAbilityCapability {
@@ -158,7 +158,7 @@ public class AbilityCapability {
         }
 
         @Override
-        public Tag writeNBT() {
+        public CompoundTag serializeNBT() {
             CompoundTag compound = new CompoundTag();
             for (Map.Entry<AbilityType<?>, Ability> abilityEntry : getAbilityMap().entrySet()) {
                 CompoundTag nbt = abilityEntry.getValue().writeNBT();
@@ -170,7 +170,7 @@ public class AbilityCapability {
         }
 
         @Override
-        public void readNBT(Tag nbt) {
+        public void deserializeNBT(CompoundTag nbt) {
             CompoundTag compound = (CompoundTag) nbt;
             Set<String> keys = compound.getAllKeys();
             for (String abilityName : keys) {
@@ -179,38 +179,24 @@ public class AbilityCapability {
         }
     }
 
-    public static class AbilityStorage implements Capability.IStorage<IAbilityCapability> {
-        @Override
-        public Tag writeNBT(Capability<AbilityCapability.IAbilityCapability> capability, AbilityCapability.IAbilityCapability instance, Direction side) {
-            return instance.writeNBT();
-        }
-
-        @Override
-        public void readNBT(Capability<AbilityCapability.IAbilityCapability> capability, AbilityCapability.IAbilityCapability instance, Direction side, Tag nbt) {
-            instance.readNBT(nbt);
-        }
-    }
-
-    public static class AbilityProvider implements ICapabilitySerializable<Tag>
+    public static class AbilityProvider implements ICapabilityProvider, ICapabilitySerializable<CompoundTag>
     {
-        @CapabilityInject(IAbilityCapability.class)
-        public static final Capability<IAbilityCapability> ABILITY_CAPABILITY = null;
-
-        private final LazyOptional<IAbilityCapability> instance = LazyOptional.of(ABILITY_CAPABILITY::getDefaultInstance);
+        private final LazyOptional<IAbilityCapability> instance = LazyOptional.of(AbilityCapabilityImp::new);
 
         @Override
-        public Tag serializeNBT() {
-            return ABILITY_CAPABILITY.getStorage().writeNBT(ABILITY_CAPABILITY, this.instance.orElseThrow(() -> new IllegalArgumentException("Lazy optional must not be empty")), null);
+        public CompoundTag serializeNBT() {
+            return instance.orElseThrow(NullPointerException::new).serializeNBT();
         }
 
         @Override
-        public void deserializeNBT(Tag nbt) {
-            ABILITY_CAPABILITY.getStorage().readNBT(ABILITY_CAPABILITY, this.instance.orElseThrow(() -> new IllegalArgumentException("Lazy optional must not be empty")), null, nbt);
+        public void deserializeNBT(CompoundTag nbt) {
+            instance.orElseThrow(NullPointerException::new).deserializeNBT(nbt);
         }
 
+        @Nonnull
         @Override
-        public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-            return cap == ABILITY_CAPABILITY ? instance.cast() : LazyOptional.empty();
+        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side) {
+            return CapabilityHandler.ABILITY_CAPABILITY.orEmpty(cap, instance.cast());
         }
     }
 }

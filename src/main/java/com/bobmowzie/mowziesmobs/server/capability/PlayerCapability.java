@@ -17,11 +17,9 @@ import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.power.Power;
 import com.bobmowzie.mowziesmobs.server.power.PowerGeomancy;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.item.minecart.MinecartEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -30,22 +28,21 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.LogicalSide;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerCapability {
 
-    public interface IPlayerCapability {
-        Tag writeNBT();
-
-        void readNBT(Tag nbt);
+    public interface IPlayerCapability extends INBTSerializable<CompoundTag> {
 
         Power[] getPowers();
 
@@ -271,7 +268,7 @@ public class PlayerCapability {
             }
 
             if (event.side == LogicalSide.SERVER) {
-                for (ItemStack itemStack : event.player.inventory.items) {
+                for (ItemStack itemStack : event.player.getInventory().items) {
                     if (itemStack.getItem() instanceof ItemEarthTalisman)
                         player.addEffect(new MobEffectInstance(EffectHandler.GEOMANCY, 20, 0, false, false));
                 }
@@ -298,10 +295,10 @@ public class PlayerCapability {
 
             Ability iceBreathAbility = AbilityHandler.INSTANCE.getAbility(player, AbilityHandler.ICE_BREATH_ABILITY);
             if (iceBreathAbility != null && !iceBreathAbility.isUsing()) {
-                for (ItemStack stack : player.inventory.items) {
+                for (ItemStack stack : player.getInventory().items) {
                     restoreIceCrystalStack(player, stack);
                 }
-                for (ItemStack stack : player.inventory.offhand) {
+                for (ItemStack stack : player.getInventory().offhand) {
                     restoreIceCrystalStack(player, stack);
                 }
             }
@@ -456,7 +453,7 @@ public class PlayerCapability {
         }
 
         @Override
-        public Tag writeNBT() {
+        public CompoundTag serializeNBT() {
             CompoundTag compound = new CompoundTag();
             compound.putInt("untilSunstrike", untilSunstrike);
             compound.putInt("untilAxeSwing", untilAxeSwing);
@@ -466,8 +463,7 @@ public class PlayerCapability {
         }
 
         @Override
-        public void readNBT(Tag nbt) {
-            CompoundTag compound = (CompoundTag) nbt;
+        public void deserializeNBT(CompoundTag compound) {
             untilSunstrike = compound.getInt("untilSunstrike");
             untilAxeSwing = compound.getInt("untilAxeSwing");
             prevTime = compound.getInt("prevTime");
@@ -475,38 +471,24 @@ public class PlayerCapability {
         }
     }
 
-    public static class PlayerStorage implements Capability.IStorage<IPlayerCapability> {
-        @Override
-        public Tag writeNBT(Capability<IPlayerCapability> capability, IPlayerCapability instance, Direction side) {
-            return instance.writeNBT();
-        }
-
-        @Override
-        public void readNBT(Capability<IPlayerCapability> capability, IPlayerCapability instance, Direction side, Tag nbt) {
-            instance.readNBT(nbt);
-        }
-    }
-
-    public static class PlayerProvider implements ICapabilitySerializable<Tag>
+    public static class PlayerProvider implements ICapabilityProvider, ICapabilitySerializable<CompoundTag>
     {
-        @CapabilityInject(IPlayerCapability.class)
-        public static final Capability<IPlayerCapability> PLAYER_CAPABILITY = null;
-
-        private final LazyOptional<IPlayerCapability> instance = LazyOptional.of(PLAYER_CAPABILITY::getDefaultInstance);
+        private final LazyOptional<PlayerCapability.IPlayerCapability> instance = LazyOptional.of(PlayerCapability.PlayerCapabilityImp::new);
 
         @Override
-        public Tag serializeNBT() {
-            return PLAYER_CAPABILITY.getStorage().writeNBT(PLAYER_CAPABILITY, this.instance.orElseThrow(() -> new IllegalArgumentException("Lazy optional must not be empty")), null);
+        public CompoundTag serializeNBT() {
+            return instance.orElseThrow(NullPointerException::new).serializeNBT();
         }
 
         @Override
-        public void deserializeNBT(Tag nbt) {
-            PLAYER_CAPABILITY.getStorage().readNBT(PLAYER_CAPABILITY, this.instance.orElseThrow(() -> new IllegalArgumentException("Lazy optional must not be empty")), null, nbt);
+        public void deserializeNBT(CompoundTag nbt) {
+            instance.orElseThrow(NullPointerException::new).deserializeNBT(nbt);
         }
 
+        @Nonnull
         @Override
-        public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-            return cap == PLAYER_CAPABILITY ? instance.cast() : LazyOptional.empty();
+        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side) {
+            return CapabilityHandler.PLAYER_CAPABILITY.orEmpty(cap, instance.cast());
         }
     }
 }

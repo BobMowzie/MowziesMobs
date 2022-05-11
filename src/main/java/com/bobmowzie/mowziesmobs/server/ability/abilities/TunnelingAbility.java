@@ -126,10 +126,10 @@ public class TunnelingAbility extends Ability {
         super.tick();
         if (!isUsing() && getUser() instanceof Player) {
             Player player = (Player) getUser();
-            for (ItemStack stack : player.inventory.items) {
+            for (ItemStack stack : player.getInventory().items) {
                 restoreGauntlet(stack);
             }
-            for (ItemStack stack : player.inventory.offhand) {
+            for (ItemStack stack : player.getInventory().offhand) {
                 restoreGauntlet(stack);
             }
         }
@@ -139,7 +139,7 @@ public class TunnelingAbility extends Ability {
     public void tickUsing() {
         super.tickUsing();
         getUser().fallDistance = 0;
-        if (getUser() instanceof Player) ((Player)getUser()).abilities.flying = false;
+        if (getUser() instanceof Player) ((Player)getUser()).getAbilities().flying = false;
         underground = !getUser().level.getEntitiesOfClass(EntityBlockSwapper.class, getUser().getBoundingBox().inflate(0.3)).isEmpty();
         Vec3 lookVec = getUser().getLookAngle();
         float tunnelSpeed = 0.3f;

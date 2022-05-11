@@ -8,7 +8,6 @@ import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerHandler;
-import com.bobmowzie.mowziesmobs.server.item.ModSpawnEggItem;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -16,7 +15,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -71,10 +69,5 @@ public class ClientEventBusSubscriber {
         for (MaskType type : MaskType.values()) {
             ModelLoader.addSpecialModel(new ModelResourceLocation(MowziesMobs.MODID + ":barakoa_mask_" + type.name + "_frame", "inventory"));
         }
-    }
-
-    @SubscribeEvent
-    public static void onRegisterEntities(final RegistryEvent.Register<EntityType<?>> event) {
-        ModSpawnEggItem.initSpawnEggs();
     }
 }

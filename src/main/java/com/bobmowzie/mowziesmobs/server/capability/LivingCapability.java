@@ -1,30 +1,27 @@
 package com.bobmowzie.mowziesmobs.server.capability;
 
-import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 
+import javax.annotation.Nonnull;
+
 public class LivingCapability {
-    public interface ILivingCapability {
+    public interface ILivingCapability extends INBTSerializable<CompoundTag> {
         void setLastDamage(float damage);
         float getLastDamage();
         void setHasSunblock(boolean hasSunblock);
         boolean getHasSunblock();
 
         void tick(LivingEntity entity);
-
-        Tag writeNBT();
-
-        void readNBT(Tag nbt);
     }
 
-    public static class LastDamageCapabilityImp implements ILivingCapability {
+    public static class LivingCapabilityImp implements ILivingCapability {
         float lastDamage = 0;
         boolean hasSunblock;
 
@@ -54,39 +51,33 @@ public class LivingCapability {
         }
 
         @Override
-        public Tag writeNBT() {
-            CompoundTag compound = new CompoundTag();
-            return compound;
+        public CompoundTag serializeNBT() {
+            return new CompoundTag();
         }
 
         @Override
-        public void readNBT(Tag nbt) {
-            CompoundTag compound = (CompoundTag) nbt;
+        public void deserializeNBT(CompoundTag nbt) {
         }
     }
-
-    public static class LivingStorage implements Capability.IStorage<ILivingCapability> {
-        @Override
-        public Tag writeNBT(Capability<LivingCapability.ILivingCapability> capability, LivingCapability.ILivingCapability instance, Direction side) {
-            return instance.writeNBT();
-        }
-
-        @Override
-        public void readNBT(Capability<LivingCapability.ILivingCapability> capability, LivingCapability.ILivingCapability instance, Direction side, Tag nbt) {
-            instance.readNBT(nbt);
-        }
-    }
-
-    public static class LivingProvider implements ICapabilityProvider
+    
+    public static class LivingProvider implements ICapabilityProvider, ICapabilitySerializable<CompoundTag>
     {
-        @CapabilityInject(ILivingCapability.class)
-        public static final Capability<ILivingCapability> LIVING_CAPABILITY = null;
-
-        private final LazyOptional<ILivingCapability> instance = LazyOptional.of(LIVING_CAPABILITY::getDefaultInstance);
+        private final LazyOptional<LivingCapability.ILivingCapability> instance = LazyOptional.of(LivingCapabilityImp::new);
 
         @Override
-        public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-            return cap == LIVING_CAPABILITY ? instance.cast() : LazyOptional.empty();
+        public CompoundTag serializeNBT() {
+            return instance.orElseThrow(NullPointerException::new).serializeNBT();
+        }
+
+        @Override
+        public void deserializeNBT(CompoundTag nbt) {
+            instance.orElseThrow(NullPointerException::new).deserializeNBT(nbt);
+        }
+
+        @Nonnull
+        @Override
+        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side) {
+            return CapabilityHandler.LIVING_CAPABILITY.orEmpty(cap, instance.cast());
         }
     }
 }

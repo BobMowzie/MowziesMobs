@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.google.common.collect.Sets;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
@@ -12,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -23,7 +25,7 @@ import java.util.List;
 
 public class ItemSpear extends MowzieToolItem {
     public ItemSpear(Item.Properties properties) {
-        super(-2 + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.BARAKOA_SPEAR.toolConfig.attackDamage.get().floatValue(), -4f + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.BARAKOA_SPEAR.toolConfig.attackSpeed.get().floatValue(), Tiers.STONE, Sets.newHashSet(), properties);
+        super(-2 + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.BARAKOA_SPEAR.toolConfig.attackDamage.get().floatValue(), -4f + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.BARAKOA_SPEAR.toolConfig.attackSpeed.get().floatValue(), Tiers.STONE, Tag.fromSet(Sets.newHashSet()), properties);
     }
 
     @Override
@@ -32,7 +34,7 @@ public class ItemSpear extends MowzieToolItem {
     }
 
     public static LivingEntity raytraceEntities(Level world, Player player, double range) {
-        ItemSpear.HitResult result = new ItemSpear.HitResult();
+        ItemSpear.SpearHitResult result = new ItemSpear.SpearHitResult();
         Vec3 pos = new Vec3(player.getX(), player.getY() + player.getEyeHeight(), player.getZ());
         Vec3 segment = player.getLookAngle();
         segment = pos.add(segment.x * range, segment.y * range, segment.z * range);
@@ -79,7 +81,7 @@ public class ItemSpear extends MowzieToolItem {
         return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.BARAKOA_SPEAR.toolConfig;
     }
 
-    public static class HitResult {
+    public static class SpearHitResult {
         private HitResult blockHit;
 
         private final List<LivingEntity> entities = new ArrayList<>();
