@@ -294,6 +294,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     @Override
     public void tick() {
         legsUp.updatePrevTimer();
+        angryEyebrow.updatePrevTimer();
         setDeltaMovement(0, getDeltaMovement().y, 0);
         super.tick();
         if (tickCount == 1) {

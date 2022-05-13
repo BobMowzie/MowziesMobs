@@ -129,7 +129,7 @@ public class ClientProxy extends ServerProxy {
                             x + dx + offset, y + dy + offset, z + dz + offset,
                             dx + minecartMotion.x(), dy + minecartMotion.y(), dz + minecartMotion.z(),
                             state
-                    ) {}.init(pos));
+                    ) {}.updateSprite(state, pos));
                 }
             }
         }

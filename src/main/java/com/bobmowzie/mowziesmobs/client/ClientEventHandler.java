@@ -3,6 +3,8 @@ package com.bobmowzie.mowziesmobs.client;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerFirstPerson;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerThirdPerson;
+import com.bobmowzie.mowziesmobs.client.render.entity.FrozenRenderHandler;
+import com.bobmowzie.mowziesmobs.client.render.entity.layer.SunblockLayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoFirstPersonRenderer;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoRenderPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
@@ -15,6 +17,7 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.item.*;
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -22,7 +25,10 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.CameraType;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -35,6 +41,10 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @OnlyIn(Dist.CLIENT)
 public enum ClientEventHandler {
@@ -42,9 +52,36 @@ public enum ClientEventHandler {
 
     private static final ResourceLocation FROZEN_BLUR = new ResourceLocation(MowziesMobs.MODID, "textures/gui/frozenblur.png");
 
+    // From https://github.com/Alex-the-666/AlexsMobs/blob/edd533010648d3bfd0b2929fa5593ccea3db4f37/src/main/java/com/github/alexthe666/alexsmobs/client/ClientLayerRegistry.java#L39
     @SubscribeEvent
     public void onAddLayers(EntityRenderersEvent.AddLayers event) {
-        //event.getEntityModels().bakeLayer()   TODO
+        List<EntityType<? extends LivingEntity>> entityTypes = ImmutableList.copyOf(
+                ForgeRegistries.ENTITIES.getValues().stream()
+                        .filter(DefaultAttributes::hasSupplier)
+                        .map(entityType -> (EntityType<? extends LivingEntity>) entityType)
+                        .collect(Collectors.toList()));
+        entityTypes.forEach((entityType -> {
+            addLayerIfApplicable(entityType, event);
+        }));
+        for (String skinType : event.getSkins()){
+            event.getSkin(skinType).addLayer(new FrozenRenderHandler.LayerFrozen(event.getSkin(skinType)));
+            event.getSkin(skinType).addLayer(new SunblockLayer(event.getSkin(skinType)));
+        }
+    }
+
+    private static void addLayerIfApplicable(EntityType<? extends LivingEntity> entityType, EntityRenderersEvent.AddLayers event) {
+        LivingEntityRenderer renderer = null;
+        if(entityType != EntityType.ENDER_DRAGON){
+            try{
+                renderer = event.getRenderer(entityType);
+            }catch (Exception e){
+                MowziesMobs.LOGGER.warn("Could not apply rainbow color layer to " + entityType.getRegistryName() + ", has custom renderer that is not LivingEntityRenderer.");
+            }
+            if(renderer != null){
+                renderer.addLayer(new FrozenRenderHandler.LayerFrozen(renderer));
+                renderer.addLayer(new SunblockLayer(renderer));
+            }
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
