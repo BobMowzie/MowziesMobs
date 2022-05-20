@@ -2,6 +2,9 @@ package com.bobmowzie.mowziesmobs.client.model.armor;
 
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.world.entity.LivingEntity;
 
 public class WroughtHelmModel<T extends LivingEntity> extends HumanoidModel<T> {
@@ -15,13 +18,27 @@ public class WroughtHelmModel<T extends LivingEntity> extends HumanoidModel<T> {
     private final ModelPart hornLeft1;
     private final ModelPart hornRight;
 
-    public WroughtHelmModel() {
-        super(0.0f);
+    public WroughtHelmModel(ModelPart part) {
+        super(part);
+        shape1 = head.getChild("shape1");
+        tuskRight1 = head.getChild("tuskRight1");
+        tuskRight2 = tuskRight1.getChild("tuskRight2");
+        hornRight1 = head.getChild("hornRight1");
+        hornLeft = hornRight1.getChild("hornLeft");
+        tuskLeft1 = head.getChild("tuskLeft1");
+        tuskLeft2 = tuskLeft1.getChild("tuskLeft2");
+        hornLeft1 = head.getChild("hornLeft1");
+        hornRight = hornLeft1.getChild("hornRight");
+    }
+
+    public static LayerDefinition createArmorLayer() {
+        CubeDeformation deformation = CubeDeformation.NONE;
+
 //        this.texWidth = 64;
 //        this.texHeight = 32;
-        head.cubes.clear();
+//        head.cubes.clear();
 
-        shape1 = new ModelPart(this);
+        shape1 = head.getChild("shape1");
         shape1.setPos(0.0F, 0.0F, 0.0F);
         shape1.texOffs(0, 12).addBox(-5.0F, -10.0F, -5.0F, 10.0F, 10.0F, 10.0F, 0.0F, false);
 

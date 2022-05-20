@@ -1,9 +1,13 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.LayerHandler;
 import com.bobmowzie.mowziesmobs.client.model.armor.WroughtHelmModel;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,11 +23,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Consumer;
 
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.client.IItemRenderProperties;
 
 public class ItemWroughtHelm extends MowzieArmorItem {
     private static final WroughtHelmMaterial ARMOR_WROUGHT_HELM = new WroughtHelmMaterial();
@@ -138,6 +144,23 @@ public class ItemWroughtHelm extends MowzieArmorItem {
         @Override
         public float getKnockbackResistance() {
             return 0.1f;
+        }
+    }
+
+    @Override
+    public void initializeClient(Consumer<IItemRenderProperties> consumer) {
+        consumer.accept(ArmorRender.INSTANCE);
+    }
+
+    private static final class ArmorRender implements IItemRenderProperties {
+        private static final ArmorRender INSTANCE = new ArmorRender();
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public <A extends HumanoidModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, A defModel) {
+            EntityModelSet models = Minecraft.getInstance().getEntityModels();
+            ModelPart root = models.bakeLayer(LayerHandler.WROUGHT_HELM_LAYER);
+            return (A) new WroughtHelmModel<>(root);
         }
     }
 }
