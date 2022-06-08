@@ -2,7 +2,6 @@ package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.LayerHandler;
-import com.bobmowzie.mowziesmobs.client.model.armor.WroughtHelmModel;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
@@ -18,8 +17,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -67,24 +64,6 @@ public class ItemWroughtHelm extends MowzieArmorItem {
     @Override
     public void setDamage(ItemStack stack, int damage) {
         if (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable.get()) super.setDamage(stack, damage);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @Nullable
-    @Override
-    public <A extends HumanoidModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, A _default) {
-        WroughtHelmModel<?> model = MowziesMobs.PROXY.getWroughtHelmModel();
-        model.hat.visible = armorSlot == EquipmentSlot.HEAD;
-
-        if (_default != null) {
-            model.young = _default.young;
-            model.crouching = _default.crouching;
-            model.riding = _default.riding;
-            model.rightArmPose = _default.rightArmPose;
-            model.leftArmPose = _default.leftArmPose;
-        }
-
-        return (A) model;
     }
 
     @Nullable
