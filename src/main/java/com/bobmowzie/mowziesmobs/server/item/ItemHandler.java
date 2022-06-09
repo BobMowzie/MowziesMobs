@@ -63,17 +63,17 @@ public final class ItemHandler {
     public static final Item LOGO = null;
     public static final RecordItem PETIOLE_MUSIC_DISC = null;
 
-    public static final SpawnEggItem FOLIAATH_SPAWN_EGG = null;
-    public static final SpawnEggItem WROUGHTNAUT_SPAWN_EGG = null;
-    public static final SpawnEggItem BARAKOA_SPAWN_EGG = null;
-    public static final SpawnEggItem BARAKOANA_SPAWN_EGG = null;
-    public static final SpawnEggItem BARAKOA_SUNBLOCKER_SPAWN_EGG = null;
-    public static final SpawnEggItem BARAKO_SPAWN_EGG = null;
-    public static final SpawnEggItem FROSTMAW_SPAWN_EGG = null;
-    public static final SpawnEggItem GROTTOL_SPAWN_EGG = null;
-    public static final SpawnEggItem LANTERN_SPAWN_EGG = null;
-    public static final SpawnEggItem NAGA_SPAWN_EGG = null;
-//    public static final SpawnEggItem SCULPTOR_SPAWN_EGG = null;
+    public static final ForgeSpawnEggItem FOLIAATH_SPAWN_EGG = null;
+    public static final ForgeSpawnEggItem WROUGHTNAUT_SPAWN_EGG = null;
+    public static final ForgeSpawnEggItem BARAKOA_SPAWN_EGG = null;
+    public static final ForgeSpawnEggItem BARAKOANA_SPAWN_EGG = null;
+    public static final ForgeSpawnEggItem BARAKOA_SUNBLOCKER_SPAWN_EGG = null;
+    public static final ForgeSpawnEggItem BARAKO_SPAWN_EGG = null;
+    public static final ForgeSpawnEggItem FROSTMAW_SPAWN_EGG = null;
+    public static final ForgeSpawnEggItem GROTTOL_SPAWN_EGG = null;
+    public static final ForgeSpawnEggItem LANTERN_SPAWN_EGG = null;
+    public static final ForgeSpawnEggItem NAGA_SPAWN_EGG = null;
+//    public static final ForgeSpawnEggItem SCULPTOR_SPAWN_EGG = null;
 
     private static final int BARAKOA_GREEN_COLOR = 0x748C47;
     private static final int BARAKOA_PINK_COLOR = 0xBA6656;

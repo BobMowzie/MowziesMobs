@@ -1,7 +1,9 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.LayerHandler;
 import com.bobmowzie.mowziesmobs.client.model.armor.BarakoaMaskModel;
+import com.bobmowzie.mowziesmobs.client.model.armor.WroughtHelmModel;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
@@ -10,7 +12,10 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoayaToPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -27,6 +32,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Consumer;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -37,6 +43,7 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.client.IItemRenderProperties;
 
 public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask {
     private final MaskType type;
@@ -110,24 +117,6 @@ public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask {
         return false;
     }
 
-    @OnlyIn(Dist.CLIENT)
-    @Nullable
-    @Override
-    public <A extends HumanoidModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, A _default) {
-        BarakoaMaskModel<?> model = MowziesMobs.PROXY.getBarakoaMaskModel();
-        model.hat.visible = armorSlot == EquipmentSlot.HEAD;
-
-        if (_default != null) {
-            model.young = _default.young;
-            model.crouching = _default.crouching;
-            model.riding = _default.riding;
-            model.rightArmPose = _default.rightArmPose;
-            model.leftArmPose = _default.leftArmPose;
-        }
-
-        return (A) model;
-    }
-
     @Nullable
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
@@ -188,6 +177,23 @@ public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask {
         @Override
         public float getKnockbackResistance() {
             return ArmorMaterials.LEATHER.getKnockbackResistance();
+        }
+    }
+
+    @Override
+    public void initializeClient(Consumer<IItemRenderProperties> consumer) {
+        consumer.accept(ItemBarakoaMask.ArmorRender.INSTANCE);
+    }
+
+    private static final class ArmorRender implements IItemRenderProperties {
+        private static final ItemBarakoaMask.ArmorRender INSTANCE = new ItemBarakoaMask.ArmorRender();
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public <A extends HumanoidModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, A defModel) {
+            EntityModelSet models = Minecraft.getInstance().getEntityModels();
+            ModelPart root = models.bakeLayer(LayerHandler.BARAKOA_MASK_LAYER);
+            return (A) new BarakoaMaskModel<>(root);
         }
     }
 }

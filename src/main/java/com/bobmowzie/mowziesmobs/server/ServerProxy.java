@@ -138,16 +138,4 @@ public class ServerProxy {
     }
 
     public void setReferencedMob(Entity referencedMob) {}
-
-    public WroughtHelmModel<LivingEntity> getWroughtHelmModel() {
-        return null;
-    }
-
-    public BarakoaMaskModel<LivingEntity> getBarakoaMaskModel() {
-        return null;
-    }
-
-    public SolVisageModel<LivingEntity> getSolVisageModel() {
-        return null;
-    }
 }

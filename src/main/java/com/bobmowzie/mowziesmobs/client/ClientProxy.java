@@ -1,7 +1,5 @@
 package com.bobmowzie.mowziesmobs.client;
 
-import com.bobmowzie.mowziesmobs.client.model.armor.BarakoaMaskModel;
-import com.bobmowzie.mowziesmobs.client.model.armor.WroughtHelmModel;
 import com.bobmowzie.mowziesmobs.client.render.entity.*;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.SunblockLayer;
 import com.bobmowzie.mowziesmobs.client.sound.*;
@@ -40,10 +38,6 @@ import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientProxy extends ServerProxy {
-    private static final WroughtHelmModel<LivingEntity> WROUGHT_HELM_MODEL = new WroughtHelmModel<>();
-    private static final BarakoaMaskModel<LivingEntity> BARAKOA_MASK_MODEL = new BarakoaMaskModel<>();
-    private static final SolVisageModel<LivingEntity> SOL_VISAGE_MODEL = new SolVisageModel<>();
-
     private static final List<SunblockSound> sunblockSounds = new ArrayList<>();
 
     private Entity referencedMob = null;
@@ -144,20 +138,5 @@ public class ClientProxy extends ServerProxy {
 
     public void setReferencedMob(Entity referencedMob) {
         this.referencedMob = referencedMob;
-    }
-
-    @Override
-    public WroughtHelmModel<LivingEntity> getWroughtHelmModel() {
-        return WROUGHT_HELM_MODEL;
-    }
-
-    @Override
-    public BarakoaMaskModel<LivingEntity> getBarakoaMaskModel() {
-        return BARAKOA_MASK_MODEL;
-    }
-
-    @Override
-    public SolVisageModel<LivingEntity> getSolVisageModel() {
-        return SOL_VISAGE_MODEL;
     }
 }
