@@ -68,7 +68,7 @@ public class BarakoaVillagePieces {
     public static StructurePiece addPiece(ResourceLocation resourceLocation, StructureManager manager, BlockPos pos, Rotation rot, List<StructurePiece> pieces, Random rand) {
         BlockPos placementOffset = OFFSET.get(resourceLocation);
         BlockPos blockPos = pos.offset(placementOffset.rotate(rot));
-        StructurePiece newPiece = new BarakoaVillagePieces.Piece(FeatureHandler.BARAKOA_VILLAGE_PIECE, manager, resourceLocation, rot, blockPos);
+        StructurePiece newPiece = new BarakoaVillagePieces.Piece(manager, resourceLocation, rot, blockPos);
         pieces.add(newPiece);
         return newPiece;
     }
@@ -76,7 +76,7 @@ public class BarakoaVillagePieces {
     public static StructurePiece addPieceCheckBounds(ResourceLocation resourceLocation, StructureManager manager, BlockPos pos, Rotation rot, List<StructurePiece> pieces, Random rand, List<StructurePiece> ignore) {
         BlockPos placementOffset = OFFSET.get(resourceLocation);
         BlockPos blockPos = pos.offset(placementOffset.rotate(rot));
-        BarakoaVillagePieces.Piece newPiece = new BarakoaVillagePieces.Piece(FeatureHandler.BARAKOA_VILLAGE_PIECE, manager, resourceLocation, rot, blockPos);
+        BarakoaVillagePieces.Piece newPiece = new BarakoaVillagePieces.Piece(manager, resourceLocation, rot, blockPos);
         for (StructurePiece piece : pieces) {
             if (ignore.contains(piece)) continue;
             if (newPiece.getBoundingBox().intersects(piece.getBoundingBox())) return null;
@@ -117,6 +117,14 @@ public class BarakoaVillagePieces {
 
         public Piece(StructurePieceType pieceType, ServerLevel level, CompoundTag tagCompound) {
             super(pieceType, tagCompound, level, (resourceLocation) -> makeSettings(Rotation.valueOf(tagCompound.getString("Rot")), resourceLocation));
+        }
+
+        public Piece(StructureManager manager, ResourceLocation resourceLocationIn, Rotation rotation, BlockPos pos) {
+            this(FeatureHandler.BARAKOA_VILLAGE_PIECE, manager, resourceLocationIn, rotation, pos);
+        }
+
+        public Piece(ServerLevel level, CompoundTag tagCompound) {
+            this(FeatureHandler.BARAKOA_VILLAGE_PIECE, level, tagCompound);
         }
 
         private static StructurePlaceSettings makeSettings(Rotation rotation, ResourceLocation resourceLocation) {

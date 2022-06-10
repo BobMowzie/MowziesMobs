@@ -100,7 +100,7 @@ public class FeatureHandler {
                 ResourceLocation cgRL = Registry.CHUNK_GENERATOR.getKey((Codec<? extends ChunkGenerator>) GETCODEC_METHOD.invoke(serverWorld.getChunkSource().generator));
                 if(cgRL != null && cgRL.getNamespace().equals("terraforged")) return;
             }
-            catch(Exception e){
+            catch (Exception e) {
                 MowziesMobs.LOGGER.error("Was unable to check if " + serverWorld.dimension().location() + " is using Terraforged's ChunkGenerator.");
             }
 

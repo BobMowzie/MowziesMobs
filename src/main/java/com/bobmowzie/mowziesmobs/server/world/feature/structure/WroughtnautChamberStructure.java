@@ -3,6 +3,8 @@ package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.level.biome.Biome;
@@ -44,18 +46,18 @@ public class WroughtnautChamberStructure extends MowzieStructure {
     }
 
     public static class Start extends StructureStart<NoneFeatureConfiguration>  {
-        public Start(StructureFeature<NoneFeatureConfiguration> structureIn, int chunkX, int chunkZ, BoundingBox mutableBoundingBox, int referenceIn, long seedIn) {
-            super(structureIn, chunkX, chunkZ, mutableBoundingBox, referenceIn, seedIn);
+        public Start(StructureFeature<NoneFeatureConfiguration> structureIn, ChunkPos chunkPos, int referenceIn, long seedIn) {
+            super(structureIn, chunkPos, referenceIn, seedIn);
         }
 
         @Override
-        public void generatePieces(RegistryAccess dynamicRegistryManager, ChunkGenerator chunkGenerator, StructureManager templateManagerIn, int chunkX, int chunkZ, Biome biomeIn, NoneFeatureConfiguration config) {
+        public void generatePieces(RegistryAccess dynamicRegistryAccess, ChunkGenerator generator, StructureManager templateManagerIn, ChunkPos chunkPos, Biome biomeIn, NoneFeatureConfiguration config, LevelHeightAccessor heightLimitView) {
             Rotation rotation = Rotation.values()[this.random.nextInt(Rotation.values().length)];
 
             //Turns the chunk coordinates into actual coordinates we can use. (Gets center of that chunk)
-            int x = (chunkX << 4) + 7;
-            int z = (chunkZ << 4) + 7;
-            int surfaceY = chunkGenerator.getBaseHeight(x, z, Heightmap.Types.OCEAN_FLOOR_WG);
+            int x = (chunkPos.x << 4) + 7;
+            int z = (chunkPos.z << 4) + 7;
+            int surfaceY = generator.getBaseHeight(x, z, Heightmap.Types.OCEAN_FLOOR_WG, heightLimitView);
             BlockPos pos = new BlockPos(x, surfaceY, z);
 
             //Now adds the structure pieces to this.components with all details such as where each part goes
@@ -64,13 +66,16 @@ public class WroughtnautChamberStructure extends MowzieStructure {
 
             //Sets the bounds of the structure.
 //            this.recalculateStructureSize();
+            this.getBoundingBox();
+            // TODO: Fix chamber bounding box, might need access transformer
+            /*
             this.boundingBox = BoundingBox.getUnknownBox();
             boundingBox.x0 = (chunkX << 4) + 7;
             boundingBox.z0 = (chunkZ << 4) + 7;
             boundingBox.y0 = surfaceY;
             boundingBox.x1 = boundingBox.x0 + 1;
             boundingBox.z1 = boundingBox.z0 + 1;
-            boundingBox.y1 = boundingBox.y0 + 1;
+            boundingBox.y1 = boundingBox.y0 + 1;*/
 
             // I use to debug and quickly find out if the structure is spawning or not and where it is.
             // This is returning the coordinates of the center starting piece.
