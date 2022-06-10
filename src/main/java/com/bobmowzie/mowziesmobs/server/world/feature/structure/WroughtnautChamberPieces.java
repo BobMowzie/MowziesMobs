@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Rotation;
@@ -18,6 +19,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.TemplateStructurePiece;
+import net.minecraft.world.level.levelgen.structure.templatesystem.BlockIgnoreProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
@@ -38,28 +40,19 @@ public class WroughtnautChamberPieces {
     }
 
     public static class Piece extends TemplateStructurePiece {
-        private final ResourceLocation resourceLocation;
-        private Rotation rotation;
         private final BlockPos startPos;
         private BlockPos wallPos;
 
         public Piece(StructureManager templateManagerIn, ResourceLocation resourceLocationIn, BlockPos pos, Rotation rotationIn)
         {
-            super(FeatureHandler.WROUGHTNAUT_CHAMBER_PIECE, 0);
-            this.resourceLocation = resourceLocationIn;
-            this.templatePosition = pos;
-            this.rotation = rotationIn;
+            super(FeatureHandler.WROUGHTNAUT_CHAMBER_PIECE, 0, templateManagerIn, resourceLocationIn, resourceLocationIn.toString(), makeSettings(rotationIn, resourceLocationIn), pos);
             this.startPos = pos;
             this.wallPos = null;
-            this.setupPiece(templateManagerIn);
         }
 
-
-        public Piece(StructureManager templateManagerIn, CompoundTag tagCompound)
+        public Piece(ServerLevel level, CompoundTag tagCompound)
         {
-            super(FeatureHandler.WROUGHTNAUT_CHAMBER_PIECE, tagCompound);
-            this.resourceLocation = new ResourceLocation(tagCompound.getString("Template"));
-            this.rotation = Rotation.valueOf(tagCompound.getString("Rot"));
+            super(FeatureHandler.WROUGHTNAUT_CHAMBER_PIECE, tagCompound, level, (resourceLocation) -> makeSettings(Rotation.valueOf(tagCompound.getString("Rot")), resourceLocation));
             this.startPos = new BlockPos(
                 tagCompound.getInt("StartX"),
                 tagCompound.getInt("StartY"),
@@ -72,27 +65,20 @@ public class WroughtnautChamberPieces {
                         tagCompound.getInt("WallZ")
                 );
             }
-            this.setupPiece(templateManagerIn);
         }
 
-
-        private void setupPiece(StructureManager templateManager)
-        {
-            StructureTemplate template = templateManager.getOrCreate(this.resourceLocation);
-            StructurePlaceSettings placementsettings = (new StructurePlaceSettings()).setRotation(this.rotation).setMirror(Mirror.NONE);
-            this.setup(template, this.templatePosition, placementsettings);
+        private static StructurePlaceSettings makeSettings(Rotation rotation, ResourceLocation resourceLocation) {
+            return (new StructurePlaceSettings()).setRotation(rotation).setMirror(Mirror.NONE).addProcessor(BlockIgnoreProcessor.STRUCTURE_BLOCK);
         }
-
 
         /**
          * (abstract) Helper method to read subclass data from NBT
          */
         @Override
-        protected void addAdditionalSaveData(CompoundTag tagCompound)
+        protected void addAdditionalSaveData(ServerLevel level, CompoundTag tagCompound)
         {
-            super.addAdditionalSaveData(tagCompound);
-            tagCompound.putString("Template", this.resourceLocation.toString());
-            tagCompound.putString("Rot", this.rotation.name());
+            super.addAdditionalSaveData(level, tagCompound);
+            tagCompound.putString("Rot", this.placeSettings.getRotation().name());
             tagCompound.putInt("StartX", startPos.getX());
             tagCompound.putInt("StartY", startPos.getY());
             tagCompound.putInt("StartZ", startPos.getZ());
@@ -122,21 +108,22 @@ public class WroughtnautChamberPieces {
 
         @Override
         public boolean postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, BoundingBox mutableBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+            Rotation rot = placeSettings.getRotation();
             Pair<BlockPos, Rotation> chamberResults;
             if (wallPos == null) {
                 chamberResults = tryWroughtChamber(worldIn, startPos.getX(), startPos.getY(), startPos.getZ());
                 this.placeSettings.setIgnoreEntities(false);
             }
             else {
-                chamberResults = Pair.of(wallPos, rotation);
+                chamberResults = Pair.of(wallPos, rot);
                 this.placeSettings.setIgnoreEntities(true);
             }
 
             if (chamberResults == null) return false;
             wallPos = chamberResults.getLeft();
-            rotation = chamberResults.getRight();
+            rot = chamberResults.getRight();
             this.templatePosition = chamberResults.getLeft();
-            this.placeSettings.setRotation(chamberResults.getRight());
+            this.placeSettings.setRotation(rot);
             this.placeSettings.setFinalizeEntities(true);
 //            System.out.println("Wroughtnaut Chamber at " + templatePosition.getX() + " " + templatePosition.getY() + " " + templatePosition.getZ());
             BlockPos rotationOffset = new BlockPos(0, 0, -9).rotate(placeSettings.getRotation());
@@ -173,7 +160,7 @@ public class WroughtnautChamberPieces {
                                 ChunkPos p1ChunkPos = new ChunkPos(p1);
                                 if (!chunkPos.equals(p1ChunkPos)) continue;
                                 if (world.getBlockState(p1).isRedstoneConductor(world, p1)) {
-                                    Boolean wall = true;
+                                    boolean wall = true;
                                     for (int y3 = 1; y3 <= 4; y3++) {
                                         BlockPos p2 = new BlockPos(x - x2, y - y2 + y4 + 1 + y3, z);
                                         ChunkPos p2ChunkPos = new ChunkPos(p2);
@@ -197,7 +184,7 @@ public class WroughtnautChamberPieces {
                                 p1ChunkPos = new ChunkPos(p1);
                                 if (!chunkPos.equals(p1ChunkPos)) continue;
                                 if (world.getBlockState(p1).isRedstoneConductor(world, p1)) {
-                                    Boolean wall = true;
+                                    boolean wall = true;
                                     for (int y3 = 1; y3 <= 4; y3++) {
                                         BlockPos p2 = new BlockPos(x + x2, y - y2 + y5 + 1 + y3, z);
                                         ChunkPos p2ChunkPos = new ChunkPos(p2);
@@ -225,7 +212,7 @@ public class WroughtnautChamberPieces {
                                 ChunkPos p1ChunkPos = new ChunkPos(p1);
                                 if (!chunkPos.equals(p1ChunkPos)) continue;
                                 if (world.getBlockState(p1).isSolidRender(world, p1)) {
-                                    Boolean wall = true;
+                                    boolean wall = true;
                                     for (int y3 = 1; y3 <= 4; y3++) {
                                         BlockPos p2 = new BlockPos(x, y - y2 + y4 + 1 + y3, z - z2);
                                         if (!world.getBlockState(p2).isRedstoneConductor(world, p2)) {
@@ -247,7 +234,7 @@ public class WroughtnautChamberPieces {
                                 p1ChunkPos = new ChunkPos(p1);
                                 if (!chunkPos.equals(p1ChunkPos)) continue;
                                 if (world.getBlockState(p1).isRedstoneConductor(world, p1)) {
-                                    Boolean wall = true;
+                                    boolean wall = true;
                                     for (int y3 = 1; y3 <= 4; y3++) {
                                         BlockPos p2 = new BlockPos(x, y - y2 + y5 + 1 + y3, z + z2);
                                         ChunkPos p2ChunkPos = new ChunkPos(p2);

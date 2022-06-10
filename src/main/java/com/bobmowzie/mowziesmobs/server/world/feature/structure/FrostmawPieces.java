@@ -4,20 +4,17 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.TemplateStructurePiece;
+import net.minecraft.world.level.levelgen.structure.templatesystem.BlockIgnoreProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
 
 import java.util.List;
@@ -39,42 +36,31 @@ public class FrostmawPieces {
     }
 
     public static class Piece extends TemplateStructurePiece {
-        private final ResourceLocation resourceLocation;
-        private final Rotation rotation;
 
+        private static StructurePlaceSettings makeSettings(Rotation rotation, ResourceLocation resourceLocation) {
+            return (new StructurePlaceSettings()).setRotation(rotation).setMirror(Mirror.NONE).addProcessor(BlockIgnoreProcessor.STRUCTURE_BLOCK);
+        }
+
+        private static BlockPos makePosition(ResourceLocation resourceLocation, BlockPos pos) {
+            return pos.offset(FrostmawPieces.OFFSET.get(resourceLocation));
+        }
 
         public Piece(StructureManager templateManagerIn, ResourceLocation resourceLocationIn, BlockPos pos, Rotation rotationIn) {
-            super(FeatureHandler.FROSTMAW_PIECE, 0);
-            this.resourceLocation = resourceLocationIn;
-            this.templatePosition = pos;
-            this.rotation = rotationIn;
-            this.setupPiece(templateManagerIn);
+            super(FeatureHandler.FROSTMAW_PIECE, 0, templateManagerIn, resourceLocationIn, resourceLocationIn.toString(), makeSettings(rotationIn, resourceLocationIn), makePosition(resourceLocationIn, pos));
         }
 
 
-        public Piece(StructureManager templateManagerIn, CompoundTag tagCompound) {
-            super(FeatureHandler.FROSTMAW_PIECE, tagCompound);
-            this.resourceLocation = new ResourceLocation(tagCompound.getString("Template"));
-            this.rotation = Rotation.valueOf(tagCompound.getString("Rot"));
-            this.setupPiece(templateManagerIn);
+        public Piece(ServerLevel level, CompoundTag tagCompound) {
+            super(FeatureHandler.FROSTMAW_PIECE, tagCompound, level, (resourceLocation) -> makeSettings(Rotation.valueOf(tagCompound.getString("Rot")), resourceLocation));
         }
-
-
-        private void setupPiece(StructureManager templateManager) {
-            StructureTemplate template = templateManager.getOrCreate(this.resourceLocation);
-            StructurePlaceSettings placementsettings = (new StructurePlaceSettings()).setRotation(this.rotation).setMirror(Mirror.NONE);
-            this.setup(template, this.templatePosition, placementsettings);
-        }
-
 
         /**
          * (abstract) Helper method to read subclass data from NBT
          */
         @Override
-        protected void addAdditionalSaveData(CompoundTag tagCompound) {
-            super.addAdditionalSaveData(tagCompound);
-            tagCompound.putString("Template", this.resourceLocation.toString());
-            tagCompound.putString("Rot", this.rotation.name());
+        protected void addAdditionalSaveData(ServerLevel level, CompoundTag tagCompound) {
+            super.addAdditionalSaveData(level, tagCompound);
+            tagCompound.putString("Rot", this.placeSettings.getRotation().name());
         }
 
 
@@ -91,15 +77,6 @@ public class FrostmawPieces {
         @Override
         protected void handleDataMarker(String function, BlockPos pos, ServerLevelAccessor worldIn, Random rand, BoundingBox sbb) {
 
-        }
-
-        @Override
-        public boolean postProcess(WorldGenLevel p_230383_1_, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, BoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
-            this.placeSettings.setRotation(this.rotation).setMirror(Mirror.NONE).setFinalizeEntities(true);
-            BlockPos blockpos = FrostmawPieces.OFFSET.get(this.resourceLocation);
-            this.templatePosition.offset(StructureTemplate.calculateRelativePosition(placeSettings, new BlockPos(0 - blockpos.getX(), blockpos.getY(), 0 - blockpos.getZ())));
-
-            return super.postProcess(p_230383_1_, p_230383_2_, p_230383_3_, p_230383_4_, p_230383_5_, p_230383_6_, p_230383_7_);
         }
     }
 }
