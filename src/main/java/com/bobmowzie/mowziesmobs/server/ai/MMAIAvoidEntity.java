@@ -5,7 +5,7 @@ import com.google.common.base.Predicates;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.util.RandomPos;
+import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.core.BlockPos;
@@ -14,11 +14,9 @@ import net.minecraft.world.phys.Vec3;
 import java.util.EnumSet;
 import java.util.List;
 
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
-
 public class MMAIAvoidEntity<U extends PathfinderMob, T extends Entity> extends Goal {
     private static final double NEAR_DISTANCE = 7.0D;
-    
+
     protected final U entity;
 
     private final Predicate<T> selector;
@@ -54,7 +52,7 @@ public class MMAIAvoidEntity<U extends PathfinderMob, T extends Entity> extends 
         this.selector = e -> e != null &&
             EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(e) &&
             e.isAlive() &&
-            entity.getSensing().canSee(e) &&
+            entity.getSensing().hasLineOfSight(e) &&
             !entity.isAlliedTo(e) &&
             predicate.test(e);
         this.avoidedEntityType = avoidedEntityType;
@@ -76,7 +74,7 @@ public class MMAIAvoidEntity<U extends PathfinderMob, T extends Entity> extends 
         }
         entityEvading = entities.get(0);
         for (int n = 0; n < numChecks; n++) {
-            Vec3 pos = RandomPos.getPosAvoid(entity, horizontalEvasion, verticalEvasion, entityEvading.position());
+            Vec3 pos = DefaultRandomPos.getPosAway(entity, horizontalEvasion, verticalEvasion, entityEvading.position());
             if (pos != null && !(entityEvading.distanceToSqr(pos.x, pos.y, pos.z) < entityEvading.distanceToSqr(entity))) {
                 entityPathEntity = entity.getNavigation().createPath(new BlockPos(pos), 0);
                 if (entityPathEntity != null) {

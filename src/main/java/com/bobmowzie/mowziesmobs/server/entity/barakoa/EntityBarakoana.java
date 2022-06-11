@@ -43,7 +43,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(3, new BarakoaHurtByTargetAI(this, true));
+        this.goalSelector.addGoal(3, new BarakoaHurtByTargetAI(this));
     }
 
     @Override

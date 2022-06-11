@@ -56,17 +56,6 @@ public class ClientProxy extends ServerProxy {
 
     @Override
     public void onLateInit(final IEventBus modbus) {
-        for (EntityRenderer<?> entityRenderer : Minecraft.getInstance().getEntityRenderDispatcher().renderers.values()) {
-            if (entityRenderer instanceof LivingEntityRenderer) {
-                LivingEntityRenderer livingRenderer = (LivingEntityRenderer) entityRenderer;
-                livingRenderer.addLayer(new FrozenRenderHandler.LayerFrozen(livingRenderer));
-                livingRenderer.addLayer(new SunblockLayer(livingRenderer));
-            }
-        }
-        for (PlayerRenderer playerRenderer : Minecraft.getInstance().getEntityRenderDispatcher().getSkinMap().values()) {
-            playerRenderer.addLayer(new FrozenRenderHandler.LayerFrozen(playerRenderer));
-            playerRenderer.addLayer(new SunblockLayer(playerRenderer));
-        }
         ItemPropertyFunction pulling = ItemProperties.getProperty(Items.BOW, new ResourceLocation("pulling"));
         ItemProperties.register(ItemHandler.BLOWGUN.asItem(), new ResourceLocation("pulling"), pulling);
     }

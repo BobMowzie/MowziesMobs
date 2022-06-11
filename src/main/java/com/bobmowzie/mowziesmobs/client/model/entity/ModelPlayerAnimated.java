@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.armor.MowzieElytraModel;
-import com.bobmowzie.mowziesmobs.client.model.tools.ModelRendererMatrix;
+import com.bobmowzie.mowziesmobs.client.model.tools.ModelPartMatrix;
 import com.google.common.collect.Lists;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.EntityModel;
@@ -10,7 +10,6 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.Mod;
 
 import java.util.List;
 import java.util.Random;
@@ -21,20 +20,20 @@ public class ModelPlayerAnimated<T extends LivingEntity> extends PlayerModel<T> 
 
     public ModelPlayerAnimated(float modelSize, boolean smallArmsIn) {
         super(modelSize, smallArmsIn);
-        this.body = new ModelRendererMatrix(body);
-        this.head = new ModelRendererMatrix(head);
-        this.rightArm = new ModelRendererMatrix(rightArm);
-        this.leftArm = new ModelRendererMatrix(leftArm);
-        this.rightLeg = new ModelRendererMatrix(rightLeg);
-        this.leftLeg = new ModelRendererMatrix(leftLeg);
+        this.body = new ModelPartMatrix(body);
+        this.head = new ModelPartMatrix(head);
+        this.rightArm = new ModelPartMatrix(rightArm);
+        this.leftArm = new ModelPartMatrix(leftArm);
+        this.rightLeg = new ModelPartMatrix(rightLeg);
+        this.leftLeg = new ModelPartMatrix(leftLeg);
 
-        this.hat = new ModelRendererMatrix(hat);
-        this.jacket = new ModelRendererMatrix(jacket);
-        this.leftSleeve = new ModelRendererMatrix(leftSleeve);
-        this.rightSleeve = new ModelRendererMatrix(rightSleeve);
-        this.leftPants = new ModelRendererMatrix(leftPants);
-        this.rightPants = new ModelRendererMatrix(rightPants);
-        this.ear = new ModelRendererMatrix(ear);
+        this.hat = new ModelPartMatrix(hat);
+        this.jacket = new ModelPartMatrix(jacket);
+        this.leftSleeve = new ModelPartMatrix(leftSleeve);
+        this.rightSleeve = new ModelPartMatrix(rightSleeve);
+        this.leftPants = new ModelPartMatrix(leftPants);
+        this.rightPants = new ModelPartMatrix(rightPants);
+        this.ear = new ModelPartMatrix(ear);
 
         modelRenderers.add(ear);
         modelRenderers.add(cloak);
@@ -82,14 +81,14 @@ public class ModelPlayerAnimated<T extends LivingEntity> extends PlayerModel<T> 
 
     @Override
     public void copyPropertiesTo(HumanoidModel<T> modelIn) {
-        if (!(modelIn.body instanceof ModelRendererMatrix)) {
-            modelIn.head = new ModelRendererMatrix(modelIn.head);
-            modelIn.hat = new ModelRendererMatrix(modelIn.hat);
-            modelIn.body = new ModelRendererMatrix(modelIn.body);
-            modelIn.leftArm = new ModelRendererMatrix(modelIn.leftArm);
-            modelIn.rightArm = new ModelRendererMatrix(modelIn.rightArm);
-            modelIn.leftLeg = new ModelRendererMatrix(modelIn.leftLeg);
-            modelIn.rightLeg = new ModelRendererMatrix(modelIn.rightLeg);
+        if (!(modelIn.body instanceof ModelPartMatrix)) {
+            modelIn.head = new ModelPartMatrix(modelIn.head);
+            modelIn.hat = new ModelPartMatrix(modelIn.hat);
+            modelIn.body = new ModelPartMatrix(modelIn.body);
+            modelIn.leftArm = new ModelPartMatrix(modelIn.leftArm);
+            modelIn.rightArm = new ModelPartMatrix(modelIn.rightArm);
+            modelIn.leftLeg = new ModelPartMatrix(modelIn.leftLeg);
+            modelIn.rightLeg = new ModelPartMatrix(modelIn.rightLeg);
         }
         setUseMatrixMode(modelIn, true);
         super.copyPropertiesTo(modelIn);

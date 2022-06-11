@@ -21,20 +21,20 @@ public class MMBossInfoServer extends ServerBossEvent {
     }
 
     public void update() {
-        this.setPercent(this.entity.getHealth() / this.entity.getMaxHealth());
+        this.setProgress(this.entity.getHealth() / this.entity.getMaxHealth());
         Iterator<ServerPlayer> it = this.unseen.iterator();
         while (it.hasNext()) {
             ServerPlayer player = it.next();
-            if (this.entity.getSensing().canSee(player)) {
+            if (this.entity.getSensing().hasLineOfSight(player)) {
                 super.addPlayer(player);
-                it.discard() ;
+                it.remove();
             }
         }
     }
 
     @Override
     public void addPlayer(ServerPlayer player) {
-        if (this.entity.getSensing().canSee(player)) {
+        if (this.entity.getSensing().hasLineOfSight(player)) {
             super.addPlayer(player);
         } else {
             this.unseen.add(player);

@@ -156,7 +156,7 @@ public class DynamicChain {
             else {
                 d[i] = 1f;
             }
-            chainOrig[i].visible = false;
+            chainOrig[i].setIsHidden(true);
         }
 
         for (int i = 0; i < chainOrig.length - 1; i++) {
@@ -196,14 +196,14 @@ public class DynamicChain {
             chainDynamic[i].setWorldPos(entity, renderPos, delta);
 
             if (i < chainDynamic.length - 1) {
-                Vec3 p1 = new Vec3(chainDynamic[i].x, chainDynamic[i].y, chainDynamic[i].z);
-                Vec3 p2 = new Vec3(chainDynamic[i+1].x, chainDynamic[i+1].y, chainDynamic[i+1].z);
+                Vec3 p1 = new Vec3(chainDynamic[i].rotationPointX, chainDynamic[i].rotationPointY, chainDynamic[i].rotationPointZ);
+                Vec3 p2 = new Vec3(chainDynamic[i+1].rotationPointX, chainDynamic[i+1].rotationPointY, chainDynamic[i+1].rotationPointZ);
                 Vec3 diff = p2.subtract(p1);
                 float yaw = (float)Math.atan2(diff.x, diff.z);
                 float pitch = -(float)Math.asin(diff.y/diff.length());
-                chainDynamic[i].yRot = chainDynamic[i].defaultRotationY + yaw;
-                chainDynamic[i].xRot = chainDynamic[i].defaultRotationZ + pitch;
-                chainDynamic[i].zRot = (float) r[i].z;
+                chainDynamic[i].rotateAngleY = chainDynamic[i].defaultRotationY + yaw;
+                chainDynamic[i].rotateAngleX = chainDynamic[i].defaultRotationZ + pitch;
+                chainDynamic[i].rotateAngleZ = (float) r[i].z;
 
                 Vec3 diffRotated = diff;
                 diffRotated = diffRotated.yRot(yaw);

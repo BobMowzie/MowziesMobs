@@ -2,77 +2,68 @@ package com.bobmowzie.mowziesmobs.server.ai;
 
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
-import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 
-public class BarakoaHurtByTargetAI extends TargetGoal
+public class BarakoaHurtByTargetAI extends HurtByTargetGoal
 {
-    private final boolean entityCallsForHelp;
-    /** Store the previous revengeTimer value */
-    private int revengeTimerOld;
-    private final Class<?>[] excludedReinforcementTypes;
-
-    public BarakoaHurtByTargetAI(PathfinderMob creatureIn, boolean entityCallsForHelpIn, Class<?>... excludedReinforcementTypes)
-    {
-        super(creatureIn, true);
-        this.entityCallsForHelp = entityCallsForHelpIn;
-        this.excludedReinforcementTypes = excludedReinforcementTypes;
+    public BarakoaHurtByTargetAI(PathfinderMob entity, Class<?>... p_26040_) {
+        super(entity, p_26040_);
     }
 
-    /**
-     * Returns whether the EntityAIBase should begin execution.
-     */
-    public boolean canUse()
-    {
-        int i = this.mob.getLastHurtByMobTimestamp();
-        LivingEntity entitylivingbase = this.mob.getLastHurtByMob();
-        return i != this.revengeTimerOld && entitylivingbase != null && this.canAttack(entitylivingbase, TargetingConditions.DEFAULT);
-    }
-
-    /**
-     * Execute a one shot task or start executing a continuous task
-     */
-    public void start()
-    {
-        this.mob.setTarget(this.mob.getLastHurtByMob());
-        this.targetMob = this.mob.getTarget();
-        this.revengeTimerOld = this.mob.getLastHurtByMobTimestamp();
-        this.unseenMemoryTicks = 300;
-
-        if (this.entityCallsForHelp)
-        {
-            this.alertOthers();
-        }
-
-        super.start();
-    }
-
+    @Override
     protected void alertOthers()
     {
         double d0 = this.getFollowDistance();
+        AABB aabb = AABB.unitCubeFromLowerCorner(this.mob.position()).inflate(d0, 10.0D, d0);
+        List<? extends PathfinderMob> listBarakoa = this.mob.level.getEntitiesOfClass(EntityBarakoa.class, aabb, EntitySelector.NO_SPECTATORS.and(e ->
+                ((EntityBarakoa)e).isBarakoDevoted()));
+        List<? extends PathfinderMob> listBarako = this.mob.level.getEntitiesOfClass(EntityBarako.class, aabb, EntitySelector.NO_SPECTATORS);
+        List<PathfinderMob> list = new ArrayList<>();
+        list.addAll(listBarakoa);
+        list.addAll(listBarako);
+        Iterator iterator = list.iterator();
 
-        List<PathfinderMob> nearby = this.mob.level.getLoadedEntitiesOfClass(EntityBarakoa.class, (new AABB(this.mob.getX(), this.mob.getY(), this.mob.getZ(), this.mob.getX() + 1.0D, this.mob.getY() + 1.0D, this.mob.getZ() + 1.0D)).inflate(d0, 10.0D, d0), e ->
-                ((EntityBarakoa)e).isBarakoDevoted());
-        nearby.addAll(this.mob.level.getLoadedEntitiesOfClass(EntityBarako.class, (new AABB(this.mob.getX(), this.mob.getY(), this.mob.getZ(), this.mob.getX() + 1.0D, this.mob.getY() + 1.0D, this.mob.getZ() + 1.0D)).inflate(d0, 10.0D, d0)));
-        for (PathfinderMob entitycreature : nearby)
-        {
-            if (this.mob != entitycreature && !(entitycreature.getTarget() instanceof Player) && (!(this.mob instanceof TamableAnimal) || ((TamableAnimal)this.mob).getOwner() == ((TamableAnimal)entitycreature).getOwner()) && this.mob.getLastHurtByMob() != null && !entitycreature.isAlliedTo(this.mob.getLastHurtByMob()))
-            {
-                this.setEntityAttackTarget(entitycreature, this.mob.getLastHurtByMob());
+        while(true) {
+            Mob mob;
+            while(true) {
+                if (!iterator.hasNext()) {
+                    return;
+                }
+
+                mob = (Mob)iterator.next();
+                if (this.mob != mob && mob.getTarget() == null && (!(this.mob instanceof TamableAnimal) || ((TamableAnimal)this.mob).getOwner() == ((TamableAnimal)mob).getOwner()) && !mob.isAlliedTo(this.mob.getLastHurtByMob())) {
+                    if (this.toIgnoreAlert == null) {
+                        break;
+                    }
+
+                    boolean flag = false;
+
+                    for(Class<?> oclass : this.toIgnoreAlert) {
+                        if (mob.getClass() == oclass) {
+                            flag = true;
+                            break;
+                        }
+                    }
+
+                    if (!flag) {
+                        break;
+                    }
+                }
             }
-        }
-    }
 
-    protected void setEntityAttackTarget(PathfinderMob creatureIn, LivingEntity entityLivingBaseIn)
-    {
-        creatureIn.setTarget(entityLivingBaseIn);
+            this.alertOther(mob, this.mob.getLastHurtByMob());
+        }
     }
 
     @Override

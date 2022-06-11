@@ -143,7 +143,12 @@ public final class ContainerBarakoayaTrade extends AbstractContainerMenu {
         }
 
         @Override
-        public ItemStack onTake(Player player, ItemStack stack) {
+        public ItemStack safeTake(int p_150648_, int p_150649_, Player p_150650_) {
+            return super.safeTake(p_150648_, p_150649_, p_150650_);
+        }
+
+        @Override
+        public void onTake(Player player, ItemStack stack) {
             checkTakeAchievements(stack);
             if (barakoaya != null && barakoaya.isOfferingTrade()) {
                 Trade trade = barakoaya.getOfferingTrade();
@@ -157,7 +162,6 @@ public final class ContainerBarakoayaTrade extends AbstractContainerMenu {
                     container.setItem(0, input);
                 }
             }
-            return stack;
         }
     }
 }

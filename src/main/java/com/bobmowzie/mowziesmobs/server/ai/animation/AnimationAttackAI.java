@@ -49,7 +49,7 @@ public class AnimationAttackAI<T extends MowzieEntity & IAnimatedEntity> extends
         }
         if (entity.getAnimationTick() == damageFrame) {
             if (entityTarget != null && entity.targetDistance <= range) {
-                entity.attackEntityAsMob(entityTarget, damageMultiplier, applyKnockbackMultiplier);
+                entity.doHurtTarget(entityTarget, damageMultiplier, applyKnockbackMultiplier);
                 onAttack(entityTarget, damageMultiplier, applyKnockbackMultiplier);
                 if (hitSound != null) {
                     entity.playSound(hitSound, 1, 1);   

@@ -36,8 +36,8 @@ public final class GuiBarakoayaTrade extends AbstractContainerScreen<ContainerBa
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    protected void containerTick() {
+        super.containerTick();
         if (barakoaya.getAnimation() == EntityBarakoaVillager.ATTACK_ANIMATION && barakoaya.getAnimationTick() == 8) {
             cursorHit = 6;
         }
@@ -60,8 +60,8 @@ public final class GuiBarakoayaTrade extends AbstractContainerScreen<ContainerBa
 
     @Override
     protected void renderBg(PoseStack matrixStack, float partialTicks, int x, int y) {
-        RenderSystem.color3f(1, 1, 1);
-        this.minecraft.getTextureManager().bind(TEXTURE);
+        RenderSystem.colorMask(true, true, true, true);
+        this.minecraft.getTextureManager().bindForSetup(TEXTURE);
         blit(matrixStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
         InventoryScreen.renderEntityInInventory(leftPos + 33, topPos + 61, 22, leftPos + 33 - x, topPos + 21 - y, barakoaya);
     }
@@ -82,26 +82,27 @@ public final class GuiBarakoayaTrade extends AbstractContainerScreen<ContainerBa
             ItemStack input = trade.getInput();
             ItemStack output = trade.getOutput();
             matrixStack.pushPose();
+            /*
             Lighting.turnBackOn();
             RenderSystem.disableLighting();
             RenderSystem.enableRescaleNormal();
             RenderSystem.enableColorMaterial();
-            RenderSystem.enableLighting();
+            RenderSystem.enableLighting();*/
             itemRenderer.blitOffset = 100;
             itemRenderer.renderAndDecorateItem(input, leftPos + 80, topPos + 24);
             itemRenderer.renderGuiItemDecorations(font, input, leftPos + 80, topPos + 24);
             itemRenderer.renderAndDecorateItem(output, leftPos + 134, topPos + 24);
             itemRenderer.renderGuiItemDecorations(font, output, leftPos + 134, topPos + 24);
             itemRenderer.blitOffset = 0;
-            RenderSystem.disableLighting();
+            //RenderSystem.disableLighting();
             if (isHovering(80, 24, 16, 16, mouseX, mouseY)) {
                 renderTooltip(matrixStack, input, mouseX, mouseY);
             } else if (isHovering(134, 24, 16, 16, mouseX, mouseY)) {
                 renderTooltip(matrixStack, output, mouseX, mouseY);
             }
-            RenderSystem.enableLighting();
+            /*RenderSystem.enableLighting();
             RenderSystem.enableDepthTest();
-            Lighting.turnBackOn();
+            Lighting.turnBackOn();*/ // TODO
             matrixStack.popPose();
         }
     }

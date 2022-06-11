@@ -919,9 +919,9 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
                 if (entity.getAnimationTick() >= 23 && entity.getAnimationTick() < 60) {
                     Vec3 prevV = new Vec3(entity.prevMotionX, entity.prevMotionY, entity.prevMotionZ);
                     Vec3 dv = prevV.add(entity.getDeltaMovement().subtract(prevV).scale(delta));
-                    double d = Math.sqrt(dv.rotationPointX * dv.rotationPointX + dv.rotationPointY * dv.rotationPointY + dv.rotationPointZ * dv.rotationPointZ);
+                    double d = Math.sqrt(dv.x * dv.x + dv.y * dv.y + dv.z * dv.z);
                     if (d != 0) {
-                        double a = dv.rotationPointY / d;
+                        double a = dv.y / d;
                         a = Math.max(-1, Math.min(1, a));
                         float pitch = -(float) Math.asin(a);
                         root.rotateAngleX += pitch * swooper.rotationPointY;
@@ -1221,7 +1221,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
             float nonHoverAnim = 1f - hoverAnim;
             float flapAnim = entity.prevFlapAnimFrac + (entity.flapAnimFrac - entity.prevFlapAnimFrac) * delta;
             if (entity.getAnimation() != EntityNaga.DIE_AIR_ANIMATION) {
-                float pitch = entity.rotateAngleXO + (entity.rotateAngleX - entity.rotateAngleXO) * delta;
+                float pitch = entity.xRotO + (entity.getXRot() - entity.xRotO) * delta;
                 pitch = (float) (-pitch * Math.PI / 180f);
                 root.rotateAngleX += pitch * nonHoverAnim;
                 shoulderLJoint.rotateAngleX -= Math.min(pitch, 0) * nonHoverAnim * (1-folder);

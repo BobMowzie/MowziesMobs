@@ -99,7 +99,7 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
 
     @Override
     protected void registerTargetGoals() {
-        targetSelector.addGoal(3, new BarakoaHurtByTargetAI(this, true));
+        targetSelector.addGoal(3, new BarakoaHurtByTargetAI(this));
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<Player>(this, Player.class, 0, true, true, target -> {
             if (target instanceof Player) {
                 if (this.level.getDifficulty() == Difficulty.PEACEFUL) return false;

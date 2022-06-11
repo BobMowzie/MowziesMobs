@@ -153,7 +153,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        hurtByTargetAI = new BarakoaHurtByTargetAI(this, true);
+        hurtByTargetAI = new BarakoaHurtByTargetAI(this);
         this.targetSelector.addGoal(3, hurtByTargetAI);
         this.targetSelector.addGoal(4, new NearestAttackableTargetPredicateGoal<Player>(this, Player.class, 0, false, true, (TargetingConditions.forCombat().range(getAttributeValue(Attributes.FOLLOW_RANGE)).selector(target -> {
             if (target instanceof Player) {

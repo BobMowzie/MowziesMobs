@@ -5,17 +5,15 @@ import net.minecraft.client.model.geom.ModelPart;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 
-public class ModelRendererMatrix extends ModelPart {
+public class ModelPartMatrix extends ModelPart {
     private Matrix4f worldXform;
     private Matrix3f worldNormal;
 
     private boolean useMatrixMode;
 
-    public ModelRendererMatrix(ModelPart original) {
-        super((int) original.xTexSize, (int) original.yTexSize, original.xTexOffs, original.yTexOffs);
+    public ModelPartMatrix(ModelPart original) {
+        super(original.cubes, original.children);
         copyFrom(original);
-        cubes.addAll(original.cubes);
-        children.addAll(original.children);
 
         worldNormal = new Matrix3f();
         worldNormal.setIdentity();
@@ -42,8 +40,8 @@ public class ModelRendererMatrix extends ModelPart {
 
     @Override
     public void copyFrom(ModelPart modelRendererIn) {
-        if (modelRendererIn instanceof ModelRendererMatrix) {
-            ModelRendererMatrix other = (ModelRendererMatrix) modelRendererIn;
+        if (modelRendererIn instanceof ModelPartMatrix) {
+            ModelPartMatrix other = (ModelPartMatrix) modelRendererIn;
             this.setWorldNormal(other.getWorldNormal());
             this.setWorldXform(other.getWorldXform());
         }

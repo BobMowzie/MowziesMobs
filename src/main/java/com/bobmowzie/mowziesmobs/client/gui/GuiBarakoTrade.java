@@ -28,6 +28,7 @@ public final class GuiBarakoTrade extends AbstractContainerScreen<ContainerBarak
     private static final ResourceLocation TEXTURE_REPLENISH = new ResourceLocation(MowziesMobs.MODID, "textures/gui/container/barako_replenish.png");
 
     private final EntityBarako barako;
+    private final Player player;
 
     private final InventoryBarako inventory;
 
@@ -40,6 +41,7 @@ public final class GuiBarakoTrade extends AbstractContainerScreen<ContainerBarak
     public GuiBarakoTrade(ContainerBarakoTrade screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         this.barako = screenContainer.getBarako();
+        this.player = inv.player;
         this.inventory = screenContainer.getInventoryBarako();
         this.hasTraded = barako.hasTradedWith(inv.player);
         inventory.addListener(this);
@@ -48,9 +50,8 @@ public final class GuiBarakoTrade extends AbstractContainerScreen<ContainerBarak
     @Override
     protected void init() {
         super.init();
-        buttons.clear();
         String text = I18n.get(hasTraded ? "entity.mowziesmobs.barako.replenish.button.text" : "entity.mowziesmobs.barako.trade.button.text");
-        grantButton = addButton(new Button(leftPos + 115, topPos + 52, 56, 20, new TranslatableComponent(text), this::actionPerformed));
+        grantButton = addRenderableWidget(new Button(leftPos + 115, topPos + 52, 56, 20, new TranslatableComponent(text), this::actionPerformed));
         grantButton.active = hasTraded;
         updateButton();
     }
@@ -61,7 +62,6 @@ public final class GuiBarakoTrade extends AbstractContainerScreen<ContainerBarak
             updateButton();
             MowziesMobs.NETWORK.sendToServer(new MessageBarakoTrade(barako));
             if (!Minecraft.getInstance().isLocalServer()) {
-                Player player = inventory.player;
                 boolean satisfied = barako.hasTradedWith(player);
                 if (!satisfied) {
                     if (barako.fulfillDesire(menu.getSlot(0))) {
@@ -75,8 +75,8 @@ public final class GuiBarakoTrade extends AbstractContainerScreen<ContainerBarak
 
     @Override
     protected void renderBg(PoseStack matrixStack, float partialTicks, int x, int y) {
-        RenderSystem.color3f(1, 1, 1);
-        minecraft.getTextureManager().bind(hasTraded ? TEXTURE_REPLENISH : TEXTURE_TRADE);
+        RenderSystem.colorMask(true, true, true, true);
+        minecraft.getTextureManager().bindForSetup(hasTraded ? TEXTURE_REPLENISH : TEXTURE_TRADE);
         blit(matrixStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
         InventoryScreen.renderEntityInInventory(leftPos + 33, topPos + 56, 14, 0, 0, barako);
     }
@@ -94,11 +94,12 @@ public final class GuiBarakoTrade extends AbstractContainerScreen<ContainerBarak
         this.renderTooltip(matrixStack, mouseX, mouseY);
         ItemStack inSlot = inventory.getItem(0);
         matrixStack.pushPose();
+        /*
         RenderHelper.turnBackOn();
         RenderSystem.disableLighting();
         RenderSystem.enableRescaleNormal();
         RenderSystem.enableColorMaterial();
-        RenderSystem.enableLighting();
+        RenderSystem.enableLighting();*/ // TODO
         itemRenderer.blitOffset = 100;
         if (hasTraded) {
             itemRenderer.renderAndDecorateItem(output, leftPos + 106, topPos + 24);
@@ -119,14 +120,14 @@ public final class GuiBarakoTrade extends AbstractContainerScreen<ContainerBarak
             }
         }
         itemRenderer.blitOffset = 0;
-        RenderSystem.disableLighting();
+//        RenderSystem.disableLighting();
 
         if (grantButton.isMouseOver(mouseX, mouseY)) {
             renderComponentHoverEffect(matrixStack, getHoverText(), mouseX, mouseY);
         }
-        RenderSystem.enableLighting();
+        /*RenderSystem.enableLighting();
         RenderSystem.enableDepthTest();
-        RenderHelper.turnBackOn();
+        RenderHelper.turnBackOn();*/
         matrixStack.popPose();
     }
 
