@@ -388,13 +388,13 @@ public class ModelFoliaath<T extends EntityFoliaath> extends MowzieEntityModel<T
         animator.endKeyframe();
         animator.resetKeyframe(7);
 
-        float deathFlailProgress = entity.deathFlail.getAnimationProgressSinSqrt();
-        chainFlap(stemParts, 0.7F, 0.2F * deathFlailProgress, 2F, entity.frame, 1F);
-        chainSwing(tongueParts, 0.7F, 0.6F * deathFlailProgress, -2F, entity.frame, 1F);
-        chainWave(leafParts1, 1.5F, 0.1F * deathFlailProgress, 0, entity.frame, 1F);
-        chainWave(leafParts2, 1.5F, 0.1F * deathFlailProgress, 0, entity.frame, 1F);
-        chainWave(leafParts3, 1.5F, 0.1F * deathFlailProgress, 0, entity.frame, 1F);
-        chainWave(leafParts4, 1.5F, 0.1F * deathFlailProgress, 0, entity.frame, 1F);
+        float deathFlailProgress = entity.deathFlail.getAnimationProgressSinSqrt(delta);
+        chainFlap(stemParts, 0.7F, 0.2F * deathFlailProgress, 2F, entity.frame + delta, 1F);
+        chainSwing(tongueParts, 0.7F, 0.6F * deathFlailProgress, -2F, entity.frame + delta, 1F);
+        chainWave(leafParts1, 1.5F, 0.1F * deathFlailProgress, 0, entity.frame + delta, 1F);
+        chainWave(leafParts2, 1.5F, 0.1F * deathFlailProgress, 0, entity.frame + delta, 1F);
+        chainWave(leafParts3, 1.5F, 0.1F * deathFlailProgress, 0, entity.frame + delta, 1F);
+        chainWave(leafParts4, 1.5F, 0.1F * deathFlailProgress, 0, entity.frame + delta, 1F);
         animator.setAnimation(EntityFoliaath.DIE_ANIMATION);
         animator.startKeyframe(4);
         animator.rotate(stem1Base, -0.1F, 0, 0);
