@@ -134,13 +134,17 @@ public class ItemWroughtHelm extends MowzieArmorItem {
 
     private static final class ArmorRender implements IItemRenderProperties {
         private static final ArmorRender INSTANCE = new ArmorRender();
+        private static HumanoidModel<?> MODEL;
 
         @Override
         @SuppressWarnings("unchecked")
         public <A extends HumanoidModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, A defModel) {
-            EntityModelSet models = Minecraft.getInstance().getEntityModels();
-            ModelPart root = models.bakeLayer(LayerHandler.WROUGHT_HELM_LAYER);
-            return (A) new WroughtHelmModel<>(root);
+            if (MODEL == null) {
+                EntityModelSet models = Minecraft.getInstance().getEntityModels();
+                ModelPart root = models.bakeLayer(LayerHandler.WROUGHT_HELM_LAYER);
+                MODEL = new WroughtHelmModel<>(root);
+            }
+            return (A) MODEL;
         }
     }
 }

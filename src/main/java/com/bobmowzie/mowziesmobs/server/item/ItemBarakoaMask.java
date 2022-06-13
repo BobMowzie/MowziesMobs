@@ -187,13 +187,17 @@ public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask {
 
     private static final class ArmorRender implements IItemRenderProperties {
         private static final ItemBarakoaMask.ArmorRender INSTANCE = new ItemBarakoaMask.ArmorRender();
+        private static HumanoidModel<?> MODEL;
 
         @Override
         @SuppressWarnings("unchecked")
         public <A extends HumanoidModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, A defModel) {
-            EntityModelSet models = Minecraft.getInstance().getEntityModels();
-            ModelPart root = models.bakeLayer(LayerHandler.BARAKOA_MASK_LAYER);
-            return (A) new BarakoaMaskModel<>(root);
+            if (MODEL == null) {
+                EntityModelSet models = Minecraft.getInstance().getEntityModels();
+                ModelPart root = models.bakeLayer(LayerHandler.BARAKOA_MASK_LAYER);
+                MODEL = new BarakoaMaskModel<>(root);
+            }
+            return (A) MODEL;
         }
     }
 }

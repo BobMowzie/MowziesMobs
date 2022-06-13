@@ -1,6 +1,8 @@
 package com.bobmowzie.mowziesmobs.client.model;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.armor.BarakoaMaskModel;
+import com.bobmowzie.mowziesmobs.client.model.armor.SolVisageModel;
 import com.bobmowzie.mowziesmobs.client.model.armor.WroughtHelmModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.resources.ResourceLocation;
@@ -18,8 +20,8 @@ public class LayerHandler {
     @SubscribeEvent
     public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(WROUGHT_HELM_LAYER, WroughtHelmModel::createArmorLayer);
-        event.registerLayerDefinition(SOL_VISAGE_LAYER, WroughtHelmModel::createArmorLayer);
-        event.registerLayerDefinition(BARAKOA_MASK_LAYER, WroughtHelmModel::createArmorLayer);
+        event.registerLayerDefinition(SOL_VISAGE_LAYER, SolVisageModel::createArmorLayer);
+        event.registerLayerDefinition(BARAKOA_MASK_LAYER, BarakoaMaskModel::createArmorLayer);
     }
 
     private static ModelLayerLocation register(String model, String layer) {

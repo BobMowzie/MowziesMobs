@@ -15,8 +15,9 @@ public class BarakoaMaskModel<T extends LivingEntity> extends HumanoidModel<T> {
 		super(root);
 	}
 
-	public static LayerDefinition createBodyLayer() {
-		MeshDefinition meshdefinition = new MeshDefinition();
+	public static LayerDefinition createArmorLayer() {
+		CubeDeformation deformation = CubeDeformation.NONE;
+		MeshDefinition meshdefinition = HumanoidModel.createMesh(deformation, 0.0F);
 		PartDefinition partdefinition = meshdefinition.getRoot();
 		PartDefinition head = partdefinition.getChild("head");
 
