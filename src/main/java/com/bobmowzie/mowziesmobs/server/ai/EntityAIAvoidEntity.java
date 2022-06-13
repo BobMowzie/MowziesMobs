@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.ai;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.entity.ai.util.RandomPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.pathfinder.Path;
@@ -39,7 +40,7 @@ public final class EntityAIAvoidEntity<T extends Entity> extends Goal {
         this.entity = entity;
         this.avoidClass = avoidClass;
         this.distance = distance;
-        Predicate<T> visible = e -> e.isAlive() && entity.getSensing().canSee(e);
+        Predicate<T> visible = e -> e.isAlive() && entity.getSensing().hasLineOfSight(e);
         Predicate<T> targetable = e -> !(e instanceof Player) || !e.isSpectator() && !((Player)e).isCreative();
         this.predicate = targetable.and(predicate).and(visible);
         this.speed = speed;
@@ -54,7 +55,7 @@ public final class EntityAIAvoidEntity<T extends Entity> extends Goal {
             return false;
         }
         avoiding = entities.get(entity.getRandom().nextInt(entities.size()));
-        Vec3 pos = RandomPos.getPosAvoid(entity, (int) (distance + 1), (int) (distance / 2 + 1), new Vec3(avoiding.getX(), avoiding.getY(), avoiding.getZ()));
+        Vec3 pos = DefaultRandomPos.getPosAway(entity, (int) (distance + 1), (int) (distance / 2 + 1), new Vec3(avoiding.getX(), avoiding.getY(), avoiding.getZ()));
         if (pos == null) {
             return false;
         }

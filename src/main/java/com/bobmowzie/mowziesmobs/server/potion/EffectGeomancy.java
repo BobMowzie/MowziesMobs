@@ -34,7 +34,7 @@ public class EffectGeomancy extends MowzieEffect {
                 && blockState.getBlock() != Blocks.SLIME_BLOCK
                 && blockState.getBlock() != Blocks.HOPPER
                 && blockState.getBlock() != BlockHandler.THATCH.get()
-                && !blockState.hasTileEntity();
+                && !blockState.hasBlockEntity();
     }
 
     public static boolean canUse(LivingEntity entity) {

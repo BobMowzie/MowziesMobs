@@ -323,7 +323,7 @@ public class PowerGeomancy extends Power {
         if (result.getDirection() != Direction.UP) {
             BlockState blockAbove = player.level.getBlockState(spawnBoulderPos.above());
             //System.out.println(blockAbove.getBlock().getLocalizedName());
-            if (blockAbove.isSuffocating(player.level, spawnBoulderPos.above()) || blockAbove.isAir(player.level, spawnBoulderPos.above()))
+            if (blockAbove.isSuffocating(player.level, spawnBoulderPos.above()) || blockAbove.isAir())
                 return;
         }
         if (!isBlockDiggable(spawnBoulderBlock)) return;

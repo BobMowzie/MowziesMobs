@@ -16,7 +16,7 @@ public class MowzieRenderUtils {
     public static void matrixStackFromModel(PoseStack matrixStack, AdvancedModelRenderer modelRenderer) {
         AdvancedModelRenderer parent = modelRenderer.getParent();
         if (parent != null) matrixStackFromModel(matrixStack, parent);
-        modelRenderer.translateAndRotate(matrixStack);
+        modelRenderer.translateRotate(matrixStack);
     }
 
     public static Vec3 getWorldPosFromModel(Entity entity, float entityYaw, AdvancedModelRenderer modelRenderer) {

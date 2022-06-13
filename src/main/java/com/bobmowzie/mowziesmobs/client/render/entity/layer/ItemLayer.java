@@ -26,7 +26,7 @@ public class ItemLayer<T extends LivingEntity, M extends EntityModel<T>> extends
 
     @Override
     public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (!modelRenderer.visible || modelRenderer.isHidden()) return;
+        if (!modelRenderer.showModel || modelRenderer.isHidden()) return;
         matrixStackIn.pushPose();
         MowzieRenderUtils.matrixStackFromModel(matrixStackIn, getModelRenderer());
         Minecraft.getInstance().getItemInHandRenderer().renderItem(entitylivingbaseIn, getItemstack(), transformType, false, matrixStackIn, bufferIn, packedLightIn);

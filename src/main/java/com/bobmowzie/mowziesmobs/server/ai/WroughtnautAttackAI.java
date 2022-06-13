@@ -70,7 +70,7 @@ public class WroughtnautAttackAI extends Goal {
         dist = this.wroughtnaut.distanceToSqr(this.targetX, this.targetY, this.targetZ);
         if (target.getY() - this.wroughtnaut.getY() >= -1 && target.getY() - this.wroughtnaut.getY() <= 3) {
             boolean couldStomp = dist < 6.0D * 6.0D && this.timeSinceStomp > 200;
-            if (dist < 3.5D * 3.5D && Math.abs(Mth.wrapDegrees(this.wroughtnaut.getAngleBetweenEntities(target, this.wroughtnaut) - this.wroughtnaut.yRot)) < 35.0D && (!couldStomp || this.wroughtnaut.getRandom().nextFloat() < 0.667F)) {
+            if (dist < 3.5D * 3.5D && Math.abs(Mth.wrapDegrees(this.wroughtnaut.getAngleBetweenEntities(target, this.wroughtnaut) - this.wroughtnaut.getYRot())) < 35.0D && (!couldStomp || this.wroughtnaut.getRandom().nextFloat() < 0.667F)) {
                 if (this.attacksSinceVertical > 3 + 2 * (1 - wroughtnaut.getHealthRatio()) || this.wroughtnaut.getRandom().nextFloat() < 0.18F) {
                     AnimationHandler.INSTANCE.sendAnimationMessage(this.wroughtnaut, EntityWroughtnaut.VERTICAL_ATTACK_ANIMATION);
                     this.attacksSinceVertical = 0;

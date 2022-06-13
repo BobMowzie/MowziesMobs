@@ -17,6 +17,7 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.bobmowzie.mowziesmobs.server.world.feature.ConfiguredFeatureHandler;
 import com.bobmowzie.mowziesmobs.server.world.spawn.SpawnHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -59,14 +60,15 @@ public final class MowziesMobs {
         PROXY.init(bus);
         bus.<FMLCommonSetupEvent>addListener(this::init);
         bus.<FMLLoadCompleteEvent>addListener(this::init);
+        bus.addListener(CapabilityHandler::registerCapabilities);
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
         MinecraftForge.EVENT_BUS.register(new AbilityCommonEventHandler());
+        MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, CapabilityHandler::attachEntityCapability);
     }
 
     public void init(final FMLCommonSetupEvent event) {
-        CapabilityHandler.register();
         SpawnHandler.registerSpawnPlacementTypes();
         PROXY.initNetwork();
         AdvancementHandler.preInit();

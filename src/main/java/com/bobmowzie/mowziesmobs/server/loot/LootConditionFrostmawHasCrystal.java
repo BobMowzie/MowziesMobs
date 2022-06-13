@@ -33,7 +33,8 @@ public class LootConditionFrostmawHasCrystal implements LootItemCondition {
 
     public boolean test(LootContext context) {
         Entity entity = context.getParamOrNull(LootContextParams.THIS_ENTITY);
-        if (entity instanceof EntityFrostmaw frostmaw) {
+        if (entity instanceof EntityFrostmaw) {
+            EntityFrostmaw frostmaw = (EntityFrostmaw) entity;
             return frostmaw.getHasCrystal();
         }
         return false;

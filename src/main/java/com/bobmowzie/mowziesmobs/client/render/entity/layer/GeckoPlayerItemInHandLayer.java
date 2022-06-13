@@ -20,10 +20,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GeckoHeldItemLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> implements IGeckoRenderLayer {
+public class GeckoPlayerItemInHandLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> implements IGeckoRenderLayer {
     private GeckoRenderPlayer renderPlayerAnimated;
 
-    public GeckoHeldItemLayer(GeckoRenderPlayer entityRendererIn) {
+    public GeckoPlayerItemInHandLayer(GeckoRenderPlayer entityRendererIn) {
         super(entityRendererIn);
         renderPlayerAnimated = entityRendererIn;
     }

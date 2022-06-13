@@ -137,7 +137,7 @@ public enum ClientEventHandler {
 
                         if (geckoPlayerModel != null && animatedPlayerRenderer != null) {
                             if (!geckoPlayerModel.isUsingSmallArms() && ((AbstractClientPlayer) player).getModelName().equals("slim")) {
-                                animatedPlayerRenderer.setSmallArms();
+//                                animatedPlayerRenderer.setSmallArms(); TODO
                             }
 
                             event.setCanceled(geckoPlayerModel.resourceForModelId((AbstractClientPlayer) player));

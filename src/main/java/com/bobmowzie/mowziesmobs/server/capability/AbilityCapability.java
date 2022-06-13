@@ -1,11 +1,13 @@
 package com.bobmowzie.mowziesmobs.server.capability;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -35,6 +37,7 @@ import javax.annotation.Nonnull;
 import java.util.*;
 
 public class AbilityCapability {
+    public static ResourceLocation ID = new ResourceLocation(MowziesMobs.MODID, "ability_cap");
 
     public interface IAbilityCapability extends INBTSerializable<CompoundTag> {
 

@@ -96,7 +96,7 @@ public class DamageUtil {
                 d1 = (Math.random() - Math.random()) * 0.01D;
             }
 
-            target.hurtDir = (float)(Mth.atan2(d0, d1) * (180D / Math.PI) - (double)target.yRot);
+            target.hurtDir = (float)(Mth.atan2(d0, d1) * (180D / Math.PI) - (double)target.getYRot());
             target.knockback(0.4F, d1, d0);
         }
         else

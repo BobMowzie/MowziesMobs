@@ -3,15 +3,16 @@ package com.bobmowzie.mowziesmobs.client.render.entity.layer;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoRenderPlayer;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.layers.ParrotOnShoulderLayer;
 
-public class GeckoParrotVariantLayer extends ParrotOnShoulderLayer<AbstractClientPlayer> implements IGeckoRenderLayer {
+public class GeckoParrotOnShoulderLayer extends ParrotOnShoulderLayer<AbstractClientPlayer> implements IGeckoRenderLayer {
     private final GeckoRenderPlayer renderPlayerAnimated;
 
-    public GeckoParrotVariantLayer(GeckoRenderPlayer rendererIn) {
-        super(rendererIn);
+    public GeckoParrotOnShoulderLayer(GeckoRenderPlayer rendererIn, EntityModelSet modelSet) {
+        super(rendererIn, modelSet);
         renderPlayerAnimated = rendererIn;
     }
 

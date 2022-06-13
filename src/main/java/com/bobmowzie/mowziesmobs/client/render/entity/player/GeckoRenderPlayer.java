@@ -9,10 +9,11 @@ import com.bobmowzie.mowziesmobs.client.render.entity.layer.*;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.entity.layers.*;
 import net.minecraft.client.model.HumanoidModel;
@@ -59,21 +60,21 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
 
     public Vec3 betweenHandsPos;
 
-    public GeckoRenderPlayer(EntityRenderDispatcher renderManager, ModelGeckoPlayerThirdPerson modelProvider) {
-        super(renderManager, false);
+    public GeckoRenderPlayer(EntityRendererProvider.Context context, boolean slim) {
+        super(context, false);
 
-        this.model = new ModelPlayerAnimated<>(0.0f, false);
+        this.model = new ModelPlayerAnimated<>(context.bakeLayer(ModelLayers.PLAYER), false);
 
         this.layers.clear();
-        this.addLayer(new HumanoidArmorLayer<>(this, new ModelBipedAnimated<>(0.5F), new ModelBipedAnimated<>(1.0F)));
-        this.addLayer(new GeckoHeldItemLayer(this));
-        this.addLayer(new ArrowLayer<>(this));
+        this.addLayer(new HumanoidArmorLayer<>(this, new ModelBipedAnimated<>(context.bakeLayer(slim ? ModelLayers.PLAYER_SLIM_INNER_ARMOR : ModelLayers.PLAYER_INNER_ARMOR)), new ModelBipedAnimated<>(context.bakeLayer(slim ? ModelLayers.PLAYER_SLIM_OUTER_ARMOR : ModelLayers.PLAYER_OUTER_ARMOR))));
+        this.addLayer(new GeckoPlayerItemInHandLayer(this));
+        this.addLayer(new ArrowLayer<>(context, this));
         this.addLayer(new Deadmau5EarsLayer(this));
         this.addLayer(new GeckoCapeLayer(this));
-        this.addLayer(new CustomHeadLayer<>(this));
-        this.addLayer(new GeckoElytraLayer<>(this, this.model.body));
-        this.addLayer(new GeckoParrotVariantLayer(this));
-        this.addLayer(new SpinAttackEffectLayer<>(this));
+        this.addLayer(new CustomHeadLayer<>(this, context.getModelSet()));
+        this.addLayer(new GeckoElytraLayer<>(this, context.getModelSet()));
+        this.addLayer(new GeckoParrotOnShoulderLayer(this, context.getModelSet()));
+        this.addLayer(new SpinAttackEffectLayer<>(this, context.getModelSet()));
         this.addLayer(new BeeStingerLayer<>(this));
         this.addLayer(new FrozenRenderHandler.LayerFrozen<>(this));
 
@@ -102,8 +103,8 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
         return modelsToLoad;
     }
 
-    public void setSmallArms() {
-        this.model = new ModelPlayerAnimated<>(0.0f, true);
+    public void setSmallArms(EntityRendererProvider.Context context) {
+        this.model = new ModelPlayerAnimated<>(context.bakeLayer(ModelLayers.PLAYER), true);
         this.modelProvider.setUseSmallArms(true);
     }
 
@@ -242,7 +243,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
             VertexConsumer ivertexbuilder = bufferIn.getBuffer(rendertype);
             int i = getOverlayCoords(entityIn, this.getWhiteOverlayProgress(entityIn, partialTicks));
             matrixStackIn.pushPose();
-            worldRenderMat.set(matrixStackIn.last().pose());
+            worldRenderMat.load(matrixStackIn.last().pose());
             render(
                     getGeoModelProvider().getModel(getGeoModelProvider().getModelLocation(geckoPlayer)),
                     geckoPlayer, partialTicks, rendertype, matrixStackIn, bufferIn, ivertexbuilder, packedLightIn, i, 1.0F, 1.0F, 1.0F, flag1 ? 0.15F : 1.0F
@@ -283,8 +284,8 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
 
             Vec3 vector3d = entityLiving.getViewVector(partialTicks);
             Vec3 vector3d1 = entityLiving.getDeltaMovement();
-            double d0 = Entity.getHorizontalDistanceSqr(vector3d1);
-            double d1 = Entity.getHorizontalDistanceSqr(vector3d);
+            double d0 = vector3d1.horizontalDistanceSqr();
+            double d1 = vector3d.horizontalDistanceSqr();
             if (d0 > 0.0D && d1 > 0.0D) {
                 double d2 = (vector3d1.x * vector3d.x + vector3d1.z * vector3d.z) / Math.sqrt(d0 * d1);
                 double d3 = vector3d1.x * vector3d.z - vector3d1.z * vector3d.x;
@@ -293,7 +294,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
         } else if (f > 0.0F) {
             float swimController = this.modelProvider.getControllerValue("SwimController");
             this.applyRotationsLivingRenderer(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks, headYaw);
-            float f3 = entityLiving.isInWater() ? -90.0F - entityLiving.xRot : -90.0F;
+            float f3 = entityLiving.isInWater() ? -90.0F - entityLiving.getXRot() : -90.0F;
             float f4 = Mth.lerp(f, 0.0F, f3) * swimController;
             matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(f4));
             if (entityLiving.isVisuallySwimming()) {
@@ -324,7 +325,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
 
             matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(f * this.getFlipDegrees(entityLiving)));
         } else if (entityLiving.isAutoSpinAttack()) {
-            matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-90.0F - entityLiving.xRot));
+            matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-90.0F - entityLiving.getXRot()));
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(((float)entityLiving.tickCount + partialTicks) * -75.0F));
         } else if (pose == Pose.SLEEPING) {
             Direction direction = entityLiving.getBedOrientation();

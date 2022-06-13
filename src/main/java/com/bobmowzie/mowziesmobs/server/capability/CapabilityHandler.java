@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.capability;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
@@ -25,7 +26,12 @@ public final class CapabilityHandler {
 
     public static void attachEntityCapability(AttachCapabilitiesEvent<Entity> e) {
         if (e.getObject() instanceof LivingEntity) {
-
+            e.addCapability(LivingCapability.ID, new LivingCapability.LivingProvider());
+            e.addCapability(FrozenCapability.ID, new FrozenCapability.FrozenProvider());
+            if (e.getObject() instanceof Player) {
+                e.addCapability(PlayerCapability.ID, new PlayerCapability.PlayerProvider());
+                e.addCapability(AbilityCapability.ID, new AbilityCapability.AbilityProvider());
+            }
         }
     }
 

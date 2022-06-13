@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.capability;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleCloud;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleSnowFlake;
@@ -7,6 +8,7 @@ import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -30,6 +32,8 @@ import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public class FrozenCapability {
+    public static ResourceLocation ID = new ResourceLocation(MowziesMobs.MODID, "frozen_cap");
+
     public static int MAX_FREEZE_DECAY_DELAY = 10;
 
     public interface IFrozenCapability extends INBTSerializable<CompoundTag> {

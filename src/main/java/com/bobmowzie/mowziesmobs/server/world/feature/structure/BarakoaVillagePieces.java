@@ -156,49 +156,49 @@ public class BarakoaVillagePieces {
          */
         @Override
         protected void handleDataMarker(String function, BlockPos pos, ServerLevelAccessor worldIn, Random rand, BoundingBox sbb) {
-            switch (function) {
-                case "support" -> {
-                    worldIn.setBlock(pos, Blocks.OAK_FENCE.defaultBlockState(), 3);
-                    fillAirLiquidDown(worldIn, Blocks.OAK_FENCE.defaultBlockState(), pos.below());
-                }
-                case "leg" -> {
-                    worldIn.setBlock(pos, Blocks.ACACIA_LOG.defaultBlockState(), 3);
-                    fillAirLiquidDown(worldIn, Blocks.ACACIA_LOG.defaultBlockState(), pos.below());
-                }
-                case "stairs" -> {
-                    Direction stairDirection = Direction.EAST;
-                    stairDirection = this.rotation.rotate(stairDirection);
-                    setBlockState(worldIn, pos.relative(Direction.UP, 1), Blocks.AIR.defaultBlockState());
-                    setBlockState(worldIn, pos.relative(Direction.UP, 2), Blocks.AIR.defaultBlockState());
-                    setBlockState(worldIn, pos, Blocks.SPRUCE_STAIRS.defaultBlockState().setValue(StairBlock.FACING, stairDirection.getOpposite()));
-                    pos = pos.relative(Direction.DOWN);
-                    setBlockState(worldIn, pos, Blocks.SPRUCE_STAIRS.defaultBlockState().setValue(StairBlock.FACING, stairDirection).setValue(StairBlock.HALF, Half.TOP));
-                    for (int i = 1; i < 20; i++) {
-                        pos = pos.relative(stairDirection);
-                        if (!Block.canSupportRigidBlock(worldIn, pos)) {
-                            setBlockState(worldIn, pos, Blocks.SPRUCE_STAIRS.defaultBlockState().setValue(StairBlock.FACING, stairDirection.getOpposite()));
-                            pos = pos.relative(Direction.DOWN);
-                            setBlockState(worldIn, pos, Blocks.SPRUCE_STAIRS.defaultBlockState().setValue(StairBlock.FACING, stairDirection).setValue(StairBlock.HALF, Half.TOP));
-                        } else {
-                            break;
-                        }
+            if (function.equals("support")) {
+                worldIn.setBlock(pos, Blocks.OAK_FENCE.defaultBlockState(), 3);
+                fillAirLiquidDown(worldIn, Blocks.OAK_FENCE.defaultBlockState(), pos.below());
+            }
+            else if (function.equals("leg")) {
+                worldIn.setBlock(pos, Blocks.ACACIA_LOG.defaultBlockState(), 3);
+                fillAirLiquidDown(worldIn, Blocks.ACACIA_LOG.defaultBlockState(), pos.below());
+            }
+            else if (function.equals("stairs")) {
+                Direction stairDirection = Direction.EAST;
+                stairDirection = this.rotation.rotate(stairDirection);
+                setBlockState(worldIn, pos.relative(Direction.UP, 1), Blocks.AIR.defaultBlockState());
+                setBlockState(worldIn, pos.relative(Direction.UP, 2), Blocks.AIR.defaultBlockState());
+                setBlockState(worldIn, pos, Blocks.SPRUCE_STAIRS.defaultBlockState().setValue(StairBlock.FACING, stairDirection.getOpposite()));
+                pos = pos.relative(Direction.DOWN);
+                setBlockState(worldIn, pos, Blocks.SPRUCE_STAIRS.defaultBlockState().setValue(StairBlock.FACING, stairDirection).setValue(StairBlock.HALF, Half.TOP));
+                for (int i = 1; i < 20; i++) {
+                    pos = pos.relative(stairDirection);
+                    if (!Block.canSupportRigidBlock(worldIn, pos)) {
+                        setBlockState(worldIn, pos, Blocks.SPRUCE_STAIRS.defaultBlockState().setValue(StairBlock.FACING, stairDirection.getOpposite()));
+                        pos = pos.relative(Direction.DOWN);
+                        setBlockState(worldIn, pos, Blocks.SPRUCE_STAIRS.defaultBlockState().setValue(StairBlock.FACING, stairDirection).setValue(StairBlock.HALF, Half.TOP));
+                    } else {
+                        break;
                     }
                 }
-                case "barako" -> {
-                    setBlockState(worldIn, pos, Blocks.AIR.defaultBlockState());
-                    EntityBarako barako = new EntityBarako(EntityHandler.BARAKO.get(), worldIn.getLevel());
-                    barako.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
-                    int i = rotation.rotate(3, 4);
-                    barako.setDirection(i);
-                    barako.finalizeSpawn(worldIn, worldIn.getCurrentDifficultyAt(barako.blockPosition()), MobSpawnType.STRUCTURE, null, null);
-                    BlockPos offset = new BlockPos(0, 0, -18);
-                    offset = offset.rotate(rotation);
-                    BlockPos firePitPos = pos.offset(offset);
-                    firePitPos = worldIn.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, firePitPos);
-                    barako.restrictTo(firePitPos, -1);
-                    worldIn.addFreshEntity(barako);
-                }
-                default -> worldIn.removeBlock(pos, false);
+            }
+            else if (function.equals("barako")) {
+                setBlockState(worldIn, pos, Blocks.AIR.defaultBlockState());
+                EntityBarako barako = new EntityBarako(EntityHandler.BARAKO.get(), worldIn.getLevel());
+                barako.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+                int i = rotation.rotate(3, 4);
+                barako.setDirection(i);
+                barako.finalizeSpawn(worldIn, worldIn.getCurrentDifficultyAt(barako.blockPosition()), MobSpawnType.STRUCTURE, null, null);
+                BlockPos offset = new BlockPos(0, 0, -18);
+                offset = offset.rotate(rotation);
+                BlockPos firePitPos = pos.offset(offset);
+                firePitPos = worldIn.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, firePitPos);
+                barako.restrictTo(firePitPos, -1);
+                worldIn.addFreshEntity(barako);
+            }
+            else {
+                worldIn.removeBlock(pos, false);
             }
         }
 

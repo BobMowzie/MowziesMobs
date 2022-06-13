@@ -23,7 +23,7 @@ public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> i
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(3, new BarakoaHurtByTargetAI(this, true));
+        this.goalSelector.addGoal(3, new BarakoaHurtByTargetAI(this));
     }
 
     @Override

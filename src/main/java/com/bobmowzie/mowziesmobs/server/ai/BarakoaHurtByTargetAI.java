@@ -19,6 +19,7 @@ public class BarakoaHurtByTargetAI extends HurtByTargetGoal
 {
     public BarakoaHurtByTargetAI(PathfinderMob entity, Class<?>... p_26040_) {
         super(entity, p_26040_);
+        setAlertOthers();
     }
 
     @Override

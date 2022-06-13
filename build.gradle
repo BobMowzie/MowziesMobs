@@ -42,16 +42,24 @@ minecraft {
     }
 }
 
+processResources {
+    filesMatching("META-INF/mods.toml") {
+        expand([
+                'version': "${project.version}"
+        ])
+    }
+}
+
 jar {
     manifest {
         attributes([
-                "Specification-Title": "mowziesmobs",
-                "Specification-Vendor": "BobMowzie",
-                "Specification-Version": "1",
-                "Implementation-Title": "mowziesmobs",
-                "Implementation-Version": "${project.version}",
-                "Implementation-Vendor" : "BobMowzie",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            "Specification-Title": "mowziesmobs",
+            "Specification-Vendor": "BobMowzie",
+            "Specification-Version": "1",
+            "Implementation-Title": "mowziesmobs",
+            "Implementation-Version": "${project.version}",
+            "Implementation-Vendor" : "BobMowzie",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
 }
@@ -63,18 +71,4 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:1.17.1-37.1.1"
     implementation fg.deobf('software.bernie.geckolib:geckolib-1.17.1:3.0.10')
-}
-
-processResources {
-    def vars = [
-            "version": project.version
-    ]
-    inputs.properties(vars)
-    from(sourceSets.main.resources.srcDirs) {
-        include("META-INF/mods.toml")
-        expand(vars)
-    }
-    from(sourceSets.main.resources.srcDirs) {
-        exclude("META-INF/mods.toml")
-    }
 }

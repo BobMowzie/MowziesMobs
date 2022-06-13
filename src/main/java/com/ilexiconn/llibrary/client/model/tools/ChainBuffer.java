@@ -80,8 +80,8 @@ public class ChainBuffer {
      */
     public void calculateChainWaveBuffer(float maxAngle, int bufferTime, float angleDecrement, float divisor, LivingEntity entity) {
         this.prevPitchVariation = this.pitchVariation;
-        if (entity.xRot != entity.xRotO && Mth.abs(this.pitchVariation) < maxAngle) {
-            this.pitchVariation += (entity.xRotO - entity.xRot) / divisor;
+        if (entity.getXRot() != entity.xRotO && Mth.abs(this.pitchVariation) < maxAngle) {
+            this.pitchVariation += (entity.xRotO - entity.getXRot()) / divisor;
         }
         if (this.pitchVariation > 0.7F * angleDecrement) {
             if (this.pitchTimer > bufferTime) {

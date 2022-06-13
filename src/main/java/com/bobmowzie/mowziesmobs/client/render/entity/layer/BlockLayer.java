@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity.layer;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.BlockModelRenderer;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import com.ilexiconn.llibrary.client.model.tools.BasicModelRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -33,18 +34,18 @@ public class BlockLayer <T extends Entity, M extends EntityModel<T>> extends Ren
     }
 
     public static void processModelRenderer(AdvancedModelRenderer modelRenderer, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha, BlockRenderDispatcher dispatcher) {
-        if (modelRenderer.visible) {
+        if (modelRenderer.showModel) {
             if (modelRenderer instanceof BlockModelRenderer || !modelRenderer.childModels.isEmpty()) {
                 matrixStackIn.pushPose();
 
-                modelRenderer.translateAndRotate(matrixStackIn);
+                modelRenderer.translateRotate(matrixStackIn);
                 if (!modelRenderer.isHidden() && modelRenderer instanceof BlockModelRenderer) {
                     BlockModelRenderer blockModelRenderer = (BlockModelRenderer) modelRenderer;
                     dispatcher.renderSingleBlock(blockModelRenderer.getBlockState(), matrixStackIn, bufferIn, packedLightIn, packedOverlayIn);
                 }
 
                 // Render children
-                for(ModelPart child : modelRenderer.childModels) {
+                for(BasicModelRenderer child : modelRenderer.childModels) {
                     if (child instanceof AdvancedModelRenderer) {
                         processModelRenderer((AdvancedModelRenderer) child, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha, dispatcher);
                     }

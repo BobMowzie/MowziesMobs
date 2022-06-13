@@ -18,7 +18,8 @@ public class LootFunctionCheckFrostmawCrystal extends LootItemConditionalFunctio
     @Override
     protected ItemStack run(ItemStack stack, LootContext context) {
         Entity entity = context.getParamOrNull(LootContextParams.THIS_ENTITY);
-        if (entity instanceof EntityFrostmaw frostmaw) {
+        if (entity instanceof EntityFrostmaw) {
+            EntityFrostmaw frostmaw = (EntityFrostmaw) entity;
             if (!frostmaw.getHasCrystal()) {
                 stack.setCount(0);
             }

@@ -20,7 +20,8 @@ public class LootFunctionGrottolDeathType extends LootItemConditionalFunction {
     @Override
     protected ItemStack run(ItemStack stack, LootContext context) {
         Entity entity = context.getParamOrNull(LootContextParams.THIS_ENTITY);
-        if (entity instanceof EntityGrottol grottol) {
+        if (entity instanceof EntityGrottol) {
+            EntityGrottol grottol = (EntityGrottol) entity;
             EntityGrottol.EnumDeathType deathType = grottol.getDeathType();
             if (deathType == EntityGrottol.EnumDeathType.NORMAL) {
                 stack.setCount(0);

@@ -24,7 +24,6 @@ public class BossMusicSound extends AbstractTickableSoundInstance {
         this.attenuation = Attenuation.NONE;
         this.looping = true;
         this.delay = 0;
-        this.priority = true;
         this.x = boss.getX();
         this.y = boss.getY();
         this.z = boss.getZ();

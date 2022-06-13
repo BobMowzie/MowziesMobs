@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.ai;
 
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.entity.ai.util.RandomPos;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -45,7 +46,7 @@ public class AvoidProjectilesGoal extends Goal {
             if (aActualMotion.length() < 0.1 || target.tickCount < 0) {
                 return false;
             }
-            if (!entity.getSensing().canSee(target)) return false;
+            if (!entity.getSensing().hasLineOfSight(target)) return false;
             float dot = (float) target.getDeltaMovement().normalize().dot(entity.position().subtract(target.position()).normalize());
             return !(dot < 0.8);
         });
@@ -79,7 +80,7 @@ public class AvoidProjectilesGoal extends Goal {
                 dodgeVec = dodgeVec.scale(-1);
             }
             Vec3 dodgeDest = diffRight.lengthSqr() > diffLeft.lengthSqr() ? newPosRight : newPosLeft;
-            Vec3 vector3d = RandomPos.getPosTowards(this.entity, 5, 3, dodgeDest);
+            Vec3 vector3d = DefaultRandomPos.getPosTowards(this.entity, 5, 3, dodgeDest, (double)((float)Math.PI / 2F));
             if (vector3d == null) {
                 this.path = null;
                 return true;
@@ -139,7 +140,7 @@ public class AvoidProjectilesGoal extends Goal {
 
     @Nullable
     private <T extends Projectile> T getMostMovingTowardsMeEntity(Class<? extends T> entityClazz, Predicate<? super T> predicate, LivingEntity entity, AABB p_225318_10_) {
-        return this.getMostMovingTowardsMeEntityFromList(entity.level.getLoadedEntitiesOfClass(entityClazz, p_225318_10_, predicate), entity);
+        return this.getMostMovingTowardsMeEntityFromList(entity.level.getEntitiesOfClass(entityClazz, p_225318_10_, predicate), entity);
     }
 
     private <T extends Projectile> T getMostMovingTowardsMeEntityFromList(List<? extends T> entities, LivingEntity target) {

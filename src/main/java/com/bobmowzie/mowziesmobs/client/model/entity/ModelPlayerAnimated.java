@@ -18,8 +18,8 @@ import java.util.Random;
 public class ModelPlayerAnimated<T extends LivingEntity> extends PlayerModel<T> {
     private List<ModelPart> modelRenderers = Lists.newArrayList();
 
-    public ModelPlayerAnimated(float modelSize, boolean smallArmsIn) {
-        super(modelSize, smallArmsIn);
+    public ModelPlayerAnimated(ModelPart root, boolean smallArmsIn) {
+        super(root, smallArmsIn);
         this.body = new ModelPartMatrix(body);
         this.head = new ModelPartMatrix(head);
         this.rightArm = new ModelPartMatrix(rightArm);

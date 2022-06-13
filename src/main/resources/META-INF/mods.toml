@@ -1,10 +1,10 @@
 modLoader="javafml"
 license="custom"
-loaderVersion="[28,)"
+loaderVersion="[36,)"
 issueTrackerURL="https://github.com/BobMowzie/MowziesMobs/issues"
 [[mods]]
     modId="mowziesmobs"
-    version="${version}"
+    version="1.2.25"
     displayName="Mowzie's Mobs"
     displayURL="https://www.curseforge.com/minecraft/mc-mods/mowzies-mobs"
     authors="BobMowzie, pau101"
@@ -13,18 +13,18 @@ issueTrackerURL="https://github.com/BobMowzie/MowziesMobs/issues"
 [[dependencies.mowziesmobs]]
     modId="forge"
     mandatory=true
-    versionRange="[28,)"
+    versionRange="[36.0.42,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.mowziesmobs]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.3, 1.16.5]"
+    versionRange="[1.17.1,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.mowziesmobs]]
     modId="geckolib3"
     mandatory=true
-    versionRange="[3.0.57,)"
+    versionRange="[3.0.10,)"
     ordering="BEFORE"
     side="BOTH"

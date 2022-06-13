@@ -178,11 +178,11 @@ public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 			ModelGeckoPlayerThirdPerson modelGeckoPlayer = new ModelGeckoPlayerThirdPerson();
 			model = modelGeckoPlayer;
 			model.resourceForModelId((AbstractClientPlayer) player);
-			GeckoRenderPlayer geckoRenderer = new GeckoRenderPlayer(Minecraft.getInstance().getEntityRenderDispatcher(), modelGeckoPlayer);
+			/*GeckoRenderPlayer geckoRenderer = new GeckoRenderPlayer(Minecraft.getInstance().getEntityRenderDispatcher(), modelGeckoPlayer);
 			renderer = geckoRenderer;
 			if (!geckoRenderer.getModelsToLoad().containsKey(this.getClass())) {
 				geckoRenderer.getModelsToLoad().put(this.getClass(), geckoRenderer);
-			}
+			}*/ // TODO
 		}
 	}
 }
