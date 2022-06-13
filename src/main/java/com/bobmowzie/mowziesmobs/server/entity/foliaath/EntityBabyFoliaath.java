@@ -82,6 +82,11 @@ public class EntityBabyFoliaath extends MowzieEntity {
     }
 
     @Override
+    protected void pushEntities() {
+
+    }
+
+    @Override
     public void tick() {
         super.tick();
         setDeltaMovement(0, getDeltaMovement().y, 0);
