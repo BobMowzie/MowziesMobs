@@ -22,59 +22,78 @@ public class SolVisageModel<T extends LivingEntity> extends HumanoidModel<T> {
 		PartDefinition partdefinition = meshdefinition.getRoot();
 		PartDefinition head = partdefinition.getChild("head");
 
-		PartDefinition group = head.addOrReplaceChild("group", CubeListBuilder.create().texOffs(0, 122).addBox(-6.0F, -7.0F, -10.0F, 12.0F, 4.0F, 2.0F, new CubeDeformation(0.0F))
-		.texOffs(0, 97).addBox(-6.0F, -7.0F, -8.0F, 12.0F, 15.0F, 7.0F, new CubeDeformation(0.0F))
-		.texOffs(50, 124).addBox(-6.0F, 2.0F, -10.0F, 12.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-		.texOffs(26, 120).mirror().addBox(4.0F, 4.0F, -10.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false)
-		.texOffs(26, 120).addBox(-6.0F, 4.0F, -10.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-		.texOffs(0, 120).addBox(-4.0F, 4.0F, -9.0F, 8.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 16.0F, 8.0F));
+		PartDefinition maskBase = head.addOrReplaceChild("maskBase", CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, deformation), PartPose.offset(0.0F, -6.777372F, -4F));
 
-		PartDefinition cube_r1 = group.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(4, 84).addBox(-2.25F, 0.0F, 0.0F, 4.0F, 4.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-7.5F, 3.0F, -4.0F, 0.0F, 0.3927F, 0.0F));
+		PartDefinition maskFace = maskBase.addOrReplaceChild("maskFace", CubeListBuilder.create().texOffs(0, 97).addBox(-6.0F, -6.0F, 0.0F, 12.0F, 15.0F, 7.0F, deformation), PartPose.offset(0.0F, 0.0F, -2.0F));
 
-		PartDefinition cube_r2 = group.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(4, 84).addBox(-2.0F, 0.0F, 0.0F, 4.0F, 4.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(7.75F, 3.0F, -4.0F, 0.0F, -0.3927F, 0.0F));
+		PartDefinition maskMouth = maskFace.addOrReplaceChild("maskMouth", CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, deformation), PartPose.offset(0.0F, 5.0F, 0.0F));
 
-		PartDefinition cube_r3 = group.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(38, 109).addBox(5.0F, 2.0F, -8.0F, 3.0F, 6.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-10.25F, -5.0F, 4.5F, 0.0F, 0.3927F, 0.0F));
+		PartDefinition upperLip = maskMouth.addOrReplaceChild("upperLip", CubeListBuilder.create().texOffs(50, 124).addBox(-6.0F, -2.0F, 0.0F, 12.0F, 2.0F, 2.0F, deformation), PartPose.offset(0.0F, 0.0F, -2.0F));
 
-		PartDefinition cube_r4 = group.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(38, 109).addBox(5.0F, 2.0F, -8.0F, 3.0F, 6.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.75F, -5.0F, -0.5F, 0.0F, -0.3927F, 0.0F));
+		PartDefinition teethTop = upperLip.addOrReplaceChild("teethTop", CubeListBuilder.create().texOffs(0, 120).addBox(-4.0F, 0.0F, 0.0F, 8.0F, 1.0F, 1.0F, deformation), PartPose.offset(0.0F, 0.0F, 1.0F));
 
-		PartDefinition cube_r5 = group.addOrReplaceChild("cube_r5", CubeListBuilder.create().texOffs(34, 117).addBox(4.0F, 1.0F, -8.0F, 4.0F, 7.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-6.0F, -3.0F, -1.0F, -0.3927F, 0.0F, 0.0F));
+		PartDefinition jaw = maskMouth.addOrReplaceChild("jaw", CubeListBuilder.create().texOffs(48, 109).addBox(-6.0F, 0.0F, 0.0F, 12.0F, 4.0F, 7.0F, deformation), PartPose.offset(0.0F, 0.0F, 0.0F));
 
-		PartDefinition bone = group.addOrReplaceChild("bone", CubeListBuilder.create().texOffs(50, 124).addBox(-4.0F, 6.0F, -8.0F, 12.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.0F, 14.0F, -2.0F, 0.0F, 0.0F, -3.1416F));
+		PartDefinition lowerLip = jaw.addOrReplaceChild("lowerLip", CubeListBuilder.create().texOffs(50, 124).addBox(-6.0F, 0.0F, -2.0F, 12.0F, 2.0F, 2.0F, deformation), PartPose.offsetAndRotation(0.0F, 4.0F, 0.0F, 0.0F, 0.0F, 3.1416F));
 
-		PartDefinition bone2 = bone.addOrReplaceChild("bone2", CubeListBuilder.create(), PartPose.offset(-2.0F, -2.0F, 1.0F));
+		PartDefinition teethBottom = lowerLip.addOrReplaceChild("teethBottom", CubeListBuilder.create().texOffs(0, 120).addBox(-4.0F, -1.0F, 0.0F, 8.0F, 1.0F, 1.0F, deformation), PartPose.offsetAndRotation(0.0F, 3.0F, 0.0F, 3.1416F, 0.0F, -3.1416F));
 
-		PartDefinition cube_r6 = bone2.addOrReplaceChild("cube_r6", CubeListBuilder.create().texOffs(0, 120).addBox(-8.0F, 10.0F, 7.0F, 8.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 3.1416F, 0.0F, -3.1416F));
+		PartDefinition leftLip = jaw.addOrReplaceChild("leftLip", CubeListBuilder.create().texOffs(26, 120).addBox(0.0F, 0.0F, -2.0F, 2.0F, 2.0F, 2.0F, deformation), PartPose.offset(-6.0F, 0.0F, 0.0F));
 
-		PartDefinition bone3 = head.addOrReplaceChild("bone3", CubeListBuilder.create(), PartPose.offset(0.0F, 45.75F, 6.0F));
+		PartDefinition rightLip = jaw.addOrReplaceChild("rightLip", CubeListBuilder.create().texOffs(26, 120).mirror().addBox(-2.0F, 0.0F, -2.0F, 2.0F, 2.0F, 2.0F, deformation).mirror(false), PartPose.offset(6.0F, 0.0F, 0.0F));
 
-		PartDefinition headdress3back = bone3.addOrReplaceChild("headdress3back", CubeListBuilder.create().texOffs(27, 76).mirror().addBox(-3.0F, -18.0F, 0.01F, 6.0F, 12.0F, 0.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, -30.7774F, -4.0F, -0.5236F, 0.0F, 1.3963F));
+		PartDefinition forehead = maskFace.addOrReplaceChild("forehead", CubeListBuilder.create().texOffs(0, 122).addBox(-6.0F, 0.0F, -2.0F, 12.0F, 4.0F, 2.0F, deformation), PartPose.offset(0.0F, -6.0F, 0.0F));
 
-		PartDefinition headdress6back = bone3.addOrReplaceChild("headdress6back", CubeListBuilder.create().texOffs(27, 76).mirror().addBox(-3.0F, -18.0F, 0.01F, 6.0F, 12.0F, 0.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, -30.7774F, -4.0F, -0.5236F, 0.0F, 2.0944F));
+		PartDefinition nose = maskFace.addOrReplaceChild("nose", CubeListBuilder.create().texOffs(34, 117).addBox(-2.0F, 0.0F, 0.0F, 4.0F, 7.0F, 4.0F, deformation), PartPose.offsetAndRotation(0.0F, -4.0F, 0.0F, -0.5236F, 0.0F, 0.0F));
 
-		PartDefinition headdress6 = bone3.addOrReplaceChild("headdress6", CubeListBuilder.create().texOffs(27, 76).mirror().addBox(-3.0F, -18.0F, 0.0F, 6.0F, 12.0F, 0.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, -30.7774F, -4.0F, -2.618F, 0.0F, -1.0472F));
+		PartDefinition headdress1 = maskBase.addOrReplaceChild("headdress1", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.0F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.5236F, 0.0F, 0.0F));
 
-		PartDefinition headdress4back = bone3.addOrReplaceChild("headdress4back", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.01F, 6.0F, 12.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -30.7774F, -4.0F, -0.5236F, 0.0F, -0.6981F));
+		PartDefinition headdress1back = maskBase.addOrReplaceChild("headdress1back", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.01F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -2.618F, 0.0F, 3.1416F));
 
-		PartDefinition headdress4 = bone3.addOrReplaceChild("headdress4", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.0F, 6.0F, 12.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -30.7774F, -4.0F, -2.618F, 0.0F, 2.4435F));
+		PartDefinition headdress2 = maskBase.addOrReplaceChild("headdress2", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.0F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.5236F, 0.0F, 0.6981F));
 
-		PartDefinition headdress7 = bone3.addOrReplaceChild("headdress7", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.0F, 6.0F, 12.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -30.7774F, -4.0F, -2.618F, 0.0F, 1.0472F));
+		PartDefinition headdress2back = maskBase.addOrReplaceChild("headdress2back", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.01F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -2.618F, 0.0F, -2.4435F));
 
-		PartDefinition headdress7back = bone3.addOrReplaceChild("headdress7back", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.01F, 6.0F, 12.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -30.7774F, -4.0F, -0.5236F, 0.0F, -2.0944F));
+		PartDefinition headdress3 = maskBase.addOrReplaceChild("headdress3", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.0F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.5236F, 0.0F, 1.3963F));
 
-		PartDefinition headdress2 = bone3.addOrReplaceChild("headdress2", CubeListBuilder.create().texOffs(27, 76).mirror().addBox(-3.0F, -18.0F, 0.0F, 6.0F, 12.0F, 0.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, -30.7774F, -4.0F, -2.618F, 0.0F, -2.4435F));
+		PartDefinition headdress3back = maskBase.addOrReplaceChild("headdress3back", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.01F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -2.618F, 0.0F, -1.7453F));
 
-		PartDefinition headdress3 = bone3.addOrReplaceChild("headdress3", CubeListBuilder.create().texOffs(27, 76).mirror().addBox(-3.0F, -18.0F, 0.0F, 6.0F, 12.0F, 0.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, -30.7774F, -4.0F, -2.618F, 0.0F, -1.7453F));
+		PartDefinition headdress4 = maskBase.addOrReplaceChild("headdress4", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.0F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.5236F, 0.0F, -0.6981F));
 
-		PartDefinition headdress2back = bone3.addOrReplaceChild("headdress2back", CubeListBuilder.create().texOffs(27, 76).mirror().addBox(-3.0F, -18.0F, 0.01F, 6.0F, 12.0F, 0.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, -30.7774F, -4.0F, -0.5236F, 0.0F, 0.6981F));
+		PartDefinition headdress4back = maskBase.addOrReplaceChild("headdress4back", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.01F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -2.618F, 0.0F, 2.4435F));
 
-		PartDefinition headdress5back = bone3.addOrReplaceChild("headdress5back", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.01F, 6.0F, 12.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -30.7774F, -4.0F, -0.5236F, 0.0F, -1.3963F));
+		PartDefinition headdress5 = maskBase.addOrReplaceChild("headdress5", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.0F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.5236F, 0.0F, -1.3963F));
 
-		PartDefinition headdress1back = bone3.addOrReplaceChild("headdress1back", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.01F, 6.0F, 12.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -30.7774F, -4.0F, -0.5236F, 0.0F, 0.0F));
+		PartDefinition headdress5back = maskBase.addOrReplaceChild("headdress5back", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.01F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -2.618F, 0.0F, 1.7453F));
 
-		PartDefinition headdress1 = bone3.addOrReplaceChild("headdress1", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.0F, 6.0F, 12.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -30.7774F, -4.0F, -2.618F, 0.0F, 3.1416F));
+		PartDefinition headdress6 = maskBase.addOrReplaceChild("headdress6", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.0F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.5236F, 0.0F, 2.0944F));
 
-		PartDefinition headdress5 = bone3.addOrReplaceChild("headdress5", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.0F, 6.0F, 12.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -30.7774F, -4.0F, -2.618F, 0.0F, 1.7453F));
+		PartDefinition headdress6back = maskBase.addOrReplaceChild("headdress6back", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.01F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -2.618F, 0.0F, -1.0472F));
+
+		PartDefinition headdress7 = maskBase.addOrReplaceChild("headdress7", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.0F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.5236F, 0.0F, -2.0944F));
+
+		PartDefinition headdress7back = maskBase.addOrReplaceChild("headdress7back", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.01F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -2.618F, 0.0F, 1.0472F));
+
+		PartDefinition rightEar = maskBase.addOrReplaceChild("rightEar", CubeListBuilder.create().texOffs(38, 109).addBox(0.0F, 0.0F, 0.0F, 3.0F, 6.0F, 2.0F, deformation), PartPose.offsetAndRotation(6.0F, -2.0F, 0.0F, 0.0F, -0.5236F, 0.0F));
+
+		PartDefinition rightEarring = rightEar.addOrReplaceChild("rightEarring", CubeListBuilder.create().texOffs(0, 84).addBox(-2.0F, 0.0F, 0.0F, 4.0F, 4.0F, 0.0F, deformation), PartPose.offset(2.5F, 6.0F, 1.0F));
+
+		PartDefinition rightEarringBack = rightEar.addOrReplaceChild("rightEarringBack", CubeListBuilder.create().texOffs(0, 84).addBox(-2.0F, 0.0F, 0.01F, 4.0F, 4.0F, 0.0F, deformation), PartPose.offsetAndRotation(2.5F, 6.0F, 1.0F, 0.0F, 3.1416F, 0.0F));
+
+		PartDefinition leftEar = maskBase.addOrReplaceChild("leftEar", CubeListBuilder.create().texOffs(38, 109).addBox(-3.0F, 0.0F, 0.0F, 3.0F, 6.0F, 2.0F, deformation), PartPose.offsetAndRotation(-6.0F, -2.0F, 0.0F, 0.0F, 0.5236F, 0.0F));
+
+		PartDefinition leftEarring = leftEar.addOrReplaceChild("leftEarring", CubeListBuilder.create().texOffs(0, 84).addBox(-2.0F, 0.0F, 0.0F, 4.0F, 4.0F, 0.0F, deformation), PartPose.offset(-2.5F, 6.0F, 1.0F));
+
+		PartDefinition leftEarringBack = leftEar.addOrReplaceChild("leftEarringBack", CubeListBuilder.create().texOffs(0, 84).addBox(-2.0F, 0.0F, 0.01F, 4.0F, 4.0F, 0.0F, deformation), PartPose.offsetAndRotation(-2.5F, 6.0F, 1.0F, 0.0F, 3.1416F, 0.0F));
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
+	}
+
+	@Override
+	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int p_102036_, int p_102037_, float p_102038_, float p_102039_, float p_102040_, float p_102041_) {
+		poseStack.pushPose();
+		poseStack.scale(0.8f, 0.8f, 0.8f);
+		super.renderToBuffer(poseStack, vertexConsumer, p_102036_, p_102037_, p_102038_, p_102039_, p_102040_, p_102041_);
+		poseStack.popPose();
 	}
 }
