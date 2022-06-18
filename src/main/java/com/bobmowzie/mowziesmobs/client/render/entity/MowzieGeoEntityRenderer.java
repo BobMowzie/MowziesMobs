@@ -58,12 +58,12 @@ public abstract class MowzieGeoEntityRenderer<T extends LivingEntity & IAnimatab
             if (mowzieBone.isTrackingXform()) {
                 MatrixStack.Entry entry = stack.getLast();
                 Matrix4f matBone = entry.getMatrix().copy();
-                mowzieBone.getWorldSpaceXform().set(matBone.copy());
+                mowzieBone.setWorldSpaceXform(matBone.copy());
 
                 Matrix4f renderEarlyMatInvert = renderEarlyMat.copy();
                 renderEarlyMatInvert.invert();
                 matBone.multiplyBackward(renderEarlyMatInvert);
-                mowzieBone.getModelSpaceXform().set(matBone);
+                mowzieBone.setModelSpaceXform(matBone);
             }
         }
         RenderUtils.moveBackFromPivot(bone, stack);

@@ -43,6 +43,10 @@ public class MowzieGeoBone extends GeoBone {
         return modelSpaceXform;
     }
 
+    public void setModelSpaceXform(Matrix4f modelSpaceXform) {
+        this.modelSpaceXform.set(modelSpaceXform);
+    }
+
     public Vector3d getModelPosition() {
         Matrix4f matrix = getModelSpaceXform();
         Vector4f vec = new Vector4f(0, 0, 0, 1);
@@ -53,6 +57,10 @@ public class MowzieGeoBone extends GeoBone {
     public Matrix4f getWorldSpaceXform() {
         setTrackXform(true);
         return worldSpaceXform;
+    }
+
+    public void setWorldSpaceXform(Matrix4f worldSpaceXform) {
+        this.worldSpaceXform.set(worldSpaceXform);
     }
 
     public Vector3d getWorldPosition() {
@@ -90,10 +98,6 @@ public class MowzieGeoBone extends GeoBone {
 
     public Matrix3f getWorldSpaceNormal() {
         return worldSpaceNormal;
-    }
-
-    public void setWorldSpaceXform(Matrix4f worldSpaceXform) {
-        this.worldSpaceXform = worldSpaceXform;
     }
 
     // Position utils
