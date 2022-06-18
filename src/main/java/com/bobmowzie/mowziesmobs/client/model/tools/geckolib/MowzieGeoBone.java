@@ -50,6 +50,18 @@ public class MowzieGeoBone extends GeoBone {
         return new Vector3d(-vec.getX() * 16f, vec.getY() * 16f, vec.getZ() * 16f);
     }
 
+    public Matrix4f getWorldSpaceXform() {
+        setTrackXform(true);
+        return worldSpaceXform;
+    }
+
+    public Vector3d getWorldPosition() {
+        Matrix4f matrix = getWorldSpaceXform();
+        Vector4f vec = new Vector4f(0, 0, 0, 1);
+        vec.transform(matrix);
+        return new Vector3d(vec.getX(), vec.getY(), vec.getZ());
+    }
+
     public void setModelPosition(Vector3d pos) {
         // TODO: Doesn't work on bones with parent transforms
         MowzieGeoBone parent = getParent();
@@ -82,10 +94,6 @@ public class MowzieGeoBone extends GeoBone {
 
     public void setWorldSpaceXform(Matrix4f worldSpaceXform) {
         this.worldSpaceXform = worldSpaceXform;
-    }
-
-    public Matrix4f getWorldSpaceXform() {
-        return worldSpaceXform;
     }
 
     // Position utils

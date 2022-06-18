@@ -56,7 +56,10 @@ public abstract class MowzieGeoEntityRenderer<T extends LivingEntity & IAnimatab
         if (bone instanceof MowzieGeoBone) {
             MowzieGeoBone mowzieBone = (MowzieGeoBone) bone;
             if (mowzieBone.isTrackingXform()) {
-                Matrix4f matBone = stack.getLast().getMatrix().copy();
+                MatrixStack.Entry entry = stack.getLast();
+                Matrix4f matBone = entry.getMatrix().copy();
+                mowzieBone.getWorldSpaceXform().set(matBone.copy());
+
                 Matrix4f renderEarlyMatInvert = renderEarlyMat.copy();
                 renderEarlyMatInvert.invert();
                 matBone.multiplyBackward(renderEarlyMatInvert);
