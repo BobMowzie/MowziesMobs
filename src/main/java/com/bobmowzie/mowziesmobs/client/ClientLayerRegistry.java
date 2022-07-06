@@ -36,7 +36,7 @@ public class ClientLayerRegistry {
             event.getSkin(skinType).addLayer(new SunblockLayer(event.getSkin(skinType)));
         }
 
-//        GeckoPlayer.GeckoPlayerThirdPerson.initRenderer();
+        GeckoPlayer.GeckoPlayerThirdPerson.initRenderer();
     }
 
     private static void addLayerIfApplicable(EntityType<? extends LivingEntity> entityType, EntityRenderersEvent.AddLayers event) {

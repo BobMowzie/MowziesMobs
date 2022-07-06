@@ -60,7 +60,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
 
     public Vec3 betweenHandsPos;
 
-    public GeckoRenderPlayer(EntityRendererProvider.Context context, boolean slim) {
+    public GeckoRenderPlayer(EntityRendererProvider.Context context, boolean slim, ModelGeckoPlayerThirdPerson modelProvider) {
         super(context, false);
 
         this.model = new ModelPlayerAnimated<>(context.bakeLayer(ModelLayers.PLAYER), false);
@@ -72,7 +72,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
         this.addLayer(new Deadmau5EarsLayer(this));
         this.addLayer(new GeckoCapeLayer(this));
         this.addLayer(new CustomHeadLayer<>(this, context.getModelSet()));
-        this.addLayer(new GeckoElytraLayer<>(this, context.getModelSet()));
+//        this.addLayer(new GeckoElytraLayer<>(this, context.getModelSet())); TODO
         this.addLayer(new GeckoParrotOnShoulderLayer(this, context.getModelSet()));
         this.addLayer(new SpinAttackEffectLayer<>(this, context.getModelSet()));
         this.addLayer(new BeeStingerLayer<>(this));

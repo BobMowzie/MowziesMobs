@@ -166,6 +166,7 @@ public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 
 	public static class GeckoPlayerThirdPerson extends GeckoPlayer {
 		public static GeckoRenderPlayer GECKO_RENDERER_THIRD_PERSON;
+		public static ModelGeckoPlayerThirdPerson GECKO_MODEL_THIRD_PERSON;
 
 		public GeckoPlayerThirdPerson(Player player) {
 			super(player);
@@ -183,13 +184,13 @@ public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 
 		@Override
 		public void setup(Player player) {
-			ModelGeckoPlayerThirdPerson modelGeckoPlayer = new ModelGeckoPlayerThirdPerson();
-			model = modelGeckoPlayer;
+			model = GECKO_MODEL_THIRD_PERSON;
 			model.resourceForModelId((AbstractClientPlayer) player);
 			renderer = GECKO_RENDERER_THIRD_PERSON;
 		}
 
 		public static void initRenderer() {
+			GECKO_MODEL_THIRD_PERSON = new ModelGeckoPlayerThirdPerson();
 			Minecraft minecraft = Minecraft.getInstance();
 			EntityRenderDispatcher dispatcher = minecraft.getEntityRenderDispatcher();
 			ItemRenderer itemRenderer = minecraft.getItemRenderer();
@@ -197,7 +198,7 @@ public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 			EntityModelSet entityModelSet = minecraft.getEntityModels();
 			Font font = minecraft.font;
 			EntityRendererProvider.Context context = new EntityRendererProvider.Context(dispatcher, itemRenderer, resourceManager, entityModelSet, font);
-			GeckoRenderPlayer geckoRenderer = new GeckoRenderPlayer(context, false);
+			GeckoRenderPlayer geckoRenderer = new GeckoRenderPlayer(context, false, GECKO_MODEL_THIRD_PERSON);
 			if (!geckoRenderer.getModelsToLoad().containsKey(GeckoPlayer.GeckoPlayerThirdPerson.class)) {
 				geckoRenderer.getModelsToLoad().put(GeckoPlayer.GeckoPlayerThirdPerson.class, geckoRenderer);
 			}
