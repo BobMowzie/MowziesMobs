@@ -10,7 +10,13 @@ import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.entity.IAnimationTickable;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -159,6 +165,8 @@ public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 	}
 
 	public static class GeckoPlayerThirdPerson extends GeckoPlayer {
+		public static GeckoRenderPlayer GECKO_RENDERER_THIRD_PERSON;
+
 		public GeckoPlayerThirdPerson(Player player) {
 			super(player);
 		}
@@ -178,11 +186,22 @@ public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 			ModelGeckoPlayerThirdPerson modelGeckoPlayer = new ModelGeckoPlayerThirdPerson();
 			model = modelGeckoPlayer;
 			model.resourceForModelId((AbstractClientPlayer) player);
-			/*GeckoRenderPlayer geckoRenderer = new GeckoRenderPlayer(Minecraft.getInstance().getEntityRenderDispatcher(), modelGeckoPlayer);
-			renderer = geckoRenderer;
-			if (!geckoRenderer.getModelsToLoad().containsKey(this.getClass())) {
-				geckoRenderer.getModelsToLoad().put(this.getClass(), geckoRenderer);
-			}*/ // TODO
+			renderer = GECKO_RENDERER_THIRD_PERSON;
+		}
+
+		public static void initRenderer() {
+			Minecraft minecraft = Minecraft.getInstance();
+			EntityRenderDispatcher dispatcher = minecraft.getEntityRenderDispatcher();
+			ItemRenderer itemRenderer = minecraft.getItemRenderer();
+			ResourceManager resourceManager = minecraft.getResourceManager();
+			EntityModelSet entityModelSet = minecraft.getEntityModels();
+			Font font = minecraft.font;
+			EntityRendererProvider.Context context = new EntityRendererProvider.Context(dispatcher, itemRenderer, resourceManager, entityModelSet, font);
+			GeckoRenderPlayer geckoRenderer = new GeckoRenderPlayer(context, false);
+			if (!geckoRenderer.getModelsToLoad().containsKey(GeckoPlayer.GeckoPlayerThirdPerson.class)) {
+				geckoRenderer.getModelsToLoad().put(GeckoPlayer.GeckoPlayerThirdPerson.class, geckoRenderer);
+			}
+			GeckoPlayer.GeckoPlayerThirdPerson.GECKO_RENDERER_THIRD_PERSON = geckoRenderer;
 		}
 	}
 }
