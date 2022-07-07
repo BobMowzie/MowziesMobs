@@ -11,6 +11,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import com.mojang.blaze3d.platform.Lighting;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -61,7 +62,10 @@ public final class GuiBarakoayaTrade extends AbstractContainerScreen<ContainerBa
     @Override
     protected void renderBg(PoseStack matrixStack, float partialTicks, int x, int y) {
         RenderSystem.colorMask(true, true, true, true);
-        this.minecraft.getTextureManager().bindForSetup(TEXTURE);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0,TEXTURE);
+        //this.minecraft.getTextureManager().bindForSetup(TEXTURE);
         blit(matrixStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
         InventoryScreen.renderEntityInInventory(leftPos + 33, topPos + 61, 22, leftPos + 33 - x, topPos + 21 - y, barakoaya);
     }
