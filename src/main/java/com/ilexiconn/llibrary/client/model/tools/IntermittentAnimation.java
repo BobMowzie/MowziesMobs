@@ -132,7 +132,7 @@ public class IntermittentAnimation<T extends Entity & IIntermittentEntity> {
             if (this.timeIdle < this.minIdleTime) {
                 this.timeIdle++;
             } else {
-                if (this.random.nextInt(this.startProbability) == 0) {
+                if (this.rand.nextInt(this.startProbability) == 0) {
                     this.start();
                     this.entity.level.broadcastEntityEvent(this.entity, (byte) (this.entity.getOffsetEntityState() + this.id));
                 }
