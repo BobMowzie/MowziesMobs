@@ -29,11 +29,9 @@ public class BarakoaMaskModel<T extends LivingEntity> extends HumanoidModel<T> {
 
 		PartDefinition maskBase = head.addOrReplaceChild("maskBase", CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, deformation), PartPose.offset(0.0F, -3.310181F, -8.267222F));
 
-		PartDefinition maskLeft = maskBase.addOrReplaceChild("maskLeft", CubeListBuilder.create().texOffs(58, 34).mirror().addBox(0.0F, -1.0F, -0.01F, 7.0F, 7.0F, 0.0F, deformation).mirror(false)
-		.texOffs(48, 18).mirror().addBox(0.0F, -8.0F, 0.0F, 7.0F, 14.0F, 2.0F, deformation).mirror(false), PartPose.offsetAndRotation(0.0F, 0.0F, -1.0F, 0.0F, -0.4363F, 0.0F));
+		PartDefinition maskLeft = maskBase.addOrReplaceChild("maskLeft", CubeListBuilder.create().texOffs(48, 18).mirror().addBox(0.0F, -8.0F, 0.0F, 7.0F, 14.0F, 2.0F, deformation).mirror(false), PartPose.offsetAndRotation(0.0F, 0.0F, -1.0F, 0.0F, -0.4363F, 0.0F));
 
-		PartDefinition maskRight = maskBase.addOrReplaceChild("maskRight", CubeListBuilder.create().texOffs(48, 18).addBox(-7.0F, -8.0F, 0.0F, 7.0F, 14.0F, 2.0F, deformation)
-		.texOffs(58, 34).addBox(-7.0F, -1.0F, -0.01F, 7.0F, 7.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, -1.0F, 0.0F, 0.4363F, 0.0F));
+		PartDefinition maskRight = maskBase.addOrReplaceChild("maskRight", CubeListBuilder.create().texOffs(48, 18).addBox(-7.0F, -8.0F, 0.0F, 7.0F, 14.0F, 2.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, -1.0F, 0.0F, 0.4363F, 0.0F));
 
 		PartDefinition mane = maskBase.addOrReplaceChild("mane", CubeListBuilder.create().texOffs(0, 0).addBox(-12.0F, -12.0F, 0.0F, 24.0F, 24.0F, 0.0F, deformation), PartPose.offset(0.0F, -2.0F, 4.0F));
 
@@ -46,6 +44,7 @@ public class BarakoaMaskModel<T extends LivingEntity> extends HumanoidModel<T> {
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int p_102036_, int p_102037_, float p_102038_, float p_102039_, float p_102040_, float p_102041_) {
 		poseStack.pushPose();
 		poseStack.scale(0.8f, 0.8f, 0.8f);
+		poseStack.translate(0, -0.1f, 0);
 		super.renderToBuffer(poseStack, vertexConsumer, p_102036_, p_102037_, p_102038_, p_102039_, p_102040_, p_102041_);
 		poseStack.popPose();
 	}

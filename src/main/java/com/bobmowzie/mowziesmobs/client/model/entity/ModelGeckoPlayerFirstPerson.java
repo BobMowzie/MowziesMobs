@@ -12,9 +12,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class ModelGeckoPlayerFirstPerson extends MowzieAnimatedGeoModel<GeckoPlayer> {
-	
-	private ResourceLocation animationFileLocation;
-	private ResourceLocation modelLocation;
 	private ResourceLocation textureLocation;
 
 	public HumanoidModel.ArmPose leftArmPose = HumanoidModel.ArmPose.EMPTY;
@@ -24,12 +21,12 @@ public class ModelGeckoPlayerFirstPerson extends MowzieAnimatedGeoModel<GeckoPla
 	
 	@Override
 	public ResourceLocation getAnimationFileLocation(GeckoPlayer animatable) {
-		return animationFileLocation;
+		return new ResourceLocation(MowziesMobs.MODID, "animations/animated_player_first_person.animation.json");
 	}
 
 	@Override
 	public ResourceLocation getModelLocation(GeckoPlayer animatable) {
-		return modelLocation;
+		return new ResourceLocation(MowziesMobs.MODID, "geo/animated_player_first_person.geo.json");
 	}
 
 	@Override
@@ -70,12 +67,7 @@ public class ModelGeckoPlayerFirstPerson extends MowzieAnimatedGeoModel<GeckoPla
 		}
 	}
 
-	/** Check if the modelId has some ResourceLocation **/
-	@Override
-	public boolean resourceForModelId(AbstractClientPlayer player) {
-		this.animationFileLocation = new ResourceLocation(MowziesMobs.MODID, "animations/animated_player_first_person.animation.json");
-		this.modelLocation = new ResourceLocation(MowziesMobs.MODID, "geo/animated_player_first_person.geo.json");
+	public void setTextureFromPlayer(AbstractClientPlayer player) {
 		this.textureLocation = player.getSkinTextureLocation();
-		return true;
 	}
 }

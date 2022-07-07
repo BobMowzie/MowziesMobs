@@ -155,7 +155,6 @@ public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 		public void setup(Player player) {
 			ModelGeckoPlayerFirstPerson modelGeckoPlayer = new ModelGeckoPlayerFirstPerson();
 			model = modelGeckoPlayer;
-			model.resourceForModelId((AbstractClientPlayer) player);
 			GeckoFirstPersonRenderer geckoRenderer = new GeckoFirstPersonRenderer(Minecraft.getInstance(), modelGeckoPlayer);
 			renderer = geckoRenderer;
 			if (!geckoRenderer.getModelsToLoad().containsKey(this.getClass())) {
@@ -165,8 +164,10 @@ public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 	}
 
 	public static class GeckoPlayerThirdPerson extends GeckoPlayer {
-		public static GeckoRenderPlayer GECKO_RENDERER_THIRD_PERSON;
-		public static ModelGeckoPlayerThirdPerson GECKO_MODEL_THIRD_PERSON;
+		public static GeckoRenderPlayer GECKO_RENDERER_THIRD_PERSON_NORMAL;
+		public static ModelGeckoPlayerThirdPerson GECKO_MODEL_THIRD_PERSON_NORMAL;
+		public static GeckoRenderPlayer GECKO_RENDERER_THIRD_PERSON_SLIM;
+		public static ModelGeckoPlayerThirdPerson GECKO_MODEL_THIRD_PERSON_SLIM;
 
 		public GeckoPlayerThirdPerson(Player player) {
 			super(player);
@@ -184,13 +185,21 @@ public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 
 		@Override
 		public void setup(Player player) {
-			model = GECKO_MODEL_THIRD_PERSON;
-			model.resourceForModelId((AbstractClientPlayer) player);
-			renderer = GECKO_RENDERER_THIRD_PERSON;
+			if (((AbstractClientPlayer) player).getModelName().equals("slim")) {
+				model = GECKO_MODEL_THIRD_PERSON_SLIM;
+				renderer = GECKO_RENDERER_THIRD_PERSON_SLIM;
+			}
+			else {
+				model = GECKO_MODEL_THIRD_PERSON_NORMAL;
+				renderer = GECKO_RENDERER_THIRD_PERSON_NORMAL;
+			}
 		}
 
 		public static void initRenderer() {
-			GECKO_MODEL_THIRD_PERSON = new ModelGeckoPlayerThirdPerson();
+			GECKO_MODEL_THIRD_PERSON_NORMAL = new ModelGeckoPlayerThirdPerson();
+			GECKO_MODEL_THIRD_PERSON_SLIM = new ModelGeckoPlayerThirdPerson();
+			GECKO_MODEL_THIRD_PERSON_SLIM.setUseSmallArms(true);
+
 			Minecraft minecraft = Minecraft.getInstance();
 			EntityRenderDispatcher dispatcher = minecraft.getEntityRenderDispatcher();
 			ItemRenderer itemRenderer = minecraft.getItemRenderer();
@@ -198,11 +207,17 @@ public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 			EntityModelSet entityModelSet = minecraft.getEntityModels();
 			Font font = minecraft.font;
 			EntityRendererProvider.Context context = new EntityRendererProvider.Context(dispatcher, itemRenderer, resourceManager, entityModelSet, font);
-			GeckoRenderPlayer geckoRenderer = new GeckoRenderPlayer(context, false, GECKO_MODEL_THIRD_PERSON);
+			GeckoRenderPlayer geckoRenderer = new GeckoRenderPlayer(context, false, GECKO_MODEL_THIRD_PERSON_NORMAL);
 			if (!geckoRenderer.getModelsToLoad().containsKey(GeckoPlayer.GeckoPlayerThirdPerson.class)) {
 				geckoRenderer.getModelsToLoad().put(GeckoPlayer.GeckoPlayerThirdPerson.class, geckoRenderer);
 			}
-			GeckoPlayer.GeckoPlayerThirdPerson.GECKO_RENDERER_THIRD_PERSON = geckoRenderer;
+			GECKO_RENDERER_THIRD_PERSON_NORMAL = geckoRenderer;
+
+			GeckoRenderPlayer geckoRendererSlim = new GeckoRenderPlayer(context, true, GECKO_MODEL_THIRD_PERSON_SLIM);
+			if (!geckoRendererSlim.getModelsToLoad().containsKey(GeckoPlayer.GeckoPlayerThirdPerson.class)) {
+				geckoRendererSlim.getModelsToLoad().put(GeckoPlayer.GeckoPlayerThirdPerson.class, geckoRendererSlim);
+			}
+			GECKO_RENDERER_THIRD_PERSON_SLIM = geckoRendererSlim;
 		}
 	}
 }

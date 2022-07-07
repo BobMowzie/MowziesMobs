@@ -20,9 +20,6 @@ import software.bernie.geckolib3.geo.render.built.GeoBone;
 
 @OnlyIn(Dist.CLIENT)
 public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
-	
-	private ResourceLocation animationFileLocation;
-	private ResourceLocation modelLocation;
 	private ResourceLocation textureLocation;
 
 	public boolean isSitting = false;
@@ -38,12 +35,12 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 	
 	@Override
 	public ResourceLocation getAnimationFileLocation(GeckoPlayer animatable) {
-		return animationFileLocation;
+		return new ResourceLocation(MowziesMobs.MODID, "animations/animated_player.animation.json");
 	}
 
 	@Override
 	public ResourceLocation getModelLocation(GeckoPlayer animatable) {
-		return modelLocation;
+		return new ResourceLocation(MowziesMobs.MODID, "geo/animated_player.geo.json");
 	}
 
 	@Override
@@ -51,12 +48,8 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 		return textureLocation;
 	}
 
-	/** Check if the modelId has some ResourceLocation **/
-	public boolean resourceForModelId(AbstractClientPlayer player) {
-		this.animationFileLocation = new ResourceLocation(MowziesMobs.MODID, "animations/animated_player.animation.json");
-		this.modelLocation = new ResourceLocation(MowziesMobs.MODID, "geo/animated_player.geo.json");
+	public void setTextureFromPlayer(AbstractClientPlayer player) {
 		this.textureLocation = player.getSkinTextureLocation();
-		return true;
 	}
 
 	public void setUseSmallArms(boolean useSmallArms) {
