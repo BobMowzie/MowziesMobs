@@ -76,10 +76,10 @@ public enum ClientEventHandler {
                     GeckoFirstPersonRenderer firstPersonRenderer = (GeckoFirstPersonRenderer) geckoPlayer.getPlayerRenderer();
 
                     if (geckoFirstPersonModel != null && firstPersonRenderer != null) {
-//                        if (!geckoFirstPersonModel.isUsingSmallArms() && ((AbstractClientPlayerEntity) player).getSkinType().equals("slim")) {
+                        if (!geckoFirstPersonModel.isUsingSmallArms() && ((AbstractClientPlayer) player).getModelName().equals("slim")) {
                             firstPersonRenderer.setSmallArms();
-//                        }
-                        event.setCanceled(geckoFirstPersonModel.resourceForModelId((AbstractClientPlayer) player));
+                        }
+                        event.setCanceled(true);
 
                         if (event.isCanceled()) {
                             float delta = event.getPartialTicks();
@@ -110,11 +110,7 @@ public enum ClientEventHandler {
                         GeckoRenderPlayer animatedPlayerRenderer = (GeckoRenderPlayer) geckoPlayer.getPlayerRenderer();
 
                         if (geckoPlayerModel != null && animatedPlayerRenderer != null) {
-                            if (!geckoPlayerModel.isUsingSmallArms() && ((AbstractClientPlayer) player).getModelName().equals("slim")) {
-//                                animatedPlayerRenderer.setSmallArms(); TODO
-                            }
-
-                            event.setCanceled(geckoPlayerModel.resourceForModelId((AbstractClientPlayer) player));
+                            event.setCanceled(true);
 
                             if (event.isCanceled()) {
                                 animatedPlayerRenderer.render((AbstractClientPlayer) event.getEntity(), event.getEntity().getYRot(), delta, event.getMatrixStack(), event.getBuffers(), event.getLight(), geckoPlayer);

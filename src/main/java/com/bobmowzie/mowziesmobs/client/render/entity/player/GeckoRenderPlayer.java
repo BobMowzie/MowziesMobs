@@ -61,9 +61,9 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
     public Vec3 betweenHandsPos;
 
     public GeckoRenderPlayer(EntityRendererProvider.Context context, boolean slim, ModelGeckoPlayerThirdPerson modelProvider) {
-        super(context, false);
+        super(context, slim);
 
-        this.model = new ModelPlayerAnimated<>(context.bakeLayer(ModelLayers.PLAYER), false);
+        this.model = new ModelPlayerAnimated<>(context.bakeLayer(ModelLayers.PLAYER), slim);
 
         this.layers.clear();
         this.addLayer(new HumanoidArmorLayer<>(this, new ModelBipedAnimated<>(context.bakeLayer(slim ? ModelLayers.PLAYER_SLIM_INNER_ARMOR : ModelLayers.PLAYER_INNER_ARMOR)), new ModelBipedAnimated<>(context.bakeLayer(slim ? ModelLayers.PLAYER_SLIM_OUTER_ARMOR : ModelLayers.PLAYER_OUTER_ARMOR))));
@@ -79,6 +79,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
         this.addLayer(new FrozenRenderHandler.LayerFrozen<>(this));
 
         this.modelProvider = modelProvider;
+        this.modelProvider.setUseSmallArms(slim);
 
         worldRenderMat = new Matrix4f();
         worldRenderMat.setIdentity();
@@ -101,11 +102,6 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
 
     public HashMap<Class<? extends GeckoPlayer>, GeckoRenderPlayer> getModelsToLoad() {
         return modelsToLoad;
-    }
-
-    public void setSmallArms(EntityRendererProvider.Context context) {
-        this.model = new ModelPlayerAnimated<>(context.bakeLayer(ModelLayers.PLAYER), true);
-        this.modelProvider.setUseSmallArms(true);
     }
 
     public void render(AbstractClientPlayer entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, GeckoPlayer geckoPlayer) {
@@ -244,6 +240,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
             int i = getOverlayCoords(entityIn, this.getWhiteOverlayProgress(entityIn, partialTicks));
             matrixStackIn.pushPose();
             worldRenderMat.load(matrixStackIn.last().pose());
+            modelProvider.setTextureFromPlayer(entityIn);
             render(
                     getGeoModelProvider().getModel(getGeoModelProvider().getModelLocation(geckoPlayer)),
                     geckoPlayer, partialTicks, rendertype, matrixStackIn, bufferIn, ivertexbuilder, packedLightIn, i, 1.0F, 1.0F, 1.0F, flag1 ? 0.15F : 1.0F

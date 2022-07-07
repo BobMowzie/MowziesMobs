@@ -76,6 +76,7 @@ public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements IGeo
         mirror = player.getMainArm() == HumanoidArm.LEFT;
 
         if (flag) {
+            this.modelProvider.setTextureFromPlayer(player);
             this.modelProvider.setLivingAnimations(geckoPlayer, player.getUUID().hashCode());
 
             RenderType rendertype = RenderType.itemEntityTranslucentCull(getTextureLocation(geckoPlayer));
