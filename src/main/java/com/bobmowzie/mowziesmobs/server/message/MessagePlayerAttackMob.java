@@ -2,10 +2,8 @@ package com.bobmowzie.mowziesmobs.server.message;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
@@ -22,7 +20,7 @@ public class MessagePlayerAttackMob {
     }
 
     public MessagePlayerAttackMob(LivingEntity target) {
-        entityID = target.getEntityId();
+        entityID = target.getId();
     }
 
     public static void serialize(final MessagePlayerAttackMob message, final FriendlyByteBuf buf) {
@@ -42,8 +40,8 @@ public class MessagePlayerAttackMob {
             final ServerPlayer player = context.getSender();
             context.enqueueWork(() -> {
                 if (player != null) {
-                    Entity entity = player.world.getEntityByID(message.entityID);
-                    if (entity != null) player.attackTargetEntityWithCurrentItem(entity);
+                    Entity entity = player.level.getEntity(message.entityID);
+                    if (entity != null) player.attack(entity);
                 }
             });
             context.setPacketHandled(true);

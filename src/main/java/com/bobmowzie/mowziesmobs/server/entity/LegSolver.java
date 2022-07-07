@@ -6,9 +6,9 @@ package com.bobmowzie.mowziesmobs.server.entity;
 
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.shapes.VoxelShape;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.level.Level;
 
 public class LegSolver {
@@ -55,9 +55,9 @@ public class LegSolver {
 
         private float settle(LivingEntity entity, double x, double y, double z, float height) {
             BlockPos pos = new BlockPos(x, y + 1e-3, z);
-            float dist = getDistance(entity.world, pos);
+            float dist = getDistance(entity.level, pos);
             if (1 - dist < 1e-3) {
-                dist = getDistance(entity.world, pos.below()) + (float) y % 1;
+                dist = getDistance(entity.level, pos.below()) + (float) y % 1;
             } else {
                 dist -= 1 - (y % 1);
             }
@@ -70,11 +70,11 @@ public class LegSolver {
         }
 
         private float getDistance(Level world, BlockPos pos) {
-            BlockState state = level.getBlockState(pos);
-            VoxelShape shape = state.getCollisionShape(world, pos);
+            BlockState state = world.getBlockState(pos);
+            VoxelShape shape = state.getBlockSupportShape(world, pos);
             float f = 0;
             if (!shape.isEmpty()) {
-                AxisAlignedBB aabb = shape.getBoundingBox();
+                AABB aabb = shape.bounds();
                 f = (float) aabb.maxY;
             }
             return 1 - Math.min(f, 1);

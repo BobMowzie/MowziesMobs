@@ -3,11 +3,11 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.sounds.HandSide;
+import net.minecraft.world.entity.HumanoidArm;
 
 /**
  * Created by BobMowzie on 4/14/2017.
@@ -87,13 +87,13 @@ public class ModelAxeAttack<T extends EntityAxeAttack> extends AdvancedModelBase
     }
 
     @Override
-    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float frame, float netHeadYaw, float headPitch) {
+    public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float frame, float netHeadYaw, float headPitch) {
         resetToDefaultPose();
 
         if (!entityIn.getVertical()) {
             float swingArc = 2;
             float scale = (float) ((1 / (1 + Math.exp(2f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 5f)))) - (1 / (1 + Math.exp(2f * (-frame + 4 * EntityAxeAttack.SWING_DURATION_HOR / 5f)))));
-            float handFlip = entityIn.getCaster().getPrimaryHand() == HandSide.RIGHT ? 1 : -1;
+            float handFlip = entityIn.getCaster().getMainArm() == HumanoidArm.RIGHT ? 1 : -1;
             axeBase.rotateAngleY -= handFlip * swingArc * 1 / (1 + Math.exp(1.3f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 2f)));
             axeBase.rotateAngleY += handFlip * swingArc / 2;
             axeBase.setScale(scale, scale, scale);
@@ -116,7 +116,7 @@ public class ModelAxeAttack<T extends EntityAxeAttack> extends AdvancedModelBase
     }
 
     @Override
-    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         axeBase.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 

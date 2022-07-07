@@ -1,10 +1,13 @@
 package com.bobmowzie.mowziesmobs.client.particle.util;
 
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
-import net.minecraft.world.phys.Quaternion;
+import com.mojang.math.Quaternion;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.Vector3f;
+import com.mojang.math.Vector3f;
+
+import net.minecraft.client.Camera;
 
 public abstract class ParticleComponent {
     public ParticleComponent() {
@@ -27,7 +30,7 @@ public abstract class ParticleComponent {
 
     }
 
-    public void postRender(AdvancedParticleBase particle, IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks, int lightmap) {
+    public void postRender(AdvancedParticleBase particle, VertexConsumer buffer, Camera renderInfo, float partialTicks, int lightmap) {
 
     }
 
@@ -148,29 +151,29 @@ public abstract class ParticleComponent {
 
         @Override
         public void preRender(AdvancedParticleBase particle, float partialTicks) {
-            float ageFrac = (particle.getAge() + partialTicks) / particle.getMaxAge();
+            float ageFrac = (particle.getAge() + partialTicks) / particle.getLifetime();
             float value = animData.evaluate(ageFrac);
             applyRender(particle, value);
         }
 
         @Override
         public void preUpdate(AdvancedParticleBase particle) {
-            float ageFrac = particle.getAge() / particle.getMaxAge();
+            float ageFrac = particle.getAge() / particle.getLifetime();
             float value = animData.evaluate(ageFrac);
             applyUpdate(particle, value);
         }
 
         private void applyUpdate(AdvancedParticleBase particle, float value) {
             if (property == EnumParticleProperty.POS_X) {
-                if (additive) particle.setPosX(particle.getX() + value);
+                if (additive) particle.setPosX(particle.getPosX() + value);
                 else particle.setPosX(value);
             }
             else if (property == EnumParticleProperty.POS_Y) {
-                if (additive) particle.setPosY(particle.getY() + value);
+                if (additive) particle.setPosY(particle.getPosY() + value);
                 else particle.setPosY(value);
             }
             else if (property == EnumParticleProperty.POS_Z) {
-                if (additive) particle.setPosZ(particle.getZ() + value);
+                if (additive) particle.setPosZ(particle.getPosZ() + value);
                 else particle.setPosZ(value);
             }
             else if (property == EnumParticleProperty.MOTION_X) {
@@ -287,17 +290,17 @@ public abstract class ParticleComponent {
 
         @Override
         public void init(AdvancedParticleBase particle) {
-            startLocation = new Vec3(particle.getX(), particle.getY(), particle.getZ());
+            startLocation = new Vec3(particle.getPosX(), particle.getPosY(), particle.getPosZ());
         }
 
         @Override
         public void preUpdate(AdvancedParticleBase particle) {
-            float ageFrac = particle.getAge() / (particle.getMaxAge() - 1);
+            float ageFrac = particle.getAge() / (particle.getLifetime() - 1);
             if (location.length > 0) {
                 Vec3 destinationVec = location[0];
-                Vec3 currPos = new Vec3(particle.getX(), particle.getY(), particle.getZ());
+                Vec3 currPos = new Vec3(particle.getPosX(), particle.getPosY(), particle.getPosZ());
                 Vec3 diff = destinationVec.subtract(currPos);
-                if (diff.length() < killDist) particle.setExpired();
+                if (diff.length() < killDist) particle.remove();
                 if (behavior == EnumAttractorBehavior.EXPONENTIAL) {
                     Vec3 path = destinationVec.subtract(startLocation).scale(Math.pow(ageFrac, strength)).add(startLocation).subtract(currPos);
                     particle.move(path.x, path.y, path.z);
@@ -343,7 +346,7 @@ public abstract class ParticleComponent {
 
         @Override
         public void preUpdate(AdvancedParticleBase particle) {
-            float ageFrac = particle.getAge() / particle.getMaxAge();
+            float ageFrac = particle.getAge() / particle.getLifetime();
             apply(particle, ageFrac);
         }
 
@@ -351,22 +354,23 @@ public abstract class ParticleComponent {
             float p = phase.evaluate(t);
             float r = radius.evaluate(t);
             Vector3f axis;
-//            if (faceCamera) {
-//                axis = Particle.cameraViewDir;
-//            }
-//            else {
+            if (faceCamera && Minecraft.getInstance().player != null) {
+                axis = new Vector3f(Minecraft.getInstance().player.getLookAngle());
+                axis.normalize();
+            }
+            else {
                 axis = new Vector3f(axisX.evaluate(t), axisY.evaluate(t), axisZ.evaluate(t));
                 axis.normalize();
-//            }
+            }
 
             Quaternion quat = new Quaternion(axis, p * (float) Math.PI * 2, false);
             Vector3f up = new Vector3f(0, 1, 0);
             Vector3f start = axis;
-            start.cross(up);
-            start.normalize();
-            if (axis.equals(up)) {
+            if (Math.abs(axis.dot(up)) > 0.99) {
                 start = new Vector3f(1, 0, 0);
             }
+            start.cross(up);
+            start.normalize();
             Vector3f newPos = start;
             newPos.transform(quat);
             newPos.mul(r);
@@ -386,9 +390,9 @@ public abstract class ParticleComponent {
         @Override
         public void preRender(AdvancedParticleBase particle, float partialTicks) {
             super.preRender(particle, partialTicks);
-            double dx = particle.getX() - particle.getPrevPosX();
-            double dy = particle.getY() - particle.getPrevPosY();
-            double dz = particle.getZ() - particle.getPrevPosZ();
+            double dx = particle.getPosX() - particle.getPrevPosX();
+            double dy = particle.getPosY() - particle.getPrevPosY();
+            double dz = particle.getPosZ() - particle.getPrevPosZ();
             double d = Math.sqrt(dx * dx + dy * dy + dz * dz);
             if (d != 0) {
                 if (particle.rotation instanceof ParticleRotation.EulerAngles) {

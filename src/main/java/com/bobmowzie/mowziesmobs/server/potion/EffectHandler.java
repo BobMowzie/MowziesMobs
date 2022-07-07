@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.server.potion;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.effect.Effect;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -20,7 +20,7 @@ public final class EffectHandler {
     public static final EffectSunblock SUNBLOCK = (EffectSunblock) new EffectSunblock().setRegistryName(MowziesMobs.MODID, "sunblock");
 
     @SubscribeEvent
-    public static void register(RegistryEvent.Register<Effect> event) {
+    public static void register(RegistryEvent.Register<MobEffect> event) {
         event.getRegistry().registerAll(
                 SUNS_BLESSING,
                 GEOMANCY,
@@ -30,10 +30,10 @@ public final class EffectHandler {
         );
     }
 
-    public static void addOrCombineEffect(LivingEntity entity, Effect effect, int duration, int amplifier, boolean ambient, boolean showParticles) {
-        MobEffectInstance effectInst = entity.getActivePotionEffect(effect);
+    public static void addOrCombineEffect(LivingEntity entity, MobEffect effect, int duration, int amplifier, boolean ambient, boolean showParticles) {
+        MobEffectInstance effectInst = entity.getEffect(effect);
         MobEffectInstance newEffect = new MobEffectInstance(effect, duration, amplifier, ambient, showParticles);
-        if (effectInst != null) effectInst.combine(newEffect);
+        if (effectInst != null) effectInst.update(newEffect);
         else entity.addEffect(newEffect);
     }
 }

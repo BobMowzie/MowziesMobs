@@ -13,26 +13,30 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Packet;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.network.play.server.SEntityTeleportPacket;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.state.properties.SlabType;
+import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.core.Direction;
-import net.minecraft.util.*;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
+
+import java.util.List;
+
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.fmllegacy.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
-
-import javax.annotation.Nullable;
-import java.util.List;
 
 public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnData {
     public static final int STRIKE_EXPLOSION = 35;
@@ -53,7 +57,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
 
     public EntitySunstrike(EntityType<? extends EntitySunstrike> type, Level world) {
         super(type, world);
-        ignoreFrustumCheck = true;
+        noCulling = true;
     }
 
     public EntitySunstrike(EntityType<? extends EntitySunstrike> type, Level world, LivingEntity caster, int x, int y, int z) {
@@ -114,7 +118,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean isPickable() {
         return false;
     }
 
@@ -124,7 +128,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     }
 
     @Override
-    public boolean isInRangeToRenderDist(double distance) {
+    public boolean shouldRenderAtSqrDistance(double distance) {
         return distance < 1024;
     }
 
@@ -157,8 +161,8 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
             }
         } else {
             this.moveDownToGround();
-            if (strikeTime >= STRIKE_LINGER || !world.canBlockSeeSky(getPosition())) {
-                this.remove();
+            if (strikeTime >= STRIKE_LINGER || !level.canSeeSkyFromBelowWater(blockPosition())) {
+                this.discard() ;
             } else if (strikeTime == STRIKE_EXPLOSION) {
                 this.damageEntityLivingBaseNearby(3);
             }
@@ -170,25 +174,25 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         HitResult rayTrace = rayTrace(this);
         if (rayTrace.getType() == HitResult.Type.BLOCK) {
             BlockHitResult hitResult = (BlockHitResult) rayTrace;
-            if (hitResult.getFace() == Direction.UP) {
-                BlockState hitBlock = level.getBlockState(hitResult.getPos());
-                if (strikeTime > STRIKE_LENGTH && hitBlock != level.getBlockState(getPosition().below())) {
-                    this.remove();
+            if (hitResult.getDirection() == Direction.UP) {
+                BlockState hitBlock = level.getBlockState(hitResult.getBlockPos());
+                if (strikeTime > STRIKE_LENGTH && hitBlock != level.getBlockState(blockPosition().below())) {
+                    this.discard() ;
                 }
-                if (hitBlock.getBlock() instanceof SlabBlock && hitBlock.get(BlockStateProperties.SLAB_TYPE) == SlabType.BOTTOM) {
-                    this.setPos(getX(), hitResult.getPos().y() + 1.0625F - 0.5f, getZ());
+                if (hitBlock.getBlock() instanceof SlabBlock && hitBlock.getValue(BlockStateProperties.SLAB_TYPE) == SlabType.BOTTOM) {
+                    this.setPos(getX(), hitResult.getBlockPos().getY() + 1.0625F - 0.5f, getZ());
                 } else {
-                    this.setPos(getX(), hitResult.getPos().y() + 1.0625F, getZ());
+                    this.setPos(getX(), hitResult.getBlockPos().getY() + 1.0625F, getZ());
                 }
-                if (this.world instanceof ServerLevel) {
-                    ((ServerLevel) this.world).getChunkProvider().sendToAllTracking(this, new SEntityTeleportPacket(this));
+                if (this.level instanceof ServerLevel) {
+                    ((ServerLevel) this.level).getChunkSource().broadcast(this, new ClientboundTeleportEntityPacket(this));
                 }
             }
         }
     }
 
     public void damageEntityLivingBaseNearby(double radius) {
-        AxisAlignedBB region = new AxisAlignedBB(getX() - radius, getY() - 0.5, getZ() - radius, getX() + radius, Double.POSITIVE_INFINITY, getZ() + radius);
+        AABB region = new AABB(getX() - radius, getY() - 0.5, getZ() - radius, getX() + radius, Double.POSITIVE_INFINITY, getZ() + radius);
         List<Entity> entities = level.getEntities(this, region);
         double radiusSq = radius * radius;
         for (Entity entity : entities) {
@@ -209,9 +213,9 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                     damageFire *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier.get();
                     damageMob *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier.get();
                 }
-                if (entity.hurt(DamageSource.causeIndirectDamage(this, caster), damageMob)) entity.hurtResistantTime = 0;
+                if (entity.hurt(DamageSource.indirectMobAttack(this, caster), damageMob)) entity.invulnerableTime = 0;
                 if (entity.hurt(DamageSource.ON_FIRE, damageFire)) {
-                    entity.setFire(3);
+                    entity.setSecondsOnFire(3);
                 }
             }
         }
@@ -252,13 +256,13 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     }
 
     public void onSummon() {
-        this.setVariant(rand.nextLong());
+        this.setVariant(random.nextLong());
     }
 
     private HitResult rayTrace(EntitySunstrike entity) {
         Vec3 startPos = new Vec3(entity.getX(), entity.getY(), entity.getZ());
         Vec3 endPos = new Vec3(entity.getX(), 0, entity.getZ());
-        return entity.world.rayTraceBlocks(new RayTraceContext(startPos, endPos, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
+        return entity.level.clip(new ClipContext(startPos, endPos, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
     }
 
     @Override

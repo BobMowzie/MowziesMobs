@@ -1,16 +1,16 @@
 package com.bobmowzie.mowziesmobs.server.potion;
 
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.effect.EffectType;
+import net.minecraft.world.effect.MobEffectCategory;
 
 public class EffectSunblock extends MowzieEffect {
     public EffectSunblock() {
-        super(EffectType.BENEFICIAL, 0xFFDF42);
+        super(MobEffectCategory.BENEFICIAL, 0xFFDF42);
     }
 
     @Override
-    public void performEffect(LivingEntity entityLivingBaseIn, int amplifier) {
-        super.performEffect(entityLivingBaseIn, amplifier);
+    public void applyEffectTick(LivingEntity entityLivingBaseIn, int amplifier) {
+        super.applyEffectTick(entityLivingBaseIn, amplifier);
         int k = 50 >> amplifier;
         if (k > 0 && entityLivingBaseIn.tickCount % k == 0) {
             if (entityLivingBaseIn.getHealth() < entityLivingBaseIn.getMaxHealth()) {

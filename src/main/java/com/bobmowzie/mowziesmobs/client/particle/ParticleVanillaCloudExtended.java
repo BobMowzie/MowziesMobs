@@ -6,21 +6,19 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ItemParticleOption;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.sounds.registry.Registry;
+import net.minecraft.core.Registry;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Locale;
 
-public class ParticleVanillaCloudExtended extends SpriteTexturedParticle {
-    private final IAnimatedSprite animatedSprite;
+public class ParticleVanillaCloudExtended extends TextureSheetParticle {
+    private final SpriteSet animatedSprite;
 
     private final float oSize;
     private final float airDrag;
@@ -30,92 +28,92 @@ public class ParticleVanillaCloudExtended extends SpriteTexturedParticle {
 
     private final Vec3[] destination;
 
-    protected ParticleVanillaCloudExtended(ClientLevel worldIn, IAnimatedSprite animatedSprite, double xCoordIn, double yCoordIn, double zCoordIn, double motionX, double motionY, double motionZ, double scale, double r, double g, double b, double drag, double duration, Vec3[] destination) {
+    protected ParticleVanillaCloudExtended(ClientLevel worldIn, SpriteSet animatedSprite, double xCoordIn, double yCoordIn, double zCoordIn, double motionX, double motionY, double motionZ, double scale, double r, double g, double b, double drag, double duration, Vec3[] destination) {
         super(worldIn, xCoordIn, yCoordIn, zCoordIn, 0.0D, 0.0D, 0.0D);
-        this.motionX *= 0.10000000149011612D;
-        this.motionY *= 0.10000000149011612D;
-        this.motionZ *= 0.10000000149011612D;
-        this.motionX += motionX;
-        this.motionY += motionY;
-        this.motionZ += motionZ;
+        this.xd *= 0.10000000149011612D;
+        this.yd *= 0.10000000149011612D;
+        this.zd *= 0.10000000149011612D;
+        this.xd += motionX;
+        this.yd += motionY;
+        this.zd += motionZ;
         float f1 = 1.0F - this.random.nextFloat() * 0.3F;
         this.red = (float) (f1 * r);
         this.green = (float) (f1 * g);
         this.blue = (float) (f1 * b);
-        this.particleScale *= 0.75F;
-        this.particleScale *= 2.5F;
-        this.oSize = this.particleScale * (float)scale;
-        this.maxAge = (int)duration;
-        if (maxAge == 0) maxAge = 1;
+        this.quadSize *= 0.75F;
+        this.quadSize *= 2.5F;
+        this.oSize = this.quadSize * (float)scale;
+        this.lifetime = (int)duration;
+        if (lifetime == 0) lifetime = 1;
         airDrag = (float)drag;
         this.destination = destination;
-        canCollide = false;
+        hasPhysics = false;
         this.animatedSprite = animatedSprite;
-        if (destination != null) this.setSprite(animatedSprite.get(this.maxAge - this.age, this.maxAge));
-        else this.selectSpriteWithAge(this.animatedSprite);
+        if (destination != null) this.setSprite(animatedSprite.get(this.lifetime - this.age, this.lifetime));
+        else this.setSpriteFromAge(this.animatedSprite);
     }
 
     @Override
-    public IParticleRenderType getRenderType() {
-        return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    public ParticleRenderType getRenderType() {
+        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @Override
     public void tick()
     {
-        this.xo = this.posX;
-        this.prevPosY = this.posY;
-        this.zo = this.posZ;
+        this.xo = this.x;
+        this.yo = this.y;
+        this.zo = this.z;
 
-        if (this.age++ >= this.maxAge)
+        if (this.age++ >= this.lifetime)
         {
-            this.setExpired();
+            this.remove();
         }
 
-        this.selectSpriteWithAge(this.animatedSprite);
+        this.setSpriteFromAge(this.animatedSprite);
 
         if (destination != null && destination.length == 1) {
-            this.setSprite(animatedSprite.get(this.maxAge - this.age, this.maxAge));
+            this.setSprite(animatedSprite.get(this.lifetime - this.age, this.lifetime));
 
             Vec3 destinationVec = destination[0];
-            Vec3 diff = destinationVec.subtract(new Vec3(posX, posY, posZ));
-            if (diff.length() < 0.5) this.setExpired();
-            float attractScale = 0.7f * ((float)this.age / (float)this.maxAge) * ((float)this.age / (float)this.maxAge);
-            motionX = diff.x * attractScale;
-            motionY = diff.y * attractScale;
-            motionZ = diff.z * attractScale;
+            Vec3 diff = destinationVec.subtract(new Vec3(x, y, z));
+            if (diff.length() < 0.5) this.remove();
+            float attractScale = 0.7f * ((float)this.age / (float)this.lifetime) * ((float)this.age / (float)this.lifetime);
+            xd = diff.x * attractScale;
+            yd = diff.y * attractScale;
+            zd = diff.z * attractScale;
         }
-        this.move(this.motionX, this.motionY, this.motionZ);
-        this.motionX *= airDrag;
-        this.motionY *= airDrag;
-        this.motionZ *= airDrag;
+        this.move(this.xd, this.yd, this.zd);
+        this.xd *= airDrag;
+        this.yd *= airDrag;
+        this.zd *= airDrag;
 
         if (this.onGround)
         {
-            this.motionX *= 0.699999988079071D;
-            this.motionZ *= 0.699999988079071D;
+            this.xd *= 0.699999988079071D;
+            this.zd *= 0.699999988079071D;
         }
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static final class CloudFactory implements IParticleFactory<VanillaCloudData> {
-        private final IAnimatedSprite spriteSet;
+    public static final class CloudFactory implements ParticleProvider<VanillaCloudData> {
+        private final SpriteSet spriteSet;
 
-        public CloudFactory(IAnimatedSprite sprite) {
+        public CloudFactory(SpriteSet sprite) {
             this.spriteSet = sprite;
         }
 
         @Override
-        public Particle makeParticle(VanillaCloudData typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(VanillaCloudData typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ParticleVanillaCloudExtended particle = new ParticleVanillaCloudExtended(worldIn, spriteSet, x, y, z, xSpeed, ySpeed, zSpeed, typeIn.getScale(), typeIn.getRed(), typeIn.getGreen(), typeIn.getBlue(), typeIn.getDrag(), typeIn.getDuration(), typeIn.getDestination());
             particle.setColor(typeIn.getRed(), typeIn.getGreen(), typeIn.getBlue());
             return particle;
         }
     }
 
-    public static class VanillaCloudData implements IParticleData {
-        public static final IParticleData.IDeserializer<VanillaCloudData> DESERIALIZER = new IParticleData.IDeserializer<VanillaCloudData>() {
-            public VanillaCloudData deserialize(ParticleType<VanillaCloudData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
+    public static class VanillaCloudData implements ParticleOptions {
+        public static final ParticleOptions.Deserializer<VanillaCloudData> DESERIALIZER = new ParticleOptions.Deserializer<VanillaCloudData>() {
+            public VanillaCloudData fromCommand(ParticleType<VanillaCloudData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
                 reader.expect(' ');
                 float scale = (float) reader.readDouble();
                 reader.expect(' ');
@@ -131,7 +129,7 @@ public class ParticleVanillaCloudExtended extends SpriteTexturedParticle {
                 return new VanillaCloudData(scale, red, green, blue, drag, duration, null);
             }
 
-            public VanillaCloudData read(ParticleType<VanillaCloudData> particleTypeIn, FriendlyByteBuf buffer) {
+            public VanillaCloudData fromNetwork(ParticleType<VanillaCloudData> particleTypeIn, FriendlyByteBuf buffer) {
                 return new VanillaCloudData(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), null);
             }
         };
@@ -155,7 +153,7 @@ public class ParticleVanillaCloudExtended extends SpriteTexturedParticle {
         }
 
         @Override
-        public void write(FriendlyByteBuf buffer) {
+        public void writeToNetwork(FriendlyByteBuf buffer) {
             buffer.writeFloat(this.scale);
             buffer.writeFloat(this.red);
             buffer.writeFloat(this.green);
@@ -166,7 +164,7 @@ public class ParticleVanillaCloudExtended extends SpriteTexturedParticle {
 
         @SuppressWarnings("deprecation")
         @Override
-        public String getParameters() {
+        public String writeToString() {
             return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %.2f %.2f", Registry.PARTICLE_TYPE.getKey(this.getType()),
                     this.scale, this.red, this.green, this.blue, this.drag, this.duration);
         }
@@ -226,10 +224,10 @@ public class ParticleVanillaCloudExtended extends SpriteTexturedParticle {
     }
 
     public static void spawnVanillaCloud(Level world, double x, double y, double z, double motionX, double motionY, double motionZ, double scale, double r, double g, double b, double drag, double duration) {
-        level.addParticle(new VanillaCloudData((float)scale, (float)r, (float)g, (float)b, (float)drag, (float)duration, null), x, y, z, motionX, motionY, motionZ);
+        world.addParticle(new VanillaCloudData((float)scale, (float)r, (float)g, (float)b, (float)drag, (float)duration, null), x, y, z, motionX, motionY, motionZ);
     }
 
     public static void spawnVanillaCloudDestination(Level world, double x, double y, double z, double motionX, double motionY, double motionZ, double scale, double r, double g, double b, double drag, double duration, Vec3[] destination) {
-        level.addParticle(new VanillaCloudData((float)scale, (float)r, (float)g, (float)b, (float)drag, (float)duration, destination), x, y, z, motionX, motionY, motionZ);
+        world.addParticle(new VanillaCloudData((float)scale, (float)r, (float)g, (float)b, (float)drag, (float)duration, destination), x, y, z, motionX, motionY, motionZ);
     }
 }

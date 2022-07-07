@@ -9,7 +9,7 @@ import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.inventory.container.Container;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraftforge.fmllegacy.network.NetworkEvent;
@@ -28,7 +28,7 @@ public class MessageBarakoTrade {
     }
 
     public MessageBarakoTrade(LivingEntity sender) {
-        entityID = sender.getEntityId();
+        entityID = sender.getId();
     }
 
     public static void serialize(final MessageBarakoTrade message, final FriendlyByteBuf buf) {
@@ -48,7 +48,7 @@ public class MessageBarakoTrade {
             final ServerPlayer player = context.getSender();
             context.enqueueWork(() -> {
                 if (player != null) {
-                    Entity entity = player.world.getEntityByID(message.entityID);
+                    Entity entity = player.level.getEntity(message.entityID);
                     if (!(entity instanceof EntityBarako)) {
                         return;
                     }
@@ -56,7 +56,7 @@ public class MessageBarakoTrade {
                     if (barako.getCustomer() != player) {
                         return;
                     }
-                    Container container = player.openContainer;
+                    AbstractContainerMenu container = player.containerMenu;
                     if (!(container instanceof ContainerBarakoTrade)) {
                         return;
                     }
@@ -65,7 +65,7 @@ public class MessageBarakoTrade {
                         if (satisfied = barako.fulfillDesire(container.getSlot(0))) {
                             barako.rememberTrade(player);
                             ((ContainerBarakoTrade) container).returnItems();
-                            container.detectAndSendChanges();
+                            container.broadcastChanges();
                         }
                     }
                     if (satisfied) {

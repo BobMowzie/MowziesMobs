@@ -12,7 +12,6 @@ import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -21,8 +20,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.sounds.ActionResultType;
-import net.minecraft.sounds.Hand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.core.BlockPos;
@@ -33,6 +32,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
+
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 
 public class EntityBarakoanToPlayer extends EntityBarakoan<Player> {
     private static final EntityDataAccessor<ItemStack> MASK_STORED = SynchedEntityData.defineId(EntityBarakoanToPlayer.class, EntityDataSerializers.ITEM_STACK);
@@ -46,7 +48,7 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<Player> {
     public EntityBarakoanToPlayer(EntityType<? extends EntityBarakoanToPlayer> type, Level world, Player leader) {
         super(type, world, Player.class, leader);
         xpReward = 0;
-        if (level.isClientSide) {
+        if (world.isClientSide) {
             feetPos = new Vec3[]{new Vec3(0, 0, 0)};
         }
     }
@@ -70,8 +72,8 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<Player> {
         }
         super.tick();
         if (level.isClientSide && feetPos != null && feetPos.length > 0) {
-            feetPos[0] = getPositionVec().add(0, 0.05f, 0);
-            if (tickCount % 10 == 0) AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING2.get(), feetPos[0].x(), feetPos[0].y(), feetPos[0].z(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 1.5F, 1, 223 / 255f, 66 / 255f, 1, 1, 15, true, false, new ParticleComponent[]{
+            feetPos[0] = position().add(0, 0.05f, 0);
+            if (tickCount % 10 == 0) AdvancedParticleBase.spawnParticle(level, ParticleHandler.RING2.get(), feetPos[0].x(), feetPos[0].y(), feetPos[0].z(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 1.5F, 1, 223 / 255f, 66 / 255f, 1, 1, 15, true, false, new ParticleComponent[]{
                     new ParticleComponent.PinLocation(feetPos),
                     new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                     new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(1f, 10f), false)
@@ -80,11 +82,11 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<Player> {
     }
 
     @Override
-    protected ActionResultType getEntityInteractionResult(Player playerIn, Hand hand) {
+    protected InteractionResult mobInteract(Player playerIn, InteractionHand hand) {
         if (playerIn == leader) {
             deactivate();
         }
-        return super.getEntityInteractionResult(playerIn, hand);
+        return super.mobInteract(playerIn, hand);
     }
 
     private void deactivate() {
@@ -95,8 +97,8 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<Player> {
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return MowzieEntity.createAttributes().add(Attributes.ATTACK_DAMAGE, 7 * ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig.attackMultiplier.get())
-                .add(Attributes.MAX_HEALTH, 20 * ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig.healthMultiplier.get());
+        return MowzieEntity.createAttributes().add(Attributes.ATTACK_DAMAGE, 7)
+                .add(Attributes.MAX_HEALTH, 20);
     }
 
     @Override
@@ -128,7 +130,7 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<Player> {
     }
 
     private PlayerCapability.IPlayerCapability getPlayerCapability() {
-        return CapabilityHandler.getCapability(leader, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        return CapabilityHandler.getCapability(leader, CapabilityHandler.PLAYER_CAPABILITY);
     }
 
     @Override
@@ -144,7 +146,7 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<Player> {
 
     @Nullable
     public UUID getOwnerId() {
-        return getLeader() == null ? null : getLeader().getUniqueID();
+        return getLeader() == null ? null : getLeader().getUUID();
     }
 
     @Nullable
@@ -156,7 +158,7 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<Player> {
     {
         BlockPos blockpos = new BlockPos(x + xOffset, y - 1, z + zOffset);
         BlockState iblockstate = this.level.getBlockState(blockpos);
-        return iblockstate.canEntitySpawn(this.world, blockpos, this.getType()) && this.world.isAirBlock(blockpos.up()) && this.world.isAirBlock(blockpos.up(2));
+        return iblockstate.isValidSpawn(this.level, blockpos, this.getType()) && this.level.isEmptyBlock(blockpos.above()) && this.level.isEmptyBlock(blockpos.above(2));
     }
 
     public ItemStack getStoredMask() {
@@ -176,14 +178,14 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<Player> {
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
         CompoundTag compoundnbt = compound.getCompound("storedMask");
-        this.setStoredMask(ItemStack.read(compoundnbt));
+        this.setStoredMask(ItemStack.of(compoundnbt));
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         if (!this.getStoredMask().isEmpty()) {
-            compound.put("storedMask", this.getStoredMask().write(new CompoundTag()));
+            compound.put("storedMask", this.getStoredMask().save(new CompoundTag()));
         }
     }
 }

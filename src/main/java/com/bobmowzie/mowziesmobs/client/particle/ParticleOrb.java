@@ -2,26 +2,24 @@ package com.bobmowzie.mowziesmobs.client.particle;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleType;
-import net.minecraft.sounds.registry.Registry;
-import net.minecraft.world.level.Level;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.Registry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Locale;
 
-public class ParticleOrb extends SpriteTexturedParticle {
+public class ParticleOrb extends TextureSheetParticle {
     private double targetX;
     private double targetY;
     private double targetZ;
@@ -38,12 +36,12 @@ public class ParticleOrb extends SpriteTexturedParticle {
         super(world, x, y, z);
         this.targetX = targetX;
         this.targetZ = targetZ;
-        particleScale = (4.5F + random.nextFloat() * 1.5F) * 0.1f;
-        maxAge = 120;
-        signX = Math.signum(targetX - posX);
-        signZ = Math.signum(targetZ - posZ);
+        quadSize = (4.5F + random.nextFloat() * 1.5F) * 0.1f;
+        lifetime = 120;
+        signX = Math.signum(targetX - x);
+        signZ = Math.signum(targetZ - z);
         mode = 0;
-        particleAlpha = 0;
+        alpha = 0;
         red = green = blue = 1;
     }
 
@@ -55,108 +53,108 @@ public class ParticleOrb extends SpriteTexturedParticle {
         this.startZ = z;
         this.duration = speed;
         mode = 1;
-        particleAlpha = 0.1f;
+        alpha = 0.1f;
     }
 
     public ParticleOrb(ClientLevel world, double x, double y, double z, double vx, double vy, double vz, double r, double g, double b, double scale, int duration) {
         super(world, x, y, z);
-        particleScale = (float) scale * 0.1f;
-        maxAge = duration;
+        quadSize = (float) scale * 0.1f;
+        lifetime = duration;
         this.duration = duration;
-        motionX = vx;
-        motionY = vy;
-        motionZ = vz;
+        xd = vx;
+        yd = vy;
+        zd = vz;
         setColor((float) r, (float) g, (float) b);
         mode = 2;
     }
 
     @Override
-    public IParticleRenderType getRenderType() {
+    public ParticleRenderType getRenderType() {
         return MMRenderType.PARTICLE_SHEET_TRANSLUCENT_NO_DEPTH;
     }
 
     @Override
-    public int getBrightnessForRender(float delta) {
-        return 240 | super.getBrightnessForRender(delta) & 0xFF0000;
+    public int getLightColor(float delta) {
+        return 240 | super.getLightColor(delta) & 0xFF0000;
     }
 
     @Override
     public void tick() {
-        particleAlpha = 0.1f;
-        xo = posX;
-        prevPosY = posY;
-        zo = posZ;
+        alpha = 0.1f;
+        xo = x;
+        yo = y;
+        zo = z;
         if (mode == 0) {
-            double vecX = targetX - posX;
-            double vecZ = targetZ - posZ;
+            double vecX = targetX - x;
+            double vecZ = targetZ - z;
             double dist = Math.sqrt(vecX * vecX + vecZ * vecZ);
-            if (dist > 2 || Math.signum(vecX) != signX || Math.signum(vecZ) != signZ || age > maxAge) {
-                setExpired();
+            if (dist > 2 || Math.signum(vecX) != signX || Math.signum(vecZ) != signZ || age > lifetime) {
+                remove();
                 return;
             }
             final double peak = 0.5;
-            particleAlpha = (float) (dist > peak ? MathUtils.linearTransformd(dist, peak, 2, 1, 0) : MathUtils.linearTransformd(dist, 0.1F, peak, 0, 1));
+            alpha = (float) (dist > peak ? MathUtils.linearTransformd(dist, peak, 2, 1, 0) : MathUtils.linearTransformd(dist, 0.1F, peak, 0, 1));
             final double minVel = 0.05, maxVel = 0.3;
             double progress = Math.sin(-Math.PI / 4 * dist) + 1;
             double magMultipler = (progress * (maxVel - minVel) + minVel) / dist;
             vecX *= magMultipler;
             vecZ *= magMultipler;
-            motionX = vecX;
-            motionY = progress;
-            motionZ = vecZ;
-            move(motionX, motionY, motionZ);
+            xd = vecX;
+            yd = progress;
+            zd = vecZ;
+            move(xd, yd, zd);
         } else if (mode == 1) {
-            particleAlpha = ((float)age/(float)duration);//(float) (1 * Math.sqrt(Math.pow(posX - startX, 2) + Math.pow(posY - startY, 2) + Math.pow(posZ - startZ, 2)) / Math.sqrt(Math.pow(targetX - startX, 2) + Math.pow(targetY - startY, 2) + Math.pow(targetZ - startZ, 2)));
-            posX = startX + (targetX - startX) / (1 + Math.exp(-(8 / duration) * (age - duration / 2)));
-            posY = startY + (targetY - startY) / (1 + Math.exp(-(8 / duration) * (age - duration / 2)));
-            posZ = startZ + (targetZ - startZ) / (1 + Math.exp(-(8 / duration) * (age - duration / 2)));
+            alpha = ((float)age/(float)duration);//(float) (1 * Math.sqrt(Math.pow(posX - startX, 2) + Math.pow(posY - startY, 2) + Math.pow(posZ - startZ, 2)) / Math.sqrt(Math.pow(targetX - startX, 2) + Math.pow(targetY - startY, 2) + Math.pow(targetZ - startZ, 2)));
+            x = startX + (targetX - startX) / (1 + Math.exp(-(8 / duration) * (age - duration / 2)));
+            y = startY + (targetY - startY) / (1 + Math.exp(-(8 / duration) * (age - duration / 2)));
+            z = startZ + (targetZ - startZ) / (1 + Math.exp(-(8 / duration) * (age - duration / 2)));
             if (age == duration) {
-                setExpired();
+                remove();
             }
         }
         else if (mode == 2) {
             super.tick();
 //            particleAlpha = ((float)age/(float)maxAge);
-            if (age >= maxAge) {
-                setExpired();
+            if (age >= lifetime) {
+                remove();
             }
         }
         age++;
     }
 
     @Override
-    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
-        if (mode == 2) particleAlpha = Math.max(1 - ((float)age + partialTicks)/(float)duration, 0.001f);
-        else particleAlpha = ((float)age + partialTicks)/(float)duration;
-        particleRed = red;
-        particleGreen = green;
-        particleBlue = blue;
+    public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
+        if (mode == 2) alpha = Math.max(1 - ((float)age + partialTicks)/(float)duration, 0.001f);
+        else alpha = ((float)age + partialTicks)/(float)duration;
+        rCol = red;
+        gCol = green;
+        bCol = blue;
 
-        super.renderParticle(buffer, renderInfo, partialTicks);
+        super.render(buffer, renderInfo, partialTicks);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static final class OrbFactory implements IParticleFactory<OrbData> {
-        private final IAnimatedSprite spriteSet;
+    public static final class OrbFactory implements ParticleProvider<OrbData> {
+        private final SpriteSet spriteSet;
 
-        public OrbFactory(IAnimatedSprite sprite) {
+        public OrbFactory(SpriteSet sprite) {
             this.spriteSet = sprite;
         }
 
         @Override
-        public Particle makeParticle(ParticleOrb.OrbData typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(ParticleOrb.OrbData typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ParticleOrb particle;
             if (typeIn.getMode() == 0) particle = new ParticleOrb(worldIn, x, y, z, typeIn.getTargetX(), typeIn.getTargetZ());
             else if (typeIn.getMode() == 1) particle = new ParticleOrb(worldIn, x, y, z, typeIn.getTargetX(), typeIn.getTargetY(), typeIn.getTargetZ(), typeIn.getSpeed());
             else particle = new ParticleOrb(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn.getR(), typeIn.getG(), typeIn.getB(), typeIn.getScale(), typeIn.getDuration());
-            particle.selectSpriteWithAge(spriteSet);
+            particle.setSpriteFromAge(spriteSet);
             return particle;
         }
     }
 
-    public static class OrbData implements IParticleData {
-        public static final IParticleData.IDeserializer<ParticleOrb.OrbData> DESERIALIZER = new IParticleData.IDeserializer<ParticleOrb.OrbData>() {
-            public ParticleOrb.OrbData deserialize(ParticleType<ParticleOrb.OrbData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
+    public static class OrbData implements ParticleOptions {
+        public static final ParticleOptions.Deserializer<ParticleOrb.OrbData> DESERIALIZER = new ParticleOptions.Deserializer<ParticleOrb.OrbData>() {
+            public ParticleOrb.OrbData fromCommand(ParticleType<ParticleOrb.OrbData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
                 reader.expect(' ');
                 float r = (float) reader.readDouble();
                 reader.expect(' ');
@@ -170,7 +168,7 @@ public class ParticleOrb extends SpriteTexturedParticle {
                 return new ParticleOrb.OrbData(r, g, b, scale, duration);
             }
 
-            public ParticleOrb.OrbData read(ParticleType<ParticleOrb.OrbData> particleTypeIn, FriendlyByteBuf buffer) {
+            public ParticleOrb.OrbData fromNetwork(ParticleType<ParticleOrb.OrbData> particleTypeIn, FriendlyByteBuf buffer) {
                 return new ParticleOrb.OrbData(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readInt());
             }
         };
@@ -215,7 +213,7 @@ public class ParticleOrb extends SpriteTexturedParticle {
         }
 
         @Override
-        public void write(FriendlyByteBuf buffer) {
+        public void writeToNetwork(FriendlyByteBuf buffer) {
             buffer.writeFloat(this.r);
             buffer.writeFloat(this.g);
             buffer.writeFloat(this.b);
@@ -225,7 +223,7 @@ public class ParticleOrb extends SpriteTexturedParticle {
 
         @SuppressWarnings("deprecation")
         @Override
-        public String getParameters() {
+        public String writeToString() {
             return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %d", Registry.PARTICLE_TYPE.getKey(this.getType()),
                     this.r, this.g, this.b, this.scale, this.duration);
         }

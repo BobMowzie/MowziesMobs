@@ -4,8 +4,8 @@ import com.bobmowzie.mowziesmobs.client.model.tools.BlockModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.world.entity.Entity;
 
 import java.util.Random;
@@ -306,7 +306,7 @@ public class ModelBoulder<T extends EntityBoulder> extends AdvancedModelBase {
     }
 
     @Override
-    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         if (size == EntityBoulder.BoulderSizeEnum.SMALL) boulder0block1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         else  if (size == EntityBoulder.BoulderSizeEnum.MEDIUM) boulder1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         else  if (size == EntityBoulder.BoulderSizeEnum.LARGE) boulder2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -314,7 +314,7 @@ public class ModelBoulder<T extends EntityBoulder> extends AdvancedModelBase {
     }
 
     @Override
-    public void setRotationAngles(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setupAnim(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         if (entityIn instanceof EntityBoulder) {
             EntityBoulder entity = (EntityBoulder) entityIn;
             size = entity.getBoulderSize();

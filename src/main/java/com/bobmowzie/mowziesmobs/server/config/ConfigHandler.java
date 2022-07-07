@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.server.config;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.*;
@@ -306,15 +306,13 @@ public final class  ConfigHandler {
                     -1, 60, true, false, false,
                     Collections.emptyList()
             );
-            this.healthMultiplier = builder.comment("Scale mob health by this value")
-                    .translation(LANG_PREFIX + "health_multiplier")
-                    .defineInRange("health_multiplier", 1.0f, 0d, Double.MAX_VALUE);
+            combatConfig = new CombatConfig(builder, 1, 1);
             builder.pop();
         }
 
         public final SpawnConfig spawnConfig;
 
-        public final DoubleValue healthMultiplier;
+        public final CombatConfig combatConfig;
     }
 
     public static class Grottol {
@@ -328,15 +326,13 @@ public final class  ConfigHandler {
                     25, -1, true, false, true,
                     Collections.emptyList()
             );
-            this.healthMultiplier = builder.comment("Scale mob health by this value")
-                    .translation(LANG_PREFIX + "health_multiplier")
-                    .defineInRange("health_multiplier", 1.0f, 0d, Double.MAX_VALUE);
+            combatConfig = new CombatConfig(builder, 1, 1);
             builder.pop();
         }
 
         public final SpawnConfig spawnConfig;
 
-        public final DoubleValue healthMultiplier;
+        public final CombatConfig combatConfig;
     }
 
     public static class FerrousWroughtnaut {
@@ -348,7 +344,7 @@ public final class  ConfigHandler {
                     Collections.emptyList()
             );
             combatConfig = new CombatConfig(builder, 1, 1);
-            this.hasBossBar = builder.comment("Disable/enable Ferrous Wroughtnauts' boss health bars")
+            this.hasBossBar = builder.comment("Disable/enable Ferrous Wroughtnaut's boss health bar")
                     .translation(LANG_PREFIX + "has_boss_bar")
                     .define("has_boss_bar", true);
             this.healsOutOfBattle = builder.comment("Disable/enable Ferrous Wroughtnaut healing while not active")
@@ -412,7 +408,7 @@ public final class  ConfigHandler {
                     Arrays.asList("minecraft:village", "minecraft:pillager_outpost")
             );
             combatConfig = new CombatConfig(builder, 1, 1);
-            this.hasBossBar = builder.comment("Disable/enable Barako's boss health bar")
+            this.hasBossBar = builder.comment("Disable/enable Frostmaw's boss health bar")
                     .translation(LANG_PREFIX + "has_boss_bar")
                     .define("has_boss_bar", true);
             this.healsOutOfBattle = builder.comment("Disable/enable frostmaws healing while asleep")
@@ -438,7 +434,7 @@ public final class  ConfigHandler {
     public static class WroughtHelm {
         WroughtHelm(final ForgeConfigSpec.Builder builder) {
             builder.push("wrought_helm");
-            armorConfig = new ArmorConfig(builder, ArmorMaterial.IRON.getDamageReductionAmount(EquipmentSlot.HEAD), ArmorMaterial.IRON.getToughness());
+            armorConfig = new ArmorConfig(builder, ArmorMaterials.IRON.getDefenseForSlot(EquipmentSlot.HEAD), ArmorMaterials.IRON.getToughness());
             breakable = builder.comment("Set to true for the Wrought Helm to have limited durability.")
                     .translation(LANG_PREFIX + "breakable")
                     .define("breakable", false);
@@ -468,7 +464,7 @@ public final class  ConfigHandler {
     public static class SolVisage {
         SolVisage(final ForgeConfigSpec.Builder builder) {
             builder.push("sol_visage");
-            armorConfig = new ArmorConfig(builder, ArmorMaterial.GOLD.getDamageReductionAmount(EquipmentSlot.HEAD), ArmorMaterial.GOLD.getToughness());
+            armorConfig = new ArmorConfig(builder, ArmorMaterials.GOLD.getDefenseForSlot(EquipmentSlot.HEAD), ArmorMaterials.GOLD.getToughness());
             breakable = builder.comment("Set to true for the Sol Visage to have limited durability.")
                     .translation(LANG_PREFIX + "breakable")
                     .define("breakable", false);
@@ -483,7 +479,7 @@ public final class  ConfigHandler {
     public static class BarakoaMask {
         BarakoaMask(final ForgeConfigSpec.Builder builder) {
             builder.push("barakoa_mask");
-            armorConfig = new ArmorConfig(builder, ArmorMaterial.LEATHER.getDamageReductionAmount(EquipmentSlot.HEAD), ArmorMaterial.LEATHER.getToughness());
+            armorConfig = new ArmorConfig(builder, ArmorMaterials.LEATHER.getDefenseForSlot(EquipmentSlot.HEAD), ArmorMaterials.LEATHER.getToughness());
             builder.pop();
         }
 
@@ -510,6 +506,31 @@ public final class  ConfigHandler {
         public final BooleanValue breakable;
 
         public final IntValue durability;
+    }
+
+    public static class EarthboreGauntlet {
+        EarthboreGauntlet(final ForgeConfigSpec.Builder builder) {
+            builder.push("earthbore_gauntlet");
+            attackMultiplier = builder.comment("Multiply all damage done with the Earthbore Gauntlet by this amount.")
+                    .translation(LANG_PREFIX + "attack_multiplier")
+                    .defineInRange("attack_multiplier", 1f, 0d, Double.MAX_VALUE);
+            breakable = builder.comment("Set to true for the Earthbore Gauntlet to have limited durability.", "Prevents regeneration in inventory.")
+                    .translation(LANG_PREFIX + "breakable")
+                    .define("breakable", false);
+            durability = builder.comment("Earthbore Gauntlet durability")
+                    .translation(LANG_PREFIX + "durability")
+                    .defineInRange("durability", 400, 1, Integer.MAX_VALUE);
+            toolConfig = new ToolConfig(builder, 6, 1.2f);
+            builder.pop();
+        }
+
+        public final DoubleValue attackMultiplier;
+
+        public final BooleanValue breakable;
+
+        public final IntValue durability;
+
+        public final ToolConfig toolConfig;
     }
 
     public static class BarakoaSpear {
@@ -625,6 +646,7 @@ public final class  ConfigHandler {
             BARAKOA_SPEAR = new BarakoaSpear(builder);
             NAGA_FANG_DAGGER = new NagaFangDagger(builder);
             BLOW_GUN = new Blowgun(builder);
+            EARTHBORE_GAUNTLET = new EarthboreGauntlet(builder);
             builder.pop();
         }
 
@@ -647,6 +669,8 @@ public final class  ConfigHandler {
         public final NagaFangDagger NAGA_FANG_DAGGER;
 
         public final Blowgun BLOW_GUN;
+
+        public final EarthboreGauntlet EARTHBORE_GAUNTLET;
     }
 
     public static class General {
@@ -664,15 +688,21 @@ public final class  ConfigHandler {
     public static class Client {
         private Client(final ForgeConfigSpec.Builder builder) {
             builder.push("client");
-            this.glowEffect = builder.comment("Toggles the lantern glow effect, which may look bad with certain shaders")
+            this.glowEffect = builder.comment("Toggles the lantern glow effect, which may look bad with certain shaders.")
                     .translation(LANG_PREFIX + "glow_effect")
                     .define("glow_effect", true);
-            this.oldBarakoaTextures = builder.comment("Use the old Barakoa textures instead of the current ones")
+            this.oldBarakoaTextures = builder.comment("Use the old Barakoa textures instead of the current ones.")
                     .translation(LANG_PREFIX + "old_barakoa_textures")
                     .define("old_barakoa_textures", false);
             this.doCameraShakes = builder.comment("Enable camera shaking during certain mob attacks and abilities.")
                     .translation(LANG_PREFIX + "do_camera_shake")
                     .define("do_camera_shake", true);
+            this.playBossMusic = builder.comment("Play boss battle themes during boss encounters.")
+                    .translation(LANG_PREFIX + "play_boss_music")
+                    .define("play_boss_music", true);
+            this.customPlayerAnims = builder.comment("Use custom player animations.")
+                    .translation(LANG_PREFIX + "custom_player_anims")
+                    .define("custom_player_anims", true);
             builder.pop();
         }
 
@@ -681,6 +711,10 @@ public final class  ConfigHandler {
         public final BooleanValue oldBarakoaTextures;
 
         public final BooleanValue doCameraShakes;
+
+        public final BooleanValue playBossMusic;
+
+        public final BooleanValue customPlayerAnims;
     }
 
     public static class Common {

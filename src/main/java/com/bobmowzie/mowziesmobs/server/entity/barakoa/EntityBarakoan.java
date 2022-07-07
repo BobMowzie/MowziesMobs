@@ -1,8 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
-import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -12,7 +9,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.util.HitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
@@ -22,7 +19,7 @@ import java.util.UUID;
 public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarakoa {
     protected static final Optional<UUID> ABSENT_LEADER = Optional.empty();
 
-    private static final EntityDataAccessor<Optional<UUID>> LEADER = SynchedEntityData.defineId(EntityBarakoan.class, EntityDataSerializers.OPTIONAL_UNIQUE_ID);
+    private static final EntityDataAccessor<Optional<UUID>> LEADER = SynchedEntityData.defineId(EntityBarakoan.class, EntityDataSerializers.OPTIONAL_UUID);
 
     private final Class<L> leaderClass;
 
@@ -40,7 +37,7 @@ public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarak
         super(type, world);
         this.leaderClass = leaderClass;
         if (leader != null) {
-            setLeaderUUID(leader.getUniqueID());
+            setLeaderUUID(leader.getUUID());
         }
         shouldSetDead = false;
     }
@@ -77,7 +74,7 @@ public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarak
                 addAsPackMember();
             }
         }
-        if (shouldSetDead) remove();
+        if (shouldSetDead) discard() ;
     }
 
     @Override
@@ -95,8 +92,8 @@ public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarak
     }
 
     @Override
-    public void onDeath(DamageSource source) {
-        super.onDeath(source);
+    public void die(DamageSource source) {
+        super.die(source);
         if (leader != null) {
             removeAsPackMember();
         }
@@ -107,19 +104,19 @@ public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarak
     }
 
     @Override
-    public void remove() {
+    public void remove(RemovalReason reason) {
         if (leader != null) {
             removeAsPackMember();
         }
-        super.remove();
+        super.remove(reason);
     }
 
     public L getLeader() {
         Optional<UUID> uuid = getLeaderUUID();
         if (uuid.isPresent()) {
-            List<L> potentialLeaders = world.getEntitiesWithinAABB(leaderClass, getBoundingBox().grow(32, 32, 32));
+            List<L> potentialLeaders = level.getEntitiesOfClass(leaderClass, getBoundingBox().inflate(32, 32, 32));
             for (L entity : potentialLeaders) {
-                if (uuid.get().equals(entity.getUniqueID())) {
+                if (uuid.get().equals(entity.getUUID())) {
                     return entity;
                 }
             }

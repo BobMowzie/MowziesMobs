@@ -1,92 +1,100 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.armor.MowzieElytraModel;
-import com.bobmowzie.mowziesmobs.client.model.tools.ModelRendererMatrix;
+import com.bobmowzie.mowziesmobs.client.model.tools.ModelPartMatrix;
 import com.google.common.collect.Lists;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.client.resources.model.ModelRenderer;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.List;
 import java.util.Random;
 
+@OnlyIn(Dist.CLIENT)
 public class ModelPlayerAnimated<T extends LivingEntity> extends PlayerModel<T> {
-    private List<ModelRenderer> modelRenderers = Lists.newArrayList();
+    private List<ModelPart> modelRenderers = Lists.newArrayList();
 
-    public ModelPlayerAnimated(float modelSize, boolean smallArmsIn) {
-        super(modelSize, smallArmsIn);
-        this.bipedBody = new ModelRendererMatrix(bipedBody);
-        this.bipedHead = new ModelRendererMatrix(bipedHead);
-        this.bipedRightArm = new ModelRendererMatrix(bipedRightArm);
-        this.bipedLeftArm = new ModelRendererMatrix(bipedLeftArm);
-        this.bipedRightLeg = new ModelRendererMatrix(bipedRightLeg);
-        this.bipedLeftLeg = new ModelRendererMatrix(bipedLeftLeg);
+    public ModelPlayerAnimated(ModelPart root, boolean smallArmsIn) {
+        super(root, smallArmsIn);
+        this.body = new ModelPartMatrix(body);
+        this.head = new ModelPartMatrix(head);
+        this.rightArm = new ModelPartMatrix(rightArm);
+        this.leftArm = new ModelPartMatrix(leftArm);
+        this.rightLeg = new ModelPartMatrix(rightLeg);
+        this.leftLeg = new ModelPartMatrix(leftLeg);
 
-        this.bipedHeadwear = new ModelRendererMatrix(bipedHeadwear);
-        this.bipedBodyWear = new ModelRendererMatrix(bipedBodyWear);
-        this.bipedLeftArmwear = new ModelRendererMatrix(bipedLeftArmwear);
-        this.bipedRightArmwear = new ModelRendererMatrix(bipedRightArmwear);
-        this.bipedLeftLegwear = new ModelRendererMatrix(bipedLeftLegwear);
-        this.bipedRightLegwear = new ModelRendererMatrix(bipedRightLegwear);
-        this.bipedDeadmau5Head = new ModelRendererMatrix(bipedDeadmau5Head);
+        this.hat = new ModelPartMatrix(hat);
+        this.jacket = new ModelPartMatrix(jacket);
+        this.leftSleeve = new ModelPartMatrix(leftSleeve);
+        this.rightSleeve = new ModelPartMatrix(rightSleeve);
+        this.leftPants = new ModelPartMatrix(leftPants);
+        this.rightPants = new ModelPartMatrix(rightPants);
+        this.ear = new ModelPartMatrix(ear);
 
-        modelRenderers.add(bipedDeadmau5Head);
-        modelRenderers.add(bipedCape);
+        modelRenderers.add(ear);
+        modelRenderers.add(cloak);
         if (smallArmsIn) {
-            modelRenderers.add(bipedLeftArm);
-            modelRenderers.add(bipedRightArm);
-            modelRenderers.add(bipedLeftArmwear);
-            modelRenderers.add(bipedRightArmwear);
+            modelRenderers.add(leftArm);
+            modelRenderers.add(rightArm);
+            modelRenderers.add(leftSleeve);
+            modelRenderers.add(rightSleeve);
         }
         else {
-            modelRenderers.add(bipedLeftArm);
-            modelRenderers.add(bipedLeftArmwear);
-            modelRenderers.add(bipedRightArmwear);
+            modelRenderers.add(leftArm);
+            modelRenderers.add(leftSleeve);
+            modelRenderers.add(rightSleeve);
         }
-        modelRenderers.add(bipedLeftLeg);
-        modelRenderers.add(bipedLeftLegwear);
-        modelRenderers.add(bipedRightLegwear);
-        modelRenderers.add(bipedBodyWear);
+        modelRenderers.add(leftLeg);
+        modelRenderers.add(leftPants);
+        modelRenderers.add(rightPants);
+        modelRenderers.add(jacket);
     }
 
     @Override
-    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        this.bipedLeftLegwear.copyModelAngles(this.bipedLeftLeg);
-        this.bipedRightLegwear.copyModelAngles(this.bipedRightLeg);
-        this.bipedLeftArmwear.copyModelAngles(this.bipedLeftArm);
-        this.bipedRightArmwear.copyModelAngles(this.bipedRightArm);
-        this.bipedBodyWear.copyModelAngles(this.bipedBody);
-        this.bipedHeadwear.copyModelAngles(this.bipedHead);
-        this.bipedDeadmau5Head.copyModelAngles(this.bipedHead);
+    public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.leftPants.copyFrom(this.leftLeg);
+        this.rightPants.copyFrom(this.rightLeg);
+        this.leftSleeve.copyFrom(this.leftArm);
+        this.rightSleeve.copyFrom(this.rightArm);
+        this.jacket.copyFrom(this.body);
+        this.hat.copyFrom(this.head);
+        this.ear.copyFrom(this.head);
     }
 
     @Override
-    public ModelRenderer getRandomModelRenderer(Random randomIn) {
+    public ModelPart getRandomModelPart(Random randomIn) {
         return this.modelRenderers.get(randomIn.nextInt(this.modelRenderers.size()));
     }
 
     @Override
-    public void copyModelAttributesTo(EntityModel<T> p_217111_1_) {
-        super.copyModelAttributesTo(p_217111_1_);
+    public void copyPropertiesTo(EntityModel<T> p_217111_1_) {
+        super.copyPropertiesTo(p_217111_1_);
         if (p_217111_1_ instanceof MowzieElytraModel) {
             MowzieElytraModel<?> elytraModel = (MowzieElytraModel<?>) p_217111_1_;
-            elytraModel.bipedBody.copyModelAngles(this.bipedBody);
+            elytraModel.bipedBody.copyFrom(this.body);
         }
     }
 
     @Override
-    public void setModelAttributes(BipedModel<T> modelIn) {
-        if (!(modelIn.bipedBody instanceof ModelRendererMatrix)) {
-            modelIn.bipedHead = new ModelRendererMatrix(modelIn.bipedHead);
-            modelIn.bipedHeadwear = new ModelRendererMatrix(modelIn.bipedHeadwear);
-            modelIn.bipedBody = new ModelRendererMatrix(modelIn.bipedBody);
-            modelIn.bipedLeftArm = new ModelRendererMatrix(modelIn.bipedLeftArm);
-            modelIn.bipedRightArm = new ModelRendererMatrix(modelIn.bipedRightArm);
-            modelIn.bipedLeftLeg = new ModelRendererMatrix(modelIn.bipedLeftLeg);
-            modelIn.bipedRightLeg = new ModelRendererMatrix(modelIn.bipedRightLeg);
+    public void copyPropertiesTo(HumanoidModel<T> modelIn) {
+        if (!(modelIn.body instanceof ModelPartMatrix)) {
+            modelIn.head = new ModelPartMatrix(modelIn.head);
+            modelIn.hat = new ModelPartMatrix(modelIn.hat);
+            modelIn.body = new ModelPartMatrix(modelIn.body);
+            modelIn.leftArm = new ModelPartMatrix(modelIn.leftArm);
+            modelIn.rightArm = new ModelPartMatrix(modelIn.rightArm);
+            modelIn.leftLeg = new ModelPartMatrix(modelIn.leftLeg);
+            modelIn.rightLeg = new ModelPartMatrix(modelIn.rightLeg);
         }
-        super.setModelAttributes(modelIn);
+        setUseMatrixMode(modelIn, true);
+        super.copyPropertiesTo(modelIn);
+    }
+
+    public static void setUseMatrixMode(HumanoidModel<? extends LivingEntity> bipedModel, boolean useMatrixMode) {
+        ModelBipedAnimated.setUseMatrixMode(bipedModel, useMatrixMode);
     }
 }

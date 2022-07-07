@@ -5,12 +5,9 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.merchant.villager.VillagerEntity;
-import net.minecraft.world.entity.monster.*;
-import net.minecraft.world.entity.animal.*;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.util.Mth;
@@ -19,6 +16,18 @@ import net.minecraft.world.*;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ServerLevelAccessor;
 
 public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImmune, Enemy {
     private final List<EntityBarakoanToBarakoana> pack = new ArrayList<>();
@@ -34,7 +43,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(3, new BarakoaHurtByTargetAI(this, true));
+        this.goalSelector.addGoal(3, new BarakoaHurtByTargetAI(this));
     }
 
     @Override
@@ -48,8 +57,8 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return MowzieEntity.createAttributes().add(Attributes.ATTACK_DAMAGE, 6 * ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig.attackMultiplier.get())
-                .add(Attributes.MAX_HEALTH, 10 * ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig.healthMultiplier.get());
+        return MowzieEntity.createAttributes().add(Attributes.ATTACK_DAMAGE, 6)
+                .add(Attributes.MAX_HEALTH, 10);
     }
 
     @Override
@@ -66,34 +75,35 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
                 EntityBarakoanToBarakoana hunter = pack.get(i);
                 if (hunter.getTarget() == null) {
                     hunter.getNavigation().moveTo(getX() + packRadius * Mth.cos(theta * i), getY(), getZ() + packRadius * Mth.sin(theta * i), 0.45);
-                    if (getDistance(hunter) > 20 && onGround) {
+                    if (distanceTo(hunter) > 20 && onGround) {
                         hunter.setPos(getX() + packRadius * Mth.cos(theta * i), getY(), getZ() + packRadius * Mth.sin(theta * i));
                     }
                 }
             }
         }
 
-        if (!this.level.isClientSide && this.world.getDifficulty() == Difficulty.PEACEFUL)
+        if (!this.level.isClientSide && this.level.getDifficulty() == Difficulty.PEACEFUL)
         {
-            this.remove();
+            this.discard() ;
         }
     }
 
     @Override
-    public void remove() {
+    public void remove(RemovalReason reason) {
         if (tickCount == 0) {
             pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
         }
-        super.remove();
+        pack.forEach(EntityBarakoanToBarakoana::removeLeader);
+        super.remove(reason);
     }
 
     @Override
-    public boolean isNotColliding(WorldGenLevelReader worldReader) {
+    public boolean checkSpawnObstruction(LevelReader worldReader) {
         if (tickCount == 0) {
             return !worldReader.containsAnyLiquid(this.getBoundingBox()) && worldReader.noCollision(this);
         }
         else {
-            return !worldReader.containsAnyLiquid(this.getBoundingBox()) && worldReader.noCollision(this) && this.world.isUnobstructed(this);
+            return !worldReader.containsAnyLiquid(this.getBoundingBox()) && worldReader.noCollision(this) && this.level.isUnobstructed(this);
         }
     }
 
@@ -136,28 +146,22 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(IServerLevel world, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData livingData, @Nullable CompoundTag compound) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData livingData, @Nullable CompoundTag compound) {
         int size = random.nextInt(2) + 3;
         float theta = (2 * (float) Math.PI / size);
         for (int i = 0; i <= size; i++) {
-            EntityBarakoanToBarakoana tribeHunter = new EntityBarakoanToBarakoana(EntityHandler.BARAKOAN_TO_BARAKOANA, this.world, this);
+            EntityBarakoanToBarakoana tribeHunter = new EntityBarakoanToBarakoana(EntityHandler.BARAKOAN_TO_BARAKOANA.get(), this.level, this);
             tribeHunter.setPos(getX() + 0.1 * Mth.cos(theta * i), getY(), getZ() + 0.1 * Mth.sin(theta * i));
             int weapon = random.nextInt(3) == 0 ? 1 : 0;
             tribeHunter.setWeapon(weapon);
-            level.addFreshEntity(tribeHunter);
+            world.addFreshEntity(tribeHunter);
         }
         return super.finalizeSpawn(world, difficulty, reason, livingData, compound);
     }
 
     @Override
-    public void onDeath(DamageSource source) {
-        super.onDeath(source);
-        pack.forEach(EntityBarakoanToBarakoana::removeLeader);
-    }
-
-    @Override
-    public void remove(boolean keepData) {
-        super.remove(keepData);
+    public void die(DamageSource source) {
+        super.die(source);
         pack.forEach(EntityBarakoanToBarakoana::removeLeader);
     }
 
@@ -170,49 +174,87 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     public boolean checkSpawnRules(LevelAccessor world, MobSpawnType reason) {
         List<LivingEntity> nearby = getEntityLivingBaseNearby(30, 10, 30, 30);
         for (LivingEntity nearbyEntity : nearby) {
-            if (nearbyEntity instanceof EntityBarakoana || nearbyEntity instanceof VillagerEntity || nearbyEntity instanceof EntityBarako || nearbyEntity instanceof Animal) {
+            if (nearbyEntity instanceof EntityBarakoana || nearbyEntity instanceof Villager || nearbyEntity instanceof EntityBarako || nearbyEntity instanceof Animal) {
                 return false;
             }
         }
         return super.checkSpawnRules(world, reason) && world.getDifficulty() != Difficulty.PEACEFUL;
     }
 
-    public int getMaxSpawnedInChunk()
+    public int getMaxSpawnClusterSize()
     {
         return 1;
     }
 
     @Override
     public void checkDespawn() {
-        if (this.world.getDifficulty() == Difficulty.PEACEFUL && this.isDespawnPeaceful()) {
-            this.remove();
-        } else if (!this.isNoDespawnRequired() && !this.requiresCustomPersistence()) {
-            Entity entity = this.world.getClosestPlayer(this, -1.0D);
+        super.checkDespawn();
+        if (this.level.getDifficulty() == Difficulty.PEACEFUL && this.shouldDespawnInPeaceful()) {
+            this.discard() ;
+        } else if (!this.isPersistenceRequired() && !this.requiresCustomPersistence()) {
+            Entity entity = this.level.getNearestPlayer(this, -1.0D);
             net.minecraftforge.eventbus.api.Event.Result result = net.minecraftforge.event.ForgeEventFactory.canEntityDespawn(this);
             if (result == net.minecraftforge.eventbus.api.Event.Result.DENY) {
-                idleTime = 0;
+                noActionTime = 0;
                 entity = null;
             } else if (result == net.minecraftforge.eventbus.api.Event.Result.ALLOW) {
-                this.remove();
+                this.discard() ;
                 entity = null;
             }
             if (entity != null) {
-                double d0 = entity.getDistanceSq(this);
-                if (d0 > 16384.0D && this.canDespawn(d0)) {
+                double d0 = entity.distanceToSqr(this);
+                if (d0 > 16384.0D && this.removeWhenFarAway(d0) && pack != null) {
                     pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
-                    this.remove();
+                    this.discard() ;
                 }
 
-                if (this.idleTime > 600 && this.random.nextInt(800) == 0 && d0 > 1024.0D && this.canDespawn(d0)) {
+                if (this.noActionTime > 600 && this.random.nextInt(800) == 0 && d0 > 1024.0D && this.removeWhenFarAway(d0) && pack != null) {
                     pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
-                    this.remove();
+                    this.discard() ;
                 } else if (d0 < 1024.0D) {
-                    this.idleTime = 0;
+                    this.noActionTime = 0;
                 }
             }
 
         } else {
-            this.idleTime = 0;
+            this.noActionTime = 0;
+        }
+
+
+        if (this.level.getDifficulty() == Difficulty.PEACEFUL && this.shouldDespawnInPeaceful()) {
+            this.discard();
+        } else if (!this.isPersistenceRequired() && !this.requiresCustomPersistence()) {
+            Entity entity = this.level.getNearestPlayer(this, -1.0D);
+            net.minecraftforge.eventbus.api.Event.Result result = net.minecraftforge.event.ForgeEventFactory.canEntityDespawn(this);
+            if (result == net.minecraftforge.eventbus.api.Event.Result.DENY) {
+                noActionTime = 0;
+                entity = null;
+            } else if (result == net.minecraftforge.eventbus.api.Event.Result.ALLOW) {
+                if (pack != null) pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
+                this.discard();
+                entity = null;
+            }
+            if (entity != null) {
+                double d0 = entity.distanceToSqr(this);
+                int i = this.getType().getCategory().getDespawnDistance();
+                int j = i * i;
+                if (d0 > (double)j && this.removeWhenFarAway(d0)) {
+                    if (pack != null) pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
+                    this.discard();
+                }
+
+                int k = this.getType().getCategory().getNoDespawnDistance();
+                int l = k * k;
+                if (this.noActionTime > 600 && this.random.nextInt(800) == 0 && d0 > (double)l && this.removeWhenFarAway(d0)) {
+                    if (pack != null) pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
+                    this.discard();
+                } else if (d0 < (double)l) {
+                    this.noActionTime = 0;
+                }
+            }
+
+        } else {
+            this.noActionTime = 0;
         }
     }
 }

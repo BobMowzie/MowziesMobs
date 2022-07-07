@@ -10,9 +10,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.BlockHitResult;
-import net.minecraft.util.RayTraceContext;
-import net.minecraft.util.HitResult;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
@@ -31,9 +31,9 @@ public class SunstrikeAbility extends Ability {
 
     private static BlockHitResult rayTrace(LivingEntity entity, double reach) {
         Vec3 pos = entity.getEyePosition(0);
-        Vec3 segment = entity.getLookVec();
+        Vec3 segment = entity.getLookAngle();
         segment = pos.add(segment.x * reach, segment.y * reach, segment.z * reach);
-        return entity.world.rayTraceBlocks(new RayTraceContext(pos, segment, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, entity));
+        return entity.level.clip(new ClipContext(pos, segment, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity));
     }
 
     @Override
@@ -41,7 +41,7 @@ public class SunstrikeAbility extends Ability {
         super.tryAbility();
         LivingEntity user = getUser();
         BlockHitResult raytrace = rayTrace(user, REACH);
-        if (raytrace.getType() == HitResult.Type.BLOCK && raytrace.getFace() == Direction.UP) {
+        if (raytrace.getType() == HitResult.Type.BLOCK && raytrace.getDirection() == Direction.UP) {
             this.rayTrace = raytrace;
             return true;
         }
@@ -53,8 +53,8 @@ public class SunstrikeAbility extends Ability {
         super.start();
         LivingEntity user = getUser();
         if (!user.level.isClientSide()) {
-            BlockPos hit = rayTrace.getPos();
-            EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE, user.world, user, hit.x(), hit.y(), hit.z());
+            BlockPos hit = rayTrace.getBlockPos();
+            EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE.get(), user.level, user, hit.getX(), hit.getY(), hit.getZ());
             sunstrike.onSummon();
             user.level.addFreshEntity(sunstrike);
         }
@@ -63,8 +63,8 @@ public class SunstrikeAbility extends Ability {
 
     @Override
     public boolean canUse() {
-        if (getUser() instanceof Player && !((Player)getUser()).inventory.getCurrentItem().isEmpty()) return false;
-        return getUser().isPotionActive(EffectHandler.SUNS_BLESSING) && super.canUse();
+        if (getUser() instanceof Player && !((Player)getUser()).getInventory().getSelected().isEmpty()) return false;
+        return getUser().hasEffect(EffectHandler.SUNS_BLESSING) && super.canUse();
     }
 
     @Override

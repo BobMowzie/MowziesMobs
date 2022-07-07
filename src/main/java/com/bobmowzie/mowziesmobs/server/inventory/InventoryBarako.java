@@ -2,13 +2,13 @@ package com.bobmowzie.mowziesmobs.server.inventory;
 
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class InventoryBarako implements IInventory {
+public final class InventoryBarako implements Container {
     private final EntityBarako barako;
 
     private ItemStack input = ItemStack.EMPTY;
@@ -27,17 +27,17 @@ public final class InventoryBarako implements IInventory {
     }
 
     @Override
-    public int getSizeInventory() {
+    public int getContainerSize() {
         return 1;
     }
 
     @Override
-    public ItemStack getStackInSlot(int index) {
+    public ItemStack getItem(int index) {
         return index == 0 ? input : ItemStack.EMPTY;
     }
 
     @Override
-    public ItemStack decrStackSize(int index, int count) {
+    public ItemStack removeItem(int index, int count) {
         ItemStack stack;
         if (index == 0 && input != ItemStack.EMPTY && count > 0) {
             ItemStack split = input.split(count);
@@ -45,7 +45,7 @@ public final class InventoryBarako implements IInventory {
                 input = ItemStack.EMPTY;
             }
             stack = split;
-            markDirty();
+            setChanged();
         } else {
             stack = ItemStack.EMPTY;
         }
@@ -53,34 +53,34 @@ public final class InventoryBarako implements IInventory {
     }
 
     @Override
-    public ItemStack removeStackFromSlot(int index) {
+    public ItemStack removeItemNoUpdate(int index) {
         if (index != 0) {
             return ItemStack.EMPTY;
         }
         ItemStack s = input;
         input = ItemStack.EMPTY;
-        markDirty();
+        setChanged();
         return s;
     }
 
     @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
+    public void setItem(int index, ItemStack stack) {
         if (index == 0) {
             input = stack;
-            if (stack != ItemStack.EMPTY && stack.getCount() > getInventoryStackLimit()) {
-                stack.setCount(getInventoryStackLimit());
+            if (stack != ItemStack.EMPTY && stack.getCount() > getMaxStackSize()) {
+                stack.setCount(getMaxStackSize());
             }
-            markDirty();
+            setChanged();
         }
     }
 
     @Override
-    public int getInventoryStackLimit() {
+    public int getMaxStackSize() {
         return 64;
     }
 
     @Override
-    public void markDirty() {
+    public void setChanged() {
         if (listeners != null) {
             for (ChangeListener listener : listeners) {
                 listener.onChange(this);
@@ -89,29 +89,29 @@ public final class InventoryBarako implements IInventory {
     }
 
     @Override
-    public boolean isUsableByPlayer(Player player) {
+    public boolean stillValid(Player player) {
         return barako.getCustomer() == player;
     }
 
     @Override
-    public void openInventory(Player player) {}
+    public void startOpen(Player player) {}
 
     @Override
-    public void closeInventory(Player player) {}
+    public void stopOpen(Player player) {}
 
     @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack) {
+    public boolean canPlaceItem(int index, ItemStack stack) {
         return true;
     }
 
     @Override
-    public void clear() {
+    public void clearContent() {
         input = ItemStack.EMPTY;
-        markDirty();
+        setChanged();
     }
 
     public interface ChangeListener {
-        void onChange(IInventory inv);
+        void onChange(Container inv);
     }
 
     @Override

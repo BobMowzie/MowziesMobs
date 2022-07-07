@@ -20,28 +20,30 @@ import net.minecraft.world.entity.ai.goal.MoveTowardsRestrictionGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.monster.Enemy;
-import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.management.PreYggdrasilConverter;
-import net.minecraft.sounds.ActionResultType;
-import net.minecraft.sounds.Hand;
+import net.minecraft.server.players.OldUsersConverter;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.*;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.UUID;
+
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 
 public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstrikeImmune, Enemy {
     private static final TradeStore DEFAULT = new TradeStore.Builder()
@@ -62,8 +64,9 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
         .build();
 
     private static final EntityDataAccessor<Optional<Trade>> TRADE = SynchedEntityData.defineId(EntityBarakoaVillager.class, ServerProxy.OPTIONAL_TRADE);
-    //    private static final EntityDataAccessor<Integer> NUM_SALES = SynchedEntityData.defineId(EntityBarakoaya.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Optional<UUID>> MISBEHAVED_PLAYER = SynchedEntityData.defineId(EntityBarakoaVillager.class, EntityDataSerializers.OPTIONAL_UNIQUE_ID);
+    //    private static final DataParameter<Integer> NUM_SALES = EntityDataManager.createKey(EntityBarakoaya.class, DataSerializers.VARINT);
+    private static final EntityDataAccessor<Optional<UUID>> MISBEHAVED_PLAYER = SynchedEntityData.defineId(EntityBarakoaVillager.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Boolean> IS_TRADING = SynchedEntityData.defineId(EntityBarakoaVillager.class, EntityDataSerializers.BOOLEAN);
 
     //TODO: Sale limits. After X sales, go out of stock and change trade.
 
@@ -96,18 +99,18 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
 
     @Override
     protected void registerTargetGoals() {
-        targetSelector.addGoal(3, new BarakoaHurtByTargetAI(this, true));
+        targetSelector.addGoal(3, new BarakoaHurtByTargetAI(this));
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<Player>(this, Player.class, 0, true, true, target -> {
             if (target instanceof Player) {
-                if (this.world.getDifficulty() == Difficulty.PEACEFUL) return false;
-                ItemStack headArmorStack = ((Player) target).inventory.armorInventory.get(3);
+                if (this.level.getDifficulty() == Difficulty.PEACEFUL) return false;
+                ItemStack headArmorStack = ((Player) target).getInventory().armor.get(3);
                 return !(headArmorStack.getItem() instanceof BarakoaMask) || target == getMisbehavedPlayer();
             }
             return true;
         }){
             @Override
-            public void resetTask() {
-                super.resetTask();
+            public void stop() {
+                super.stop();
                 setMisbehavedPlayerId(null);
             }
         });
@@ -119,8 +122,9 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
     protected void defineSynchedData() {
         super.defineSynchedData();
         getEntityData().define(TRADE, Optional.empty());
-        this.dataManager.register(MISBEHAVED_PLAYER, Optional.empty());
-//        getEntityData().define(NUM_SALES, MAX_SALES);
+        this.entityData.define(MISBEHAVED_PLAYER, Optional.empty());
+        this.entityData.define(IS_TRADING, false);
+//        getDataManager().register(NUM_SALES, MAX_SALES);
     }
 
     public void setOfferingTrade(Trade trade) {
@@ -132,11 +136,11 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
     }
 
     //    public int getNumSales() {
-//        return getEntityData().get(NUM_SALES);
+//        return getDataManager().get(NUM_SALES);
 //    }
 //
 //    public void setNumSales(int numSales) {
-//        getEntityData().set(NUM_SALES, numSales);
+//        getDataManager().set(NUM_SALES, numSales);
 //    }
 
     public boolean isOfferingTrade() {
@@ -147,6 +151,7 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
     }
 
     public void setCustomer(Player customer) {
+        setTrading(customer != null);
         this.customer = customer;
     }
 
@@ -154,8 +159,12 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
         return customer;
     }
 
+    public void setTrading(boolean trading) {
+        entityData.set(IS_TRADING, trading);
+    }
+
     public boolean isTrading() {
-        return customer != null;
+        return entityData.get(IS_TRADING);
     }
 
     protected boolean canHoldVaryingWeapons() {
@@ -169,23 +178,23 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
             if (((Player) getTarget()).isCreative() || getTarget().isSpectator()) setTarget(null);
         }
         if ((!isOfferingTrade() || timeOffering <= 0) && tradeStore.hasStock()) {
-            setOfferingTrade(tradeStore.get(rand));
+            setOfferingTrade(tradeStore.get(random));
             timeOffering = random.nextInt(MAX_OFFER_TIME - MIN_OFFER_TIME + 1) + MIN_OFFER_TIME;
         }
     }
 
-    public void openGUI(Player Player) {
-        setCustomer(Player);
+    public void openGUI(Player playerEntity) {
+        setCustomer(playerEntity);
         MowziesMobs.PROXY.setReferencedMob(this);
         if (!this.level.isClientSide && getTarget() == null && isAlive()) {
-            Player.openContainer(new INamedContainerProvider() {
+            playerEntity.openMenu(new MenuProvider() {
                 @Override
-                public Container createMenu(int id, PlayerInventory playerInventory, Player player) {
+                public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player) {
                     return new ContainerBarakoayaTrade(id, EntityBarakoaVillager.this, playerInventory);
                 }
 
                 @Override
-                public TextComponent getDisplayName() {
+                public Component getDisplayName() {
                     return EntityBarakoaVillager.this.getDisplayName();
                 }
             });
@@ -193,27 +202,27 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
     }
 
     @Override
-    protected ActionResultType getEntityInteractionResult(Player player, Hand hand) {
+    protected InteractionResult mobInteract(Player player, InteractionHand hand) {
         if (canTradeWith(player) && getTarget() == null && isAlive()) {
             openGUI(player);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.sidedSuccess(this.level.isClientSide);
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     public boolean canTradeWith(Player player) {
         if (isTrading()) {
             return false;
         }
-        ItemStack headStack = player.inventory.armorInventory.get(3);
+        ItemStack headStack = player.getInventory().armor.get(3);
         return headStack.getItem() instanceof BarakoaMask && isOfferingTrade();
     }
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(IServerLevel world, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData livingData, @Nullable CompoundTag compound) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData livingData, @Nullable CompoundTag compound) {
         tradeStore = DEFAULT;
-        if (reason == MobSpawnType.COMMAND) setHomePosAndDistance(getPosition(), 25);
+        if (reason == MobSpawnType.COMMAND) restrictTo(blockPosition(), 25);
         return super.finalizeSpawn(world, difficulty, reason, livingData, compound);
     }
 
@@ -230,12 +239,12 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
             compound.put("offeringTrade", getOfferingTrade().serialize());
         }
         compound.putInt("timeOffering", timeOffering);
-        compound.putInt("HomePosX", this.getHomePosition().x());
-        compound.putInt("HomePosY", this.getHomePosition().y());
-        compound.putInt("HomePosZ", this.getHomePosition().z());
-        compound.putInt("HomeDist", (int) this.getMaximumHomeDistance());
+        compound.putInt("HomePosX", this.getRestrictCenter().getX());
+        compound.putInt("HomePosY", this.getRestrictCenter().getY());
+        compound.putInt("HomePosZ", this.getRestrictCenter().getZ());
+        compound.putInt("HomeDist", (int) this.getRestrictRadius());
         if (this.getMisbehavedPlayerId() != null) {
-            compound.putUniqueId("MisbehavedPlayer", this.getMisbehavedPlayerId());
+            compound.putUUID("MisbehavedPlayer", this.getMisbehavedPlayerId());
         }
 //        compound.setInteger("numSales", getNumSales());
     }
@@ -250,13 +259,13 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
         int j = compound.getInt("HomePosY");
         int k = compound.getInt("HomePosZ");
         int dist = compound.getInt("HomeDist");
-        this.setHomePosAndDistance(new BlockPos(i, j, k), dist);
+        this.restrictTo(new BlockPos(i, j, k), dist);
         UUID uuid;
-        if (compound.hasUniqueId("MisbehavedPlayer")) {
-            uuid = compound.getUniqueId("MisbehavedPlayer");
+        if (compound.hasUUID("MisbehavedPlayer")) {
+            uuid = compound.getUUID("MisbehavedPlayer");
         } else {
             String s = compound.getString("MisbehavedPlayer");
-            uuid = PreYggdrasilConverter.convertMobOwnerIfNeeded(this.getServer(), s);
+            uuid = OldUsersConverter.convertMobOwnerIfNecessary(this.getServer(), s);
         }
 
         if (uuid != null) {
@@ -271,18 +280,18 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
 
     @Nullable
     public UUID getMisbehavedPlayerId() {
-        return this.dataManager.get(MISBEHAVED_PLAYER).orElse((UUID)null);
+        return this.entityData.get(MISBEHAVED_PLAYER).orElse((UUID)null);
     }
 
     public void setMisbehavedPlayerId(@Nullable UUID p_184754_1_) {
-        this.dataManager.set(MISBEHAVED_PLAYER, Optional.ofNullable(p_184754_1_));
+        this.entityData.set(MISBEHAVED_PLAYER, Optional.ofNullable(p_184754_1_));
     }
 
     @Nullable
     public LivingEntity getMisbehavedPlayer() {
         try {
             UUID uuid = this.getMisbehavedPlayerId();
-            return uuid == null ? null : this.world.getPlayerByUuid(uuid);
+            return uuid == null ? null : this.level.getPlayerByUUID(uuid);
         } catch (IllegalArgumentException illegalargumentexception) {
             return null;
         }

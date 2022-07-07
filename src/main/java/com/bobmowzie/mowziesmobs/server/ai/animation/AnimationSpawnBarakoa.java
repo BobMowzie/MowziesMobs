@@ -9,30 +9,32 @@ import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.scoreboard.ScorePlayerTeam;
-import net.minecraft.world.IServerLevel;
+import net.minecraft.world.scores.PlayerTeam;
+import net.minecraft.world.level.ServerLevelAccessor;
 
 import java.util.EnumSet;
+
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class AnimationSpawnBarakoa extends SimpleAnimationAI<EntityBarako> {
     private boolean spawnSunblockers;
 
     public AnimationSpawnBarakoa(EntityBarako entity, Animation animation, boolean spawnSunblockers) {
         super(entity, animation);
-        this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.JUMP, Flag.LOOK));
+        this.setFlags(EnumSet.of(Flag.MOVE, Flag.JUMP, Flag.LOOK));
         this.spawnSunblockers = spawnSunblockers;
     }
 
     @Override
-    public void startExecuting() {
-        super.startExecuting();
+    public void start() {
+        super.start();
         entity.barakoaSpawnCount++;
         entity.playSound(MMSounds.ENTITY_BARAKOA_INHALE.get(), 1.2f, 0.5f);
     }
 
     @Override
-    public void resetTask() {
-        super.resetTask();
+    public void stop() {
+        super.stop();
         if (entity.barakoaSpawnCount < 3 && (entity.targetDistance > 6 || entity.getTarget() == null || spawnSunblockers)) {
             if (spawnSunblockers) AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityBarako.SPAWN_SUNBLOCKERS_ANIMATION);
             else AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityBarako.SPAWN_ANIMATION);
@@ -49,7 +51,7 @@ public class AnimationSpawnBarakoa extends SimpleAnimationAI<EntityBarako> {
         if (entity.getAnimationTick() == 6) {
             entity.playSound(MMSounds.ENTITY_BARAKO_BELLY.get(), 1.5f, 1);
             entity.playSound(MMSounds.ENTITY_BARAKOA_BLOWDART.get(), 1.5f, 0.5f);
-            double angle = entity.getYRot()Head;
+            double angle = entity.yHeadRot;
             if (angle < 0) {
                 angle = angle + 360;
             }
@@ -60,23 +62,23 @@ public class AnimationSpawnBarakoa extends SimpleAnimationAI<EntityBarako> {
             }
             EntityBarakoaVillager barakoa;
             if (spawnSunblockers) {
-                barakoa = new EntityBarakoaya(EntityHandler.BARAKOAYA, entity.world);
+                barakoa = new EntityBarakoaya(EntityHandler.BARAKOAYA.get(), entity.level);
                 ((EntityBarakoaya)barakoa).hasTriedOrSucceededTeleport = false;
             }
-            else barakoa = new EntityBarakoaVillager(EntityHandler.BARAKOA_VILLAGER, entity.world);
-            barakoa.setPositionAndRotation(entity.getX() + 2 * Math.sin(-angle * (Math.PI / 180)), entity.getY() + 1.5, entity.getZ() + 2 * Math.cos(-angle * (Math.PI / 180)), entity.getYRot()Head, 0);
+            else barakoa = new EntityBarakoaVillager(EntityHandler.BARAKOA_VILLAGER.get(), entity.level);
+            barakoa.absMoveTo(entity.getX() + 2 * Math.sin(-angle * (Math.PI / 180)), entity.getY() + 1.5, entity.getZ() + 2 * Math.cos(-angle * (Math.PI / 180)), entity.yHeadRot, 0);
             barakoa.setActive(false);
             barakoa.active = false;
-            barakoa.finalizeSpawn((IServerLevel) entity.getEntityWorld(), entity.world.getDifficultyForLocation(barakoa.getPosition()), MobSpawnType.MOB_SUMMONED, null, null);
-            barakoa.setHomePosAndDistance(entity.getHomePosition(), 25);
-            if (entity.getTeam() instanceof ScorePlayerTeam) {
-                barakoa.world.getScoreboard().addPlayerToTeam(barakoa.getScoreboardName(), (ScorePlayerTeam) entity.getTeam());
+            barakoa.finalizeSpawn((ServerLevelAccessor) entity.getCommandSenderWorld(), entity.level.getCurrentDifficultyAt(barakoa.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
+            barakoa.restrictTo(entity.getRestrictCenter(), 25);
+            if (entity.getTeam() instanceof PlayerTeam) {
+                barakoa.level.getScoreboard().addPlayerToTeam(barakoa.getScoreboardName(), (PlayerTeam) entity.getTeam());
             }
             entity.level.addFreshEntity(barakoa);
             barakoa.setDeltaMovement(0.7 * Math.sin(-angle * (Math.PI / 180)), 0.5, 0.7 * Math.cos(-angle * (Math.PI / 180)));
             barakoa.setTarget(entity.getTarget());
             if (entity.getTarget() instanceof Player) {
-                barakoa.setMisbehavedPlayerId(entity.getTarget().getUniqueID());
+                barakoa.setMisbehavedPlayerId(entity.getTarget().getUUID());
             }
         }
     }

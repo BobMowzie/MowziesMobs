@@ -29,14 +29,14 @@ public class SolarBeamAbility extends Ability {
         super.start();
         LivingEntity user = getUser();
         if (!getUser().level.isClientSide()) {
-            EntitySolarBeam solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM, user.world, user, user.getX(), user.getY() + 1.2f, user.getZ(), (float) ((user.getYRot()Head + 90) * Math.PI / 180), (float) (-user.getXRot() * Math.PI / 180), 55);
+            EntitySolarBeam solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM.get(), user.level, user, user.getX(), user.getY() + 1.2f, user.getZ(), (float) ((user.yHeadRot + 90) * Math.PI / 180), (float) (-user.getXRot() * Math.PI / 180), 55);
             solarBeam.setHasPlayer(true);
             user.level.addFreshEntity(solarBeam);
-            user.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 80, 2, false, false));
-            MobEffectInstance sunsBlessingInstance = user.getActivePotionEffect(EffectHandler.SUNS_BLESSING);
+            user.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 2, false, false));
+            MobEffectInstance sunsBlessingInstance = user.getEffect(EffectHandler.SUNS_BLESSING);
             if (sunsBlessingInstance != null) {
                 int duration = sunsBlessingInstance.getDuration();
-                user.removePotionEffect(EffectHandler.SUNS_BLESSING);
+                user.removeEffect(EffectHandler.SUNS_BLESSING);
                 int solarBeamCost = ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.solarBeamCost.get() * 60 * 20;
                 if (duration - solarBeamCost > 0) {
                     user.addEffect(new MobEffectInstance(EffectHandler.SUNS_BLESSING, duration - solarBeamCost, 0, false, false));
@@ -57,12 +57,12 @@ public class SolarBeamAbility extends Ability {
     @Override
     public void end() {
         super.end();
-        if (solarBeam != null) solarBeam.remove();
+        if (solarBeam != null) solarBeam.discard() ;
     }
 
     @Override
     public boolean canUse() {
-        if (getUser() instanceof Player && !((Player)getUser()).inventory.getCurrentItem().isEmpty()) return false;
-        return getUser().isPotionActive(EffectHandler.SUNS_BLESSING) && super.canUse();
+        if (getUser() instanceof Player && !((Player)getUser()).getInventory().getSelected().isEmpty()) return false;
+        return getUser().hasEffect(EffectHandler.SUNS_BLESSING) && super.canUse();
     }
 }

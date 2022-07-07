@@ -2,9 +2,10 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.resources.model.ModelRenderer;
+import com.ilexiconn.llibrary.client.model.tools.BasicModelRenderer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -450,7 +451,7 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
         head.addChild(eyeLeftSocket);
 
         if (eyesLayer) {
-            for (ModelRenderer box : boxList) {
+            for (BasicModelRenderer box : boxList) {
                 if (box instanceof AdvancedModelRenderer) {
                     ((AdvancedModelRenderer)box).setIsHidden(true);
                 }
@@ -478,7 +479,7 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
     }
 
     @Override
-    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         this.rootBox.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
@@ -553,7 +554,8 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
 
         float frame = entity.frame + delta;
         limbSwing = (float) ((4 * Math.PI * frame - 30 * Mth.sin((float) (0.1 * Math.PI * (frame - 9))) - 27 * Math.PI) / (4 * Math.PI)) + 5f;
-        limbSwingAmount = (float) Math.pow(Mth.sin((float) (entity.walkAnim.getTimer() * Math.PI * 0.05)), 2);
+        float walkTimerInterp = entity.walkAnim.getPrevTimer() + (entity.walkAnim.getTimer() - entity.walkAnim.getPrevTimer()) * delta;
+        limbSwingAmount = (float) Math.pow(Mth.sin((float) (walkTimerInterp * Math.PI * 0.05)), 2);
 
         float globalSpeed = (float) (Math.PI * 0.05);
         float globalDegree = 0.8F;

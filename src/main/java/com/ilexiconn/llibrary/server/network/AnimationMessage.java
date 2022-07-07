@@ -38,7 +38,7 @@ public class AnimationMessage {
         public void accept(final AnimationMessage message, final Supplier<NetworkEvent.Context> contextSupplier) {
             final NetworkEvent.Context context = contextSupplier.get();
             context.enqueueWork(() -> {
-                IAnimatedEntity entity = (IAnimatedEntity) Minecraft.getInstance().world.getEntityByID(message.entityID);
+                IAnimatedEntity entity = (IAnimatedEntity) Minecraft.getInstance().level.getEntity(message.entityID);
                 if (entity != null) {
                     if (message.index == -1) {
                         entity.setAnimation(IAnimatedEntity.NO_ANIMATION);

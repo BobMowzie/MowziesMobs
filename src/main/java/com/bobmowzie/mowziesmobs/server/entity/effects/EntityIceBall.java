@@ -10,7 +10,6 @@ import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability.IFrozenCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
-import net.minecraft.world.entity.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.resources.ResourceLocation;
@@ -19,12 +18,16 @@ import net.minecraft.world.level.Level;
 
 import java.util.List;
 
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
+
 /**
  * Created by BobMowzie on 9/2/2018.
  */
 public class EntityIceBall extends EntityMagicEffect {
     public EntityIceBall(Level world) {
-        super(EntityHandler.ICE_BALL, world);
+        super(EntityHandler.ICE_BALL.get(), world);
     }
 
     public EntityIceBall(EntityType<? extends EntityIceBall> type, Level worldIn) {
@@ -34,7 +37,7 @@ public class EntityIceBall extends EntityMagicEffect {
     public EntityIceBall(EntityType<? extends EntityIceBall> type, Level worldIn, LivingEntity caster) {
         this(type, worldIn);
         if (!level.isClientSide) {
-            this.setCasterID(caster.getEntityId());
+            this.setCasterID(caster.getId());
         }
     }
 
@@ -56,21 +59,21 @@ public class EntityIceBall extends EntityMagicEffect {
                 List<? extends String> freezeImmune = ConfigHandler.COMMON.GENERAL.freeze_blacklist.get();
                 ResourceLocation mobName = EntityType.getKey(entity.getType());
                 if (freezeImmune.contains(mobName.toString())) continue;
-                if (entity.hurt(DamageSource.causeIndirectMagicDamage(this, caster), 3f * ConfigHandler.COMMON.MOBS.FROSTMAW.combatConfig.attackMultiplier.get().floatValue())) {
-                    IFrozenCapability capability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+                if (entity.hurt(DamageSource.indirectMagic(this, caster), 3f * ConfigHandler.COMMON.MOBS.FROSTMAW.combatConfig.attackMultiplier.get().floatValue())) {
+                    IFrozenCapability capability = CapabilityHandler.getCapability(entity, CapabilityHandler.FROZEN_CAPABILITY);
                     if (capability != null) capability.addFreezeProgress(entity, 1);
                 }
             }
         }
 
-        if (!world.noCollision(this, getBoundingBox().grow(0.15))) {
+        if (!level.noCollision(this, getBoundingBox().inflate(0.15))) {
             explode();
         }
 
         if (level.isClientSide) {
             float scale = 2f;
             double x = getX();
-            double y = getY() + getHeight() / 2;
+            double y = getY() + getBbHeight() / 2;
             double z = getZ();
             double motionX = getDeltaMovement().x;
             double motionY = getDeltaMovement().y;
@@ -106,7 +109,7 @@ public class EntityIceBall extends EntityMagicEffect {
                 level.addParticle(new ParticleRing.RingData(yaw, pitch, 20, 0.9f, 0.9f, 1f, 0.4f, scale * 16f, false, ParticleRing.EnumRingBehavior.GROW), x, y, z, 0, 0, 0);
             }
         }
-        if (tickCount > 50) remove();
+        if (tickCount > 50) discard() ;
     }
 
     @Override
@@ -132,18 +135,18 @@ public class EntityIceBall extends EntityMagicEffect {
         if (level.isClientSide) {
             for (int i = 0; i < 8; i++) {
                 Vec3 particlePos = new Vec3(random.nextFloat() * 0.3, 0, 0);
-                particlePos = particlePos.rotateYaw((float) (random.nextFloat() * 2 * Math.PI));
-                particlePos = particlePos.rotatePitch((float) (random.nextFloat() * 2 * Math.PI));
+                particlePos = particlePos.yRot((float) (random.nextFloat() * 2 * Math.PI));
+                particlePos = particlePos.xRot((float) (random.nextFloat() * 2 * Math.PI));
                 float value = random.nextFloat() * 0.15f;
                 level.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f + value, 0.75f + value, 1f, 10f + random.nextFloat() * 20f, 40, ParticleCloud.EnumCloudBehavior.GROW, 1f), getX() + particlePos.x, getY() + particlePos.y, getZ() + particlePos.z, particlePos.x, particlePos.y, particlePos.z);
             }
             for (int i = 0; i < 10; i++) {
                 Vec3 particlePos = new Vec3(random.nextFloat() * 0.3, 0, 0);
-                particlePos = particlePos.rotateYaw((float) (random.nextFloat() * 2 * Math.PI));
-                particlePos = particlePos.rotatePitch((float) (random.nextFloat() * 2 * Math.PI));
+                particlePos = particlePos.yRot((float) (random.nextFloat() * 2 * Math.PI));
+                particlePos = particlePos.xRot((float) (random.nextFloat() * 2 * Math.PI));
                 level.addParticle(new ParticleSnowFlake.SnowflakeData(40, false), getX() + particlePos.x, getY() + particlePos.y, getZ() + particlePos.z, particlePos.x, particlePos.y, particlePos.z);
             }
         }
-        remove();
+        discard() ;
     }
 }

@@ -5,56 +5,60 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.HorizontalBlock;
-import net.minecraft.world.item.BlockItemUseContext;
-import net.minecraft.state.EnumProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.sounds.*;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.util.*;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.shapes.ISelectionContext;
-import net.minecraft.util.shapes.VoxelShape;
-import net.minecraft.util.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.level.LevelGenLevelReader;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
-public class BlockGrottol extends HorizontalBlock {
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
+import net.minecraft.core.Direction;
+
+public class BlockGrottol extends HorizontalDirectionalBlock {
     public static final EnumProperty<Variant> VARIANT = EnumProperty.create("variant",Variant.class);
 
-    private static final VoxelShape BOUNDS = VoxelShapes.create(
+    private static final VoxelShape BOUNDS = Shapes.box(
             0.0625F, 0.0F, 0.0625F,
             0.9375F, 0.9375F, 0.9375F
     );
 
     public BlockGrottol(Properties properties) {
         super(properties);
-        setDefaultState(getStateContainer().getBaseState()
-            .with(HORIZONTAL_FACING, Direction.NORTH)
-            .with(VARIANT, Variant.DIAMOND)
+        registerDefaultState(getStateDefinition().any()
+            .setValue(FACING, Direction.NORTH)
+            .setValue(VARIANT, Variant.DIAMOND)
         );
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
-        builder.add(HORIZONTAL_FACING);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(FACING);
         builder.add(VARIANT);
     }
 
     @Override
     @Deprecated
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         return BOUNDS;
     }
 
     @Override
     @Deprecated
-    public boolean isValidPosition(BlockState state, WorldGenLevelReader world, BlockPos pos) {
-        return super.isValidPosition(state, world, pos) && hasSupport(world, pos);
+    public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
+        return super.canSurvive(state, world, pos) && hasSupport(world, pos);
     }
 
     @Override
@@ -66,8 +70,8 @@ public class BlockGrottol extends HorizontalBlock {
 
     @Nullable
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return getDefaultState().with(HORIZONTAL_FACING, context.getPlacementHorizontalFacing().getOpposite());
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
 
     /*@Override
@@ -83,11 +87,11 @@ public class BlockGrottol extends HorizontalBlock {
             .withProperty(FACING, Direction.byHorizontalIndex(meta & 0b0011));
     }*/
 
-    private static boolean hasSupport(IBlockReader world, BlockPos pos) {
-        return level.getBlockState(pos.below()).getMaterial().isSolid();
+    private static boolean hasSupport(BlockGetter world, BlockPos pos) {
+        return world.getBlockState(pos.below()).getMaterial().isSolid();
     }
 
-    public enum Variant implements IStringSerializable {
+    public enum Variant implements StringRepresentable {
         DIAMOND(0, "diamond"),
         BLACK_PINK(1, "black_pink");
 
@@ -117,7 +121,7 @@ public class BlockGrottol extends HorizontalBlock {
         }
 
         @Override
-        public final String getString() {
+        public final String getSerializedName() {
             return name;
         }
 

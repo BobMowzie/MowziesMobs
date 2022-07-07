@@ -1,9 +1,12 @@
 package com.bobmowzie.mowziesmobs.client.model.tools.geckolib;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.RigUtils;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.world.phys.*;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
+
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector4f;
+import net.minecraft.world.phys.Vec3;
 
 public class MowzieGeoBone extends GeoBone {
     private Matrix4f modelSpaceXform;

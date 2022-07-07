@@ -2,11 +2,13 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.dynamics.DynamicChain;
 import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
+import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec3;
 
@@ -660,7 +662,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
     }
 
     @Override
-    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         this.root.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         if (tail != null) tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha, tailDynamic);
         for (AdvancedModelRenderer AdvancedModelRenderer : tailOriginal) {
@@ -682,8 +684,9 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         float nonHoverAnim = 1f - hoverAnim;
 
         float flapAnim = entity.prevFlapAnimFrac + (entity.flapAnimFrac - entity.prevFlapAnimFrac) * partial;
-
-        if (!entity.isPotionActive(EffectHandler.FROZEN)) {
+        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.FROZEN_CAPABILITY);
+        boolean frozen = frozenCapability != null && frozenCapability.getFrozen();
+        if (!frozen) {
             //Hover anim
             float globalSpeed = 0.28f;
             float globalDegree = 1f * hoverAnim;
@@ -775,8 +778,9 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         this.setDefaultAngle(entity, limbSwing, limbSwingAmount, headYaw, headPitch, delta);
         float frame = entity.frame + delta;
 
-        if (!entity.isPotionActive(EffectHandler.FROZEN)) {
-
+        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.FROZEN_CAPABILITY);
+        boolean frozen = frozenCapability != null && frozenCapability.getFrozen();
+        if (!frozen) {
 
             if (entity.getAnimation() == EntityNaga.FLAP_ANIMATION) {
                 animator.setAnimation(EntityNaga.FLAP_ANIMATION);
@@ -1217,7 +1221,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
             float nonHoverAnim = 1f - hoverAnim;
             float flapAnim = entity.prevFlapAnimFrac + (entity.flapAnimFrac - entity.prevFlapAnimFrac) * delta;
             if (entity.getAnimation() != EntityNaga.DIE_AIR_ANIMATION) {
-                float pitch = entity.xRot0 + (entity.getXRot() - entity.xRot0) * delta;
+                float pitch = entity.xRotO + (entity.getXRot() - entity.xRotO) * delta;
                 pitch = (float) (-pitch * Math.PI / 180f);
                 root.rotateAngleX += pitch * nonHoverAnim;
                 shoulderLJoint.rotateAngleX -= Math.min(pitch, 0) * nonHoverAnim * (1-folder);
@@ -1234,7 +1238,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
             jawControls();
             wingFoldControls();
 
-            entity.dc.updateChain(Minecraft.getInstance().getRenderPartialTicks(), tailOriginal, tailDynamic, 0.5f, 0.5f, 0.5f, 0.97f, 30, true);
+            entity.dc.updateChain(Minecraft.getInstance().getFrameTime(), tailOriginal, tailDynamic, 0.5f, 0.5f, 0.5f, 0.97f, 30, true);
 
             computeWingWebbing();
 

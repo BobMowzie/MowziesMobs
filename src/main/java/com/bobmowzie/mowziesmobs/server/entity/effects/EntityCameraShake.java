@@ -1,12 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
-import net.minecraft.client.entity.player.ClientPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Packet;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -28,12 +27,12 @@ public class EntityCameraShake extends Entity {
     }
 
     public EntityCameraShake(Level world, Vec3 position, float radius, float magnitude, int duration, int fadeDuration) {
-        super(EntityHandler.CAMERA_SHAKE, world);
+        super(EntityHandler.CAMERA_SHAKE.get(), world);
         setRadius(radius);
         setMagnitude(magnitude);
         setDuration(duration);
         setFadeDuration(fadeDuration);
-        setPosition(position.x(), position.y(), position.z());
+        setPos(position.x(), position.y(), position.z());
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -42,14 +41,14 @@ public class EntityCameraShake extends Entity {
         float timeFrac = 1.0f - (ticksDelta - getDuration()) / (getFadeDuration() + 1.0f);
         float baseAmount = ticksDelta < getDuration() ? getMagnitude() : timeFrac * timeFrac * getMagnitude();
         Vec3 playerPos = player.getEyePosition(delta);
-        float distFrac = (float) (1.0f - Mth.clamp(getPositionVec().distanceTo(playerPos) / getRadius(), 0, 1));
+        float distFrac = (float) (1.0f - Mth.clamp(position().distanceTo(playerPos) / getRadius(), 0, 1));
         return baseAmount * distFrac * distFrac;
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (tickCount > getDuration() + getFadeDuration()) remove();
+        if (tickCount > getDuration() + getFadeDuration()) discard() ;
     }
 
     @Override
@@ -116,9 +115,9 @@ public class EntityCameraShake extends Entity {
     }
 
     public static void cameraShake(Level world, Vec3 position, float radius, float magnitude, int duration, int fadeDuration) {
-        if (!level.isClientSide) {
+        if (!world.isClientSide) {
             EntityCameraShake cameraShake = new EntityCameraShake(world, position, radius, magnitude, duration, fadeDuration);
-            level.addFreshEntity(cameraShake);
+            world.addFreshEntity(cameraShake);
         }
     }
 }

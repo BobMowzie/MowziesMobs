@@ -7,23 +7,25 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-public class MMBossEventServer extends ServerBossEvent {
+import net.minecraft.world.BossEvent.BossBarOverlay;
+
+public class MMBossInfoServer extends ServerBossEvent {
     private final MowzieEntity entity;
 
     private final Set<ServerPlayer> unseen = new HashSet<>();
 
-    public MMBossEventServer(MowzieEntity entity) {
-        super(entity.getDisplayName(), entity.bossBarColor(), Overlay.PROGRESS);
+    public MMBossInfoServer(MowzieEntity entity) {
+        super(entity.getDisplayName(), entity.bossBarColor(), BossBarOverlay.PROGRESS);
         this.setVisible(entity.hasBossBar());
         this.entity = entity;
     }
 
     public void update() {
-        this.setPercent(this.entity.getHealth() / this.entity.getMaxHealth());
+        this.setProgress(this.entity.getHealth() / this.entity.getMaxHealth());
         Iterator<ServerPlayer> it = this.unseen.iterator();
         while (it.hasNext()) {
             ServerPlayer player = it.next();
-            if (this.entity.getEntitySenses().canSee(player)) {
+            if (this.entity.getSensing().hasLineOfSight(player)) {
                 super.addPlayer(player);
                 it.remove();
             }
@@ -32,7 +34,7 @@ public class MMBossEventServer extends ServerBossEvent {
 
     @Override
     public void addPlayer(ServerPlayer player) {
-        if (this.entity.getEntitySenses().canSee(player)) {
+        if (this.entity.getSensing().hasLineOfSight(player)) {
             super.addPlayer(player);
         } else {
             this.unseen.add(player);

@@ -4,7 +4,6 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.ilexiconn.llibrary.server.event.AnimationEvent;
 import com.ilexiconn.llibrary.server.network.AnimationMessage;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import org.apache.commons.lang3.ArrayUtils;
@@ -28,7 +27,7 @@ public enum AnimationHandler {
             return;
         }
         entity.setAnimation(animation);
-        MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new AnimationMessage(entity.getEntityId(), ArrayUtils.indexOf(entity.getAnimations(), animation)));
+        MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new AnimationMessage(entity.getId(), ArrayUtils.indexOf(entity.getAnimations(), animation)));
     }
 
     /**

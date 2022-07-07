@@ -32,12 +32,12 @@ public class MessagePlayerSolarBeam {
             final NetworkEvent.Context context = contextSupplier.get();
             final ServerPlayer player = context.getSender();
             context.enqueueWork(() -> {
-                EntitySolarBeam solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM, player.world, player, player.getX(), player.getY() + 1.2f, player.getZ(), (float) ((player.getYRot()Head + 90) * Math.PI / 180), (float) (-player.getXRot() * Math.PI / 180), 55);
+                EntitySolarBeam solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM.get(), player.level, player, player.getX(), player.getY() + 1.2f, player.getZ(), (float) ((player.yHeadRot + 90) * Math.PI / 180), (float) (-player.getXRot() * Math.PI / 180), 55);
                 solarBeam.setHasPlayer(true);
                 player.level.addFreshEntity(solarBeam);
-                player.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 80, 2, false, false));
-                int duration = player.getActivePotionEffect(EffectHandler.SUNS_BLESSING).getDuration();
-                player.removePotionEffect(EffectHandler.SUNS_BLESSING);
+                player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 2, false, false));
+                int duration = player.getEffect(EffectHandler.SUNS_BLESSING).getDuration();
+                player.removeEffect(EffectHandler.SUNS_BLESSING);
                 int solarBeamCost = ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.solarBeamCost.get() * 60 * 20;
                 if (duration - solarBeamCost > 0) {
                     player.addEffect(new MobEffectInstance(EffectHandler.SUNS_BLESSING, duration - solarBeamCost, 0, false, false));

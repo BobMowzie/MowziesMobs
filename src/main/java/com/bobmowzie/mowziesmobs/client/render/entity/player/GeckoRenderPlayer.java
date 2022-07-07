@@ -6,29 +6,31 @@ import com.bobmowzie.mowziesmobs.client.model.entity.ModelPlayerAnimated;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.entity.FrozenRenderHandler;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.*;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.PlayerRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.entity.layers.*;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.PlayerModel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.core.Direction;
-import net.minecraft.sounds.Hand;
-import net.minecraft.sounds.HandSide;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.phys.*;
-import net.minecraft.network.chat.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimatableModel;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -41,6 +43,14 @@ import software.bernie.geckolib3.util.RenderUtils;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
+import com.mojang.math.Vector4f;
+import net.minecraft.world.phys.Vec3;
+
+@OnlyIn(Dist.CLIENT)
 public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<GeckoPlayer> {
 
     private static HashMap<Class<? extends GeckoPlayer>, GeckoRenderPlayer> modelsToLoad = new HashMap<>();
@@ -50,25 +60,26 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
 
     public Vec3 betweenHandsPos;
 
-    public GeckoRenderPlayer(EntityRendererManager renderManager, ModelGeckoPlayerThirdPerson modelProvider) {
-        super(renderManager, false);
+    public GeckoRenderPlayer(EntityRendererProvider.Context context, boolean slim, ModelGeckoPlayerThirdPerson modelProvider) {
+        super(context, slim);
 
-        this.entityModel = new ModelPlayerAnimated<>(0.0f, false);
+        this.model = new ModelPlayerAnimated<>(context.bakeLayer(ModelLayers.PLAYER), slim);
 
-        this.layerRenderers.clear();
-        this.addLayer(new BipedArmorLayer<>(this, new ModelBipedAnimated<>(0.5F), new ModelBipedAnimated<>(1.0F)));
-        this.addLayer(new GeckoHeldItemLayer(this));
-        this.addLayer(new ArrowLayer<>(this));
-        this.addLayer(new Deadmau5HeadLayer(this));
+        this.layers.clear();
+        this.addLayer(new HumanoidArmorLayer<>(this, new ModelBipedAnimated<>(context.bakeLayer(slim ? ModelLayers.PLAYER_SLIM_INNER_ARMOR : ModelLayers.PLAYER_INNER_ARMOR)), new ModelBipedAnimated<>(context.bakeLayer(slim ? ModelLayers.PLAYER_SLIM_OUTER_ARMOR : ModelLayers.PLAYER_OUTER_ARMOR))));
+        this.addLayer(new GeckoPlayerItemInHandLayer(this));
+        this.addLayer(new ArrowLayer<>(context, this));
+        this.addLayer(new Deadmau5EarsLayer(this));
         this.addLayer(new GeckoCapeLayer(this));
-        this.addLayer(new HeadLayer<>(this));
-        this.addLayer(new GeckoElytraLayer<>(this, this.entityModel.bipedBody));
-        this.addLayer(new GeckoParrotVariantLayer(this));
-        this.addLayer(new SpinAttackEffectLayer<>(this));
+        this.addLayer(new CustomHeadLayer<>(this, context.getModelSet()));
+//        this.addLayer(new GeckoElytraLayer<>(this, context.getModelSet())); TODO
+        this.addLayer(new GeckoParrotOnShoulderLayer(this, context.getModelSet()));
+        this.addLayer(new SpinAttackEffectLayer<>(this, context.getModelSet()));
         this.addLayer(new BeeStingerLayer<>(this));
         this.addLayer(new FrozenRenderHandler.LayerFrozen<>(this));
 
         this.modelProvider = modelProvider;
+        this.modelProvider.setUseSmallArms(slim);
 
         worldRenderMat = new Matrix4f();
         worldRenderMat.setIdentity();
@@ -93,12 +104,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
         return modelsToLoad;
     }
 
-    public void setSmallArms() {
-        this.entityModel = new ModelPlayerAnimated<>(0.0f, true);
-        this.modelProvider.setUseSmallArms(true);
-    }
-
-    public void render(AbstractClientPlayer entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, GeckoPlayer geckoPlayer) {
+    public void render(AbstractClientPlayer entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, GeckoPlayer geckoPlayer) {
         this.setModelVisibilities(entityIn);
         renderLiving(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn, geckoPlayer);
     }
@@ -112,20 +118,20 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
                 playermodel.bipedHeadwear().setHidden(false);
             } else {
                 playermodel.setVisible(true);
-                playermodel.bipedHeadwear().setHidden(!clientPlayer.isWearing(PlayerModelPart.HAT));
-                playermodel.bipedBodywear().setHidden(!clientPlayer.isWearing(PlayerModelPart.JACKET));
-                playermodel.bipedLeftLegwear().setHidden(!clientPlayer.isWearing(PlayerModelPart.LEFT_PANTS_LEG));
-                playermodel.bipedRightLegwear().setHidden(!clientPlayer.isWearing(PlayerModelPart.RIGHT_PANTS_LEG));
-                playermodel.bipedLeftArmwear().setHidden(!clientPlayer.isWearing(PlayerModelPart.LEFT_SLEEVE));
-                playermodel.bipedRightArmwear().setHidden(!clientPlayer.isWearing(PlayerModelPart.RIGHT_SLEEVE));
+                playermodel.bipedHeadwear().setHidden(!clientPlayer.isModelPartShown(PlayerModelPart.HAT));
+                playermodel.bipedBodywear().setHidden(!clientPlayer.isModelPartShown(PlayerModelPart.JACKET));
+                playermodel.bipedLeftLegwear().setHidden(!clientPlayer.isModelPartShown(PlayerModelPart.LEFT_PANTS_LEG));
+                playermodel.bipedRightLegwear().setHidden(!clientPlayer.isModelPartShown(PlayerModelPart.RIGHT_PANTS_LEG));
+                playermodel.bipedLeftArmwear().setHidden(!clientPlayer.isModelPartShown(PlayerModelPart.LEFT_SLEEVE));
+                playermodel.bipedRightArmwear().setHidden(!clientPlayer.isModelPartShown(PlayerModelPart.RIGHT_SLEEVE));
                 playermodel.isSneak = clientPlayer.isCrouching();
-                BipedModel.ArmPose bipedmodel$armpose = func_241741_a_(clientPlayer, Hand.MAIN_HAND);
-                BipedModel.ArmPose bipedmodel$armpose1 = func_241741_a_(clientPlayer, Hand.OFF_HAND);
-                if (bipedmodel$armpose.func_241657_a_()) {
-                    bipedmodel$armpose1 = clientPlayer.getHeldItemOffhand().isEmpty() ? BipedModel.ArmPose.EMPTY : BipedModel.ArmPose.ITEM;
+                HumanoidModel.ArmPose bipedmodel$armpose = getArmPose(clientPlayer, InteractionHand.MAIN_HAND);
+                HumanoidModel.ArmPose bipedmodel$armpose1 = getArmPose(clientPlayer, InteractionHand.OFF_HAND);
+                if (bipedmodel$armpose.isTwoHanded()) {
+                    bipedmodel$armpose1 = clientPlayer.getOffhandItem().isEmpty() ? HumanoidModel.ArmPose.EMPTY : HumanoidModel.ArmPose.ITEM;
                 }
 
-                if (clientPlayer.getPrimaryHand() == HandSide.RIGHT) {
+                if (clientPlayer.getMainArm() == HumanoidArm.RIGHT) {
                     modelProvider.rightArmPose = bipedmodel$armpose;
                     modelProvider.leftArmPose = bipedmodel$armpose1;
                 } else {
@@ -136,20 +142,20 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
         }
     }
 
-    public void renderLiving(AbstractClientPlayer entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, GeckoPlayer geckoPlayer) {
-        if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Pre<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn))) return;
-        matrixStackIn.push();
-        this.entityModel.swingProgress = this.getSwingProgress(entityIn, partialTicks);
+    public void renderLiving(AbstractClientPlayer entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, GeckoPlayer geckoPlayer) {
+//        if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Pre<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn))) return;
+        matrixStackIn.pushPose();
+        this.model.attackTime = this.getAttackAnim(entityIn, partialTicks);
 
-        boolean shouldSit = entityIn.isPassenger() && (entityIn.getRidingEntity() != null && entityIn.getRidingEntity().shouldRiderSit());
-        this.entityModel.isSitting = shouldSit;
-        this.entityModel.isChild = entityIn.isChild();
-        float f = Mth.interpolateAngle(partialTicks, entityIn.yBodyRotO, entityIn.yBodyRot);
-        float f1 = Mth.interpolateAngle(partialTicks, entityIn.yHeadRot0, entityIn.getYRot()Head);
+        boolean shouldSit = entityIn.isPassenger() && (entityIn.getVehicle() != null && entityIn.getVehicle().shouldRiderSit());
+        this.model.riding = shouldSit;
+        this.model.young = entityIn.isBaby();
+        float f = Mth.rotLerp(partialTicks, entityIn.yBodyRotO, entityIn.yBodyRot);
+        float f1 = Mth.rotLerp(partialTicks, entityIn.yHeadRotO, entityIn.yHeadRot);
         float f2 = f1 - f;
-        if (shouldSit && entityIn.getRidingEntity() instanceof LivingEntity) {
-            LivingEntity livingentity = (LivingEntity)entityIn.getRidingEntity();
-            f = Mth.interpolateAngle(partialTicks, livingentity.yBodyRotO, livingentity.yBodyRot);
+        if (shouldSit && entityIn.getVehicle() instanceof LivingEntity) {
+            LivingEntity livingentity = (LivingEntity)entityIn.getVehicle();
+            f = Mth.rotLerp(partialTicks, livingentity.yBodyRotO, livingentity.yBodyRot);
             f2 = f1 - f;
             float f3 = Mth.wrapDegrees(f2);
             if (f3 < -85.0F) {
@@ -168,23 +174,23 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
             f2 = f1 - f;
         }
 
-        float f6 = Mth.lerp(partialTicks, entityIn.xRot0, entityIn.getXRot());
+        float f6 = Mth.lerp(partialTicks, entityIn.xRotO, entityIn.getXRot());
         if (entityIn.getPose() == Pose.SLEEPING) {
-            Direction direction = entityIn.getBedDirection();
+            Direction direction = entityIn.getBedOrientation();
             if (direction != null) {
                 float f4 = entityIn.getEyeHeight(Pose.STANDING) - 0.1F;
-                matrixStackIn.translate((double)((float)(-direction.getXOffset()) * f4), 0.0D, (double)((float)(-direction.getZOffset()) * f4));
+                matrixStackIn.translate((double)((float)(-direction.getStepX()) * f4), 0.0D, (double)((float)(-direction.getStepZ()) * f4));
             }
         }
 
-        float f7 = this.handleRotationFloat(entityIn, partialTicks);
-        this.preRenderCallback(entityIn, matrixStackIn, partialTicks);
+        float f7 = this.getBob(entityIn, partialTicks);
+        this.scale(entityIn, matrixStackIn, partialTicks);
         float f8 = 0.0F;
         float f5 = 0.0F;
         if (!shouldSit && entityIn.isAlive()) {
-            f8 = Mth.lerp(partialTicks, entityIn.prevLimbSwingAmount, entityIn.limbSwingAmount);
-            f5 = entityIn.limbSwing - entityIn.limbSwingAmount * (1.0F - partialTicks);
-            if (entityIn.isChild()) {
+            f8 = Mth.lerp(partialTicks, entityIn.animationSpeedOld, entityIn.animationSpeed);
+            f5 = entityIn.animationPosition - entityIn.animationSpeed * (1.0F - partialTicks);
+            if (entityIn.isBaby()) {
                 f5 *= 3.0F;
             }
 
@@ -193,117 +199,118 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
             }
         }
 
-        this.modelProvider.setLivingAnimations(geckoPlayer, entityIn.getUniqueID().hashCode());
+        this.modelProvider.setLivingAnimations(geckoPlayer, entityIn.getUUID().hashCode());
         if (this.modelProvider.isInitialized()) {
             this.applyRotationsPlayerRenderer(entityIn, matrixStackIn, f7, f, partialTicks, f1);
             float bodyRotateAmount = this.modelProvider.getControllerValue("BodyRotateController");
-            this.modelProvider.setRotationAngles(entityIn, f5, f8, f7, Mth.interpolateAngle(bodyRotateAmount, 0, f2), f6, partialTicks);
+            this.modelProvider.setRotationAngles(entityIn, f5, f8, f7, Mth.rotLerp(bodyRotateAmount, 0, f2), f6, partialTicks);
 
             MowzieGeoBone leftHeldItem = modelProvider.getMowzieBone("LeftHeldItem");
             MowzieGeoBone rightHeldItem = modelProvider.getMowzieBone("RightHeldItem");
 
-            Matrix4f worldMatInverted = matrixStackIn.getLast().getMatrix().copy();
+            Matrix4f worldMatInverted = matrixStackIn.last().pose().copy();
             worldMatInverted.invert();
-            Matrix3f worldNormInverted = matrixStackIn.getLast().getNormal().copy();
+            Matrix3f worldNormInverted = matrixStackIn.last().normal().copy();
             worldNormInverted.invert();
-            MatrixStack toWorldSpace = new MatrixStack();
-            toWorldSpace.rotate(new Quaternion(0, -entityYaw + 180, 0, true));
+            PoseStack toWorldSpace = new PoseStack();
+            toWorldSpace.mulPose(new Quaternion(0, -entityYaw + 180, 0, true));
             toWorldSpace.translate(0, -1.5f, 0);
-            toWorldSpace.getLast().getNormal().mul(worldNormInverted);
-            toWorldSpace.getLast().getMatrix().mul(worldMatInverted);
+            toWorldSpace.last().normal().mul(worldNormInverted);
+            toWorldSpace.last().pose().multiply(worldMatInverted);
 
             Vector4f leftHeldItemPos = new Vector4f(0, 0, 0, 1);
             leftHeldItemPos.transform(leftHeldItem.getWorldSpaceXform());
-            leftHeldItemPos.transform(toWorldSpace.getLast().getMatrix());
+            leftHeldItemPos.transform(toWorldSpace.last().pose());
             Vec3 leftHeldItemPos3 = new Vec3(leftHeldItemPos.x(), leftHeldItemPos.y(), leftHeldItemPos.z());
 
             Vector4f rightHeldItemPos = new Vector4f(0, 0, 0, 1);
             rightHeldItemPos.transform(rightHeldItem.getWorldSpaceXform());
-            rightHeldItemPos.transform(toWorldSpace.getLast().getMatrix());
+            rightHeldItemPos.transform(toWorldSpace.last().pose());
             Vec3 rightHeldItemPos3 = new Vec3(rightHeldItemPos.x(), rightHeldItemPos.y(), rightHeldItemPos.z());
 
             betweenHandsPos = rightHeldItemPos3.add(leftHeldItemPos3.subtract(rightHeldItemPos3).scale(0.5));
         }
         Minecraft minecraft = Minecraft.getInstance();
-        boolean flag = this.isVisible(entityIn);
-        boolean flag1 = !flag && !entityIn.isInvisibleToPlayer(minecraft.player);
-        boolean flag2 = minecraft.isEntityGlowing(entityIn);
-        RenderType rendertype = this.func_230496_a_(entityIn, flag, flag1, flag2);
+        boolean flag = this.isBodyVisible(entityIn);
+        boolean flag1 = !flag && !entityIn.isInvisibleTo(minecraft.player);
+        boolean flag2 = minecraft.shouldEntityAppearGlowing(entityIn);
+        RenderType rendertype = this.getRenderType(entityIn, flag, flag1, flag2);
         if (rendertype != null) {
-            IVertexBuilder ivertexbuilder = bufferIn.getBuffer(rendertype);
-            int i = getPackedOverlay(entityIn, this.getOverlayProgress(entityIn, partialTicks));
-            matrixStackIn.push();
-            worldRenderMat.set(matrixStackIn.getLast().getMatrix());
+            VertexConsumer ivertexbuilder = bufferIn.getBuffer(rendertype);
+            int i = getOverlayCoords(entityIn, this.getWhiteOverlayProgress(entityIn, partialTicks));
+            matrixStackIn.pushPose();
+            worldRenderMat.load(matrixStackIn.last().pose());
+            modelProvider.setTextureFromPlayer(entityIn);
             render(
                     getGeoModelProvider().getModel(getGeoModelProvider().getModelLocation(geckoPlayer)),
                     geckoPlayer, partialTicks, rendertype, matrixStackIn, bufferIn, ivertexbuilder, packedLightIn, i, 1.0F, 1.0F, 1.0F, flag1 ? 0.15F : 1.0F
             );
-            matrixStackIn.pop();
-            this.entityModel.setRotationAngles(entityIn, f5, f8, f7, f2, f6);
-            ModelBipedAnimated.copyFromGeckoModel(this.entityModel, this.modelProvider);
+            matrixStackIn.popPose();
+            this.model.setupAnim(entityIn, f5, f8, f7, f2, f6);
+            ModelBipedAnimated.copyFromGeckoModel(this.model, this.modelProvider);
         }
 
         if (!entityIn.isSpectator()) {
-            for(LayerRenderer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> layerrenderer : this.layerRenderers) {
+            for(RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> layerrenderer : this.layers) {
                 layerrenderer.render(matrixStackIn, bufferIn, packedLightIn, entityIn, f5, f8, partialTicks, f7, f2, f6);
             }
         }
 
-        matrixStackIn.pop();
+        matrixStackIn.popPose();
         renderEntity(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Post<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn));
     }
 
-    public void renderEntity(AbstractClientPlayer entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+    public void renderEntity(AbstractClientPlayer entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         net.minecraftforge.client.event.RenderNameplateEvent renderNameplateEvent = new net.minecraftforge.client.event.RenderNameplateEvent(entityIn, entityIn.getDisplayName(), this, matrixStackIn, bufferIn, packedLightIn, partialTicks);
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(renderNameplateEvent);
-        if (renderNameplateEvent.getResult() != net.minecraftforge.eventbus.api.Event.Result.DENY && (renderNameplateEvent.getResult() == net.minecraftforge.eventbus.api.Event.Result.ALLOW || this.canRenderName(entityIn))) {
-            this.renderName(entityIn, renderNameplateEvent.getContent(), matrixStackIn, bufferIn, packedLightIn);
+        if (renderNameplateEvent.getResult() != net.minecraftforge.eventbus.api.Event.Result.DENY && (renderNameplateEvent.getResult() == net.minecraftforge.eventbus.api.Event.Result.ALLOW || this.shouldShowName(entityIn))) {
+            this.renderNameTag(entityIn, renderNameplateEvent.getContent(), matrixStackIn, bufferIn, packedLightIn);
         }
     }
 
-    protected void applyRotationsPlayerRenderer(AbstractClientPlayer entityLiving, MatrixStack matrixStackIn, float ageInTicks, float yRot, float partialTicks, float headYaw) {
-        float f = entityLiving.getSwimAnimation(partialTicks);
-        if (entityLiving.isElytraFlying()) {
-            this.applyRotationsLivingRenderer(entityLiving, matrixStackIn, ageInTicks, yRot, partialTicks, headYaw);
-            float f1 = (float)entityLiving.getTicksElytraFlying() + partialTicks;
+    protected void applyRotationsPlayerRenderer(AbstractClientPlayer entityLiving, PoseStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks, float headYaw) {
+        float f = entityLiving.getSwimAmount(partialTicks);
+        if (entityLiving.isFallFlying()) {
+            this.applyRotationsLivingRenderer(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks, headYaw);
+            float f1 = (float)entityLiving.getFallFlyingTicks() + partialTicks;
             float f2 = Mth.clamp(f1 * f1 / 100.0F, 0.0F, 1.0F);
-            if (!entityLiving.isSpinAttacking()) {
-                matrixStackIn.rotate(Vector3f.XP.rotationDegrees(f2 * (-90.0F - entityLiving.getXRot())));
+            if (!entityLiving.isAutoSpinAttack()) {
+                matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(f2 * (-90.0F - entityLiving.getXRot())));
             }
 
-            Vec3 vector3d = entityLiving.getLook(partialTicks);
+            Vec3 vector3d = entityLiving.getViewVector(partialTicks);
             Vec3 vector3d1 = entityLiving.getDeltaMovement();
-            double d0 = Entity.horizontalMag(vector3d1);
-            double d1 = Entity.horizontalMag(vector3d);
+            double d0 = vector3d1.horizontalDistanceSqr();
+            double d1 = vector3d.horizontalDistanceSqr();
             if (d0 > 0.0D && d1 > 0.0D) {
                 double d2 = (vector3d1.x * vector3d.x + vector3d1.z * vector3d.z) / Math.sqrt(d0 * d1);
                 double d3 = vector3d1.x * vector3d.z - vector3d1.z * vector3d.x;
-                matrixStackIn.rotate(Vector3f.YP.rotation((float)(Math.signum(d3) * Math.acos(d2))));
+                matrixStackIn.mulPose(Vector3f.YP.rotation((float)(Math.signum(d3) * Math.acos(d2))));
             }
         } else if (f > 0.0F) {
             float swimController = this.modelProvider.getControllerValue("SwimController");
-            this.applyRotationsLivingRenderer(entityLiving, matrixStackIn, ageInTicks, yRot, partialTicks, headYaw);
+            this.applyRotationsLivingRenderer(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks, headYaw);
             float f3 = entityLiving.isInWater() ? -90.0F - entityLiving.getXRot() : -90.0F;
             float f4 = Mth.lerp(f, 0.0F, f3) * swimController;
-            matrixStackIn.rotate(Vector3f.XP.rotationDegrees(f4));
-            if (entityLiving.isActualySwimming()) {
+            matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(f4));
+            if (entityLiving.isVisuallySwimming()) {
                 matrixStackIn.translate(0.0D, -1.0D, (double)0.3F);
             }
         } else {
-            this.applyRotationsLivingRenderer(entityLiving, matrixStackIn, ageInTicks, yRot, partialTicks, headYaw);
+            this.applyRotationsLivingRenderer(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks, headYaw);
         }
     }
 
-    protected void applyRotationsLivingRenderer(AbstractClientPlayer entityLiving, MatrixStack matrixStackIn, float ageInTicks, float yRot, float partialTicks, float headYaw) {
-        if (this.func_230495_a_(entityLiving)) {
-            yRot += (float)(Math.cos((double)entityLiving.tickCount * 3.25D) * Math.PI * (double)0.4F);
+    protected void applyRotationsLivingRenderer(AbstractClientPlayer entityLiving, PoseStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks, float headYaw) {
+        if (this.isShaking(entityLiving)) {
+            rotationYaw += (float)(Math.cos((double)entityLiving.tickCount * 3.25D) * Math.PI * (double)0.4F);
         }
 
         Pose pose = entityLiving.getPose();
         if (pose != Pose.SLEEPING) {
             float bodyRotateAmount = this.modelProvider.getControllerValue("BodyRotateController");
-            matrixStackIn.rotate(Vector3f.YP.rotationDegrees(180.0F - Mth.interpolateAngle(bodyRotateAmount, headYaw, yRot)));
+            matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180.0F - Mth.rotLerp(bodyRotateAmount, headYaw, rotationYaw)));
         }
 
         if (entityLiving.deathTime > 0) {
@@ -313,21 +320,21 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
                 f = 1.0F;
             }
 
-            matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(f * this.getDeathMaxRotation(entityLiving)));
-        } else if (entityLiving.isSpinAttacking()) {
-            matrixStackIn.rotate(Vector3f.XP.rotationDegrees(-90.0F - entityLiving.getXRot()));
-            matrixStackIn.rotate(Vector3f.YP.rotationDegrees(((float)entityLiving.tickCount + partialTicks) * -75.0F));
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(f * this.getFlipDegrees(entityLiving)));
+        } else if (entityLiving.isAutoSpinAttack()) {
+            matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-90.0F - entityLiving.getXRot()));
+            matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(((float)entityLiving.tickCount + partialTicks) * -75.0F));
         } else if (pose == Pose.SLEEPING) {
-            Direction direction = entityLiving.getBedDirection();
-            float f1 = direction != null ? getFacingAngle(direction) : yRot;
-            matrixStackIn.rotate(Vector3f.YP.rotationDegrees(f1));
-            matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(this.getDeathMaxRotation(entityLiving)));
-            matrixStackIn.rotate(Vector3f.YP.rotationDegrees(270.0F));
+            Direction direction = entityLiving.getBedOrientation();
+            float f1 = direction != null ? getFacingAngle(direction) : rotationYaw;
+            matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(f1));
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(this.getFlipDegrees(entityLiving)));
+            matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270.0F));
         } else if (entityLiving.hasCustomName() || entityLiving instanceof Player) {
-            String s = TextFormatting.getTextWithoutFormattingCodes(entityLiving.getName().getString());
-            if (("Dinnerbone".equals(s) || "Grumm".equals(s)) && (!(entityLiving instanceof Player) || ((Player)entityLiving).isWearing(PlayerModelPart.CAPE))) {
-                matrixStackIn.translate(0.0D, (double)(entityLiving.getHeight() + 0.1F), 0.0D);
-                matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(180.0F));
+            String s = ChatFormatting.stripFormatting(entityLiving.getName().getString());
+            if (("Dinnerbone".equals(s) || "Grumm".equals(s)) && (!(entityLiving instanceof Player) || ((Player)entityLiving).isModelPartShown(PlayerModelPart.CAPE))) {
+                matrixStackIn.translate(0.0D, (double)(entityLiving.getBbHeight() + 0.1F), 0.0D);
+                matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180.0F));
             }
         }
     }
@@ -358,12 +365,12 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
 
     @Override
     public ResourceLocation getTextureLocation(GeckoPlayer geckoPlayer) {
-        return getEntityTexture((AbstractClientPlayer) geckoPlayer.getPlayer());
+        return getTextureLocation((AbstractClientPlayer) geckoPlayer.getPlayer());
     }
 
     @Override
-    public void renderRecursively(GeoBone bone, MatrixStack matrixStack, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        matrixStack.push();
+    public void renderRecursively(GeoBone bone, PoseStack matrixStack, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        matrixStack.pushPose();
         RenderUtils.translate(bone, matrixStack);
         RenderUtils.moveToPivot(bone, matrixStack);
         RenderUtils.rotate(bone, matrixStack);
@@ -380,7 +387,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
                     mowzieBone.name.equals("RightLeg") ||
                     mowzieBone.name.equals("LeftLeg")
             ) {
-                matrixStack.push();
+                matrixStack.pushPose();
                 if (!mowzieBone.name.equals("LeftHeldItem") && !mowzieBone.name.equals("RightHeldItem")) {
                     matrixStack.scale(-1.0F, -1.0F, 1.0F);
                 }
@@ -393,10 +400,10 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
                 if (mowzieBone.name.equals("RightArm")) {
                     matrixStack.translate(0.075, 0, 0);
                 }
-                MatrixStack.Entry entry = matrixStack.getLast();
-                mowzieBone.setWorldSpaceNormal(entry.getNormal().copy());
-                mowzieBone.setWorldSpaceXform(entry.getMatrix().copy());
-                matrixStack.pop();
+                PoseStack.Pose entry = matrixStack.last();
+                mowzieBone.setWorldSpaceNormal(entry.normal().copy());
+                mowzieBone.setWorldSpaceXform(entry.pose().copy());
+                matrixStack.popPose();
             }
         }
         RenderUtils.moveBackFromPivot(bone, matrixStack);
@@ -405,9 +412,9 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
 
             while(var10.hasNext()) {
                 GeoCube cube = (GeoCube)var10.next();
-                matrixStack.push();
+                matrixStack.pushPose();
                 this.renderCube(cube, matrixStack, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                matrixStack.pop();
+                matrixStack.popPose();
             }
 
             var10 = bone.childBones.iterator();
@@ -418,9 +425,9 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
             }
         }
 
-        matrixStack.pop();
+        matrixStack.popPose();
 
-        for(LayerRenderer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> layerrenderer : this.layerRenderers) {
+        for(RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> layerrenderer : this.layers) {
             if (layerrenderer instanceof IGeckoRenderLayer) ((IGeckoRenderLayer)layerrenderer).renderRecursively(bone, matrixStack, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
     }

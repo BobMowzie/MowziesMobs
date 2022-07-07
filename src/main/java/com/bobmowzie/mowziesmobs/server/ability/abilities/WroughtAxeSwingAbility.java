@@ -8,7 +8,7 @@ import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.sounds.HandSide;
+import net.minecraft.world.entity.HumanoidArm;
 
 import static com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack.SWING_DURATION_HOR;
 
@@ -27,13 +27,13 @@ public class WroughtAxeSwingAbility extends Ability {
     public void start() {
         super.start();
         if (!getUser().level.isClientSide()) {
-            EntityAxeAttack axeAttack = new EntityAxeAttack(EntityHandler.AXE_ATTACK, getUser().world, getUser(), false);
-            axeAttack.setPositionAndRotation(getUser().getX(), getUser().getY(), getUser().getZ(), getUser().getYRot(), getUser().getXRot());
+            EntityAxeAttack axeAttack = new EntityAxeAttack(EntityHandler.AXE_ATTACK.get(), getUser().level, getUser(), false);
+            axeAttack.absMoveTo(getUser().getX(), getUser().getY(), getUser().getZ(), getUser().getYRot(), getUser().getXRot());
             getUser().level.addFreshEntity(axeAttack);
             this.axeAttack = axeAttack;
         }
         else {
-            boolean handSide = getUser().getPrimaryHand() == HandSide.RIGHT;
+            boolean handSide = getUser().getMainArm() == HumanoidArm.RIGHT;
             playAnimation("axe_swing_start_" + (handSide ? "right" : "left"), GeckoPlayer.Perspective.THIRD_PERSON, false);
             playAnimation("axe_swing_start", GeckoPlayer.Perspective.FIRST_PERSON, false);
             heldItemMainHandVisualOverride = getUser().getMainHandItem();
@@ -45,7 +45,7 @@ public class WroughtAxeSwingAbility extends Ability {
         super.tickUsing();
         if (getTicksInUse() == SWING_DURATION_HOR && getUser() instanceof Player) {
             Player player = (Player) getUser();
-            player.resetCooldown();
+            player.resetAttackStrengthTicker();
         }
     }
 
@@ -53,7 +53,7 @@ public class WroughtAxeSwingAbility extends Ability {
     public void end() {
         super.end();
         if (axeAttack != null) {
-            this.axeAttack.remove();
+            this.axeAttack.discard() ;
         }
     }
 

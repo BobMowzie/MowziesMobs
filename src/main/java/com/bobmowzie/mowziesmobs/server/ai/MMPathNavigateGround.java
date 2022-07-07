@@ -2,11 +2,11 @@ package com.bobmowzie.mowziesmobs.server.ai;
 
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.pathfinding.GroundPathNavigation;
-import net.minecraft.pathfinding.Path;
-import net.minecraft.pathfinding.PathFinder;
-import net.minecraft.pathfinding.PathNodeType;
-import net.minecraft.pathfinding.PathType;
+import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.level.pathfinder.PathFinder;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
@@ -20,46 +20,46 @@ public class MMPathNavigateGround extends GroundPathNavigation {
     }
 
     @Override
-    protected PathFinder getPathFinder(int maxVisitedNodes) {
-        this.nodeProcessor = new MMWalkNodeProcessor();
-        this.nodeProcessor.setCanEnterDoors(true);
-        return new MMPathFinder(this.nodeProcessor, maxVisitedNodes);
+    protected PathFinder createPathFinder(int maxVisitedNodes) {
+        this.nodeEvaluator = new MMWalkNodeProcessor();
+        this.nodeEvaluator.setCanPassDoors(true);
+        return new MMPathFinder(this.nodeEvaluator, maxVisitedNodes);
     }
 
     @Override
-    protected void pathFollow() {
-        Path path = Objects.requireNonNull(this.currentPath);
-        Vec3 entityPos = this.getEntityPosition();
-        int pathLength = path.getCurrentPathLength();
-        for (int i = path.getCurrentPathIndex(); i < path.getCurrentPathLength(); i++) {
-            if (path.getPathPointFromIndex(i).y != Math.floor(entityPos.y)) {
+    protected void followThePath() {
+        Path path = Objects.requireNonNull(this.path);
+        Vec3 entityPos = this.getTempMobPos();
+        int pathLength = path.getNodeCount();
+        for (int i = path.getNextNodeIndex(); i < path.getNodeCount(); i++) {
+            if (path.getNode(i).y != Math.floor(entityPos.y)) {
                 pathLength = i;
                 break;
             }
         }
-        final Vec3 base = entityPos.add(-this.entity.getBbWidth() * 0.5F, 0.0F, -this.entity.getBbWidth() * 0.5F);
-        final Vec3 max = base.add(this.entity.getBbWidth(), this.entity.getHeight(), this.entity.getBbWidth());
-        if (this.tryShortcut(path, new Vec3(this.entity.getX(), this.entity.getY(), this.entity.getZ()), pathLength, base, max)) {
-            if (this.isAt(path, 0.5F) || this.atElevationChange(path) && this.isAt(path, this.entity.getBbWidth() * 0.5F)) {
-                path.setCurrentPathIndex(path.getCurrentPathIndex() + 1);
+        final Vec3 base = entityPos.add(-this.mob.getBbWidth() * 0.5F, 0.0F, -this.mob.getBbWidth() * 0.5F);
+        final Vec3 max = base.add(this.mob.getBbWidth(), this.mob.getBbHeight(), this.mob.getBbWidth());
+        if (this.tryShortcut(path, new Vec3(this.mob.getX(), this.mob.getY(), this.mob.getZ()), pathLength, base, max)) {
+            if (this.isAt(path, 0.5F) || this.atElevationChange(path) && this.isAt(path, this.mob.getBbWidth() * 0.5F)) {
+                path.setNextNodeIndex(path.getNextNodeIndex() + 1);
             }
         }
-        this.checkForStuck(entityPos);
+        this.doStuckDetection(entityPos);
     }
 
     private boolean isAt(Path path, float threshold) {
-        final Vec3 pathPos = path.getPosition(this.entity);
-        return Mth.abs((float) (this.entity.getX() - pathPos.x)) < threshold &&
-                Mth.abs((float) (this.entity.getZ() - pathPos.z)) < threshold &&
-                Math.abs(this.entity.getY() - pathPos.y) < 1.0D;
+        final Vec3 pathPos = path.getNextEntityPos(this.mob);
+        return Mth.abs((float) (this.mob.getX() - pathPos.x)) < threshold &&
+                Mth.abs((float) (this.mob.getZ() - pathPos.z)) < threshold &&
+                Math.abs(this.mob.getY() - pathPos.y) < 1.0D;
     }
 
     private boolean atElevationChange(Path path) {
-        final int curr = path.getCurrentPathIndex();
-        final int end = Math.min(path.getCurrentPathLength(), curr + Mth.ceil(this.entity.getBbWidth() * 0.5F) + 1);
-        final int currY = path.getPathPointFromIndex(curr).y;
+        final int curr = path.getNextNodeIndex();
+        final int end = Math.min(path.getNodeCount(), curr + Mth.ceil(this.mob.getBbWidth() * 0.5F) + 1);
+        final int currY = path.getNode(curr).y;
         for (int i = curr + 1; i < end; i++) {
-            if (path.getPathPointFromIndex(i).y != currY) {
+            if (path.getNode(i).y != currY) {
                 return true;
             }
         }
@@ -67,10 +67,10 @@ public class MMPathNavigateGround extends GroundPathNavigation {
     }
 
     private boolean tryShortcut(Path path, Vec3 entityPos, int pathLength, Vec3 base, Vec3 max) {
-        for (int i = pathLength; --i > path.getCurrentPathIndex(); ) {
-            final Vec3 vec = path.getVectorFromIndex(this.entity, i).subtract(entityPos);
+        for (int i = pathLength; --i > path.getNextNodeIndex(); ) {
+            final Vec3 vec = path.getEntityPosAtNode(this.mob, i).subtract(entityPos);
             if (this.sweep(vec, base, max)) {
-                path.setCurrentPathIndex(i);
+                path.setNextNodeIndex(i);
                 return false;
             }
         }
@@ -78,7 +78,7 @@ public class MMPathNavigateGround extends GroundPathNavigation {
     }
 
     @Override
-    protected boolean isDirectPathBetweenPoints(Vec3 start, Vec3 end, int sizeX, int sizeY, int sizeZ) {
+    protected boolean canMoveDirectly(Vec3 start, Vec3 end, int sizeX, int sizeY, int sizeZ) {
         return true;
     }
 
@@ -109,7 +109,7 @@ public class MMPathNavigateGround extends GroundPathNavigation {
             float dist = dir ? (ldi[i] + 1 - lead) : (lead - ldi[i]);
             tNext[i] = tDelta[i] < Float.POSITIVE_INFINITY ? tDelta[i] * dist : Float.POSITIVE_INFINITY;
         }
-        final BlockPos.Mutable pos = new BlockPos.Mutable();
+        final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
         do {
             // stepForward
             int axis = (tNext[0] < tNext[1]) ?
@@ -136,15 +136,15 @@ public class MMPathNavigateGround extends GroundPathNavigation {
             for (int x = x0; x != x1; x += stepx) {
                 for (int z = z0; z != z1; z += stepz) {
                     for (int y = y0; y != y1; y += stepy) {
-                        BlockState block = this.level.getBlockState(pos.setPos(x, y, z));
-                        if (!block.allowsMovement(this.world, pos, PathType.LAND)) return false;
+                        BlockState block = this.level.getBlockState(pos.set(x, y, z));
+                        if (!block.isPathfindable(this.level, pos, PathComputationType.LAND)) return false;
                     }
-                    PathNodeType below = this.nodeProcessor.determineNodeType(this.world, x, y0 - 1, z, this.entity, 1, 1, 1, true, true);
-                    if (below == PathNodeType.WATER || below == PathNodeType.LAVA || below == PathNodeType.OPEN) return false;
-                    PathNodeType in = this.nodeProcessor.determineNodeType(this.world, x, y0, z, this.entity, 1, y1 - y0, 1, true, true);
-                    float priority = this.entity.getPathPriority(in);
+                    BlockPathTypes below = this.nodeEvaluator.getBlockPathType(this.level, x, y0 - 1, z, this.mob, 1, 1, 1, true, true);
+                    if (below == BlockPathTypes.WATER || below == BlockPathTypes.LAVA || below == BlockPathTypes.OPEN) return false;
+                    BlockPathTypes in = this.nodeEvaluator.getBlockPathType(this.level, x, y0, z, this.mob, 1, y1 - y0, 1, true, true);
+                    float priority = this.mob.getPathfindingMalus(in);
                     if (priority < 0.0F || priority >= 8.0F) return false;
-                    if (in == PathNodeType.DAMAGE_FIRE || in == PathNodeType.DANGER_FIRE || in == PathNodeType.DAMAGE_OTHER) return false;
+                    if (in == BlockPathTypes.DAMAGE_FIRE || in == BlockPathTypes.DANGER_FIRE || in == BlockPathTypes.DAMAGE_OTHER) return false;
                 }
             }
         } while (t <= max_t);

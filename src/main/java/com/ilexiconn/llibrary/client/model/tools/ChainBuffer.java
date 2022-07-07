@@ -3,7 +3,7 @@ package com.ilexiconn.llibrary.client.model.tools;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.ilexiconn.llibrary.client.util.ClientUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.ModelRenderer;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
@@ -80,8 +80,8 @@ public class ChainBuffer {
      */
     public void calculateChainWaveBuffer(float maxAngle, int bufferTime, float angleDecrement, float divisor, LivingEntity entity) {
         this.prevPitchVariation = this.pitchVariation;
-        if (entity.getXRot() != entity.xRot0 && Mth.abs(this.pitchVariation) < maxAngle) {
-            this.pitchVariation += (entity.xRot0 - entity.getXRot()) / divisor;
+        if (entity.getXRot() != entity.xRotO && Mth.abs(this.pitchVariation) < maxAngle) {
+            this.pitchVariation += (entity.xRotO - entity.getXRot()) / divisor;
         }
         if (this.pitchVariation > 0.7F * angleDecrement) {
             if (this.pitchTimer > bufferTime) {
@@ -135,10 +135,10 @@ public class ChainBuffer {
      *
      * @param boxes the box array
      */
-    public void applyChainSwingBuffer(ModelRenderer... boxes) {
-        float rotateAmount = 0.01745329251F * ClientUtils.interpolate(this.prevYawVariation, this.yawVariation, Minecraft.getInstance().getRenderPartialTicks()) / boxes.length;
-        for (ModelRenderer box : boxes) {
-            box.rotateAngleY += rotateAmount;
+    public void applyChainSwingBuffer(ModelPart... boxes) {
+        float rotateAmount = 0.01745329251F * ClientUtils.interpolate(this.prevYawVariation, this.yawVariation, Minecraft.getInstance().getFrameTime()) / boxes.length;
+        for (ModelPart box : boxes) {
+            box.yRot += rotateAmount;
         }
     }
 
@@ -147,10 +147,10 @@ public class ChainBuffer {
      *
      * @param boxes the box array
      */
-    public void applyChainWaveBuffer(ModelRenderer... boxes) {
-        float rotateAmount = 0.01745329251F * ClientUtils.interpolate(this.prevPitchVariation, this.pitchVariation, Minecraft.getInstance().getRenderPartialTicks()) / boxes.length;
-        for (ModelRenderer box : boxes) {
-            box.rotateAngleX += rotateAmount;
+    public void applyChainWaveBuffer(ModelPart... boxes) {
+        float rotateAmount = 0.01745329251F * ClientUtils.interpolate(this.prevPitchVariation, this.pitchVariation, Minecraft.getInstance().getFrameTime()) / boxes.length;
+        for (ModelPart box : boxes) {
+            box.xRot += rotateAmount;
         }
     }
 }

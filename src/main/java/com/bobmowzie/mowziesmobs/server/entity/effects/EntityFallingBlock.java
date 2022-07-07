@@ -6,9 +6,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.network.Packet;
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -21,7 +21,7 @@ public class EntityFallingBlock extends Entity {
     public static float GRAVITY = 0.1f;
     public double prevMotionX, prevMotionY, prevMotionZ;
 
-    private static final EntityDataAccessor<Optional<BlockState>> BLOCK_STATE = SynchedEntityData.defineId(EntityFallingBlock.class, EntityDataSerializers.OPTIONAL_BLOCK_STATE);
+    private static final EntityDataAccessor<Optional<BlockState>> BLOCK_STATE = SynchedEntityData.defineId(EntityFallingBlock.class, EntityDataSerializers.BLOCK_STATE);
     private static final EntityDataAccessor<Integer> DURATION = SynchedEntityData.defineId(EntityFallingBlock.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> TICKS_EXISTED = SynchedEntityData.defineId(EntityFallingBlock.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<String> MODE = SynchedEntityData.defineId(EntityFallingBlock.class, EntityDataSerializers.STRING);
@@ -56,8 +56,8 @@ public class EntityFallingBlock extends Entity {
 
     @Override
     public void onAddedToWorld() {
-        if (getDeltaMovement().x() > 0 || getDeltaMovement().z() > 0) yRot = (float) ((180f/Math.PI) * Math.atan2(getDeltaMovement().x(), getDeltaMovement().z()));
-        rotationPitch += random.nextFloat() * 360;
+        if (getDeltaMovement().x() > 0 || getDeltaMovement().z() > 0) setYRot((float) ((180f/Math.PI) * Math.atan2(getDeltaMovement().x(), getDeltaMovement().z())));
+        setXRot(getXRot() + random.nextFloat() * 360);
         super.onAddedToWorld();
     }
 
@@ -73,17 +73,17 @@ public class EntityFallingBlock extends Entity {
         if (getMode() == EnumFallingBlockMode.MOBILE) {
             setDeltaMovement(getDeltaMovement().subtract(0, GRAVITY, 0));
             if (onGround) setDeltaMovement(getDeltaMovement().scale(0.7));
-            else rotationPitch += 15;
+            else setXRot(getXRot() + 15);
             this.move(MoverType.SELF, this.getDeltaMovement());
 
-            if (tickCount > getDuration()) remove();
+            if (tickCount > getDuration()) discard() ;
         }
         else {
             float animVY = getAnimVY();
             prevAnimY = animY;
             animY += animVY;
             setAnimVY(animVY - GRAVITY);
-            if (animY < -0.5) remove();
+            if (animY < -0.5) discard() ;
         }
     }
 
@@ -98,13 +98,13 @@ public class EntityFallingBlock extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
-        INBT blockStateCompound = compound.get("block");
+        Tag blockStateCompound = compound.get("block");
         if (blockStateCompound != null) {
-            BlockState blockState = NBTUtil.readBlockState((CompoundTag) blockStateCompound);
+            BlockState blockState = NbtUtils.readBlockState((CompoundTag) blockStateCompound);
             setBlock(blockState);
         }
         setDuration(compound.getInt("duration"));
-        tickCount = compound.getInt("tickCount");
+        tickCount = compound.getInt("ticksExisted");
         getEntityData().set(MODE, compound.getString("mode"));
         setAnimVY(compound.getFloat("vy"));
 
@@ -113,9 +113,9 @@ public class EntityFallingBlock extends Entity {
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
         BlockState blockState = getBlock();
-        if (blockState != null) compound.put("block", NBTUtil.writeBlockState(blockState));
+        if (blockState != null) compound.put("block", NbtUtils.writeBlockState(blockState));
         compound.putInt("duration", getDuration());
-        compound.putInt("tickCount", tickCount);
+        compound.putInt("ticksExisted", tickCount);
         compound.putString("mode", getEntityData().get(MODE));
         compound.putFloat("vy", getEntityData().get(ANIM_V_Y));
     }
@@ -146,8 +146,8 @@ public class EntityFallingBlock extends Entity {
         return getEntityData().get(TICKS_EXISTED);
     }
 
-    public void setTicksExisted(int tickCount) {
-        getEntityData().set(TICKS_EXISTED, tickCount);
+    public void setTicksExisted(int ticksExisted) {
+        getEntityData().set(TICKS_EXISTED, ticksExisted);
     }
 
     public EnumFallingBlockMode getMode() {

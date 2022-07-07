@@ -2,23 +2,14 @@ package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
-import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.monster.*;
-import net.minecraft.world.entity.animal.*;
-import net.minecraft.world.entity.animal.ChickenEntity;
-import net.minecraft.world.entity.animal.SheepEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.Level;
 
 import java.util.Optional;
 import java.util.UUID;
+
+import net.minecraft.world.entity.monster.Enemy;
 
 public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> implements LeaderSunstrikeImmune, Enemy {
     public EntityBarakoanToBarakoana(EntityType<? extends EntityBarakoanToBarakoana> type, Level world) {
@@ -32,7 +23,7 @@ public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> i
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(3, new BarakoaHurtByTargetAI(this, true));
+        this.goalSelector.addGoal(3, new BarakoaHurtByTargetAI(this));
     }
 
     @Override
@@ -42,9 +33,9 @@ public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> i
             setTarget(leader.getTarget());
         }
 
-        if (!this.level.isClientSide && this.world.getDifficulty() == Difficulty.PEACEFUL)
+        if (!this.level.isClientSide && this.level.getDifficulty() == Difficulty.PEACEFUL)
         {
-            this.remove();
+            this.discard() ;
         }
     }
 

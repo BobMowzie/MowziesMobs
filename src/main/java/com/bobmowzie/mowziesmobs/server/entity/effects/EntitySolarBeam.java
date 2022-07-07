@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleOrb;
@@ -14,36 +13,37 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.damage.DamageUtil;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
-import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.minecraft.world.level.block.material.PushReaction;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.AbstractClientPlayer;
-import net.minecraft.client.settings.PointOfView;
+import net.minecraft.client.CameraType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Packet;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.particles.ParticleTypes;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.core.Direction;
-import net.minecraft.util.*;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.Vector3f;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 public class EntitySolarBeam extends Entity {
     public static final double RADIUS_BARAKO = 30;
@@ -77,8 +77,8 @@ public class EntitySolarBeam extends Entity {
 
     public EntitySolarBeam(EntityType<? extends EntitySolarBeam> type, Level world) {
         super(type, world);
-        ignoreFrustumCheck = true;
-        if (level.isClientSide) {
+        noCulling = true;
+        if (world.isClientSide) {
             attractorPos = new Vec3[] {new Vec3(0, 0, 0)};
         }
     }
@@ -92,8 +92,8 @@ public class EntitySolarBeam extends Entity {
         this.setPos(x, y, z);
         this.calculateEndPos();
         this.playSound(MMSounds.LASER.get(), 2f, 1);
-        if (!level.isClientSide) {
-            this.setCasterID(caster.getEntityId());
+        if (!world.isClientSide) {
+            this.setCasterID(caster.getId());
         }
     }
 
@@ -110,8 +110,11 @@ public class EntitySolarBeam extends Entity {
         prevCollidePosZ = collidePosZ;
         prevYaw = renderYaw;
         prevPitch = renderPitch;
+        xo = getX();
+        yo = getY();
+        zo = getZ();
         if (tickCount == 1 && level.isClientSide) {
-            caster = (LivingEntity) world.getEntityByID(getCasterID());
+            caster = (LivingEntity) level.getEntity(getCasterID());
         }
         if (getHasPlayer()) {
             if (!level.isClientSide) {
@@ -119,12 +122,12 @@ public class EntitySolarBeam extends Entity {
             }
         }
         if (caster != null) {
-            renderYaw = (float) ((caster.getYRot()Head + 90.0d) * Math.PI / 180.0d);
+            renderYaw = (float) ((caster.yHeadRot + 90.0d) * Math.PI / 180.0d);
             renderPitch = (float) (-caster.getXRot() * Math.PI / 180.0d);
         }
 
         if (!on && appear.getTimer() == 0) {
-            this.remove();
+            this.discard() ;
         }
         if (on && tickCount > 20) {
             appear.increaseTimer();
@@ -132,7 +135,7 @@ public class EntitySolarBeam extends Entity {
             appear.decreaseTimer();
         }
 
-        if (caster != null && !caster.isAlive()) remove();
+        if (caster != null && !caster.isAlive()) discard() ;
 
         if (level.isClientSide && tickCount <= 10 && caster != null) {
             int particleCount = 8;
@@ -144,10 +147,10 @@ public class EntitySolarBeam extends Entity {
                 double oy = radius * Math.cos(pitch);
                 double oz = radius * Math.cos(yaw) * Math.sin(pitch);
                 double rootX = caster.getX();
-                double rootY = caster.getY() + caster.getHeight() / 2f + 0.3f;
+                double rootY = caster.getY() + caster.getBbHeight() / 2f + 0.3f;
                 double rootZ = caster.getZ();
                 if (getHasPlayer()) {
-                    if (caster instanceof Player && !(caster == Minecraft.getInstance().player && Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON)) {
+                    if (caster instanceof Player && !(caster == Minecraft.getInstance().player && Minecraft.getInstance().options.getCameraType() == CameraType.FIRST_PERSON)) {
                         GeckoPlayer geckoPlayer = GeckoPlayer.getGeckoPlayer((Player) caster, GeckoPlayer.Perspective.THIRD_PERSON);
                         if (geckoPlayer != null) {
                             GeckoRenderPlayer renderPlayer = (GeckoRenderPlayer) geckoPlayer.getPlayerRenderer();
@@ -160,7 +163,7 @@ public class EntitySolarBeam extends Entity {
                     }
                 }
                 attractorPos[0] = new Vec3(rootX, rootY, rootZ);
-                AdvancedParticleBase.spawnParticle(world, ParticleHandler.ORB2.get(), rootX + ox, rootY + oy, rootZ + oz, 0, 0, 0, true, 0, 0, 0, 0, 5F, 1, 1, 1, 1, 1, 7, true, false, new ParticleComponent[]{
+                AdvancedParticleBase.spawnParticle(level, ParticleHandler.ORB2.get(), rootX + ox, rootY + oy, rootZ + oz, 0, 0, 0, true, 0, 0, 0, 0, 5F, 1, 1, 1, 1, 1, 7, true, false, new ParticleComponent[]{
                         new ParticleComponent.Attractor(attractorPos, 1.7f, 0.0f, ParticleComponent.Attractor.EnumAttractorBehavior.EXPONENTIAL),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, new ParticleComponent.KeyTrack(
                                 new float[]{0f, 0.8f},
@@ -175,7 +178,7 @@ public class EntitySolarBeam extends Entity {
         }
         if (tickCount > 20) {
             this.calculateEndPos();
-            List<LivingEntity> hit = raytraceEntities(world, new Vec3(getX(), getY(), getZ()), new Vec3(endPosX, endPosY, endPosZ), false, true, true).entities;
+            List<LivingEntity> hit = raytraceEntities(level, new Vec3(getX(), getY(), getZ()), new Vec3(endPosX, endPosY, endPosZ), false, true, true).entities;
             if (blockSide != null) {
                 spawnExplosionParticles(2);
             }
@@ -194,7 +197,7 @@ public class EntitySolarBeam extends Entity {
                         damageFire *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier.get();
                         damageMob *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier.get();
                     }
-                    DamageUtil.dealMixedDamage(target, DamageSource.causeIndirectDamage(this, caster), damageMob, DamageSource.ON_FIRE, damageFire);
+                    DamageUtil.dealMixedDamage(target, DamageSource.indirectMobAttack(this, caster), damageMob, DamageSource.ON_FIRE, damageFire);
                 }
             } else {
                 if (tickCount - 15 < getDuration()) {
@@ -320,29 +323,29 @@ public class EntitySolarBeam extends Entity {
         }
     }
 
-    public HitResult raytraceEntities(Level world, Vec3 from, Vec3 to, boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock) {
-        HitResult result = new HitResult();
-        result.setBlockHit(world.rayTraceBlocks(new RayTraceContext(from, to, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this)));
+    public SolarbeamHitResult raytraceEntities(Level world, Vec3 from, Vec3 to, boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock) {
+        SolarbeamHitResult result = new SolarbeamHitResult();
+        result.setBlockHit(world.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this)));
         if (result.blockHit != null) {
-            Vec3 hitVec = result.blockHit.getHitVec();
+            Vec3 hitVec = result.blockHit.getLocation();
             collidePosX = hitVec.x;
             collidePosY = hitVec.y;
             collidePosZ = hitVec.z;
-            blockSide = result.blockHit.getFace();
+            blockSide = result.blockHit.getDirection();
         } else {
             collidePosX = endPosX;
             collidePosY = endPosY;
             collidePosZ = endPosZ;
             blockSide = null;
         }
-        List<LivingEntity> entities = world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(Math.min(getX(), collidePosX), Math.min(getY(), collidePosY), Math.min(getZ(), collidePosZ), Math.max(getX(), collidePosX), Math.max(getY(), collidePosY), Math.max(getZ(), collidePosZ)).grow(1, 1, 1));
+        List<LivingEntity> entities = world.getEntitiesOfClass(LivingEntity.class, new AABB(Math.min(getX(), collidePosX), Math.min(getY(), collidePosY), Math.min(getZ(), collidePosZ), Math.max(getX(), collidePosX), Math.max(getY(), collidePosY), Math.max(getZ(), collidePosZ)).inflate(1, 1, 1));
         for (LivingEntity entity : entities) {
             if (entity == caster) {
                 continue;
             }
-            float pad = entity.getCollisionBorderSize() + 0.5f;
-            AxisAlignedBB aabb = entity.getBoundingBox().grow(pad, pad, pad);
-            Optional<Vec3> hit = aabb.rayTrace(from, to);
+            float pad = entity.getPickRadius() + 0.5f;
+            AABB aabb = entity.getBoundingBox().inflate(pad, pad, pad);
+            Optional<Vec3> hit = aabb.clip(from, to);
             if (aabb.contains(from)) {
                 result.addEntityHit(entity);
             } else if (hit.isPresent()) {
@@ -353,11 +356,11 @@ public class EntitySolarBeam extends Entity {
     }
 
     @Override
-    public void applyEntityCollision(Entity entityIn) {
+    public void push(Entity entityIn) {
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean isPickable() {
         return false;
     }
 
@@ -367,28 +370,29 @@ public class EntitySolarBeam extends Entity {
     }
 
     @Override
-    public boolean isInRangeToRenderDist(double distance) {
+    public boolean shouldRenderAtSqrDistance(double distance) {
         return distance < 1024;
     }
 
     private void updateWithPlayer() {
-        this.setYaw((float) ((caster.getYRot()Head + 90) * Math.PI / 180.0d));
+        this.setYaw((float) ((caster.yHeadRot + 90) * Math.PI / 180.0d));
         this.setPitch((float) (-caster.getXRot() * Math.PI / 180.0d));
-        this.setPos(caster.getX(), caster.getY() + 1.2f, caster.getZ());
+        Vec3 vecOffset = caster.getLookAngle().normalize().scale(1);
+        this.setPos(caster.getX() + vecOffset.x(), caster.getY() + 1.2f + vecOffset.y(), caster.getZ() + vecOffset.z());
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void remove(RemovalReason reason) {
+        super.remove(reason);
         if (caster instanceof Player) {
-            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(caster, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(caster, CapabilityHandler.PLAYER_CAPABILITY);
             if (playerCapability != null) {
                 playerCapability.setUsingSolarBeam(false);
             }
         }
     }
 
-    public static class HitResult {
+    public static class SolarbeamHitResult {
         private BlockHitResult blockHit;
 
         private final List<LivingEntity> entities = new ArrayList<>();

@@ -9,7 +9,6 @@ import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
-import net.minecraft.world.phys.Vector2f;
 
 public class AnimationSunStrike<T extends MowzieEntity & IAnimatedEntity> extends SimpleAnimationAI<T> {
     protected LivingEntity entityTarget;
@@ -24,8 +23,8 @@ public class AnimationSunStrike<T extends MowzieEntity & IAnimatedEntity> extend
     }
 
     @Override
-    public void startExecuting() {
-        super.startExecuting();
+    public void start() {
+        super.start();
         entityTarget = entity.getTarget();
         if (entityTarget != null) {
             prevX = entityTarget.getX();
@@ -40,7 +39,7 @@ public class AnimationSunStrike<T extends MowzieEntity & IAnimatedEntity> extend
             return;
         }
         if (entity.getAnimationTick() < 9) {
-            entity.getLookController().setLookPositionWithEntity(entityTarget, 30, 30);
+            entity.getLookControl().setLookAt(entityTarget, 30, 30);
         }
 
         if (entity.getAnimationTick() == 7) {
@@ -60,7 +59,7 @@ public class AnimationSunStrike<T extends MowzieEntity & IAnimatedEntity> extend
                 newZ = Mth.floor(entityTarget.getZ());
             }
             for (int i = 0; i < 5; i++) {
-                if (!entity.world.canBlockSeeSky(new BlockPos(newX, y, newZ))) {
+                if (!entity.level.canSeeSkyFromBelowWater(new BlockPos(newX, y, newZ))) {
                     y++;
                 } else {
                     break;
@@ -69,12 +68,12 @@ public class AnimationSunStrike<T extends MowzieEntity & IAnimatedEntity> extend
         }
         if (!entity.level.isClientSide && entity.getAnimationTick() == 9) {
             entity.playSound(MMSounds.ENTITY_BARAKO_ATTACK.get(), 1.4f, 1);
-            EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE, entity.world, entity, newX, y, newZ);
+            EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE.get(), entity.level, entity, newX, y, newZ);
             sunstrike.onSummon();
             entity.level.addFreshEntity(sunstrike);
         }
         if (entity.getAnimationTick() > 6) {
-            entity.getLookController().setLookPosition(newX, y, newZ, 20, 20);
+            entity.getLookControl().setLookAt(newX, y, newZ, 20, 20);
         }
     }
 }

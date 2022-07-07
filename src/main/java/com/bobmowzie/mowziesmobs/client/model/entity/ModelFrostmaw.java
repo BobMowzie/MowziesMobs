@@ -1,11 +1,13 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.LegArticulator;
+import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
 /**
  * Created by BobMowzie on 5/8/2017.
@@ -306,12 +308,9 @@ public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T
         setRotateAngle(legLeftJoint, -0.6981317007977318F, 0.0F, 0.0F);
         this.iceCrystal = new AdvancedModelRenderer(this, 0, 0);
         this.iceCrystal.setRotationPoint(0, 0, 0);
-//        this.iceCrystal.add3DTexture(-8, -8, 0, 16, 16);
         this.iceCrystalJoint = new AdvancedModelRenderer(this, 0, 0);
         this.iceCrystalJoint.setRotationPoint(0, 20, -20);
         this.iceCrystalHand = new AdvancedModelRenderer(this, 0, 0);
-//        this.iceCrystalHand.add3DTexture(-8, -8, 0, 16, 16);
-//        this.iceCrystalHand.setScale(0.5f, 0.5f, 0.5f);
         this.iceCrystalHand.setRotationPoint(-28.5f, 10, -25.5f);
         
         headHair = new AdvancedModelRenderer(this);
@@ -529,13 +528,13 @@ public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T
     }
 
     @Override
-    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         this.root.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.iceCrystalHand.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
     @Override
-    public void setRotationAngles(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         resetToDefaultPose();
         LegArticulator.articulateQuadruped(entity, entity.legSolver, waist, headJoint,
                 legLeft1, legLeft2, legRight1, legRight2, armLeftJoint, armLeftJoint2, armRightJoint, armRightJoint2,
@@ -545,7 +544,7 @@ public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T
         legLeftJoint.rotateAngleX -= waist.rotateAngleX - waist.defaultRotationX;
         legRightJoint.rotateAngleX -= waist.rotateAngleX - waist.defaultRotationX;
 
-        super.setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+        super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
         mouthSocket.setRotationPoint(0, -10, 8);
         mouthSocket.rotationPointZ -= 28;
@@ -1668,7 +1667,9 @@ public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T
                 walk(rightFoot, 0.5f * globalSpeed, 0.4f * globalDegreeBi, true, -1.5f, -0.4f * globalDegreeBi, limbSwing, limbSwingAmount);
 
                 //Idle
-                if (!entity.isPotionActive(EffectHandler.FROZEN) && (entity.getAnimation() != EntityFrostmaw.SLAM_ANIMATION || entity.getAnimationTick() < 118) && entity.getAnimation() != EntityFrostmaw.DIE_ANIMATION) {
+                FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.FROZEN_CAPABILITY);
+                boolean frozen = frozenCapability != null && frozenCapability.getFrozen();
+                if (!frozen && (entity.getAnimation() != EntityFrostmaw.SLAM_ANIMATION || entity.getAnimationTick() < 118) && entity.getAnimation() != EntityFrostmaw.DIE_ANIMATION) {
                     walk(waist, 0.08f, 0.05f, false, 0, 0, frame, 1);
                     walk(headJoint, 0.08f, 0.05f, true, 0.8f, 0, frame, 1);
                     walk(legRightJoint, 0.08f, 0.05f, true, 0, 0, frame, 1);

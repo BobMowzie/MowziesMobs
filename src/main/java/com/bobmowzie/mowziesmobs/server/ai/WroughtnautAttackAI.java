@@ -9,6 +9,8 @@ import net.minecraft.util.Mth;
 
 import java.util.EnumSet;
 
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
+
 public class WroughtnautAttackAI extends Goal {
     private final EntityWroughtnaut wroughtnaut;
 
@@ -22,54 +24,54 @@ public class WroughtnautAttackAI extends Goal {
 
     public WroughtnautAttackAI(EntityWroughtnaut wroughtnaut) {
         this.wroughtnaut = wroughtnaut;
-        this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.JUMP, Flag.LOOK));
+        this.setFlags(EnumSet.of(Flag.MOVE, Flag.JUMP, Flag.LOOK));
     }
 
     @Override
-    public boolean shouldExecute() {
+    public boolean canUse() {
         LivingEntity target = this.wroughtnaut.getTarget();
         return target != null && target.isAlive() && this.wroughtnaut.isActive() && this.wroughtnaut.getAnimation() == IAnimatedEntity.NO_ANIMATION;
     }
 
     @Override
-    public void startExecuting() {
+    public void start() {
         this.repath = 0;
     }
 
     @Override
-    public void resetTask() {
-        this.wroughtnaut.getNavigation().clearPath();
+    public void stop() {
+        this.wroughtnaut.getNavigation().stop();
     }
 
     @Override
     public void tick() {
         LivingEntity target = this.wroughtnaut.getTarget();
         if (target == null) return;
-        double dist = this.wroughtnaut.getDistanceSq(this.targetX, this.targetY, this.targetZ);
-        this.wroughtnaut.getLookController().setLookPositionWithEntity(target, 30.0F, 30.0F);
+        double dist = this.wroughtnaut.distanceToSqr(this.targetX, this.targetY, this.targetZ);
+        this.wroughtnaut.getLookControl().setLookAt(target, 30.0F, 30.0F);
         if (--this.repath <= 0 && (
             this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D ||
-            target.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D) ||
+            target.distanceToSqr(this.targetX, this.targetY, this.targetZ) >= 1.0D) ||
             this.wroughtnaut.getNavigation().isDone()
         ) {
             this.targetX = target.getX();
             this.targetY = target.getY();
             this.targetZ = target.getZ();
-            this.repath = 4 + this.wroughtnaut.getRNG().nextInt(7);
+            this.repath = 4 + this.wroughtnaut.getRandom().nextInt(7);
             if (dist > 32.0D * 32.0D) {
                 this.repath += 10;
             } else if (dist > 16.0D * 16.0D) {
                 this.repath += 5;
             }
-            if (!this.wroughtnaut.getNavigation().tryMoveToEntityLiving(target, 0.2D)) {
+            if (!this.wroughtnaut.getNavigation().moveTo(target, 0.2D)) {
                 this.repath += 15;
             }
         }
-        dist = this.wroughtnaut.getDistanceSq(this.targetX, this.targetY, this.targetZ);
+        dist = this.wroughtnaut.distanceToSqr(this.targetX, this.targetY, this.targetZ);
         if (target.getY() - this.wroughtnaut.getY() >= -1 && target.getY() - this.wroughtnaut.getY() <= 3) {
             boolean couldStomp = dist < 6.0D * 6.0D && this.timeSinceStomp > 200;
-            if (dist < 3.5D * 3.5D && Math.abs(Mth.wrapDegrees(this.wroughtnaut.getAngleBetweenEntities(target, this.wroughtnaut) - this.wroughtnaut.getYRot())) < 35.0D && (!couldStomp || this.wroughtnaut.getRNG().nextFloat() < 0.667F)) {
-                if (this.attacksSinceVertical > 3 + 2 * (1 - wroughtnaut.getHealthRatio()) || this.wroughtnaut.getRNG().nextFloat() < 0.18F) {
+            if (dist < 3.5D * 3.5D && Math.abs(Mth.wrapDegrees(this.wroughtnaut.getAngleBetweenEntities(target, this.wroughtnaut) - this.wroughtnaut.getYRot())) < 35.0D && (!couldStomp || this.wroughtnaut.getRandom().nextFloat() < 0.667F)) {
+                if (this.attacksSinceVertical > 3 + 2 * (1 - wroughtnaut.getHealthRatio()) || this.wroughtnaut.getRandom().nextFloat() < 0.18F) {
                     AnimationHandler.INSTANCE.sendAnimationMessage(this.wroughtnaut, EntityWroughtnaut.VERTICAL_ATTACK_ANIMATION);
                     this.attacksSinceVertical = 0;
                 } else {

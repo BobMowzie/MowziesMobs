@@ -14,8 +14,8 @@ public class MowzieMathUtil {
     }
 
     public static float approachDegreesSmooth(float current, float previous, float desired, float desiredSpeed, float deltaSpeed) {
-        float desiredDifference = Mth.warpDegreeDifference(current, desired);
-        float previousDifference = Mth.warpDegreeDifference(current, previous);
+        float desiredDifference = Mth.degreesDifference(current, desired);
+        float previousDifference = Mth.degreesDifference(current, previous);
         return approachSmooth(current, current + previousDifference, current + desiredDifference, desiredSpeed, deltaSpeed);
     }
 }

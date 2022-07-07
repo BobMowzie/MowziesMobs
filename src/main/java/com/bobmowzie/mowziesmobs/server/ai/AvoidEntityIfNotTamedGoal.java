@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.server.ai;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
-import net.minecraft.world.entity.animal.TameableEntity;
+import net.minecraft.world.entity.TamableAnimal;
 
 public class AvoidEntityIfNotTamedGoal<T extends LivingEntity> extends AvoidEntityGoal<T> {
     public AvoidEntityIfNotTamedGoal(PathfinderMob entityIn, Class classToAvoidIn, float avoidDistanceIn, double farSpeedIn, double nearSpeedIn) {
@@ -11,9 +11,9 @@ public class AvoidEntityIfNotTamedGoal<T extends LivingEntity> extends AvoidEnti
     }
 
     @Override
-    public boolean shouldExecute() {
+    public boolean canUse() {
         boolean isTamed;
-        isTamed = entity instanceof TameableEntity && ((TameableEntity) entity).isTamed();
-        return super.shouldExecute() && !isTamed;
+        isTamed = mob instanceof TamableAnimal && ((TamableAnimal) mob).isTame();
+        return super.canUse() && !isTamed;
     }
 }

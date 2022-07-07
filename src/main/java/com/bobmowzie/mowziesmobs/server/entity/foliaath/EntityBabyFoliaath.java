@@ -2,16 +2,12 @@ package com.bobmowzie.mowziesmobs.server.entity.foliaath;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationBabyFoliaathEatAI;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.minecraft.core.particles.BlockParticleOption;
-import net.minecraft.core.particles.ItemParticleOption;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.entity.Entity;
@@ -22,6 +18,10 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ItemParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -32,6 +32,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
@@ -66,9 +67,8 @@ public class EntityBabyFoliaath extends MowzieEntity {
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1);
     }
 
-    @Override
-    protected MovementEmission getMovementEmission() {
-        return MovementEmission.NONE;
+    protected boolean isMovementNoisy() {
+        return false;
     }
 
     @Override
@@ -79,6 +79,11 @@ public class EntityBabyFoliaath extends MowzieEntity {
     @Override
     public void push(double x, double y, double z) {
         super.push(0, y, 0);
+    }
+
+    @Override
+    protected void pushEntities() {
+
     }
 
     @Override
@@ -137,11 +142,11 @@ public class EntityBabyFoliaath extends MowzieEntity {
                 setHungry(true);
             }
             if (getGrowth() == 2400) {
-                EntityFoliaath adultFoliaath = new EntityFoliaath(EntityHandler.FOLIAATH, level);
+                EntityFoliaath adultFoliaath = new EntityFoliaath(EntityHandler.FOLIAATH.get(), level);
                 adultFoliaath.setPos(getX(), getY(), getZ());
                 adultFoliaath.setCanDespawn(false);
                 level.addFreshEntity(adultFoliaath);
-                discard();
+                discard() ;
             }
         }
     }
@@ -169,12 +174,12 @@ public class EntityBabyFoliaath extends MowzieEntity {
     }
 
     @Override
-    public void onDeath(DamageSource source) {
-        super.onDeath(source);
+    public void die(DamageSource source) {
+        super.die(source);
         for (int i = 0; i < 10; i++) {
             level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.JUNGLE_LEAVES.defaultBlockState()), getX(), getY() + 0.2, getZ(), 0, 0, 0);
         }
-        discard();
+        discard() ;
     }
 
     @Override
@@ -183,7 +188,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
     }
 
     @Override
-    public void applyEntityCollision(Entity collider) {
+    public void push(Entity collider) {
         setDeltaMovement(0, getDeltaMovement().y, 0);
     }
 
@@ -202,7 +207,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
                     Mth.floor(getZ())
             );
 
-            BlockState block = level.getBlockState(ground);
+            BlockState block = world.getBlockState(ground);
 
             if (block.getBlock() == Blocks.GRASS_BLOCK || block.getMaterial() == Material.DIRT || block.getMaterial() == Material.LEAVES) {
                 playSound(SoundEvents.GRASS_HIT, 1, 0.8F);
@@ -213,7 +218,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
     }
 
     public List<ItemEntity> getMeatsNearby(double distanceX, double distanceY, double distanceZ, double radius) {
-        List<Entity> list = level.getEntities(this, getBoundingBox().expandTowards(distanceX, distanceY, distanceZ));
+        List<Entity> list = level.getEntities(this, getBoundingBox().inflate(distanceX, distanceY, distanceZ));
         ArrayList<ItemEntity> listEntityItem = new ArrayList<>();
         for (Entity entityNeighbor : list) {
             if (entityNeighbor instanceof ItemEntity && distanceTo(entityNeighbor) <= radius) {

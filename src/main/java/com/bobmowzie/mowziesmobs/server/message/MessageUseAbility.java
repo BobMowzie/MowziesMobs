@@ -40,9 +40,9 @@ public class MessageUseAbility {
         public void accept(final MessageUseAbility message, final Supplier<NetworkEvent.Context> contextSupplier) {
             final NetworkEvent.Context context = contextSupplier.get();
             context.enqueueWork(() -> {
-                LivingEntity entity = (LivingEntity) Minecraft.getInstance().world.getEntityByID(message.entityID);
+                LivingEntity entity = (LivingEntity) Minecraft.getInstance().level.getEntity(message.entityID);
                 if (entity != null) {
-                    AbilityCapability.IAbilityCapability abilityCapability = CapabilityHandler.getCapability(entity, AbilityCapability.AbilityProvider.ABILITY_CAPABILITY);
+                    AbilityCapability.IAbilityCapability abilityCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.ABILITY_CAPABILITY);
                     if (abilityCapability != null) {
                         abilityCapability.activateAbility(entity, abilityCapability.getAbilityTypesOnEntity(entity)[message.index]);
                     }

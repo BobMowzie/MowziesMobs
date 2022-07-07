@@ -21,11 +21,11 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.controller.MovementController;
+import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.particles.ParticleTypes;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
@@ -59,10 +59,10 @@ public class EntityLantern extends MowzieEntity {
         super(type, world);
         dir = null;
 
-        if (level.isClientSide) {
+        if (world.isClientSide) {
             pos = new Vec3[1];
         }
-        this.moveController = new MoveHelperController(this);
+        this.moveControl = new MoveHelperController(this);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class EntityLantern extends MowzieEntity {
 
     public static AttributeSupplier.Builder createAttributes() {
         return MowzieEntity.createAttributes()
-                .add(Attributes.MAX_HEALTH, 4.0D * ConfigHandler.COMMON.MOBS.LANTERN.healthMultiplier.get())
+                .add(Attributes.MAX_HEALTH, 4.0D)
                 .add(Attributes.FLYING_SPEED, 0.3D)
                 .add(Attributes.MOVEMENT_SPEED, 0.2D);
     }
@@ -94,10 +94,10 @@ public class EntityLantern extends MowzieEntity {
             setDeltaMovement(getDeltaMovement().add(0, 0.2d + 0.2d / groundDist, 0));
             if (level.isClientSide) {
                 for (int i = 0; i < 5; i++) {
-                    ParticleVanillaCloudExtended.spawnVanillaCloud(world, getX(), getY() + 0.3, getZ(), -getDeltaMovement().x() * 0.2 + 0.1 * (random.nextFloat() - 0.5), -getDeltaMovement().y() * 0.2 + 0.1 * (random.nextFloat() - 0.5), -getDeltaMovement().z() * 0.2 + 0.1 * (random.nextFloat() - 0.5), 0.8d + random.nextDouble() * 1d, 163d / 256d, 247d / 256d, 74d / 256d, 0.95, 30);
+                    ParticleVanillaCloudExtended.spawnVanillaCloud(level, getX(), getY() + 0.3, getZ(), -getDeltaMovement().x() * 0.2 + 0.1 * (random.nextFloat() - 0.5), -getDeltaMovement().y() * 0.2 + 0.1 * (random.nextFloat() - 0.5), -getDeltaMovement().z() * 0.2 + 0.1 * (random.nextFloat() - 0.5), 0.8d + random.nextDouble() * 1d, 163d / 256d, 247d / 256d, 74d / 256d, 0.95, 30);
                 }
                 for (int i = 0; i < 8; i++) {
-                    AdvancedParticleBase.spawnParticle(world, ParticleHandler.PIXEL.get(), getX(), getY() + 0.3, getZ(), -getDeltaMovement().x() * 0.2 + 0.2 * (random.nextFloat() - 0.5), -getDeltaMovement().y() * 0.2 + 0.1 * (random.nextFloat() - 0.5), -getDeltaMovement().z() * 0.2 + 0.2 * (random.nextFloat() - 0.5), true, 0, 0, 0, 0, 4f, 163d / 256d, 247d / 256d, 74d / 256d, 1, 0.9, 17 + random.nextFloat() * 10, true, true, new ParticleComponent[] {
+                    AdvancedParticleBase.spawnParticle(level, ParticleHandler.PIXEL.get(), getX(), getY() + 0.3, getZ(), -getDeltaMovement().x() * 0.2 + 0.2 * (random.nextFloat() - 0.5), -getDeltaMovement().y() * 0.2 + 0.1 * (random.nextFloat() - 0.5), -getDeltaMovement().z() * 0.2 + 0.2 * (random.nextFloat() - 0.5), true, 0, 0, 0, 0, 4f, 163d / 256d, 247d / 256d, 74d / 256d, 1, 0.9, 17 + random.nextFloat() * 10, true, true, new ParticleComponent[] {
                             new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
                                     new float[] {4f, 0},
                                     new float[] {0.8f, 1}
@@ -106,11 +106,11 @@ public class EntityLantern extends MowzieEntity {
                 }
             }
             else {
-                if (getMoveHelperController().getAction() == MovementController.Action.MOVE_TO) {
-                    Vec3 lvt_1_1_ = new Vec3(getMoveHelper().x() - this.getX(), getMoveHelper().y() - this.getY(), getMoveHelper().z() - this.getZ());
+                if (getMoveHelperController().isMovingTo()) {
+                    Vec3 lvt_1_1_ = new Vec3(getMoveControl().getWantedX() - this.getX(), getMoveControl().getWantedY() - this.getY(), getMoveControl().getWantedZ() - this.getZ());
                     double lvt_2_1_ = lvt_1_1_.length();
                     lvt_1_1_ = lvt_1_1_.normalize();
-                    if (getMoveHelperController().func_220673_a(lvt_1_1_, Mth.ceil(lvt_2_1_))) {
+                    if (getMoveHelperController().canReach(lvt_1_1_, Mth.ceil(lvt_2_1_))) {
                         setDeltaMovement(getDeltaMovement().add(lvt_1_1_.scale(0.2)));
                     }
                 }
@@ -127,7 +127,7 @@ public class EntityLantern extends MowzieEntity {
         if (groundDist >= 2) setDeltaMovement(getDeltaMovement().add(0, -0.0055d, 0));
 
         if (tickCount % 5 == 0) {
-            BlockPos checkPos = getPosition();
+            BlockPos checkPos = blockPosition();
             int i;
             for (i = 0; i < 16; i++) {
                 if (level.getBlockState(checkPos).getBlock() != Blocks.AIR) break;
@@ -137,9 +137,9 @@ public class EntityLantern extends MowzieEntity {
         }
 
         if (level.isClientSide && ConfigHandler.CLIENT.glowEffect.get()) {
-            pos[0] = getPositionVec().add(0, getHeight() * 0.8, 0);
+            pos[0] = position().add(0, getBbHeight() * 0.8, 0);
             if (tickCount % 70 == 0) {
-                AdvancedParticleBase.spawnParticle(world, ParticleHandler.GLOW.get(), pos[0].x, pos[0].y, pos[0].z, 0, 0, 0, true, 0, 0, 0, 0, 20F, 0.8, 0.95, 0.35, 1, 1, 70, true, true, new ParticleComponent[]{
+                AdvancedParticleBase.spawnParticle(level, ParticleHandler.GLOW.get(), pos[0].x, pos[0].y, pos[0].z, 0, 0, 0, true, 0, 0, 0, 0, 20F, 0.8, 0.95, 0.35, 1, 1, 70, true, true, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, new ParticleComponent.KeyTrack(
                                 new float[]{0.0f, 0.8f, 0},
                                 new float[]{0, 0.5f, 1}
@@ -153,8 +153,8 @@ public class EntityLantern extends MowzieEntity {
     }
 
     @Override
-    protected void onDeathAIUpdate() {
-        super.onDeathAIUpdate();
+    protected void tickDeath() {
+        super.tickDeath();
         if (getAnimationTick() == 1 && level.isClientSide) {
             for (int i = 0; i < 8; i++) {
                 level.addParticle(ParticleTypes.ITEM_SLIME, getX(), getY(), getZ(), 0.2 * (random.nextFloat() - 0.5), 0.2 * (random.nextFloat() - 0.5), 0.2 * (random.nextFloat() - 0.5));
@@ -165,11 +165,8 @@ public class EntityLantern extends MowzieEntity {
         if (getAnimationTick() == 2) playSound(MMSounds.ENTITY_LANTERN_POP.get(), 1f, 0.8f + random.nextFloat() * 0.4f);
     }
 
-    public void fall(float distance, float damageMultiplier)
-    {
-    }
-
-    protected void updateFallState(double y, boolean onGroundIn, BlockState state, BlockPos pos)
+    @Override
+    protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos)
     {
     }
 
@@ -188,13 +185,13 @@ public class EntityLantern extends MowzieEntity {
             BlockPos ground = new BlockPos(this.getX(), this.getBoundingBox().minY - 1.0D, this.getZ());
             float f = 0.91F;
             if (this.isOnGround()) {
-                f = this.level.getBlockState(ground).getSlipperiness(world, ground, this) * 0.91F;
+                f = this.level.getBlockState(ground).getFriction(level, ground, this) * 0.91F;
             }
 
             float f1 = 0.16277137F / (f * f * f);
             f = 0.91F;
             if (this.isOnGround()) {
-                f = this.level.getBlockState(ground).getSlipperiness(world, ground, this) * 0.91F;
+                f = this.level.getBlockState(ground).getFriction(level, ground, this) * 0.91F;
             }
 
             this.moveRelative(this.isOnGround() ? 0.1F * f1 : 0.02F, movement);
@@ -202,16 +199,16 @@ public class EntityLantern extends MowzieEntity {
             this.setDeltaMovement(this.getDeltaMovement().scale(f));
         }
 
-        this.prevLimbSwingAmount = this.limbSwingAmount;
+        this.animationSpeedOld = this.animationSpeed;
         double d1 = this.getX() - this.xo;
         double d0 = this.getZ() - this.zo;
-        float f2 = Mth.sqrt(d1 * d1 + d0 * d0) * 4.0F;
+        float f2 = Mth.sqrt((float) (d1 * d1 + d0 * d0)) * 4.0F;
         if (f2 > 1.0F) {
             f2 = 1.0F;
         }
 
-        this.limbSwingAmount += (f2 - this.limbSwingAmount) * 0.4F;
-        this.limbSwing += this.limbSwingAmount;
+        this.animationSpeed += (f2 - this.animationSpeed) * 0.4F;
+        this.animationPosition += this.animationSpeed;
     }
 
     @Override
@@ -223,7 +220,7 @@ public class EntityLantern extends MowzieEntity {
      * Returns true if this entity should move as if it were on a ladder (either because it's actually on a ladder, or
      * for AI reasons)
      */
-    public boolean isOnLadder()
+    public boolean onClimbable()
     {
         return false;
     }
@@ -248,9 +245,14 @@ public class EntityLantern extends MowzieEntity {
         return LootTableHandler.LANTERN;
     }
 
+    @Override
+    protected ConfigHandler.CombatConfig getCombatConfig() {
+        return ConfigHandler.COMMON.MOBS.LANTERN.combatConfig;
+    }
+
     public MoveHelperController getMoveHelperController() {
-        if (getMoveHelper() instanceof MoveHelperController)
-            return (MoveHelperController) super.getMoveHelper();
+        if (getMoveControl() instanceof MoveHelperController)
+            return (MoveHelperController) super.getMoveControl();
         return null;
     }
 
@@ -259,36 +261,36 @@ public class EntityLantern extends MowzieEntity {
 
         public RandomFlyGoal(EntityLantern p_i45836_1_) {
             this.parentEntity = p_i45836_1_;
-            this.setMutexFlags(EnumSet.of(Flag.MOVE));
+            this.setFlags(EnumSet.of(Flag.MOVE));
         }
 
-        public boolean shouldExecute() {
-            MovementController lvt_1_1_ = this.parentEntity.getMoveHelper();
-            if (!lvt_1_1_.isUpdating()) {
+        public boolean canUse() {
+            MoveControl lvt_1_1_ = this.parentEntity.getMoveControl();
+            if (!lvt_1_1_.hasWanted()) {
                 return true;
             } else {
-                double lvt_2_1_ = lvt_1_1_.x() - this.parentEntity.getX();
-                double lvt_4_1_ = lvt_1_1_.y() - this.parentEntity.getY();
-                double lvt_6_1_ = lvt_1_1_.z() - this.parentEntity.getZ();
+                double lvt_2_1_ = lvt_1_1_.getWantedX() - this.parentEntity.getX();
+                double lvt_4_1_ = lvt_1_1_.getWantedY() - this.parentEntity.getY();
+                double lvt_6_1_ = lvt_1_1_.getWantedZ() - this.parentEntity.getZ();
                 double lvt_8_1_ = lvt_2_1_ * lvt_2_1_ + lvt_4_1_ * lvt_4_1_ + lvt_6_1_ * lvt_6_1_;
                 return lvt_8_1_ < 1.0D || lvt_8_1_ > 3600.0D;
             }
         }
 
-        public boolean shouldContinueExecuting() {
+        public boolean canContinueToUse() {
             return false;
         }
 
-        public void startExecuting() {
-            Random lvt_1_1_ = this.parentEntity.getRNG();
+        public void start() {
+            Random lvt_1_1_ = this.parentEntity.getRandom();
             double lvt_2_1_ = this.parentEntity.getX() + (double)((lvt_1_1_.nextFloat() * 2.0F - 1.0F) * 16.0F);
             double lvt_4_1_ = this.parentEntity.getY() + (double)((lvt_1_1_.nextFloat() * 2.0F - 1.0F) * 16.0F);
             double lvt_6_1_ = this.parentEntity.getZ() + (double)((lvt_1_1_.nextFloat() * 2.0F - 1.0F) * 16.0F);
-            this.parentEntity.getMoveHelper().setMoveTo(lvt_2_1_, lvt_4_1_, lvt_6_1_, 1.0D);
+            this.parentEntity.getMoveControl().setWantedPosition(lvt_2_1_, lvt_4_1_, lvt_6_1_, 1.0D);
         }
     }
 
-    static class MoveHelperController extends MovementController {
+    static class MoveHelperController extends MoveControl {
         private final EntityLantern parentEntity;
         protected int courseChangeCooldown;
 
@@ -298,26 +300,26 @@ public class EntityLantern extends MowzieEntity {
         }
 
         public void tick() {
-            if (this.action == Action.MOVE_TO) {
+            if (this.operation == Operation.MOVE_TO) {
                 if (this.courseChangeCooldown-- <= 0) {
-                    this.courseChangeCooldown += this.parentEntity.getRNG().nextInt(5) + 2;
-                    Vec3 lvt_1_1_ = new Vec3(this.posX - this.parentEntity.getX(), this.posY - this.parentEntity.getY(), this.posZ - this.parentEntity.getZ());
+                    this.courseChangeCooldown += this.parentEntity.getRandom().nextInt(5) + 2;
+                    Vec3 lvt_1_1_ = new Vec3(this.wantedX - this.parentEntity.getX(), this.wantedY - this.parentEntity.getY(), this.wantedZ - this.parentEntity.getZ());
                     double lvt_2_1_ = lvt_1_1_.length();
                     lvt_1_1_ = lvt_1_1_.normalize();
-                    if (!this.func_220673_a(lvt_1_1_, Mth.ceil(lvt_2_1_))) {
-                        this.action = Action.WAIT;
+                    if (!this.canReach(lvt_1_1_, Mth.ceil(lvt_2_1_))) {
+                        this.operation = Operation.WAIT;
                     }
                 }
 
             }
         }
 
-        public boolean func_220673_a(Vec3 p_220673_1_, int p_220673_2_) {
-            AxisAlignedBB lvt_3_1_ = this.parentEntity.getBoundingBox();
+        public boolean canReach(Vec3 p_220673_1_, int p_220673_2_) {
+            AABB lvt_3_1_ = this.parentEntity.getBoundingBox();
 
             for(int lvt_4_1_ = 1; lvt_4_1_ < p_220673_2_; ++lvt_4_1_) {
-                lvt_3_1_ = lvt_3_1_.offset(p_220673_1_);
-                if (!this.parentEntity.world.noCollision(this.parentEntity, lvt_3_1_)) {
+                lvt_3_1_ = lvt_3_1_.move(p_220673_1_);
+                if (!this.parentEntity.level.noCollision(this.parentEntity, lvt_3_1_)) {
                     return false;
                 }
             }
@@ -325,8 +327,8 @@ public class EntityLantern extends MowzieEntity {
             return true;
         }
 
-        public Action getAction() {
-            return action;
+        public boolean isMovingTo() {
+            return operation == Operation.MOVE_TO;
         }
     }
 }

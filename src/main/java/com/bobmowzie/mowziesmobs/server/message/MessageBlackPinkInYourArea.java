@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.minecart.AbstractMinecart;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraftforge.fmllegacy.network.NetworkEvent;
@@ -22,7 +22,7 @@ public final class MessageBlackPinkInYourArea {
     public MessageBlackPinkInYourArea() {}
 
     public MessageBlackPinkInYourArea(AbstractMinecart minecart) {
-        this(minecart.getEntityId());
+        this(minecart.getId());
     }
 
     private MessageBlackPinkInYourArea(int entityId) {
@@ -44,23 +44,23 @@ public final class MessageBlackPinkInYourArea {
         public void accept(final MessageBlackPinkInYourArea message, final Supplier<NetworkEvent.Context> contextSupplier) {
             final NetworkEvent.Context context = contextSupplier.get();
             context.enqueueWork(() -> {
-                ClientLevel world = Minecraft.getInstance().world;
-                Entity entity = world.getEntityByID(message.entityID);
+                ClientLevel world = Minecraft.getInstance().level;
+                Entity entity = world.getEntity(message.entityID);
                 if (entity instanceof AbstractMinecart) {
                     AbstractMinecart minecart = (AbstractMinecart) entity;
                     MowziesMobs.PROXY.playBlackPinkSound(minecart);
                     BlockState state = Blocks.STONE.defaultBlockState()
-                            .with(BlockGrottol.VARIANT, BlockGrottol.Variant.BLACK_PINK);
-                    BlockPos pos = minecart.getPosition();
+                            .setValue(BlockGrottol.VARIANT, BlockGrottol.Variant.BLACK_PINK);
+                    BlockPos pos = minecart.blockPosition();
                     final float scale = 0.75F;
                     double x = minecart.getX(),
-                            y = minecart.getY() + 0.375F + 0.5F + (minecart.getDefaultDisplayTileOffset() - 8) / 16.0F * scale,
+                            y = minecart.getY() + 0.375F + 0.5F + (minecart.getDefaultDisplayOffset() - 8) / 16.0F * scale,
                             z = minecart.getZ();
                     SoundType sound = state.getBlock().getSoundType(state, world, pos, minecart);
-                    level.playSound(
+                    world.playLocalSound(
                             x, y, z,
                             sound.getBreakSound(),
-                            minecart.getSoundCategory(),
+                            minecart.getSoundSource(),
                             (sound.getVolume() + 1.0F) / 2.0F,
                             sound.getPitch() * 0.8F,
                             false

@@ -1,0 +1,14 @@
+{
+  "__comment": "These items will be able to damage grottols even if they cannot mine diamond ore.",
+  "replace": false,
+  "values": [
+    {
+      "id": "cagedmobs:dnasamplerdiamond",
+      "required": false
+    },
+    {
+      "id": "cagedmobs:dnasamplernetherite",
+      "required": false
+    }
+  ]
+}

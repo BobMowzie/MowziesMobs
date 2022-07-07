@@ -1,44 +1,49 @@
 package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.client.resources.model.*;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 @OnlyIn(Dist.CLIENT)
 public class MMModels {
-    public static final String[] HAND_MODEL_ITEMS = new String[] {"wrought_axe", "spear"};
+    public static final String[] HAND_MODEL_ITEMS = new String[] {"wrought_axe", "spear", "earthbore_gauntlet"};
 
     @SubscribeEvent
     public static void onModelBakeEvent(ModelBakeEvent event) {
-        Map<ResourceLocation, IBakedModel> map = event.getModelRegistry();
+        Map<ResourceLocation, BakedModel> map = event.getModelRegistry();
 
         for (String item : HAND_MODEL_ITEMS) {
             ResourceLocation modelInventory = new ModelResourceLocation("mowziesmobs:" + item, "inventory");
             ResourceLocation modelHand = new ModelResourceLocation("mowziesmobs:" + item + "_in_hand", "inventory");
 
-            IBakedModel bakedModelDefault = map.get(modelInventory);
-            IBakedModel bakedModelHand = map.get(modelHand);
-            IBakedModel modelWrapper = new IBakedModel() {
+            BakedModel bakedModelDefault = map.get(modelInventory);
+            BakedModel bakedModelHand = map.get(modelHand);
+            BakedModel modelWrapper = new BakedModel() {
                 @Override
                 public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand) {
                     return bakedModelDefault.getQuads(state, side, rand);
                 }
 
                 @Override
-                public boolean isAmbientOcclusion() {
-                    return bakedModelDefault.isAmbientOcclusion();
+                public boolean useAmbientOcclusion() {
+                    return bakedModelDefault.useAmbientOcclusion();
                 }
 
                 @Override
@@ -47,30 +52,30 @@ public class MMModels {
                 }
 
                 @Override
-                public boolean isSideLit() {
+                public boolean usesBlockLight() {
                     return false;
                 }
 
                 @Override
-                public boolean isBuiltInRenderer() {
-                    return bakedModelDefault.isBuiltInRenderer();
+                public boolean isCustomRenderer() {
+                    return bakedModelDefault.isCustomRenderer();
                 }
 
                 @Override
-                public TextureAtlasSprite getParticleTexture() {
-                    return bakedModelDefault.getParticleTexture();
+                public TextureAtlasSprite getParticleIcon() {
+                    return bakedModelDefault.getParticleIcon();
                 }
 
                 @Override
-                public ItemOverrideList getOverrides() {
+                public ItemOverrides getOverrides() {
                     return bakedModelDefault.getOverrides();
                 }
 
                 @Override
-                public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
-                    IBakedModel modelToUse = bakedModelDefault;
-                    if (cameraTransformType == ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND || cameraTransformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND
-                            || cameraTransformType == ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND || cameraTransformType == ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND) {
+                public BakedModel handlePerspective(ItemTransforms.TransformType cameraTransformType, PoseStack mat) {
+                    BakedModel modelToUse = bakedModelDefault;
+                    if (cameraTransformType == ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND || cameraTransformType == ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND
+                            || cameraTransformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND || cameraTransformType == ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND) {
                         modelToUse = bakedModelHand;
                     }
                     return ForgeHooksClient.handlePerspective(modelToUse, cameraTransformType, mat);
@@ -83,17 +88,17 @@ public class MMModels {
             ResourceLocation maskModelInventory = new ModelResourceLocation("mowziesmobs:barakoa_mask_" + type.name, "inventory");
             ResourceLocation maskModelFrame = new ModelResourceLocation("mowziesmobs:barakoa_mask_" + type.name + "_frame", "inventory");
 
-            IBakedModel maskBakedModelDefault = map.get(maskModelInventory);
-            IBakedModel maskBakedModelFrame = map.get(maskModelFrame);
-            IBakedModel maskModelWrapper = new IBakedModel() {
+            BakedModel maskBakedModelDefault = map.get(maskModelInventory);
+            BakedModel maskBakedModelFrame = map.get(maskModelFrame);
+            BakedModel maskModelWrapper = new BakedModel() {
                 @Override
                 public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand) {
                     return maskBakedModelDefault.getQuads(state, side, rand);
                 }
 
                 @Override
-                public boolean isAmbientOcclusion() {
-                    return maskBakedModelDefault.isAmbientOcclusion();
+                public boolean useAmbientOcclusion() {
+                    return maskBakedModelDefault.useAmbientOcclusion();
                 }
 
                 @Override
@@ -102,29 +107,29 @@ public class MMModels {
                 }
 
                 @Override
-                public boolean isSideLit() {
+                public boolean usesBlockLight() {
                     return false;
                 }
 
                 @Override
-                public boolean isBuiltInRenderer() {
-                    return maskBakedModelDefault.isBuiltInRenderer();
+                public boolean isCustomRenderer() {
+                    return maskBakedModelDefault.isCustomRenderer();
                 }
 
                 @Override
-                public TextureAtlasSprite getParticleTexture() {
-                    return maskBakedModelDefault.getParticleTexture();
+                public TextureAtlasSprite getParticleIcon() {
+                    return maskBakedModelDefault.getParticleIcon();
                 }
 
                 @Override
-                public ItemOverrideList getOverrides() {
+                public ItemOverrides getOverrides() {
                     return maskBakedModelDefault.getOverrides();
                 }
 
                 @Override
-                public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
-                    IBakedModel modelToUse = maskBakedModelDefault;
-                    if (cameraTransformType == ItemCameraTransforms.TransformType.FIXED) {
+                public BakedModel handlePerspective(ItemTransforms.TransformType cameraTransformType, PoseStack mat) {
+                    BakedModel modelToUse = maskBakedModelDefault;
+                    if (cameraTransformType == ItemTransforms.TransformType.FIXED) {
                         modelToUse = maskBakedModelFrame;
                     }
                     return ForgeHooksClient.handlePerspective(modelToUse, cameraTransformType, mat);

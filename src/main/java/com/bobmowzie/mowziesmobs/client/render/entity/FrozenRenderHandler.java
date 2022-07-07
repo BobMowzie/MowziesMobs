@@ -1,28 +1,30 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.AbstractClientPlayer;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.LivingRenderer;
-import net.minecraft.client.renderer.entity.PlayerRenderer;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.client.resources.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
-import net.minecraft.sounds.Hand;
-import net.minecraft.sounds.HandSide;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.phys.Vector3f;
+import com.mojang.math.Vector3f;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -34,44 +36,46 @@ public enum FrozenRenderHandler {
 
     private static final ResourceLocation FROZEN_TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/frozen.png");
 
-    public static class LayerFrozen<T extends LivingEntity, M extends EntityModel<T>> extends LayerRenderer<T,M> {
-        private final LivingRenderer<T, M> renderer;
+    public static class LayerFrozen<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T,M> {
+        private final LivingEntityRenderer<T, M> renderer;
 
-        public LayerFrozen(LivingRenderer<T, M> renderer) {
+        public LayerFrozen(LivingEntityRenderer<T, M> renderer) {
             super(renderer);
             this.renderer = renderer;
         }
 
         @Override
-        public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, LivingEntity living, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-            if (living.isPotionActive(EffectHandler.FROZEN)) {
-                EntityModel model = this.renderer.getEntityModel();
+        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, LivingEntity living, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(living, CapabilityHandler.FROZEN_CAPABILITY);
+            if (frozenCapability != null && frozenCapability.getFrozen()) {
+                EntityModel model = this.renderer.getModel();
 
                 float transparency = 1;
-                IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntityTranslucent(FROZEN_TEXTURE));
-                model.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, transparency);
+                VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(FROZEN_TEXTURE));
+                model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, transparency);
             }
         }
     }
 
     @SubscribeEvent
     public void onRenderHand(RenderHandEvent event) {
-        event.getMatrixStack().push();
+        event.getMatrixStack().pushPose();
 
         Player player = Minecraft.getInstance().player;
 
-        if(player != null && player.isPotionActive(EffectHandler.FROZEN)) {
-            if(player.isPotionActive(EffectHandler.FROZEN)) {
-                boolean isMainHand = event.getHand() == Hand.MAIN_HAND;
-                if(isMainHand && !player.isInvisible() && event.getItemStack().isEmpty()) {
-                    HandSide enumhandside = isMainHand ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
+        if(player != null) {
+            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(player, CapabilityHandler.FROZEN_CAPABILITY);
+            if (frozenCapability != null && frozenCapability.getFrozen()) {
+                boolean isMainHand = event.getHand() == InteractionHand.MAIN_HAND;
+                if (isMainHand && !player.isInvisible() && event.getItemStack().isEmpty()) {
+                    HumanoidArm enumhandside = isMainHand ? player.getMainArm() : player.getMainArm().getOpposite();
                     renderArmFirstPersonFrozen(event.getMatrixStack(), event.getBuffers(), event.getLight(), event.getEquipProgress(), event.getSwingProgress(), enumhandside);
                     event.setCanceled(true);
                 }
             }
         }
 
-        event.getMatrixStack().pop();
+        event.getMatrixStack().popPose();
     }
 
     /**
@@ -80,73 +84,73 @@ public enum FrozenRenderHandler {
      * @param equipProgress
      * @param handSide
      */
-    private void renderArmFirstPersonFrozen(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, float equippedProgress, float swingProgress, HandSide side) {
+    private void renderArmFirstPersonFrozen(PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, float equippedProgress, float swingProgress, HumanoidArm side) {
         Minecraft mc = Minecraft.getInstance();
-        EntityRendererManager renderManager = mc.getRenderManager();
-        Minecraft.getInstance().getTextureManager().bindTexture(FROZEN_TEXTURE);
-        boolean flag = side != HandSide.LEFT;
+        EntityRenderDispatcher renderManager = mc.getEntityRenderDispatcher();
+        Minecraft.getInstance().getTextureManager().bindForSetup(FROZEN_TEXTURE);
+        boolean flag = side != HumanoidArm.LEFT;
         float f = flag ? 1.0F : -1.0F;
         float f1 = Mth.sqrt(swingProgress);
         float f2 = -0.3F * Mth.sin(f1 * (float)Math.PI);
         float f3 = 0.4F * Mth.sin(f1 * ((float)Math.PI * 2F));
         float f4 = -0.4F * Mth.sin(swingProgress * (float)Math.PI);
         matrixStackIn.translate(f * (f2 + 0.64000005F), f3 + -0.6F + equippedProgress * -0.6F, f4 + -0.71999997F);
-        matrixStackIn.rotate(Vector3f.YP.rotationDegrees(f * 45.0F));
+        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(f * 45.0F));
         float f5 = Mth.sin(swingProgress * swingProgress * (float)Math.PI);
         float f6 = Mth.sin(f1 * (float)Math.PI);
-        matrixStackIn.rotate(Vector3f.YP.rotationDegrees(f * f6 * 70.0F));
-        matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(f * f5 * -20.0F));
-        AbstractClientPlayer abstractclientPlayer = mc.player;
-        mc.getTextureManager().bindTexture(abstractclientPlayer.getLocationSkin());
+        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(f * f6 * 70.0F));
+        matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(f * f5 * -20.0F));
+        AbstractClientPlayer abstractclientplayerentity = mc.player;
+        mc.getTextureManager().bindForSetup(abstractclientplayerentity.getSkinTextureLocation());
         matrixStackIn.translate(f * -1.0F, 3.6F, 3.5D);
-        matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(f * 120.0F));
-        matrixStackIn.rotate(Vector3f.XP.rotationDegrees(200.0F));
-        matrixStackIn.rotate(Vector3f.YP.rotationDegrees(f * -135.0F));
+        matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(f * 120.0F));
+        matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(200.0F));
+        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(f * -135.0F));
         matrixStackIn.translate(f * 5.6F, 0.0D, 0.0D);
-        PlayerRenderer playerrenderer = (PlayerRenderer)renderManager.getRenderer(abstractclientPlayer);
+        PlayerRenderer playerrenderer = (PlayerRenderer)renderManager.getRenderer(abstractclientplayerentity);
         if (flag) {
-            playerrenderer.renderRightArm(matrixStackIn, bufferIn, combinedLightIn, abstractclientPlayer);
+            playerrenderer.renderRightHand(matrixStackIn, bufferIn, combinedLightIn, abstractclientplayerentity);
             matrixStackIn.scale(1.02f, 1.02f, 1.02f);
-            this.renderRightArm(matrixStackIn, bufferIn, combinedLightIn, abstractclientPlayer, playerrenderer.getEntityModel());
+            this.renderRightArm(matrixStackIn, bufferIn, combinedLightIn, abstractclientplayerentity, playerrenderer.getModel());
         } else {
-            playerrenderer.renderLeftArm(matrixStackIn, bufferIn, combinedLightIn, abstractclientPlayer);
+            playerrenderer.renderLeftHand(matrixStackIn, bufferIn, combinedLightIn, abstractclientplayerentity);
             matrixStackIn.scale(1.02f, 1.02f, 1.02f);
-            this.renderLeftArm(matrixStackIn, bufferIn, combinedLightIn, abstractclientPlayer, playerrenderer.getEntityModel());
+            this.renderLeftArm(matrixStackIn, bufferIn, combinedLightIn, abstractclientplayerentity, playerrenderer.getModel());
         }
     }
 
-    public void renderRightArm(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, AbstractClientPlayer playerIn, PlayerModel<AbstractClientPlayer> model) {
-        this.renderItem(matrixStackIn, bufferIn, combinedLightIn, playerIn, (model).bipedRightArm, (model).bipedRightArmwear, model);
+    public void renderRightArm(PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, AbstractClientPlayer playerIn, PlayerModel<AbstractClientPlayer> model) {
+        this.renderItem(matrixStackIn, bufferIn, combinedLightIn, playerIn, (model).rightArm, (model).rightSleeve, model);
     }
 
-    public void renderLeftArm(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, AbstractClientPlayer playerIn, PlayerModel<AbstractClientPlayer> model) {
-        this.renderItem(matrixStackIn, bufferIn, combinedLightIn, playerIn, (model).bipedLeftArm, (model).bipedLeftArmwear, model);
+    public void renderLeftArm(PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, AbstractClientPlayer playerIn, PlayerModel<AbstractClientPlayer> model) {
+        this.renderItem(matrixStackIn, bufferIn, combinedLightIn, playerIn, (model).leftArm, (model).leftSleeve, model);
     }
 
-    private void renderItem(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, AbstractClientPlayer playerIn, ModelRenderer rendererArmIn, ModelRenderer rendererArmwearIn, PlayerModel<AbstractClientPlayer> model) {
+    private void renderItem(PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, AbstractClientPlayer playerIn, ModelPart rendererArmIn, ModelPart rendererArmwearIn, PlayerModel<AbstractClientPlayer> model) {
         this.setModelVisibilities(playerIn, model);
-        model.swingProgress = 0.0F;
-        model.isSneak = false;
-        model.swimAnimation = 0.0F;
-        model.setRotationAngles(playerIn, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
-        rendererArmwearIn.rotateAngleX = 0.0F;
-        rendererArmwearIn.render(matrixStackIn, bufferIn.getBuffer(RenderType.getEntityTranslucent(FROZEN_TEXTURE)), combinedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 0.8f);
+        model.attackTime = 0.0F;
+        model.crouching = false;
+        model.swimAmount = 0.0F;
+        model.setupAnim(playerIn, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
+        rendererArmwearIn.xRot = 0.0F;
+        rendererArmwearIn.render(matrixStackIn, bufferIn.getBuffer(RenderType.entityTranslucent(FROZEN_TEXTURE)), combinedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 0.8f);
     }
 
     private void setModelVisibilities(AbstractClientPlayer clientPlayer, PlayerModel<AbstractClientPlayer> playermodel) {
         if (clientPlayer.isSpectator()) {
-            playermodel.setVisible(false);
-            playermodel.bipedHead.showModel = true;
-            playermodel.bipedHeadwear.showModel = true;
+            playermodel.setAllVisible(false);
+            playermodel.head.visible = true;
+            playermodel.hat.visible = true;
         } else {
-            playermodel.setVisible(true);
-            playermodel.bipedHeadwear.showModel = clientPlayer.isWearing(PlayerModelPart.HAT);
-            playermodel.bipedBodyWear.showModel = clientPlayer.isWearing(PlayerModelPart.JACKET);
-            playermodel.bipedLeftLegwear.showModel = clientPlayer.isWearing(PlayerModelPart.LEFT_PANTS_LEG);
-            playermodel.bipedRightLegwear.showModel = clientPlayer.isWearing(PlayerModelPart.RIGHT_PANTS_LEG);
-            playermodel.bipedLeftArmwear.showModel = clientPlayer.isWearing(PlayerModelPart.LEFT_SLEEVE);
-            playermodel.bipedRightArmwear.showModel = clientPlayer.isWearing(PlayerModelPart.RIGHT_SLEEVE);
-            playermodel.isSneak = clientPlayer.isCrouching();
+            playermodel.setAllVisible(true);
+            playermodel.hat.visible = clientPlayer.isModelPartShown(PlayerModelPart.HAT);
+            playermodel.jacket.visible = clientPlayer.isModelPartShown(PlayerModelPart.JACKET);
+            playermodel.leftPants.visible = clientPlayer.isModelPartShown(PlayerModelPart.LEFT_PANTS_LEG);
+            playermodel.rightPants.visible = clientPlayer.isModelPartShown(PlayerModelPart.RIGHT_PANTS_LEG);
+            playermodel.leftSleeve.visible = clientPlayer.isModelPartShown(PlayerModelPart.LEFT_SLEEVE);
+            playermodel.rightSleeve.visible = clientPlayer.isModelPartShown(PlayerModelPart.RIGHT_SLEEVE);
+            playermodel.crouching = clientPlayer.isCrouching();
         }
     }
 }

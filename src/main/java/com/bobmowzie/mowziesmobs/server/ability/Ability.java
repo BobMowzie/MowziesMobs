@@ -10,7 +10,7 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilitySection.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.Tag;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
@@ -41,14 +41,10 @@ public class Ability {
 
     protected Random rand;
 
-    @OnlyIn(Dist.CLIENT)
     protected AnimationBuilder activeThirdPersonAnimation;
-    @OnlyIn(Dist.CLIENT)
     protected AnimationBuilder activeFirstPersonAnimation;
 
-    @OnlyIn(Dist.CLIENT)
     protected ItemStack heldItemMainHandVisualOverride;
-    @OnlyIn(Dist.CLIENT)
     protected ItemStack heldItemOffHandVisualOverride;
 
     public enum HandDisplay {
@@ -57,9 +53,7 @@ public class Ability {
         FORCE_RENDER
     }
 
-    @OnlyIn(Dist.CLIENT)
     protected HandDisplay firstPersonMainHandDisplay;
-    @OnlyIn(Dist.CLIENT)
     protected HandDisplay firstPersonOffHandDisplay;
 
     public Ability(AbilityType<? extends Ability> abilityType, LivingEntity user, AbilitySection[] sectionTrack, int cooldownMax) {
@@ -114,7 +108,7 @@ public class Ability {
 
     public void tick() {
         if (isUsing()) {
-            if (getUser().isServerLevel() && !canContinueUsing()) AbilityHandler.INSTANCE.sendInterruptAbilityMessage(getUser(), this.abilityType);
+            if (getUser().isEffectiveAi() && !canContinueUsing()) AbilityHandler.INSTANCE.sendInterruptAbilityMessage(getUser(), this.abilityType);
 
             tickUsing();
 
@@ -270,6 +264,14 @@ public class Ability {
         return true;
     }
 
+    /**
+     * Unused for background abilities
+     * @return
+     */
+    public boolean preventsItemUse(ItemStack stack) {
+        return true;
+    }
+
     public AbilitySection[] getSectionTrack() {
         return sectionTrack;
     }
@@ -309,11 +311,11 @@ public class Ability {
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(LivingEntity player, Class<T> entityClass, double r) {
-        return player.world.getEntitiesWithinAABB(entityClass, player.getBoundingBox().grow(r, r, r), e -> e != player && player.getDistance(e) <= r);
+        return player.level.getEntitiesOfClass(entityClass, player.getBoundingBox().inflate(r, r, r), e -> e != player && player.distanceTo(e) <= r);
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(LivingEntity player, Class<T> entityClass, double dX, double dY, double dZ, double r) {
-        return player.world.getEntitiesWithinAABB(entityClass, player.getBoundingBox().grow(dX, dY, dZ), e -> e != player && player.getDistance(e) <= r);
+        return player.level.getEntitiesOfClass(entityClass, player.getBoundingBox().inflate(dX, dY, dZ), e -> e != player && player.distanceTo(e) <= r);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -349,7 +351,7 @@ public class Ability {
         return compound;
     }
 
-    public void readNBT(INBT nbt) {
+    public void readNBT(Tag nbt) {
         CompoundTag compound = (CompoundTag) nbt;
         isUsing = compound.contains("ticks_in_use");
         if (isUsing) {

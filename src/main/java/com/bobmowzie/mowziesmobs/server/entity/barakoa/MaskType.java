@@ -1,23 +1,23 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
 import com.google.common.base.Defaults;
-import net.minecraft.world.effect.Effect;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 
 import java.util.EnumMap;
 import java.util.Locale;
 
 public enum MaskType {
-    FURY(MobEffects.STRENGTH, 0.7F, 2F, true),
-    FEAR(MobEffects.SPEED),
-    RAGE(MobEffects.HASTE),
-    BLISS(MobEffects.JUMP_BOOST),
-    MISERY(MobEffects.RESISTANCE),
+    FURY(MobEffects.DAMAGE_BOOST, 0.7F, 2F, true),
+    FEAR(MobEffects.MOVEMENT_SPEED),
+    RAGE(MobEffects.DIG_SPEED),
+    BLISS(MobEffects.JUMP),
+    MISERY(MobEffects.DAMAGE_RESISTANCE),
     FAITH(MobEffects.HEALTH_BOOST, 0.7F, 2F, false);
 
     public static final int COUNT = MaskType.values().length;
 
-    public final Effect potion;
+    public final MobEffect potion;
 
     public final float entityWidth;
 
@@ -27,11 +27,11 @@ public enum MaskType {
 
     public final String name;
 
-    MaskType(Effect potion) {
+    MaskType(MobEffect potion) {
         this(potion, 0.6F, 1.7F, false);
     }
 
-    MaskType(Effect potion, float entityWidth, float entityHeight, boolean canBlock) {
+    MaskType(MobEffect potion, float entityWidth, float entityHeight, boolean canBlock) {
         this.potion = potion;
         this.entityWidth = entityWidth;
         this.entityHeight = entityHeight;

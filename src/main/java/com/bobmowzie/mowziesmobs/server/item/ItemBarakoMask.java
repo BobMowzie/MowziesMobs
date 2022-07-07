@@ -1,25 +1,36 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.LayerHandler;
 import com.bobmowzie.mowziesmobs.client.model.armor.SolVisageModel;
+import com.bobmowzie.mowziesmobs.client.model.armor.WroughtHelmModel;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.*;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Consumer;
+
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.ArmorMaterials;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.client.IItemRenderProperties;
 
 /**
  * Created by BobMowzie on 8/15/2016.
@@ -32,8 +43,8 @@ public class ItemBarakoMask extends MowzieArmorItem implements BarakoaMask {
     }
 
     @Override
-    public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
-        if (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get()) return super.getIsRepairable(toRepair, repair);
+    public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
+        if (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get()) return super.isValidRepairItem(toRepair, repair);
         return false;
     }
 
@@ -48,7 +59,7 @@ public class ItemBarakoMask extends MowzieArmorItem implements BarakoaMask {
     }
 
     @Override
-    public boolean isDamageable() {
+    public boolean canBeDepleted() {
         return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get();
     }
 
@@ -67,24 +78,6 @@ public class ItemBarakoMask extends MowzieArmorItem implements BarakoaMask {
         if (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get()) super.setDamage(stack, damage);
     }
 
-    @OnlyIn(Dist.CLIENT)
-    @Nullable
-    @Override
-    public <A extends BipedModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, A _default) {
-        SolVisageModel<?> model = new SolVisageModel<>();
-        model.bipedHeadwear.showModel = armorSlot == EquipmentSlot.HEAD;
-
-        if (_default != null) {
-            model.isChild = _default.isChild;
-            model.isSneak = _default.isSneak;
-            model.isSitting = _default.isSitting;
-            model.rightArmPose = _default.rightArmPose;
-            model.leftArmPose = _default.leftArmPose;
-        }
-
-        return (A) model;
-    }
-
     @Nullable
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
@@ -92,11 +85,11 @@ public class ItemBarakoMask extends MowzieArmorItem implements BarakoaMask {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<TextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
-        tooltip.add(new TextComponent(getDescriptionId() + ".text.0").setStyle(ItemHandler.TOOLTIP_STYLE));
-        tooltip.add(new TextComponent(getDescriptionId() + ".text.1").setStyle(ItemHandler.TOOLTIP_STYLE));
-        tooltip.add(new TextComponent(getDescriptionId() + ".text.2").setStyle(ItemHandler.TOOLTIP_STYLE));
+        tooltip.add(new TranslatableComponent(getDescriptionId() + ".text.0").setStyle(ItemHandler.TOOLTIP_STYLE));
+        tooltip.add(new TranslatableComponent(getDescriptionId() + ".text.1").setStyle(ItemHandler.TOOLTIP_STYLE));
+        tooltip.add(new TranslatableComponent(getDescriptionId() + ".text.2").setStyle(ItemHandler.TOOLTIP_STYLE));
     }
 
     @Override
@@ -104,31 +97,31 @@ public class ItemBarakoMask extends MowzieArmorItem implements BarakoaMask {
         return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.armorConfig;
     }
 
-    private static class SolVisageMaterial implements IArmorMaterial {
+    private static class SolVisageMaterial implements ArmorMaterial {
 
         @Override
-        public int getDurability(EquipmentSlot equipmentSlotType) {
-            return ArmorMaterial.GOLD.getDamageReductionAmount(equipmentSlotType);
+        public int getDurabilityForSlot(EquipmentSlot equipmentSlotType) {
+            return ArmorMaterials.GOLD.getDefenseForSlot(equipmentSlotType);
         }
 
         @Override
-        public int getDamageReductionAmount(EquipmentSlot equipmentSlotType) {
+        public int getDefenseForSlot(EquipmentSlot equipmentSlotType) {
             return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.armorConfig.damageReduction.get();
         }
 
         @Override
-        public int getEnchantability() {
-            return ArmorMaterial.GOLD.getEnchantability();
+        public int getEnchantmentValue() {
+            return ArmorMaterials.GOLD.getEnchantmentValue();
         }
 
         @Override
-        public SoundEvent getSoundEvent() {
-            return ArmorMaterial.GOLD.getSoundEvent();
+        public SoundEvent getEquipSound() {
+            return ArmorMaterials.GOLD.getEquipSound();
         }
 
         @Override
-        public Ingredient getRepairMaterial() {
-            return ArmorMaterial.GOLD.getRepairMaterial();
+        public Ingredient getRepairIngredient() {
+            return ArmorMaterials.GOLD.getRepairIngredient();
         }
 
         @Override
@@ -143,7 +136,28 @@ public class ItemBarakoMask extends MowzieArmorItem implements BarakoaMask {
 
         @Override
         public float getKnockbackResistance() {
-            return ArmorMaterial.GOLD.getKnockbackResistance();
+            return ArmorMaterials.GOLD.getKnockbackResistance();
+        }
+    }
+
+    @Override
+    public void initializeClient(Consumer<IItemRenderProperties> consumer) {
+        consumer.accept(ItemBarakoMask.ArmorRender.INSTANCE);
+    }
+
+    private static final class ArmorRender implements IItemRenderProperties {
+        private static final ItemBarakoMask.ArmorRender INSTANCE = new ItemBarakoMask.ArmorRender();
+        private static HumanoidModel<?> MODEL;
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public <A extends HumanoidModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, A defModel) {
+            if (MODEL == null) {
+                EntityModelSet models = Minecraft.getInstance().getEntityModels();
+                ModelPart root = models.bakeLayer(LayerHandler.SOL_VISAGE_LAYER);
+                MODEL = new SolVisageModel<>(root);
+            }
+            return (A) MODEL;
         }
     }
 }

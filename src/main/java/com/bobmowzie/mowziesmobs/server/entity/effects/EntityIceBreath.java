@@ -12,7 +12,6 @@ import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -20,11 +19,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.*;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
+
+import net.minecraft.core.BlockPos;
 
 /**
  * Created by BobMowzie on 5/25/2017.
@@ -40,8 +39,8 @@ public class EntityIceBreath extends EntityMagicEffect {
 
     public EntityIceBreath(EntityType<? extends EntityIceBreath> type, Level world, LivingEntity caster) {
         super(type, world);
-        if (!level.isClientSide) {
-            this.setCasterID(caster.getEntityId());
+        if (!world.isClientSide) {
+            this.setCasterID(caster.getId());
         }
     }
 
@@ -53,15 +52,16 @@ public class EntityIceBreath extends EntityMagicEffect {
                 MowziesMobs.PROXY.playIceBreathSound(this);
             }
         }
-        if (caster != null && !caster.isAlive()) this.remove();
+        if (caster == null) this.discard() ;
+        if (caster != null && !caster.isAlive()) this.discard() ;
         if (tickCount == 1) playSound(MMSounds.ENTITY_FROSTMAW_ICEBREATH_START.get(), 1, 0.6f);
         if (caster instanceof Player) {
             Player player = (Player) caster;
-            setPositionAndRotation(player.getX(), player.getY() + player.getStandingEyeHeight(player.getPose(), player.getSize(player.getPose())) - 0.5f, player.getZ(), player.getYRot(), player.getXRot());
+            absMoveTo(player.getX(), player.getY() + player.getStandingEyeHeight(player.getPose(), player.getDimensions(player.getPose())) - 0.5f, player.getZ(), player.getYRot(), player.getXRot());
         }
 
-        float yaw = (float) Math.toRadians(-yRot);
-        float pitch = (float) Math.toRadians(-rotationPitch);
+        float yaw = (float) Math.toRadians(-getYRot());
+        float pitch = (float) Math.toRadians(-getXRot());
         float spread = 0.25f;
         float speed = 0.56f;
         float xComp = (float) (Math.sin(yaw) * Math.cos(pitch));
@@ -73,9 +73,9 @@ public class EntityIceBreath extends EntityMagicEffect {
             }
 
             for (int i = 0; i < 6; i++) {
-                double xSpeed = speed * 1f * xComp;// + (spread * (random.nextFloat() * 2 - 1) * (1 - Math.abs(xComp)));
-                double ySpeed = speed * 1f * yComp;// + (spread * (random.nextFloat() * 2 - 1) * (1 - Math.abs(yComp)));
-                double zSpeed = speed * 1f * zComp;// + (spread * (random.nextFloat() * 2 - 1) * (1 - Math.abs(zComp)));
+                double xSpeed = speed * 1f * xComp;// + (spread * (rand.nextFloat() * 2 - 1) * (1 - Math.abs(xComp)));
+                double ySpeed = speed * 1f * yComp;// + (spread * (rand.nextFloat() * 2 - 1) * (1 - Math.abs(yComp)));
+                double zSpeed = speed * 1f * zComp;// + (spread * (rand.nextFloat() * 2 - 1) * (1 - Math.abs(zComp)));
                 level.addParticle(new ParticleSnowFlake.SnowflakeData(37f, true), getX(), getY(), getZ(), xSpeed, ySpeed, zSpeed);
             }
             for (int i = 0; i < 5; i++) {
@@ -89,7 +89,7 @@ public class EntityIceBreath extends EntityMagicEffect {
         if (tickCount > 10) hitEntities();
         if (tickCount > 10) freezeBlocks();
 
-        if (tickCount > 65 && !(caster instanceof Player)) remove();
+        if (tickCount > 65 && !(caster instanceof Player)) discard() ;
     }
 
     public void hitEntities() {
@@ -105,7 +105,7 @@ public class EntityIceBreath extends EntityMagicEffect {
             if (freezeImmune.contains(mobName.toString())) continue;
 
             float entityHitYaw = (float) ((Math.atan2(entityHit.getZ() - getZ(), entityHit.getX() - getX()) * (180 / Math.PI) - 90) % 360);
-            float entityAttackingYaw = yRot % 360;
+            float entityAttackingYaw = getYRot() % 360;
             if (entityHitYaw < 0) {
                 entityHitYaw += 360;
             }
@@ -115,9 +115,9 @@ public class EntityIceBreath extends EntityMagicEffect {
             float entityRelativeYaw = entityHitYaw - entityAttackingYaw;
 
             float xzDistance = (float) Math.sqrt((entityHit.getZ() - getZ()) * (entityHit.getZ() - getZ()) + (entityHit.getX() - getX()) * (entityHit.getX() - getX()));
-            double hitY = entityHit.getY() + entityHit.getHeight() / 2.0;
+            double hitY = entityHit.getY() + entityHit.getBbHeight() / 2.0;
             float entityHitPitch = (float) ((Math.atan2((hitY - getY()), xzDistance) * (180 / Math.PI)) % 360);
-            float entityAttackingPitch = -rotationPitch % 360;
+            float entityAttackingPitch = -getXRot() % 360;
             if (entityHitPitch < 0) {
                 entityHitPitch += 360;
             }
@@ -133,17 +133,12 @@ public class EntityIceBreath extends EntityMagicEffect {
             boolean pitchCheck = (entityRelativePitch <= ARC / 2f && entityRelativePitch >= -ARC / 2f) || (entityRelativePitch >= 360 - ARC / 2f || entityRelativePitch <= -360 + ARC / 2f);
             boolean frostmawCloseCheck = caster instanceof EntityFrostmaw && entityHitDistance <= 2;
             if (inRange && yawCheck && pitchCheck || frostmawCloseCheck) {
-                // Raytrace to mob center to avoid damaging through walls
-                Vec3 from = this.position();
-                Vec3 to = entityHit.position().add(0, entityHit.getHeight() / 2.0f, 0);
-                BlockHitResult result = world.rayTraceBlocks(new RayTraceContext(from, to, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
-                if (result.getType() == HitResult.Type.BLOCK) {
-                    continue;
-                }
+                // Do raycast check to prevent damaging through walls
+                if (!raytraceCheckEntity(entityHit)) continue;
 
-                if (entityHit.hurt(DamageSource.causeIndirectMagicDamage(this, caster), damage)) {
-                    entityHit.setDeltaMovement(entityHit.getDeltaMovement().mul(0.25, 1, 0.25));
-                    FrozenCapability.IFrozenCapability capability = CapabilityHandler.getCapability(entityHit, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+                if (entityHit.hurt(DamageSource.indirectMagic(this, caster), damage)) {
+                    entityHit.setDeltaMovement(entityHit.getDeltaMovement().multiply(0.25, 1, 0.25));
+                    FrozenCapability.IFrozenCapability capability = CapabilityHandler.getCapability(entityHit, CapabilityHandler.FROZEN_CAPABILITY);
                     if (capability != null) capability.addFreezeProgress(entityHit, 0.23f);
                 }
             }
@@ -158,13 +153,13 @@ public class EntityIceBreath extends EntityMagicEffect {
                     BlockPos pos = new BlockPos(i, j, k);
 
                     BlockState blockState = level.getBlockState(pos);
-                    BlockState blockStateAbove = level.getBlockState(pos.up());
+                    BlockState blockStateAbove = level.getBlockState(pos.above());
                     if (blockState.getBlock() != Blocks.WATER || blockStateAbove.getBlock() != Blocks.AIR) {
                         continue;
                     }
 
-                    float blockHitYaw = (float) ((Math.atan2(pos.z() - getZ(), pos.x() - getX()) * (180 / Math.PI) - 90) % 360);
-                    float entityAttackingYaw = yRot % 360;
+                    float blockHitYaw = (float) ((Math.atan2(pos.getZ() - getZ(), pos.getX() - getX()) * (180 / Math.PI) - 90) % 360);
+                    float entityAttackingYaw = getYRot() % 360;
                     if (blockHitYaw < 0) {
                         blockHitYaw += 360;
                     }
@@ -173,9 +168,9 @@ public class EntityIceBreath extends EntityMagicEffect {
                     }
                     float blockRelativeYaw = blockHitYaw - entityAttackingYaw;
 
-                    float xzDistance = (float) Math.sqrt((pos.z() - getZ()) * (pos.z() - getZ()) + (pos.x() - getX()) * (pos.x() - getX()));
-                    float blockHitPitch = (float) ((Math.atan2((pos.y() - getY()), xzDistance) * (180 / Math.PI)) % 360);
-                    float entityAttackingPitch = -rotationPitch % 360;
+                    float xzDistance = (float) Math.sqrt((pos.getZ() - getZ()) * (pos.getZ() - getZ()) + (pos.getX() - getX()) * (pos.getX() - getX()));
+                    float blockHitPitch = (float) ((Math.atan2((pos.getY() - getY()), xzDistance) * (180 / Math.PI)) % 360);
+                    float entityAttackingPitch = -getXRot() % 360;
                     if (blockHitPitch < 0) {
                         blockHitPitch += 360;
                     }
@@ -184,13 +179,13 @@ public class EntityIceBreath extends EntityMagicEffect {
                     }
                     float blockRelativePitch = blockHitPitch - entityAttackingPitch;
 
-                    float blockHitDistance = (float) Math.sqrt((pos.z() - getZ()) * (pos.z() - getZ()) + (pos.x() - getX()) * (pos.x() - getX()) + (pos.y() - getY()) * (pos.y() - getY()));
+                    float blockHitDistance = (float) Math.sqrt((pos.getZ() - getZ()) * (pos.getZ() - getZ()) + (pos.getX() - getX()) * (pos.getX() - getX()) + (pos.getY() - getY()) * (pos.getY() - getY()));
 
                     boolean inRange = blockHitDistance <= RANGE;
                     boolean yawCheck = (blockRelativeYaw <= ARC / 2f && blockRelativeYaw >= -ARC / 2f) || (blockRelativeYaw >= 360 - ARC / 2f || blockRelativeYaw <= -360 + ARC / 2f);
                     boolean pitchCheck = (blockRelativePitch <= ARC / 2f && blockRelativePitch >= -ARC / 2f) || (blockRelativePitch >= 360 - ARC / 2f || blockRelativePitch <= -360 + ARC / 2f);
                     if (inRange && yawCheck && pitchCheck) {
-                        EntityBlockSwapper.swapBlock(world, pos, Blocks.ICE.defaultBlockState(), 140, false, false);
+                        EntityBlockSwapper.swapBlock(level, pos, Blocks.ICE.defaultBlockState(), 140, false, false);
                     }
                 }
             }
@@ -202,7 +197,7 @@ public class EntityIceBreath extends EntityMagicEffect {
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double dX, double dY, double dZ, double r) {
-        return world.getEntitiesWithinAABB(entityClass, getBoundingBox().grow(dX, dY, dZ), e -> e != this && getDistance(e) <= r + e.getBbWidth() / 2f && e.getY() <= getY() + dY);
+        return level.getEntitiesOfClass(entityClass, getBoundingBox().inflate(dX, dY, dZ), e -> e != this && distanceTo(e) <= r + e.getBbWidth() / 2f && e.getY() <= getY() + dY);
     }
 
     @Override

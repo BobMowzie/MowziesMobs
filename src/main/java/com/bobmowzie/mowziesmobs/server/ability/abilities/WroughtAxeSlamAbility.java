@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.ability.abilities;
 
-import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
@@ -8,9 +7,7 @@ import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.sounds.HandSide;
 
-import static com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack.SWING_DURATION_HOR;
 import static com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack.SWING_DURATION_VER;
 
 public class WroughtAxeSlamAbility extends Ability {
@@ -28,8 +25,8 @@ public class WroughtAxeSlamAbility extends Ability {
     public void start() {
         super.start();
         if (!getUser().level.isClientSide()) {
-            EntityAxeAttack axeAttack = new EntityAxeAttack(EntityHandler.AXE_ATTACK, getUser().world, getUser(), true);
-            axeAttack.setPositionAndRotation(getUser().getX(), getUser().getY(), getUser().getZ(), getUser().getYRot(), getUser().getXRot());
+            EntityAxeAttack axeAttack = new EntityAxeAttack(EntityHandler.AXE_ATTACK.get(), getUser().level, getUser(), true);
+            axeAttack.absMoveTo(getUser().getX(), getUser().getY(), getUser().getZ(), getUser().getYRot(), getUser().getXRot());
             getUser().level.addFreshEntity(axeAttack);
             this.axeAttack = axeAttack;
         }
@@ -44,7 +41,7 @@ public class WroughtAxeSlamAbility extends Ability {
         super.tickUsing();
         if (getTicksInUse() == SWING_DURATION_VER && getUser() instanceof Player) {
             Player player = (Player) getUser();
-            player.resetCooldown();
+            player.resetAttackStrengthTicker();
         }
     }
 
@@ -52,7 +49,7 @@ public class WroughtAxeSlamAbility extends Ability {
     public void end() {
         super.end();
         if (axeAttack != null) {
-            this.axeAttack.remove();
+            this.axeAttack.discard() ;
         }
     }
 

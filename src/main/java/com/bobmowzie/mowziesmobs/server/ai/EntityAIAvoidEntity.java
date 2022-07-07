@@ -3,11 +3,11 @@ package com.bobmowzie.mowziesmobs.server.ai;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.RandomPositionGenerator;
+import net.minecraft.world.entity.ai.util.DefaultRandomPos;
+import net.minecraft.world.entity.ai.util.RandomPos;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.pathfinding.Path;
-import net.minecraft.pathfinding.PathNavigation;
-import net.minecraft.sounds.EntityPredicates;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 
@@ -40,49 +40,49 @@ public final class EntityAIAvoidEntity<T extends Entity> extends Goal {
         this.entity = entity;
         this.avoidClass = avoidClass;
         this.distance = distance;
-        Predicate<T> visible = e -> e.isAlive() && entity.getEntitySenses().canSee(e);
+        Predicate<T> visible = e -> e.isAlive() && entity.getSensing().hasLineOfSight(e);
         Predicate<T> targetable = e -> !(e instanceof Player) || !e.isSpectator() && !((Player)e).isCreative();
         this.predicate = targetable.and(predicate).and(visible);
         this.speed = speed;
         navigator = entity.getNavigation();
-        this.setMutexFlags(EnumSet.of(Flag.MOVE));
+        this.setFlags(EnumSet.of(Flag.MOVE));
     }
 
     @Override
-    public boolean shouldExecute() {
-        List<T> entities = entity.world.getEntitiesWithinAABB(avoidClass, entity.getBoundingBox().grow(distance, 3, distance), predicate);
+    public boolean canUse() {
+        List<T> entities = entity.level.getEntitiesOfClass(avoidClass, entity.getBoundingBox().inflate(distance, 3, distance), predicate);
         if (entities.isEmpty()) {
             return false;
         }
-        avoiding = entities.get(entity.getRNG().nextInt(entities.size()));
-        Vec3 pos = RandomPositionGenerator.findRandomTargetBlockAwayFrom(entity, (int) (distance + 1), (int) (distance / 2 + 1), new Vec3(avoiding.getX(), avoiding.getY(), avoiding.getZ()));
+        avoiding = entities.get(entity.getRandom().nextInt(entities.size()));
+        Vec3 pos = DefaultRandomPos.getPosAway(entity, (int) (distance + 1), (int) (distance / 2 + 1), new Vec3(avoiding.getX(), avoiding.getY(), avoiding.getZ()));
         if (pos == null) {
             return false;
         }
-        if (avoiding.getDistanceSq(pos.x, pos.y, pos.z) < avoiding.getDistanceSq(entity)) {
+        if (avoiding.distanceToSqr(pos.x, pos.y, pos.z) < avoiding.distanceToSqr(entity)) {
             return false;
         }
-        path = navigator.getPathToPos(new BlockPos(pos), 0);
+        path = navigator.createPath(new BlockPos(pos), 0);
         return path != null;
     }
 
     @Override
-    public boolean shouldContinueExecuting() {
-        return !navigator.noPath();
+    public boolean canContinueToUse() {
+        return !navigator.isDone();
     }
 
     @Override
-    public void startExecuting() {
-        navigator.setPath(path, speed);
+    public void start() {
+        navigator.moveTo(path, speed);
     }
 
     @Override
-    public void resetTask() {
+    public void stop() {
         avoiding = null;
     }
 
     @Override
     public void tick() {
-        entity.getNavigation().setSpeed(speed);
+        entity.getNavigation().setSpeedModifier(speed);
     }
 }

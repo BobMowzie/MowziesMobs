@@ -1,17 +1,14 @@
 package com.ilexiconn.llibrary.client.model.tools;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.resources.model.ModelRenderer;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.system.MathUtil;
 
 import java.util.List;
 import java.util.function.Function;
@@ -23,8 +20,7 @@ import java.util.function.Function;
  * @since 1.0.0
  */
 @OnlyIn(Dist.CLIENT)
-public abstract class AdvancedModelBase<T extends Entity> extends EntityModel<T> {
-    public final List<ModelRenderer> boxList = Lists.newArrayList();
+public abstract class AdvancedModelBase<T extends Entity> extends BasicModelBase<T> {
 
     private float movementScale = 1.0F;
 
@@ -54,11 +50,6 @@ public abstract class AdvancedModelBase<T extends Entity> extends EntityModel<T>
             AdvancedModelRenderer advancedModelRenderer = (AdvancedModelRenderer) modelRenderer;
             advancedModelRenderer.resetToDefaultPose();
         });
-    }
-
-    @Override
-    public void accept(ModelRenderer modelRenderer) {
-        boxList.add(modelRenderer);
     }
 
     /**

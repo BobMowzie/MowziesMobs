@@ -7,14 +7,16 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import net.minecraft.core.particles.ParticleOptions.Deserializer;
+
 public class RibbonParticleData extends AdvancedParticleData {
-    public static final IDeserializer<RibbonParticleData> DESERIALIZER = new IDeserializer<RibbonParticleData>() {
-        public RibbonParticleData deserialize(ParticleType<RibbonParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
+    public static final Deserializer<RibbonParticleData> DESERIALIZER = new Deserializer<RibbonParticleData>() {
+        public RibbonParticleData fromCommand(ParticleType<RibbonParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
             reader.expect(' ');
             double airDrag = reader.readDouble();
             reader.expect(' ');
@@ -50,13 +52,13 @@ public class RibbonParticleData extends AdvancedParticleData {
             return new RibbonParticleData(particleTypeIn, rotation, scale, red, green, blue, alpha, airDrag, duration, emissive, length);
         }
 
-        public RibbonParticleData read(ParticleType<RibbonParticleData> particleTypeIn, FriendlyByteBuf buffer) {
+        public RibbonParticleData fromNetwork(ParticleType<RibbonParticleData> particleTypeIn, FriendlyByteBuf buffer) {
             double airDrag = buffer.readFloat();
             double red = buffer.readFloat();
             double green = buffer.readFloat();
             double blue = buffer.readFloat();
             double alpha = buffer.readFloat();
-            String rotationMode = buffer.readString();
+            String rotationMode = buffer.readUtf();
             double scale = buffer.readFloat();
             double yaw = buffer.readFloat();
             double pitch = buffer.readFloat();
@@ -85,15 +87,15 @@ public class RibbonParticleData extends AdvancedParticleData {
     }
 
     @Override
-    public void write(FriendlyByteBuf buffer) {
-        super.write(buffer);
+    public void writeToNetwork(FriendlyByteBuf buffer) {
+        super.writeToNetwork(buffer);
         buffer.writeInt(this.length);
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public String getParameters() {
-        return super.getParameters() + " " + this.length;
+    public String writeToString() {
+        return super.writeToString() + " " + this.length;
     }
 
     @OnlyIn(Dist.CLIENT)

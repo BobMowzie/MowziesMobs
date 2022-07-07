@@ -9,6 +9,8 @@ import net.minecraft.sounds.SoundEvent;
 import java.util.EnumSet;
 import java.util.List;
 
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
+
 public class AnimationAreaAttackAI<T extends MowzieEntity & IAnimatedEntity> extends AnimationAttackAI<T> {
     private final float arc;
     private final float height;
@@ -23,18 +25,18 @@ public class AnimationAreaAttackAI<T extends MowzieEntity & IAnimatedEntity> ext
         this.arc = arc;
         this.height = height;
         this.faceTarget = faceTarget;
-        if (faceTarget) this.setMutexFlags(EnumSet.of(Flag.LOOK));
+        if (faceTarget) this.setFlags(EnumSet.of(Flag.LOOK));
     }
 
     @Override
-    public void startExecuting() {
-        super.startExecuting();
+    public void start() {
+        super.start();
     }
 
     @Override
     public void tick() {
         if (faceTarget && entity.getAnimationTick() < damageFrame && entityTarget != null) {
-            entity.faceEntity(entityTarget, 30F, 30F);
+            entity.lookAt(entityTarget, 30F, 30F);
         }
         else if (entity.getAnimationTick() == damageFrame) {
             hitEntities();

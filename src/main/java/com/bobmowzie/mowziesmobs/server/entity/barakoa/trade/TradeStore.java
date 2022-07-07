@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.ListTag;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import java.util.Random;
@@ -41,7 +41,7 @@ public final class TradeStore {
 
     public CompoundTag serialize() {
         CompoundTag compound = new CompoundTag();
-        ListNBT tradesList = new ListNBT();
+        ListTag tradesList = new ListTag();
         for (Trade trade : trades) {
             tradesList.add(trade.serialize());
         }
@@ -50,7 +50,7 @@ public final class TradeStore {
     }
 
     public static TradeStore deserialize(CompoundTag compound) {
-        ListNBT tradesList = compound.getList("trades", NBT.TAG_COMPOUND);
+        ListTag tradesList = compound.getList("trades", NBT.TAG_COMPOUND);
         int totalWeight = 0;
         ImmutableSet.Builder<Trade> trades = new ImmutableSet.Builder<>();
         for (int i = 0; i < tradesList.size(); i++) {

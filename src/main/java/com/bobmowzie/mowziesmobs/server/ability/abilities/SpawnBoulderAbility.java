@@ -18,14 +18,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.BlockHitResult;
-import net.minecraft.util.RayTraceContext;
-import net.minecraft.util.HitResult;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -56,17 +56,17 @@ public class SpawnBoulderAbility extends Ability {
     @Override
     public boolean tryAbility() {
         Vec3 from = getUser().getEyePosition(1.0f);
-        Vec3 to = from.add(getUser().getLookVec().scale(SPAWN_BOULDER_REACH));
-        BlockHitResult result = getUser().world.rayTraceBlocks(new RayTraceContext(from, to, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, getUser()));
+        Vec3 to = from.add(getUser().getLookAngle().scale(SPAWN_BOULDER_REACH));
+        BlockHitResult result = getUser().level.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, getUser()));
         if (result.getType() == HitResult.Type.BLOCK) {
-            this.lookPos = result.getHitVec();
+            this.lookPos = result.getLocation();
         }
 
-        this.spawnBoulderPos = result.getPos();
+        this.spawnBoulderPos = result.getBlockPos();
         this.spawnBoulderBlock = getUser().level.getBlockState(spawnBoulderPos);
-        if (result.getFace() != Direction.UP) {
-            BlockState blockAbove = getUser().level.getBlockState(spawnBoulderPos.up());
-            if (blockAbove.isSuffocating(getUser().world, spawnBoulderPos.up()) || blockAbove.isAir(getUser().world, spawnBoulderPos.up()))
+        if (result.getDirection() != Direction.UP) {
+            BlockState blockAbove = getUser().level.getBlockState(spawnBoulderPos.above());
+            if (blockAbove.isSuffocating(getUser().level, spawnBoulderPos.above()) || blockAbove.isAir())
                 return false;
         }
         return EffectGeomancy.isBlockDiggable(spawnBoulderBlock);
@@ -77,11 +77,11 @@ public class SpawnBoulderAbility extends Ability {
         super.tickUsing();
         if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.STARTUP) {
             spawnBoulderCharge++;
-            if (spawnBoulderCharge > 1) getUser().addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 3, 3, false, false));
+            if (spawnBoulderCharge > 1) getUser().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 3, 3, false, false));
             if (spawnBoulderCharge == 1 && getUser().level.isClientSide) MowziesMobs.PROXY.playBoulderChargeSound(getUser());
             if ((spawnBoulderCharge + 10) % 10 == 0 && spawnBoulderCharge < 40) {
                 if (getUser().level.isClientSide) {
-                    AdvancedParticleBase.spawnParticle(getUser().world, ParticleHandler.RING2.get(), (float) getUser().getX(), (float) getUser().getY() + getUser().getHeight() / 2f, (float) getUser().getZ(), 0, 0, 0, false, 0, Math.PI / 2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, true, new ParticleComponent[]{
+                    AdvancedParticleBase.spawnParticle(getUser().level, ParticleHandler.RING2.get(), (float) getUser().getX(), (float) getUser().getY() + getUser().getBbHeight() / 2f, (float) getUser().getZ(), 0, 0, 0, false, 0, Math.PI / 2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, true, new ParticleComponent[]{
                             new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0f, 0.7f), false),
                             new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd((0.8f + 2.7f * spawnBoulderCharge / 60f) * 10f, 0), false)
                     });
@@ -89,7 +89,7 @@ public class SpawnBoulderAbility extends Ability {
             }
             if (spawnBoulderCharge == 50) {
                 if (getUser().level.isClientSide) {
-                    AdvancedParticleBase.spawnParticle(getUser().world, ParticleHandler.RING2.get(), (float) getUser().getX(), (float) getUser().getY() + getUser().getHeight() / 2f, (float) getUser().getZ(), 0, 0, 0, true, 0, 0, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 20, true, true, new ParticleComponent[]{
+                    AdvancedParticleBase.spawnParticle(getUser().level, ParticleHandler.RING2.get(), (float) getUser().getX(), (float) getUser().getY() + getUser().getBbHeight() / 2f, (float) getUser().getZ(), 0, 0, 0, true, 0, 0, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 20, true, true, new ParticleComponent[]{
                             new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0.7f, 0f), false),
                             new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0, 40f), false)
                     });
@@ -98,10 +98,10 @@ public class SpawnBoulderAbility extends Ability {
             }
 
             int size = getBoulderSize() + 1;
-            EntityType<EntityBoulder> type = EntityHandler.BOULDERS[size];
+            EntityType<EntityBoulder> type = EntityHandler.BOULDERS[size].get();
             if (
-                    !getUser().world.noCollision(type.getBoundingBoxWithSizeApplied(spawnBoulderPos.x() + 0.5F, spawnBoulderPos.y() + 2, spawnBoulderPos.z() + 0.5F))
-                    || getUser().getDistanceSq(spawnBoulderPos.x(), spawnBoulderPos.y(), spawnBoulderPos.z()) > 36
+                    !getUser().level.noCollision(type.getAABB(spawnBoulderPos.getX() + 0.5F, spawnBoulderPos.getY() + 2, spawnBoulderPos.getZ() + 0.5F))
+                    || getUser().distanceToSqr(spawnBoulderPos.getX(), spawnBoulderPos.getY(), spawnBoulderPos.getZ()) > 36
             ) {
                 nextSection();
             }
@@ -129,8 +129,8 @@ public class SpawnBoulderAbility extends Ability {
 
         int size = getBoulderSize();
         if (spawnBoulderCharge >= 60) size = 3;
-        EntityBoulder boulder = new EntityBoulder(EntityHandler.BOULDERS[size], getUser().world, getUser(), spawnBoulderBlock, spawnBoulderPos);
-        boulder.setPos(spawnBoulderPos.x() + 0.5F, spawnBoulderPos.y() + 2, spawnBoulderPos.z() + 0.5F);
+        EntityBoulder boulder = new EntityBoulder(EntityHandler.BOULDERS[size].get(), getUser().level, getUser(), spawnBoulderBlock, spawnBoulderPos);
+        boulder.setPos(spawnBoulderPos.getX() + 0.5F, spawnBoulderPos.getY() + 2, spawnBoulderPos.getZ() + 0.5F);
         if (!getUser().level.isClientSide && boulder.checkCanSpawn()) {
             getUser().level.addFreshEntity(boulder);
         }
@@ -140,8 +140,8 @@ public class SpawnBoulderAbility extends Ability {
             Vec3 vec = playerEyes.subtract(lookPos).normalize();
             float yaw = (float) Math.atan2(vec.z, vec.x);
             float pitch = (float) Math.asin(vec.y);
-            getUser().getYRot() = (float) (yaw * 180f / Math.PI + 90);
-            getUser().getXRot() = (float) (pitch * 180f / Math.PI);
+            getUser().setYRot((float) (yaw * 180f / Math.PI + 90));
+            getUser().setXRot((float) (pitch * 180f / Math.PI));
         }
         spawnBoulderCharge = 0;
     }
@@ -150,7 +150,7 @@ public class SpawnBoulderAbility extends Ability {
     public void onRightMouseUp(Player player) {
         super.onRightMouseUp(player);
         if (isUsing() && getCurrentSection().sectionType == AbilitySection.AbilitySectionType.STARTUP) {
-            if (player.getDistanceSq(spawnBoulderPos.x(), spawnBoulderPos.y(), spawnBoulderPos.z()) < 36) {
+            if (player.distanceToSqr(spawnBoulderPos.getX(), spawnBoulderPos.getY(), spawnBoulderPos.getZ()) < 36) {
                 nextSection();
             } else {
                 spawnBoulderCharge = 0;
@@ -170,7 +170,7 @@ public class SpawnBoulderAbility extends Ability {
     }
 
     @Override
-    public void readNBT(INBT nbt) {
+    public void readNBT(Tag nbt) {
         super.readNBT(nbt);
         if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.STARTUP) spawnBoulderCharge = getTicksInSection();
     }
@@ -178,7 +178,7 @@ public class SpawnBoulderAbility extends Ability {
     @Override
     public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         super.onRightClickBlock(event);
-        if (!event.getLevel().isClientSide()) AbilityHandler.INSTANCE.sendAbilityMessage(event.getEntityLiving(), AbilityHandler.SPAWN_BOULDER_ABILITY);
+        if (!event.getWorld().isClientSide()) AbilityHandler.INSTANCE.sendAbilityMessage(event.getEntityLiving(), AbilityHandler.SPAWN_BOULDER_ABILITY);
     }
 
     @Override
@@ -191,16 +191,16 @@ public class SpawnBoulderAbility extends Ability {
     public void onRenderTick(TickEvent.RenderTickEvent event) {
         super.onRenderTick(event);
         if (isUsing() && getCurrentSection().sectionType == AbilitySection.AbilitySectionType.STARTUP && getTicksInSection() > 1) {
-            Vec3 playerEyes = getUser().getEyePosition(Minecraft.getInstance().getRenderPartialTicks());
+            Vec3 playerEyes = getUser().getEyePosition(Minecraft.getInstance().getFrameTime());
             Vec3 vec = playerEyes.subtract(lookPos).normalize();
             float yaw = (float) Math.atan2(vec.z, vec.x);
             float pitch = (float) Math.asin(vec.y);
-            getUser().getYRot() = (float) (yaw * 180f / Math.PI + 90);
-            getUser().getXRot() = (float) (pitch * 180f / Math.PI);
-            getUser().getYRot()Head = getUser().getYRot();
+            getUser().setYRot((float) (yaw * 180f / Math.PI + 90));
+            getUser().setXRot((float) (pitch * 180f / Math.PI));
+            getUser().yHeadRot = getUser().getYRot();
             getUser().yRotO = getUser().getYRot();
-            getUser().xRot0 = getUser().getXRot();
-            getUser().yHeadRot0 = getUser().getYRot()Head;
+            getUser().xRotO = getUser().getXRot();
+            getUser().yHeadRotO = getUser().yHeadRot;
         }
     }
 }

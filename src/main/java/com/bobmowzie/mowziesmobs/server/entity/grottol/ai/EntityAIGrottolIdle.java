@@ -15,21 +15,21 @@ public class EntityAIGrottolIdle extends SimpleAnimationAI<EntityGrottol> {
     }
 
     @Override
-    public boolean shouldExecute() {
-        return entity.getAnimation() == IAnimatedEntity.NO_ANIMATION && entity.getRNG().nextInt(180) == 0;
+    public boolean canUse() {
+        return entity.getAnimation() == IAnimatedEntity.NO_ANIMATION && entity.getRandom().nextInt(180) == 0;
     }
 
     @Override
-    public void startExecuting() {
+    public void start() {
         AnimationHandler.INSTANCE.sendAnimationMessage(this.entity, ANIMATION);
-        super.startExecuting();
+        super.start();
     }
 
     @Override
     public void tick() {
         super.tick();
         if (entity.getAnimationTick() == 28 || entity.getAnimationTick() == 33) {
-            entity.playSound(SoundEvents.BLOCK_STONE_STEP, 0.5F, 1.4F);
+            entity.playSound(SoundEvents.STONE_STEP, 0.5F, 1.4F);
         }
     }
 

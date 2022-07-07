@@ -21,8 +21,8 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
     }
 
     @Override
-    public void startExecuting() {
-        super.startExecuting();
+    public void start() {
+        super.start();
         entity.playSound(MMSounds.ENTITY_WROUGHT_PRE_SWING_2.get(), 1.5F, 1F);
     }
 
@@ -30,10 +30,10 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
     public void tick() {
         entity.setDeltaMovement(0, entity.getDeltaMovement().y, 0);
         if (entity.getAnimationTick() < 21 && entityTarget != null) {
-            entity.faceEntity(entityTarget, 30F, 30F);
+            entity.lookAt(entityTarget, 30F, 30F);
         }
         else {
-            entity.getYRot() = entity.yRotO;
+            entity.setYRot(entity.yRotO);
         }
 
         if (entity.getAnimationTick() == 6) {
@@ -43,7 +43,7 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
         } else if (entity.getAnimationTick() == 27) {
             entity.playSound(MMSounds.ENTITY_WROUGHT_SWING_2.get(), 1.5F, 1F);
             List<LivingEntity> entitiesHit = entity.getEntityLivingBaseNearby(range, 3, range, range);
-            float damage = (float)entity.getAttribute(Attributes.ATTACK_DAMAGE).getValue() * ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.combatConfig.attackMultiplier.get().floatValue();
+            float damage = (float)entity.getAttribute(Attributes.ATTACK_DAMAGE).getValue();
             for (LivingEntity entityHit : entitiesHit) {
                 float entityHitAngle = (float) ((Math.atan2(entityHit.getZ() - entity.getZ(), entityHit.getX() - entity.getX()) * (180 / Math.PI) - 90) % 360);
                 float entityAttackingAngle = entity.yBodyRot % 360;
@@ -56,14 +56,14 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
                 float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
                 float entityHitDistance = (float) Math.sqrt((entityHit.getZ() - entity.getZ()) * (entityHit.getZ() - entity.getZ()) + (entityHit.getX() - entity.getX()) * (entityHit.getX() - entity.getX()));
                 if (entityHitDistance <= range && (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2)) {
-                    entityHit.hurt(DamageSource.causeMobDamage(entity), damage * 1.5F);
-                    if (entityHit.isActiveItemStackBlocking()) entityHit.getActiveItemStack().damageItem(400, entityHit, player -> player.sendBreakAnimation(entityHit.getActiveHand()));
+                    entityHit.hurt(DamageSource.mobAttack(entity), damage * 1.5F);
+                    if (entityHit.isBlocking()) entityHit.getUseItem().hurtAndBreak(400, entityHit, player -> player.broadcastBreakEvent(entityHit.getUsedItemHand()));
                     entityHit.setDeltaMovement(entityHit.getDeltaMovement().x * applyKnockbackMultiplier, entityHit.getDeltaMovement().y, entityHit.getDeltaMovement().z * applyKnockbackMultiplier);
                 }
             }
         } else if (entity.getAnimationTick() == 28) {
             entity.playSound(MMSounds.ENTITY_WROUGHT_AXE_LAND.get(), 1, 0.5F);
-            EntityCameraShake.cameraShake(entity.world, entity.position(), 20, 0.3f, 0, 10);
+            EntityCameraShake.cameraShake(entity.level, entity.position(), 20, 0.3f, 0, 10);
         } else if (entity.getAnimationTick() == 44) {
             entity.playSound(MMSounds.ENTITY_WROUGHT_PULL_1.get(), 1, 1F);
             entity.playSound(MMSounds.ENTITY_WROUGHT_CREAK.get(), 0.5F, 1F);
@@ -74,7 +74,7 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
         }
         if (entity.getAnimationTick() > 26 && entity.getAnimationTick() < 85) {
             entity.vulnerable = true;
-            entity.getYRot() = entity.yRotO;
+            entity.setYRot(entity.yRotO);
             entity.yBodyRot = entity.yBodyRotO;
         } else {
             entity.vulnerable = false;
@@ -82,8 +82,8 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
     }
 
     @Override
-    public void resetTask() {
-        super.resetTask();
+    public void stop() {
+        super.stop();
         entity.vulnerable = false;
     }
 }

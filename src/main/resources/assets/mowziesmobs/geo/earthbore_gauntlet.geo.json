@@ -1,0 +1,253 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.unknown",
+				"texture_width": 32,
+				"texture_height": 32,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "root",
+					"pivot": [0, 2.25, 0],
+					"cubes": [
+						{"origin": [-3.25, -0.5, -3], "size": [6, 3, 6], "uv": [0, 0]}
+					]
+				},
+				{
+					"name": "pinkyJoint",
+					"parent": "root",
+					"pivot": [-2.5, -1, 1.75],
+					"rotation": [1.70335, 25.57384, -23.63233]
+				},
+				{
+					"name": "pinky",
+					"parent": "pinkyJoint",
+					"pivot": [-2.5, -0.5, 1.75],
+					"cubes": [
+						{"origin": [-3.5, -4.5, 0.25], "size": [2, 4, 3], "uv": [21, 6], "mirror": true}
+					]
+				},
+				{
+					"name": "indexJoint",
+					"parent": "root",
+					"pivot": [-2.75, -1, -1.75],
+					"rotation": [-10.02546, -23.92045, -4.42091]
+				},
+				{
+					"name": "index",
+					"parent": "indexJoint",
+					"pivot": [-2.75, -0.5, -1.75],
+					"cubes": [
+						{"origin": [-3.75, -4.5, -3.25], "size": [2, 4, 3], "uv": [21, 6], "mirror": true}
+					]
+				},
+				{
+					"name": "thumbJoint",
+					"parent": "root",
+					"pivot": [1.75, 0, -1.75],
+					"rotation": [0.66382, 21.88061, -1.02076]
+				},
+				{
+					"name": "thumb",
+					"parent": "thumbJoint",
+					"pivot": [1.75, -0.5, -1.75],
+					"cubes": [
+						{"origin": [0.75, -3.5, -3.25], "size": [2, 3, 3], "uv": [18, 0]}
+					]
+				},
+				{
+					"name": "rocks",
+					"parent": "root",
+					"pivot": [-3.25, 0.5, 0]
+				},
+				{
+					"name": "leftRock2",
+					"parent": "rocks",
+					"pivot": [-2, 1.25, 1.75],
+					"rotation": [-22.63445, 11.81242, 1.4701],
+					"cubes": [
+						{"origin": [-3.5, 1.75, 0.75], "size": [2, 5, 2], "uv": [20, 20], "mirror": true}
+					]
+				},
+				{
+					"name": "rightRock2",
+					"parent": "rocks",
+					"pivot": [-2, 1.25, -1.75],
+					"rotation": [22.63445, -11.81242, 1.4701],
+					"cubes": [
+						{"origin": [-3.5, 1.75, -2.75], "size": [2, 5, 2], "uv": [20, 20], "mirror": true}
+					]
+				},
+				{
+					"name": "rightRock1",
+					"parent": "rocks",
+					"pivot": [-2.75, 1.25, -1.5],
+					"rotation": [10.01319, -5.79149, -10.94399],
+					"cubes": [
+						{"origin": [-3.58746, 0.76491, -2.83387], "size": [2, 7, 2], "uv": [12, 20], "mirror": true}
+					]
+				},
+				{
+					"name": "leftRock1",
+					"parent": "rocks",
+					"pivot": [-2.75, 1.25, 1.5],
+					"rotation": [-10.01319, 5.79149, -10.94399],
+					"cubes": [
+						{"origin": [-3.58746, 0.76491, 0.83387], "size": [2, 7, 2], "uv": [12, 20], "mirror": true}
+					]
+				},
+				{
+					"name": "centerRock",
+					"parent": "rocks",
+					"pivot": [-2.75, 0.5, 0],
+					"rotation": [0, 0, -17.5],
+					"cubes": [
+						{"origin": [-3.5, 0.5, -2], "size": [2, 9, 4], "uv": [0, 18]}
+					]
+				},
+				{
+					"name": "gem",
+					"parent": "rocks",
+					"pivot": [-2.75, 2, -1],
+					"rotation": [0, 0, -20],
+					"cubes": [
+						{"origin": [-4.75, 2.25, -1], "size": [1, 2, 2], "uv": [0, 0]}
+					]
+				},
+				{
+					"name": "sleeve",
+					"parent": "root",
+					"pivot": [0, 1.75, 0],
+					"rotation": [0, 0, 15],
+					"cubes": [
+						{"origin": [-3.75, 1.75, -2.5], "size": [6, 4, 5], "uv": [0, 9]},
+						{"origin": [-4.75, 3.5, -2.5], "size": [1, 2.25, 5], "uv": [17, 13]}
+					]
+				},
+				{
+					"name": "rootFlipped",
+					"pivot": [0, 2.25, 0],
+					"cubes": [
+						{"origin": [-2.75, -0.5, -3], "size": [6, 3, 6], "uv": [0, 0], "mirror": true}
+					]
+				},
+				{
+					"name": "pinkyJointFlipped",
+					"parent": "rootFlipped",
+					"pivot": [2.5, -1, 1.75],
+					"rotation": [1.70335, -25.57384, 23.63233]
+				},
+				{
+					"name": "pinkyFlipped",
+					"parent": "pinkyJointFlipped",
+					"pivot": [2.5, -0.5, 1.75],
+					"cubes": [
+						{"origin": [1.5, -4.5, 0.25], "size": [2, 4, 3], "uv": [21, 6]}
+					]
+				},
+				{
+					"name": "indexJointFlipped",
+					"parent": "rootFlipped",
+					"pivot": [2.75, -1, -1.75],
+					"rotation": [-10.02546, 23.92045, 4.42091]
+				},
+				{
+					"name": "indexFlipped",
+					"parent": "indexJointFlipped",
+					"pivot": [2.75, -0.5, -1.75],
+					"cubes": [
+						{"origin": [1.75, -4.5, -3.25], "size": [2, 4, 3], "uv": [21, 6]}
+					]
+				},
+				{
+					"name": "thumbJointFlipped",
+					"parent": "rootFlipped",
+					"pivot": [-1.75, 0, -1.75],
+					"rotation": [0.66382, -21.88061, 1.02076]
+				},
+				{
+					"name": "thumbFlipped",
+					"parent": "thumbJointFlipped",
+					"pivot": [-1.75, -0.5, -1.75],
+					"cubes": [
+						{"origin": [-2.75, -3.5, -3.25], "size": [2, 3, 3], "uv": [18, 0], "mirror": true}
+					]
+				},
+				{
+					"name": "rocksFlipped",
+					"parent": "rootFlipped",
+					"pivot": [3.25, 0.5, 0]
+				},
+				{
+					"name": "rightRockFlipped",
+					"parent": "rocksFlipped",
+					"pivot": [2, 1.25, 1.75],
+					"rotation": [-22.63445, -11.81242, -1.4701],
+					"cubes": [
+						{"origin": [1.5, 1.75, 0.75], "size": [2, 5, 2], "uv": [20, 20]}
+					]
+				},
+				{
+					"name": "leftRockFlipped",
+					"parent": "rocksFlipped",
+					"pivot": [2, 1.25, -1.75],
+					"rotation": [22.63445, 11.81242, -1.4701],
+					"cubes": [
+						{"origin": [1.5, 1.75, -2.75], "size": [2, 5, 2], "uv": [20, 20]}
+					]
+				},
+				{
+					"name": "rightRock1Flipped",
+					"parent": "rocksFlipped",
+					"pivot": [2.75, 1.25, -1.5],
+					"rotation": [10.01319, 5.79149, 10.94399],
+					"cubes": [
+						{"origin": [1.58746, 0.76491, -2.83387], "size": [2, 7, 2], "uv": [12, 20]}
+					]
+				},
+				{
+					"name": "leftRock1Flipped",
+					"parent": "rocksFlipped",
+					"pivot": [2.75, 1.25, 1.5],
+					"rotation": [-10.01319, -5.79149, 10.94399],
+					"cubes": [
+						{"origin": [1.58746, 0.76491, 0.83387], "size": [2, 7, 2], "uv": [12, 20]}
+					]
+				},
+				{
+					"name": "centerRockFlipped",
+					"parent": "rocksFlipped",
+					"pivot": [2.75, 0.5, 0],
+					"rotation": [0, 0, 17.5],
+					"cubes": [
+						{"origin": [1.5, 0.5, -2], "size": [2, 9, 4], "uv": [0, 18], "mirror": true}
+					]
+				},
+				{
+					"name": "gemFlipped",
+					"parent": "rocksFlipped",
+					"pivot": [2.75, 2, -1],
+					"rotation": [0, 0, 20],
+					"cubes": [
+						{"origin": [3.75, 2.25, -1], "size": [1, 2, 2], "uv": [0, 0], "mirror": true}
+					]
+				},
+				{
+					"name": "sleeveFlipped",
+					"parent": "rootFlipped",
+					"pivot": [0, 1.75, 0],
+					"rotation": [0, 0, -15],
+					"cubes": [
+						{"origin": [-2.25, 1.75, -2.5], "size": [6, 4, 5], "uv": [0, 9], "mirror": true},
+						{"origin": [3.75, 3.5, -2.5], "size": [1, 2.25, 5], "uv": [17, 13], "mirror": true}
+					]
+				}
+			]
+		}
+	]
+}

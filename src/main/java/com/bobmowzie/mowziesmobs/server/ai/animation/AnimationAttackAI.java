@@ -8,6 +8,8 @@ import net.minecraft.sounds.SoundEvent;
 
 import java.util.EnumSet;
 
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
+
 public class AnimationAttackAI<T extends MowzieEntity & IAnimatedEntity> extends SimpleAnimationAI<T> {
     protected LivingEntity entityTarget;
     protected SoundEvent attackSound;
@@ -30,12 +32,12 @@ public class AnimationAttackAI<T extends MowzieEntity & IAnimatedEntity> extends
         this.damageMultiplier = damageMultiplier;
         this.damageFrame = damageFrame;
         this.hitSound = hitSound;
-        this.setMutexFlags(EnumSet.of(Flag.LOOK));
+        this.setFlags(EnumSet.of(Flag.LOOK));
     }
 
     @Override
-    public void startExecuting() {
-        super.startExecuting();
+    public void start() {
+        super.start();
         entityTarget = entity.getTarget();
     }
 
@@ -43,7 +45,7 @@ public class AnimationAttackAI<T extends MowzieEntity & IAnimatedEntity> extends
     public void tick() {
         super.tick();
         if (entity.getAnimationTick() < damageFrame && entityTarget != null) {
-            entity.faceEntity(entityTarget, 30F, 30F);
+            entity.lookAt(entityTarget, 30F, 30F);
         }
         if (entity.getAnimationTick() == damageFrame) {
             if (entityTarget != null && entity.targetDistance <= range) {

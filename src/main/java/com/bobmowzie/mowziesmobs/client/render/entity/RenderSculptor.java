@@ -2,17 +2,17 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelSculptor;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 
 public class RenderSculptor extends MowzieGeoEntityRenderer<EntitySculptor> {
-    public RenderSculptor(EntityRendererManager renderManager) {
+    public RenderSculptor(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ModelSculptor());
-        this.shadowSize = 0.7f;
+        this.shadowRadius = 0.7f;
     }
 
     @Override
-    public ResourceLocation getEntityTexture(EntitySculptor entity) {
+    public ResourceLocation getTextureLocation(EntitySculptor entity) {
         return this.getGeoModelProvider().getTextureLocation(entity);
     }
 }

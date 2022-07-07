@@ -10,108 +10,120 @@ import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
-import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
-import net.minecraft.world.entity.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fmllegacy.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
-import java.lang.reflect.Field;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 
 @Mod.EventBusSubscriber(modid = MowziesMobs.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class EntityHandler {
-    public static final EntityType<EntityFoliaath> FOLIAATH = register("foliaath", EntityType.Builder.of(EntityFoliaath::new, MobCategory.MONSTER).sized(0.5f, 2.5f));
-    public static final EntityType<EntityBabyFoliaath> BABY_FOLIAATH = register("baby_foliaath", EntityType.Builder.of(EntityBabyFoliaath::new, MobCategory.MONSTER).sized(0.4f, 0.4f));
-    public static final EntityType<EntityWroughtnaut> WROUGHTNAUT = register("ferrous_wroughtnaut", EntityType.Builder.of(EntityWroughtnaut::new, MobCategory.MONSTER).sized(2.5f, 3.5f).setUpdateInterval(1));
-    private static final EntityType.Builder<EntityBarakoanToBarakoana> barakoanToBarakoanaBuilder = EntityType.Builder.of(EntityBarakoanToBarakoana::new, MobCategory.MONSTER);
-    public static final EntityType<EntityBarakoanToBarakoana> BARAKOAN_TO_BARAKOANA = register("barakoan_barakoana", barakoanToBarakoanaBuilder.sized(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1));
-    private static final EntityType.Builder<EntityBarakoanToPlayer> barakoanToPlayerBuilder = EntityType.Builder.of(EntityBarakoanToPlayer::new, MobCategory.MONSTER);
-    public static final EntityType<EntityBarakoanToPlayer> BARAKOAN_TO_PLAYER = register("barakoan_player", barakoanToPlayerBuilder.sized(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1));
-    private static final EntityType.Builder<EntityBarakoayaToPlayer> barakoayaToPlayerBuilder = EntityType.Builder.of(EntityBarakoayaToPlayer::new, MobCategory.MONSTER);
-    public static final EntityType<EntityBarakoayaToPlayer> BARAKOAYA_TO_PLAYER = register("barakoa_sunblocker_player", barakoayaToPlayerBuilder.sized(MaskType.FAITH.entityWidth, MaskType.FAITH.entityHeight).setUpdateInterval(1));
-    public static final EntityType<EntityBarakoaVillager> BARAKOA_VILLAGER = register("barakoaya", EntityType.Builder.of(EntityBarakoaVillager::new, MobCategory.MONSTER).sized(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1));
-    public static final EntityType<EntityBarakoana> BARAKOANA = register("barakoana", EntityType.Builder.of(EntityBarakoana::new, MobCategory.MONSTER).sized(MaskType.FURY.entityWidth, MaskType.FURY.entityHeight).setUpdateInterval(1));
-    public static final EntityType<EntityBarakoaya> BARAKOAYA = register("barakoa_sunblocker", EntityType.Builder.of(EntityBarakoaya::new, MobCategory.MONSTER).sized(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1));
-    public static final EntityType<EntityBarako> BARAKO = register("barako", EntityType.Builder.of(EntityBarako::new, MobCategory.MONSTER).sized(1.5f, 2.4f).setUpdateInterval(1));
-    public static final EntityType<EntityFrostmaw> FROSTMAW = register("frostmaw", EntityType.Builder.of(EntityFrostmaw::new, MobCategory.MONSTER).sized(4f, 4f).setUpdateInterval(1));
-    public static final EntityType<EntityGrottol> GROTTOL = register("grottol", EntityType.Builder.of(EntityGrottol::new, MobCategory.MONSTER).sized(0.9F, 1.2F).setUpdateInterval(1));
-    public static final EntityType<EntityLantern> LANTERN = register("lantern", EntityType.Builder.of(EntityLantern::new, MobCategory.AMBIENT).sized(1.0f, 1.0f).setUpdateInterval(1));
-    public static final EntityType<EntityNaga> NAGA = register("naga", EntityType.Builder.of(EntityNaga::new, MobCategory.MONSTER).sized(3.0f, 1.0f).setTrackingRange(128).setUpdateInterval(1));
-    public static final EntityType<EntitySculptor> SCULPTOR = register("sculptor", EntityType.Builder.of(EntitySculptor::new, MobCategory.MISC).sized(1.0f, 2.0f).setUpdateInterval(1));
+    public static final DeferredRegister<EntityType<?>> REG = DeferredRegister.create(ForgeRegistries.ENTITIES, MowziesMobs.MODID);
 
-    private static final EntityType.Builder<EntitySunstrike> sunstrikeBuilder = EntityType.Builder.of(EntitySunstrike::new, MobCategory.MISC);
-    public static final EntityType<EntitySunstrike> SUNSTRIKE = register("sunstrike", sunstrikeBuilder.sized(0.1F, 0.1F));
-    private static final EntityType.Builder<EntitySolarBeam> solarBeamBuilder = EntityType.Builder.of(EntitySolarBeam::new, MobCategory.MISC);
-    public static final EntityType<EntitySolarBeam> SOLAR_BEAM = register("solar_beam", solarBeamBuilder.sized(0.1F, 0.1F).setUpdateInterval(1));
-    private static final EntityType.Builder<EntityBoulder> boulderBuilder = EntityType.Builder.of(EntityBoulder::new, MobCategory.MISC);
-    public static final EntityType<EntityBoulder> BOULDER_SMALL = register("boulder_small", boulderBuilder.sized(1, 1).setUpdateInterval(1));;
-    public static final EntityType<EntityBoulder> BOULDER_MEDIUM = register("boulder_medium", boulderBuilder.sized(2, 1.5f).setUpdateInterval(1));
-    public static final EntityType<EntityBoulder> BOULDER_LARGE = register("boulder_large", boulderBuilder.sized(3, 2.5f).setUpdateInterval(1));
-    public static final EntityType<EntityBoulder> BOULDER_HUGE = register("boulder_huge", boulderBuilder.sized(4, 3.5f).setUpdateInterval(1));
-    public static final EntityType<EntityBoulder>[] BOULDERS = new EntityType[] {BOULDER_SMALL, BOULDER_MEDIUM, BOULDER_LARGE, BOULDER_HUGE};
-    private static final EntityType.Builder<EntityAxeAttack> axeAttackBuilder = EntityType.Builder.of(EntityAxeAttack::new, MobCategory.MISC);
-    public static final EntityType<EntityAxeAttack> AXE_ATTACK = register("axe_attack", axeAttackBuilder.sized(1f, 1f).setUpdateInterval(1));
-    private static final EntityType.Builder<EntityIceBreath> iceBreathBuilder = EntityType.Builder.of(EntityIceBreath::new, MobCategory.MISC);
-    public static final EntityType<EntityIceBreath> ICE_BREATH = register("ice_breath", iceBreathBuilder.sized(0F, 0F).setUpdateInterval(1));
-    private static final EntityType.Builder<EntityIceBall> iceBallBuilder = EntityType.Builder.of(EntityIceBall::new, MobCategory.MISC);
-    public static final EntityType<EntityIceBall> ICE_BALL = register("ice_ball", iceBallBuilder.sized(0.5F, 0.5F).setUpdateInterval(20));
-    private static final EntityType.Builder<EntityFrozenController> frozenControllerBuilder = EntityType.Builder.of(EntityFrozenController::new, MobCategory.MISC);
-    public static final EntityType<EntityFrozenController> FROZEN_CONTROLLER = register("frozen_controller", frozenControllerBuilder.noSummon().sized(0, 0));
-    private static final EntityType.Builder<EntityDart> dartBuilder = EntityType.Builder.of(EntityDart::new, MobCategory.MISC);
-    public static final EntityType<EntityDart> DART = register("dart", dartBuilder.noSummon().sized(0.5F, 0.5F).setUpdateInterval(20));
-    private static final EntityType.Builder<EntityPoisonBall> poisonBallBuilder = EntityType.Builder.of(EntityPoisonBall::new, MobCategory.MISC);
-    public static final EntityType<EntityPoisonBall> POISON_BALL = register("poison_ball", poisonBallBuilder.sized(0.5F, 0.5F).setUpdateInterval(20));
-    private static final EntityType.Builder<EntitySuperNova> superNovaBuilder = EntityType.Builder.of(EntitySuperNova::new, MobCategory.MISC);
-    public static final EntityType<EntitySuperNova> SUPER_NOVA = register("super_nova", superNovaBuilder.sized(1, 1).setUpdateInterval(Integer.MAX_VALUE));
-    private static final EntityType.Builder<EntityFallingBlock> fallingBlockBuilder = EntityType.Builder.of(EntityFallingBlock::new, MobCategory.MISC);
-    public static final EntityType<EntityFallingBlock> FALLING_BLOCK = register("falling_block", fallingBlockBuilder.sized(1, 1));
-    private static final EntityType.Builder<EntityBlockSwapper> blockSwapperBuilder = EntityType.Builder.of(EntityBlockSwapper::new, MobCategory.MISC);
-    public static final EntityType<EntityBlockSwapper> BLOCK_SWAPPER = register("block_swapper", blockSwapperBuilder.noSummon().sized(1, 1).setUpdateInterval(Integer.MAX_VALUE));
-    private static final EntityType.Builder<EntityCameraShake> cameraShakeBuilder = EntityType.Builder.of(EntityCameraShake::new, MobCategory.MISC);
-    public static final EntityType<EntityCameraShake> CAMERA_SHAKE = register("camera_shake", cameraShakeBuilder.noSummon().sized(1, 1).setUpdateInterval(Integer.MAX_VALUE));
-
-    private static <T extends Entity> EntityType<T> register(String name, EntityType.Builder<T> builder) {
-        ResourceLocation regName = new ResourceLocation(MowziesMobs.MODID, name);
-        return (EntityType<T>) builder.build(name).setRegistryName(regName);
+    public static final RegistryObject<EntityType<EntityFoliaath>> FOLIAATH = REG.register("foliaath", () -> EntityType.Builder.of(EntityFoliaath::new, MobCategory.MONSTER).sized(0.5f, 2.5f).build(new ResourceLocation(MowziesMobs.MODID, "foliaath").toString()));
+    public static final RegistryObject<EntityType<EntityBabyFoliaath>> BABY_FOLIAATH = REG.register("baby_foliaath", () -> EntityType.Builder.of(EntityBabyFoliaath::new, MobCategory.MONSTER).sized(0.4f, 0.4f).build(new ResourceLocation(MowziesMobs.MODID, "baby_foliaath").toString()));
+    public static final RegistryObject<EntityType<EntityWroughtnaut>> WROUGHTNAUT = REG.register("ferrous_wroughtnaut", () -> EntityType.Builder.of(EntityWroughtnaut::new, MobCategory.MONSTER).sized(2.5f, 3.5f).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "ferrous_wroughtnaut").toString()));
+    private static EntityType.Builder<EntityBarakoanToBarakoana> barakoanToBarakoanaBuilder() {
+        return EntityType.Builder.of(EntityBarakoanToBarakoana::new, MobCategory.MONSTER);
     }
-
-    @SubscribeEvent
-    public static void registerEntities(final RegistryEvent.Register<EntityType<?>> event) {
-        try {
-            for (Field f : EntityHandler.class.getDeclaredFields()) {
-                Object obj = f.get(null);
-                if (obj instanceof EntityType) {
-                    event.getRegistry().register((EntityType) obj);
-                } else if (obj instanceof EntityType[]) {
-                    for (EntityType type : (EntityType[]) obj) {
-                        event.getRegistry().register(type);
-                    }
-                }
-            }
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+    public static final RegistryObject<EntityType<EntityBarakoanToBarakoana>> BARAKOAN_TO_BARAKOANA = REG.register("barakoan_barakoana", () -> barakoanToBarakoanaBuilder().sized(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "barakoan_barakoana").toString()));
+    private static EntityType.Builder<EntityBarakoanToPlayer> barakoanToPlayerBuilder() {
+        return EntityType.Builder.of(EntityBarakoanToPlayer::new, MobCategory.MONSTER);
     }
+    public static final RegistryObject<EntityType<EntityBarakoanToPlayer>> BARAKOAN_TO_PLAYER = REG.register("barakoan_player", () -> barakoanToPlayerBuilder().sized(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "barakoan_player").toString()));
+    private static EntityType.Builder<EntityBarakoayaToPlayer> barakoayaToPlayerBuilder() {
+        return EntityType.Builder.of(EntityBarakoayaToPlayer::new, MobCategory.MONSTER);
+    }
+    public static final RegistryObject<EntityType<EntityBarakoayaToPlayer>> BARAKOAYA_TO_PLAYER = REG.register("barakoa_sunblocker_player", () -> barakoayaToPlayerBuilder().sized(MaskType.FAITH.entityWidth, MaskType.FAITH.entityHeight).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "barakoa_sunblocker_player").toString()));
+    public static final RegistryObject<EntityType<EntityBarakoaVillager>> BARAKOA_VILLAGER = REG.register("barakoaya", () -> EntityType.Builder.of(EntityBarakoaVillager::new, MobCategory.MONSTER).sized(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "barakoaya").toString()));
+    public static final RegistryObject<EntityType<EntityBarakoana>> BARAKOANA = REG.register("barakoana", () -> EntityType.Builder.of(EntityBarakoana::new, MobCategory.MONSTER).sized(MaskType.FURY.entityWidth, MaskType.FURY.entityHeight).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "barakoana").toString()));
+    public static final RegistryObject<EntityType<EntityBarakoaya>> BARAKOAYA = REG.register("barakoa_sunblocker", () -> EntityType.Builder.of(EntityBarakoaya::new, MobCategory.MONSTER).sized(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "barakoa_sunblocker").toString()));
+    public static final RegistryObject<EntityType<EntityBarako>> BARAKO = REG.register("barako", () -> EntityType.Builder.of(EntityBarako::new, MobCategory.MONSTER).sized(1.5f, 2.4f).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "barako").toString()));
+    public static final RegistryObject<EntityType<EntityFrostmaw>> FROSTMAW = REG.register("frostmaw", () -> EntityType.Builder.of(EntityFrostmaw::new, MobCategory.MONSTER).sized(4f, 4f).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "frostmaw").toString()));
+    public static final RegistryObject<EntityType<EntityGrottol>> GROTTOL = REG.register("grottol", () -> EntityType.Builder.of(EntityGrottol::new, MobCategory.MONSTER).sized(0.9F, 1.2F).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "grottol").toString()));
+    public static final RegistryObject<EntityType<EntityLantern>> LANTERN = REG.register("lantern", () -> EntityType.Builder.of(EntityLantern::new, MobCategory.AMBIENT).sized(1.0f, 1.0f).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "lantern").toString()));
+    public static final RegistryObject<EntityType<EntityNaga>> NAGA = REG.register("naga", () -> EntityType.Builder.of(EntityNaga::new, MobCategory.MONSTER).sized(3.0f, 1.0f).setTrackingRange(128).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "naga").toString()));
+//    public static final RegistryObject<EntityType<EntitySculptor> SCULPTOR = register("sculptor", EntityType.Builder.create(EntitySculptor::new, EntityClassification.MISC).size(1.0f, 2.0f).setUpdateInterval(1).build(null));
+
+    private static EntityType.Builder<EntitySunstrike> sunstrikeBuilder() {
+        return EntityType.Builder.of(EntitySunstrike::new, MobCategory.MISC);
+    }
+    public static final RegistryObject<EntityType<EntitySunstrike>> SUNSTRIKE = REG.register("sunstrike", () -> sunstrikeBuilder().sized(0.1F, 0.1F).build(new ResourceLocation(MowziesMobs.MODID, "sunstrike").toString()));
+    private static EntityType.Builder<EntitySolarBeam> solarBeamBuilder() {
+        return EntityType.Builder.of(EntitySolarBeam::new, MobCategory.MISC);
+    }
+    public static final RegistryObject<EntityType<EntitySolarBeam>> SOLAR_BEAM = REG.register("solar_beam", () -> solarBeamBuilder().sized(0.1F, 0.1F).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "solar_beam").toString()));
+    private static EntityType.Builder<EntityBoulder> boulderBuilder() {
+        return EntityType.Builder.of(EntityBoulder::new, MobCategory.MISC);
+    }
+    public static final RegistryObject<EntityType<EntityBoulder>> BOULDER_SMALL = REG.register("boulder_small", () -> boulderBuilder().sized(1, 1).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "boulder_small").toString()));;
+    public static final RegistryObject<EntityType<EntityBoulder>> BOULDER_MEDIUM = REG.register("boulder_medium", () -> boulderBuilder().sized(2, 1.5f).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "boulder_medium").toString()));
+    public static final RegistryObject<EntityType<EntityBoulder>> BOULDER_LARGE = REG.register("boulder_large", () -> boulderBuilder().sized(3, 2.5f).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "boulder_large").toString()));
+    public static final RegistryObject<EntityType<EntityBoulder>> BOULDER_HUGE = REG.register("boulder_huge", () -> boulderBuilder().sized(4, 3.5f).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "boulder_huge").toString()));
+    public static final RegistryObject<EntityType<EntityBoulder>>[] BOULDERS = new RegistryObject[] {BOULDER_SMALL, BOULDER_MEDIUM, BOULDER_LARGE, BOULDER_HUGE};
+    private static EntityType.Builder<EntityAxeAttack> axeAttackBuilder() {
+        return EntityType.Builder.of(EntityAxeAttack::new, MobCategory.MISC);
+    }
+    public static final RegistryObject<EntityType<EntityAxeAttack>> AXE_ATTACK = REG.register("axe_attack", () -> axeAttackBuilder().sized(1f, 1f).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "axe_attack").toString()));
+    private static EntityType.Builder<EntityIceBreath> iceBreathBuilder() {
+        return EntityType.Builder.of(EntityIceBreath::new, MobCategory.MISC);
+    }
+    public static final RegistryObject<EntityType<EntityIceBreath>> ICE_BREATH = REG.register("ice_breath", () -> iceBreathBuilder().sized(0F, 0F).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "ice_breath").toString()));
+    private static EntityType.Builder<EntityIceBall> iceBallBuilder() {
+        return EntityType.Builder.of(EntityIceBall::new, MobCategory.MISC);
+    }
+    public static final RegistryObject<EntityType<EntityIceBall>> ICE_BALL = REG.register("ice_ball", () -> iceBallBuilder().sized(0.5F, 0.5F).setUpdateInterval(20).build(new ResourceLocation(MowziesMobs.MODID, "ice_ball").toString()));
+    private static EntityType.Builder<EntityFrozenController> frozenControllerBuilder() {
+        return EntityType.Builder.of(EntityFrozenController::new, MobCategory.MISC);
+    }
+    public static final RegistryObject<EntityType<EntityFrozenController>> FROZEN_CONTROLLER = REG.register("frozen_controller", () -> frozenControllerBuilder().noSummon().sized(0, 0).build(new ResourceLocation(MowziesMobs.MODID, "frozen_controller").toString()));
+    private static EntityType.Builder<EntityDart> dartBuilder() {
+        return EntityType.Builder.of(EntityDart::new, MobCategory.MISC);
+    }
+    public static final RegistryObject<EntityType<EntityDart>> DART = REG.register("dart", () -> dartBuilder().noSummon().sized(0.5F, 0.5F).setUpdateInterval(20).build(new ResourceLocation(MowziesMobs.MODID, "dart").toString()));
+    private static EntityType.Builder<EntityPoisonBall> poisonBallBuilder() {
+        return EntityType.Builder.of(EntityPoisonBall::new, MobCategory.MISC);
+    }
+    public static final RegistryObject<EntityType<EntityPoisonBall>> POISON_BALL = REG.register("poison_ball", () -> poisonBallBuilder().sized(0.5F, 0.5F).setUpdateInterval(20).build(new ResourceLocation(MowziesMobs.MODID, "poison_ball").toString()));
+    private static EntityType.Builder<EntitySuperNova> superNovaBuilder() {
+        return EntityType.Builder.of(EntitySuperNova::new, MobCategory.MISC);
+    }
+    public static final RegistryObject<EntityType<EntitySuperNova>> SUPER_NOVA = REG.register("super_nova", () -> superNovaBuilder().sized(1, 1).setUpdateInterval(Integer.MAX_VALUE).build(new ResourceLocation(MowziesMobs.MODID, "super_nova").toString()));
+    private static EntityType.Builder<EntityFallingBlock> fallingBlockBuilder() {
+        return EntityType.Builder.of(EntityFallingBlock::new, MobCategory.MISC);
+    }
+    public static final RegistryObject<EntityType<EntityFallingBlock>> FALLING_BLOCK = REG.register("falling_block", () -> fallingBlockBuilder().sized(1, 1).build(new ResourceLocation(MowziesMobs.MODID, "falling_block").toString()));
+    private static EntityType.Builder<EntityBlockSwapper> blockSwapperBuilder() {
+        return EntityType.Builder.of(EntityBlockSwapper::new, MobCategory.MISC);
+    }
+    public static final RegistryObject<EntityType<EntityBlockSwapper>> BLOCK_SWAPPER = REG.register("block_swapper", () -> blockSwapperBuilder().noSummon().sized(1, 1).setUpdateInterval(Integer.MAX_VALUE).build(new ResourceLocation(MowziesMobs.MODID, "block_swapper").toString()));
+    private static EntityType.Builder<EntityCameraShake> cameraShakeBuilder() {
+        return EntityType.Builder.of(EntityCameraShake::new, MobCategory.MISC);
+    }
+    public static final RegistryObject<EntityType<EntityCameraShake>> CAMERA_SHAKE = REG.register("camera_shake", () -> cameraShakeBuilder().sized(1, 1).setUpdateInterval(Integer.MAX_VALUE).build(new ResourceLocation(MowziesMobs.MODID, "camera_shake").toString()));
 
     @SubscribeEvent
     public static void onCreateAttributes(EntityAttributeCreationEvent event) {
-        event.put(EntityHandler.FOLIAATH, EntityFoliaath.createAttributes().build());
-        event.put(EntityHandler.BABY_FOLIAATH, EntityBabyFoliaath.createAttributes().build());
-        event.put(EntityHandler.WROUGHTNAUT, EntityWroughtnaut.createAttributes().build());
-        event.put(EntityHandler.BARAKOANA, EntityBarakoana.createAttributes().build());
-        event.put(EntityHandler.BARAKOA_VILLAGER, EntityBarakoa.createAttributes().build());
-        event.put(EntityHandler.BARAKOAN_TO_PLAYER, EntityBarakoanToPlayer.createAttributes().build());
-        event.put(EntityHandler.BARAKOAYA_TO_PLAYER, EntityBarakoanToPlayer.createAttributes().build());
-        event.put(EntityHandler.BARAKOAN_TO_BARAKOANA, EntityBarakoa.createAttributes().build());
-        event.put(EntityHandler.BARAKOAYA, EntityBarakoa.createAttributes().build());
-        event.put(EntityHandler.BARAKO, EntityBarako.createAttributes().build());
-        event.put(EntityHandler.FROSTMAW, EntityFrostmaw.createAttributes().build());
-        event.put(EntityHandler.NAGA, EntityNaga.createAttributes().build());
-        event.put(EntityHandler.LANTERN, EntityLantern.createAttributes().build());
-        event.put(EntityHandler.GROTTOL, EntityGrottol.createAttributes().build());
-        event.put(EntityHandler.SCULPTOR, EntitySculptor.createAttributes().build());
+        event.put(EntityHandler.FOLIAATH.get(), EntityFoliaath.createAttributes().build());
+        event.put(EntityHandler.BABY_FOLIAATH.get(), EntityBabyFoliaath.createAttributes().build());
+        event.put(EntityHandler.WROUGHTNAUT.get(), EntityWroughtnaut.createAttributes().build());
+        event.put(EntityHandler.BARAKOANA.get(), EntityBarakoana.createAttributes().build());
+        event.put(EntityHandler.BARAKOA_VILLAGER.get(), EntityBarakoa.createAttributes().build());
+        event.put(EntityHandler.BARAKOAN_TO_PLAYER.get(), EntityBarakoanToPlayer.createAttributes().build());
+        event.put(EntityHandler.BARAKOAYA_TO_PLAYER.get(), EntityBarakoanToPlayer.createAttributes().build());
+        event.put(EntityHandler.BARAKOAN_TO_BARAKOANA.get(), EntityBarakoa.createAttributes().build());
+        event.put(EntityHandler.BARAKOAYA.get(), EntityBarakoa.createAttributes().build());
+        event.put(EntityHandler.BARAKO.get(), EntityBarako.createAttributes().build());
+        event.put(EntityHandler.FROSTMAW.get(), EntityFrostmaw.createAttributes().build());
+        event.put(EntityHandler.NAGA.get(), EntityNaga.createAttributes().build());
+        event.put(EntityHandler.LANTERN.get(), EntityLantern.createAttributes().build());
+        event.put(EntityHandler.GROTTOL.get(), EntityGrottol.createAttributes().build());
+//        event.put(EntityHandler.SCULPTOR.get(), EntitySculptor.createAttributes().create());
     }
 }

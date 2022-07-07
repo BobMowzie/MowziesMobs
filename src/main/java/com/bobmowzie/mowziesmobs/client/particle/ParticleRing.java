@@ -2,24 +2,22 @@ package com.bobmowzie.mowziesmobs.client.particle;
 
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleRotation;
 import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraft.util.Mth;
-import net.minecraft.world.phys.Quaternion;
+import com.mojang.math.Quaternion;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.Vector3f;
-import net.minecraft.sounds.registry.Registry;
-import net.minecraft.world.level.Level;
+import com.mojang.math.Vector3f;
+import net.minecraft.core.Registry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.Locale;
@@ -27,7 +25,7 @@ import java.util.Locale;
 /**
  * Created by BobMowzie on 6/2/2017.
  */
-public class ParticleRing extends SpriteTexturedParticle {
+public class ParticleRing extends TextureSheetParticle {
     public float r, g, b;
     public float opacity;
     public boolean facesCamera;
@@ -47,8 +45,8 @@ public class ParticleRing extends SpriteTexturedParticle {
         super(world, x, y, z);
         setSize(1, 1);
         this.size = size * 0.1f;
-        maxAge = duration;
-        particleAlpha = 1;
+        lifetime = duration;
+        alpha = 1;
         this.r = r;
         this.g = g;
         this.b = b;
@@ -56,71 +54,71 @@ public class ParticleRing extends SpriteTexturedParticle {
         this.yaw = yaw;
         this.pitch = pitch;
         this.facesCamera = facesCamera;
-        this.motionX = motionX;
-        this.motionY = motionY;
-        this.motionZ = motionZ;
+        this.xd = motionX;
+        this.yd = motionY;
+        this.zd = motionZ;
         this.behavior = behavior;
     }
 
     @Override
-    public int getBrightnessForRender(float delta) {
-        return 240 | super.getBrightnessForRender(delta) & 0xFF0000;
+    public int getLightColor(float delta) {
+        return 240 | super.getLightColor(delta) & 0xFF0000;
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (age >= maxAge) {
-            setExpired();
+        if (age >= lifetime) {
+            remove();
         }
         age++;
     }
 
     @Override
-    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
-        float var = (age + partialTicks)/maxAge;
+    public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
+        float var = (age + partialTicks)/lifetime;
         if (behavior == EnumRingBehavior.GROW) {
-            particleScale = size * var;
+            quadSize = size * var;
         }
         else if (behavior == EnumRingBehavior.SHRINK) {
-            particleScale = size * (1 - var);
+            quadSize = size * (1 - var);
         }
         else if (behavior == EnumRingBehavior.GROW_THEN_SHRINK) {
-            particleScale = (float) (size * (1 - var - Math.pow(2000, -var)));
+            quadSize = (float) (size * (1 - var - Math.pow(2000, -var)));
         }
         else {
-            particleScale = size;
+            quadSize = size;
         }
-        particleAlpha = opacity * 0.95f * (1 - (age + partialTicks)/maxAge) + 0.05f;
-        particleRed = r;
-        particleGreen = g;
-        particleBlue = b;
+        alpha = opacity * 0.95f * (1 - (age + partialTicks)/lifetime) + 0.05f;
+        rCol = r;
+        gCol = g;
+        bCol = b;
 
-        Vec3 Vec3 = renderInfo.getProjectedView();
-        float f = (float)(Mth.lerp(partialTicks, this.xo, this.posX) - Vec3.x());
-        float f1 = (float)(Mth.lerp(partialTicks, this.prevPosY, this.posY) - Vec3.y());
-        float f2 = (float)(Mth.lerp(partialTicks, this.zo, this.posZ) - Vec3.z());
+        Vec3 Vector3d = renderInfo.getPosition();
+        float f = (float)(Mth.lerp(partialTicks, this.xo, this.x) - Vector3d.x());
+        float f1 = (float)(Mth.lerp(partialTicks, this.yo, this.y) - Vector3d.y());
+        float f2 = (float)(Mth.lerp(partialTicks, this.zo, this.z) - Vector3d.z());
         Quaternion quaternion = new Quaternion(0.0F, 0.0F, 0.0F, 1.0F);
         if (facesCamera) {
-            if (this.particleAngle == 0.0F) {
-                quaternion = renderInfo.getRotation();
+            if (this.roll == 0.0F) {
+                quaternion = renderInfo.rotation();
             } else {
-                quaternion = new Quaternion(renderInfo.getRotation());
-                float f3 = Mth.lerp(partialTicks, this.prevParticleAngle, this.particleAngle);
-                quaternion.multiply(Vector3f.ZP.rotation(f3));
+                quaternion = new Quaternion(renderInfo.rotation());
+                float f3 = Mth.lerp(partialTicks, this.oRoll, this.roll);
+                quaternion.mul(Vector3f.ZP.rotation(f3));
             }
         }
         else {
             Quaternion quatX = new Quaternion(pitch, 0, 0, false);
             Quaternion quatY = new Quaternion(0, yaw, 0, false);
-            quaternion.multiply(quatY);
-            quaternion.multiply(quatX);
+            quaternion.mul(quatY);
+            quaternion.mul(quatX);
         }
 
         Vector3f vector3f1 = new Vector3f(-1.0F, -1.0F, 0.0F);
         vector3f1.transform(quaternion);
         Vector3f[] avector3f = new Vector3f[]{new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};
-        float f4 = this.getScale(partialTicks);
+        float f4 = this.getQuadSize(partialTicks);
 
         for(int i = 0; i < 4; ++i) {
             Vector3f vector3f = avector3f[i];
@@ -129,41 +127,41 @@ public class ParticleRing extends SpriteTexturedParticle {
             vector3f.add(f, f1, f2);
         }
 
-        float f7 = this.getMinU();
-        float f8 = this.getMaxU();
-        float f5 = this.getMinV();
-        float f6 = this.getMaxV();
-        int j = this.getBrightnessForRender(partialTicks);
-        buffer.pos(avector3f[0].x(), avector3f[0].y(), avector3f[0].z()).tex(f8, f6).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
-        buffer.pos(avector3f[1].x(), avector3f[1].y(), avector3f[1].z()).tex(f8, f5).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
-        buffer.pos(avector3f[2].x(), avector3f[2].y(), avector3f[2].z()).tex(f7, f5).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
-        buffer.pos(avector3f[3].x(), avector3f[3].y(), avector3f[3].z()).tex(f7, f6).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
+        float f7 = this.getU0();
+        float f8 = this.getU1();
+        float f5 = this.getV0();
+        float f6 = this.getV1();
+        int j = this.getLightColor(partialTicks);
+        buffer.vertex(avector3f[0].x(), avector3f[0].y(), avector3f[0].z()).uv(f8, f6).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
+        buffer.vertex(avector3f[1].x(), avector3f[1].y(), avector3f[1].z()).uv(f8, f5).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
+        buffer.vertex(avector3f[2].x(), avector3f[2].y(), avector3f[2].z()).uv(f7, f5).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
+        buffer.vertex(avector3f[3].x(), avector3f[3].y(), avector3f[3].z()).uv(f7, f6).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
     }
 
     @Override
-    public IParticleRenderType getRenderType() {
+    public ParticleRenderType getRenderType() {
         return MMRenderType.PARTICLE_SHEET_TRANSLUCENT_NO_DEPTH;
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static final class RingFactory implements IParticleFactory<RingData> {
-        private final IAnimatedSprite spriteSet;
+    public static final class RingFactory implements ParticleProvider<RingData> {
+        private final SpriteSet spriteSet;
 
-        public RingFactory(IAnimatedSprite sprite) {
+        public RingFactory(SpriteSet sprite) {
             this.spriteSet = sprite;
         }
 
         @Override
-        public Particle makeParticle(RingData typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(RingData typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ParticleRing particle = new ParticleRing(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn.getYaw(), typeIn.getPitch(), typeIn.getDuration(), typeIn.getR(), typeIn.getG(), typeIn.getB(), typeIn.getA(), typeIn.getScale(), typeIn.getFacesCamera(), typeIn.getBehavior());
-            particle.selectSpriteWithAge(spriteSet);
+            particle.setSpriteFromAge(spriteSet);
             return particle;
         }
     }
 
-    public static class RingData implements IParticleData {
-        public static final IParticleData.IDeserializer<ParticleRing.RingData> DESERIALIZER = new IParticleData.IDeserializer<ParticleRing.RingData>() {
-            public ParticleRing.RingData deserialize(ParticleType<ParticleRing.RingData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
+    public static class RingData implements ParticleOptions {
+        public static final ParticleOptions.Deserializer<ParticleRing.RingData> DESERIALIZER = new ParticleOptions.Deserializer<ParticleRing.RingData>() {
+            public ParticleRing.RingData fromCommand(ParticleType<ParticleRing.RingData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
                 reader.expect(' ');
                 float yaw = (float) reader.readDouble();
                 reader.expect(' ');
@@ -185,7 +183,7 @@ public class ParticleRing extends SpriteTexturedParticle {
                 return new ParticleRing.RingData(yaw, pitch, duration, r, g, b, a, scale, facesCamera, EnumRingBehavior.GROW);
             }
 
-            public ParticleRing.RingData read(ParticleType<ParticleRing.RingData> particleTypeIn, FriendlyByteBuf buffer) {
+            public ParticleRing.RingData fromNetwork(ParticleType<ParticleRing.RingData> particleTypeIn, FriendlyByteBuf buffer) {
                 return new ParticleRing.RingData(buffer.readFloat(), buffer.readFloat(), buffer.readInt(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readBoolean(), EnumRingBehavior.GROW);
             }
         };
@@ -215,7 +213,7 @@ public class ParticleRing extends SpriteTexturedParticle {
         }
 
         @Override
-        public void write(FriendlyByteBuf buffer) {
+        public void writeToNetwork(FriendlyByteBuf buffer) {
             buffer.writeFloat(this.r);
             buffer.writeFloat(this.g);
             buffer.writeFloat(this.b);
@@ -225,7 +223,7 @@ public class ParticleRing extends SpriteTexturedParticle {
 
         @SuppressWarnings("deprecation")
         @Override
-        public String getParameters() {
+        public String writeToString() {
             return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %.2f %.2f %.2f %d %b", Registry.PARTICLE_TYPE.getKey(this.getType()),
                     this.yaw, this.pitch, this.r, this.g, this.b, this.scale, this.a, this.duration, this.facesCamera);
         }

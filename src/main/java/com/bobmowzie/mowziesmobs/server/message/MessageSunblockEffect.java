@@ -2,7 +2,6 @@ package com.bobmowzie.mowziesmobs.server.message;
 
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.LivingCapability;
-import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,7 +23,7 @@ public class MessageSunblockEffect {
     }
 
     public MessageSunblockEffect(LivingEntity entity, boolean activate) {
-        entityID = entity.getEntityId();
+        entityID = entity.getId();
         this.hasSunblock = activate;
     }
 
@@ -45,11 +44,11 @@ public class MessageSunblockEffect {
         public void accept(final MessageSunblockEffect message, final Supplier<NetworkEvent.Context> contextSupplier) {
             final NetworkEvent.Context context = contextSupplier.get();
             context.enqueueWork(() -> {
-                if (Minecraft.getInstance().world != null) {
-                    Entity entity = Minecraft.getInstance().world.getEntityByID(message.entityID);
+                if (Minecraft.getInstance().level != null) {
+                    Entity entity = Minecraft.getInstance().level.getEntity(message.entityID);
                     if (entity instanceof LivingEntity) {
                         LivingEntity living = (LivingEntity) entity;
-                        LivingCapability.ILivingCapability livingCapability = CapabilityHandler.getCapability(living, LivingCapability.LivingProvider.LIVING_CAPABILITY);
+                        LivingCapability.ILivingCapability livingCapability = CapabilityHandler.getCapability(living, CapabilityHandler.LIVING_CAPABILITY);
                         if (livingCapability != null) {
                             livingCapability.setHasSunblock(message.hasSunblock);
                         }

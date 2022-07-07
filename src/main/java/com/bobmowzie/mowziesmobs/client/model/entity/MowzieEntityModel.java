@@ -3,10 +3,9 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 import com.bobmowzie.mowziesmobs.client.model.tools.MMModelAnimator;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.ilexiconn.llibrary.client.model.tools.BasicModelRenderer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.resources.model.ModelRenderer;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.resources.ResourceLocation;
 
@@ -24,7 +23,7 @@ public abstract class MowzieEntityModel<T extends MowzieEntity> extends Advanced
     }
 
     @Override
-    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         float delta = ageInTicks - entityIn.tickCount;
         this.animator.update(entityIn, delta);
         this.animate(entityIn, limbSwing, limbSwingAmount, netHeadYaw, headPitch, delta);
@@ -37,7 +36,7 @@ public abstract class MowzieEntityModel<T extends MowzieEntity> extends Advanced
 
     protected abstract void animate(T entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta);
 
-    protected static void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+    protected static void setRotateAngle(BasicModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;

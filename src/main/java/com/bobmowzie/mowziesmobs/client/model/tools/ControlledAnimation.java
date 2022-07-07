@@ -13,6 +13,7 @@ public class ControlledAnimation {
      * It is the timer used to animate
      */
     private int timer;
+    private int prevtimer;
 
     /**
      * It is the limit time, the maximum value that the timer can be. I represents the duration of the
@@ -24,6 +25,7 @@ public class ControlledAnimation {
 
     public ControlledAnimation(int d) {
         timer = 0;
+        prevtimer = 0;
         duration = d;
     }
 
@@ -34,6 +36,7 @@ public class ControlledAnimation {
      */
     public void setDuration(int d) {
         timer = 0;
+        prevtimer = 0;
         duration = d;
     }
 
@@ -44,6 +47,10 @@ public class ControlledAnimation {
         return timer;
     }
 
+    public int getPrevTimer() {
+        return prevtimer;
+    }
+
     /**
      * Sets the timer to a specific value.
      *
@@ -51,6 +58,7 @@ public class ControlledAnimation {
      */
     public void setTimer(int time) {
         timer = time;
+        prevtimer = time;
 
         if (timer > duration) {
             timer = duration;
@@ -64,6 +72,7 @@ public class ControlledAnimation {
      */
     public void resetTimer() {
         timer = 0;
+        prevtimer = 0;
     }
 
     /**
@@ -135,6 +144,14 @@ public class ControlledAnimation {
     }
 
     /**
+     * Returns a float that represents a fraction of the animation, a value between 0.0F and 1.0F.
+     */
+    public float getAnimationFraction(float partialTicks) {
+        float interpTimer = prevtimer + (timer - prevtimer) * partialTicks;
+        return interpTimer / (float) duration;
+    }
+
+    /**
      * Returns a value between 0.0F and 1.0F depending on the timer and duration of the animation. It reaches
      * 1.0F using 1/(1 + e^(4-8*x)). It is quite uniform but slow, and needs if statements.
      */
@@ -176,6 +193,15 @@ public class ControlledAnimation {
 
     /**
      * Returns a value between 0.0F and 1.0F depending on the timer and duration of the animation. It reaches
+     * 1.0F using a sine function squared. It is very smooth.
+     */
+    public float getAnimationProgressSinSqrt(float partialTicks) {
+        float result = Mth.sin(1.57079632679F * getAnimationFraction(partialTicks));
+        return result * result;
+    }
+
+    /**
+     * Returns a value between 0.0F and 1.0F depending on the timer and duration of the animation. It reaches
      * 1.0F using a sine function to the power of ten. It is slow in the beginning and fast in the end.
      */
     public float getAnimationProgressSinToTen() {
@@ -187,6 +213,13 @@ public class ControlledAnimation {
             return Mth.sin(1.57079632679F * getAnimationFraction()) * Mth.sin(1.57079632679F * getAnimationFraction());
         }
         return (float) Math.pow(Mth.sin(1.57079632679F * getAnimationFraction()), 10);
+    }
+
+    public float getAnimationProgressSinToTenWithoutReturn(float partialTicks) {
+        if (timerChange == -1) {
+            return Mth.sin(1.57079632679F * getAnimationFraction(partialTicks)) * Mth.sin(1.57079632679F * getAnimationFraction(partialTicks));
+        }
+        return (float) Math.pow(Mth.sin(1.57079632679F * getAnimationFraction(partialTicks)), 10);
     }
 
     /**
@@ -267,5 +300,9 @@ public class ControlledAnimation {
     public float getAnimationProgressTemporaryInvesed() {
         float x = 6.28318530718F * getAnimationFraction();
         return 0.5F + 0.5F * Mth.cos(x + Mth.sin(x));
+    }
+
+    public void updatePrevTimer() {
+        prevtimer = timer;
     }
 }

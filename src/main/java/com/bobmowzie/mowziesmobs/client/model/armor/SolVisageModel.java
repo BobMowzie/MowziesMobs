@@ -1,223 +1,99 @@
 package com.bobmowzie.mowziesmobs.client.model.armor;
-
-import com.bobmowzie.mowziesmobs.client.model.entity.ModelBipedAnimated;
-import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.resources.model.ModelRenderer;
+// Made with Blockbench 4.2.3
+// Exported for Minecraft version 1.17 - 1.18 with Mojang mappings
+// Paste this class into your mod and generate all required imports
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-/**
- * Tribe Leader - Undefined
- * Created using Tabula 8.0.0
- */
-@OnlyIn(Dist.CLIENT)
-public class SolVisageModel<T extends LivingEntity> extends BipedModel<T> {
-    public AdvancedModelRenderer maskBase;
-    public ModelRenderer maskFace;
-    public ModelRenderer headdress1back;
-    public ModelRenderer headdress2back;
-    public ModelRenderer headdress3back;
-    public ModelRenderer headdress4back;
-    public ModelRenderer headdress5back;
-    public ModelRenderer headdress6back;
-    public ModelRenderer headdress7back;
-    public ModelRenderer rightEar;
-    public ModelRenderer leftEar;
-    public ModelRenderer headdress7;
-    public ModelRenderer headdress6;
-    public ModelRenderer headdress5;
-    public ModelRenderer headdress4;
-    public ModelRenderer headdress3;
-    public ModelRenderer headdress2;
-    public ModelRenderer headdress1;
-    public ModelRenderer maskMouth;
-    public ModelRenderer forehead;
-    public ModelRenderer nose;
-    public ModelRenderer upperLip;
-    public ModelRenderer jaw;
-    public ModelRenderer teethTop;
-    public ModelRenderer lowerLip;
-    public ModelRenderer leftLip;
-    public ModelRenderer rightLip;
-    public ModelRenderer teethBottom;
-    public ModelRenderer rightEarring;
-    public ModelRenderer leftEarring;
+public class SolVisageModel<T extends LivingEntity> extends HumanoidModel<T> {
 
-    public SolVisageModel() {
-        super(0.0f);
-        this.textureWidth = 128;
-        this.textureHeight = 128;
-        bipedHead.cubeList.clear();
-        this.headdress5 = new ModelRenderer(this, 27, 76);
-        this.headdress5.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.headdress5.addBox(-3.0F, -18.0F, 0.0F, 6, 12, 0, 0.0F);
-        this.setRotateAngle(headdress5, -2.6179938779914944F, 0.0F, 1.7453292519943295F);
-        this.lowerLip = new ModelRenderer(this, 50, 124);
-        this.lowerLip.mirror = true;
-        this.lowerLip.setRotationPoint(0.0F, 4.0F, 0.0F);
-        this.lowerLip.addBox(-6.0F, 0.0F, -2.0F, 12, 2, 2, 0.0F);
-        this.setRotateAngle(lowerLip, 0.0F, 0.0F, 3.141592653589793F);
-        this.headdress1 = new ModelRenderer(this, 27, 76);
-        this.headdress1.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.headdress1.addBox(-3.0F, -18.0F, 0.0F, 6, 12, 0, 0.0F);
-        this.setRotateAngle(headdress1, -2.6179938779914944F, 0.0F, 3.141592653589793F);
-        this.upperLip = new ModelRenderer(this, 50, 124);
-        this.upperLip.setRotationPoint(0.0F, 0.0F, -2.0F);
-        this.upperLip.addBox(-6.0F, -2.0F, 0.0F, 12, 2, 2, 0.0F);
-        this.headdress1back = new ModelRenderer(this, 27, 76);
-        this.headdress1back.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.headdress1back.addBox(-3.0F, -18.0F, 0.01F, 6, 12, 0, 0.0F);
-        this.setRotateAngle(headdress1back, -0.5235987755982988F, 0.0F, 0.0F);
-        this.headdress5back = new ModelRenderer(this, 27, 76);
-        this.headdress5back.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.headdress5back.addBox(-3.0F, -18.0F, 0.01F, 6, 12, 0, 0.0F);
-        this.setRotateAngle(headdress5back, -0.5235987755982988F, 0.0F, -1.3962634015954636F);
-        this.headdress2back = new ModelRenderer(this, 27, 76);
-        this.headdress2back.mirror = true;
-        this.headdress2back.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.headdress2back.addBox(-3.0F, -18.0F, 0.01F, 6, 12, 0, 0.0F);
-        this.setRotateAngle(headdress2back, -0.5235987755982988F, 0.0F, 0.6981317007977318F);
-        this.headdress3 = new ModelRenderer(this, 27, 76);
-        this.headdress3.mirror = true;
-        this.headdress3.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.headdress3.addBox(-3.0F, -18.0F, 0.0F, 6, 12, 0, 0.0F);
-        this.setRotateAngle(headdress3, -2.6179938779914944F, 0.0F, -1.7453292519943295F);
-        this.rightLip = new ModelRenderer(this, 26, 120);
-        this.rightLip.setRotationPoint(-6.0F, 0.0F, 0.0F);
-        this.rightLip.addBox(0.0F, 0.0F, -2.0F, 2, 2, 2, 0.0F);
-        this.headdress2 = new ModelRenderer(this, 27, 76);
-        this.headdress2.mirror = true;
-        this.headdress2.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.headdress2.addBox(-3.0F, -18.0F, 0.0F, 6, 12, 0, 0.0F);
-        this.setRotateAngle(headdress2, -2.6179938779914944F, 0.0F, -2.443460952792061F);
-        this.forehead = new ModelRenderer(this, 0, 122);
-        this.forehead.setRotationPoint(0.0F, -6.0F, 0.0F);
-        this.forehead.addBox(-6.0F, -0.0F, -2.0F, 12, 4, 2, 0.0F);
-        this.leftLip = new ModelRenderer(this, 26, 120);
-        this.leftLip.mirror = true;
-        this.leftLip.setRotationPoint(6.0F, 0.0F, 0.0F);
-        this.leftLip.addBox(-2.0F, 0.0F, -2.0F, 2, 2, 2, 0.0F);
-        this.headdress7back = new ModelRenderer(this, 27, 76);
-        this.headdress7back.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.headdress7back.addBox(-3.0F, -18.0F, 0.01F, 6, 12, 0, 0.0F);
-        this.setRotateAngle(headdress7back, -0.5235987755982988F, 0.0F, -2.0943951023931953F);
-        this.headdress7 = new ModelRenderer(this, 27, 76);
-        this.headdress7.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.headdress7.addBox(-3.0F, -18.0F, 0.0F, 6, 12, 0, 0.0F);
-        this.setRotateAngle(headdress7, -2.6179938779914944F, 0.0F, 1.0471975511965976F);
-        this.maskBase = new AdvancedModelRenderer(this, 0, 0);
-        this.maskBase.setRotationPoint(0.0F, -6.777372F, -4F);
-        this.maskBase.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
-        this.maskBase.setScale(0.8f);
-        this.jaw = new ModelRenderer(this, 48, 109);
-        this.jaw.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.jaw.addBox(-6.0F, 0.0F, 0.0F, 12, 4, 7, 0.0F);
-        this.headdress4 = new ModelRenderer(this, 27, 76);
-        this.headdress4.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.headdress4.addBox(-3.0F, -18.0F, 0.0F, 6, 12, 0, 0.0F);
-        this.setRotateAngle(headdress4, -2.6179938779914944F, 0.0F, 2.443460952792061F);
-        this.leftEar = new ModelRenderer(this, 38, 109);
-        this.leftEar.mirror = true;
-        this.leftEar.setRotationPoint(6.0F, -2.0F, 0.0F);
-        this.leftEar.addBox(0.0F, 0.0F, 0.0F, 3, 6, 2, 0.0F);
-        this.setRotateAngle(leftEar, 0.0F, -0.5235987755982988F, 0.0F);
-        this.headdress4back = new ModelRenderer(this, 27, 76);
-        this.headdress4back.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.headdress4back.addBox(-3.0F, -18.0F, 0.01F, 6, 12, 0, 0.0F);
-        this.setRotateAngle(headdress4back, -0.5235987755982988F, 0.0F, -0.6981317007977318F);
-        this.teethBottom = new ModelRenderer(this, 0, 120);
-        this.teethBottom.setRotationPoint(0.0F, 3.0F, 0.0F);
-        this.teethBottom.addBox(-4.0F, -1.0F, 0.0F, 8, 1, 1, 0.0F);
-        this.setRotateAngle(teethBottom, 3.141592653589793F, 0.0F, -3.141592653589793F);
-        this.headdress6 = new ModelRenderer(this, 27, 76);
-        this.headdress6.mirror = true;
-        this.headdress6.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.headdress6.addBox(-3.0F, -18.0F, 0.0F, 6, 12, 0, 0.0F);
-        this.setRotateAngle(headdress6, -2.6179938779914944F, 0.0F, -1.0471975511965976F);
-        this.rightEar = new ModelRenderer(this, 38, 109);
-        this.rightEar.setRotationPoint(-6.0F, -2.0F, 0.0F);
-        this.rightEar.addBox(-3.0F, 0.0F, 0.0F, 3, 6, 2, 0.0F);
-        this.setRotateAngle(rightEar, 0.0F, 0.5235987755982988F, 0.0F);
-        this.headdress6back = new ModelRenderer(this, 27, 76);
-        this.headdress6back.mirror = true;
-        this.headdress6back.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.headdress6back.addBox(-3.0F, -18.0F, 0.01F, 6, 12, 0, 0.0F);
-        this.setRotateAngle(headdress6back, -0.5235987755982988F, 0.0F, 2.0943951023931953F);
-        this.teethTop = new ModelRenderer(this, 0, 120);
-        this.teethTop.setRotationPoint(0.0F, 0.0F, 1.0F);
-        this.teethTop.addBox(-4.0F, 0.0F, 0.0F, 8, 1, 1, 0.0F);
-        this.leftEarring = new ModelRenderer(this, 0, 84);
-        this.leftEarring.mirror = true;
-        this.leftEarring.setRotationPoint(2.5F, 6.0F, 1.0F);
-        this.leftEarring.addBox(-2.0F, 0.0F, 0.0F, 4, 4, 0, 0.0F);
-        this.headdress3back = new ModelRenderer(this, 27, 76);
-        this.headdress3back.mirror = true;
-        this.headdress3back.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.headdress3back.addBox(-3.0F, -18.0F, 0.01F, 6, 12, 0, 0.0F);
-        this.setRotateAngle(headdress3back, -0.5235987755982988F, 0.0F, 1.3962634015954636F);
-        this.rightEarring = new ModelRenderer(this, 0, 84);
-        this.rightEarring.mirror = true;
-        this.rightEarring.setRotationPoint(-2.5F, 6.0F, 1.0F);
-        this.rightEarring.addBox(-2.0F, 0.0F, 0.0F, 4, 4, 0, 0.0F);
-        this.maskMouth = new ModelRenderer(this, 0, 0);
-        this.maskMouth.setRotationPoint(0.0F, 5.0F, 0.0F);
-        this.maskMouth.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
-        this.nose = new ModelRenderer(this, 34, 117);
-        this.nose.setRotationPoint(0.0F, -4.0F, 0.0F);
-        this.nose.addBox(-2.0F, 0.0F, 0.0F, 4, 7, 4, 0.0F);
-        this.setRotateAngle(nose, -0.5235987755982988F, 0.0F, 0.0F);
-        this.maskFace = new ModelRenderer(this, 0, 97);
-        this.maskFace.setRotationPoint(0.0F, 0.0F, -2.0F);
-        this.maskFace.addBox(-6.0F, -6.0F, 0.0F, 12, 15, 7, 0.0F);
-        this.maskBase.addChild(this.headdress5);
-        this.jaw.addChild(this.lowerLip);
-        this.maskBase.addChild(this.headdress1);
-        this.maskMouth.addChild(this.upperLip);
-        this.maskBase.addChild(this.headdress1back);
-        this.maskBase.addChild(this.headdress5back);
-        this.maskBase.addChild(this.headdress2back);
-        this.maskBase.addChild(this.headdress3);
-        this.jaw.addChild(this.rightLip);
-        this.maskBase.addChild(this.headdress2);
-        this.maskFace.addChild(this.forehead);
-        this.jaw.addChild(this.leftLip);
-        this.maskBase.addChild(this.headdress7back);
-        this.maskBase.addChild(this.headdress7);
-        this.maskMouth.addChild(this.jaw);
-        this.maskBase.addChild(this.headdress4);
-        this.maskBase.addChild(this.leftEar);
-        this.maskBase.addChild(this.headdress4back);
-        this.lowerLip.addChild(this.teethBottom);
-        this.maskBase.addChild(this.headdress6);
-        this.maskBase.addChild(this.rightEar);
-        this.maskBase.addChild(this.headdress6back);
-        this.upperLip.addChild(this.teethTop);
-        this.leftEar.addChild(this.leftEarring);
-        this.maskBase.addChild(this.headdress3back);
-        this.rightEar.addChild(this.rightEarring);
-        this.maskFace.addChild(this.maskMouth);
-        this.maskFace.addChild(this.nose);
-        this.maskBase.addChild(this.maskFace);
+	public SolVisageModel(ModelPart root) {
+		super(root);
+	}
 
-        this.bipedHead.addChild(maskBase);
-    }
+	public static LayerDefinition createArmorLayer() {
+		CubeDeformation deformation = CubeDeformation.NONE;
+		MeshDefinition meshdefinition = HumanoidModel.createMesh(deformation, 0.0F);
+		PartDefinition partdefinition = meshdefinition.getRoot();
+		PartDefinition head = partdefinition.getChild("head");
 
-    @Override
-    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        bipedHeadwear.showModel = false;
-        super.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-    }
+		PartDefinition maskBase = head.addOrReplaceChild("maskBase", CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, deformation), PartPose.offset(0.0F, -6.777372F, -4F));
 
-    /**
-     * This is a helper function from Tabula to set the rotation of model parts
-     */
-    public void setRotateAngle(ModelRenderer ModelRenderer, float x, float y, float z) {
-        ModelRenderer.rotateAngleX = x;
-        ModelRenderer.rotateAngleY = y;
-        ModelRenderer.rotateAngleZ = z;
-    }
+		PartDefinition maskFace = maskBase.addOrReplaceChild("maskFace", CubeListBuilder.create().texOffs(0, 97).addBox(-6.0F, -6.0F, 0.0F, 12.0F, 15.0F, 7.0F, deformation), PartPose.offset(0.0F, 0.0F, -2.0F));
+
+		PartDefinition maskMouth = maskFace.addOrReplaceChild("maskMouth", CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, deformation), PartPose.offset(0.0F, 5.0F, 0.0F));
+
+		PartDefinition upperLip = maskMouth.addOrReplaceChild("upperLip", CubeListBuilder.create().texOffs(50, 124).addBox(-6.0F, -2.0F, 0.0F, 12.0F, 2.0F, 2.0F, deformation), PartPose.offset(0.0F, 0.0F, -2.0F));
+
+		PartDefinition teethTop = upperLip.addOrReplaceChild("teethTop", CubeListBuilder.create().texOffs(0, 120).addBox(-4.0F, 0.0F, 0.0F, 8.0F, 1.0F, 1.0F, deformation), PartPose.offset(0.0F, 0.0F, 1.0F));
+
+		PartDefinition jaw = maskMouth.addOrReplaceChild("jaw", CubeListBuilder.create().texOffs(48, 109).addBox(-6.0F, 0.0F, 0.0F, 12.0F, 4.0F, 7.0F, deformation), PartPose.offset(0.0F, 0.0F, 0.0F));
+
+		PartDefinition lowerLip = jaw.addOrReplaceChild("lowerLip", CubeListBuilder.create().texOffs(50, 124).addBox(-6.0F, 0.0F, -2.0F, 12.0F, 2.0F, 2.0F, deformation), PartPose.offsetAndRotation(0.0F, 4.0F, 0.0F, 0.0F, 0.0F, 3.1416F));
+
+		PartDefinition teethBottom = lowerLip.addOrReplaceChild("teethBottom", CubeListBuilder.create().texOffs(0, 120).addBox(-4.0F, -1.0F, 0.0F, 8.0F, 1.0F, 1.0F, deformation), PartPose.offsetAndRotation(0.0F, 3.0F, 0.0F, 3.1416F, 0.0F, -3.1416F));
+
+		PartDefinition leftLip = jaw.addOrReplaceChild("leftLip", CubeListBuilder.create().texOffs(26, 120).addBox(0.0F, 0.0F, -2.0F, 2.0F, 2.0F, 2.0F, deformation), PartPose.offset(-6.0F, 0.0F, 0.0F));
+
+		PartDefinition rightLip = jaw.addOrReplaceChild("rightLip", CubeListBuilder.create().texOffs(26, 120).mirror().addBox(-2.0F, 0.0F, -2.0F, 2.0F, 2.0F, 2.0F, deformation).mirror(false), PartPose.offset(6.0F, 0.0F, 0.0F));
+
+		PartDefinition forehead = maskFace.addOrReplaceChild("forehead", CubeListBuilder.create().texOffs(0, 122).addBox(-6.0F, 0.0F, -2.0F, 12.0F, 4.0F, 2.0F, deformation), PartPose.offset(0.0F, -6.0F, 0.0F));
+
+		PartDefinition nose = maskFace.addOrReplaceChild("nose", CubeListBuilder.create().texOffs(34, 117).addBox(-2.0F, 0.0F, 0.0F, 4.0F, 7.0F, 4.0F, deformation), PartPose.offsetAndRotation(0.0F, -4.0F, 0.0F, -0.5236F, 0.0F, 0.0F));
+
+		PartDefinition headdress1 = maskBase.addOrReplaceChild("headdress1", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.0F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.5236F, 0.0F, 0.0F));
+
+		PartDefinition headdress1back = maskBase.addOrReplaceChild("headdress1back", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.01F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -2.618F, 0.0F, 3.1416F));
+
+		PartDefinition headdress2 = maskBase.addOrReplaceChild("headdress2", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.0F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.5236F, 0.0F, 0.6981F));
+
+		PartDefinition headdress2back = maskBase.addOrReplaceChild("headdress2back", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.01F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -2.618F, 0.0F, -2.4435F));
+
+		PartDefinition headdress3 = maskBase.addOrReplaceChild("headdress3", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.0F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.5236F, 0.0F, 1.3963F));
+
+		PartDefinition headdress3back = maskBase.addOrReplaceChild("headdress3back", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.01F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -2.618F, 0.0F, -1.7453F));
+
+		PartDefinition headdress4 = maskBase.addOrReplaceChild("headdress4", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.0F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.5236F, 0.0F, -0.6981F));
+
+		PartDefinition headdress4back = maskBase.addOrReplaceChild("headdress4back", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.01F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -2.618F, 0.0F, 2.4435F));
+
+		PartDefinition headdress5 = maskBase.addOrReplaceChild("headdress5", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.0F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.5236F, 0.0F, -1.3963F));
+
+		PartDefinition headdress5back = maskBase.addOrReplaceChild("headdress5back", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.01F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -2.618F, 0.0F, 1.7453F));
+
+		PartDefinition headdress6 = maskBase.addOrReplaceChild("headdress6", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.0F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.5236F, 0.0F, 2.0944F));
+
+		PartDefinition headdress6back = maskBase.addOrReplaceChild("headdress6back", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.01F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -2.618F, 0.0F, -1.0472F));
+
+		PartDefinition headdress7 = maskBase.addOrReplaceChild("headdress7", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.0F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.5236F, 0.0F, -2.0944F));
+
+		PartDefinition headdress7back = maskBase.addOrReplaceChild("headdress7back", CubeListBuilder.create().texOffs(27, 76).addBox(-3.0F, -18.0F, 0.01F, 6.0F, 12.0F, 0.0F, deformation), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -2.618F, 0.0F, 1.0472F));
+
+		PartDefinition rightEar = maskBase.addOrReplaceChild("rightEar", CubeListBuilder.create().texOffs(38, 109).addBox(0.0F, 0.0F, 0.0F, 3.0F, 6.0F, 2.0F, deformation), PartPose.offsetAndRotation(6.0F, -2.0F, 0.0F, 0.0F, -0.5236F, 0.0F));
+
+		PartDefinition rightEarring = rightEar.addOrReplaceChild("rightEarring", CubeListBuilder.create().texOffs(0, 84).addBox(-2.0F, 0.0F, 0.0F, 4.0F, 4.0F, 0.0F, deformation), PartPose.offset(2.5F, 6.0F, 1.0F));
+
+		PartDefinition rightEarringBack = rightEar.addOrReplaceChild("rightEarringBack", CubeListBuilder.create().texOffs(0, 84).addBox(-2.0F, 0.0F, 0.01F, 4.0F, 4.0F, 0.0F, deformation), PartPose.offsetAndRotation(2.5F, 6.0F, 1.0F, 0.0F, 3.1416F, 0.0F));
+
+		PartDefinition leftEar = maskBase.addOrReplaceChild("leftEar", CubeListBuilder.create().texOffs(38, 109).addBox(-3.0F, 0.0F, 0.0F, 3.0F, 6.0F, 2.0F, deformation), PartPose.offsetAndRotation(-6.0F, -2.0F, 0.0F, 0.0F, 0.5236F, 0.0F));
+
+		PartDefinition leftEarring = leftEar.addOrReplaceChild("leftEarring", CubeListBuilder.create().texOffs(0, 84).addBox(-2.0F, 0.0F, 0.0F, 4.0F, 4.0F, 0.0F, deformation), PartPose.offset(-2.5F, 6.0F, 1.0F));
+
+		PartDefinition leftEarringBack = leftEar.addOrReplaceChild("leftEarringBack", CubeListBuilder.create().texOffs(0, 84).addBox(-2.0F, 0.0F, 0.01F, 4.0F, 4.0F, 0.0F, deformation), PartPose.offsetAndRotation(-2.5F, 6.0F, 1.0F, 0.0F, 3.1416F, 0.0F));
+
+		return LayerDefinition.create(meshdefinition, 128, 128);
+	}
+
+	@Override
+	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int p_102036_, int p_102037_, float p_102038_, float p_102039_, float p_102040_, float p_102041_) {
+		poseStack.pushPose();
+		poseStack.scale(0.8f, 0.8f, 0.8f);
+		super.renderToBuffer(poseStack, vertexConsumer, p_102036_, p_102037_, p_102038_, p_102039_, p_102040_, p_102041_);
+		poseStack.popPose();
+	}
 }

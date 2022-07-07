@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.particle.util;
 
 import com.bobmowzie.mowziesmobs.client.particle.ParticleRibbon;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraft.world.phys.Vec3;
 
 public class RibbonComponent extends ParticleComponent {
@@ -38,7 +38,7 @@ public class RibbonComponent extends ParticleComponent {
             newComponents[components.length] = new AttachToParticle(particle);
             newComponents[components.length + 1] = new Trail();
 
-            ParticleRibbon.spawnRibbon(particle.getLevel(), ribbon, length, particle.getX(), particle.getY(), particle.getZ(), 0, 0, 0, faceCamera, yaw, pitch, roll, scale, r, g, b, a, 0, particle.getMaxAge() + length, emissive, newComponents);
+            ParticleRibbon.spawnRibbon(particle.getWorld(), ribbon, length, particle.getPosX(), particle.getPosY(), particle.getPosZ(), 0, 0, 0, faceCamera, yaw, pitch, roll, scale, r, g, b, a, 0, particle.getLifetime() + length, emissive, newComponents);
         }
     }
 
@@ -87,7 +87,7 @@ public class RibbonComponent extends ParticleComponent {
                     ribbon.positions[i] = ribbon.positions[i - 1];
                     ribbon.prevPositions[i] = ribbon.prevPositions[i - 1];
                 }
-                ribbon.positions[0] = new Vec3(ribbon.getX(), ribbon.getY(), ribbon.getZ());
+                ribbon.positions[0] = new Vec3(ribbon.getPosX(), ribbon.getPosY(), ribbon.getPosZ());
                 ribbon.prevPositions[0] = ribbon.getPrevPos();
             }
         }
@@ -135,7 +135,7 @@ public class RibbonComponent extends ParticleComponent {
         public void preRender(AdvancedParticleBase particle, float partialTicks) {
             if (particle instanceof ParticleRibbon) {
                 ParticleRibbon ribbon = (ParticleRibbon) particle;
-                float time = (ribbon.getAge() - 1 + partialTicks) / (ribbon.getMaxAge());
+                float time = (ribbon.getAge() - 1 + partialTicks) / (ribbon.getLifetime());
                 float t = (startOffset + time * speed) % 1.0f;
                 ribbon.texPanOffset = (ribbon.getMaxUPublic() - ribbon.getMinUPublic()) / 2 * t;
             }

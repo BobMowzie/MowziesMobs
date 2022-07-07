@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.render.item.RenderEarthboreGauntlet;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
@@ -8,24 +9,14 @@ import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockSource;
-import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
-import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
-import net.minecraft.world.level.block.DispenserBlock;
-import net.minecraft.dispenser.IBlockSource;
-import net.minecraft.dispenser.IPosition;
-import net.minecraft.dispenser.ProjectileDispenseBehavior;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.*;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.chat.Style;
+import net.minecraft.ChatFormatting;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.event.RegistryEvent;
@@ -33,6 +24,13 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ObjectHolder;
 
+
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.RecordItem;
+import net.minecraft.world.item.SpawnEggItem;
 
 @Mod.EventBusSubscriber(modid = MowziesMobs.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 @ObjectHolder(MowziesMobs.MODID)
@@ -61,7 +59,8 @@ public final class ItemHandler {
     public static final ItemGlowingJelly GLOWING_JELLY = null;
     public static final ItemNagaFang NAGA_FANG = null;
     public static final ItemNagaFangDagger NAGA_FANG_DAGGER = null;
-    public static final ItemLogo LOGO = null;
+    public static final ItemEarthboreGauntlet EARTHBORE_GAUNTLET = null;
+    public static final Item LOGO = null;
     public static final RecordItem PETIOLE_MUSIC_DISC = null;
 
     public static final ForgeSpawnEggItem FOLIAATH_SPAWN_EGG = null;
@@ -74,7 +73,7 @@ public final class ItemHandler {
     public static final ForgeSpawnEggItem GROTTOL_SPAWN_EGG = null;
     public static final ForgeSpawnEggItem LANTERN_SPAWN_EGG = null;
     public static final ForgeSpawnEggItem NAGA_SPAWN_EGG = null;
-    public static final ForgeSpawnEggItem SCULPTOR_SPAWN_EGG = null;
+//    public static final ForgeSpawnEggItem SCULPTOR_SPAWN_EGG = null;
 
     private static final int BARAKOA_GREEN_COLOR = 0x748C47;
     private static final int BARAKOA_PINK_COLOR = 0xBA6656;
@@ -98,15 +97,16 @@ public final class ItemHandler {
             new ItemDart(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("dart"),
             new ItemSpear(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1)).setRegistryName("spear"),
             new ItemSunblockStaff(new Item.Properties().stacksTo(1)).setRegistryName("sunblock_staff"),
-            new ItemBlowgun(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1).maxDamage(300)).setRegistryName("blowgun"),
+            new ItemBlowgun(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1).durability(300)).setRegistryName("blowgun"),
             new ItemGrantSunsBlessing(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1).rarity(Rarity.EPIC)).setRegistryName("grant_suns_blessing"),
-            new ItemIceCrystal(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).defaultMaxDamage(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.durability.get()).rarity(Rarity.RARE)).setRegistryName("ice_crystal"),
+            new ItemIceCrystal(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).defaultDurability(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.durability.get()).rarity(Rarity.RARE)).setRegistryName("ice_crystal"),
             new ItemEarthTalisman(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1).rarity(Rarity.EPIC)).setRegistryName("earth_talisman"),
             new ItemCapturedGrottol(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1)).setRegistryName("captured_grottol"),
             new ItemGlowingJelly( new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).food(ItemGlowingJelly.GLOWING_JELLY_FOOD)).setRegistryName("glowing_jelly"),
             new ItemNagaFang(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("naga_fang"),
             new ItemNagaFangDagger(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("naga_fang_dagger"),
-            new ItemLogo(new Item.Properties()).setRegistryName("logo"),
+            new ItemEarthboreGauntlet(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).defaultDurability(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.durability.get()).rarity(Rarity.RARE)).setRegistryName("earthbore_gauntlet"),
+            new Item(new Item.Properties()).setRegistryName("logo"),
             new RecordItem(14, MMSounds.MUSIC_PETIOLE, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1).rarity(Rarity.RARE)).setRegistryName("music_disc_petiole"),
     
             new ForgeSpawnEggItem(EntityHandler.FOLIAATH, 0x47CC3B, 0xC03BCC, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("foliaath_spawn_egg"),
@@ -119,7 +119,7 @@ public final class ItemHandler {
             new ForgeSpawnEggItem(EntityHandler.GROTTOL, 0x777777, 0xbce0ff, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("grottol_spawn_egg"),
             new ForgeSpawnEggItem(EntityHandler.LANTERN, 0x6dea00, 0x235a10, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("lantern_spawn_egg"),
             new ForgeSpawnEggItem(EntityHandler.NAGA, 0x154850, 0x8dd759, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("naga_spawn_egg"),
-            new ForgeSpawnEggItem(EntityHandler.SCULPTOR, 0x154850, 0x8dd759, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("sculptor_spawn_egg"),
+//            new ForgeSpawnEggItem(EntityHandler.SCULPTOR, 0x154850, 0x8dd759, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("sculptor_spawn_egg"),
 
             new BlockItem(BlockHandler.PAINTED_ACACIA.get(), new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.PAINTED_ACACIA.get().getRegistryName()),
             new BlockItem(BlockHandler.PAINTED_ACACIA_SLAB.get(), new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.PAINTED_ACACIA_SLAB.get().getRegistryName()),
@@ -141,48 +141,19 @@ public final class ItemHandler {
         NAGA_FANG_DAGGER.getAttributesFromConfig();
 
         int barakoaColor = ConfigHandler.CLIENT.oldBarakoaTextures.get() ? BARAKOA_PINK_COLOR : BARAKOA_GREEN_COLOR;
-        BARAKO_SPAWN_EGG.primaryColor = barakoaColor;
-        BARAKOA_SPAWN_EGG.primaryColor = barakoaColor;
-        BARAKOANA_SPAWN_EGG.primaryColor = barakoaColor;
-        BARAKOA_SUNBLOCKER_SPAWN_EGG.primaryColor = barakoaColor;
+        BARAKO_SPAWN_EGG.backgroundColor = barakoaColor;
+        BARAKOA_SPAWN_EGG.backgroundColor = barakoaColor;
+        BARAKOANA_SPAWN_EGG.backgroundColor = barakoaColor;
+        BARAKOA_SUNBLOCKER_SPAWN_EGG.backgroundColor = barakoaColor;
     }
 
     public static void initializeDispenserBehaviors() {
-        // Copied from IDispenseItemBehavior
-        DefaultDispenseItemBehavior defaultdispenseitembehavior = new DefaultDispenseItemBehavior() {
-            /**
-             * Dispense the specified stack, play the dispense sound and spawn particles.
-             */
-            public ItemStack dispenseStack(BlockSource source, ItemStack stack) {
-                Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
-                EntityType<?> entitytype = ((ForgeSpawnEggItem)stack.getItem()).getType(stack.getTag());
-                entitytype.spawn(source.getLevel(), stack, (Player)null, source.getPos().offset(direction.getNormal()), MobSpawnType.DISPENSER, direction != Direction.UP, false);
-                stack.shrink(1);
-                return stack;
-            }
-        };
-        ForgeSpawnEggItem[] spawnEggItems = new ForgeSpawnEggItem[] {
-                FOLIAATH_SPAWN_EGG,
-                WROUGHTNAUT_SPAWN_EGG,
-                BARAKOA_SPAWN_EGG,
-                BARAKOANA_SPAWN_EGG,
-                BARAKOA_SUNBLOCKER_SPAWN_EGG,
-                BARAKO_SPAWN_EGG,
-                FROSTMAW_SPAWN_EGG,
-                GROTTOL_SPAWN_EGG,
-                LANTERN_SPAWN_EGG,
-                NAGA_SPAWN_EGG,
-                SCULPTOR_SPAWN_EGG
-        };
-        for(ForgeSpawnEggItem spawneggitem : spawnEggItems) {
-            DispenserBlock.registerBehavior(spawneggitem, defaultdispenseitembehavior);
-        }
         DispenserBlock.registerBehavior(DART, new AbstractProjectileDispenseBehavior() {
             /**
              * Return the projectile entity spawned by this dispense behavior.
              */
             protected Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
-                EntityDart dartentity = new EntityDart(EntityHandler.DART, worldIn, position.x(), position.y(), position.z());
+                EntityDart dartentity = new EntityDart(EntityHandler.DART.get(), worldIn, position.x(), position.y(), position.z());
                 dartentity.pickup = AbstractArrow.Pickup.ALLOWED;
                 return dartentity;
             }

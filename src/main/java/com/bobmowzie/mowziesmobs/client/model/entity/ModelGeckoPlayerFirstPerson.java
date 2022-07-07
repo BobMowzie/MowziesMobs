@@ -4,33 +4,29 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
-import net.minecraft.client.entity.player.AbstractClientPlayer;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class ModelGeckoPlayerFirstPerson extends MowzieAnimatedGeoModel<GeckoPlayer> {
-	
-	private ResourceLocation animationFileLocation;
-	private ResourceLocation modelLocation;
 	private ResourceLocation textureLocation;
 
-	public BipedModel.ArmPose leftArmPose = BipedModel.ArmPose.EMPTY;
-	public BipedModel.ArmPose rightArmPose = BipedModel.ArmPose.EMPTY;
+	public HumanoidModel.ArmPose leftArmPose = HumanoidModel.ArmPose.EMPTY;
+	public HumanoidModel.ArmPose rightArmPose = HumanoidModel.ArmPose.EMPTY;
 
 	protected boolean useSmallArms;
 	
 	@Override
 	public ResourceLocation getAnimationFileLocation(GeckoPlayer animatable) {
-		return animationFileLocation;
+		return new ResourceLocation(MowziesMobs.MODID, "animations/animated_player_first_person.animation.json");
 	}
 
 	@Override
 	public ResourceLocation getModelLocation(GeckoPlayer animatable) {
-		return modelLocation;
+		return new ResourceLocation(MowziesMobs.MODID, "geo/animated_player_first_person.geo.json");
 	}
 
 	@Override
@@ -58,43 +54,20 @@ public class ModelGeckoPlayerFirstPerson extends MowzieAnimatedGeoModel<GeckoPla
 			MowzieGeoBone leftArmClassic = getMowzieBone("LeftArmClassic");
 			MowzieGeoBone rightArmSlim = getMowzieBone("RightArmSlim");
 			MowzieGeoBone leftArmSlim = getMowzieBone("LeftArmSlim");
-			if (useSmallArms) {
-				rightArmLayerClassic.setHidden(true);
-				rightArmClassic.setHidden(true);
-				leftArmLayerClassic.setHidden(true);
-				leftArmClassic.setHidden(true);
-				rightArmLayerSlim.setHidden(false);
-				rightArmSlim.setHidden(false);
-				leftArmLayerSlim.setHidden(false);
-				leftArmSlim.setHidden(false);
-			}
-			else {
-				rightArmLayerSlim.setHidden(true);
-				rightArmSlim.setHidden(true);
-				leftArmLayerSlim.setHidden(true);
-				leftArmSlim.setHidden(true);
-				rightArmLayerClassic.setHidden(false);
-				rightArmClassic.setHidden(false);
-				leftArmLayerClassic.setHidden(false);
-				leftArmClassic.setHidden(false);
-			}
-
-
 			getMowzieBone("LeftHeldItem").setHidden(true);
 			getMowzieBone("RightHeldItem").setHidden(true);
-			getMowzieBone("RightArmClassic").setHidden(true);
-			getMowzieBone("LeftArmClassic").setHidden(true);
-			getMowzieBone("RightArmLayerClassic").setHidden(true);
-			getMowzieBone("LeftArmLayerClassic").setHidden(true);
+			rightArmClassic.setHidden(true);
+			leftArmClassic.setHidden(true);
+			rightArmLayerClassic.setHidden(true);
+			leftArmLayerClassic.setHidden(true);
+			rightArmSlim.setHidden(true);
+			leftArmSlim.setHidden(true);
+			rightArmLayerSlim.setHidden(true);
+			leftArmLayerSlim.setHidden(true);
 		}
 	}
 
-	/** Check if the modelId has some ResourceLocation **/
-	@Override
-	public boolean resourceForModelId(AbstractClientPlayer player) {
-		this.animationFileLocation = new ResourceLocation(MowziesMobs.MODID, "animations/animated_player_first_person.animation.json");
-		this.modelLocation = new ResourceLocation(MowziesMobs.MODID, "geo/animated_player_first_person.geo.json");
+	public void setTextureFromPlayer(AbstractClientPlayer player) {
 		this.textureLocation = player.getSkinTextureLocation();
-		return true;
 	}
 }

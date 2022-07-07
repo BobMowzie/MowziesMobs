@@ -4,7 +4,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Packet;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
@@ -19,12 +19,12 @@ public class EntityFrozenController extends Entity {
     @Override
     public void tick() {
         super.tick();
-        if (!level.isClientSide && tickCount >= 70 && !isBeingRidden()) remove();
+        if (!level.isClientSide && tickCount >= 70 && !isVehicle()) discard() ;
 //        List<Entity> passengers = getPassengers();
 //        for (Entity passenger : passengers) {
 //            if (passenger instanceof LivingEntity) {
 //                LivingEntity livingEntity = (LivingEntity)passenger;
-//                if (!livingEntity.isPotionActive(PotionHandler.FROZEN)) remove();
+//                if (!livingEntity.isPotionActive(PotionHandler.FROZEN)) discard() ;
 //            }
 //        }
     }
@@ -55,7 +55,7 @@ public class EntityFrozenController extends Entity {
     }
 
     @Override
-    public double getMountedYOffset() {
+    public double getPassengersRidingOffset() {
         return 0;
     }
 
@@ -70,11 +70,11 @@ public class EntityFrozenController extends Entity {
     }
 
     @Override
-    public void updatePassenger(Entity passenger) {
-        if (this.isPassenger(passenger))
+    public void positionRider(Entity passenger) {
+        if (this.hasPassenger(passenger))
         {
             if (passenger instanceof Player) passenger.setPos(this.getX(), this.getY(), this.getZ());
-            else passenger.setPositionAndRotation(this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
+            else passenger.absMoveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
         }
     }
 }

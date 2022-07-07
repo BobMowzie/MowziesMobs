@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.client.model.tools.geckolib;
 
 import com.bobmowzie.mowziesmobs.server.entity.IAnimationTickable;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.AbstractClientPlayer;
+import net.minecraft.client.player.AbstractClientPlayer;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
@@ -32,11 +32,11 @@ public abstract class MowzieAnimatedGeoModel<T extends IAnimatable & IAnimationT
         // EntityAnimationManager), which allows for multiple independent animations
         AnimationData manager = entity.getFactory().getOrCreateAnimationData(uniqueID);
         if (manager.startTick == null) {
-            manager.startTick = (double) (entity.tickTimer() + Minecraft.getInstance().getRenderPartialTicks());    // Set start ticks when animation starts playing
+            manager.startTick = (double) (entity.tickTimer() + Minecraft.getInstance().getFrameTime());    // Set start ticks when animation starts playing
         }
 
-        if (!Minecraft.getInstance().isGamePaused() || manager.shouldPlayWhilePaused) {
-            manager.tick = (entity.tickTimer() + Minecraft.getInstance().getRenderPartialTicks());
+        if (!Minecraft.getInstance().isPaused() || manager.shouldPlayWhilePaused) {
+            manager.tick = (entity.tickTimer() + Minecraft.getInstance().getFrameTime());
             double gameTick = manager.tick;
             double deltaTicks = gameTick - lastGameTickTime;
             seekTime += deltaTicks;
@@ -57,17 +57,13 @@ public abstract class MowzieAnimatedGeoModel<T extends IAnimatable & IAnimationT
                     shouldCrashOnMissing);
         }
 
-        if (!Minecraft.getInstance().isGamePaused() || manager.shouldPlayWhilePaused) {
+        if (!Minecraft.getInstance().isPaused() || manager.shouldPlayWhilePaused) {
             codeAnimations(entity, uniqueID, customPredicate);
         }
     }
 
     public void codeAnimations(T entity, Integer uniqueID, AnimationEvent<?> customPredicate) {
 
-    }
-
-    public boolean resourceForModelId(AbstractClientPlayer player) {
-        return true;
     }
 
     public float getControllerValue(String controllerName) {

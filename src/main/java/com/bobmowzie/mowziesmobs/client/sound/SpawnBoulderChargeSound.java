@@ -7,19 +7,19 @@ import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.minecraft.client.audio.TickableSound;
+import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.sounds.SoundCategory;
+import net.minecraft.sounds.SoundSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class SpawnBoulderChargeSound extends TickableSound {
+public class SpawnBoulderChargeSound extends AbstractTickableSoundInstance {
     private final LivingEntity user;
     private final SpawnBoulderAbility ability;
 
     public SpawnBoulderChargeSound(LivingEntity user) {
-        super(MMSounds.EFFECT_GEOMANCY_BOULDER_CHARGE.get(), SoundCategory.PLAYERS);
+        super(MMSounds.EFFECT_GEOMANCY_BOULDER_CHARGE.get(), SoundSource.PLAYERS);
         this.user = user;
         volume = 1F;
         pitch = 0.95f;
@@ -37,11 +37,11 @@ public class SpawnBoulderChargeSound extends TickableSound {
     @Override
     public void tick() {
         if (ability == null) {
-            finishPlaying();
+            stop();
             return;
         }
         if (!ability.isUsing() || ability.getCurrentSection().sectionType != AbilitySection.AbilitySectionType.STARTUP) {
-            finishPlaying();
+            stop();
         }
     }
 }

@@ -17,35 +17,34 @@ import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.power.Power;
 import com.bobmowzie.mowziesmobs.server.power.PowerGeomancy;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.item.minecart.MinecartEntity;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.INBT;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.core.Direction;
-import net.minecraft.sounds.Hand;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.LogicalSide;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerCapability {
+    public static ResourceLocation ID = new ResourceLocation(MowziesMobs.MODID, "player_cap");
 
-    public interface IPlayerCapability {
-        INBT writeNBT();
-
-        void readNBT(INBT nbt);
+    public interface IPlayerCapability extends INBTSerializable<CompoundTag> {
 
         Power[] getPowers();
 
@@ -251,7 +250,7 @@ public class PlayerCapability {
 
         @Override
         public void addedToWorld(EntityJoinWorldEvent event) {
-            if (event.getLevel().isClientSide()) {
+            if (event.getWorld().isClientSide()) {
                 Player player = (Player) event.getEntity();
                 geckoPlayer = new GeckoPlayer.GeckoPlayerThirdPerson(player);
                 if (event.getEntity() == Minecraft.getInstance().player) GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON = new GeckoPlayer.GeckoPlayerFirstPerson(player);
@@ -261,7 +260,7 @@ public class PlayerCapability {
         public void tick(TickEvent.PlayerTickEvent event) {
             Player player = event.player;
 
-            prevMotion = player.position().subtract(new Vec3(player.xo, player.prevPosY, player.zo));
+            prevMotion = player.position().subtract(new Vec3(player.xo, player.yo, player.zo));
             prevTime = time;
             if (untilSunstrike > 0) {
                 untilSunstrike--;
@@ -271,11 +270,11 @@ public class PlayerCapability {
             }
 
             if (event.side == LogicalSide.SERVER) {
-                for (ItemStack itemStack : event.player.inventory.mainInventory) {
+                for (ItemStack itemStack : event.player.getInventory().items) {
                     if (itemStack.getItem() instanceof ItemEarthTalisman)
                         player.addEffect(new MobEffectInstance(EffectHandler.GEOMANCY, 20, 0, false, false));
                 }
-                if (player.getHeldItemOffhand().getItem() instanceof ItemEarthTalisman)
+                if (player.getOffhandItem().getItem() instanceof ItemEarthTalisman)
                     player.addEffect(new MobEffectInstance(EffectHandler.GEOMANCY, 20, 0, false, false));
 
                 List<EntityBarakoanToPlayer> pack = tribePack;
@@ -283,9 +282,13 @@ public class PlayerCapability {
                 for (int i = 0; i < pack.size(); i++) {
                     EntityBarakoanToPlayer barakoan = pack.get(i);
                     barakoan.index = i;
+                    float distanceToPlayer = player.distanceTo(barakoan);
                     if (barakoan.getTarget() == null && barakoan.getAnimation() != EntityBarakoanToPlayer.DEACTIVATE_ANIMATION) {
-                        barakoan.getNavigation().moveTo(player.getX() + tribePackRadius * Mth.cos(theta * i), player.getY(), player.getZ() + tribePackRadius * Mth.sin(theta * i), 0.45);
-                        if (player.getDistance(barakoan) > 20 && player.isOnGround()) {
+                        if (distanceToPlayer > 4)
+                            barakoan.getNavigation().moveTo(player.getX() + tribePackRadius * Mth.cos(theta * i), player.getY(), player.getZ() + tribePackRadius * Mth.sin(theta * i), 0.45);
+                        else
+                            barakoan.getNavigation().stop();
+                        if (distanceToPlayer > 20 && player.isOnGround()) {
                             tryTeleportBarakoan(player, barakoan);
                         }
                     }
@@ -293,11 +296,11 @@ public class PlayerCapability {
             }
 
             Ability iceBreathAbility = AbilityHandler.INSTANCE.getAbility(player, AbilityHandler.ICE_BREATH_ABILITY);
-            if (!iceBreathAbility.isUsing()) {
-                for (ItemStack stack : player.inventory.mainInventory) {
+            if (iceBreathAbility != null && !iceBreathAbility.isUsing()) {
+                for (ItemStack stack : player.getInventory().items) {
                     restoreIceCrystalStack(player, stack);
                 }
-                for (ItemStack stack : player.inventory.offHandInventory) {
+                for (ItemStack stack : player.getInventory().offhand) {
                     restoreIceCrystalStack(player, stack);
                 }
             }
@@ -305,7 +308,7 @@ public class PlayerCapability {
             useIceCrystalStack(player);
 
             if (event.side == LogicalSide.CLIENT) {
-                if (Minecraft.getInstance().gameSettings.keyBindAttack.isKeyDown() && !mouseLeftDown) {
+                if (Minecraft.getInstance().options.keyAttack.isDown() && !mouseLeftDown) {
                     mouseLeftDown = true;
                     MowziesMobs.NETWORK.sendToServer(new MessageLeftMouseDown());
                     for (int i = 0; i < powers.length; i++) {
@@ -318,7 +321,7 @@ public class PlayerCapability {
                         }
                     }
                 }
-                if (Minecraft.getInstance().gameSettings.keyBindUseItem.isKeyDown() && !mouseRightDown) {
+                if (Minecraft.getInstance().options.keyUse.isDown() && !mouseRightDown) {
                     mouseRightDown = true;
                     MowziesMobs.NETWORK.sendToServer(new MessageRightMouseDown());
                     for (int i = 0; i < powers.length; i++) {
@@ -331,7 +334,7 @@ public class PlayerCapability {
                         }
                     }
                 }
-                if (!Minecraft.getInstance().gameSettings.keyBindAttack.isKeyDown() && mouseLeftDown) {
+                if (!Minecraft.getInstance().options.keyAttack.isDown() && mouseLeftDown) {
                     mouseLeftDown = false;
                     MowziesMobs.NETWORK.sendToServer(new MessageLeftMouseUp());
                     for (int i = 0; i < powers.length; i++) {
@@ -344,7 +347,7 @@ public class PlayerCapability {
                         }
                     }
                 }
-                if (!Minecraft.getInstance().gameSettings.keyBindUseItem.isKeyDown() && mouseRightDown) {
+                if (!Minecraft.getInstance().options.keyUse.isDown() && mouseRightDown) {
                     mouseRightDown = false;
                     MowziesMobs.NETWORK.sendToServer(new MessageRightMouseUp());
                     for (int i = 0; i < powers.length; i++) {
@@ -359,7 +362,7 @@ public class PlayerCapability {
                 }
             }
 
-            if (player.isSneaking() && !prevSneaking) {
+            if (player.isShiftKeyDown() && !prevSneaking) {
                 for (int i = 0; i < powers.length; i++) {
                     powers[i].onSneakDown(player);
                 }
@@ -370,7 +373,7 @@ public class PlayerCapability {
                     }
                 }
             }
-            else if (!player.isSneaking() && prevSneaking) {
+            else if (!player.isShiftKeyDown() && prevSneaking) {
                 for (int i = 0; i < powers.length; i++) {
                     powers[i].onSneakUp(player);
                 }
@@ -381,29 +384,29 @@ public class PlayerCapability {
                     }
                 }
             }
-            prevSneaking = player.isSneaking();
+            prevSneaking = player.isShiftKeyDown();
         }
 
         private void restoreIceCrystalStack(Player entity, ItemStack stack) {
             if (stack.getItem() == ItemHandler.ICE_CRYSTAL) {
                 if (!ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable.get()) {
-                    stack.setDamage(Math.max(stack.getDamage() - 1, 0));
+                    stack.setDamageValue(Math.max(stack.getDamageValue() - 1, 0));
                 }
             }
         }
 
         private void useIceCrystalStack(Player player) {
-            ItemStack stack = player.getActiveItemStack();
+            ItemStack stack = player.getUseItem();
             if (stack.getItem() == ItemHandler.ICE_CRYSTAL) {
                 Ability iceBreathAbility = AbilityHandler.INSTANCE.getAbility(player, AbilityHandler.ICE_BREATH_ABILITY);
                 if (iceBreathAbility != null && iceBreathAbility.isUsing()) {
-                    Hand handIn = player.getActiveHand();
-                    if (stack.getDamage() + 5 < stack.getMaxDamage()) {
-                        stack.damageItem(5, player, p -> p.sendBreakAnimation(handIn));
+                    InteractionHand handIn = player.getUsedItemHand();
+                    if (stack.getDamageValue() + 5 < stack.getMaxDamage()) {
+                        stack.hurtAndBreak(5, player, p -> p.broadcastBreakEvent(handIn));
                     }
                     else {
                         if (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable.get()) {
-                            stack.damageItem(5, player, p -> p.sendBreakAnimation(handIn));
+                            stack.hurtAndBreak(5, player, p -> p.broadcastBreakEvent(handIn));
                         }
                         iceBreathAbility.end();
                     }
@@ -419,8 +422,8 @@ public class PlayerCapability {
             for (int l = 0; l <= 4; ++l) {
                 for (int i1 = 0; i1 <= 4; ++i1) {
                     if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && barakoan.isTeleportFriendlyBlock(x, z, y, l, i1)) {
-                        barakoan.setLocationAndAngles((float) (x + l) + 0.5F, y, (float) (z + i1) + 0.5F, barakoan.getYRot(), barakoan.getXRot());
-                        barakoan.getNavigation().clearPath();
+                        barakoan.moveTo((float) (x + l) + 0.5F, y, (float) (z + i1) + 0.5F, barakoan.getYRot(), barakoan.getXRot());
+                        barakoan.getNavigation().stop();
                         return;
                     }
                 }
@@ -452,7 +455,7 @@ public class PlayerCapability {
         }
 
         @Override
-        public INBT writeNBT() {
+        public CompoundTag serializeNBT() {
             CompoundTag compound = new CompoundTag();
             compound.putInt("untilSunstrike", untilSunstrike);
             compound.putInt("untilAxeSwing", untilAxeSwing);
@@ -462,8 +465,7 @@ public class PlayerCapability {
         }
 
         @Override
-        public void readNBT(INBT nbt) {
-            CompoundTag compound = (CompoundTag) nbt;
+        public void deserializeNBT(CompoundTag compound) {
             untilSunstrike = compound.getInt("untilSunstrike");
             untilAxeSwing = compound.getInt("untilAxeSwing");
             prevTime = compound.getInt("prevTime");
@@ -471,38 +473,24 @@ public class PlayerCapability {
         }
     }
 
-    public static class PlayerStorage implements Capability.IStorage<IPlayerCapability> {
-        @Override
-        public INBT writeNBT(Capability<IPlayerCapability> capability, IPlayerCapability instance, Direction side) {
-            return instance.writeNBT();
-        }
-
-        @Override
-        public void readNBT(Capability<IPlayerCapability> capability, IPlayerCapability instance, Direction side, INBT nbt) {
-            instance.readNBT(nbt);
-        }
-    }
-
-    public static class PlayerProvider implements ICapabilitySerializable<INBT>
+    public static class PlayerProvider implements ICapabilityProvider, ICapabilitySerializable<CompoundTag>
     {
-        @CapabilityInject(IPlayerCapability.class)
-        public static final Capability<IPlayerCapability> PLAYER_CAPABILITY = null;
-
-        private final LazyOptional<IPlayerCapability> instance = LazyOptional.of(PLAYER_CAPABILITY::getDefaultInstance);
+        private final LazyOptional<PlayerCapability.IPlayerCapability> instance = LazyOptional.of(PlayerCapability.PlayerCapabilityImp::new);
 
         @Override
-        public INBT serializeNBT() {
-            return PLAYER_CAPABILITY.getStorage().writeNBT(PLAYER_CAPABILITY, this.instance.orElseThrow(() -> new IllegalArgumentException("Lazy optional must not be empty")), null);
+        public CompoundTag serializeNBT() {
+            return instance.orElseThrow(NullPointerException::new).serializeNBT();
         }
 
         @Override
-        public void deserializeNBT(INBT nbt) {
-            PLAYER_CAPABILITY.getStorage().readNBT(PLAYER_CAPABILITY, this.instance.orElseThrow(() -> new IllegalArgumentException("Lazy optional must not be empty")), null, nbt);
+        public void deserializeNBT(CompoundTag nbt) {
+            instance.orElseThrow(NullPointerException::new).deserializeNBT(nbt);
         }
 
+        @Nonnull
         @Override
-        public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-            return cap == PLAYER_CAPABILITY ? instance.cast() : LazyOptional.empty();
+        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side) {
+            return CapabilityHandler.PLAYER_CAPABILITY.orEmpty(cap, instance.cast());
         }
     }
 }

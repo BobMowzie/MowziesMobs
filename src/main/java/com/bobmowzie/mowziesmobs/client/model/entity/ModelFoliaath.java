@@ -1,10 +1,12 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
+import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -230,24 +232,24 @@ public class ModelFoliaath<T extends EntityFoliaath> extends MowzieEntityModel<T
     }
 
     @Override
-    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         float leafScale = 1.25F;
         bigLeaf2Base.rotationPointY -= 3.5;
         bigLeaf1Base.rotationPointY -= 3.5;
         bigLeaf3Base.rotationPointY -= 3.5;
         bigLeaf4Base.rotationPointY -= 3.5;
-        matrixStackIn.push();
+        matrixStackIn.pushPose();
         matrixStackIn.scale(leafScale, leafScale, leafScale);
         bigLeaf2Base.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         bigLeaf1Base.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         bigLeaf3Base.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         bigLeaf4Base.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        matrixStackIn.pop();
-        matrixStackIn.push();
+        matrixStackIn.popPose();
+        matrixStackIn.pushPose();
         matrixStackIn.translate(0, 1.4F - 1.4F * activeProgress, 0);
         matrixStackIn.scale(activeProgress, activeProgress, activeProgress);
         stem1Joint.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        matrixStackIn.pop();
+        matrixStackIn.popPose();
     }
 
     public void setDefaultAngles(EntityFoliaath entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
@@ -255,15 +257,16 @@ public class ModelFoliaath<T extends EntityFoliaath> extends MowzieEntityModel<T
 
         stem1Joint.rotateAngleY += (headYaw / (180f / (float) Math.PI));
 
-        activeProgress = entity.activate.getAnimationProgressSinSqrt();
-        float activeIntermittent = entity.activate.getAnimationProgressSinSqrt() - entity.activate.getAnimationProgressSinToTenWithoutReturn();
+        activeProgress = entity.activate.getAnimationProgressSinSqrt(delta);
+        float activeIntermittent = entity.activate.getAnimationProgressSinSqrt(delta) - entity.activate.getAnimationProgressSinToTenWithoutReturn(delta);
         float activeComplete = activeProgress - activeIntermittent;
-        float stopDance = entity.stopDance.getAnimationProgressSinSqrt() - (entity.stopDance.getAnimationProgressSinSqrt() - entity.stopDance.getAnimationProgressSinToTenWithoutReturn());
+        float stopDance = entity.stopDance.getAnimationProgressSinSqrt(delta) - (entity.stopDance.getAnimationProgressSinSqrt(delta) - entity.stopDance.getAnimationProgressSinToTenWithoutReturn(delta));
         float frame = entity.frame + delta;
 
         float globalSpeed = 0.9f;
-
-        if (!entity.isPotionActive(EffectHandler.FROZEN)) {
+        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.FROZEN_CAPABILITY);
+        boolean frozen = frozenCapability != null && frozenCapability.getFrozen();
+        if (!frozen) {
             flap(stem1Base, 0.25F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 0F, 0F, frame, 1F);
             walk(stem1Base, 0.5F * globalSpeed, 0.05F * (activeComplete - stopDance), false, 0F, 0F, frame, 1F);
             walk(stem2, 0.5F * globalSpeed, 0.05F * (activeComplete - stopDance), false, 0.5F, 0F, frame, 1F);
@@ -285,8 +288,8 @@ public class ModelFoliaath<T extends EntityFoliaath> extends MowzieEntityModel<T
             chainWave(leafParts4, 0.5F * globalSpeed, 0.13F * (activeComplete - stopDance), 2, frame, 1F);
 
             //Open Mouth Animation
-            float openMouthProgress = entity.openMouth.getAnimationProgressSinSqrt();
-            float openMouthIntermittent = entity.openMouth.getAnimationProgressSinSqrt() - entity.openMouth.getAnimationProgressSinToTenWithoutReturn();
+            float openMouthProgress = entity.openMouth.getAnimationProgressSinSqrt(delta);
+            float openMouthIntermittent = entity.openMouth.getAnimationProgressSinSqrt(delta) - entity.openMouth.getAnimationProgressSinToTenWithoutReturn(delta);
             float headLeafRotation = 0.2F * openMouthProgress - 0.8F * openMouthIntermittent;
             mouthTop1.rotateAngleX -= 0.3 * openMouthIntermittent;
             mouthBottom1.rotateAngleX -= 0.3 * openMouthIntermittent;
@@ -385,13 +388,13 @@ public class ModelFoliaath<T extends EntityFoliaath> extends MowzieEntityModel<T
         animator.endKeyframe();
         animator.resetKeyframe(7);
 
-        float deathFlailProgress = entity.deathFlail.getAnimationProgressSinSqrt();
-        chainFlap(stemParts, 0.7F, 0.2F * deathFlailProgress, 2F, entity.frame, 1F);
-        chainSwing(tongueParts, 0.7F, 0.6F * deathFlailProgress, -2F, entity.frame, 1F);
-        chainWave(leafParts1, 1.5F, 0.1F * deathFlailProgress, 0, entity.frame, 1F);
-        chainWave(leafParts2, 1.5F, 0.1F * deathFlailProgress, 0, entity.frame, 1F);
-        chainWave(leafParts3, 1.5F, 0.1F * deathFlailProgress, 0, entity.frame, 1F);
-        chainWave(leafParts4, 1.5F, 0.1F * deathFlailProgress, 0, entity.frame, 1F);
+        float deathFlailProgress = entity.deathFlail.getAnimationProgressSinSqrt(delta);
+        chainFlap(stemParts, 0.7F, 0.2F * deathFlailProgress, 2F, entity.frame + delta, 1F);
+        chainSwing(tongueParts, 0.7F, 0.6F * deathFlailProgress, -2F, entity.frame + delta, 1F);
+        chainWave(leafParts1, 1.5F, 0.1F * deathFlailProgress, 0, entity.frame + delta, 1F);
+        chainWave(leafParts2, 1.5F, 0.1F * deathFlailProgress, 0, entity.frame + delta, 1F);
+        chainWave(leafParts3, 1.5F, 0.1F * deathFlailProgress, 0, entity.frame + delta, 1F);
+        chainWave(leafParts4, 1.5F, 0.1F * deathFlailProgress, 0, entity.frame + delta, 1F);
         animator.setAnimation(EntityFoliaath.DIE_ANIMATION);
         animator.startKeyframe(4);
         animator.rotate(stem1Base, -0.1F, 0, 0);

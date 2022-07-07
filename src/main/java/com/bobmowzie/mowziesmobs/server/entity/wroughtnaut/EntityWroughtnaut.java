@@ -11,54 +11,54 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationFWNStompAttackAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationFWNVerticalAttackAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.SmartBodyHelper;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntityFallingBlock;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.minecraft.core.particles.BlockParticleOption;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.ai.control.BodyRotationControl;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.controller.BodyRotationControl;
+import net.minecraft.world.entity.ai.control.BodyRotationControl;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NBTUtil;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.network.play.server.SEntityVelocityPacket;
-import net.minecraft.particles.BlockParticleOption;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.pathfinding.PathNavigation;
-import net.minecraft.sounds.*;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.util.*;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.*;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.Optional;
+
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class EntityWroughtnaut extends MowzieEntity implements Enemy {
     public static final Animation DIE_ANIMATION = Animation.create(130);
@@ -102,6 +102,8 @@ public class EntityWroughtnaut extends MowzieEntity implements Enemy {
 
     private static final EntityDataAccessor<Boolean> ACTIVE = SynchedEntityData.defineId(EntityWroughtnaut.class, EntityDataSerializers.BOOLEAN);
 
+    private static final EntityDataAccessor<Boolean> ALWAYS_ACTIVE = SynchedEntityData.defineId(EntityWroughtnaut.class, EntityDataSerializers.BOOLEAN);
+
     public ControlledAnimation walkAnim = new ControlledAnimation(10);
 
     public boolean swingDirection;
@@ -118,10 +120,10 @@ public class EntityWroughtnaut extends MowzieEntity implements Enemy {
         xpReward = 30;
         active = false;
         maxUpStep = 1;
-//        rightEyePos = new Vec3(0, 0, 0);
-//        leftEyePos = new Vec3(0, 0, 0);
-//        rightEyeRot = new Vec3(0, 0, 0);
-//        leftEyeRot = new Vec3(0, 0, 0);
+//        rightEyePos = new Vector3d(0, 0, 0);
+//        leftEyePos = new Vector3d(0, 0, 0);
+//        rightEyeRot = new Vector3d(0, 0, 0);
+//        leftEyeRot = new Vector3d(0, 0, 0);
 
         dropAfterDeathAnim = true;
     }
@@ -138,7 +140,6 @@ public class EntityWroughtnaut extends MowzieEntity implements Enemy {
         goalSelector.addGoal(1, new AnimationDeactivateAI<>(this, DEACTIVATE_ANIMATION));
         goalSelector.addGoal(2, new WroughtnautAttackAI(this));
         targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, 0, true, false, null));
-
     }
 
     @Override
@@ -174,7 +175,7 @@ public class EntityWroughtnaut extends MowzieEntity implements Enemy {
 
     public static AttributeSupplier.Builder createAttributes() {
         return MowzieEntity.createAttributes().add(Attributes.ATTACK_DAMAGE, 30)
-                .add(Attributes.MAX_HEALTH, 40 * ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.combatConfig.healthMultiplier.get())
+                .add(Attributes.MAX_HEALTH, 40)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1);
     }
 
@@ -229,18 +230,23 @@ public class EntityWroughtnaut extends MowzieEntity implements Enemy {
     @Override
     public void tick() {
         super.tick();
+        walkAnim.updatePrevTimer();
 
 //        if (getAnimation() == NO_ANIMATION) {
 //            setActive(true);
 //            swingDirection = true;
 //            AnimationHandler.INSTANCE.sendAnimationMessage(this, VERTICAL_ATTACK_ANIMATION);
-//            getNavigation().clearPath();
+//            getNavigator().clearPath();
 //        }
 
         if (getTarget() != null && (!getTarget().isAlive() || getTarget().getHealth() <= 0)) setTarget(null);
 
         if (!level.isClientSide) {
-            if (getAnimation() == NO_ANIMATION && !isNoAi()) {
+            if (isAlwaysActive()) {
+                setActive(true);
+                active = true;
+            }
+            else if (getAnimation() == NO_ANIMATION && !isNoAi()) {
                 if (isActive()) {
                     if (getTarget() == null && zza == 0 && isAtRestPos()) {
                         AnimationHandler.INSTANCE.sendAnimationMessage(this, DEACTIVATE_ANIMATION);
@@ -254,18 +260,20 @@ public class EntityWroughtnaut extends MowzieEntity implements Enemy {
         }
 
         if (!isActive()) {
-//            posX = xo;
-//            posZ = zo;
+//            posX = prevPosX;
+//            posZ = prevPosZ;
             setDeltaMovement(0, getDeltaMovement().y, 0);
             setYRot(yRotO);
         }
-//        else if (level.isClientSide && leftEyePos != null && rightEyePos != null) {
+//        else if (world.isRemote && leftEyePos != null && rightEyePos != null) {
 //            MowzieParticleBase.spawnParticle(world, MMParticle.EYE, leftEyePos.x, leftEyePos.y, leftEyePos.z, 0, 0, 0, false, leftEyeRot.y + 1.5708, 0, 0, 0, 5f, 0.8f, 0.1f, 0.1f, 1f, 1, 10, false, new ParticleComponent[]{new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1, 0), false)});
 //            MowzieParticleBase.spawnParticle(world, MMParticle.EYE, rightEyePos.x, rightEyePos.y, rightEyePos.z, 0, 0, 0, false, rightEyeRot.y, 0, 0, 0, 5f, 0.8f, 0.1f, 0.1f, 1f, 1, 10, false, new ParticleComponent[]{new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1, 0), false)});
 //        }
-        yBodyRot = getYRot();
+        if (getAnimation() != NO_ANIMATION || !isActive()) {
+            yHeadRot = yBodyRot = getYRot();
+        }
 
-        if (getTarget() == null && getNavigation().isDone() && !isAtRestPos() && isActive()) updateRestPos();
+        if (!isAlwaysActive() && getTarget() == null && getNavigation().isDone() && !isAtRestPos() && isActive()) updateRestPos();
 
         if (getAnimation() == ATTACK_ANIMATION && getAnimationTick() == 1) {
             swingDirection = random.nextBoolean();
@@ -312,11 +320,11 @@ public class EntityWroughtnaut extends MowzieEntity implements Enemy {
             }
         }
 
-//        if (!this.level.isClientSide) {
-//            Path path = this.getNavigation().getPath();
+//        if (!this.world.isRemote) {
+//            Path path = this.getNavigator().getPath();
 //            if (path != null) {
 //                for (int i = 0; i < path.getCurrentPathLength(); i++) {
-//                    Vec3 p = path.getVectorFromIndex(this, i);
+//                    Vector3d p = path.getVectorFromIndex(this, i);
 //                    ((WorldServer) this.world).spawnParticle(EnumParticleTypes.BLOCK_DUST, p.x, p.y + 0.1D, p.z, 1, 0.1D, 0.0D, 0.1D, 0.01D, Block.getIdFromBlock(i < path.getCurrentPathIndex() ? Blocks.GOLD_BLOCK : i == path.getCurrentPathIndex() ? Blocks.DIAMOND_BLOCK : Blocks.DIRT));
 //                }
 //            }
@@ -329,7 +337,7 @@ public class EntityWroughtnaut extends MowzieEntity implements Enemy {
     }
 
     @Override
-    public boolean isPushableByEntity(Entity entity) {
+    public boolean canBePushedByEntity(Entity entity) {
         return false;
     }
 
@@ -345,7 +353,7 @@ public class EntityWroughtnaut extends MowzieEntity implements Enemy {
         boolean reassign = true;
         if (getRestPos().isPresent()) {
             BlockPos pos = getRestPos().get();
-            if (getNavigation().moveTo(pos.x(), pos.y(), pos.z(), 0.2)) {
+            if (getNavigation().moveTo(pos.getX(), pos.getY(), pos.getZ(), 0.2)) {
                 reassign = false;
             }
         }
@@ -529,6 +537,7 @@ public class EntityWroughtnaut extends MowzieEntity implements Enemy {
         super.defineSynchedData();
         getEntityData().define(REST_POSITION, Optional.empty());
         getEntityData().define(ACTIVE, false);
+        getEntityData().define(ALWAYS_ACTIVE, false);
     }
 
     public Optional<BlockPos> getRestPos() {
@@ -547,6 +556,19 @@ public class EntityWroughtnaut extends MowzieEntity implements Enemy {
         getEntityData().set(ACTIVE, isActive);
     }
 
+    public boolean isAlwaysActive() {
+        return getEntityData().get(ALWAYS_ACTIVE);
+    }
+
+    public void setAlwaysActive(boolean isAlwaysActive) {
+        getEntityData().set(ALWAYS_ACTIVE, isAlwaysActive);
+        if (isAlwaysActive) {
+            this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.2D));
+            this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+            this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
+        }
+    }
+
     @Override
     public void writeSpawnData(FriendlyByteBuf buf) {
         super.writeSpawnData(buf);
@@ -557,19 +579,26 @@ public class EntityWroughtnaut extends MowzieEntity implements Enemy {
         super.addAdditionalSaveData(compound);
         Optional<BlockPos> restPos = getRestPos();
         if (restPos.isPresent()) {
-            compound.put("restPos", NBTUtil.writeBlockPos(getRestPos().get()));
+            compound.put("restPos", NbtUtils.writeBlockPos(getRestPos().get()));
         }
         compound.putBoolean("active", isActive());
+        compound.putBoolean("alwaysActive", isAlwaysActive());
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        if (compound.contains("restPos", NBT.TAG_COMPOUND)) {
-            setRestPos(NBTUtil.readBlockPos(compound.getCompound("restPos")));
+        if (compound.contains("restPos")) {
+            setRestPos(NbtUtils.readBlockPos(compound.getCompound("restPos")));
         }
         setActive(compound.getBoolean("active"));
         active = isActive();
+        setAlwaysActive(compound.getBoolean("alwaysActive"));
+    }
+
+    @Override
+    protected ConfigHandler.CombatConfig getCombatConfig() {
+        return ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.combatConfig;
     }
 
     @Override
@@ -592,8 +621,8 @@ public class EntityWroughtnaut extends MowzieEntity implements Enemy {
     }
 
     @Override
-    protected BossEvent.Color bossBarColor() {
-        return BossEvent.Color.RED;
+    protected BossEvent.BossBarColor bossBarColor() {
+        return BossEvent.BossBarColor.RED;
     }
 
     @Override

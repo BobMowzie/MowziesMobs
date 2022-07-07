@@ -4,20 +4,19 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
 import com.mojang.brigadier.StringReader;
-import net.minecraft.sounds.Rotation;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.sounds.registry.Registry;
+import net.minecraft.core.Registry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Locale;
 
-public class AdvancedParticleData implements IParticleData {
-    public static final IParticleData.IDeserializer<AdvancedParticleData> DESERIALIZER = new IParticleData.IDeserializer<AdvancedParticleData>() {
-        public AdvancedParticleData deserialize(ParticleType<AdvancedParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
+public class AdvancedParticleData implements ParticleOptions {
+    public static final ParticleOptions.Deserializer<AdvancedParticleData> DESERIALIZER = new ParticleOptions.Deserializer<AdvancedParticleData>() {
+        public AdvancedParticleData fromCommand(ParticleType<AdvancedParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
             reader.expect(' ');
             double airDrag = reader.readDouble();
             reader.expect(' ');
@@ -53,13 +52,13 @@ public class AdvancedParticleData implements IParticleData {
             return new AdvancedParticleData(particleTypeIn, rotation, scale, red, green, blue, alpha, airDrag, duration, emissive, canCollide);
         }
 
-        public AdvancedParticleData read(ParticleType<AdvancedParticleData> particleTypeIn, FriendlyByteBuf buffer) {
+        public AdvancedParticleData fromNetwork(ParticleType<AdvancedParticleData> particleTypeIn, FriendlyByteBuf buffer) {
             double airDrag = buffer.readFloat();
             double red = buffer.readFloat();
             double green = buffer.readFloat();
             double blue = buffer.readFloat();
             double alpha = buffer.readFloat();
-            String rotationMode = buffer.readString();
+            String rotationMode = buffer.readUtf();
             double scale = buffer.readFloat();
             double yaw = buffer.readFloat();
             double pitch = buffer.readFloat();
@@ -115,7 +114,7 @@ public class AdvancedParticleData implements IParticleData {
     }
 
     @Override
-    public void write(FriendlyByteBuf buffer) {
+    public void writeToNetwork(FriendlyByteBuf buffer) {
         String rotationMode;
         float faceCameraAngle = 0;
         float yaw = 0;
@@ -144,7 +143,7 @@ public class AdvancedParticleData implements IParticleData {
         buffer.writeFloat(this.green);
         buffer.writeFloat(this.blue);
         buffer.writeFloat(this.alpha);
-        buffer.writeString(rotationMode);
+        buffer.writeUtf(rotationMode);
         buffer.writeFloat(this.scale);
         buffer.writeFloat(yaw);
         buffer.writeFloat(pitch);
@@ -157,7 +156,7 @@ public class AdvancedParticleData implements IParticleData {
 
     @SuppressWarnings("deprecation")
     @Override
-    public String getParameters() {
+    public String writeToString() {
         String rotationMode;
         float faceCameraAngle = 0;
         float yaw = 0;

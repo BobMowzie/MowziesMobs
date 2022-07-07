@@ -3,9 +3,9 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySuperNova;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.resources.model.ModelRenderer;
+import com.ilexiconn.llibrary.client.model.tools.BasicModelRenderer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
 public class ModelSuperNova<T extends EntitySuperNova> extends AdvancedModelBase<T> {
 	private final AdvancedModelRenderer body1;
@@ -35,7 +35,7 @@ public class ModelSuperNova<T extends EntitySuperNova> extends AdvancedModelBase
 	}
 
 	@Override
-	public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+	public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 		body4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 		body3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 		body2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -43,7 +43,7 @@ public class ModelSuperNova<T extends EntitySuperNova> extends AdvancedModelBase
 	}
 
 	@Override
-	public void setRotationAngles(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		float ageFrac = ageInTicks / (float)(EntitySuperNova.DURATION);
 		float scale = (float) (Math.pow(ageFrac, 0.5) * 3 + 0.05 * Math.cos(ageInTicks * 3));
 		float opacity = (float) Math.max((1.0 - Math.pow(ageFrac, 4f)) * 0.4f, 0.00001);
@@ -58,7 +58,7 @@ public class ModelSuperNova<T extends EntitySuperNova> extends AdvancedModelBase
 		body1.setScale(scale, scale, scale);
 	}
 
-	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+	public void setRotationAngle(BasicModelRenderer modelRenderer, float x, float y, float z) {
 		modelRenderer.rotateAngleX = x;
 		modelRenderer.rotateAngleY = y;
 		modelRenderer.rotateAngleZ = z;

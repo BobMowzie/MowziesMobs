@@ -8,6 +8,8 @@ import net.minecraft.world.entity.ai.goal.Goal;
 
 import java.util.EnumSet;
 
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
+
 public abstract class AnimationAI<T extends MowzieEntity & IAnimatedEntity> extends Goal {
     protected final T entity;
 
@@ -23,27 +25,27 @@ public abstract class AnimationAI<T extends MowzieEntity & IAnimatedEntity> exte
 
     protected AnimationAI(T entity, boolean interruptsAI, boolean hurtInterruptsAnimation) {
         this.entity = entity;
-        if (interruptsAI) this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
+        if (interruptsAI) this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
         this.hurtInterruptsAnimation = hurtInterruptsAnimation;
     }
 
     @Override
-    public boolean shouldExecute() {
+    public boolean canUse() {
         return this.test(this.entity.getAnimation());
     }
 
     @Override
-    public void startExecuting() {
+    public void start() {
         this.entity.hurtInterruptsAnimation = this.hurtInterruptsAnimation;
     }
 
     @Override
-    public boolean shouldContinueExecuting() {
+    public boolean canContinueToUse() {
         return this.test(this.entity.getAnimation()) && this.entity.getAnimationTick() < this.entity.getAnimation().getDuration();
     }
 
     @Override
-    public void resetTask() {
+    public void stop() {
         if (this.test(this.entity.getAnimation())) {
             AnimationHandler.INSTANCE.sendAnimationMessage(this.entity, IAnimatedEntity.NO_ANIMATION);
         }

@@ -1,10 +1,13 @@
 package com.bobmowzie.mowziesmobs.client.model.tools;
 
 import net.minecraft.util.Mth;
-import net.minecraft.world.phys.*;
 import software.bernie.geckolib3.core.processor.IBone;
 
-import java.util.Arrays;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
+import net.minecraft.world.phys.Vec3;
 
 public class RigUtils {
     public static Vec3 lerp(Vec3 v, Vec3 u, float alpha) {
@@ -17,9 +20,9 @@ public class RigUtils {
 
     public static Vec3 lerpAngles(Vec3 v, Vec3 u, float alpha) {
         return new Vec3(
-                Math.toRadians(Mth.interpolateAngle(alpha, (float) Math.toDegrees(v.x()), (float) Math.toDegrees(u.x()))),
-                Math.toRadians(Mth.interpolateAngle(alpha, (float) Math.toDegrees(v.y()), (float) Math.toDegrees(u.y()))),
-                Math.toRadians(Mth.interpolateAngle(alpha, (float) Math.toDegrees(v.z()), (float) Math.toDegrees(u.z())))
+                Math.toRadians(Mth.rotLerp(alpha, (float) Math.toDegrees(v.x()), (float) Math.toDegrees(u.x()))),
+                Math.toRadians(Mth.rotLerp(alpha, (float) Math.toDegrees(v.y()), (float) Math.toDegrees(u.y()))),
+                Math.toRadians(Mth.rotLerp(alpha, (float) Math.toDegrees(v.z()), (float) Math.toDegrees(u.z())))
         );
     }
 
@@ -92,7 +95,7 @@ public class RigUtils {
         }
 
         public double getWeight(Vec3 dir) {
-            double dot = dir.normalize().dotProduct(direction.normalize());
+            double dot = dir.normalize().dot(direction.normalize());
             dot = Math.max(dot, 0);
             dot = Math.pow(dot, 0.01 * power);
             return dot;
@@ -145,9 +148,9 @@ public class RigUtils {
             double totalAngularDistance = 0.0;
             for (int i = 0; i < entries.length; i++) {
                 BlendShape3DEntry entry = entries[i];
-                double sqrdDistance = dir.subtract(entry.direction).dotProduct(dir.subtract(entry.direction));
+                double sqrdDistance = dir.subtract(entry.direction).dot(dir.subtract(entry.direction));
                 if (sqrdDistance > 0.0) {
-                    double angularDistance = -(Mth.clamp(dir.dotProduct(entry.direction), -1, 1) - 1) * 0.5;
+                    double angularDistance = -(Mth.clamp(dir.dot(entry.direction), -1, 1) - 1) * 0.5;
                     totalSqrdDistance += 1.0 / sqrdDistance;
                     if (angularDistance > 0) totalAngularDistance += 1.0 / angularDistance;
                     sqrdDistances[i] = sqrdDistance;
@@ -171,7 +174,7 @@ public class RigUtils {
         }
 
         public void evaluate(IBone bone, Vec3 d, boolean mirrorX) {
-            Vec3 dir = mirrorX ? d.mul(-1, 1, 1) : d;
+            Vec3 dir = mirrorX ? d.multiply(-1, 1, 1) : d;
             dir = dir.normalize();
 
             double[] weights = getWeights(dir);
@@ -253,8 +256,8 @@ public class RigUtils {
     }
 
     public static Quaternion betweenVectors(Vec3 u, Vec3 v) {
-        Vec3 a = u.crossProduct(v);
-        float w = (float) (Math.sqrt(u.lengthSquared() * v.lengthSquared()) + u.dotProduct(v));
+        Vec3 a = u.cross(v);
+        float w = (float) (Math.sqrt(u.lengthSqr() * v.lengthSqr()) + u.dot(v));
         Quaternion q = new Quaternion((float) a.x(), -(float) a.y(), -(float) a.z(), w);
         q.normalize();
         return q;

@@ -3,9 +3,9 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityPoisonBall;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.resources.model.ModelRenderer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.phys.Vec3;
 
 public class ModelPoisonBall<T extends EntityPoisonBall> extends AdvancedModelBase<T> {
@@ -29,13 +29,13 @@ public class ModelPoisonBall<T extends EntityPoisonBall> extends AdvancedModelBa
 	}
 
 	@Override
-	public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+	public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 		inner.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 		outer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 	}
 
 	@Override
-	public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+	public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		EntityPoisonBall poisonBall = entityIn;
 		float delta = ageInTicks - entityIn.tickCount;
 		Vec3 prevV = new Vec3(poisonBall.prevMotionX, poisonBall.prevMotionY, poisonBall.prevMotionZ);
@@ -50,9 +50,9 @@ public class ModelPoisonBall<T extends EntityPoisonBall> extends AdvancedModelBa
 		}
 	}
 
-	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-		modelRenderer.rotateAngleX = x;
-		modelRenderer.rotateAngleY = y;
-		modelRenderer.rotateAngleZ = z;
+	public void setRotationAngle(ModelPart modelRenderer, float x, float y, float z) {
+		modelRenderer.x = x;
+		modelRenderer.y = y;
+		modelRenderer.z = z;
 	}
 }

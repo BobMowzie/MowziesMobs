@@ -6,21 +6,22 @@ import com.bobmowzie.mowziesmobs.client.particle.util.ParticleRotation;
 import com.bobmowzie.mowziesmobs.client.particle.util.RibbonComponent.PropertyOverLength;
 import com.bobmowzie.mowziesmobs.client.particle.util.RibbonComponent.PropertyOverLength.EnumRibbonProperty;
 import com.bobmowzie.mowziesmobs.client.particle.util.RibbonParticleData;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.particle.IAnimatedSprite;
-import net.minecraft.client.particle.IParticleFactory;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.particles.ParticleType;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.Mth;
-import net.minecraft.world.phys.Matrix4f;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.world.phys.AABB;
+import com.mojang.math.Matrix4f;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.Vector4f;
+import com.mojang.math.Vector4f;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import net.minecraft.client.Camera;
 
 public class ParticleRibbon extends AdvancedParticleBase {
     public Vec3[] positions;
@@ -32,7 +33,7 @@ public class ParticleRibbon extends AdvancedParticleBase {
         super(worldIn, xCoordIn, yCoordIn, zCoordIn, motionX, motionY, motionZ, rotation, scale, r, g, b, a, drag, duration, emissive, false, components);
         positions = new Vec3[length];
         prevPositions = new Vec3[length];
-        if (positions.length >= 1) positions[0] = new Vec3(getX(), getY(), getZ());
+        if (positions.length >= 1) positions[0] = new Vec3(getPosX(), getPosY(), getPosZ());
         if (prevPositions.length >= 1) prevPositions[0] = getPrevPos();
     }
 
@@ -42,24 +43,24 @@ public class ParticleRibbon extends AdvancedParticleBase {
     }
 
     @Override
-    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
-        particleAlpha = prevAlpha + (alpha - prevAlpha) * partialTicks;
-        if (particleAlpha < 0.01) particleAlpha = 0.01f;
-        particleRed = prevRed + (red - prevRed) * partialTicks;
-        particleGreen = prevGreen + (green - prevGreen) * partialTicks;
-        particleBlue = prevBlue + (blue - prevBlue) * partialTicks;
+    public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
+        alpha = prevAlpha + (alpha - prevAlpha) * partialTicks;
+        if (alpha < 0.01) alpha = 0.01f;
+        rCol = prevRed + (red - prevRed) * partialTicks;
+        gCol = prevGreen + (green - prevGreen) * partialTicks;
+        bCol = prevBlue + (blue - prevBlue) * partialTicks;
         particleScale = prevScale + (scale - prevScale) * partialTicks;
 
         for (ParticleComponent component : components) {
             component.preRender(this, partialTicks);
         }
 
-        int j = this.getBrightnessForRender(partialTicks);
+        int j = this.getLightColor(partialTicks);
 
-        float r =  particleRed;
-        float g = particleGreen;
-        float b = particleBlue;
-        float a = particleAlpha;
+        float r =  rCol;
+        float g = gCol;
+        float b = bCol;
+        float a = alpha;
         float scale = particleScale;
         float prevR = r;
         float prevG = g;
@@ -93,9 +94,9 @@ public class ParticleRibbon extends AdvancedParticleBase {
         for (int index = 0; index < positions.length - 1; index++) {
             if (positions[index] == null || positions[index + 1] == null) continue;
 
-            r = particleRed;
-            g = particleGreen;
-            b = particleBlue;
+            r = rCol;
+            g = gCol;
+            b = bCol;
             scale = particleScale;
             float t = ((float)index + 1) / ((float)positions.length - 1);
             float tPrev = ((float)index) / ((float)positions.length - 1);
@@ -122,57 +123,57 @@ public class ParticleRibbon extends AdvancedParticleBase {
                 }
             }
 
-            Vec3 Vec3 = renderInfo.getProjectedView();
-            Vec3 p1 = prevPositions[index].add(positions[index].subtract(prevPositions[index]).scale(partialTicks)).subtract(Vec3);
-            Vec3 p2 = prevPositions[index + 1].add(positions[index + 1].subtract(prevPositions[index + 1]).scale(partialTicks)).subtract(Vec3);
+            Vec3 Vector3d = renderInfo.getPosition();
+            Vec3 p1 = prevPositions[index].add(positions[index].subtract(prevPositions[index]).scale(partialTicks)).subtract(Vector3d);
+            Vec3 p2 = prevPositions[index + 1].add(positions[index + 1].subtract(prevPositions[index + 1]).scale(partialTicks)).subtract(Vector3d);
 
             if (index == 0) {
                 Vec3 moveDir = p2.subtract(p1).normalize();
                 if (rotation instanceof ParticleRotation.FaceCamera) {
-                    Vec3 viewVec = new Vec3(renderInfo.getViewVector());
-                    offsetDir = moveDir.crossProduct(viewVec).normalize();
+                    Vec3 viewVec = new Vec3(renderInfo.getLookVector());
+                    offsetDir = moveDir.cross(viewVec).normalize();
                 } else {
-                    offsetDir = moveDir.crossProduct(new Vec3(0, 1, 0)).normalize();
+                    offsetDir = moveDir.cross(new Vec3(0, 1, 0)).normalize();
                 }
                 offsetDir = offsetDir.scale(prevScale);
             }
 
-            Vec3[] aVec32 = new Vec3[] {offsetDir.scale(-1), offsetDir, null, null};
+            Vec3[] aVector3d2 = new Vec3[] {offsetDir.scale(-1), offsetDir, null, null};
             Vec3 moveDir = p2.subtract(p1).normalize();
             if (rotation instanceof ParticleRotation.FaceCamera) {
-                Vec3 viewVec = new Vec3(renderInfo.getViewVector());
-                offsetDir = moveDir.crossProduct(viewVec).normalize();
+                Vec3 viewVec = new Vec3(renderInfo.getLookVector());
+                offsetDir = moveDir.cross(viewVec).normalize();
             }
             else {
-                offsetDir = moveDir.crossProduct(new Vec3(0, 1, 0)).normalize();
+                offsetDir = moveDir.cross(new Vec3(0, 1, 0)).normalize();
             }
             offsetDir = offsetDir.scale(scale);
-            aVec32[2] = offsetDir;
-            aVec32[3] = offsetDir.scale(-1);
+            aVector3d2[2] = offsetDir;
+            aVector3d2[3] = offsetDir.scale(-1);
 
             Vector4f[] vertices2 = new Vector4f[] {
-                    new Vector4f((float)aVec32[0].x, (float)aVec32[0].y,  (float)aVec32[0].z, 1f),
-                    new Vector4f((float)aVec32[1].x, (float)aVec32[1].y,  (float)aVec32[1].z, 1f),
-                    new Vector4f((float)aVec32[2].x,  (float)aVec32[2].y,  (float)aVec32[2].z, 1f),
-                    new Vector4f((float)aVec32[3].x,  (float)aVec32[3].y,  (float)aVec32[3].z, 1f)
+                    new Vector4f((float)aVector3d2[0].x, (float)aVector3d2[0].y,  (float)aVector3d2[0].z, 1f),
+                    new Vector4f((float)aVector3d2[1].x, (float)aVector3d2[1].y,  (float)aVector3d2[1].z, 1f),
+                    new Vector4f((float)aVector3d2[2].x,  (float)aVector3d2[2].y,  (float)aVector3d2[2].z, 1f),
+                    new Vector4f((float)aVector3d2[3].x,  (float)aVector3d2[3].y,  (float)aVector3d2[3].z, 1f)
             };
-            Matrix4f boxTranslate = Matrix4f.makeTranslate((float)p1.x, (float)p1.y, (float)p1.z);
+            Matrix4f boxTranslate = Matrix4f.createTranslateMatrix((float)p1.x, (float)p1.y, (float)p1.z);
             vertices2[0].transform(boxTranslate);
             vertices2[1].transform(boxTranslate);
-            boxTranslate = Matrix4f.makeTranslate((float)p2.x, (float)p2.y, (float)p2.z);
+            boxTranslate = Matrix4f.createTranslateMatrix((float)p2.x, (float)p2.y, (float)p2.z);
             vertices2[2].transform(boxTranslate);
             vertices2[3].transform(boxTranslate);
 
-            float halfU = (getMaxU() - getMinU()) / 2 + getMinU();
-            float f = this.getMinU() + texPanOffset;
+            float halfU = (getU1() - getU0()) / 2 + getU0();
+            float f = this.getU0() + texPanOffset;
             float f1 = halfU + texPanOffset;
-            float f2 = this.getMinV();
-            float f3 = this.getMaxV();
+            float f2 = this.getV0();
+            float f3 = this.getV1();
 
-            buffer.pos(vertices2[0].x(), vertices2[0].y(), vertices2[0].z()).tex(f1, f3).color(prevR, prevG, prevB, prevA).lightmap(j).endVertex();
-            buffer.pos(vertices2[1].x(), vertices2[1].y(), vertices2[1].z()).tex(f1, f2).color(prevR, prevG, prevB, prevA).lightmap(j).endVertex();
-            buffer.pos(vertices2[2].x(), vertices2[2].y(), vertices2[2].z()).tex(f, f2).color(r, g, b, a).lightmap(j).endVertex();
-            buffer.pos(vertices2[3].x(), vertices2[3].y(), vertices2[3].z()).tex(f, f3).color(r, g, b, a).lightmap(j).endVertex();
+            buffer.vertex(vertices2[0].x(), vertices2[0].y(), vertices2[0].z()).uv(f1, f3).color(prevR, prevG, prevB, prevA).uv2(j).endVertex();
+            buffer.vertex(vertices2[1].x(), vertices2[1].y(), vertices2[1].z()).uv(f1, f2).color(prevR, prevG, prevB, prevA).uv2(j).endVertex();
+            buffer.vertex(vertices2[2].x(), vertices2[2].y(), vertices2[2].z()).uv(f, f2).color(r, g, b, a).uv2(j).endVertex();
+            buffer.vertex(vertices2[3].x(), vertices2[3].y(), vertices2[3].z()).uv(f, f3).color(r, g, b, a).uv2(j).endVertex();
 
             prevR = r;
             prevG = g;
@@ -186,7 +187,7 @@ public class ParticleRibbon extends AdvancedParticleBase {
     }
 
     @Override
-    public AxisAlignedBB getBoundingBox() {
+    public AABB getBoundingBox() {
         if (positions == null || positions.length <= 0 || positions[0] == null) return super.getBoundingBox();
         double minX = positions[0].x() - 0.1;
         double minY = positions[0].y() - 0.1;
@@ -203,37 +204,37 @@ public class ParticleRibbon extends AdvancedParticleBase {
             maxY = Math.max(maxY, pos.y());
             maxZ = Math.max(maxZ, pos.z());
         }
-        return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
+        return new AABB(minX, minY, minZ, maxX, maxY, maxZ);
     }
 
     public float getMinUPublic() {
-        return getMinU();
+        return getU0();
     }
 
     public float getMaxUPublic() {
-        return getMaxU();
+        return getU1();
     }
 
     public float getMinVPublic() {
-        return getMinV();
+        return getV0();
     }
 
     public float getMaxVPublic() {
-        return getMaxV();
+        return getV1();
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static final class Factory implements IParticleFactory<RibbonParticleData> {
-        private final IAnimatedSprite spriteSet;
+    public static final class Factory implements ParticleProvider<RibbonParticleData> {
+        private final SpriteSet spriteSet;
 
-        public Factory(IAnimatedSprite spriteSet) {
+        public Factory(SpriteSet spriteSet) {
             this.spriteSet = spriteSet;
         }
 
         @Override
-        public Particle makeParticle(RibbonParticleData typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(RibbonParticleData typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ParticleRibbon particle = new ParticleRibbon(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn.getRotation(), typeIn.getScale(), typeIn.getRed(), typeIn.getGreen(), typeIn.getBlue(), typeIn.getAlpha(), typeIn.getAirDrag(), typeIn.getDuration(), typeIn.isEmissive(), typeIn.getLength(), typeIn.getComponents());
-            particle.selectSpriteWithAge(spriteSet);
+            particle.setSpriteFromAge(spriteSet);
             return particle;
         }
     }
@@ -244,6 +245,6 @@ public class ParticleRibbon extends AdvancedParticleBase {
 
     public static void spawnRibbon(Level world, ParticleType<? extends RibbonParticleData> particle, int length, double x, double y, double z, double motionX, double motionY, double motionZ, boolean faceCamera, double yaw, double pitch, double roll, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, ParticleComponent[] components) {
         ParticleRotation rotation = faceCamera ? new ParticleRotation.FaceCamera((float) 0) : new ParticleRotation.EulerAngles((float)yaw, (float)pitch, (float)roll);
-        level.addParticle(new RibbonParticleData(particle, rotation, scale, r, g, b, a, drag, duration, emissive, length, components), x, y, z, motionX, motionY, motionZ);
+        world.addParticle(new RibbonParticleData(particle, rotation, scale, r, g, b, a, drag, duration, emissive, length, components), x, y, z, motionX, motionY, motionZ);
     }
 }
