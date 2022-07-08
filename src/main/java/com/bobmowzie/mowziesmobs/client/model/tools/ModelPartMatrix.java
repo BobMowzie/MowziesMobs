@@ -35,7 +35,7 @@ public class ModelPartMatrix extends ModelPart {
             last.pose().multiply(getWorldXform());
             last.normal().mul(getWorldNormal());
         }
-        useMatrixMode = false;
+//        useMatrixMode = false;
     }
 
     @Override

@@ -7,13 +7,13 @@ import net.minecraft.world.entity.LivingEntity;
 
 public class ModelBipedAnimated<T extends LivingEntity> extends HumanoidModel<T> {
     public ModelBipedAnimated(ModelPart root) {
-        super(root);/*
+        super(root);
         this.body = new ModelPartMatrix(body);
         this.head = new ModelPartMatrix(head);
         this.rightArm = new ModelPartMatrix(rightArm);
         this.leftArm = new ModelPartMatrix(leftArm);
         this.rightLeg = new ModelPartMatrix(rightLeg);
-        this.leftLeg = new ModelPartMatrix(leftLeg);*/ // TODO
+        this.leftLeg = new ModelPartMatrix(leftLeg);
     }
 
     public static void copyFromGeckoModel(HumanoidModel<?> bipedModel, ModelGeckoPlayerThirdPerson geckoModel) {

@@ -111,6 +111,7 @@ public enum ClientEventHandler {
 
                         if (geckoPlayerModel != null && animatedPlayerRenderer != null) {
                             event.setCanceled(true);
+                            player.setArrowCount(20);
 
                             if (event.isCanceled()) {
                                 animatedPlayerRenderer.render((AbstractClientPlayer) event.getEntity(), event.getEntity().getYRot(), delta, event.getMatrixStack(), event.getBuffers(), event.getLight(), geckoPlayer);

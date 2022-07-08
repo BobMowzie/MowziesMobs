@@ -63,7 +63,9 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
     public GeckoRenderPlayer(EntityRendererProvider.Context context, boolean slim, ModelGeckoPlayerThirdPerson modelProvider) {
         super(context, slim);
 
-        this.model = new ModelPlayerAnimated<>(context.bakeLayer(ModelLayers.PLAYER), slim);
+        ModelPlayerAnimated<AbstractClientPlayer> modelPlayerAnimated = new ModelPlayerAnimated<>(context.bakeLayer(ModelLayers.PLAYER), slim);
+        ModelPlayerAnimated.setUseMatrixMode(modelPlayerAnimated, true);
+        this.model = modelPlayerAnimated;
 
         this.layers.clear();
         this.addLayer(new HumanoidArmorLayer<>(this, new ModelBipedAnimated<>(context.bakeLayer(slim ? ModelLayers.PLAYER_SLIM_INNER_ARMOR : ModelLayers.PLAYER_INNER_ARMOR)), new ModelBipedAnimated<>(context.bakeLayer(slim ? ModelLayers.PLAYER_SLIM_OUTER_ARMOR : ModelLayers.PLAYER_OUTER_ARMOR))));
@@ -246,8 +248,8 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
                     geckoPlayer, partialTicks, rendertype, matrixStackIn, bufferIn, ivertexbuilder, packedLightIn, i, 1.0F, 1.0F, 1.0F, flag1 ? 0.15F : 1.0F
             );
             matrixStackIn.popPose();
-            this.model.setupAnim(entityIn, f5, f8, f7, f2, f6);
             ModelBipedAnimated.copyFromGeckoModel(this.model, this.modelProvider);
+            this.model.setupAnim(entityIn, f5, f8, f7, f2, f6);
         }
 
         if (!entityIn.isSpectator()) {
