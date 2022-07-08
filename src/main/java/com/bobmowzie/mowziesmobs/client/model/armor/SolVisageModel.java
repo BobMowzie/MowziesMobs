@@ -2,8 +2,10 @@ package com.bobmowzie.mowziesmobs.client.model.armor;
 // Made with Blockbench 4.2.3
 // Exported for Minecraft version 1.17 - 1.18 with Mojang mappings
 // Paste this class into your mod and generate all required imports
+import com.bobmowzie.mowziesmobs.client.model.tools.ModelPartMatrix;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -93,6 +95,9 @@ public class SolVisageModel<T extends LivingEntity> extends HumanoidModel<T> {
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int p_102036_, int p_102037_, float p_102038_, float p_102039_, float p_102040_, float p_102041_) {
 		poseStack.pushPose();
 		poseStack.scale(0.8f, 0.8f, 0.8f);
+		if (head instanceof ModelPartMatrix) {
+			((ModelPartMatrix) head).getWorldXform().multiply(Matrix4f.createScaleMatrix(0.8f, 0.8f, 0.8f));
+		}
 		super.renderToBuffer(poseStack, vertexConsumer, p_102036_, p_102037_, p_102038_, p_102039_, p_102040_, p_102041_);
 		poseStack.popPose();
 	}

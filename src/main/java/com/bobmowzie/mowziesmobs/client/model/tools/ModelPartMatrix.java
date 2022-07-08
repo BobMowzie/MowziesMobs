@@ -9,9 +9,14 @@ public class ModelPartMatrix extends ModelPart {
     private Matrix4f worldXform;
     private Matrix3f worldNormal;
 
+    private boolean resetUseMatrixMode;
     private boolean useMatrixMode;
 
     public ModelPartMatrix(ModelPart original) {
+        this(original, true);
+    }
+
+    public ModelPartMatrix(ModelPart original, boolean resetUseMatrixMode) {
         super(original.cubes, original.children);
         copyFrom(original);
 
@@ -21,6 +26,7 @@ public class ModelPartMatrix extends ModelPart {
         worldXform.setIdentity();
 
         useMatrixMode = true;
+        this.resetUseMatrixMode = resetUseMatrixMode;
     }
 
     @Override
@@ -35,7 +41,7 @@ public class ModelPartMatrix extends ModelPart {
             last.pose().multiply(getWorldXform());
             last.normal().mul(getWorldNormal());
         }
-//        useMatrixMode = false;
+        if (resetUseMatrixMode) useMatrixMode = false;
     }
 
     @Override

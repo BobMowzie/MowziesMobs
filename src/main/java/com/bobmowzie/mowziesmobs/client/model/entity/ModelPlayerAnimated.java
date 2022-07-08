@@ -20,21 +20,21 @@ public class ModelPlayerAnimated<T extends LivingEntity> extends PlayerModel<T> 
 
     public ModelPlayerAnimated(ModelPart root, boolean smallArmsIn) {
         super(root, smallArmsIn);
-        ModelPartMatrix bodyMatrix = new ModelPartMatrix(body);
-        ModelPartMatrix headMatrix = new ModelPartMatrix(head);
-        ModelPartMatrix rightArmMatrix = new ModelPartMatrix(rightArm);
-        ModelPartMatrix leftArmMatrix = new ModelPartMatrix(leftArm);
-        ModelPartMatrix rightLegMatrix = new ModelPartMatrix(rightLeg);
-        ModelPartMatrix leftLegMatrix = new ModelPartMatrix(leftLeg);
+        ModelPartMatrix bodyMatrix = new ModelPartMatrix(body, false);
+        ModelPartMatrix headMatrix = new ModelPartMatrix(head, false);
+        ModelPartMatrix rightArmMatrix = new ModelPartMatrix(rightArm, false);
+        ModelPartMatrix leftArmMatrix = new ModelPartMatrix(leftArm, false);
+        ModelPartMatrix rightLegMatrix = new ModelPartMatrix(rightLeg, false);
+        ModelPartMatrix leftLegMatrix = new ModelPartMatrix(leftLeg, false);
 
-        ModelPartMatrix hatMatrix = new ModelPartMatrix(hat);
-        ModelPartMatrix jacketMatrix = new ModelPartMatrix(jacket);
-        ModelPartMatrix leftSleeveMatrix = new ModelPartMatrix(leftSleeve);
-        ModelPartMatrix rightSleeveMatrix = new ModelPartMatrix(rightSleeve);
-        ModelPartMatrix leftPantsMatrix = new ModelPartMatrix(leftPants);
-        ModelPartMatrix rightPantsMatrix = new ModelPartMatrix(rightPants);
-        ModelPartMatrix earMatrix = new ModelPartMatrix(ear);
-        ModelPartMatrix cloakMatrix = new ModelPartMatrix(cloak);
+        ModelPartMatrix hatMatrix = new ModelPartMatrix(hat, false);
+        ModelPartMatrix jacketMatrix = new ModelPartMatrix(jacket, false);
+        ModelPartMatrix leftSleeveMatrix = new ModelPartMatrix(leftSleeve, false);
+        ModelPartMatrix rightSleeveMatrix = new ModelPartMatrix(rightSleeve, false);
+        ModelPartMatrix leftPantsMatrix = new ModelPartMatrix(leftPants, false);
+        ModelPartMatrix rightPantsMatrix = new ModelPartMatrix(rightPants, false);
+        ModelPartMatrix earMatrix = new ModelPartMatrix(ear, false);
+        ModelPartMatrix cloakMatrix = new ModelPartMatrix(cloak, false);
 
         Map<ModelPart, ModelPart> origToNew = new HashMap<>();
         origToNew.put(body, bodyMatrix);
