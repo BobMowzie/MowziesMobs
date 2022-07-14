@@ -374,7 +374,7 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
         if (this.deathTime == deathDuration && !this.level.isClientSide()) {
             lastHurtByPlayer = killDataAttackingPlayer;
             lastHurtByPlayerTime = killDataRecentlyHit;
-            if (!level.isClientSide() && dropAfterDeathAnim && killDataCause != null) {
+            if (dropAfterDeathAnim && killDataCause != null) {
                 dropAllDeathLoot(killDataCause);
             }
             this.level.broadcastEntityEvent(this, (byte)60);
@@ -384,17 +384,20 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
 
     @Override
     protected void dropAllDeathLoot(DamageSource source) {
-        if (!dropAfterDeathAnim && deathTime > 0)
-        super.dropAllDeathLoot(source);
+        if (!dropAfterDeathAnim || deathTime > 0) {
+            super.dropAllDeathLoot(source);
+        }
     }
 
     @Override
     public void die(DamageSource cause) {
-        super.die(cause);
-        if (!this.isRemoved() && !this.dead) {
+        if (!this.dead) {
             killDataCause = cause;
             killDataRecentlyHit = this.lastHurtByPlayerTime;
             killDataAttackingPlayer = lastHurtByPlayer;
+        }
+        super.die(cause);
+        if (!this.isRemoved()) {
             bossInfo.update();
         }
     }
