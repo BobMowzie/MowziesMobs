@@ -1,16 +1,23 @@
 package com.bobmowzie.mowziesmobs.client.render.entity.layer;
 
-import com.bobmowzie.mowziesmobs.client.model.armor.MowzieElytraModel;
+import com.bobmowzie.mowziesmobs.client.model.tools.ModelPartMatrix;
+import com.bobmowzie.mowziesmobs.client.render.MowzieRenderUtils;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.ElytraLayer;
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.world.entity.LivingEntity;
 
-public class GeckoElytraLayer<T extends LivingEntity, M extends EntityModel<T>> extends ElytraLayer<T, M> {
-    public GeckoElytraLayer(RenderLayerParent<T, M> rendererIn, EntityModelSet modelSet) {
+public class GeckoElytraLayer extends ElytraLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
+    public GeckoElytraLayer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> rendererIn, EntityModelSet modelSet) {
         super(rendererIn, modelSet);
-        elytraModel = new MowzieElytraModel(modelSet.bakeLayer(ModelLayers.ELYTRA));
+    }
+
+    public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, AbstractClientPlayer entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        MowzieRenderUtils.transformStackToModelPart(matrixStackIn, (ModelPartMatrix)this.getParentModel().body);
+        super.render(matrixStackIn, bufferIn, packedLightIn, entity, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
+        matrixStackIn.popPose();
     }
 }

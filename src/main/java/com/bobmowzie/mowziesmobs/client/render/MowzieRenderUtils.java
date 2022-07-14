@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.render;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.ModelPartMatrix;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.world.entity.Entity;
@@ -115,5 +116,14 @@ public class MowzieRenderUtils {
         stack.mulPose(new Quaternion(0.0F, 0.0F, -rotation.z(), false));
         stack.mulPose(new Quaternion(0.0F, -rotation.y(), 0.0F, false));
         stack.mulPose(new Quaternion(rotation.x(), 0.0F, 0.0F, false));
+    }
+
+    // Used for elytra layer, parrot layer, cape layer
+    public static void transformStackToModelPart(PoseStack stack, ModelPartMatrix part) {
+        stack.last().pose().setIdentity();
+        stack.last().normal().setIdentity();
+        stack.pushPose();
+        stack.last().pose().multiply(part.getWorldXform());
+        stack.last().normal().mul(part.getWorldNormal());
     }
 }

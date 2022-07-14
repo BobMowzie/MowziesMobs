@@ -1,9 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.client.model.armor.MowzieElytraModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.ModelPartMatrix;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.PlayerModel;
@@ -94,15 +92,6 @@ public class ModelPlayerAnimated<T extends LivingEntity> extends PlayerModel<T> 
     @Override
     public ModelPart getRandomModelPart(Random randomIn) {
         return this.parts.get(randomIn.nextInt(this.parts.size()));
-    }
-
-    @Override
-    public void copyPropertiesTo(EntityModel<T> p_217111_1_) {
-        super.copyPropertiesTo(p_217111_1_);
-        if (p_217111_1_ instanceof MowzieElytraModel) {
-            MowzieElytraModel<?> elytraModel = (MowzieElytraModel<?>) p_217111_1_;
-            elytraModel.bipedBody.copyFrom(this.body);
-        }
     }
 
     @Override
