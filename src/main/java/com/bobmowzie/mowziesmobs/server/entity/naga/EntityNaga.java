@@ -1021,7 +1021,7 @@ public class EntityNaga extends MowzieEntity implements RangedAttackMob, Enemy, 
 //            } else {
                 vector3d = EntityNaga.this.getViewVector(0.0F);
 //            }
-            Vec3 position = HoverRandomPos.getPos(EntityNaga.this, 24, 24, vector3d.x, vector3d.z, ((float)Math.PI / 2F), 8, 18);
+            Vec3 position = HoverRandomPos.getPos(EntityNaga.this, 24, 24, vector3d.x, vector3d.z, ((float)Math.PI / 2F), 18, 8);
             if (position == null) {
                 Vec3 sumPos = position().add(vector3d);
                 position = AirAndWaterRandomPos.getPos(EntityNaga.this, 24, 8, -8, sumPos.x, sumPos.z, ((float)Math.PI / 2F));

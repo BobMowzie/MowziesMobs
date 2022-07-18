@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.client.render;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.Util;
 import net.minecraft.client.particle.ParticleRenderType;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import net.minecraft.client.renderer.RenderStateShard;
@@ -15,6 +16,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.function.Function;
+
 @OnlyIn(Dist.CLIENT)
 public abstract class MMRenderType extends RenderType {
     // TODO make sure these are working correctly
@@ -23,24 +26,31 @@ public abstract class MMRenderType extends RenderType {
         super(nameIn, formatIn, drawModeIn, bufferSizeIn, useDelegateIn, needsSortingIn, setupTaskIn, clearTaskIn);
     }
 
-    public static RenderType getLantern(ResourceLocation locationIn) {
+    public static final Function<ResourceLocation, RenderType> LANTERN = Util.memoize((locationIn) -> {
         RenderType.CompositeState rendertype$state = RenderType.CompositeState.builder().setTextureState(new RenderStateShard.TextureStateShard(locationIn, false, false)).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setLightmapState(LIGHTMAP).setOverlayState(OVERLAY).setCullState(NO_CULL).setLightmapState(NO_LIGHTMAP).setOverlayState(OVERLAY).createCompositeState(true);
         return create("lantern", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true, rendertype$state);
+    });
+
+    public static RenderType getLantern(ResourceLocation locationIn) {
+        return LANTERN.apply(locationIn);
     }
 
-    public static RenderType getGlowingEffect(ResourceLocation locationIn) {
+    public static final Function<ResourceLocation, RenderType> GLOWING_EFFECT = Util.memoize((locationIn) -> {
         RenderType.CompositeState rendertype$state = RenderType.CompositeState.builder().setTextureState(new RenderStateShard.TextureStateShard(locationIn, false, false)).setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY).setOverlayState(OVERLAY).setCullState(NO_CULL).setLightmapState(NO_LIGHTMAP).setOverlayState(NO_OVERLAY).createCompositeState(true);
         return create("glow_effect", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true, rendertype$state);
+    });
+
+    public static RenderType getGlowingEffect(ResourceLocation locationIn) {
+        return GLOWING_EFFECT.apply(locationIn);
     }
 
-    public static RenderType getSolarFlare(ResourceLocation locationIn) {
+    public static final Function<ResourceLocation, RenderType> SOLAR_FLARE = Util.memoize((locationIn) -> {
         RenderType.CompositeState rendertype$state = RenderType.CompositeState.builder().setTextureState(new RenderStateShard.TextureStateShard(locationIn, false, false)).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setDepthTestState(NO_DEPTH_TEST).setOverlayState(OVERLAY).setCullState(NO_CULL).setLightmapState(NO_LIGHTMAP).setOverlayState(NO_OVERLAY).createCompositeState(true);
         return create("solar_flare", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true, rendertype$state);
-    }
+    });
 
-    public static RenderType getEntityCutoutCull(ResourceLocation locationIn) {
-        RenderType.CompositeState rendertype$state = RenderType.CompositeState.builder().setTextureState(new RenderStateShard.TextureStateShard(locationIn, false, false)).setTransparencyState(NO_TRANSPARENCY).setLightmapState(LIGHTMAP).setOverlayState(OVERLAY).setCullState(CULL).setLightmapState(LIGHTMAP).setOverlayState(OVERLAY).createCompositeState(true);
-        return create("entity_cutout_cull", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, false, rendertype$state);
+    public static RenderType getSolarFlare(ResourceLocation locationIn) {
+        return SOLAR_FLARE.apply(locationIn);
     }
 
     public static ParticleRenderType PARTICLE_SHEET_TRANSLUCENT_NO_DEPTH = new ParticleRenderType() {

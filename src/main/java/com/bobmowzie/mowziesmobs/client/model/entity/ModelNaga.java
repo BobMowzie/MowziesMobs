@@ -1,15 +1,14 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.dynamics.DynamicChain;
-import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
-import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -124,7 +123,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
     private DynamicChain tail;
 
     public ModelNaga() {
-        super(MMRenderType::getEntityCutoutCull);
+        super(RenderType::entityCutout);
         this.textureWidth = 256;
         this.textureHeight = 256;
         this.eyebrow_L = new AdvancedModelRenderer(this, 63, 0);
