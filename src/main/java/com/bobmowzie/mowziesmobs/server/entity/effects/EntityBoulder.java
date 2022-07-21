@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleRotation;
+import com.bobmowzie.mowziesmobs.client.sound.BossMusicPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
@@ -45,11 +46,12 @@ import net.minecraftforge.fmllegacy.network.NetworkHooks;
  * Created by BobMowzie on 4/14/2017.
  */
 public class EntityBoulder extends Entity {
+    private static final byte EXPLOSION_PARTICLES_ID = 69;
+
     private LivingEntity caster;
     private boolean travelling;
     public BlockState storedBlock;
     private static final EntityDataAccessor<Optional<BlockState>> BLOCK_STATE = SynchedEntityData.defineId(EntityBoulder.class, EntityDataSerializers.BLOCK_STATE);
-    private static final EntityDataAccessor<Boolean> SHOULD_EXPLODE = SynchedEntityData.defineId(EntityBoulder.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<BlockPos> ORIGIN = SynchedEntityData.defineId(EntityBoulder.class, EntityDataSerializers.BLOCK_POS);
     private static final EntityDataAccessor<Integer> DEATH_TIME = SynchedEntityData.defineId(EntityBoulder.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> SIZE = SynchedEntityData.defineId(EntityBoulder.class, EntityDataSerializers.INT);
@@ -137,7 +139,6 @@ public class EntityBoulder extends Entity {
     @Override
     protected void defineSynchedData() {
         getEntityData().define(BLOCK_STATE, Optional.of(Blocks.DIRT.defaultBlockState()));
-        getEntityData().define(SHOULD_EXPLODE, false);
         getEntityData().define(ORIGIN, new BlockPos(0, 0, 0));
         getEntityData().define(DEATH_TIME, 1200);
         getEntityData().define(SIZE, 0);
@@ -177,7 +178,7 @@ public class EntityBoulder extends Entity {
             boulderSize = getBoulderSize();
         }
         if (storedBlock == null) storedBlock = getBlock();
-        if (getShouldExplode()) explode();
+
         if (!travelling) {
             setBoundingBox(getType().getAABB(getX(), getY(), getZ()).expandTowards(0, -0.5, 0));
         }
@@ -216,7 +217,7 @@ public class EntityBoulder extends Entity {
                 if (ridingEntities.contains(entity)) continue;
                 if (caster != null) entity.hurt(DamageSource.indirectMobAttack(this, caster), damage);
                 else entity.hurt(DamageSource.FALLING_BLOCK, damage);
-                if (isAlive() && boulderSize != BoulderSizeEnum.HUGE) setShouldExplode(true);
+                if (isAlive() && boulderSize != BoulderSizeEnum.HUGE) this.explode();
             }
         }
         List<EntityBoulder> bouldersHit = level.getEntitiesOfClass(EntityBoulder.class, getBoundingBox().inflate(0.2, 0.2, 0.2).move(getDeltaMovement().normalize().scale(0.5)));
@@ -229,7 +230,7 @@ public class EntityBoulder extends Entity {
             }
         }
 
-        if (travelling && !level.noCollision(this, getBoundingBox().inflate(0.1), (e)->ridingEntities.contains(e))) setShouldExplode(true);
+        if (travelling && !level.noCollision(this, getBoundingBox().inflate(0.1), (e)->ridingEntities.contains(e))) this.explode();
 
         if (tickCount == 1) {
             for (int i = 0; i < 20 * getBbWidth(); i++) {
@@ -283,13 +284,7 @@ public class EntityBoulder extends Entity {
     }
 
     private void explode() {
-        discard();
-        for (int i = 0; i < 40 * getBbWidth(); i++) {
-            Vec3 particlePos = new Vec3(random.nextFloat() * 0.7 * getBbWidth(), 0, 0);
-            particlePos = particlePos.yRot((float)(random.nextFloat() * 2 * Math.PI));
-            particlePos = particlePos.xRot((float)(random.nextFloat() * 2 * Math.PI));
-            level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, storedBlock), getX() + particlePos.x, getY() + 0.5 + particlePos.y, getZ() + particlePos.z, particlePos.x, particlePos.y, particlePos.z);
-        }
+        this.level.broadcastEntityEvent(this, EXPLOSION_PARTICLES_ID);
         if (boulderSize == BoulderSizeEnum.SMALL) {
             playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL.get(), 1.5f, 0.9f);
             playSound(MMSounds.EFFECT_GEOMANCY_BREAK.get(), 1.5f, 1f);
@@ -308,7 +303,6 @@ public class EntityBoulder extends Entity {
                 particlePos = particlePos.yRot((float) (random.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.xRot((float) (random.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.add(new Vec3(0, getBbHeight() / 4, 0));
-//                    ParticleFallingBlock.spawnFallingBlock(world, getPosX() + particlePos.x, getPosY() + 0.5 + particlePos.y, getPosZ() + particlePos.z, 10.f, 90, 1, (float) particlePos.x * 0.3f, 0.2f + (float) rand.nextFloat() * 0.6f, (float) particlePos.z * 0.3f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, getBlock());
                 EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK.get(), level, 70, getBlock());
                 fallingBlock.setPos(getX() + particlePos.x, getY() + 0.5 + particlePos.y, getZ() + particlePos.z);
                 fallingBlock.setDeltaMovement((float) particlePos.x * 0.3f, 0.2f + random.nextFloat() * 0.6f, (float) particlePos.z * 0.3f);
@@ -325,13 +319,13 @@ public class EntityBoulder extends Entity {
                 particlePos = particlePos.yRot((float) (random.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.xRot((float) (random.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.add(new Vec3(0, getBbHeight() / 4, 0));
-//                    ParticleFallingBlock.spawnFallingBlock(world, getPosX() + particlePos.x, getPosY() + 0.5 + particlePos.y, getPosZ() + particlePos.z, 10.f, 70, 1, (float) particlePos.x * 0.3f, 0.2f + (float) rand.nextFloat() * 0.6f, (float) particlePos.z * 0.3f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, getBlock());
                 EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK.get(), level, 70, getBlock());
                 fallingBlock.setPos(getX() + particlePos.x, getY() + 0.5 + particlePos.y, getZ() + particlePos.z);
                 fallingBlock.setDeltaMovement((float) particlePos.x * 0.3f, 0.2f + random.nextFloat() * 0.6f, (float) particlePos.z * 0.3f);
                 level.addFreshEntity(fallingBlock);
             }
         }
+        discard();
     }
 
     public BlockState getBlock() {
@@ -342,14 +336,6 @@ public class EntityBoulder extends Entity {
     public void setBlock(BlockState block) {
         getEntityData().set(BLOCK_STATE, Optional.of(block));
         this.storedBlock = block;
-    }
-
-    public boolean getShouldExplode() {
-        return getEntityData().get(SHOULD_EXPLODE);
-    }
-
-    public void setShouldExplode(boolean shouldExplode) {
-        getEntityData().set(SHOULD_EXPLODE, shouldExplode);
     }
 
     public void setOrigin(BlockPos pos) {
@@ -458,6 +444,23 @@ public class EntityBoulder extends Entity {
             }
         }
         return super.skipAttackInteraction(entityIn);
+    }
+
+    private void spawnExplosionParticles() {
+        for (int i = 0; i < 40 * getBbWidth(); i++) {
+            Vec3 particlePos = new Vec3(random.nextFloat() * 0.7 * getBbWidth(), 0, 0);
+            particlePos = particlePos.yRot((float) (random.nextFloat() * 2 * Math.PI));
+            particlePos = particlePos.xRot((float) (random.nextFloat() * 2 * Math.PI));
+            level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, storedBlock), getX() + particlePos.x, getY() + 0.5 + particlePos.y, getZ() + particlePos.z, particlePos.x, particlePos.y, particlePos.z);
+        }
+    }
+
+    @Override
+    public void handleEntityEvent(byte id) {
+        if (id == EXPLOSION_PARTICLES_ID) {
+            spawnExplosionParticles();
+        }
+        else super.handleEntityEvent(id);
     }
 
     @Override
