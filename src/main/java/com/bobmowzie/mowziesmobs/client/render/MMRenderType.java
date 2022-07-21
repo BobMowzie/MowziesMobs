@@ -42,10 +42,10 @@ public abstract class MMRenderType extends RenderType {
         public void begin(BufferBuilder p_217600_1_, TextureManager p_217600_2_) {
             RenderSystem.depthMask(false);
             RenderSystem.disableCull();
-            p_217600_2_.bindForSetup(TextureAtlas.LOCATION_PARTICLES);
+            RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-//            RenderSystem.alphaFunc(516, 0.003921569F);
+//            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             p_217600_1_.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
         }
 

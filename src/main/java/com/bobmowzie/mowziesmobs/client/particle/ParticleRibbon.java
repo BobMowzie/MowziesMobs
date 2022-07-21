@@ -45,7 +45,6 @@ public class ParticleRibbon extends AdvancedParticleBase {
     @Override
     public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
         alpha = prevAlpha + (alpha - prevAlpha) * partialTicks;
-        if (alpha < 0.01) alpha = 0.01f;
         rCol = prevRed + (red - prevRed) * partialTicks;
         gCol = prevGreen + (green - prevGreen) * partialTicks;
         bCol = prevBlue + (blue - prevBlue) * partialTicks;

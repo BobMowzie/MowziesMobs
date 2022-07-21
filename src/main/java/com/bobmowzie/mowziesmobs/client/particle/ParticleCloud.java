@@ -67,7 +67,6 @@ public class ParticleCloud extends TextureSheetParticle {
     public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
         float var = (age + partialTicks)/(float)lifetime;
         alpha = 0.2f * ((float) (1 - Math.exp(5 * (var - 1)) - Math.pow(2000, -var)));
-        if (alpha < 0.01) alpha = 0.01f;
         if (behavior == EnumCloudBehavior.SHRINK) this.quadSize = scale * ((1 - 0.7f * var) + 0.3f);
         else if (behavior == EnumCloudBehavior.GROW) this.quadSize = scale * ((0.7f * var) + 0.3f);
         else this.quadSize = scale;
