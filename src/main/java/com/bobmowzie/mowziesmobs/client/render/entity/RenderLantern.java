@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.client.render.entity.layer.LanternGelLayer;
 import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -27,5 +28,10 @@ public class RenderLantern extends MobRenderer<EntityLantern, ModelLantern<Entit
     @Override
     public ResourceLocation getTextureLocation(EntityLantern entity) {
         return RenderLantern.TEXTURE;
+    }
+
+    @Override
+    protected int getBlockLightLevel(EntityLantern p_114496_, BlockPos p_114497_) {
+        return 15;
     }
 }
