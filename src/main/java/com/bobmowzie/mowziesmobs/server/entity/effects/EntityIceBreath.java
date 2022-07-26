@@ -136,7 +136,7 @@ public class EntityIceBreath extends EntityMagicEffect {
                 // Do raycast check to prevent damaging through walls
                 if (!raytraceCheckEntity(entityHit)) continue;
 
-                if (entityHit.hurt(DamageSource.indirectMagic(this, caster), damage)) {
+                if (entityHit.hurt(DamageSource.FREEZE, damage)) {
                     entityHit.setDeltaMovement(entityHit.getDeltaMovement().multiply(0.25, 1, 0.25));
                     FrozenCapability.IFrozenCapability capability = CapabilityHandler.getCapability(entityHit, CapabilityHandler.FROZEN_CAPABILITY);
                     if (capability != null) capability.addFreezeProgress(entityHit, 0.23f);

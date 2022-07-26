@@ -59,7 +59,7 @@ public class EntityIceBall extends EntityMagicEffect {
                 List<? extends String> freezeImmune = ConfigHandler.COMMON.GENERAL.freeze_blacklist.get();
                 ResourceLocation mobName = EntityType.getKey(entity.getType());
                 if (freezeImmune.contains(mobName.toString())) continue;
-                if (entity.hurt(DamageSource.indirectMagic(this, caster), 3f * ConfigHandler.COMMON.MOBS.FROSTMAW.combatConfig.attackMultiplier.get().floatValue())) {
+                if (entity.hurt(DamageSource.FREEZE, 3f * ConfigHandler.COMMON.MOBS.FROSTMAW.combatConfig.attackMultiplier.get().floatValue())) {
                     IFrozenCapability capability = CapabilityHandler.getCapability(entity, CapabilityHandler.FROZEN_CAPABILITY);
                     if (capability != null) capability.addFreezeProgress(entity, 1);
                 }
