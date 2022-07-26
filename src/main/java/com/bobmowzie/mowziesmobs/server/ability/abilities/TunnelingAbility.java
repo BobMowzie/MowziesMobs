@@ -17,6 +17,8 @@ import com.bobmowzie.mowziesmobs.server.item.ItemEarthboreGauntlet;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.client.Minecraft;
@@ -65,7 +67,7 @@ public class TunnelingAbility extends Ability {
 
     public void playGauntletAnimation() {
         if (getUser() instanceof Player) {
-            if (gauntletStack.getItem() == ItemHandler.EARTHBORE_GAUNTLET) {
+            if (gauntletStack != null && gauntletStack.getItem() == ItemHandler.EARTHBORE_GAUNTLET) {
                 Player player = (Player) getUser();
                 ItemHandler.EARTHBORE_GAUNTLET.playAnimation(player, gauntletStack, ItemEarthboreGauntlet.ANIM_OPEN);
             }
@@ -74,7 +76,7 @@ public class TunnelingAbility extends Ability {
 
     public void stopGauntletAnimation() {
         if (getUser() instanceof Player) {
-            if (gauntletStack.getItem() == ItemHandler.EARTHBORE_GAUNTLET) {
+            if (gauntletStack != null && gauntletStack.getItem() == ItemHandler.EARTHBORE_GAUNTLET) {
                 Player player = (Player) getUser();
                 ItemHandler.EARTHBORE_GAUNTLET.playAnimation(player, gauntletStack, ItemEarthboreGauntlet.ANIM_REST);
             }
@@ -242,6 +244,7 @@ public class TunnelingAbility extends Ability {
     protected boolean canContinueUsing() {
         ItemStack stack = getUser().getUseItem();
         boolean usingGauntlet = stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET;
+        if (whichHand == null) return false;
         boolean canContinueUsing = (getTicksInUse() <= 1 || !(getUser().isOnGround() || (getUser().isInWater() && !usingGauntlet)) || underground) && getUser().getItemInHand(whichHand).getItem() == ItemHandler.EARTHBORE_GAUNTLET && super.canContinueUsing();
         return canContinueUsing;
     }
@@ -291,5 +294,19 @@ public class TunnelingAbility extends Ability {
         }
         MowzieGeoBone waist = model.getMowzieBone("Waist");
         waist.addRotationY(-spinAmount);
+    }
+
+    @Override
+    public CompoundTag writeNBT() {
+        CompoundTag compound = super.writeNBT();
+        compound.putInt("whichHand", whichHand.ordinal());
+        return compound;
+    }
+
+    @Override
+    public void readNBT(Tag nbt) {
+        super.readNBT(nbt);
+        CompoundTag compound = (CompoundTag) nbt;
+        whichHand = InteractionHand.values()[compound.getInt("whichHand")];
     }
 }
