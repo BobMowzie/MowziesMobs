@@ -299,14 +299,18 @@ public class TunnelingAbility extends Ability {
     @Override
     public CompoundTag writeNBT() {
         CompoundTag compound = super.writeNBT();
-        compound.putInt("whichHand", whichHand.ordinal());
+        if (isUsing() && whichHand != null) {
+            compound.putInt("whichHand", whichHand.ordinal());
+        }
         return compound;
     }
 
     @Override
     public void readNBT(Tag nbt) {
         super.readNBT(nbt);
-        CompoundTag compound = (CompoundTag) nbt;
-        whichHand = InteractionHand.values()[compound.getInt("whichHand")];
+        if (isUsing()) {
+            CompoundTag compound = (CompoundTag) nbt;
+            whichHand = InteractionHand.values()[compound.getInt("whichHand")];
+        }
     }
 }
