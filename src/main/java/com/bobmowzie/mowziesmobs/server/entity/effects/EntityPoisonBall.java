@@ -22,6 +22,7 @@ import java.util.List;
  * Created by BobMowzie on 11/16/2018.
  */
 public class EntityPoisonBall extends EntityMagicEffect {
+    private static final byte EXPLOSION_PARTICLES_ID = 69;
 
     public static float GRAVITY = 0.05f;
 
@@ -109,8 +110,27 @@ public class EntityPoisonBall extends EntityMagicEffect {
     }
 
     private void explode() {
-        float explodeSpeed = 3.5f;
+        this.level.broadcastEntityEvent(this, EXPLOSION_PARTICLES_ID);
+
+        playSound(MMSounds.ENTITY_NAGA_ACID_HIT.get(), 1, 1);
+
+        List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(2);
+        if (!entitiesHit.isEmpty()) {
+            for (LivingEntity entity : entitiesHit) {
+                if (entity == caster) continue;
+                if (entity instanceof EntityNaga) continue;
+                if (entity.hurt(DamageSource.indirectMagic(this, caster), 3 * ConfigHandler.COMMON.MOBS.NAGA.combatConfig.attackMultiplier.get().floatValue())) {
+                    entity.addEffect(new MobEffectInstance(MobEffects.POISON, 80, 0, false, true));
+                }
+            }
+        }
+
+        discard() ;
+    }
+
+    private void spawnExplosionParticles() {
         if (level.isClientSide) {
+            float explodeSpeed = 3.5f;
             for (int i = 0; i < 26; i++) {
                 Vec3 particlePos = new Vec3(random.nextFloat() * 0.25, 0, 0);
                 particlePos = particlePos.yRot((float) (random.nextFloat() * 2 * Math.PI));
@@ -136,20 +156,13 @@ public class EntityPoisonBall extends EntityMagicEffect {
                 AdvancedParticleBase.spawnParticle(level, ParticleHandler.BUBBLE.get(), getX() + particlePos.x, getY() + particlePos.y, getZ() + particlePos.z, particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, true, 0, 0, 0, 0, 3f, 0.25d + value, 0.75d + value, 0.25d + value, 1d, 0.6, life * 0.95, false, true);
             }
         }
+    }
 
-        playSound(MMSounds.ENTITY_NAGA_ACID_HIT.get(), 1, 1);
-
-        List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(2);
-        if (!entitiesHit.isEmpty()) {
-            for (LivingEntity entity : entitiesHit) {
-                if (entity == caster) continue;
-                if (entity instanceof EntityNaga) continue;
-                if (entity.hurt(DamageSource.indirectMagic(this, caster), 3 * ConfigHandler.COMMON.MOBS.NAGA.combatConfig.attackMultiplier.get().floatValue())) {
-                    entity.addEffect(new MobEffectInstance(MobEffects.POISON, 80, 0, false, true));
-                }
-            }
+    @Override
+    public void handleEntityEvent(byte id) {
+        if (id == EXPLOSION_PARTICLES_ID) {
+            spawnExplosionParticles();
         }
-
-        discard() ;
+        else super.handleEntityEvent(id);
     }
 }
