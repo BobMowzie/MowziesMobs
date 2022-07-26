@@ -56,7 +56,7 @@ import java.util.stream.Collectors;
 public enum ClientEventHandler {
     INSTANCE;
 
-    private static final ResourceLocation FROZEN_BLUR = new ResourceLocation(MowziesMobs.MODID, "textures/gui/frozenblur.png");
+    private static final ResourceLocation FROZEN_BLUR = new ResourceLocation("textures/misc/powder_snow_outline.png");
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onHandRender(RenderHandEvent event) {
