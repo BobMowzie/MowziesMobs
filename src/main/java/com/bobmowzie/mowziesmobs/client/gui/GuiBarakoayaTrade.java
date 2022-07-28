@@ -8,6 +8,7 @@ import com.bobmowzie.mowziesmobs.server.inventory.InventoryBarakoaya;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.java.games.input.Mouse;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import com.mojang.blaze3d.platform.Lighting;
@@ -37,18 +38,6 @@ public final class GuiBarakoayaTrade extends AbstractContainerScreen<ContainerBa
     }
 
     @Override
-    protected void containerTick() {
-        super.containerTick();
-        if (barakoaya.getAnimation() == EntityBarakoaVillager.ATTACK_ANIMATION && barakoaya.getAnimationTick() == 8) {
-            cursorHit = 6;
-        }
-        if (cursorHit > 0) {
-            cursorHit--;
-//            Mouse.setCursorPosition(Mouse.getX() + cursorHit * 16 / 6, Mouse.getY() - cursorHit * 44 / 6); // TODO
-        }
-    }
-
-    @Override
     public boolean mouseReleased(double mouseX, double mouseY, int state) {
         if (barakoaya.getAnimation() == IAnimatedEntity.NO_ANIMATION) {
             if (isHovering(13, 23, 8, 14, mouseX, mouseY)) {
@@ -65,7 +54,6 @@ public final class GuiBarakoayaTrade extends AbstractContainerScreen<ContainerBa
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0,TEXTURE);
-        //this.minecraft.getTextureManager().bindForSetup(TEXTURE);
         blit(matrixStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
         InventoryScreen.renderEntityInInventory(leftPos + 33, topPos + 61, 22, leftPos + 33 - x, topPos + 21 - y, barakoaya);
     }
@@ -86,27 +74,19 @@ public final class GuiBarakoayaTrade extends AbstractContainerScreen<ContainerBa
             ItemStack input = trade.getInput();
             ItemStack output = trade.getOutput();
             matrixStack.pushPose();
-            /*
-            Lighting.turnBackOn();
-            RenderSystem.disableLighting();
-            RenderSystem.enableRescaleNormal();
-            RenderSystem.enableColorMaterial();
-            RenderSystem.enableLighting();*/
+
             itemRenderer.blitOffset = 100;
             itemRenderer.renderAndDecorateItem(input, leftPos + 80, topPos + 24);
             itemRenderer.renderGuiItemDecorations(font, input, leftPos + 80, topPos + 24);
             itemRenderer.renderAndDecorateItem(output, leftPos + 134, topPos + 24);
             itemRenderer.renderGuiItemDecorations(font, output, leftPos + 134, topPos + 24);
             itemRenderer.blitOffset = 0;
-            //RenderSystem.disableLighting();
+
             if (isHovering(80, 24, 16, 16, mouseX, mouseY)) {
                 renderTooltip(matrixStack, input, mouseX, mouseY);
             } else if (isHovering(134, 24, 16, 16, mouseX, mouseY)) {
                 renderTooltip(matrixStack, output, mouseX, mouseY);
             }
-            /*RenderSystem.enableLighting();
-            RenderSystem.enableDepthTest();
-            Lighting.turnBackOn();*/ // TODO
             matrixStack.popPose();
         }
     }

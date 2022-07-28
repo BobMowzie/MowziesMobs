@@ -65,9 +65,7 @@ public class WroughtnautChamberStructure extends MowzieStructure {
             WroughtnautChamberPieces.start(templateManagerIn, pos, rotation, this.pieces, this.random);
 
             //Sets the bounds of the structure.
-//            this.recalculateStructureSize();
             this.getBoundingBox();
-            // TODO: Fix chamber bounding box, might need access transformer
             /*
             this.boundingBox = BoundingBox.getUnknownBox();
             boundingBox.x0 = (chunkX << 4) + 7;

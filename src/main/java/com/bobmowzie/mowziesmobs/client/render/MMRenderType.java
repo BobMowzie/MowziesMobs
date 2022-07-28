@@ -20,8 +20,6 @@ import java.util.function.Function;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class MMRenderType extends RenderType {
-    // TODO make sure these are working correctly
-
     public MMRenderType(String nameIn, VertexFormat formatIn, VertexFormat.Mode drawModeIn, int bufferSizeIn, boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {
         super(nameIn, formatIn, drawModeIn, bufferSizeIn, useDelegateIn, needsSortingIn, setupTaskIn, clearTaskIn);
     }

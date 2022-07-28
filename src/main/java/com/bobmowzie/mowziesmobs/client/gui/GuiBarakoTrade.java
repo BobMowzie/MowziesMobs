@@ -98,12 +98,7 @@ public final class GuiBarakoTrade extends AbstractContainerScreen<ContainerBarak
         this.renderTooltip(matrixStack, mouseX, mouseY);
         ItemStack inSlot = inventory.getItem(0);
         matrixStack.pushPose();
-        /*
-        RenderHelper.turnBackOn();
-        RenderSystem.disableLighting();
-        RenderSystem.enableRescaleNormal();
-        RenderSystem.enableColorMaterial();
-        RenderSystem.enableLighting();*/ // TODO
+
         itemRenderer.blitOffset = 100;
         if (hasTraded) {
             itemRenderer.renderAndDecorateItem(output, leftPos + 106, topPos + 24);
@@ -124,14 +119,10 @@ public final class GuiBarakoTrade extends AbstractContainerScreen<ContainerBarak
             }
         }
         itemRenderer.blitOffset = 0;
-//        RenderSystem.disableLighting();
 
         if (grantButton.isMouseOver(mouseX, mouseY)) {
             renderComponentHoverEffect(matrixStack, getHoverText(), mouseX, mouseY);
         }
-        /*RenderSystem.enableLighting();
-        RenderSystem.enableDepthTest();
-        RenderHelper.turnBackOn();*/
         matrixStack.popPose();
     }
 

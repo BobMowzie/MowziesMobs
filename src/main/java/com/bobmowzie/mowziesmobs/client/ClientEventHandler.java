@@ -172,7 +172,7 @@ public enum ClientEventHandler {
         final int startTime = 210;
         final int pointStart = 1200;
         final int timePerMillis = 22;
-        if (e.getOverlay() == ForgeIngameGui.FROSTBITE_ELEMENT) {   // TODO port to use vanilla frostbite overlay
+        if (e.getOverlay() == ForgeIngameGui.FROSTBITE_ELEMENT) {
             if (Minecraft.getInstance().player != null) {
                 FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(Minecraft.getInstance().player, CapabilityHandler.FROZEN_CAPABILITY);
                 if (frozenCapability != null && frozenCapability.getFrozen() && Minecraft.getInstance().options.getCameraType() == CameraType.FIRST_PERSON) {
