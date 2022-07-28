@@ -282,7 +282,8 @@ public class EntityGrottol extends MowzieEntity {
                     timeSinceMinecart = 0;
                 }
                 else if (onRail) {
-                    minecart.setDeltaMovement(minecart.getForward().scale(2.7));
+                    if (minecart.getDeltaMovement().length() < 0.001) minecart.setDeltaMovement(minecart.getForward().scale(2.7));
+                    else minecart.setDeltaMovement(minecart.getDeltaMovement().normalize().scale(2.7));
                     timeSinceMinecart++;
                 }
             }
