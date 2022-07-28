@@ -11,8 +11,10 @@ import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability.IFrozenCapab
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
 
@@ -56,9 +58,7 @@ public class EntityIceBall extends EntityMagicEffect {
         if (!entitiesHit.isEmpty()) {
             for (LivingEntity entity : entitiesHit) {
                 if (entity == caster) continue;
-                List<? extends String> freezeImmune = ConfigHandler.COMMON.GENERAL.freeze_blacklist.get();
-                ResourceLocation mobName = EntityType.getKey(entity.getType());
-                if (freezeImmune.contains(mobName.toString())) continue;
+                if (entity.getType().is(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES) || entity instanceof EnderDragon) continue;                ResourceLocation mobName = EntityType.getKey(entity.getType());
                 if (entity.hurt(DamageSource.FREEZE, 3f * ConfigHandler.COMMON.MOBS.FROSTMAW.combatConfig.attackMultiplier.get().floatValue())) {
                     IFrozenCapability capability = CapabilityHandler.getCapability(entity, CapabilityHandler.FROZEN_CAPABILITY);
                     if (capability != null) capability.addFreezeProgress(entity, 1);

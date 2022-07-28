@@ -10,6 +10,8 @@ import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.entity.Entity;
@@ -100,9 +102,7 @@ public class EntityIceBreath extends EntityMagicEffect {
         for (LivingEntity entityHit : entitiesHit) {
             if (entityHit == caster) continue;
 
-            List<? extends String> freezeImmune = ConfigHandler.COMMON.GENERAL.freeze_blacklist.get();
-            ResourceLocation mobName = EntityType.getKey(entityHit.getType());
-            if (freezeImmune.contains(mobName.toString())) continue;
+            if (entityHit.getType().is(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES) || entityHit instanceof EnderDragon) continue;
 
             float entityHitYaw = (float) ((Math.atan2(entityHit.getZ() - getZ(), entityHit.getX() - getX()) * (180 / Math.PI) - 90) % 360);
             float entityAttackingYaw = getYRot() % 360;

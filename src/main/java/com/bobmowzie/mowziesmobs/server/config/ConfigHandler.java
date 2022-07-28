@@ -673,18 +673,6 @@ public final class  ConfigHandler {
         public final EarthboreGauntlet EARTHBORE_GAUNTLET;
     }
 
-    public static class General {
-        public final ConfigValue<List<? extends String>> freeze_blacklist;
-
-        private General(final ForgeConfigSpec.Builder builder) {
-            builder.push("general");
-            this.freeze_blacklist = builder.comment("Add a mob's full name here to prevent it from being frozen or taking damage from ice magic.")
-                    .translation(LANG_PREFIX + "freeze_blacklist")
-                    .defineList("freeze_blacklist", Arrays.asList("mowziesmobs:frostmaw", "minecraft:enderdragon", "minecraft:blaze", "minecraft:magma_cube", "minecraft:stray", "minecraft:polar_bear", "minecraft:snow_golem"), STRING_PREDICATE);
-            builder.pop();
-        }
-    }
-
     public static class Client {
         private Client(final ForgeConfigSpec.Builder builder) {
             builder.push("client");
@@ -719,12 +707,9 @@ public final class  ConfigHandler {
 
     public static class Common {
         private Common(final ForgeConfigSpec.Builder builder) {
-            GENERAL = new General(builder);
             TOOLS_AND_ABILITIES = new ToolsAndAbilities(builder);
             MOBS = new Mobs(builder);
         }
-
-        public final General GENERAL;
 
         public final ToolsAndAbilities TOOLS_AND_ABILITIES;
 
