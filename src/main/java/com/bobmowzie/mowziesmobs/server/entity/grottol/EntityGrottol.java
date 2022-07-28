@@ -244,7 +244,7 @@ public class EntityGrottol extends MowzieEntity {
     @Override
     public boolean hurt(DamageSource source, float amount) {
         Entity entity = source.getEntity();
-        if (entity instanceof Player) {
+        if (entity instanceof Player && !source.isProjectile()) {
             Player player = (Player) entity;
             if (player.getMainHandItem().isCorrectToolForDrops(Blocks.DIAMOND_ORE.defaultBlockState()) || player.getMainHandItem().is(TagHandler.Items.CAN_HIT_GROTTOL)) {
                 if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, player.getMainHandItem()) > 0) {
