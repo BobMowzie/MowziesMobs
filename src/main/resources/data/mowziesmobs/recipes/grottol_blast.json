@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": {
+    "item": "mowziesmobs:captured_grottol"
+  },
+  "result": "minecraft:diamond",
+  "experience": 1.0,
+  "cookingtime": 200
+}
