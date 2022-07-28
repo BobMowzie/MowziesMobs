@@ -45,6 +45,7 @@ public class ParticleSparkle extends TextureSheetParticle {
     public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
         float a = ((float)age + partialTicks)/lifetime;
         alpha = -4 * a * a + 4 * a;
+        if (alpha < 0.01) alpha = 0.01f;
         quadSize = (-4 * a * a + 4 * a) * scale;
 
         super.render(buffer, renderInfo, partialTicks);

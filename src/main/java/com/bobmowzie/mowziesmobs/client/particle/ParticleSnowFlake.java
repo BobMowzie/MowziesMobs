@@ -86,7 +86,7 @@ public class ParticleSnowFlake extends TextureSheetParticle {
     public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
         float var = (age + partialTicks)/(float)lifetime;
         alpha = (float) (1 - Math.exp(10 * (var - 1)) - Math.pow(2000, -var));
-
+        if (alpha < 0.01) alpha = 0.01f;
         super.render(buffer, renderInfo, partialTicks);
     }
 
