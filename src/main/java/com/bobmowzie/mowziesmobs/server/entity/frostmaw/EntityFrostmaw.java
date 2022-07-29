@@ -625,11 +625,9 @@ public class EntityFrostmaw extends MowzieEntity implements Enemy {
         List<LivingEntity> nearby = getEntityLivingBaseNearby(100, 100, 100, 100);
         for (LivingEntity nearbyEntity : nearby) {
             if (nearbyEntity instanceof EntityFrostmaw || nearbyEntity instanceof Villager) {
-//                System.out.println("Could not spawn");
                 return false;
             }
         }
-//        System.out.println("Can spawn");
         return super.checkSpawnRules(world, reason);
     }
 
@@ -851,7 +849,9 @@ public class EntityFrostmaw extends MowzieEntity implements Enemy {
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        setHasCrystal(compound.getBoolean("has_crystal"));
+        if (compound.contains("has_crystal")) {
+            setHasCrystal(compound.getBoolean("has_crystal"));
+        }
         setActive(compound.getBoolean("active"));
         setAlwaysActive(compound.getBoolean("alwaysActive"));
     }
