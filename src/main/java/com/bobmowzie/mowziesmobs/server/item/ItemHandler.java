@@ -139,6 +139,7 @@ public final class ItemHandler {
         BARAKO_MASK.getAttributesFromConfig();
         SPEAR.getAttributesFromConfig();
         NAGA_FANG_DAGGER.getAttributesFromConfig();
+        EARTHBORE_GAUNTLET.getAttributesFromConfig();
 
         int barakoaColor = ConfigHandler.CLIENT.oldBarakoaTextures.get() ? BARAKOA_PINK_COLOR : BARAKOA_GREEN_COLOR;
         BARAKO_SPAWN_EGG.backgroundColor = barakoaColor;
