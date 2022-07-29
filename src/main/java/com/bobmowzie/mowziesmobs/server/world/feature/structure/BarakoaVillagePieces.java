@@ -66,17 +66,13 @@ public class BarakoaVillagePieces {
     );
 
     public static StructurePiece addPiece(ResourceLocation resourceLocation, StructureManager manager, BlockPos pos, Rotation rot, List<StructurePiece> pieces, Random rand) {
-        BlockPos placementOffset = OFFSET.get(resourceLocation);
-        BlockPos blockPos = pos.offset(placementOffset.rotate(rot));
-        StructurePiece newPiece = new BarakoaVillagePieces.Piece(manager, resourceLocation, rot, blockPos);
+        StructurePiece newPiece = new BarakoaVillagePieces.Piece(manager, resourceLocation, rot, pos);
         pieces.add(newPiece);
         return newPiece;
     }
 
     public static StructurePiece addPieceCheckBounds(ResourceLocation resourceLocation, StructureManager manager, BlockPos pos, Rotation rot, List<StructurePiece> pieces, Random rand, List<StructurePiece> ignore) {
-        BlockPos placementOffset = OFFSET.get(resourceLocation);
-        BlockPos blockPos = pos.offset(placementOffset.rotate(rot));
-        BarakoaVillagePieces.Piece newPiece = new BarakoaVillagePieces.Piece(manager, resourceLocation, rot, blockPos);
+        BarakoaVillagePieces.Piece newPiece = new BarakoaVillagePieces.Piece(manager, resourceLocation, rot, pos);
         for (StructurePiece piece : pieces) {
             if (ignore.contains(piece)) continue;
             if (newPiece.getBoundingBox().intersects(piece.getBoundingBox())) return null;
@@ -86,10 +82,7 @@ public class BarakoaVillagePieces {
     }
 
     public static StructurePiece addHouse(StructureManager manager, BlockPos pos, Rotation rot, List<StructurePiece> pieces, Random rand) {
-        ResourceLocation resourceLocation = HOUSE;
-        BlockPos placementOffset = OFFSET.get(resourceLocation);
-        BlockPos blockPos = pos.offset(placementOffset.rotate(rot));
-        BarakoaVillagePieces.HousePiece newPiece = new BarakoaVillagePieces.HousePiece(manager, resourceLocation, rot, blockPos);
+        BarakoaVillagePieces.HousePiece newPiece = new BarakoaVillagePieces.HousePiece(manager, HOUSE, rot, pos);
         for (StructurePiece piece : pieces) {
             if (newPiece.getBoundingBox().intersects(piece.getBoundingBox())) return null;
         }
@@ -109,10 +102,9 @@ public class BarakoaVillagePieces {
 
     public static class Piece extends TemplateStructurePiece {
         protected ResourceLocation resourceLocation;
-        protected Rotation rotation;
 
         public Piece(StructurePieceType pieceType, StructureManager manager, ResourceLocation resourceLocationIn, Rotation rotation, BlockPos pos) {
-            super(pieceType, 0, manager, resourceLocationIn, resourceLocationIn.toString(), makeSettings(rotation, resourceLocationIn), makePosition(resourceLocationIn, pos));
+            super(pieceType, 0, manager, resourceLocationIn, resourceLocationIn.toString(), makeSettings(rotation, resourceLocationIn), makePosition(resourceLocationIn, pos, rotation));
         }
 
         public Piece(StructurePieceType pieceType, ServerLevel level, CompoundTag tagCompound) {
@@ -131,8 +123,8 @@ public class BarakoaVillagePieces {
             return (new StructurePlaceSettings()).setRotation(rotation).setMirror(Mirror.NONE).addProcessor(BlockIgnoreProcessor.STRUCTURE_BLOCK);
         }
 
-        private static BlockPos makePosition(ResourceLocation resourceLocation, BlockPos pos) {
-            return pos.offset(BarakoaVillagePieces.OFFSET.get(resourceLocation));
+        private static BlockPos makePosition(ResourceLocation resourceLocation, BlockPos pos, Rotation rotation) {
+            return pos.offset(BarakoaVillagePieces.OFFSET.get(resourceLocation).rotate(rotation));
         }
 
         /**
@@ -156,6 +148,7 @@ public class BarakoaVillagePieces {
          */
         @Override
         protected void handleDataMarker(String function, BlockPos pos, ServerLevelAccessor worldIn, Random rand, BoundingBox sbb) {
+            Rotation rotation = this.placeSettings.getRotation();
             if (function.equals("support")) {
                 worldIn.setBlock(pos, Blocks.OAK_FENCE.defaultBlockState(), 3);
                 fillAirLiquidDown(worldIn, Blocks.OAK_FENCE.defaultBlockState(), pos.below());
@@ -166,7 +159,7 @@ public class BarakoaVillagePieces {
             }
             else if (function.equals("stairs")) {
                 Direction stairDirection = Direction.EAST;
-                stairDirection = this.rotation.rotate(stairDirection);
+                stairDirection = rotation.rotate(stairDirection);
                 setBlockState(worldIn, pos.relative(Direction.UP, 1), Blocks.AIR.defaultBlockState());
                 setBlockState(worldIn, pos.relative(Direction.UP, 2), Blocks.AIR.defaultBlockState());
                 setBlockState(worldIn, pos, Blocks.SPRUCE_STAIRS.defaultBlockState().setValue(StairBlock.FACING, stairDirection.getOpposite()));
@@ -216,7 +209,7 @@ public class BarakoaVillagePieces {
 
         @Override
         public boolean postProcess(WorldGenLevel p_230383_1_, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, BoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
-            StructurePlaceSettings placementsettings = (new StructurePlaceSettings()).setRotation(this.rotation).setMirror(Mirror.NONE);
+            StructurePlaceSettings placementsettings = (new StructurePlaceSettings()).setRotation(this.placeSettings.getRotation()).setMirror(Mirror.NONE);
             BlockPos blockpos = BarakoaVillagePieces.OFFSET.get(this.resourceLocation);
             if (blockpos != null) {
                 this.templatePosition.offset(StructureTemplate.calculateRelativePosition(placementsettings, new BlockPos(0 - blockpos.getX(), 0, 0 - blockpos.getZ())));
@@ -271,6 +264,7 @@ public class BarakoaVillagePieces {
 
         @Override
         protected void handleDataMarker(String function, BlockPos pos, ServerLevelAccessor worldIn, Random rand, BoundingBox sbb) {
+            Rotation rotation = this.placeSettings.getRotation();
             if ("corner".equals(function.substring(0, function.length() - 1))) {
                 worldIn.removeBlock(pos, false);
                 pos = pos.below();
