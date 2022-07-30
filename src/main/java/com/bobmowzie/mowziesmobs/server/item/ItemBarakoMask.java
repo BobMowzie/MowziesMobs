@@ -70,7 +70,7 @@ public class ItemBarakoMask extends MowzieArmorItem implements BarakoaMask {
 
     @Override
     public int getMaxDamage(ItemStack stack) {
-        return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get() ? super.getDamage(stack): 0;
+        return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get() ? super.getMaxDamage(stack): 0;
     }
 
     @Override
@@ -101,7 +101,7 @@ public class ItemBarakoMask extends MowzieArmorItem implements BarakoaMask {
 
         @Override
         public int getDurabilityForSlot(EquipmentSlot equipmentSlotType) {
-            return ArmorMaterials.GOLD.getDefenseForSlot(equipmentSlotType);
+            return ArmorMaterials.GOLD.getDurabilityForSlot(equipmentSlotType);
         }
 
         @Override

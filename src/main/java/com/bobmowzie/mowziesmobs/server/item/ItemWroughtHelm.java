@@ -59,7 +59,7 @@ public class ItemWroughtHelm extends MowzieArmorItem {
 
     @Override
     public int getMaxDamage(ItemStack stack) {
-        return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable.get() ? super.getDamage(stack): 0;
+        return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable.get() ? super.getMaxDamage(stack): 0;
     }
 
     @Override
