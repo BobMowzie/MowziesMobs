@@ -10,8 +10,6 @@ import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.List;
 
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
-
 public final class EntityAIGrottolFindMinecart extends Goal {
     private final EntityGrottol grottol;
 

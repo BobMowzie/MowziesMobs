@@ -1,11 +1,10 @@
 package com.ilexiconn.llibrary.client.model.tools;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.ilexiconn.llibrary.client.util.ClientUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

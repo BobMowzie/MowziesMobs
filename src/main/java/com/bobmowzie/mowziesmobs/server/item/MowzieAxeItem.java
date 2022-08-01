@@ -8,8 +8,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.Tier;
 
-import net.minecraft.world.item.Item.Properties;
-
 public abstract class MowzieAxeItem extends AxeItem {
     public MowzieAxeItem(Tier tier, float attackDamageIn, float attackSpeedIn, Properties builderIn) {
         super(tier, attackDamageIn, attackSpeedIn, builderIn);

@@ -1,45 +1,32 @@
 package com.bobmowzie.mowziesmobs.client;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerFirstPerson;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerThirdPerson;
-import com.bobmowzie.mowziesmobs.client.render.entity.FrozenRenderHandler;
-import com.bobmowzie.mowziesmobs.client.render.entity.layer.SunblockLayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoFirstPersonRenderer;
+import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoRenderPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
-import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
-import com.bobmowzie.mowziesmobs.server.item.*;
-import com.google.common.collect.ImmutableList;
+import com.bobmowzie.mowziesmobs.server.item.ItemBlowgun;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.CameraType;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
@@ -48,10 +35,6 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.registries.ForgeRegistries;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @OnlyIn(Dist.CLIENT)
 public enum ClientEventHandler {
@@ -85,7 +68,7 @@ public enum ClientEventHandler {
                         if (event.isCanceled()) {
                             float delta = event.getPartialTicks();
                             float f1 = Mth.lerp(delta, player.xRotO, player.getXRot());
-                            firstPersonRenderer.renderItemInFirstPerson((AbstractClientPlayer) player, f1, delta, event.getHand(), event.getSwingProgress(), event.getItemStack(), event.getEquipProgress(), event.getMatrixStack(), event.getBuffers(), event.getLight(), geckoPlayer);
+                            firstPersonRenderer.renderItemInFirstPerson((AbstractClientPlayer) player, f1, delta, event.getHand(), event.getSwingProgress(), event.getItemStack(), event.getEquipProgress(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), geckoPlayer);
                         }
                     }
                 }
@@ -99,7 +82,7 @@ public enum ClientEventHandler {
             if (!ConfigHandler.CLIENT.customPlayerAnims.get()) return;
             Player player = (Player) event.getEntity();
             if (player == null) return;
-            float delta = event.getPartialRenderTick();
+            float delta = event.getPartialTick();
             AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
 //        shouldAnimate = (player.ticksExisted / 20) % 2 == 0;
             if (abilityCapability != null && abilityCapability.getActiveAbility() != null) {
@@ -114,7 +97,7 @@ public enum ClientEventHandler {
                             event.setCanceled(true);
 
                             if (event.isCanceled()) {
-                                animatedPlayerRenderer.render((AbstractClientPlayer) event.getEntity(), event.getEntity().getYRot(), delta, event.getMatrixStack(), event.getBuffers(), event.getLight(), geckoPlayer);
+                                animatedPlayerRenderer.render((AbstractClientPlayer) event.getEntity(), event.getEntity().getYRot(), delta, event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), geckoPlayer);
                             }
                         }
                     }
@@ -194,14 +177,14 @@ public enum ClientEventHandler {
                     event.setCanceled(true);
                 }
                 if (event.getType().equals(RenderGameOverlayEvent.ElementType.ALL)) {
-                    Minecraft.getInstance().gui.setOverlayMessage(new TranslatableComponent(""), false);
+                    Minecraft.getInstance().gui.setOverlayMessage(TextComponent.EMPTY, false);
                 }
             }
         }
     }
 
     @SubscribeEvent
-    public void updateFOV(FOVUpdateEvent event) {
+    public void updateFOV(FOVModifierEvent event) {
         Player player = event.getEntity();
         if (player.isUsingItem() && player.getUseItem().getItem() instanceof ItemBlowgun) {
             int i = player.getTicksUsingItem();

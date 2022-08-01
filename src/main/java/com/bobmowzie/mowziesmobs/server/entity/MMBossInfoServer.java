@@ -1,13 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.server.level.ServerPlayer;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
-import net.minecraft.world.BossEvent.BossBarOverlay;
 
 public class MMBossInfoServer extends ServerBossEvent {
     private final MowzieEntity entity;

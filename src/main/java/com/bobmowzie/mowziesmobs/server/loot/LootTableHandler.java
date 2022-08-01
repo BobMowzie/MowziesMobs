@@ -1,13 +1,13 @@
 package com.bobmowzie.mowziesmobs.server.loot;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.Serializer;
-import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.Registry;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 
 public class LootTableHandler {
     // Mob drops

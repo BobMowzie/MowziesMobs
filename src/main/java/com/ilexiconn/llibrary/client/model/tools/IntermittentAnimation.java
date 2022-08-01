@@ -1,8 +1,8 @@
 package com.ilexiconn.llibrary.client.model.tools;
 
 import com.ilexiconn.llibrary.server.entity.IIntermittentEntity;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

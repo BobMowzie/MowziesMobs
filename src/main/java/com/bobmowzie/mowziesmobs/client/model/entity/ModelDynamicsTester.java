@@ -7,7 +7,6 @@ import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.ilexiconn.llibrary.client.model.tools.BasicModelRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.model.geom.ModelPart;
 
 /**
  * Created by BobMowzie on 8/30/2018.

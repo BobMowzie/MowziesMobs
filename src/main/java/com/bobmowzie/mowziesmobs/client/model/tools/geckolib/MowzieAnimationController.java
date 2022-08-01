@@ -6,8 +6,6 @@ import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
 
-import software.bernie.geckolib3.core.controller.AnimationController.IAnimationPredicate;
-
 public class MowzieAnimationController<T extends IAnimatable & IAnimationTickable> extends AnimationController<T> {
     private double tickOffset;
 

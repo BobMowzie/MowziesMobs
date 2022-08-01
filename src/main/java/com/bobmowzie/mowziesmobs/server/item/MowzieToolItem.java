@@ -3,19 +3,16 @@ package com.bobmowzie.mowziesmobs.server.item;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.google.common.collect.ImmutableMultimap;
 import net.minecraft.tags.Tag;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.DiggerItem;
-
-import java.util.Set;
-
-import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.level.block.Block;
 
 public abstract class MowzieToolItem extends DiggerItem {
-    public MowzieToolItem(float attackDamageIn, float attackSpeedIn, Tier tier, Tag<Block> effectiveBlocksIn, Properties builderIn) {
+    public MowzieToolItem(float attackDamageIn, float attackSpeedIn, Tier tier, TagKey<Block> effectiveBlocksIn, Properties builderIn) {
         super(attackDamageIn, attackSpeedIn, tier, effectiveBlocksIn, builderIn);
     }
 

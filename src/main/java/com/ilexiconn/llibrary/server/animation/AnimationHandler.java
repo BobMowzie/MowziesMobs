@@ -5,7 +5,7 @@ import com.ilexiconn.llibrary.server.event.AnimationEvent;
 import com.ilexiconn.llibrary.server.network.AnimationMessage;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraftforge.network.PacketDistributor;
 import org.apache.commons.lang3.ArrayUtils;
 
 /**

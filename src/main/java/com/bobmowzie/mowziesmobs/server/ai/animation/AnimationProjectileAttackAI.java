@@ -3,9 +3,9 @@ package com.bobmowzie.mowziesmobs.server.ai.animation;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.RangedAttackMob;
-import net.minecraft.sounds.SoundEvent;
 
 public class AnimationProjectileAttackAI<T extends MowzieEntity & IAnimatedEntity & RangedAttackMob> extends SimpleAnimationAI<T> {
     private final int attackFrame;

@@ -14,11 +14,11 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.ForgeModelBakery;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fmllegacy.RegistryObject;
+import net.minecraftforge.registries.RegistryObject;
 
 @Mod.EventBusSubscriber(modid = MowziesMobs.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientEventBusSubscriber {
@@ -64,10 +64,10 @@ public class ClientEventBusSubscriber {
     @SubscribeEvent
     public static void onRegisterModels(ModelRegistryEvent modelRegistryEvent) {
         for (String item : MMModels.HAND_MODEL_ITEMS) {
-            ModelLoader.addSpecialModel(new ModelResourceLocation(MowziesMobs.MODID + ":" + item + "_in_hand", "inventory"));
+            ForgeModelBakery.addSpecialModel(new ModelResourceLocation(MowziesMobs.MODID + ":" + item + "_in_hand", "inventory"));
         }
         for (MaskType type : MaskType.values()) {
-            ModelLoader.addSpecialModel(new ModelResourceLocation(MowziesMobs.MODID + ":barakoa_mask_" + type.name + "_frame", "inventory"));
+            ForgeModelBakery.addSpecialModel(new ModelResourceLocation(MowziesMobs.MODID + ":barakoa_mask_" + type.name + "_frame", "inventory"));
         }
     }
 }

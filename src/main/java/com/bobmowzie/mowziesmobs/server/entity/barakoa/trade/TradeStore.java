@@ -1,11 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa.trade;
 
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Random;
 
@@ -50,7 +50,7 @@ public final class TradeStore {
     }
 
     public static TradeStore deserialize(CompoundTag compound) {
-        ListTag tradesList = compound.getList("trades", NBT.TAG_COMPOUND);
+        ListTag tradesList = compound.getList("trades", Tag.TAG_COMPOUND);
         int totalWeight = 0;
         ImmutableSet.Builder<Trade> trades = new ImmutableSet.Builder<>();
         for (int i = 0; i < tradesList.size(); i++) {

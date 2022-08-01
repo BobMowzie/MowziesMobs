@@ -1,12 +1,12 @@
 package com.bobmowzie.mowziesmobs.server.ai;
 
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
-import net.minecraft.world.level.pathfinder.NodeEvaluator;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
-import net.minecraft.util.Mth;
+import net.minecraft.world.level.pathfinder.NodeEvaluator;
 
 public class MMEntityMoveHelper extends MoveControl
 {

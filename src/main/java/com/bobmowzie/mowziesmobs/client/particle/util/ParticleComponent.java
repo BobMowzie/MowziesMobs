@@ -1,13 +1,11 @@
 package com.bobmowzie.mowziesmobs.client.particle.util;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
 import com.mojang.math.Quaternion;
-import net.minecraft.world.phys.Vec3;
 import com.mojang.math.Vector3f;
-
 import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.phys.Vec3;
 
 public abstract class ParticleComponent {
     public ParticleComponent() {

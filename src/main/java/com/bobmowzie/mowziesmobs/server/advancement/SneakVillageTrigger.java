@@ -1,14 +1,13 @@
 package com.bobmowzie.mowziesmobs.server.advancement;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.PlayerAdvancements;
+import net.minecraft.server.level.ServerPlayer;
 
 public class SneakVillageTrigger extends MMTrigger<AbstractCriterionTriggerInstance, SneakVillageTrigger.Listener> {
     public static final ResourceLocation ID = new ResourceLocation(MowziesMobs.MODID, "sneak_village");

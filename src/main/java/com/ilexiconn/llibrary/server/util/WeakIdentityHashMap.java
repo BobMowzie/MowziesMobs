@@ -3,15 +3,7 @@ package com.ilexiconn.llibrary.server.util;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
-import java.util.AbstractCollection;
-import java.util.AbstractSet;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
-import java.util.Map.Entry;
+import java.util.*;
 
 /**
  *

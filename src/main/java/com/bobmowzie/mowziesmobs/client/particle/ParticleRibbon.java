@@ -7,21 +7,19 @@ import com.bobmowzie.mowziesmobs.client.particle.util.RibbonComponent.PropertyOv
 import com.bobmowzie.mowziesmobs.client.particle.util.RibbonComponent.PropertyOverLength.EnumRibbonProperty;
 import com.bobmowzie.mowziesmobs.client.particle.util.RibbonParticleData;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.particles.ParticleType;
-import net.minecraft.world.phys.AABB;
 import com.mojang.math.Matrix4f;
-import net.minecraft.world.phys.Vec3;
 import com.mojang.math.Vector4f;
+import net.minecraft.client.Camera;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import net.minecraft.client.Camera;
 
 public class ParticleRibbon extends AdvancedParticleBase {
     public Vec3[] positions;

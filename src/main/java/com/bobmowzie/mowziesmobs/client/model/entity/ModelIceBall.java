@@ -6,7 +6,6 @@ import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.ilexiconn.llibrary.client.model.tools.BasicModelRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.model.geom.ModelPart;
 
 public class ModelIceBall<T extends EntityIceBall> extends AdvancedModelBase<T> {
 	private final AdvancedModelRenderer body1;

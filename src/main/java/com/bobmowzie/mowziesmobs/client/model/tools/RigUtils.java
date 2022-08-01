@@ -1,13 +1,12 @@
 package com.bobmowzie.mowziesmobs.client.model.tools;
 
-import net.minecraft.util.Mth;
-import software.bernie.geckolib3.core.processor.IBone;
-
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import software.bernie.geckolib3.core.processor.IBone;
 
 public class RigUtils {
     public static Vec3 lerp(Vec3 v, Vec3 u, float alpha) {

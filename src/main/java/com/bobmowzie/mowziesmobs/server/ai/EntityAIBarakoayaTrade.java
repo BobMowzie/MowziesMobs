@@ -6,8 +6,6 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.EnumSet;
 
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
-
 public final class EntityAIBarakoayaTrade extends Goal {
     private final EntityBarakoaVillager barakoaya;
 

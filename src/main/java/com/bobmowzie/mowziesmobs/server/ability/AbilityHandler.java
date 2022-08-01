@@ -10,7 +10,7 @@ import com.bobmowzie.mowziesmobs.server.message.MessageUseAbility;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraftforge.network.PacketDistributor;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nullable;
