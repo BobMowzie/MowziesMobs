@@ -12,6 +12,7 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -291,7 +292,7 @@ public class EntityFoliaath extends MowzieEntity implements Enemy {
 
     @Override
     public boolean checkSpawnRules(LevelAccessor world, MobSpawnType reason) {
-        Biome biome = world.getBiome(blockPosition());
+        Holder<Biome> biome = world.getBiome(blockPosition());
         int i = Mth.floor(this.getX());
         int j = Mth.floor(this.getBoundingBox().minY);
         int k = Mth.floor(this.getZ());
@@ -300,8 +301,9 @@ public class EntityFoliaath extends MowzieEntity implements Enemy {
         BlockState floorDown1 = world.getBlockState(pos.below(2));
         BlockState floorDown2 = world.getBlockState(pos.below(3));
         boolean notInTree = true;
-        BlockState topBlock = biome.getGenerationSettings().getSurfaceBuilder().get().config().getTopMaterial();
-        if (floor instanceof LeavesBlock && floorDown1 != topBlock && floorDown2 != topBlock) notInTree = false;
+        /* TODO
+        BlockState topBlock = biome.value().getGenerationSettings().getCarvingStages().getSurfaceBuilder().get().config().getTopMaterial();
+        if (floor instanceof LeavesBlock && floorDown1 != topBlock && floorDown2 != topBlock) notInTree = false;*/
         return super.checkSpawnRules(world, reason) && notInTree && getEntitiesNearby(Animal.class, 5, 5, 5, 5).isEmpty() && world.getDifficulty() != Difficulty.PEACEFUL;
     }
 

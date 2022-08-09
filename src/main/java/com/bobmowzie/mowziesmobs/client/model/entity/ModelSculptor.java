@@ -90,6 +90,7 @@ public class ModelSculptor extends MowzieAnimatedGeoModel<EntitySculptor> {
     }
 
     private void skirtCorrections(EntitySculptor entity) {
+        /* TODO
         MowzieGeoBone headJoint = this.getMowzieBone("head_joint");
         MowzieGeoBone thighR = this.getMowzieBone("thighR");
         MowzieGeoBone thighJointR = this.getMowzieBone("thighJointR");
@@ -169,6 +170,8 @@ public class ModelSculptor extends MowzieAnimatedGeoModel<EntitySculptor> {
         Matrix4f mat = frontCloth.getModelRotationMat().copy();
         mat.invert();
         frontCloth2.setModelRotationMat(mat);
+
+         */
 
     }
 }

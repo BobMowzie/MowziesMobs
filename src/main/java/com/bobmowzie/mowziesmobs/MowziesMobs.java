@@ -75,8 +75,7 @@ public final class MowziesMobs {
         LootTableHandler.init();
 
         event.enqueueWork(() -> {
-            FeatureHandler.setupStructures();
-            ConfiguredFeatureHandler.registerConfiguredStructures();
+            FeatureHandler.registerStructurePieces();
         });
     }
 
@@ -92,10 +91,5 @@ public final class MowziesMobs {
     public void onBiomeLoading(BiomeLoadingEvent event) {
         SpawnHandler.onBiomeLoading(event);
         ConfiguredFeatureHandler.onBiomeLoading(event);
-    }
-
-    @SubscribeEvent
-    public void onWorldLoad(final WorldEvent.Load event) {
-        FeatureHandler.addDimensionalSpacing(event);
     }
 }

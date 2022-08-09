@@ -28,11 +28,12 @@ import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.feature.StructurePieceType;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.ScatteredFeaturePiece;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.TemplateStructurePiece;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockIgnoreProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
@@ -99,16 +100,16 @@ public class BarakoaVillagePieces {
             super(pieceType, 0, manager, resourceLocationIn, resourceLocationIn.toString(), makeSettings(rotation, resourceLocationIn), makePosition(resourceLocationIn, pos, rotation));
         }
 
-        public Piece(StructurePieceType pieceType, ServerLevel level, CompoundTag tagCompound) {
-            super(pieceType, tagCompound, level, (resourceLocation) -> makeSettings(Rotation.valueOf(tagCompound.getString("Rot")), resourceLocation));
+        public Piece(StructurePieceType pieceType, StructurePieceSerializationContext context, CompoundTag tagCompound) {
+            super(pieceType, tagCompound, context.structureManager(), (resourceLocation) -> makeSettings(Rotation.valueOf(tagCompound.getString("Rot")), resourceLocation));
         }
 
         public Piece(StructureManager manager, ResourceLocation resourceLocationIn, Rotation rotation, BlockPos pos) {
             this(FeatureHandler.BARAKOA_VILLAGE_PIECE, manager, resourceLocationIn, rotation, pos);
         }
 
-        public Piece(ServerLevel level, CompoundTag tagCompound) {
-            this(FeatureHandler.BARAKOA_VILLAGE_PIECE, level, tagCompound);
+        public Piece(StructurePieceSerializationContext context, CompoundTag tagCompound) {
+            this(FeatureHandler.BARAKOA_VILLAGE_PIECE, context, tagCompound);
         }
 
         private static StructurePlaceSettings makeSettings(Rotation rotation, ResourceLocation resourceLocation) {
@@ -123,8 +124,8 @@ public class BarakoaVillagePieces {
          * (abstract) Helper method to read subclass data from NBT
          */
         @Override
-        protected void addAdditionalSaveData(ServerLevel level, CompoundTag tagCompound) {
-            super.addAdditionalSaveData(level, tagCompound);
+        protected void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag tagCompound) {
+            super.addAdditionalSaveData(context, tagCompound);
             tagCompound.putString("Rot", this.placeSettings.getRotation().name());
         }
 
@@ -190,7 +191,7 @@ public class BarakoaVillagePieces {
         protected void setBlockState(LevelAccessor worldIn, BlockPos pos, BlockState state) {
             FluidState ifluidstate = worldIn.getFluidState(pos);
             if (!ifluidstate.isEmpty()) {
-                worldIn.getLiquidTicks().scheduleTick(pos, ifluidstate.getType(), 0);
+                worldIn.getFluidTicks().willTickThisTick(pos, ifluidstate.getType());
                 if (state.hasProperty(BlockStateProperties.WATERLOGGED)) state = state.setValue(BlockStateProperties.WATERLOGGED, true);
             }
             worldIn.setBlock(pos, state, 2);
@@ -200,13 +201,12 @@ public class BarakoaVillagePieces {
         }
 
         @Override
-        public boolean postProcess(WorldGenLevel p_230383_1_, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, BoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+        public void postProcess(WorldGenLevel p_230383_1_, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, BoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
             StructurePlaceSettings placementsettings = (new StructurePlaceSettings()).setRotation(this.placeSettings.getRotation()).setMirror(Mirror.NONE);
             BlockPos blockpos = BarakoaVillagePieces.OFFSET.get(this.resourceLocation);
             if (blockpos != null) {
                 this.templatePosition.offset(StructureTemplate.calculateRelativePosition(placementsettings, new BlockPos(0 - blockpos.getX(), 0, 0 - blockpos.getZ())));
             }
-            return super.postProcess(p_230383_1_, p_230383_2_, p_230383_3_, p_230383_4_, p_230383_5_, p_230383_6_, p_230383_7_);
         }
 
         public void fillAirLiquidDown(LevelAccessor worldIn, BlockState state, BlockPos startPos) {
@@ -233,8 +233,8 @@ public class BarakoaVillagePieces {
             super(FeatureHandler.BARAKOA_VILLAGE_HOUSE, manager, resourceLocationIn, rotation, pos);
         }
 
-        public HousePiece(ServerLevel level, CompoundTag tagCompound) {
-            super(FeatureHandler.BARAKOA_VILLAGE_HOUSE, level, tagCompound);
+        public HousePiece(StructurePieceSerializationContext context, CompoundTag tagCompound) {
+            super(FeatureHandler.BARAKOA_VILLAGE_HOUSE, context, tagCompound);
             tableCorner = tagCompound.getInt("TableCorner");
             tableContent = tagCompound.getInt("TableContent");
             bedCorner = tagCompound.getInt("BedCorner");
@@ -244,8 +244,8 @@ public class BarakoaVillagePieces {
         }
 
         @Override
-        protected void addAdditionalSaveData(ServerLevel level, CompoundTag tagCompound) {
-            super.addAdditionalSaveData(level, tagCompound);
+        protected void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag tagCompound) {
+            super.addAdditionalSaveData(context, tagCompound);
             tagCompound.putInt("TableCorner", tableCorner);
             tagCompound.putInt("TableContent", tableContent);
             tagCompound.putInt("BedCorner", bedCorner);
@@ -351,7 +351,7 @@ public class BarakoaVillagePieces {
                 FluidState ifluidstate = worldIn.getFluidState(pos);
                 BlockState toPut = state;
                 if (!ifluidstate.isEmpty()) {
-                    worldIn.getLiquidTicks().scheduleTick(pos, ifluidstate.getType(), 0);
+                    worldIn.getFluidTicks().willTickThisTick(pos, ifluidstate.getType());
                     if (toPut.hasProperty(BlockStateProperties.WATERLOGGED)) toPut = toPut.setValue(BlockStateProperties.WATERLOGGED, true);
                 }
                 worldIn.setBlock(pos, toPut, 2);
@@ -365,7 +365,7 @@ public class BarakoaVillagePieces {
         protected void setBlockState(LevelAccessor worldIn, BlockPos pos, BlockState state) {
             FluidState ifluidstate = worldIn.getFluidState(pos);
             if (!ifluidstate.isEmpty()) {
-                worldIn.getLiquidTicks().scheduleTick(pos, ifluidstate.getType(), 0);
+                worldIn.getFluidTicks().willTickThisTick(pos, ifluidstate.getType());
                 if (state.hasProperty(BlockStateProperties.WATERLOGGED)) state = state.setValue(BlockStateProperties.WATERLOGGED, true);
             }
             worldIn.setBlock(pos, state, 2);
@@ -381,12 +381,12 @@ public class BarakoaVillagePieces {
             super(FeatureHandler.BARAKOA_VILLAGE_FIREPIT, x, 64, z, 9, 3, 9, Direction.NORTH);
         }
 
-        public FirepitPiece(ServerLevel level, CompoundTag tagCompound) {
+        public FirepitPiece(StructurePieceSerializationContext context, CompoundTag tagCompound) {
             super(FeatureHandler.BARAKOA_VILLAGE_FIREPIT, tagCompound);
         }
 
         @Override
-        public boolean postProcess(WorldGenLevel worldIn, StructureFeatureManager structureManager, ChunkGenerator chunkGenerator, Random randomIn, BoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+        public void postProcess(WorldGenLevel worldIn, StructureFeatureManager structureManager, ChunkGenerator chunkGenerator, Random randomIn, BoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
             BlockPos centerPos = findGround(worldIn, 4, 4);
             worldIn.setBlock(centerPos, Blocks.CAMPFIRE.defaultBlockState(), 2);
             fillAirLiquidBelowHeightmap(worldIn, Blocks.ACACIA_LOG.defaultBlockState(), 4, 4);
@@ -430,7 +430,6 @@ public class BarakoaVillagePieces {
                     }
                 }
             }
-            return true;
         }
     }
 
@@ -444,7 +443,7 @@ public class BarakoaVillagePieces {
             skullDir = random.nextInt(16);
         }
 
-        public StakePiece(ServerLevel level, CompoundTag tagCompound) {
+        public StakePiece(StructurePieceSerializationContext context, CompoundTag tagCompound) {
             super(FeatureHandler.BARAKOA_VILLAGE_STAKE, tagCompound);
             skull = tagCompound.getBoolean("Skull");
             skullDir = tagCompound.getInt("SkullDir");
@@ -454,14 +453,14 @@ public class BarakoaVillagePieces {
          * (abstract) Helper method to read subclass data from NBT
          */
         @Override
-        protected void addAdditionalSaveData(ServerLevel level, CompoundTag tagCompound) {
-            super.addAdditionalSaveData(level, tagCompound);
+        protected void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag tagCompound) {
+            super.addAdditionalSaveData(context, tagCompound);
             tagCompound.putBoolean("Skull", skull);
             tagCompound.putInt("SkullDir", skullDir);
         }
 
         @Override
-        public boolean postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, BoundingBox mutableBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+        public void postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, BoundingBox mutableBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
             placeBlock(worldIn, Blocks.OAK_FENCE.defaultBlockState(), 0, 1, 0, mutableBoundingBoxIn);
             if (skull) {
                 placeBlock(worldIn, Blocks.SKELETON_SKULL.defaultBlockState().setValue(BlockStateProperties.ROTATION_16, skullDir), 0, 2, 0, mutableBoundingBoxIn);
@@ -470,7 +469,6 @@ public class BarakoaVillagePieces {
                 placeBlock(worldIn, Blocks.TORCH.defaultBlockState(), 0, 2, 0, mutableBoundingBoxIn);
             }
             fillAirLiquidBelowHeightmap(worldIn, Blocks.OAK_FENCE.defaultBlockState(), 0, 0);
-            return true;
         }
     }
 
@@ -479,12 +477,12 @@ public class BarakoaVillagePieces {
             super(FeatureHandler.BARAKOA_VILLAGE_ALTAR, x - 2, y - 1, z - 2, 5, 4, 5, direction);
         }
 
-        public AltarPiece(ServerLevel level, CompoundTag tagCompound) {
+        public AltarPiece(StructurePieceSerializationContext context, CompoundTag tagCompound) {
             super(FeatureHandler.BARAKOA_VILLAGE_STAKE, tagCompound);
         }
 
         @Override
-        public boolean postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, BoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+        public void postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, BoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
             Vec2[] thatchPositions = new Vec2[] {
                     new Vec2(0, 1),
                     new Vec2(0, 2),
@@ -534,7 +532,6 @@ public class BarakoaVillagePieces {
                 setBlockState(worldIn, groundPos, Blocks.OAK_FENCE.defaultBlockState());
                 setBlockState(worldIn, groundPos.above(), Blocks.SKELETON_SKULL.defaultBlockState().setValue(BlockStateProperties.ROTATION_16, randomIn.nextInt(16)));
             }
-            return true;
         }
 
         public BlockPos findGround(LevelAccessor worldIn, int x, int z) {

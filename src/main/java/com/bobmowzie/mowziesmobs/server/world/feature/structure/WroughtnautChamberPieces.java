@@ -15,6 +15,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.TemplateStructurePiece;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockIgnoreProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
@@ -45,9 +46,9 @@ public class WroughtnautChamberPieces {
             this.wallPos = null;
         }
 
-        public Piece(ServerLevel level, CompoundTag tagCompound)
+        public Piece(StructurePieceSerializationContext context, CompoundTag tagCompound)
         {
-            super(FeatureHandler.WROUGHTNAUT_CHAMBER_PIECE, tagCompound, level, (resourceLocation) -> makeSettings(Rotation.valueOf(tagCompound.getString("Rot")), resourceLocation));
+            super(FeatureHandler.WROUGHTNAUT_CHAMBER_PIECE, tagCompound, context.structureManager(), (resourceLocation) -> makeSettings(Rotation.valueOf(tagCompound.getString("Rot")), resourceLocation));
             this.startPos = new BlockPos(
                 tagCompound.getInt("StartX"),
                 tagCompound.getInt("StartY"),
@@ -70,9 +71,9 @@ public class WroughtnautChamberPieces {
          * (abstract) Helper method to read subclass data from NBT
          */
         @Override
-        protected void addAdditionalSaveData(ServerLevel level, CompoundTag tagCompound)
+        protected void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag tagCompound)
         {
-            super.addAdditionalSaveData(level, tagCompound);
+            super.addAdditionalSaveData(context, tagCompound);
             tagCompound.putString("Rot", this.placeSettings.getRotation().name());
             tagCompound.putInt("StartX", startPos.getX());
             tagCompound.putInt("StartY", startPos.getY());
@@ -102,7 +103,7 @@ public class WroughtnautChamberPieces {
         }
 
         @Override
-        public boolean postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, BoundingBox mutableBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+        public void postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, BoundingBox mutableBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
             Rotation rot = placeSettings.getRotation();
             Pair<BlockPos, Rotation> chamberResults;
             if (wallPos == null) {
@@ -114,7 +115,7 @@ public class WroughtnautChamberPieces {
                 this.placeSettings.setIgnoreEntities(true);
             }
 
-            if (chamberResults == null) return false;
+            if (chamberResults == null) return;
             wallPos = chamberResults.getLeft();
             rot = chamberResults.getRight();
             this.templatePosition = chamberResults.getLeft();
@@ -125,7 +126,7 @@ public class WroughtnautChamberPieces {
             this.templatePosition = this.templatePosition.offset(rotationOffset);
             mutableBoundingBoxIn = template.getBoundingBox(placeSettings, templatePosition);
 
-            return super.postProcess(worldIn, p_230383_2_, p_230383_3_, p_230383_4_, mutableBoundingBoxIn, p_230383_6_, p_230383_7_);
+            this.boundingBox = mutableBoundingBoxIn;
         }
 
         @Nullable

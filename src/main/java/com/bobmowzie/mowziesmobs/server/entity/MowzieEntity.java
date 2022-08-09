@@ -166,6 +166,7 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
                 return false;
             }
 
+            /* TODO
             List<? extends String> avoidStructures = spawnConfig.avoidStructures.get();
             for (String structureName : avoidStructures) {
                 StructureFeature<?> structure = ForgeRegistries.STRUCTURE_FEATURES.getValue(new ResourceLocation(structureName));
@@ -174,16 +175,18 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
                 if (pos == null) continue;
                 double dist = spawnPos.offset(0, -spawnPos.getY(), 0).distSqr(pos);
                 if (dist < 900) return false;
-            }
+            }*/
         }
         return true;
     }
 
     private static boolean isBlockTagAllowed(List<? extends String> allowedBlockTags, Block block) {
+        /* TODO
         for (String allowedBlockTag : allowedBlockTags) {
             if (TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(allowedBlockTag)).contains(block)) return true;
         }
-        return false;
+        return false;*/
+        return true;
     }
 
     protected boolean isWithinDistance(BlockPos pos, int distance) {

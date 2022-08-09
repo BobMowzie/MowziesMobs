@@ -77,11 +77,6 @@ public class MMPathNavigateGround extends GroundPathNavigation {
         return true;
     }
 
-    @Override
-    protected boolean canMoveDirectly(Vec3 start, Vec3 end, int sizeX, int sizeY, int sizeZ) {
-        return true;
-    }
-
     static final float EPSILON = 1.0E-8F;
 
     // Based off of https://github.com/andyhall/voxel-aabb-sweep/blob/d3ef85b19c10e4c9d2395c186f9661b052c50dc7/index.js
