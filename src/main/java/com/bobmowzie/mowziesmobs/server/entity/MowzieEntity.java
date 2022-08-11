@@ -12,6 +12,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -40,6 +41,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -47,10 +49,7 @@ import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class MowzieEntity extends PathfinderMob implements IEntityAdditionalSpawnData, IAnimatedEntity, IntermittentAnimatableEntity {
@@ -166,16 +165,21 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
                 return false;
             }
 
-            /* TODO
             List<? extends String> avoidStructures = spawnConfig.avoidStructures.get();
+            Registry<StructureSet> structureSetRegistry = world.registryAccess().registryOrThrow(Registry.STRUCTURE_SET_REGISTRY);
+            ServerLevel serverLevel = (ServerLevel) world;
+            ChunkGenerator generator = serverLevel.getChunkSource().getGenerator();
+            long seed = serverLevel.getSeed();
+            ChunkPos chunkPos = new ChunkPos(spawnPos);
             for (String structureName : avoidStructures) {
-                StructureFeature<?> structure = ForgeRegistries.STRUCTURE_FEATURES.getValue(new ResourceLocation(structureName));
-                if (structure == null) continue;
-                BlockPos pos = ((ServerLevel) world).findNearestMapFeature(structure, spawnPos, 3, false);
-                if (pos == null) continue;
-                double dist = spawnPos.offset(0, -spawnPos.getY(), 0).distSqr(pos);
-                if (dist < 900) return false;
-            }*/
+                Optional<StructureSet> structureSetOptional = structureSetRegistry.getOptional(new ResourceLocation(structureName));
+                if (structureSetOptional.isEmpty()) continue;
+                Optional<ResourceKey<StructureSet>> resourceKeyOptional = structureSetRegistry.getResourceKey(structureSetOptional.get());
+                if (resourceKeyOptional.isEmpty()) continue;
+                if (generator.hasFeatureChunkInRange(resourceKeyOptional.get(), seed, chunkPos.x, chunkPos.z, 2)) {
+                    return false;
+                }
+            }
         }
         return true;
     }

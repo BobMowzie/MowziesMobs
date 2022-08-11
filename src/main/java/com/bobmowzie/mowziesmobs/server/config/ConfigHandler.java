@@ -245,7 +245,7 @@ public final class  ConfigHandler {
                     Collections.emptyList(),
                     Arrays.asList("minecraft:valid_spawn", "minecraft:leaves", "minecraft:logs"),
                     -1, 60, false, false, false,
-                    Arrays.asList("minecraft:village", "minecraft:pillager_outpost")
+                    Arrays.asList("minecraft:villages", "minecraft:pillager_outposts")
 
             );
             combatConfig = new CombatConfig(builder, 1, 1);
@@ -267,7 +267,7 @@ public final class  ConfigHandler {
                     Collections.emptyList(),
                     Arrays.asList("minecraft:valid_spawn", "minecraft:sand"),
                     -1, 60, false, false, false,
-                    Arrays.asList("minecraft:village", "minecraft:pillager_outpost", "mowziesmobs:barakoa_village")
+                    Arrays.asList("minecraft:villages", "minecraft:pillager_outposts", "mowziesmobs:barakoa_villages")
             );
             combatConfig = new CombatConfig(builder,1, 1);
             builder.pop();
@@ -287,7 +287,7 @@ public final class  ConfigHandler {
                     Collections.emptyList(),
                     Collections.emptyList(),
                     -1, 70, false, true, false,
-                    Arrays.asList("minecraft:village", "minecraft:pillager_outpost")
+                    Arrays.asList("minecraft:villages", "minecraft:pillager_outposts")
             );
             combatConfig = new CombatConfig(builder,1, 1);
             builder.pop();
@@ -371,7 +371,7 @@ public final class  ConfigHandler {
             generationConfig = new GenerationConfig(builder, 25, 8,
                     new BiomeConfig(builder,  Arrays.asList("SAVANNA"), new ArrayList<>(), new ArrayList<>()),
                     50, 100,
-                    Arrays.asList("minecraft:village", "minecraft:pillager_outpost")
+                    Arrays.asList("minecraft:villages", "minecraft:pillager_outposts")
             );
             combatConfig = new CombatConfig(builder, 1, 1);
             this.hasBossBar = builder.comment("Disable/enable Barako's boss health bar")
@@ -408,7 +408,7 @@ public final class  ConfigHandler {
             generationConfig = new GenerationConfig(builder, 25, 8,
                     new BiomeConfig(builder,  Arrays.asList("SNOWY,!OCEAN,!RIVER,!BEACH,!FOREST"), new ArrayList<>(), new ArrayList<>()),
                     50, 100,
-                    Arrays.asList("minecraft:village", "minecraft:pillager_outpost")
+                    Arrays.asList("minecraft:villages", "minecraft:pillager_outposts")
             );
             combatConfig = new CombatConfig(builder, 1, 1);
             this.hasBossBar = builder.comment("Disable/enable Frostmaw's boss health bar")

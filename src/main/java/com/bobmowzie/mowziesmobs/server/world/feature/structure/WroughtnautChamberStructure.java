@@ -21,12 +21,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureMana
 
 public class WroughtnautChamberStructure extends MowzieStructure {
     public WroughtnautChamberStructure(Codec<NoneFeatureConfiguration> codec) {
-        super(codec, PieceGeneratorSupplier.simple(PieceGeneratorSupplier.checkForBiomeOnTop(Heightmap.Types.WORLD_SURFACE_WG), WroughtnautChamberStructure::generatePieces));
-    }
-
-    @Override
-    public ConfigHandler.GenerationConfig getGenerationConfig() {
-        return ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig;
+        super(codec, ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig, WroughtnautChamberStructure::generatePieces);
     }
 
     private static void generatePieces(StructurePiecesBuilder builder, PieceGenerator.Context<NoneFeatureConfiguration> pieceGenerator) {

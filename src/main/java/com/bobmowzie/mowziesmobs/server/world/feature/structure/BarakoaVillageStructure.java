@@ -28,12 +28,7 @@ import java.util.Arrays;
 
 public class BarakoaVillageStructure extends MowzieStructure {
     public BarakoaVillageStructure(Codec<NoneFeatureConfiguration> codec) {
-        super(codec, PieceGeneratorSupplier.simple(PieceGeneratorSupplier.checkForBiomeOnTop(Heightmap.Types.WORLD_SURFACE_WG), BarakoaVillageStructure::generatePieces));
-    }
-
-    @Override
-    public ConfigHandler.GenerationConfig getGenerationConfig() {
-        return ConfigHandler.COMMON.MOBS.BARAKO.generationConfig;
+        super(codec, ConfigHandler.COMMON.MOBS.BARAKO.generationConfig, BarakoaVillageStructure::generatePieces);
     }
 
     private static void generatePieces(StructurePiecesBuilder builder, PieceGenerator.Context<NoneFeatureConfiguration> pieceGenerator) {
