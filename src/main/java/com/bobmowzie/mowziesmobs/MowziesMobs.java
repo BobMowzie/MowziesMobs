@@ -56,6 +56,7 @@ public final class MowziesMobs {
         BlockHandler.REG.register(bus);
         ParticleHandler.REG.register(bus);
         FeatureHandler.REG.register(bus);
+        FeatureHandler.FEATURES.register(bus);
 
         PROXY.init(bus);
         bus.<FMLCommonSetupEvent>addListener(this::init);

@@ -51,7 +51,8 @@ public class BiomeChecker {
         }
     }
 
-    public static boolean isBiomeInConfig(ConfigHandler.BiomeConfig biomeConfig, ResourceLocation biomeName) {
+    public static boolean isBiomeInConfig(ConfigHandler.BiomeConfig biomeConfig, ResourceKey<Biome> biomeKey) {
+        ResourceLocation biomeName = biomeKey.getRegistryName();
         if (biomeConfig.biomeWhitelist.get().contains(biomeName.toString())) {
             return true;
         }
@@ -63,9 +64,8 @@ public class BiomeChecker {
             BiomeCombo biomeCombo = new BiomeCombo(biomeComboString);
             biomeCombos.add(biomeCombo);
         }
-        ResourceKey<Biome> biomeRegistryKey = ResourceKey.create(ForgeRegistries.Keys.BIOMES, biomeName);
         for (BiomeCombo biomeCombo : biomeCombos) {
-            if (biomeCombo.acceptsBiome(biomeRegistryKey)) return true;
+            if (biomeCombo.acceptsBiome(biomeKey)) return true;
         }
         return false;
     }

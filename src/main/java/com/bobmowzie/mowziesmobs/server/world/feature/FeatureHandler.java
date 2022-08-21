@@ -33,6 +33,8 @@ import java.util.function.Supplier;
 public class FeatureHandler {
     public static final DeferredRegister<StructureFeature<?>> REG = DeferredRegister.create(ForgeRegistries.STRUCTURE_FEATURES, MowziesMobs.MODID);
 
+    public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, MowziesMobs.MODID);
+
     public static RegistryObject<StructureFeature<NoneFeatureConfiguration>> WROUGHTNAUT_CHAMBER = registerStructure("wrought_chamber", () -> (new WroughtnautChamberStructure(NoneFeatureConfiguration.CODEC)));
     public static StructurePieceType WROUGHTNAUT_CHAMBER_PIECE;
 
