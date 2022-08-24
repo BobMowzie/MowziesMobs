@@ -1,0 +1,7 @@
+{
+  "//NOTE": "Add a biome to no_barakoa_village to prevent barakoa villages from generating there, even if that biome is included here.",
+  "replace": false,
+  "values": [
+    "#forge:is_savanna"
+  ]
+}

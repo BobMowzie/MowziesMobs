@@ -1,0 +1,7 @@
+{
+  "//NOTE": "Add a biome here to prevent Wrought Chambers from generating there, even if that biome is included in has_wrought_chamber.",
+  "replace": false,
+  "values": [
+    "#forge:is_ocean"
+  ]
+}

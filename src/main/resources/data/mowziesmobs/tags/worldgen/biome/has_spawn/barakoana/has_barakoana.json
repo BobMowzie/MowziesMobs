@@ -1,0 +1,7 @@
+{
+  "//NOTE": "Add a biome to no_barakoana to prevent Barakoana from spawning there, even if that biome is included here.",
+  "replace": false,
+  "values": [
+    "#forge:is_savanna"
+  ]
+}

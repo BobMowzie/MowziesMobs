@@ -126,13 +126,6 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
         if (spawnConfig != null) {
             if (rand.nextDouble() > spawnConfig.extraRarity.get()) return false;
 
-            // Dimension check
-            List<? extends String> dimensionNames = spawnConfig.dimensions.get();
-            ResourceLocation currDimensionName = ((ServerLevel)world).dimension().location();
-            if (!dimensionNames.contains(currDimensionName.toString())) {
-                return false;
-            }
-
             // Height check
             float heightMax = spawnConfig.heightMax.get();
             float heightMin = spawnConfig.heightMin.get();

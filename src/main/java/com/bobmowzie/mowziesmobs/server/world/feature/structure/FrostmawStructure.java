@@ -23,21 +23,7 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilde
 
 public class FrostmawStructure extends MowzieStructure {
     public FrostmawStructure(Codec<NoneFeatureConfiguration> codec) {
-        super(codec, ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig, FrostmawStructure::generatePieces);
-        /*this.configuredStructureCodec = RecordCodecBuilder.create((p_209759_) -> {
-            return p_209759_.group(codec.fieldOf("config").forGetter((p_209786_) -> {
-                return (NoneFeatureConfiguration)p_209786_.config;
-            }), RegistryCodecs.homogeneousList(Registry.BIOME_REGISTRY).fieldOf("biomes").forGetter(ConfiguredStructureFeature::biomes), Codec.BOOL.optionalFieldOf("adapt_noise", Boolean.valueOf(false)).forGetter((p_209784_) -> {
-                return p_209784_.adaptNoise;
-            }), Codec.simpleMap(MobCategory.CODEC, StructureSpawnOverride.CODEC, StringRepresentable.keys(MobCategory.values())).fieldOf("spawn_overrides").forGetter((p_209761_) -> {
-                return p_209761_.spawnOverrides;
-            })).apply(p_209759_, (p_209779_, p_209780_, p_209781_, p_209782_) -> {
-//                HolderSet.Named<Biome> biomes = BuiltinRegistries.BIOME.getOrCreateTag(TagHandler.HAS_MOWZIE_STRUCTURE);
-//                biomes.contents = ConfiguredFeatureHandler.FROSTMAW_BIOMES.stream().toList();
-                HolderSet.Direct<Biome> biomes = HolderSet.direct(ConfiguredFeatureHandler.FROSTMAW_BIOMES.stream().toList());
-                return new ConfiguredStructureFeature<>(this, p_209779_, biomes, p_209781_, p_209782_);
-            });
-        });*/
+        super(codec, ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig, TagHandler.NO_FROSTMAW, FrostmawStructure::generatePieces);
     }
 
     private static void generatePieces(StructurePiecesBuilder builder, PieceGenerator.Context<NoneFeatureConfiguration> pieceGenerator) {

@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.tag.TagHandler;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -28,7 +29,7 @@ import java.util.Arrays;
 
 public class BarakoaVillageStructure extends MowzieStructure {
     public BarakoaVillageStructure(Codec<NoneFeatureConfiguration> codec) {
-        super(codec, ConfigHandler.COMMON.MOBS.BARAKO.generationConfig, BarakoaVillageStructure::generatePieces);
+        super(codec, ConfigHandler.COMMON.MOBS.BARAKO.generationConfig, TagHandler.NO_BARAKOA_VILLAGE, BarakoaVillageStructure::generatePieces);
     }
 
     private static void generatePieces(StructurePiecesBuilder builder, PieceGenerator.Context<NoneFeatureConfiguration> pieceGenerator) {

@@ -1,0 +1,10 @@
+{
+  "//NOTE": "Add a biome here to prevent frostmaws from generating there, even if that biome is included in has_frostmaw.",
+  "replace": false,
+  "values": [
+    "#forge:is_wet",
+    "#forge:is_beach",
+    "#forge:is_forest",
+    "#minecraft:is_forest"
+  ]
+}

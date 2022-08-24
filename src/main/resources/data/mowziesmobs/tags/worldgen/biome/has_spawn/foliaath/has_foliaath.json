@@ -1,0 +1,8 @@
+{
+  "//NOTE": "Add a biome to no_foliaath to prevent foliaaths from spawning there, even if that biome is included here.",
+  "replace": false,
+  "values": [
+    "#minecraft:is_jungle",
+    "#forge:is_jungle"
+  ]
+}

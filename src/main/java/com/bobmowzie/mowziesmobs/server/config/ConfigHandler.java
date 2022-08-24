@@ -46,25 +46,11 @@ public final class  ConfigHandler {
 
     // Config templates
     public static class BiomeConfig {
-        BiomeConfig(final ForgeConfigSpec.Builder builder, List<? extends String> biomeTypes, List<? extends String> biomeWhitelist, List<? extends String> biomeBlacklist) {
+        BiomeConfig(final ForgeConfigSpec.Builder builder) {
             builder.push("biome_config");
-            this.biomeTypes = builder.comment("Each entry is a combination of allowed biome types.", "Separate types with commas to require biomes to have all types in an entry", "Put a '!' before a biome type to mean NOT that type", "A blank entry means all biomes. No entries means no biomes.", "For example, 'FOREST,MAGICAL,!SNOWY' would mean all biomes that are magical forests but not snowy", "'!MOUNTAIN' would mean all non-mountain biomes")
-                    .translation(LANG_PREFIX + "biome_type")
-                    .defineList("biome_type", biomeTypes, STRING_PREDICATE);
-            this.biomeWhitelist = builder.comment("Allow spawns in these biomes regardless of the biome type settings")
-                    .translation(LANG_PREFIX + "biome_whitelist")
-                    .defineList("biome_whitelist", biomeWhitelist, STRING_PREDICATE);
-            this.biomeBlacklist = builder.comment("Prevent spawns in these biomes regardless of the biome type settings")
-                    .translation(LANG_PREFIX + "biome_blacklist")
-                    .defineList("biome_blacklist", biomeBlacklist, STRING_PREDICATE);
+            builder.comment("Biome configuration is now done using datapack tags. It can no longer be customized via config file.");
             builder.pop();
         }
-
-        public final ConfigValue<List<? extends String>> biomeTypes;
-
-        public final ConfigValue<List<? extends String>> biomeWhitelist;
-
-        public final ConfigValue<List<? extends String>> biomeBlacklist;
     }
 
     public static class SpawnConfig {
@@ -84,9 +70,6 @@ public final class  ConfigHandler {
                     .translation(LANG_PREFIX + "extra_rarity")
                     .defineInRange("extra_rarity", extraRarity, 0.0, 1.0);
             this.biomeConfig = biomeConfig;
-            this.dimensions = builder.comment("Names of dimensions this mob can spawn in")
-                    .translation(LANG_PREFIX + "dimensions")
-                    .defineList("dimensions", Collections.singletonList("minecraft:overworld"), STRING_PREDICATE);
             this.allowedBlocks = builder.comment("Names of blocks this mob is allowed to spawn on. Leave blank to ignore block names.")
                     .translation(LANG_PREFIX + "allowed_blocks")
                     .defineList("allowed_blocks", allowedBlocks, STRING_PREDICATE);
@@ -124,8 +107,6 @@ public final class  ConfigHandler {
 
         public final BiomeConfig biomeConfig;
 
-        public final ConfigValue<List<? extends String>> dimensions;
-
         public final IntValue heightMin;
 
         public final IntValue heightMax;
@@ -154,9 +135,6 @@ public final class  ConfigHandler {
                     .translation(LANG_PREFIX + "generation_separation")
                     .defineInRange("generation_separation", generationSeparation, -1, Integer.MAX_VALUE);
             this.biomeConfig = biomeConfig;
-            this.dimensions = builder.comment("Names of dimensions this mob/structure can generate in")
-                    .translation(LANG_PREFIX + "dimensions")
-                    .defineList("dimensions", Collections.singletonList("minecraft:overworld"), STRING_PREDICATE);
             this.heightMax = builder.comment("Maximum height for generation placement. -1 to ignore")
                     .translation(LANG_PREFIX + "height_max")
                     .defineInRange("height_max", heightMax, -1, 256);
@@ -174,8 +152,6 @@ public final class  ConfigHandler {
         public final IntValue generationSeparation;
 
         public final BiomeConfig biomeConfig;
-
-        public final ConfigValue<List<? extends String>> dimensions;
 
         public final DoubleValue heightMin;
 
@@ -241,7 +217,7 @@ public final class  ConfigHandler {
             builder.push("foliaath");
             spawnConfig = new SpawnConfig(builder,
                     70, 1, 4, 1,
-                    new BiomeConfig(builder, Collections.singletonList("JUNGLE"), new ArrayList<>(), new ArrayList<>()),
+                    new BiomeConfig(builder),
                     Collections.emptyList(),
                     Arrays.asList("minecraft:valid_spawn", "minecraft:leaves", "minecraft:logs"),
                     -1, 60, false, false, false,
@@ -263,7 +239,7 @@ public final class  ConfigHandler {
             builder.comment("Controls spawning for Barakoana hunting groups", "Group size controls how many elites spawn, not followers", "See Barako config for village controls");
             spawnConfig = new SpawnConfig(builder,
                     5, 1, 1, 1,
-                    new BiomeConfig(builder, Collections.singletonList("SAVANNA"), new ArrayList<>(), new ArrayList<>()),
+                    new BiomeConfig(builder),
                     Collections.emptyList(),
                     Arrays.asList("minecraft:valid_spawn", "minecraft:sand"),
                     -1, 60, false, false, false,
@@ -283,7 +259,7 @@ public final class  ConfigHandler {
             builder.push("naga");
             spawnConfig = new SpawnConfig(builder,
                     15, 2, 4, 1,
-                    new BiomeConfig(builder, Arrays.asList("BEACH,MOUNTAIN", "BEACH,HILLS"), Collections.singletonList("minecraft:stone_shore"), new ArrayList<>()),
+                    new BiomeConfig(builder),
                     Collections.emptyList(),
                     Collections.emptyList(),
                     -1, 70, false, true, false,
@@ -303,7 +279,7 @@ public final class  ConfigHandler {
             builder.push("lantern");
             spawnConfig = new SpawnConfig(builder,
                     5, 2, 4, 1,
-                    new BiomeConfig(builder, Collections.singletonList("FOREST,MAGICAL,!SNOWY"), Arrays.asList("minecraft:dark_forest", "minecraft:dark_forest_hills"), new ArrayList<>()),
+                    new BiomeConfig(builder),
                     Collections.emptyList(),
                     Arrays.asList("minecraft:valid_spawn", "minecraft:leaves", "minecraft:logs"),
                     -1, 60, true, false, false,
@@ -323,7 +299,7 @@ public final class  ConfigHandler {
             builder.push("grottol");
             this.spawnConfig = new SpawnConfig(builder,
                     2, 1, 1, 1,
-                    new BiomeConfig(builder,  Collections.singletonList("!MUSHROOM"), new ArrayList<>(), new ArrayList<>()),
+                    new BiomeConfig(builder),
                     Collections.emptyList(),
                     Collections.singletonList("minecraft:base_stone_overworld"),
                     25, -1, true, false, true,
@@ -342,7 +318,7 @@ public final class  ConfigHandler {
         FerrousWroughtnaut(final ForgeConfigSpec.Builder builder) {
             builder.push("ferrous_wroughtnaut");
             generationConfig = new GenerationConfig(builder, 15, 5,
-                    new BiomeConfig(builder,  Arrays.asList("!OCEAN"), new ArrayList<>(), new ArrayList<>()),
+                    new BiomeConfig(builder),
                     30, 55,
                     Collections.emptyList()
             );
@@ -369,7 +345,7 @@ public final class  ConfigHandler {
             builder.push("barako");
             builder.comment("Generation controls for Barakoa villages");
             generationConfig = new GenerationConfig(builder, 25, 8,
-                    new BiomeConfig(builder,  Arrays.asList("SAVANNA"), new ArrayList<>(), new ArrayList<>()),
+                    new BiomeConfig(builder),
                     50, 100,
                     Arrays.asList("minecraft:villages", "minecraft:pillager_outposts")
             );
@@ -406,7 +382,7 @@ public final class  ConfigHandler {
         Frostmaw(final ForgeConfigSpec.Builder builder) {
             builder.push("frostmaw");
             generationConfig = new GenerationConfig(builder, 25, 8,
-                    new BiomeConfig(builder,  Arrays.asList("SNOWY,!OCEAN,!RIVER,!BEACH,!FOREST"), new ArrayList<>(), new ArrayList<>()),
+                    new BiomeConfig(builder),
                     50, 100,
                     Arrays.asList("minecraft:villages", "minecraft:pillager_outposts")
             );

@@ -1,0 +1,6 @@
+{
+  "//NOTE": "Add a biome here to prevent Barakoana from spawning there, even if that biome is included in has_barakoana.",
+  "replace": false,
+  "values": [
+  ]
+}

@@ -12,5 +12,29 @@ public class TagHandler {
     public static final TagKey<Item> CAN_HIT_GROTTOL = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "can_hit_grottol"));
     public static final TagKey<EntityType<?>> BARAKOA = TagKey.create(Registry.ENTITY_TYPE_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "barakoa"));
     public static final TagKey<EntityType<?>> BARAKOA_BARAKO_ALIGNED = TagKey.create(Registry.ENTITY_TYPE_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "barakoa_barako_aligned"));
-    public static final TagKey<Biome> HAS_MOWZIE_STRUCTURE = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "has_structure/has_mowzie_structure"));
+
+
+    public static final TagKey<Biome> HAS_FOLIAATH = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "has_spawn/has_foliaath"));
+    public static final TagKey<Biome> NO_FOLIAATH = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "has_spawn/no_foliaath"));
+
+    public static final TagKey<Biome> HAS_BARAKOANA = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "has_spawn/has_barakoana"));
+    public static final TagKey<Biome> NO_BARAKOANA = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "has_spawn/no_barakoana"));
+
+    public static final TagKey<Biome> HAS_GROTTOL = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "has_spawn/has_grottol"));
+    public static final TagKey<Biome> NO_GROTTOL = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "has_spawn/no_grottol"));
+
+    public static final TagKey<Biome> HAS_LANTERN = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "has_spawn/has_lantern"));
+    public static final TagKey<Biome> NO_LANTERN = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "has_spawn/no_lantern"));
+
+    public static final TagKey<Biome> HAS_NAGA = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "has_spawn/has_naga"));
+    public static final TagKey<Biome> NO_NAGA = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "has_spawn/no_naga"));
+
+    public static final TagKey<Biome> HAS_WROUGHT_CHAMBER = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "has_structure/has_wrought_chamber"));
+    public static final TagKey<Biome> NO_WROUGHT_CHAMBER = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "has_structure/no_wrought_chamber"));
+
+    public static final TagKey<Biome> HAS_BARAKOA_VILLAGE = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "has_structure/has_barakoa_village"));
+    public static final TagKey<Biome> NO_BARAKOA_VILLAGE = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "has_structure/no_barakoa_village"));
+
+    public static final TagKey<Biome> HAS_FROSTMAW = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "has_structure/has_frostmaw"));
+    public static final TagKey<Biome> NO_FROSTMAW = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "has_structure/no_frostmaw"));
 }

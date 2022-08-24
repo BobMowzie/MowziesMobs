@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.tag.TagHandler;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
@@ -21,7 +22,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureMana
 
 public class WroughtnautChamberStructure extends MowzieStructure {
     public WroughtnautChamberStructure(Codec<NoneFeatureConfiguration> codec) {
-        super(codec, ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig, WroughtnautChamberStructure::generatePieces);
+        super(codec, ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig, TagHandler.NO_WROUGHT_CHAMBER, WroughtnautChamberStructure::generatePieces);
     }
 
     private static void generatePieces(StructurePiecesBuilder builder, PieceGenerator.Context<NoneFeatureConfiguration> pieceGenerator) {

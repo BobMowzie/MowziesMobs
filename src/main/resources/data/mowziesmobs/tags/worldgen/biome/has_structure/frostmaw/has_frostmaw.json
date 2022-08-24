@@ -1,0 +1,7 @@
+{
+  "//NOTE": "Add a biome to no_frostmaw to prevent frostmaws from generating there, even if that biome is included here.",
+  "replace": false,
+  "values": [
+    "#forge:is_snowy"
+  ]
+}
