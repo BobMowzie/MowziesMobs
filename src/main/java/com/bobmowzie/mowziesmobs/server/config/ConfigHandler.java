@@ -76,12 +76,12 @@ public final class  ConfigHandler {
             this.allowedBlockTags = builder.comment("Tags of blocks this mob is allowed to spawn on. Leave blank to ignore block tags.")
                     .translation(LANG_PREFIX + "allowed_block_tags")
                     .defineList("allowed_block_tags", allowedBlockTags, STRING_PREDICATE);
-            this.heightMax = builder.comment("Maximum height for this spawn. -1 to ignore.")
+            this.heightMax = builder.comment("Maximum height for this spawn. -65 to ignore.")
                     .translation(LANG_PREFIX + "height_max")
-                    .defineInRange("height_max", heightMax, -1, 256);
-            this.heightMin = builder.comment("Minimum height for this spawn. -1 to ignore.")
+                    .defineInRange("height_max", heightMax, -64, 256);
+            this.heightMin = builder.comment("Minimum height for this spawn. -65 to ignore.")
                     .translation(LANG_PREFIX + "height_min")
-                    .defineInRange("height_min", heightMin, -1, 256);
+                    .defineInRange("height_min", heightMin, -64, 256);
             this.needsDarkness = builder.comment("Set to true to only allow this mob to spawn in the dark, like zombies and skeletons.")
                     .translation(LANG_PREFIX + "needs_darkness")
                     .define("needs_darkness", needsDarkness);
@@ -135,12 +135,12 @@ public final class  ConfigHandler {
                     .translation(LANG_PREFIX + "generation_separation")
                     .defineInRange("generation_separation", generationSeparation, -1, Integer.MAX_VALUE);
             this.biomeConfig = biomeConfig;
-            this.heightMax = builder.comment("Maximum height for generation placement. -1 to ignore")
+            this.heightMax = builder.comment("Maximum height for generation placement. -65 to ignore")
                     .translation(LANG_PREFIX + "height_max")
-                    .defineInRange("height_max", heightMax, -1, 256);
-            this.heightMin = builder.comment("Minimum height for generation placement. -1 to ignore")
+                    .defineInRange("height_max", heightMax, -64, 256);
+            this.heightMin = builder.comment("Minimum height for generation placement. -65 to ignore")
                     .translation(LANG_PREFIX + "height_min")
-                    .defineInRange("height_min", heightMin, -1, 256);
+                    .defineInRange("height_min", heightMin, -64, 256);
             this.avoidStructures = builder.comment("Names of structures this mob/structure will avoid when generating")
                     .translation(LANG_PREFIX + "avoid_structures")
                     .defineList("avoid_structures", avoidStructures, STRING_PREDICATE);
@@ -262,7 +262,7 @@ public final class  ConfigHandler {
                     new BiomeConfig(builder),
                     Collections.emptyList(),
                     Collections.emptyList(),
-                    -1, 70, false, true, false,
+                    -1, 60, false, true, false,
                     Arrays.asList("minecraft:villages", "minecraft:pillager_outposts")
             );
             combatConfig = new CombatConfig(builder,1, 1);
@@ -302,7 +302,7 @@ public final class  ConfigHandler {
                     new BiomeConfig(builder),
                     Collections.emptyList(),
                     Collections.singletonList("minecraft:base_stone_overworld"),
-                    25, -1, true, false, true,
+                    25, -65, true, false, true,
                     Collections.emptyList()
             );
             combatConfig = new CombatConfig(builder, 1, 1);
@@ -317,9 +317,9 @@ public final class  ConfigHandler {
     public static class FerrousWroughtnaut {
         FerrousWroughtnaut(final ForgeConfigSpec.Builder builder) {
             builder.push("ferrous_wroughtnaut");
-            generationConfig = new GenerationConfig(builder, 15, 5,
+            generationConfig = new GenerationConfig(builder, 15, 8,
                     new BiomeConfig(builder),
-                    30, 55,
+                    20, 50,
                     Collections.emptyList()
             );
             combatConfig = new CombatConfig(builder, 1, 1);

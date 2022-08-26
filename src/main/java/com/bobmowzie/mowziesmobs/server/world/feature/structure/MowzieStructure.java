@@ -29,25 +29,18 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 public abstract class MowzieStructure extends StructureFeature<NoneFeatureConfiguration> {
-    private ConfigHandler.GenerationConfig config;
-    private TagKey<Biome> blockedBiomes;
+    private final ConfigHandler.GenerationConfig config;
+
+    public MowzieStructure(Codec<NoneFeatureConfiguration> codec, ConfigHandler.GenerationConfig config, TagKey<Biome> blockedBiomes, PieceGenerator<NoneFeatureConfiguration> generator, boolean doCheckHeight, boolean doAvoidWater, boolean doAvoidStructures) {
+        super(codec, PieceGeneratorSupplier.simple((c) -> MowzieStructure.checkLocation(c, config, blockedBiomes, doCheckHeight, doAvoidWater, doAvoidStructures), generator), PostPlacementProcessor.NONE);
+        this.config = config;
+    }
 
     public MowzieStructure(Codec<NoneFeatureConfiguration> codec, ConfigHandler.GenerationConfig config, TagKey<Biome> blockedBiomes, PieceGenerator<NoneFeatureConfiguration> generator) {
-        super(codec, PieceGeneratorSupplier.simple((c) -> MowzieStructure.checkLocation(c, config), generator), PostPlacementProcessor.NONE);
-        this.config = config;
-        this.blockedBiomes = blockedBiomes;
+        this(codec, config, blockedBiomes, generator, true, true, true);
     }
 
-    @Override
-    public boolean canGenerate(RegistryAccess registryAccess, ChunkGenerator chunkGenerator, BiomeSource biomeSource, StructureManager structureManager, long seed, ChunkPos chunkPos, NoneFeatureConfiguration featureConfiguration, LevelHeightAccessor heightAccessor, Predicate<Holder<Biome>> biomeCheck) {
-        return super.canGenerate(registryAccess, chunkGenerator, biomeSource, structureManager, seed, chunkPos, featureConfiguration, heightAccessor, this::checkBiome);
-    }
-
-    protected boolean checkBiome(Holder<Biome> biome) {
-        return !biome.is(blockedBiomes);
-    }
-
-    protected static <C extends FeatureConfiguration> boolean checkLocation(PieceGeneratorSupplier.Context<C> context, ConfigHandler.GenerationConfig config) {
+    protected static <C extends FeatureConfiguration> boolean checkLocation(PieceGeneratorSupplier.Context<C> context, ConfigHandler.GenerationConfig config, TagKey<Biome> blockedBiomes, boolean checkHeight, boolean avoidWater, boolean avoidStructures) {
         if (config.generationDistance.get() < 0) {
             return false;
         }
@@ -59,28 +52,42 @@ public abstract class MowzieStructure extends StructureFeature<NoneFeatureConfig
             return false;
         }
 
-        double minHeight = config.heightMin.get();
-        double maxHeight = config.heightMax.get();
-        int landHeight = context.getLowestY(16, 16);
-        if (minHeight != -1 && landHeight < minHeight) return false;
-        if (maxHeight != -1 && landHeight > maxHeight) return false;
+        int i = chunkPos.getMiddleBlockX();
+        int j = chunkPos.getMiddleBlockZ();
+        int k = context.chunkGenerator().getFirstOccupiedHeight(i, j, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor());
+        Holder<Biome> biome = context.chunkGenerator().getNoiseBiome(QuartPos.fromBlock(i), QuartPos.fromBlock(k), QuartPos.fromBlock(j));
+        if (biome.is(blockedBiomes)) {
+            return false;
+        }
 
-        ChunkGenerator chunkGenerator = context.chunkGenerator();
-        LevelHeightAccessor heightLimitView = context.heightAccessor();
-        int centerHeight = chunkGenerator.getBaseHeight(centerOfChunk.getX(), centerOfChunk.getZ(), Heightmap.Types.WORLD_SURFACE_WG, heightLimitView);
-        NoiseColumn columnOfBlocks = chunkGenerator.getBaseColumn(centerOfChunk.getX(), centerOfChunk.getZ(), heightLimitView);
-        BlockState topBlock = columnOfBlocks.getBlock(centerHeight);
-        if (!topBlock.getFluidState().isEmpty()) return false;
+        if (checkHeight) {
+            double minHeight = config.heightMin.get();
+            double maxHeight = config.heightMax.get();
+            int landHeight = context.getLowestY(16, 16);
+            if (minHeight != -65 && landHeight < minHeight) return false;
+            if (maxHeight != -65 && landHeight > maxHeight) return false;
+        }
 
-        List<? extends String> avoidStructures = config.avoidStructures.get();
-        Registry<StructureSet> structureSetRegistry = context.registryAccess().registryOrThrow(Registry.STRUCTURE_SET_REGISTRY);
-        for (String structureName : avoidStructures) {
-            Optional<StructureSet> structureSetOptional = structureSetRegistry.getOptional(new ResourceLocation(structureName));
-            if (structureSetOptional.isEmpty()) continue;
-            Optional<ResourceKey<StructureSet>> resourceKeyOptional = structureSetRegistry.getResourceKey(structureSetOptional.get());
-            if (resourceKeyOptional.isEmpty()) continue;
-            if (context.chunkGenerator().hasFeatureChunkInRange(resourceKeyOptional.get(), context.seed(), chunkPos.x, chunkPos.z, 10)) {
-                return false;
+        if (avoidWater) {
+            ChunkGenerator chunkGenerator = context.chunkGenerator();
+            LevelHeightAccessor heightLimitView = context.heightAccessor();
+            int centerHeight = chunkGenerator.getBaseHeight(centerOfChunk.getX(), centerOfChunk.getZ(), Heightmap.Types.WORLD_SURFACE_WG, heightLimitView);
+            NoiseColumn columnOfBlocks = chunkGenerator.getBaseColumn(centerOfChunk.getX(), centerOfChunk.getZ(), heightLimitView);
+            BlockState topBlock = columnOfBlocks.getBlock(centerHeight);
+            if (!topBlock.getFluidState().isEmpty()) return false;
+        }
+
+        if (avoidStructures) {
+            List<? extends String> structuresToAvoid = config.avoidStructures.get();
+            Registry<StructureSet> structureSetRegistry = context.registryAccess().registryOrThrow(Registry.STRUCTURE_SET_REGISTRY);
+            for (String structureName : structuresToAvoid) {
+                Optional<StructureSet> structureSetOptional = structureSetRegistry.getOptional(new ResourceLocation(structureName));
+                if (structureSetOptional.isEmpty()) continue;
+                Optional<ResourceKey<StructureSet>> resourceKeyOptional = structureSetRegistry.getResourceKey(structureSetOptional.get());
+                if (resourceKeyOptional.isEmpty()) continue;
+                if (context.chunkGenerator().hasFeatureChunkInRange(resourceKeyOptional.get(), context.seed(), chunkPos.x, chunkPos.z, 5)) {
+                    return false;
+                }
             }
         }
 
