@@ -34,59 +34,22 @@ public class WroughtnautChamberPieces {
     private static final ResourceLocation PART = new ResourceLocation(MowziesMobs.MODID, "wroughtnaut_chamber");
 
     public static void start(StructureManager manager, BlockPos pos, Rotation rot, StructurePieceAccessor pieces) {
-//        BlockPos rotationOffset = new BlockPos(0, 0, -9).rotate(rot);
-//        BlockPos blockPos = rotationOffset.offset(pos);
         pieces.addPiece(new WroughtnautChamberPieces.Piece(manager, PART, pos, rot));
     }
 
     public static class Piece extends TemplateStructurePiece {
-        private final BlockPos startPos;
-        private BlockPos wallPos;
 
         public Piece(StructureManager templateManagerIn, ResourceLocation resourceLocationIn, BlockPos pos, Rotation rotationIn) {
             super(FeatureHandler.WROUGHTNAUT_CHAMBER_PIECE, 0, templateManagerIn, resourceLocationIn, resourceLocationIn.toString(), makeSettings(rotationIn, resourceLocationIn), pos);
-            this.startPos = pos;
-            this.wallPos = null;
         }
 
         public Piece(StructurePieceSerializationContext context, CompoundTag tagCompound) {
             super(FeatureHandler.WROUGHTNAUT_CHAMBER_PIECE, tagCompound, context.structureManager(), (resourceLocation) -> makeSettings(Rotation.valueOf(tagCompound.getString("Rot")), resourceLocation));
-            this.startPos = new BlockPos(
-                    tagCompound.getInt("StartX"),
-                    tagCompound.getInt("StartY"),
-                    tagCompound.getInt("StartZ")
-            );
-            if (tagCompound.getBoolean("HasWall")) {
-                this.wallPos = new BlockPos(
-                        tagCompound.getInt("WallX"),
-                        tagCompound.getInt("WallY"),
-                        tagCompound.getInt("WallZ")
-                );
-            }
         }
 
         private static StructurePlaceSettings makeSettings(Rotation rotation, ResourceLocation resourceLocation) {
             return (new StructurePlaceSettings()).setRotation(rotation).setMirror(Mirror.NONE).addProcessor(BlockIgnoreProcessor.STRUCTURE_BLOCK);
         }
-
-        /**
-         * (abstract) Helper method to read subclass data from NBT
-         */
-        @Override
-        protected void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag tagCompound) {
-            super.addAdditionalSaveData(context, tagCompound);
-            tagCompound.putString("Rot", this.placeSettings.getRotation().name());
-            tagCompound.putInt("StartX", startPos.getX());
-            tagCompound.putInt("StartY", startPos.getY());
-            tagCompound.putInt("StartZ", startPos.getZ());
-            tagCompound.putBoolean("HasWall", wallPos != null);
-            if (wallPos != null) {
-                tagCompound.putInt("WallX", wallPos.getX());
-                tagCompound.putInt("WallY", wallPos.getY());
-                tagCompound.putInt("WallZ", wallPos.getZ());
-            }
-        }
-
 
         /*
          * If you added any data marker structure blocks to your structure, you can access and modify them here. In this case,

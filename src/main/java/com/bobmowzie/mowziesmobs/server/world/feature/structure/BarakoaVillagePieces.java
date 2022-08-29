@@ -28,12 +28,11 @@ import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraft.world.level.levelgen.structure.ScatteredFeaturePiece;
-import net.minecraft.world.level.levelgen.structure.StructurePiece;
-import net.minecraft.world.level.levelgen.structure.TemplateStructurePiece;
+import net.minecraft.world.level.levelgen.WorldgenRandom;
+import net.minecraft.world.level.levelgen.structure.*;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockIgnoreProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
@@ -58,28 +57,24 @@ public class BarakoaVillagePieces {
         THRONE, new BlockPos(-3, 0, 0)
     );
 
-    public static StructurePiece addPiece(ResourceLocation resourceLocation, StructureManager manager, BlockPos pos, Rotation rot, List<StructurePiece> pieces, Random rand) {
+    public static StructurePiece addPiece(ResourceLocation resourceLocation, StructureManager manager, BlockPos pos, Rotation rot, StructurePieceAccessor pieces, WorldgenRandom rand) {
         StructurePiece newPiece = new BarakoaVillagePieces.Piece(manager, resourceLocation, rot, pos);
-        pieces.add(newPiece);
+        pieces.addPiece(newPiece);
         return newPiece;
     }
 
-    public static StructurePiece addPieceCheckBounds(ResourceLocation resourceLocation, StructureManager manager, BlockPos pos, Rotation rot, List<StructurePiece> pieces, Random rand, List<StructurePiece> ignore) {
+    public static StructurePiece addPieceCheckBounds(ResourceLocation resourceLocation, StructureManager manager, BlockPos pos, Rotation rot, StructurePieceAccessor pieces, WorldgenRandom rand, List<StructurePiece> ignore) {
         BarakoaVillagePieces.Piece newPiece = new BarakoaVillagePieces.Piece(manager, resourceLocation, rot, pos);
-        for (StructurePiece piece : pieces) {
-            if (ignore.contains(piece)) continue;
-            if (newPiece.getBoundingBox().intersects(piece.getBoundingBox())) return null;
-        }
-        pieces.add(newPiece);
+        StructurePiece collisionPiece = pieces.findCollisionPiece(newPiece.getBoundingBox());
+        if (!ignore.contains(collisionPiece)) return null;
+        pieces.addPiece(newPiece);
         return newPiece;
     }
 
-    public static StructurePiece addHouse(StructureManager manager, BlockPos pos, Rotation rot, List<StructurePiece> pieces, Random rand) {
+    public static StructurePiece addHouse(StructureManager manager, BlockPos pos, Rotation rot, StructurePiecesBuilder builder, WorldgenRandom rand) {
         BarakoaVillagePieces.HousePiece newPiece = new BarakoaVillagePieces.HousePiece(manager, HOUSE, rot, pos);
-        for (StructurePiece piece : pieces) {
-            if (newPiece.getBoundingBox().intersects(piece.getBoundingBox())) return null;
-        }
-        pieces.add(newPiece);
+        if (builder.findCollisionPiece(newPiece.getBoundingBox()) != null) return null;
+        builder.addPiece(newPiece);
         newPiece.tableCorner = rand.nextInt(6);
         newPiece.tableContent = rand.nextInt(4);
         newPiece.bedCorner = rand.nextInt(6);
@@ -89,7 +84,7 @@ public class BarakoaVillagePieces {
         return newPiece;
     }
 
-    public static StructurePiece addPieceCheckBounds(ResourceLocation resourceLocation, StructureManager manager, BlockPos pos, Rotation rot, List<StructurePiece> pieces, Random rand) {
+    public static StructurePiece addPieceCheckBounds(ResourceLocation resourceLocation, StructureManager manager, BlockPos pos, Rotation rot, StructurePiecesBuilder pieces, WorldgenRandom rand) {
        return addPieceCheckBounds(resourceLocation, manager, pos, rot, pieces, rand, Collections.emptyList());
     }
 
@@ -98,6 +93,7 @@ public class BarakoaVillagePieces {
 
         public Piece(StructurePieceType pieceType, StructureManager manager, ResourceLocation resourceLocationIn, Rotation rotation, BlockPos pos) {
             super(pieceType, 0, manager, resourceLocationIn, resourceLocationIn.toString(), makeSettings(rotation, resourceLocationIn), makePosition(resourceLocationIn, pos, rotation));
+            this.resourceLocation = resourceLocationIn;
         }
 
         public Piece(StructurePieceType pieceType, StructurePieceSerializationContext context, CompoundTag tagCompound) {
@@ -197,15 +193,6 @@ public class BarakoaVillagePieces {
             worldIn.setBlock(pos, state, 2);
             if (BLOCKS_NEEDING_POSTPROCESSING.contains(state.getBlock())) {
                 worldIn.getChunk(pos).markPosForPostprocessing(pos);
-            }
-        }
-
-        @Override
-        public void postProcess(WorldGenLevel p_230383_1_, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, BoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
-            StructurePlaceSettings placementsettings = (new StructurePlaceSettings()).setRotation(this.placeSettings.getRotation()).setMirror(Mirror.NONE);
-            BlockPos blockpos = BarakoaVillagePieces.OFFSET.get(this.resourceLocation);
-            if (blockpos != null) {
-                this.templatePosition.offset(StructureTemplate.calculateRelativePosition(placementsettings, new BlockPos(0 - blockpos.getX(), 0, 0 - blockpos.getZ())));
             }
         }
 
