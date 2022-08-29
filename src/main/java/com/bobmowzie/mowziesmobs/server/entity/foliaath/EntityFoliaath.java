@@ -20,6 +20,8 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
@@ -40,9 +42,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraftforge.common.Tags;
 
 public class EntityFoliaath extends MowzieEntity implements Enemy {
     public static final Animation DIE_ANIMATION = Animation.create(50);
@@ -290,21 +294,27 @@ public class EntityFoliaath extends MowzieEntity implements Enemy {
         return ConfigHandler.COMMON.MOBS.FOLIAATH.combatConfig;
     }
 
+    private boolean isInTree(LevelAccessor world) {
+        int x = Mth.floor(this.getX());
+        int y = Mth.floor(this.getBoundingBox().minY);
+        int z = Mth.floor(this.getZ());
+        BlockPos pos = new BlockPos(x, y, z);
+        BlockState floor = world.getBlockState(pos.below());
+        if (floor.is(BlockTags.LEAVES)) {
+            for (int i = 2; i < 4; i++) {
+                BlockState toCheck = world.getBlockState(pos.below(i));
+                if (!(toCheck.is(BlockTags.LEAVES) || toCheck.is(BlockTags.LOGS) || toCheck.isAir())) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public boolean checkSpawnRules(LevelAccessor world, MobSpawnType reason) {
-        Holder<Biome> biome = world.getBiome(blockPosition());
-        int i = Mth.floor(this.getX());
-        int j = Mth.floor(this.getBoundingBox().minY);
-        int k = Mth.floor(this.getZ());
-        BlockPos pos = new BlockPos(i, j, k);
-        Block floor = world.getBlockState(pos.below()).getBlock();
-        BlockState floorDown1 = world.getBlockState(pos.below(2));
-        BlockState floorDown2 = world.getBlockState(pos.below(3));
-        boolean notInTree = true;
-        /* TODO
-        BlockState topBlock = biome.value().getGenerationSettings().getCarvingStages().getSurfaceBuilder().get().config().getTopMaterial();
-        if (floor instanceof LeavesBlock && floorDown1 != topBlock && floorDown2 != topBlock) notInTree = false;*/
-        return super.checkSpawnRules(world, reason) && notInTree && getEntitiesNearby(Animal.class, 5, 5, 5, 5).isEmpty() && world.getDifficulty() != Difficulty.PEACEFUL;
+        return !isInTree(world) && super.checkSpawnRules(world, reason) && getEntitiesNearby(Animal.class, 5, 5, 5, 5).isEmpty() && world.getDifficulty() != Difficulty.PEACEFUL;
     }
 
     @Override

@@ -9,6 +9,7 @@ import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -38,6 +39,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
@@ -142,8 +144,8 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
             }
 
             // Block check
-            Block block = world.getBlockState(spawnPos.below()).getBlock();
-            ResourceLocation blockName = block.getRegistryName();
+            BlockState block = world.getBlockState(spawnPos.below());
+            ResourceLocation blockName = block.getBlock().getRegistryName();
             List<? extends String> allowedBlocks = spawnConfig.allowedBlocks.get();
             List<? extends String> allowedBlockTags = spawnConfig.allowedBlockTags.get();
             if (blockName == null) return false;
@@ -169,7 +171,7 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
                 if (structureSetOptional.isEmpty()) continue;
                 Optional<ResourceKey<StructureSet>> resourceKeyOptional = structureSetRegistry.getResourceKey(structureSetOptional.get());
                 if (resourceKeyOptional.isEmpty()) continue;
-                if (generator.hasFeatureChunkInRange(resourceKeyOptional.get(), seed, chunkPos.x, chunkPos.z, 2)) {
+                if (generator.hasFeatureChunkInRange(resourceKeyOptional.get(), seed, chunkPos.x, chunkPos.z, 3)) {
                     return false;
                 }
             }
@@ -177,13 +179,12 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
         return true;
     }
 
-    private static boolean isBlockTagAllowed(List<? extends String> allowedBlockTags, Block block) {
-        /* TODO
+    private static boolean isBlockTagAllowed(List<? extends String> allowedBlockTags, BlockState block) {
         for (String allowedBlockTag : allowedBlockTags) {
-            if (TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(allowedBlockTag)).contains(block)) return true;
+            TagKey<Block> tagKey = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(allowedBlockTag));
+            if (block.is(tagKey)) return true;
         }
-        return false;*/
-        return true;
+        return false;
     }
 
     protected boolean isWithinDistance(BlockPos pos, int distance) {

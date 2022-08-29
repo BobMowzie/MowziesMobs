@@ -80,7 +80,7 @@ public class BarakoaVillageStructure extends MowzieStructure {
                 angle = random.nextInt(360);
                 BlockPos altarPos = new BlockPos(centerPos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.getZ() + distance * Math.cos(Math.toRadians(angle)));
                 altarPos = posToSurface(generator, altarPos, heightLimitView);
-                StructurePiece altar = new BarakoaVillagePieces.AltarPiece(altarPos.getX(), altarPos.getY(), altarPos.getZ(), Direction.NORTH); // TODO should this direction be something else?
+                StructurePiece altar = new BarakoaVillagePieces.AltarPiece(altarPos.getX(), altarPos.getY(), altarPos.getZ(), Direction.NORTH);
                 if (builder.findCollisionPiece(altar.getBoundingBox()) != null) {
                     continue;
                 }
