@@ -2,7 +2,6 @@ package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.google.common.collect.ImmutableMultimap;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;

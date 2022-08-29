@@ -1,10 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.google.common.collect.Sets;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.tags.Tag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;

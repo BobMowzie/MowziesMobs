@@ -19,7 +19,6 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.bobmowzie.mowziesmobs.server.tag.TagHandler;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;

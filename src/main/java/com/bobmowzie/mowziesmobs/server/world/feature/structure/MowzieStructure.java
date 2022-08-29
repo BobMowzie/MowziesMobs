@@ -2,7 +2,10 @@ package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.mojang.serialization.Codec;
-import net.minecraft.core.*;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.QuartPos;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -10,7 +13,6 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.GenerationStep;
@@ -22,11 +24,9 @@ import net.minecraft.world.level.levelgen.structure.PostPlacementProcessor;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 public abstract class MowzieStructure extends StructureFeature<NoneFeatureConfiguration> {
     private final ConfigHandler.GenerationConfig config;

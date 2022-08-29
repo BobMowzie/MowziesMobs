@@ -1,33 +1,17 @@
 package com.bobmowzie.mowziesmobs.server.world.feature;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.structure.*;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.FlatLevelSource;
-import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.IglooFeature;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
-import net.minecraftforge.registries.RegistryObject;import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
 
 public class FeatureHandler {

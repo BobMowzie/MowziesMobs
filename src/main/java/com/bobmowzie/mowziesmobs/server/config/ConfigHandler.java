@@ -12,7 +12,6 @@ import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
