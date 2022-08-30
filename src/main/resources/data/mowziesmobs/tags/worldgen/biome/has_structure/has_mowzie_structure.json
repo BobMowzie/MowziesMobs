@@ -62,6 +62,10 @@
     "#minecraft:is_forest",
     "#minecraft:is_deep_ocean",
     "#minecraft:is_beach",
-    "#minecraft:is_badlands"
+    "#minecraft:is_badlands",
+    {
+      "id": "#forge:is_overworld",
+      "required": false
+    }
   ]
 }

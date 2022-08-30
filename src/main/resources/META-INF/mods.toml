@@ -1,30 +1,30 @@
 modLoader="javafml"
 license="custom"
-loaderVersion="[36,)"
+loaderVersion="[40,)"
 issueTrackerURL="https://github.com/BobMowzie/MowziesMobs/issues"
 [[mods]]
     modId="mowziesmobs"
-    version="1.2.25"
+    version="1.5.27"
     displayName="Mowzie's Mobs"
     displayURL="https://www.curseforge.com/minecraft/mc-mods/mowzies-mobs"
-    authors="BobMowzie, pau101"
+    authors="BobMowzie, Wadoo, pau101"
     description="Mowzie's Mobs adds a variety of high-quality fantasy creatures to your Minecraft world."
     logoFile="banner.png"
 [[dependencies.mowziesmobs]]
     modId="forge"
     mandatory=true
-    versionRange="[36.0.42,)"
+    versionRange="[40.1.0,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.mowziesmobs]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.17.1,)"
+    versionRange="[1.18.2,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.mowziesmobs]]
     modId="geckolib3"
     mandatory=true
-    versionRange="[3.0.10,)"
+    versionRange="[3.0.29,)"
     ordering="BEFORE"
     side="BOTH"
