@@ -91,5 +91,6 @@ public final class MowziesMobs {
     @SubscribeEvent
     public void onBiomeLoading(BiomeLoadingEvent event) {
         SpawnHandler.onBiomeLoading(event);
+        ConfiguredFeatureHandler.onBiomeLoading(event);
     }
 }

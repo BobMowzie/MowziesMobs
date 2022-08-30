@@ -27,20 +27,21 @@ import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplie
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public abstract class MowzieStructure extends StructureFeature<NoneFeatureConfiguration> {
     private final ConfigHandler.GenerationConfig config;
 
-    public MowzieStructure(Codec<NoneFeatureConfiguration> codec, ConfigHandler.GenerationConfig config, TagKey<Biome> blockedBiomes, PieceGenerator<NoneFeatureConfiguration> generator, boolean doCheckHeight, boolean doAvoidWater, boolean doAvoidStructures) {
-        super(codec, PieceGeneratorSupplier.simple((c) -> MowzieStructure.checkLocation(c, config, blockedBiomes, doCheckHeight, doAvoidWater, doAvoidStructures), generator), PostPlacementProcessor.NONE);
+    public MowzieStructure(Codec<NoneFeatureConfiguration> codec, ConfigHandler.GenerationConfig config, Set<ResourceLocation> allowedBiomes, PieceGenerator<NoneFeatureConfiguration> generator, boolean doCheckHeight, boolean doAvoidWater, boolean doAvoidStructures) {
+        super(codec, PieceGeneratorSupplier.simple((c) -> MowzieStructure.checkLocation(c, config, allowedBiomes, doCheckHeight, doAvoidWater, doAvoidStructures), generator), PostPlacementProcessor.NONE);
         this.config = config;
     }
 
-    public MowzieStructure(Codec<NoneFeatureConfiguration> codec, ConfigHandler.GenerationConfig config, TagKey<Biome> blockedBiomes, PieceGenerator<NoneFeatureConfiguration> generator) {
-        this(codec, config, blockedBiomes, generator, true, true, true);
+    public MowzieStructure(Codec<NoneFeatureConfiguration> codec, ConfigHandler.GenerationConfig config, Set<ResourceLocation> allowedBiomes, PieceGenerator<NoneFeatureConfiguration> generator) {
+        this(codec, config, allowedBiomes, generator, true, true, true);
     }
 
-    protected static <C extends FeatureConfiguration> boolean checkLocation(PieceGeneratorSupplier.Context<C> context, ConfigHandler.GenerationConfig config, TagKey<Biome> blockedBiomes, boolean checkHeight, boolean avoidWater, boolean avoidStructures) {
+    protected static <C extends FeatureConfiguration> boolean checkLocation(PieceGeneratorSupplier.Context<C> context, ConfigHandler.GenerationConfig config, Set<ResourceLocation> allowedBiomes, boolean checkHeight, boolean avoidWater, boolean avoidStructures) {
         if (config.generationDistance.get() < 0) {
             return false;
         }
@@ -56,7 +57,7 @@ public abstract class MowzieStructure extends StructureFeature<NoneFeatureConfig
         int j = chunkPos.getMiddleBlockZ();
         int k = context.chunkGenerator().getFirstOccupiedHeight(i, j, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor());
         Holder<Biome> biome = context.chunkGenerator().getNoiseBiome(QuartPos.fromBlock(i), QuartPos.fromBlock(k), QuartPos.fromBlock(j));
-        if (biome.is(blockedBiomes)) {
+        if (!allowedBiomes.contains(biome.value().getRegistryName())) {
             return false;
         }
 

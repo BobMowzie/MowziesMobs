@@ -1,7 +1,0 @@
-{
-  "//NOTE": "Add a biome to no_lantern to prevent lanterns from spawning there, even if that biome is included here.",
-  "replace": false,
-  "values": [
-    "minecraft:dark_forest"
-  ]
-}

@@ -246,6 +246,11 @@ public class EntityFrostmaw extends MowzieEntity implements Enemy {
     }
 
     @Override
+    public boolean isPushedByFluid() {
+        return false;
+    }
+
+    @Override
     protected void repelEntities(float x, float y, float z, float radius) {
         List<Player> nearbyEntities = getPlayersNearby(x, y, z, radius);
         for (Entity entity : nearbyEntities) {

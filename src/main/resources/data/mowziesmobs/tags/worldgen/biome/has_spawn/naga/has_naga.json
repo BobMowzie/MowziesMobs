@@ -1,7 +1,0 @@
-{
-  "//NOTE": "Add a biome to no_naga to prevent nagas from spawning there, even if that biome is included here.",
-  "replace": false,
-  "values": [
-    "minecraft:stony_shore"
-  ]
-}

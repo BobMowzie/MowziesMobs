@@ -216,6 +216,11 @@ public class EntityWroughtnaut extends MowzieEntity implements Enemy {
     }
 
     @Override
+    public boolean isPushedByFluid() {
+        return false;
+    }
+
+    @Override
     public void tick() {
         super.tick();
         walkAnim.updatePrevTimer();

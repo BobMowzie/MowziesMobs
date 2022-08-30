@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.tag.TagHandler;
+import com.bobmowzie.mowziesmobs.server.world.feature.ConfiguredFeatureHandler;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -21,7 +22,7 @@ import javax.annotation.Nullable;
 
 public class WroughtnautChamberStructure extends MowzieStructure {
     public WroughtnautChamberStructure(Codec<NoneFeatureConfiguration> codec) {
-        super(codec, ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig, TagHandler.NO_WROUGHT_CHAMBER, WroughtnautChamberStructure::generatePieces, false, false, true);
+        super(codec, ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig, ConfiguredFeatureHandler.FERROUS_WROUGHTNAUT_BIOMES, WroughtnautChamberStructure::generatePieces, false, false, true);
     }
 
     private static void generatePieces(StructurePiecesBuilder builder, PieceGenerator.Context<NoneFeatureConfiguration> pieceGenerator) {

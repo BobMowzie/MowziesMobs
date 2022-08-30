@@ -1,7 +1,0 @@
-{
-  "//NOTE": "Add a biome to no_wrought_chamber to prevent Wrought Chambers from generating there, even if that biome is included here.",
-  "replace": false,
-  "values": [
-    "#forge:is_overworld"
-  ]
-}

@@ -3,11 +3,13 @@ package com.bobmowzie.mowziesmobs.server.world.feature;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.tag.TagHandler;
+import com.bobmowzie.mowziesmobs.server.world.BiomeChecker;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
@@ -16,6 +18,11 @@ import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadType;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
+import net.minecraftforge.event.world.BiomeLoadingEvent;
+import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class ConfiguredFeatureHandler {
 
@@ -26,6 +33,10 @@ public class ConfiguredFeatureHandler {
     public static Holder<StructureSet> WROUGHT_CHAMBERS;
     public static Holder<StructureSet> BARAKOA_VILLAGES;
     public static Holder<StructureSet> FROSTMAWS;
+
+    public static final Set<ResourceLocation> FERROUS_WROUGHTNAUT_BIOMES = new HashSet<>();
+    public static final Set<ResourceLocation> BARAKO_BIOMES = new HashSet<>();
+    public static final Set<ResourceLocation> FROSTMAW_BIOMES = new HashSet<>();
 
     private static ResourceKey<ConfiguredStructureFeature<?, ?>> createFeatureKey(String name) {
         return ResourceKey.create(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY, new ResourceLocation(MowziesMobs.MODID, name));
@@ -48,12 +59,31 @@ public class ConfiguredFeatureHandler {
     }
 
     public static void registerConfiguredFeatures() {
-        CONFIGURED_WROUGHT_CHAMBER = register(createFeatureKey("wrought_chamber"), FeatureHandler.WROUGHTNAUT_CHAMBER.get().configured(NoneFeatureConfiguration.INSTANCE, TagHandler.HAS_WROUGHT_CHAMBER));
-        CONFIGURED_BARAKOA_VILLAGE = register(createFeatureKey("barakoa_village"), FeatureHandler.BARAKOA_VILLAGE.get().configured(NoneFeatureConfiguration.INSTANCE, TagHandler.HAS_BARAKOA_VILLAGE));
-        CONFIGURED_FROSTMAW = register(createFeatureKey("frostmaw_spawn"), FeatureHandler.FROSTMAW.get().configured(NoneFeatureConfiguration.INSTANCE, TagHandler.HAS_FROSTMAW, true));
+        CONFIGURED_WROUGHT_CHAMBER = register(createFeatureKey("wrought_chamber"), FeatureHandler.WROUGHTNAUT_CHAMBER.get().configured(NoneFeatureConfiguration.INSTANCE, TagHandler.HAS_MOWZIE_STRUCTURE));
+        CONFIGURED_BARAKOA_VILLAGE = register(createFeatureKey("barakoa_village"), FeatureHandler.BARAKOA_VILLAGE.get().configured(NoneFeatureConfiguration.INSTANCE, TagHandler.HAS_MOWZIE_STRUCTURE));
+        CONFIGURED_FROSTMAW = register(createFeatureKey("frostmaw_spawn"), FeatureHandler.FROSTMAW.get().configured(NoneFeatureConfiguration.INSTANCE, TagHandler.HAS_MOWZIE_STRUCTURE, true));
 
-        WROUGHT_CHAMBERS = register(createSetKey("wrought_chambers"), CONFIGURED_WROUGHT_CHAMBER, new RandomSpreadStructurePlacement(ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig.generationDistance.get(), ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig.generationSeparation.get(), RandomSpreadType.LINEAR, 23217347));
-        BARAKOA_VILLAGES= register(createSetKey("barakoa_villages"), CONFIGURED_BARAKOA_VILLAGE, new RandomSpreadStructurePlacement(ConfigHandler.COMMON.MOBS.BARAKO.generationConfig.generationDistance.get(), ConfigHandler.COMMON.MOBS.BARAKO.generationConfig.generationSeparation.get(), RandomSpreadType.LINEAR, 23311138));
-        FROSTMAWS = register(createSetKey("frostmaw_spawns"), CONFIGURED_FROSTMAW, new RandomSpreadStructurePlacement(ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig.generationDistance.get(), ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig.generationSeparation.get(), RandomSpreadType.LINEAR, 23317578));
+        WROUGHT_CHAMBERS = register(createSetKey("wrought_chambers"), CONFIGURED_WROUGHT_CHAMBER, new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.TRIANGULAR, 23217347));
+        BARAKOA_VILLAGES= register(createSetKey("barakoa_villages"), CONFIGURED_BARAKOA_VILLAGE, new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.TRIANGULAR, 23311138));
+        FROSTMAWS = register(createSetKey("frostmaw_spawns"), CONFIGURED_FROSTMAW, new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.TRIANGULAR, 23317578));
+    }
+
+    public static void onBiomeLoading(BiomeLoadingEvent event) {
+        ResourceLocation biomeName = event.getName();
+        if (biomeName == null) return;
+        ResourceKey<Biome> biomeKey = ResourceKey.create(ForgeRegistries.Keys.BIOMES, biomeName);
+
+        if (ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig.generationDistance.get() >= 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig.biomeConfig, biomeKey)) {
+//            System.out.println("Added Ferrous Wroughtnaut biome: " + biomeName.toString());
+            FERROUS_WROUGHTNAUT_BIOMES.add(biomeName);
+        }
+        if (ConfigHandler.COMMON.MOBS.BARAKO.generationConfig.generationDistance.get() >= 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.BARAKO.generationConfig.biomeConfig, biomeKey)) {
+//            System.out.println("Added Barako biome: " + biomeName.toString());
+            BARAKO_BIOMES.add(biomeName);
+        }
+        if (ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig.generationDistance.get() >= 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig.biomeConfig, biomeKey)) {
+//            System.out.println("Added frostmaw biome: " + biomeName.toString());
+            FROSTMAW_BIOMES.add(biomeName);
+        }
     }
 }
