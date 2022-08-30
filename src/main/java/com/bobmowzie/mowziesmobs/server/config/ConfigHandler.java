@@ -239,7 +239,7 @@ public final class  ConfigHandler {
                     new BiomeConfig(builder, Collections.singletonList("JUNGLE"), new ArrayList<>(), new ArrayList<>()),
                     Collections.emptyList(),
                     Arrays.asList("minecraft:valid_spawn", "minecraft:leaves", "minecraft:logs"),
-                    -1, 60, false, false, false,
+                    -1, 60, true, false, false,
                     Arrays.asList("minecraft:villages", "minecraft:pillager_outposts")
 
             );
