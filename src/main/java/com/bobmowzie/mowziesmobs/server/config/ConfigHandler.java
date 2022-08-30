@@ -48,6 +48,7 @@ public final class  ConfigHandler {
     public static class BiomeConfig {
         BiomeConfig(final ForgeConfigSpec.Builder builder, List<? extends String> biomeTypes, List<? extends String> biomeWhitelist, List<? extends String> biomeBlacklist) {
             builder.push("biome_config");
+            builder.comment("Mowzie's Mobs bosses cannot generate in modded or non-overworld biomes unless the biome is added to the 'has_structure/has_mowzie_structure' tag via a datapack!");
             this.biomeTypes = builder.comment("Each entry is a combination of allowed biome types.", "Separate types with commas to require biomes to have all types in an entry", "Put a '!' before a biome type to mean NOT that type", "A blank entry means all biomes. No entries means no biomes.", "For example, 'FOREST,MAGICAL,!SNOWY' would mean all biomes that are magical forests but not snowy", "'!MOUNTAIN' would mean all non-mountain biomes")
                     .translation(LANG_PREFIX + "biome_type")
                     .defineList("biome_type", biomeTypes, STRING_PREDICATE);
