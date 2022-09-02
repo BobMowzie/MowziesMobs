@@ -167,10 +167,10 @@ public abstract class EntityBarakoa extends MowzieEntity implements RangedAttack
                 int startMoveFrame = 7;
                 int endMoveFrame = 14;
                 if (entity.getAnimationTick() == startMoveFrame) teleportStart = entity.position();
-                if (entity.teleportDestination != null && entity.getAnimationTick() > startMoveFrame && entity.getAnimationTick() < endMoveFrame) {
-                    float t = (getAnimationTick() - startMoveFrame) / (float)(endMoveFrame - startMoveFrame);
+                if (teleportStart != null && entity.teleportDestination != null && entity.getAnimationTick() > startMoveFrame && entity.getAnimationTick() < endMoveFrame) {
+                    float t = (getAnimationTick() - startMoveFrame) / (float) (endMoveFrame - startMoveFrame);
                     t = (float) (0.5 - 0.5 * Math.cos(t * Math.PI));
-                    Vec3 newPos = teleportStart.add(teleportDestination.subtract(teleportStart).scale(t));
+                    Vec3 newPos = teleportStart.add(entity.teleportDestination.subtract(teleportStart).scale(t));
                     entity.teleportTo(newPos.x(), newPos.y(), newPos.z());
                     entity.getNavigation().stop();
                 }
