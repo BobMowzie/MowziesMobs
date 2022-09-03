@@ -49,5 +49,10 @@ public abstract class AnimationAI<T extends MowzieEntity & IAnimatedEntity> exte
         }
     }
 
+    @Override
+    public boolean requiresUpdateEveryTick() {
+        return true;
+    }
+
     protected abstract boolean test(Animation animation);
 }

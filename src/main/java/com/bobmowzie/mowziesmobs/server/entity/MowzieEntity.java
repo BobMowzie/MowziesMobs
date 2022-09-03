@@ -133,10 +133,10 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
             // Height check
             float heightMax = spawnConfig.heightMax.get();
             float heightMin = spawnConfig.heightMin.get();
-            if (spawnPos.getY() > heightMax && heightMax >= 0) {
+            if (spawnPos.getY() > heightMax && heightMax >= -64) {
                 return false;
             }
-            if (spawnPos.getY() < heightMin) {
+            if (spawnPos.getY() < heightMin && heightMin >= -64) {
                 return false;
             }
 
