@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
  */
 public class RenderGrottol extends MobRenderer<EntityGrottol, ModelGrottol<EntityGrottol>> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/grottol.png");
+    private static final ResourceLocation TEXTURE_DEEPSLATE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/grottol_deepslate.png");
 
     public RenderGrottol(EntityRendererProvider.Context mgr) {
         super(mgr, new ModelGrottol<>(), 0.6f);
@@ -24,7 +25,7 @@ public class RenderGrottol extends MobRenderer<EntityGrottol, ModelGrottol<Entit
 
     @Override
     public ResourceLocation getTextureLocation(EntityGrottol entity) {
-        return RenderGrottol.TEXTURE;
+        return entity.getDeepslate() ? RenderGrottol.TEXTURE_DEEPSLATE : RenderGrottol.TEXTURE;
     }
 
     /*@Override
