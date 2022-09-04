@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.client.model.tools.ModelPartMatrix;
 import com.bobmowzie.mowziesmobs.client.render.MowzieRenderUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -18,8 +19,10 @@ public class GeckoCapeLayer extends CapeLayer {
     }
 
     public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, AbstractClientPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        MowzieRenderUtils.transformStackToModelPart(matrixStackIn, (ModelPartMatrix)this.getParentModel().body);
-        super.render(matrixStackIn, bufferIn, packedLightIn, entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
-        matrixStackIn.popPose();
+        if (this.getParentModel().body instanceof ModelPartMatrix) {
+            MowzieRenderUtils.transformStackToModelPart(matrixStackIn, (ModelPartMatrix) this.getParentModel().body);
+            super.render(matrixStackIn, bufferIn, packedLightIn, entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
+            matrixStackIn.popPose();
+        }
     }
 }

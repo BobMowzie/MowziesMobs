@@ -16,8 +16,10 @@ public class GeckoElytraLayer extends ElytraLayer<AbstractClientPlayer, PlayerMo
     }
 
     public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, AbstractClientPlayer entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        MowzieRenderUtils.transformStackToModelPart(matrixStackIn, (ModelPartMatrix)this.getParentModel().body);
-        super.render(matrixStackIn, bufferIn, packedLightIn, entity, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
-        matrixStackIn.popPose();
+        if (this.getParentModel().body instanceof ModelPartMatrix) {
+            MowzieRenderUtils.transformStackToModelPart(matrixStackIn, (ModelPartMatrix) this.getParentModel().body);
+            super.render(matrixStackIn, bufferIn, packedLightIn, entity, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
+            matrixStackIn.popPose();
+        }
     }
 }
