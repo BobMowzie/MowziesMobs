@@ -205,7 +205,7 @@ public enum ClientEventHandler {
         float delta = Minecraft.getInstance().getFrameTime();
         float ticksExistedDelta = player.tickCount + delta;
         if (player != null) {
-            if (ConfigHandler.CLIENT.doCameraShakes.get()) {
+            if (ConfigHandler.CLIENT.doCameraShakes.get() && !Minecraft.getInstance().isPaused()) {
                 float shakeAmplitude = 0;
                 for (EntityCameraShake cameraShake : player.level.getEntitiesOfClass(EntityCameraShake.class, player.getBoundingBox().inflate(20, 20, 20))) {
                     if (cameraShake.distanceTo(player) < cameraShake.getRadius()) {
