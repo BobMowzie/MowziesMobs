@@ -115,9 +115,13 @@ public class EntitySolarBeam extends Entity {
         if (tickCount == 1 && level.isClientSide) {
             caster = (LivingEntity) level.getEntity(getCasterID());
         }
-        if (getHasPlayer()) {
-            if (!level.isClientSide) {
+
+        if (!level.isClientSide) {
+            if (getHasPlayer()) {
                 this.updateWithPlayer();
+            }
+            else if (caster instanceof EntityBarako) {
+                this.updateWithBarako();
             }
         }
         if (caster != null) {
@@ -378,6 +382,14 @@ public class EntitySolarBeam extends Entity {
         this.setPitch((float) (-caster.getXRot() * Math.PI / 180.0d));
         Vec3 vecOffset = caster.getLookAngle().normalize().scale(1);
         this.setPos(caster.getX() + vecOffset.x(), caster.getY() + 1.2f + vecOffset.y(), caster.getZ() + vecOffset.z());
+    }
+
+    private void updateWithBarako() {
+        this.setYaw((float) ((caster.yHeadRot + 90) * Math.PI / 180.0d));
+        this.setPitch((float) (-caster.getXRot() * Math.PI / 180.0d));
+        Vec3 vecOffset1 = new Vec3(0, 0, 0.6).yRot((float) Math.toRadians(-caster.getYRot()));
+        Vec3 vecOffset2 = new Vec3(1.2, 0, 0).yRot(-getYaw()).xRot(getPitch());
+        this.setPos(caster.getX() + vecOffset1.x() + vecOffset2.x(), caster.getY() + 1.4f + vecOffset1.y() + vecOffset2.y(), caster.getZ() + vecOffset1.z() + vecOffset2.z());
     }
 
     @Override

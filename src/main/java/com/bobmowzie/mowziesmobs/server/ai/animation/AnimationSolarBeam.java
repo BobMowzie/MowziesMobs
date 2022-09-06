@@ -33,20 +33,6 @@ public class AnimationSolarBeam<T extends MowzieEntity & IAnimatedEntity> extend
             solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM.get(), entity.level, entity, entity.getX() + radius1 * Math.sin(-entity.getYRot() * Math.PI / 180), entity.getY() + 1.4, entity.getZ() + radius1 * Math.cos(-entity.getYRot() * Math.PI / 180), (float) ((entity.yHeadRot + 90) * Math.PI / 180), (float) (-entity.getXRot() * Math.PI / 180), 55);
             entity.level.addFreshEntity(solarBeam);
         }
-        if (entity.getAnimationTick() >= 4) {
-            if (solarBeam != null) {
-                float radius2 = 1.1f;
-                double x = entity.getX() + radius1 * Math.sin(-entity.getYRot() * Math.PI / 180) + radius2 * Math.sin(-entity.yHeadRot * Math.PI / 180) * Math.cos(-entity.getXRot() * Math.PI / 180);
-                double y = entity.getY() + 1.4 + radius2 * Math.sin(-entity.getXRot() * Math.PI / 180);
-                double z = entity.getZ() + radius1 * Math.cos(-entity.getYRot() * Math.PI / 180) + radius2 * Math.cos(-entity.yHeadRot * Math.PI / 180) * Math.cos(-entity.getXRot() * Math.PI / 180);
-                solarBeam.setPos(x, y, z);
-
-                float yaw = entity.yHeadRot + 90;
-                float pitch = -entity.getXRot();
-                solarBeam.setYaw((float) (yaw * Math.PI / 180));
-                solarBeam.setPitch((float) (pitch * Math.PI / 180));
-            }
-        }
         if (entity.getAnimationTick() >= 22) {
             if (entityTarget != null) {
                 entity.getLookControl().setLookAt(entityTarget.getX(), entityTarget.getY() + entityTarget.getBbHeight() / 2, entityTarget.getZ(), 2, 90);
