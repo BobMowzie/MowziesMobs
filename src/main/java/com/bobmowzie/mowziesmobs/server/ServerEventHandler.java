@@ -136,7 +136,7 @@ public final class ServerEventHandler {
                 }
             }
 
-            if (entity instanceof Mob) {
+            if (entity instanceof Mob && !(entity instanceof EntityBarakoaya)) {
                 Mob mob = (Mob) entity;
                 if (mob.getTarget() instanceof EntityBarako && mob.getTarget().hasEffect(EffectHandler.SUNBLOCK)) {
                     EntityBarakoaya sunblocker = mob.level.getNearestEntity(EntityBarakoaya.class, TargetingConditions.DEFAULT, mob, mob.getX(), mob.getY() + mob.getEyeHeight(), mob.getZ(), mob.getBoundingBox().inflate(40.0D, 15.0D, 40.0D));
