@@ -37,11 +37,13 @@ public class ModelBipedAnimated<T extends LivingEntity> extends HumanoidModel<T>
     }
 
     public static void setUseMatrixMode(HumanoidModel<? extends LivingEntity> bipedModel, boolean useMatrixMode) {
-        ((ModelPartMatrix)bipedModel.body).setUseMatrixMode(useMatrixMode);
-        ((ModelPartMatrix)bipedModel.head).setUseMatrixMode(useMatrixMode);
-        ((ModelPartMatrix)bipedModel.leftLeg).setUseMatrixMode(useMatrixMode);
-        ((ModelPartMatrix)bipedModel.rightLeg).setUseMatrixMode(useMatrixMode);
-        ((ModelPartMatrix)bipedModel.rightArm).setUseMatrixMode(useMatrixMode);
-        ((ModelPartMatrix)bipedModel.leftArm).setUseMatrixMode(useMatrixMode);
+        if (bipedModel.body instanceof ModelPartMatrix) {
+            ((ModelPartMatrix) bipedModel.body).setUseMatrixMode(useMatrixMode);
+            ((ModelPartMatrix) bipedModel.head).setUseMatrixMode(useMatrixMode);
+            ((ModelPartMatrix) bipedModel.leftLeg).setUseMatrixMode(useMatrixMode);
+            ((ModelPartMatrix) bipedModel.rightLeg).setUseMatrixMode(useMatrixMode);
+            ((ModelPartMatrix) bipedModel.rightArm).setUseMatrixMode(useMatrixMode);
+            ((ModelPartMatrix) bipedModel.leftArm).setUseMatrixMode(useMatrixMode);
+        }
     }
 }
