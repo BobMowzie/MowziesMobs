@@ -260,7 +260,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
 
     private HitResult rayTrace(EntitySunstrike entity) {
         Vec3 startPos = new Vec3(entity.getX(), entity.getY(), entity.getZ());
-        Vec3 endPos = new Vec3(entity.getX(), 0, entity.getZ());
+        Vec3 endPos = new Vec3(entity.getX(), level.getMinBuildHeight(), entity.getZ());
         return entity.level.clip(new ClipContext(startPos, endPos, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
     }
 
