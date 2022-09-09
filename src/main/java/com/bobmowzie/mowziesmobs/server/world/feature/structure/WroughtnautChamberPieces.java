@@ -33,11 +33,17 @@ public class WroughtnautChamberPieces {
         }
 
         public Piece(StructurePieceSerializationContext context, CompoundTag tagCompound) {
-            super(FeatureHandler.WROUGHTNAUT_CHAMBER_PIECE, tagCompound, context.structureManager(), (resourceLocation) -> makeSettings(Rotation.valueOf(tagCompound.getString("Rot")), resourceLocation));
+            super(FeatureHandler.WROUGHTNAUT_CHAMBER_PIECE, tagCompound, context.structureManager(), (resourceLocation) -> makeSettings(Rotation.valueOf(tagCompound.contains("Rot") ? tagCompound.getString("Rot") : Rotation.NONE.name()), resourceLocation));
         }
 
         private static StructurePlaceSettings makeSettings(Rotation rotation, ResourceLocation resourceLocation) {
             return (new StructurePlaceSettings()).setRotation(rotation).setMirror(Mirror.NONE).addProcessor(BlockIgnoreProcessor.STRUCTURE_BLOCK);
+        }
+
+        @Override
+        protected void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag tagCompound) {
+            super.addAdditionalSaveData(context, tagCompound);
+            tagCompound.putString("Rot", this.placeSettings.getRotation().name());
         }
 
         /*
