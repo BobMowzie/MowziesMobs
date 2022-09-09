@@ -28,6 +28,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
+import java.util.List;
 
 public class EntityBarakoaya extends EntityBarakoaVillager {
     public boolean hasTriedOrSucceededTeleport = true;
@@ -113,6 +114,24 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
     @Override
     public boolean canHeal(LivingEntity entity) {
         return entity instanceof EntityBarako;
+    }
+
+    @Override
+    public void die(DamageSource cause) {
+        // If healing Barako, set the attack target of any mob targeting the Barakoaya to Barako
+        if (this.getTarget() instanceof EntityBarako) {
+            List<Mob> targetingMobs = level.getEntitiesOfClass(Mob.class, getBoundingBox().inflate(30), (e) -> e.getTarget() == this);
+            if (cause.getEntity() instanceof Mob) {
+                Mob damagingMob = (Mob) cause.getEntity();
+                if (damagingMob.getTarget() == this && !targetingMobs.contains(damagingMob)) {
+                    targetingMobs.add(damagingMob);
+                }
+            }
+            for (Mob mob : targetingMobs) {
+                mob.setTarget(this.getTarget());
+            }
+        }
+        super.die(cause);
     }
 
     public class TeleportToSafeSpotGoal extends Goal {
