@@ -31,6 +31,7 @@ public final class EffectHandler {
     }
 
     public static void addOrCombineEffect(LivingEntity entity, MobEffect effect, int duration, int amplifier, boolean ambient, boolean showParticles) {
+        if (effect == null) return;
         MobEffectInstance effectInst = entity.getEffect(effect);
         MobEffectInstance newEffect = new MobEffectInstance(effect, duration, amplifier, ambient, showParticles);
         if (effectInst != null) effectInst.update(newEffect);
