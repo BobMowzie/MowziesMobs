@@ -1,10 +1,16 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.tools.RigUtils;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3d;
+import com.mojang.math.Vector3f;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
@@ -86,7 +92,6 @@ public class ModelSculptor extends MowzieAnimatedGeoModel<EntitySculptor> {
     }
 
     private void skirtCorrections(EntitySculptor entity) {
-        /* TODO
         MowzieGeoBone headJoint = this.getMowzieBone("head_joint");
         MowzieGeoBone thighR = this.getMowzieBone("thighR");
         MowzieGeoBone thighJointR = this.getMowzieBone("thighJointR");
@@ -114,13 +119,13 @@ public class ModelSculptor extends MowzieAnimatedGeoModel<EntitySculptor> {
 
         headJoint.setHidden(false);
 
-        Vec3 thighToKneeR = calfR.getModelPosition().subtract(thighR.getModelPosition()).normalize();
-        Vec3 thighToKneeL = calfL.getModelPosition().subtract(thighL.getModelPosition()).normalize();
+        Vec3 thighToKneeR = Vec3(calfR.getModelPosition()).subtract(Vec3(thighR.getModelPosition())).normalize();
+        Vec3 thighToKneeL = Vec3(calfL.getModelPosition()).subtract(Vec3(thighL.getModelPosition())).normalize();
 
         skirtEndL.addPosition(-0.2f, -1.5f, 0);
         skirtEndR.addPosition( 0.2f, -1.5f, 0);
-        Vec3 thighToSkirtEndR = skirtEndR.getModelPosition().subtract(thighR.getModelPosition()).normalize();
-        Vec3 thighToSkirtEndL = skirtEndL.getModelPosition().subtract(thighL.getModelPosition()).normalize();
+        Vec3 thighToSkirtEndR = Vec3(skirtEndR.getModelPosition()).subtract(Vec3(thighR.getModelPosition())).normalize();
+        Vec3 thighToSkirtEndL = Vec3(skirtEndL.getModelPosition()).subtract(Vec3(thighL.getModelPosition())).normalize();
         float rightDot = (float) thighToKneeR.dot(new Vec3(0, -1, 0));
         rightDot = (float) Math.pow(Math.max(rightDot, 0), 3);
         float leftDot = (float) thighToKneeL.dot(new Vec3(0, -1, 0));
@@ -143,17 +148,17 @@ public class ModelSculptor extends MowzieAnimatedGeoModel<EntitySculptor> {
         float angleAv = (float) Mth.atan2(average.y(), average.z());
         skirtBack.setRotationX(skirtBack.getRotationX() - angleAv + 3.48f);
         skirtFront.setRotationX(skirtFront.getRotationX() - Math.min(angleAv, -2) + 3.48f);
-        Vec3 skirtFrontDiff = skirtLocFrontL.getModelPosition().subtract(skirtLocFrontR.getModelPosition());
+        Vec3 skirtFrontDiff = Vec3(skirtLocFrontL.getModelPosition()).subtract(Vec3(skirtLocFrontR.getModelPosition()));
         skirtFront.setScaleX(Math.max((float) (0.3f + 0.15f * skirtFrontDiff.length()), 0.4f));
-        Vec3 skirtBackDiff = skirtLocBackL.getModelPosition().subtract(skirtLocBackR.getModelPosition());
+        Vec3 skirtBackDiff = Vec3(skirtLocBackL.getModelPosition()).subtract(Vec3(skirtLocBackR.getModelPosition()));
         skirtBack.setScaleX((float) (0.15f + 0.1f * skirtBackDiff.length()));
         float angleF = (float) Mth.atan2(skirtFrontDiff.normalize().z(), skirtFrontDiff.normalize().x());
         if (angleF < 0.001 || angleF > 3.141) angleF = 0;
         skirtFront.setRotationY(angleF * 0.6f);
-        skirtFront.addPosition(0.5f * (float) skirtLocFrontR.getModelPosition().add(skirtFrontDiff.scale(0.5)).x(), 0, 0);
+        skirtFront.addPosition(0.5f * (float) Vec3(skirtLocFrontR.getModelPosition()).add(skirtFrontDiff.scale(0.5)).x(), 0, 0);
         float angleB = (float) Mth.atan2(skirtBackDiff.normalize().z(), skirtBackDiff.normalize().x());
         skirtBack.setRotationY(angleB * 0.5f);
-        skirtBack.addPosition(0.5f * (float) skirtLocBackR.getModelPosition().add(skirtBackDiff.scale(0.5)).x(), 0, 0);
+        skirtBack.addPosition(0.5f * (float) Vec3(skirtLocBackR.getModelPosition()).add(skirtBackDiff.scale(0.5)).x(), 0, 0);
         float bothDots = (float) Math.pow(rightDot * leftDot, 1);
         float f = Math.min(1, bothDots * 2);
         skirtR.addRotation(0, Mth.clamp(angleF, -0.5f, 0.5f) * (1 - f) - bothDots * 0.4f, 0);
@@ -166,8 +171,9 @@ public class ModelSculptor extends MowzieAnimatedGeoModel<EntitySculptor> {
         Matrix4f mat = frontCloth.getModelRotationMat().copy();
         mat.invert();
         frontCloth2.setModelRotationMat(mat);
+    }
 
-         */
-
+    private static Vec3 Vec3(Vector3d vec) {
+        return new Vec3(vec.x, vec.y, vec.z);
     }
 }
