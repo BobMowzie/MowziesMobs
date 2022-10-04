@@ -9,7 +9,7 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulder;
 import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.client.Minecraft;

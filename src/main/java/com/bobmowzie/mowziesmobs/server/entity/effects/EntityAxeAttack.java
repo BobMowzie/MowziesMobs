@@ -54,10 +54,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
     }
 
     public EntityAxeAttack(EntityType<? extends EntityAxeAttack> type, Level world, LivingEntity caster, boolean vertical) {
-        this(type, world);
-        if (!world.isClientSide) {
-            this.setCasterID(caster.getId());
-        }
+        super(type, world, caster);
         setVertical(vertical);
         setAxeStack(caster.getMainHandItem());
     }

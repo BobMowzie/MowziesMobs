@@ -2,7 +2,8 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBoulder;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.BlockLayer;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulder;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityGeomancyBase;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -58,9 +59,9 @@ public class RenderBoulder extends EntityRenderer<EntityBoulder> {
         model.setupAnim(entityIn, 0, 0, entityIn.tickCount + partialTicks, 0, 0);
         BlockRenderDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRenderer();
         AdvancedModelRenderer root;
-        if (entityIn.boulderSize == EntityBoulder.BoulderSizeEnum.SMALL) root = model.boulder0block1;
-        else  if (entityIn.boulderSize == EntityBoulder.BoulderSizeEnum.MEDIUM) root = model.boulder1;
-        else  if (entityIn.boulderSize == EntityBoulder.BoulderSizeEnum.LARGE) root = model.boulder2;
+        if (entityIn.boulderSize == EntityGeomancyBase.GeomancyTier.SMALL) root = model.boulder0block1;
+        else  if (entityIn.boulderSize == EntityGeomancyBase.GeomancyTier.MEDIUM) root = model.boulder1;
+        else  if (entityIn.boulderSize == EntityGeomancyBase.GeomancyTier.LARGE) root = model.boulder2;
         else root = model.boulder3;
         matrixStackIn.translate(-0.5f, 0.5f, -0.5f);
         BlockLayer.processModelRenderer(root, matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1, blockrendererdispatcher);

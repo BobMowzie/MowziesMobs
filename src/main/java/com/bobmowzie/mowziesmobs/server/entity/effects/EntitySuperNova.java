@@ -28,10 +28,7 @@ public class EntitySuperNova extends EntityMagicEffect {
     }
 
     public EntitySuperNova(EntityType<? extends EntitySuperNova> type, Level world, LivingEntity caster, double x, double y, double z) {
-        this(type, world);
-        if (!world.isClientSide) {
-            this.setCasterID(caster.getId());
-        }
+        super(type, world, caster);
         this.setPos(x, y, z);
     }
 

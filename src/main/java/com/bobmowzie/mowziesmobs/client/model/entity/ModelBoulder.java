@@ -1,7 +1,8 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.BlockModelRenderer;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulder;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityGeomancyBase;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -73,7 +74,7 @@ public class ModelBoulder<T extends EntityBoulder> extends AdvancedModelBase {
 
     public BlockModelRenderer[] blockModels;
 
-    private EntityBoulder.BoulderSizeEnum size;
+    private EntityGeomancyBase.GeomancyTier size;
 
     public ModelBoulder() {
         this.textureWidth = 16;
@@ -307,9 +308,9 @@ public class ModelBoulder<T extends EntityBoulder> extends AdvancedModelBase {
 
     @Override
     public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        if (size == EntityBoulder.BoulderSizeEnum.SMALL) boulder0block1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        else  if (size == EntityBoulder.BoulderSizeEnum.MEDIUM) boulder1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        else  if (size == EntityBoulder.BoulderSizeEnum.LARGE) boulder2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        if (size == EntityGeomancyBase.GeomancyTier.SMALL) boulder0block1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        else  if (size == EntityGeomancyBase.GeomancyTier.MEDIUM) boulder1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        else  if (size == EntityGeomancyBase.GeomancyTier.LARGE) boulder2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         else boulder3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
@@ -317,7 +318,7 @@ public class ModelBoulder<T extends EntityBoulder> extends AdvancedModelBase {
     public void setupAnim(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         if (entityIn instanceof EntityBoulder) {
             EntityBoulder entity = (EntityBoulder) entityIn;
-            size = entity.getBoulderSize();
+            size = entity.getTier();
             resetToDefaultPose();
             int tick = Math.max(entity.tickCount, 0);
             float delta = ageInTicks - entity.tickCount;

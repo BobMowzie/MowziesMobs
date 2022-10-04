@@ -38,10 +38,7 @@ public class EntityIceBreath extends EntityMagicEffect {
     }
 
     public EntityIceBreath(EntityType<? extends EntityIceBreath> type, Level world, LivingEntity caster) {
-        super(type, world);
-        if (!world.isClientSide) {
-            this.setCasterID(caster.getId());
-        }
+        super(type, world, caster);
     }
 
     @Override

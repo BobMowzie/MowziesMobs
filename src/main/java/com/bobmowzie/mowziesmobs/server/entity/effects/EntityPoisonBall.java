@@ -33,10 +33,7 @@ public class EntityPoisonBall extends EntityMagicEffect {
     }
 
     public EntityPoisonBall(EntityType<? extends EntityPoisonBall> type, Level worldIn, LivingEntity caster) {
-        super(type, worldIn);
-        if (!level.isClientSide) {
-            this.setCasterID(caster.getId());
-        }
+        super(type, worldIn, caster);
     }
 
     public void shoot(double x, double y, double z, float velocity, float inaccuracy) {

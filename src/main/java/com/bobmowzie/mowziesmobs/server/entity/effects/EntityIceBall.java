@@ -34,10 +34,7 @@ public class EntityIceBall extends EntityMagicEffect {
     }
 
     public EntityIceBall(EntityType<? extends EntityIceBall> type, Level worldIn, LivingEntity caster) {
-        this(type, worldIn);
-        if (!level.isClientSide) {
-            this.setCasterID(caster.getId());
-        }
+        super(type, worldIn, caster);
     }
 
     @Override

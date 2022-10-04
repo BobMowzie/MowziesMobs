@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.entity;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.*;
 import com.bobmowzie.mowziesmobs.server.entity.effects.*;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulder;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityBabyFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;

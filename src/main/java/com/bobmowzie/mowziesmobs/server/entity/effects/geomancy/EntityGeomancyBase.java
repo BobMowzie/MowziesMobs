@@ -1,0 +1,166 @@
+package com.bobmowzie.mowziesmobs.server.entity.effects.geomancy;
+
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityFallingBlock;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityMagicEffect;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.phys.Vec3;
+
+import java.util.Optional;
+
+public abstract class EntityGeomancyBase extends EntityMagicEffect {
+    private static final byte EXPLOSION_PARTICLES_ID = 69;
+
+    protected static final EntityDataAccessor<Optional<BlockState>> BLOCK_STATE = SynchedEntityData.defineId(EntityBoulder.class, EntityDataSerializers.BLOCK_STATE);
+    private static final EntityDataAccessor<Integer> TIER = SynchedEntityData.defineId(EntityBoulder.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> DEATH_TIME = SynchedEntityData.defineId(EntityBoulder.class, EntityDataSerializers.INT);
+
+    public enum GeomancyTier {
+        SMALL,
+        MEDIUM,
+        LARGE,
+        HUGE
+    }
+
+    public EntityGeomancyBase(EntityType<? extends EntityMagicEffect> type, Level worldIn) {
+        super(type, worldIn);
+    }
+
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        getEntityData().define(BLOCK_STATE, Optional.of(Blocks.DIRT.defaultBlockState()));
+        getEntityData().define(DEATH_TIME, 1200);
+        getEntityData().define(TIER, 0);
+    }
+
+    @Override
+    public boolean canBeCollidedWith() {
+        return true;
+    }
+
+    @Override
+    public boolean displayFireAnimation() {
+        return false;
+    }
+
+    @Override
+    public PushReaction getPistonPushReaction() {
+        return PushReaction.BLOCK;
+    }
+
+    @Override
+    public boolean isSilent() {
+        return false;
+    }
+
+    @Override
+    public void playSound(SoundEvent soundIn, float volume, float pitch) {
+        super.playSound(soundIn, volume, pitch + random.nextFloat() * 0.25f - 0.125f);
+    }
+
+    @Override
+    public boolean ignoreExplosion() {
+        return true;
+    }
+
+    protected void explode() {
+        this.level.broadcastEntityEvent(this, EXPLOSION_PARTICLES_ID);
+        GeomancyTier tier = getTier();
+        if (tier == GeomancyTier.SMALL) {
+            playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL.get(), 1.5f, 0.9f);
+            playSound(MMSounds.EFFECT_GEOMANCY_BREAK.get(), 1.5f, 1f);
+        }
+        else if (tier == GeomancyTier.MEDIUM) {
+            playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL.get(), 1.5f, 0.7f);
+            playSound(MMSounds.EFFECT_GEOMANCY_BREAK_MEDIUM_3.get(), 1.5f, 1.5f);
+        }
+        else if (tier == GeomancyTier.LARGE) {
+            playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG.get(), 1.5f, 1f);
+            playSound(MMSounds.EFFECT_GEOMANCY_BREAK_MEDIUM_1.get(), 1.5f, 0.9f);
+            EntityCameraShake.cameraShake(level, position(), 15, 0.05f, 0, 20);
+
+            for (int i = 0; i < 5; i++) {
+                Vec3 particlePos = new Vec3(random.nextFloat() * 2, 0, 0);
+                particlePos = particlePos.yRot((float) (random.nextFloat() * 2 * Math.PI));
+                particlePos = particlePos.xRot((float) (random.nextFloat() * 2 * Math.PI));
+                particlePos = particlePos.add(new Vec3(0, getBbHeight() / 4, 0));
+                EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK.get(), level, 70, getBlock());
+                fallingBlock.setPos(getX() + particlePos.x, getY() + 0.5 + particlePos.y, getZ() + particlePos.z);
+                fallingBlock.setDeltaMovement((float) particlePos.x * 0.3f, 0.2f + random.nextFloat() * 0.6f, (float) particlePos.z * 0.3f);
+                level.addFreshEntity(fallingBlock);
+            }
+        }
+        else if (tier == GeomancyTier.HUGE) {
+            playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG.get(), 1.5f, 0.5f);
+            playSound(MMSounds.EFFECT_GEOMANCY_BREAK_LARGE_1.get(), 1.5f, 0.5f);
+            EntityCameraShake.cameraShake(level, position(), 20, 0.05f, 0, 20);
+
+            for (int i = 0; i < 7; i++) {
+                Vec3 particlePos = new Vec3(random.nextFloat() * 2.5f, 0, 0);
+                particlePos = particlePos.yRot((float) (random.nextFloat() * 2 * Math.PI));
+                particlePos = particlePos.xRot((float) (random.nextFloat() * 2 * Math.PI));
+                particlePos = particlePos.add(new Vec3(0, getBbHeight() / 4, 0));
+                EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK.get(), level, 70, getBlock());
+                fallingBlock.setPos(getX() + particlePos.x, getY() + 0.5 + particlePos.y, getZ() + particlePos.z);
+                fallingBlock.setDeltaMovement((float) particlePos.x * 0.3f, 0.2f + random.nextFloat() * 0.6f, (float) particlePos.z * 0.3f);
+                level.addFreshEntity(fallingBlock);
+            }
+        }
+        discard();
+    }
+
+    private void spawnExplosionParticles() {
+        for (int i = 0; i < 40 * getBbWidth(); i++) {
+            Vec3 particlePos = new Vec3(random.nextFloat() * 0.7 * getBbWidth(), 0, 0);
+            particlePos = particlePos.yRot((float) (random.nextFloat() * 2 * Math.PI));
+            particlePos = particlePos.xRot((float) (random.nextFloat() * 2 * Math.PI));
+            level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, getBlock()), getX() + particlePos.x, getY() + 0.5 + particlePos.y, getZ() + particlePos.z, particlePos.x, particlePos.y, particlePos.z);
+        }
+    }
+
+    @Override
+    public void handleEntityEvent(byte id) {
+        if (id == EXPLOSION_PARTICLES_ID) {
+            spawnExplosionParticles();
+        }
+        else super.handleEntityEvent(id);
+    }
+
+    public BlockState getBlock() {
+        Optional<BlockState> bsOp = getEntityData().get(BLOCK_STATE);
+        return bsOp.orElse(null);
+    }
+
+    public void setBlock(BlockState block) {
+        getEntityData().set(BLOCK_STATE, Optional.of(block));
+    }
+
+    public GeomancyTier getTier() {
+        return GeomancyTier.values()[entityData.get(TIER)];
+    }
+
+    public void setTier(GeomancyTier size) {
+        entityData.set(TIER, size.ordinal());
+    }
+
+    public int getDeathTime() {
+        return entityData.get(DEATH_TIME);
+    }
+
+    public void setDeathTime(int deathTime) {
+        entityData.set(DEATH_TIME, deathTime);
+    }
+}

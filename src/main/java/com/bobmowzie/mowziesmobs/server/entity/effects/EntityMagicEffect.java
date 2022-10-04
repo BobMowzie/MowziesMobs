@@ -29,6 +29,13 @@ public abstract class EntityMagicEffect extends Entity {
         super(type, worldIn);
     }
 
+    public EntityMagicEffect(EntityType<? extends EntityMagicEffect> type, Level world, LivingEntity caster) {
+        super(type, world);
+        if (!world.isClientSide) {
+            this.setCasterID(caster.getId());
+        }
+    }
+
     @Override
     public PushReaction getPistonPushReaction() {
         return PushReaction.IGNORE;

@@ -6,7 +6,7 @@ import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.client.render.entity.*;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulder;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerHandler;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.entity.EntityRenderers;
