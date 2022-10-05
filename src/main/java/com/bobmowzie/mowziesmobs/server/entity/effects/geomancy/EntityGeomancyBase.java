@@ -5,6 +5,7 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityFallingBlock;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityMagicEffect;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -12,9 +13,12 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.Vec3;
 
@@ -36,6 +40,38 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect {
 
     public EntityGeomancyBase(EntityType<? extends EntityMagicEffect> type, Level worldIn) {
         super(type, worldIn);
+    }
+
+    public EntityGeomancyBase(EntityType<? extends EntityMagicEffect> type, Level worldIn, LivingEntity caster, BlockState blockState, BlockPos pos) {
+        super(type, worldIn, caster);
+        if (!worldIn.isClientSide && blockState != null) {
+            Block block = blockState.getBlock();
+            BlockState newBlock = blockState;
+            Material mat = blockState.getMaterial();
+            if (blockState.getBlock() == Blocks.GRASS_BLOCK || blockState.getBlock() == Blocks.MYCELIUM || mat == Material.DIRT) newBlock = Blocks.DIRT.defaultBlockState();
+            else if (mat == Material.STONE) {
+                if (block.getRegistryName() != null && block.getRegistryName().getPath().contains("ore")) newBlock = Blocks.STONE.defaultBlockState();
+                if (blockState.getBlock() == Blocks.NETHER_QUARTZ_ORE) newBlock = Blocks.NETHERRACK.defaultBlockState();
+                if (blockState.getBlock() == Blocks.FURNACE
+                        || blockState.getBlock() == Blocks.DISPENSER
+                        || blockState.getBlock() == Blocks.DROPPER
+                ) newBlock = Blocks.COBBLESTONE.defaultBlockState();
+            }
+            else if (mat == Material.CLAY) {
+                if (blockState.getBlock() == Blocks.CLAY) newBlock = Blocks.TERRACOTTA.defaultBlockState();
+            }
+            else if (mat == Material.SAND) {
+                if (blockState.getBlock() == Blocks.SAND) newBlock = Blocks.SANDSTONE.defaultBlockState();
+                else if (blockState.getBlock() == Blocks.RED_SAND) newBlock = Blocks.RED_SANDSTONE.defaultBlockState();
+                else if (blockState.getBlock() == Blocks.GRAVEL) newBlock = Blocks.COBBLESTONE.defaultBlockState();
+                else if (blockState.getBlock() == Blocks.SOUL_SAND) newBlock = Blocks.NETHERRACK.defaultBlockState();
+            }
+
+            if (!newBlock.isRedstoneConductor(worldIn, pos)) {
+                newBlock = Blocks.STONE.defaultBlockState();
+            }
+            setBlock(newBlock);
+        }
     }
 
     @Override

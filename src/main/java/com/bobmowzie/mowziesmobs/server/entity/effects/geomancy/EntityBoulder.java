@@ -66,41 +66,16 @@ public class EntityBoulder extends EntityGeomancyBase {
     }
 
     public EntityBoulder(EntityType<? extends EntityBoulder> type, Level world, LivingEntity caster, BlockState blockState, BlockPos pos) {
-        this(type, world);
-        this.caster = caster;
+        super(type, world, caster, blockState, pos);
+        travelling = false;
+        damage = 8;
+        finishedRisingTick = 4;
+        animationOffset = random.nextFloat() * 8;
         if (type == EntityHandler.BOULDER_SMALL.get()) setTier(GeomancyTier.SMALL);
         else if (type == EntityHandler.BOULDER_MEDIUM.get()) setTier(GeomancyTier.MEDIUM);
         else if (type == EntityHandler.BOULDER_LARGE.get()) setTier(GeomancyTier.LARGE);
         else if (type == EntityHandler.BOULDER_HUGE.get()) setTier(GeomancyTier.HUGE);
         setSizeParams();
-        if (!world.isClientSide && blockState != null) {
-            Block block = blockState.getBlock();
-            BlockState newBlock = blockState;
-            Material mat = blockState.getMaterial();
-            if (blockState.getBlock() == Blocks.GRASS_BLOCK || blockState.getBlock() == Blocks.MYCELIUM || mat == Material.DIRT) newBlock = Blocks.DIRT.defaultBlockState();
-            else if (mat == Material.STONE) {
-                if (block.getRegistryName() != null && block.getRegistryName().getPath().contains("ore")) newBlock = Blocks.STONE.defaultBlockState();
-                if (blockState.getBlock() == Blocks.NETHER_QUARTZ_ORE) newBlock = Blocks.NETHERRACK.defaultBlockState();
-                if (blockState.getBlock() == Blocks.FURNACE
-                        || blockState.getBlock() == Blocks.DISPENSER
-                        || blockState.getBlock() == Blocks.DROPPER
-                ) newBlock = Blocks.COBBLESTONE.defaultBlockState();
-            }
-            else if (mat == Material.CLAY) {
-                if (blockState.getBlock() == Blocks.CLAY) newBlock = Blocks.TERRACOTTA.defaultBlockState();
-            }
-            else if (mat == Material.SAND) {
-                if (blockState.getBlock() == Blocks.SAND) newBlock = Blocks.SANDSTONE.defaultBlockState();
-                else if (blockState.getBlock() == Blocks.RED_SAND) newBlock = Blocks.RED_SANDSTONE.defaultBlockState();
-                else if (blockState.getBlock() == Blocks.GRAVEL) newBlock = Blocks.COBBLESTONE.defaultBlockState();
-                else if (blockState.getBlock() == Blocks.SOUL_SAND) newBlock = Blocks.NETHERRACK.defaultBlockState();
-            }
-
-            if (!newBlock.isRedstoneConductor(world, pos)) {
-                newBlock = Blocks.STONE.defaultBlockState();
-            }
-            setBlock(newBlock);
-        }
     }
 
     public boolean checkCanSpawn() {

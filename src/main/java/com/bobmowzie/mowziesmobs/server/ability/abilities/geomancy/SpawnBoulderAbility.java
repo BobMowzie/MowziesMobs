@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.server.ability.abilities;
+package com.bobmowzie.mowziesmobs.server.ability.abilities.geomancy;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
