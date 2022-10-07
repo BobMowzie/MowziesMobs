@@ -47,6 +47,7 @@ import java.util.Iterator;
 @OnlyIn(Dist.CLIENT)
 public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<GeckoPlayer> {
 
+    public MultiBufferSource rtb;
     private static HashMap<Class<? extends GeckoPlayer>, GeckoRenderPlayer> modelsToLoad = new HashMap<>();
     private ModelGeckoPlayerThirdPerson modelProvider;
 
@@ -101,6 +102,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
     }
 
     public void render(AbstractClientPlayer entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, GeckoPlayer geckoPlayer) {
+        this.rtb = bufferIn;
         this.setModelVisibilities(entityIn);
         renderLiving(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn, geckoPlayer);
     }
@@ -426,5 +428,15 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
         for(RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> layerrenderer : this.layers) {
             if (layerrenderer instanceof IGeckoRenderLayer) ((IGeckoRenderLayer)layerrenderer).renderRecursively(bone, matrixStack, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
+    }
+
+    @Override
+    public void setCurrentRTB(MultiBufferSource rtb) {
+        this.rtb = rtb;
+    }
+
+    @Override
+    public MultiBufferSource getCurrentRTB() {
+        return this.rtb;
     }
 }

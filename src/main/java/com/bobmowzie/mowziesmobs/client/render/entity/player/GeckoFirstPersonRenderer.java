@@ -38,6 +38,8 @@ import java.util.Iterator;
 
 @OnlyIn(Dist.CLIENT)
 public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements IGeoRenderer<GeckoPlayer> {
+    public MultiBufferSource rtb;
+
     public static GeckoPlayer.GeckoPlayerFirstPerson GECKO_PLAYER_FIRST_PERSON;
 
     private static HashMap<Class<? extends GeckoPlayer>, GeckoFirstPersonRenderer> modelsToLoad = new HashMap<>();
@@ -70,6 +72,8 @@ public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements IGeo
     }
 
     public void renderItemInFirstPerson(AbstractClientPlayer player, float pitch, float partialTicks, InteractionHand handIn, float swingProgress, ItemStack stack, float equippedProgress, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, GeckoPlayer geckoPlayer) {
+        this.rtb = bufferIn;
+
         boolean flag = handIn == InteractionHand.MAIN_HAND;
         HumanoidArm handside = flag ? player.getMainArm() : player.getMainArm().getOpposite();
         mirror = player.getMainArm() == HumanoidArm.LEFT;
@@ -200,5 +204,15 @@ public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements IGeo
         }
 
         matrixStack.popPose();
+    }
+
+    @Override
+    public void setCurrentRTB(MultiBufferSource rtb) {
+        this.rtb = rtb;
+    }
+
+    @Override
+    public MultiBufferSource getCurrentRTB() {
+        return this.rtb;
     }
 }
