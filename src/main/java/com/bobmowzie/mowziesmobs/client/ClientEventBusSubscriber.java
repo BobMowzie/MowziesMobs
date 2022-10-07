@@ -47,6 +47,7 @@ public class ClientEventBusSubscriber {
         for (RegistryObject<EntityType<EntityBoulder>> boulderType : EntityHandler.BOULDERS) {
             EntityRenderers.register(boulderType.get(), RenderBoulder::new);
         }
+        EntityRenderers.register(EntityHandler.PILLAR.get(), RenderPillar::new);
         EntityRenderers.register(EntityHandler.AXE_ATTACK.get(), RenderAxeAttack::new);
         EntityRenderers.register(EntityHandler.POISON_BALL.get(), RenderPoisonBall::new);
         EntityRenderers.register(EntityHandler.ICE_BALL.get(), RenderIceBall::new);

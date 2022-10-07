@@ -230,25 +230,6 @@ public class EntityBoulder extends EntityGeomancyBase {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
-        BlockState blockState = getBlock();
-        if (blockState != null) compound.put("block", NbtUtils.writeBlockState(blockState));
-        compound.putInt("deathTime", getDeathTime());
-        compound.putInt("size", getTier().ordinal());
-    }
-
-    @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        Tag blockStateCompound = compound.get("block");
-        if (blockStateCompound != null) {
-            BlockState blockState = NbtUtils.readBlockState((CompoundTag) blockStateCompound);
-            setBlock(blockState);
-        }
-        setDeathTime(compound.getInt("deathTime"));
-        setTier(GeomancyTier.values()[compound.getInt("size")]);
-    }
-
-    @Override
     public boolean isPickable() {
         return true;
     }

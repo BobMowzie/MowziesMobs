@@ -8,6 +8,9 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -27,9 +30,9 @@ import java.util.Optional;
 public abstract class EntityGeomancyBase extends EntityMagicEffect {
     private static final byte EXPLOSION_PARTICLES_ID = 69;
 
-    protected static final EntityDataAccessor<Optional<BlockState>> BLOCK_STATE = SynchedEntityData.defineId(EntityBoulder.class, EntityDataSerializers.BLOCK_STATE);
-    private static final EntityDataAccessor<Integer> TIER = SynchedEntityData.defineId(EntityBoulder.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Integer> DEATH_TIME = SynchedEntityData.defineId(EntityBoulder.class, EntityDataSerializers.INT);
+    protected static final EntityDataAccessor<Optional<BlockState>> BLOCK_STATE = SynchedEntityData.defineId(EntityGeomancyBase.class, EntityDataSerializers.BLOCK_STATE);
+    private static final EntityDataAccessor<Integer> TIER = SynchedEntityData.defineId(EntityGeomancyBase.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> DEATH_TIME = SynchedEntityData.defineId(EntityGeomancyBase.class, EntityDataSerializers.INT);
 
     public enum GeomancyTier {
         SMALL,
@@ -198,5 +201,24 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect {
 
     public void setDeathTime(int deathTime) {
         entityData.set(DEATH_TIME, deathTime);
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag compound) {
+        BlockState blockState = getBlock();
+        if (blockState != null) compound.put("block", NbtUtils.writeBlockState(blockState));
+        compound.putInt("deathTime", getDeathTime());
+        compound.putInt("tier", getTier().ordinal());
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag compound) {
+        Tag blockStateCompound = compound.get("block");
+        if (blockStateCompound != null) {
+            BlockState blockState = NbtUtils.readBlockState((CompoundTag) blockStateCompound);
+            setBlock(blockState);
+        }
+        setDeathTime(compound.getInt("deathTime"));
+        setTier(GeomancyTier.values()[compound.getInt("tier")]);
     }
 }

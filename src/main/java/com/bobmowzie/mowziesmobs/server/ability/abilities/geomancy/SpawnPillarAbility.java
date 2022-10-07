@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.ability.abilities.geomancy;
 
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
+import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
@@ -9,15 +10,20 @@ import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.entity.living.LivingEvent;
 
 public class SpawnPillarAbility extends Ability {
     private static int MAX_DURATION = 60;
+    private static int MAX_RANGE_TO_GROUND = 12;
     private BlockPos spawnPillarPos;
     private BlockState spawnPillarBlock;
+    private EntityPillar pillar;
 
     public SpawnPillarAbility(AbilityType<? extends Ability> abilityType, LivingEntity user) {
         super(abilityType, user,  new AbilitySection[] {
@@ -35,16 +41,19 @@ public class SpawnPillarAbility extends Ability {
     @Override
     public boolean tryAbility() {
         Vec3 from = getUser().getPosition(0);
-        Vec3 to = from.subtract(0, from.y(), 0).add(0, getUser().getLevel().getMinBuildHeight(), 0);
+        Vec3 to = from.subtract(0, MAX_RANGE_TO_GROUND, 0);
         BlockHitResult result = getUser().level.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, getUser()));
-        this.spawnPillarPos = result.getBlockPos();
-        this.spawnPillarBlock = getUser().level.getBlockState(spawnPillarPos);
-        if (result.getDirection() != Direction.UP) {
-            BlockState blockAbove = getUser().level.getBlockState(spawnPillarPos.above());
-            if (blockAbove.isSuffocating(getUser().level, spawnPillarPos.above()) || blockAbove.isAir())
-                return false;
+        if (result.getType() != HitResult.Type.MISS) {
+            this.spawnPillarPos = result.getBlockPos();
+            this.spawnPillarBlock = getUser().level.getBlockState(spawnPillarPos);
+            if (result.getDirection() != Direction.UP) {
+                BlockState blockAbove = getUser().level.getBlockState(spawnPillarPos.above());
+                if (blockAbove.isSuffocating(getUser().level, spawnPillarPos.above()) || blockAbove.isAir())
+                    return false;
+            }
+            return EffectGeomancy.isBlockDiggable(spawnPillarBlock);
         }
-        return EffectGeomancy.isBlockDiggable(spawnPillarBlock);
+        return false;
     }
 
     @Override
@@ -62,15 +71,38 @@ public class SpawnPillarAbility extends Ability {
     private void spawnPillar() {
         playAnimation("spawn_boulder_instant", false);
 
-        EntityPillar pillar = new EntityPillar(EntityHandler.PILLAR.get(), getUser().level, getUser(), spawnPillarBlock, spawnPillarPos);
-        pillar.setPos(spawnPillarPos.getX() + 0.5F, spawnPillarPos.getY() + 2, spawnPillarPos.getZ() + 0.5F);
+        pillar = new EntityPillar(EntityHandler.PILLAR.get(), getUser().level, getUser(), spawnPillarBlock, spawnPillarPos);
+        pillar.setPos(spawnPillarPos.getX() + 0.5F, spawnPillarPos.getY() + 1, spawnPillarPos.getZ() + 0.5F);
         if (!getUser().level.isClientSide && pillar.checkCanSpawn()) {
             getUser().level.addFreshEntity(pillar);
         }
     }
 
     @Override
+    public void end() {
+        super.end();
+        pillar = null;
+    }
+
+    @Override
     public boolean canUse() {
         return EffectGeomancy.canUse(getUser()) && super.canUse();
+    }
+
+    @Override
+    public void onJump(LivingEvent.LivingJumpEvent event) {
+        super.onJump(event);
+        if (getUser().isCrouching()) {
+            if (!event.getEntity().getLevel().isClientSide()) AbilityHandler.INSTANCE.sendAbilityMessage(event.getEntityLiving(), AbilityHandler.SPAWN_PILLAR_ABILITY);
+        }
+    }
+
+    @Override
+    public void onSneakUp(Player player) {
+        super.onSneakUp(player);
+        if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE && isUsing() && pillar != null) {
+            pillar.stopRising();
+            nextSection();
+        }
     }
 }
