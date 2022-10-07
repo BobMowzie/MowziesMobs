@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects.geomancy;
 
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
+import com.bobmowzie.mowziesmobs.server.entity.IAnimationTickable;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityFallingBlock;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityMagicEffect;
@@ -24,10 +25,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.Vec3;
+import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.manager.AnimationData;
+import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import java.util.Optional;
 
-public abstract class EntityGeomancyBase extends EntityMagicEffect {
+public abstract class EntityGeomancyBase extends EntityMagicEffect implements IAnimatable, IAnimationTickable {
     private static final byte EXPLOSION_PARTICLES_ID = 69;
 
     protected static final EntityDataAccessor<Optional<BlockState>> BLOCK_STATE = SynchedEntityData.defineId(EntityGeomancyBase.class, EntityDataSerializers.BLOCK_STATE);
@@ -40,6 +44,8 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect {
         LARGE,
         HUGE
     }
+
+    private AnimationFactory factory = new AnimationFactory(this);
 
     public EntityGeomancyBase(EntityType<? extends EntityMagicEffect> type, Level worldIn) {
         super(type, worldIn);
@@ -220,5 +226,20 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect {
         }
         setDeathTime(compound.getInt("deathTime"));
         setTier(GeomancyTier.values()[compound.getInt("tier")]);
+    }
+
+    @Override
+    public AnimationFactory getFactory() {
+        return null;
+    }
+
+    @Override
+    public int tickTimer() {
+        return tickCount;
+    }
+
+    @Override
+    public void registerControllers(AnimationData data) {
+
     }
 }
