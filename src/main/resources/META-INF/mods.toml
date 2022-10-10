@@ -4,7 +4,7 @@ loaderVersion="[40,)"
 issueTrackerURL="https://github.com/BobMowzie/MowziesMobs/issues"
 [[mods]]
     modId="mowziesmobs"
-    version="1.5.29"
+    version="1.5.30"
     displayName="Mowzie's Mobs"
     displayURL="https://www.curseforge.com/minecraft/mc-mods/mowzies-mobs"
     authors="BobMowzie, Wadoo, pau101"
@@ -25,6 +25,6 @@ issueTrackerURL="https://github.com/BobMowzie/MowziesMobs/issues"
 [[dependencies.mowziesmobs]]
     modId="geckolib3"
     mandatory=true
-    versionRange="[3.0.29,)"
+    versionRange="[3.0.41,)"
     ordering="BEFORE"
     side="BOTH"
