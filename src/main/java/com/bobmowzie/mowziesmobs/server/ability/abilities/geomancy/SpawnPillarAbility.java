@@ -19,7 +19,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingEvent;
 
 public class SpawnPillarAbility extends Ability {
-    private static int MAX_DURATION = 60;
+    private static int MAX_DURATION = 120;
     private static int MAX_RANGE_TO_GROUND = 12;
     private BlockPos spawnPillarPos;
     private BlockState spawnPillarBlock;
@@ -81,6 +81,7 @@ public class SpawnPillarAbility extends Ability {
     @Override
     public void end() {
         super.end();
+        if (pillar != null) pillar.stopRising();
         pillar = null;
     }
 
@@ -100,8 +101,8 @@ public class SpawnPillarAbility extends Ability {
     @Override
     public void onSneakUp(Player player) {
         super.onSneakUp(player);
-        if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE && isUsing() && pillar != null) {
-            pillar.stopRising();
+        if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE && isUsing()) {
+            if (pillar != null) pillar.stopRising();
             nextSection();
         }
     }

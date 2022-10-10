@@ -227,9 +227,6 @@ public class EntityBoulder extends EntityGeomancyBase {
                 level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, storedBlock), getX() + particlePos.x, getY() + offsetY, getZ() + particlePos.z, 0, -1, 0);
             }
         }
-        int newDeathTime = getDeathTime() - 1;
-        setDeathTime(newDeathTime);
-        if (newDeathTime < 0) this.explode();
     }
 
     @Override
@@ -294,5 +291,9 @@ public class EntityBoulder extends EntityGeomancyBase {
             }
         }
         return super.skipAttackInteraction(entityIn);
+    }
+
+    public boolean isTravelling() {
+        return travelling;
     }
 }

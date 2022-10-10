@@ -39,6 +39,7 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements IA
     private static final EntityDataAccessor<Integer> DEATH_TIME = SynchedEntityData.defineId(EntityGeomancyBase.class, EntityDataSerializers.INT);
 
     public enum GeomancyTier {
+        NONE,
         SMALL,
         MEDIUM,
         LARGE,
@@ -81,6 +82,14 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements IA
             }
             setBlock(newBlock);
         }
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        int newDeathTime = getDeathTime() - 1;
+        setDeathTime(newDeathTime);
+        if (newDeathTime < 0) this.explode();
     }
 
     @Override
@@ -230,7 +239,7 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements IA
 
     @Override
     public AnimationFactory getFactory() {
-        return null;
+        return factory;
     }
 
     @Override
