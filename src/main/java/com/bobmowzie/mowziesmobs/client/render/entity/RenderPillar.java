@@ -65,10 +65,11 @@ public class RenderPillar extends RenderGeomancyBase<EntityPillar> {
 
     @Override
     public void render(GeoModel model, EntityPillar pillar, float partialTicks, RenderType type, PoseStack matrixStackIn, @Nullable MultiBufferSource renderTypeBuffer, @Nullable VertexConsumer vertexBuilder, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        float height = pillar.prevHeight + (pillar.getHeight() - pillar.prevHeight) * partialTicks;
+        float height = pillar.prevPrevHeight + (pillar.prevHeight - pillar.prevPrevHeight) * partialTicks;
         matrixStackIn.translate(0, height - 0.5f, 0);
+
         int numRenders = (int) Math.ceil(pillar.getHeight());
-        for  (int i = 0; i < numRenders; i++) {
+        for (int i = 0; i < numRenders; i++) {
             matrixStackIn.translate(0, -1, 0);
             super.render(model, pillar, partialTicks, type, matrixStackIn, renderTypeBuffer, vertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
@@ -84,9 +85,8 @@ public class RenderPillar extends RenderGeomancyBase<EntityPillar> {
 
     @Override
     public void renderCube(GeoCube cube, PoseStack stack, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        stack.translate(-0.5f, 0.5f, -0.5f);
+        stack.translate(-0.5, 0.5f, -0.5);
         BlockRenderDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRenderer();
         blockrendererdispatcher.renderSingleBlock(getEntity().getBlock(), stack, getCurrentRTB(), packedLightIn, packedOverlayIn);
-//        super.renderCube(cube, stack, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 }

@@ -5,6 +5,7 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.*;
 import com.bobmowzie.mowziesmobs.server.entity.effects.*;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulder;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityPillar;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityPillarPiece;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityBabyFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
@@ -73,6 +74,10 @@ public class EntityHandler {
         return EntityType.Builder.of(EntityPillar::new, MobCategory.MISC);
     }
     public static final RegistryObject<EntityType<EntityPillar>> PILLAR = REG.register("pillar", () -> pillarBuilder().sized(1f, 1f).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "pillar").toString()));
+    private static EntityType.Builder<EntityPillarPiece> pillarPieceBuilder() {
+        return EntityType.Builder.of(EntityPillarPiece::new, MobCategory.MISC);
+    }
+    public static final RegistryObject<EntityType<EntityPillarPiece>> PILLAR_PIECE = REG.register("pillar_piece", () -> pillarPieceBuilder().sized(1f, 1f).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "pillar_piece").toString()));
 
     private static EntityType.Builder<EntityAxeAttack> axeAttackBuilder() {
         return EntityType.Builder.of(EntityAxeAttack::new, MobCategory.MISC);
