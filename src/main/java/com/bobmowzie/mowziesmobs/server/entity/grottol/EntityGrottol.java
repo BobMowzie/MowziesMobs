@@ -11,6 +11,7 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.ai.animation.SimpleAnimationAI;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieLLibraryEntity;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.ai.EntityAIGrottolIdle;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
@@ -62,7 +63,7 @@ import net.minecraft.world.phys.Vec3;
 /**
  * Created by BobMowzie on 7/3/2018.
  */
-public class EntityGrottol extends MowzieEntity {
+public class EntityGrottol extends MowzieLLibraryEntity {
     public static final Animation DIE_ANIMATION = Animation.create(73);
     public static final Animation HURT_ANIMATION = Animation.create(10);
     public static final Animation IDLE_ANIMATION = EntityAIGrottolIdle.animation();

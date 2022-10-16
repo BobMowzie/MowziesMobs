@@ -12,6 +12,7 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LegSolverQuadruped;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieLLibraryEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBall;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
@@ -61,7 +62,7 @@ import java.util.List;
 /**
  * Created by BobMowzie on 5/8/2017.
  */
-public class EntityFrostmaw extends MowzieEntity implements Enemy {
+public class EntityFrostmaw extends MowzieLLibraryEntity implements Enemy {
     public static final Animation DIE_ANIMATION = Animation.create(94);
     public static final Animation HURT_ANIMATION = Animation.create(0);
     public static final Animation ROAR_ANIMATION = Animation.create(76);

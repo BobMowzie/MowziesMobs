@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.MMModelAnimator;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieLLibraryEntity;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import com.ilexiconn.llibrary.client.model.tools.BasicModelRenderer;
 import net.minecraft.client.renderer.RenderType;
@@ -10,7 +11,7 @@ import net.minecraft.world.entity.Entity;
 
 import java.util.function.Function;
 
-public abstract class MowzieEntityModel<T extends MowzieEntity> extends AdvancedModelBase<T> {
+public abstract class MowzieEntityModel<T extends MowzieLLibraryEntity> extends AdvancedModelBase<T> {
     protected final MMModelAnimator animator = MMModelAnimator.create();
 
     protected MowzieEntityModel() {

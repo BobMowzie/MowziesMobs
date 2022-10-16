@@ -11,6 +11,7 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.ai.animation.SimpleAnimationAI;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieLLibraryEntity;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
@@ -39,7 +40,7 @@ import java.util.Random;
 /**
  * Created by BobMowzie on 7/24/2018.
  */
-public class EntityLantern extends MowzieEntity {
+public class EntityLantern extends MowzieLLibraryEntity {
     public static final Animation DIE_ANIMATION = Animation.create(25);
     public static final Animation HURT_ANIMATION = Animation.create(10);
     public static final Animation PUFF_ANIMATION = Animation.create(28);

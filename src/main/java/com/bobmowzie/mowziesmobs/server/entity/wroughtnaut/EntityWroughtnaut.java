@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.server.ai.WroughtnautAttackAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.*;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieLLibraryEntity;
 import com.bobmowzie.mowziesmobs.server.entity.SmartBodyHelper;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
@@ -48,7 +49,7 @@ import net.minecraft.world.phys.Vec3;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-public class EntityWroughtnaut extends MowzieEntity implements Enemy {
+public class EntityWroughtnaut extends MowzieLLibraryEntity implements Enemy {
     public static final Animation DIE_ANIMATION = Animation.create(130);
 
     public static final Animation HURT_ANIMATION = Animation.create(15);

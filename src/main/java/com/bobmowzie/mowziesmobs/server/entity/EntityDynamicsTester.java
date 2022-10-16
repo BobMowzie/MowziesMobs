@@ -8,7 +8,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class EntityDynamicsTester extends MowzieEntity {
+public class EntityDynamicsTester extends MowzieLLibraryEntity {
     @OnlyIn(Dist.CLIENT)
     public DynamicChain dc;
 

@@ -9,6 +9,7 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.SimpleAnimationAI;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieLLibraryEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityPoisonBall;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
@@ -68,7 +69,7 @@ import java.util.Random;
 /**
  * Created by BobMowzie on 9/9/2018.
  */
-public class EntityNaga extends MowzieEntity implements RangedAttackMob, Enemy, FlyingAnimal {
+public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob, Enemy, FlyingAnimal {
     @OnlyIn(Dist.CLIENT)
     public DynamicChain dc;
     @OnlyIn(Dist.CLIENT)

@@ -19,7 +19,7 @@ import java.util.UUID;
 
 public class EntityPillarPiece extends Entity {
     private static final EntityDataAccessor<Optional<UUID>> PILLAR = SynchedEntityData.defineId(EntityPillarPiece.class, EntityDataSerializers.OPTIONAL_UUID);
-    private static final EntityDataAccessor<Integer> TIER = SynchedEntityData.defineId(EntityGeomancyBase.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> TIER = SynchedEntityData.defineId(EntityPillarPiece.class, EntityDataSerializers.INT);
 
     private EntityPillar pillar;
 

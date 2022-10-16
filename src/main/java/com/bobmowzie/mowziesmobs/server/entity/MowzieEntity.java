@@ -49,7 +49,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class MowzieEntity extends PathfinderMob implements IEntityAdditionalSpawnData, IAnimatedEntity, IntermittentAnimatableEntity {
+public abstract class MowzieEntity extends PathfinderMob implements IEntityAdditionalSpawnData, IntermittentAnimatableEntity {
     private static final byte START_IA_HEALTH_UPDATE_ID = 4;
     private static final byte MUSIC_PLAY_ID = 67;
     private static final byte MUSIC_STOP_ID = 68;
@@ -59,12 +59,10 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
     public float targetAngle = -1;
     public boolean active;
     public LivingEntity blockingEntity = null;
-    private int animationTick;
-    private Animation animation = NO_ANIMATION;
-    private final List<IntermittentAnimation<?>> intermittentAnimations = new ArrayList<>();
     public boolean playsHurtAnimation = true;
     protected boolean dropAfterDeathAnim = true;
     public boolean hurtInterruptsAnimation = false;
+    private final List<IntermittentAnimation<?>> intermittentAnimations = new ArrayList<>();
 
     @OnlyIn(Dist.CLIENT)
     public Vec3[] socketPosArray;
@@ -199,12 +197,6 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
         prevOnGround = onGround;
         super.tick();
         frame++;
-        if (getAnimation() != NO_ANIMATION) {
-            animationTick++;
-            if (level.isClientSide && animationTick >= animation.getDuration()) {
-                setAnimation(NO_ANIMATION);
-            }
-        }
         if (tickCount % 4 == 0) bossInfo.update();
         if (getTarget() != null) {
             targetDistance = distanceTo(getTarget()) - getTarget().getBbWidth() / 2f;
@@ -237,22 +229,11 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
         super.customServerAiStep();
     }
 
-    protected void onAnimationFinish(Animation animation) {}
-
-    @Override
-    public void writeSpawnData(FriendlyByteBuf buf) {
-        buf.writeInt(ArrayUtils.indexOf(this.getAnimations(), this.getAnimation()));
-        buf.writeInt(this.getAnimationTick());
-    }
 
     @Override
     public void readSpawnData(FriendlyByteBuf buf) {
         yRotO = getYRot();
         yBodyRotO = yBodyRot = yHeadRotO = yHeadRot;
-        int animOrdinal = buf.readInt();
-        int animTick = buf.readInt();
-        this.setAnimation(animOrdinal == -1 ? IAnimatedEntity.NO_ANIMATION : this.getAnimations()[animOrdinal]);
-        this.setAnimationTick(animTick);
     }
 
     @Override
@@ -348,11 +329,7 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
     @Override
     protected void tickDeath() { // Copied from entityLiving
         ++this.deathTime;
-        int deathDuration = 20;
-        Animation death;
-        if ((death = getDeathAnimation()) != null) {
-            deathDuration = death.getDuration() - 20;
-        }
+        int deathDuration = getDeathDuration();
         if (this.deathTime == deathDuration && !this.level.isClientSide()) {
             lastHurtByPlayer = killDataAttackingPlayer;
             lastHurtByPlayerTime = killDataRecentlyHit;
@@ -363,6 +340,8 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
             this.remove(Entity.RemovalReason.KILLED);
         }
     }
+
+    protected abstract int getDeathDuration();
 
     @Override
     protected void dropAllDeathLoot(DamageSource source) {
@@ -382,19 +361,6 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
         if (!this.isRemoved()) {
             bossInfo.update();
         }
-    }
-
-    @Override
-    public boolean hurt(DamageSource source, float damage) {
-        boolean attack = super.hurt(source, damage);
-        if (attack) {
-            if (getHealth() > 0.0F && (getAnimation() == NO_ANIMATION || hurtInterruptsAnimation) && playsHurtAnimation) {
-                AnimationHandler.INSTANCE.sendAnimationMessage(this, getHurtAnimation());
-            } else if (getHealth() <= 0.0F) {
-                AnimationHandler.INSTANCE.sendAnimationMessage(this, getDeathAnimation());
-            }
-        }
-        return attack;
     }
 
     protected void addIntermittentAnimation(IntermittentAnimation animation) {
@@ -437,34 +403,6 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
             }
         }
     }
-
-    @Override
-    public int getAnimationTick() {
-        return this.animationTick;
-    }
-
-    @Override
-    public void setAnimationTick(int tick) {
-        this.animationTick = tick;
-    }
-
-    @Override
-    public Animation getAnimation() {
-        return this.animation;
-    }
-
-    @Override
-    public void setAnimation(Animation animation) {
-        if (animation == NO_ANIMATION) {
-            onAnimationFinish(this.animation);
-        }
-        this.animation = animation;
-        setAnimationTick(0);
-    }
-
-    public abstract Animation getDeathAnimation();
-
-    public abstract Animation getHurtAnimation();
 
     @Override
     public void startSeenByPlayer(ServerPlayer player) {

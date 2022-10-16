@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationBabyFoliaathEatAI;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieLLibraryEntity;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
@@ -37,7 +38,7 @@ import net.minecraft.world.level.material.Material;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EntityBabyFoliaath extends MowzieEntity {
+public class EntityBabyFoliaath extends MowzieLLibraryEntity {
     private static final EntityDataAccessor<Integer> GROWTH = SynchedEntityData.defineId(EntityBabyFoliaath.class, EntityDataSerializers.INT);
 
     private static final EntityDataAccessor<Boolean> INFANT = SynchedEntityData.defineId(EntityBabyFoliaath.class, EntityDataSerializers.BOOLEAN);
