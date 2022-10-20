@@ -3,18 +3,20 @@ package com.bobmowzie.mowziesmobs.server.ability.abilities;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
+import com.bobmowzie.mowziesmobs.server.ability.PlayerAbility;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-public class IceBreathAbility extends Ability {
+public class IceBreathAbility extends PlayerAbility {
     protected EntityIceBreath iceBreath;
 
-    public IceBreathAbility(AbilityType<IceBreathAbility> abilityType, LivingEntity user) {
+    public IceBreathAbility(AbilityType<Player, IceBreathAbility> abilityType, Player user) {
         super(abilityType, user, new AbilitySection[] {
                 new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 6),
                 new AbilitySection.AbilitySectionInfinite(AbilitySection.AbilitySectionType.ACTIVE),
@@ -37,12 +39,12 @@ public class IceBreathAbility extends Ability {
         if (getUser().getUsedItemHand() == InteractionHand.MAIN_HAND) {
             heldItemMainHandVisualOverride = getUser().getMainHandItem();
             heldItemOffHandVisualOverride = ItemStack.EMPTY;
-            firstPersonOffHandDisplay = Ability.HandDisplay.DONT_RENDER;
+            firstPersonOffHandDisplay = PlayerAbility.HandDisplay.DONT_RENDER;
         }
         else {
             heldItemOffHandVisualOverride = getUser().getOffhandItem();
             heldItemMainHandVisualOverride = ItemStack.EMPTY;
-            firstPersonMainHandDisplay = Ability.HandDisplay.DONT_RENDER;
+            firstPersonMainHandDisplay = PlayerAbility.HandDisplay.DONT_RENDER;
         }
     }
 

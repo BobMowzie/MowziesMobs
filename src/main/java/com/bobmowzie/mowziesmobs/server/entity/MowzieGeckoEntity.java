@@ -1,17 +1,28 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
+import com.bobmowzie.mowziesmobs.server.ability.Ability;
+import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
+import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
+import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public abstract class MowzieGeckoEntity extends MowzieEntity implements IAnimatable, IAnimationTickable {
+
     protected AnimationFactory factory = new AnimationFactory(this);
-    protected String currentAnimation;
+    protected MowzieAnimationController<MowzieGeckoEntity> controller = new MowzieAnimationController<>(this, "controller", 10, this::predicate);
 
     public MowzieGeckoEntity(EntityType<? extends MowzieEntity> type, Level world) {
         super(type, world);
@@ -28,12 +39,6 @@ public abstract class MowzieGeckoEntity extends MowzieEntity implements IAnimata
     }
 
     @Override
-    public void tick() {
-        super.tick();
-
-    }
-
-    @Override
     protected int getDeathDuration() {
         return 0;
     }
@@ -45,7 +50,51 @@ public abstract class MowzieGeckoEntity extends MowzieEntity implements IAnimata
 
     protected <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event)
     {
-        event.getController().setAnimation(new AnimationBuilder().addAnimation(currentAnimation, true));
-        return PlayState.CONTINUE;
+        getController().transitionLengthTicks = 0;
+        AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability();
+        if (abilityCapability == null) {
+            return PlayState.STOP;
+        }
+
+        if (abilityCapability.getActiveAbility() != null) {
+            return abilityCapability.animationPredicate(event, null);
+        }
+        else {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("idle"));
+            return PlayState.CONTINUE;
+        }
+    }
+
+    @Override
+    public void registerControllers(AnimationData data) {
+        data.addAnimationController(controller);
+    }
+
+    public MowzieAnimationController<MowzieGeckoEntity> getController() {
+        return controller;
+    }
+
+    public AbilityType<?, ?>[] getAbilities() {
+        return new AbilityType[]{};
+    }
+
+    public AbilityCapability.IAbilityCapability getAbilityCapability() {
+        return AbilityHandler.INSTANCE.getAbilityCapability(this);
+    }
+
+    public Ability getActiveAbility() {
+        AbilityCapability.IAbilityCapability capability = getAbilityCapability();
+        if (capability == null) return null;
+        return getAbilityCapability().getActiveAbility();
+    }
+
+    public Ability getAbility(AbilityType abilityType) {
+        AbilityCapability.IAbilityCapability capability = getAbilityCapability();
+        if (capability == null) return null;
+        return getAbilityCapability().getAbilityMap().get(abilityType);
+    }
+
+    public void sendAbilityMessage(AbilityType abilityType) {
+        AbilityHandler.INSTANCE.sendAbilityMessage(this, abilityType);
     }
 }

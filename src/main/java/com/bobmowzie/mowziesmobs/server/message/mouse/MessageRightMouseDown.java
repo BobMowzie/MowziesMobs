@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.message.mouse;
 
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
+import com.bobmowzie.mowziesmobs.server.ability.PlayerAbility;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
@@ -51,7 +52,9 @@ public class MessageRightMouseDown {
                 AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
                 if (abilityCapability != null) {
                     for (Ability ability : abilityCapability.getAbilities()) {
-                        ability.onRightMouseDown(player);
+                        if (ability instanceof PlayerAbility) {
+                            ((PlayerAbility) ability).onRightMouseDown(player);
+                        }
                     }
                 }
             }

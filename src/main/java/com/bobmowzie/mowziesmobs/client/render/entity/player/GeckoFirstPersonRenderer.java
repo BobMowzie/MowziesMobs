@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.client.render.MowzieRenderUtils;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
+import com.bobmowzie.mowziesmobs.server.ability.PlayerAbility;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -91,15 +92,18 @@ public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements IGeo
             );
         }
 
-        Ability.HandDisplay handDisplay = Ability.HandDisplay.DEFAULT;
+        PlayerAbility.HandDisplay handDisplay = PlayerAbility.HandDisplay.DEFAULT;
         float offHandEquipProgress = 0.0f;
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
         if (abilityCapability != null && abilityCapability.getActiveAbility() != null) {
             Ability ability = abilityCapability.getActiveAbility();
-            ItemStack stackOverride = flag ? ability.heldItemMainHandOverride() : ability.heldItemOffHandOverride();
-            if (stackOverride != null) stack = stackOverride;
+            if (ability instanceof PlayerAbility) {
+                PlayerAbility playerAbility = (PlayerAbility) ability;
+                ItemStack stackOverride = flag ? playerAbility.heldItemMainHandOverride() : playerAbility.heldItemOffHandOverride();
+                if (stackOverride != null) stack = stackOverride;
 
-            handDisplay = flag ? ability.getFirstPersonMainHandDisplay() : ability.getFirstPersonOffHandDisplay();
+                handDisplay = flag ? playerAbility.getFirstPersonMainHandDisplay() : playerAbility.getFirstPersonOffHandDisplay();
+            }
 
             if (ability.getCurrentSection().sectionType == AbilitySection.AbilitySectionType.STARTUP)
                 offHandEquipProgress = Mth.clamp(1f - (ability.getTicksInSection() + partialTicks) / 5f, 0f, 1f);
@@ -107,7 +111,7 @@ public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements IGeo
                 offHandEquipProgress = Mth.clamp((ability.getTicksInSection() + partialTicks - ((AbilitySection.AbilitySectionDuration)ability.getCurrentSection()).duration + 5) / 5f, 0f, 1f);
         }
 
-        if (handDisplay != Ability.HandDisplay.DONT_RENDER && modelProvider.isInitialized()) {
+        if (handDisplay != PlayerAbility.HandDisplay.DONT_RENDER && modelProvider.isInitialized()) {
             int sideMult = handside == HumanoidArm.RIGHT ? -1 : 1;
             if (mirror) handside = handside.getOpposite();
             String sideName = handside == HumanoidArm.RIGHT ? "Right" : "Left";
@@ -125,7 +129,7 @@ public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements IGeo
 
             if (mirror) handside = handside.getOpposite();
 
-            if (stack.isEmpty() && !flag && handDisplay == Ability.HandDisplay.FORCE_RENDER && !player.isInvisible()) {
+            if (stack.isEmpty() && !flag && handDisplay == PlayerAbility.HandDisplay.FORCE_RENDER && !player.isInvisible()) {
                 newMatrixStack.translate(0, -1 * offHandEquipProgress, 0);
                 super.renderPlayerArm(newMatrixStack, bufferIn, combinedLightIn, 0.0f, 0.0f, handside);
             }

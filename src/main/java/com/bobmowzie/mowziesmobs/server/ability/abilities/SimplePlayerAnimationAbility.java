@@ -1,18 +1,18 @@
 package com.bobmowzie.mowziesmobs.server.ability.abilities;
 
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
-import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
+import com.bobmowzie.mowziesmobs.server.ability.PlayerAbility;
 import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 
-public class SimpleAnimationAbility extends Ability {
+public class SimplePlayerAnimationAbility extends PlayerAbility {
     private String animationName;
     private boolean separateLeftAndRight;
     private boolean lockHeldItemMainHand;
 
-    public SimpleAnimationAbility(AbilityType<SimpleAnimationAbility> abilityType, LivingEntity user, String animationName, int duration) {
+    public SimplePlayerAnimationAbility(AbilityType<Player, SimplePlayerAnimationAbility> abilityType, Player user, String animationName, int duration) {
         super(abilityType, user, new AbilitySection[] {
                 new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
                 new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, duration)
@@ -20,7 +20,7 @@ public class SimpleAnimationAbility extends Ability {
         this.animationName = animationName;
     }
 
-    public SimpleAnimationAbility(AbilityType<SimpleAnimationAbility> abilityType, LivingEntity user, String animationName, int duration, boolean separateLeftAndRight, boolean lockHeldItemMainHand) {
+    public SimplePlayerAnimationAbility(AbilityType<Player, SimplePlayerAnimationAbility> abilityType, Player user, String animationName, int duration, boolean separateLeftAndRight, boolean lockHeldItemMainHand) {
         super(abilityType, user, new AbilitySection[] {
                 new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
                 new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, duration)

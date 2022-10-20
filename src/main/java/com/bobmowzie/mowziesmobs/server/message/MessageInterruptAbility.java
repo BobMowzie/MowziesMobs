@@ -46,7 +46,7 @@ public class MessageInterruptAbility {
                 if (entity != null) {
                     AbilityCapability.IAbilityCapability abilityCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.ABILITY_CAPABILITY);
                     if (abilityCapability != null) {
-                        AbilityType<?> abilityType = abilityCapability.getAbilityTypesOnEntity(entity)[message.index];
+                        AbilityType<?, ?> abilityType = abilityCapability.getAbilityTypesOnEntity(entity)[message.index];
                         Ability instance = abilityCapability.getAbilityMap().get(abilityType);
                         if (instance.isUsing()) instance.interrupt();
                     }

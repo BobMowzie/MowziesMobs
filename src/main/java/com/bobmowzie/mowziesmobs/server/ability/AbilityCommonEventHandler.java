@@ -16,7 +16,9 @@ public class AbilityCommonEventHandler {
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
         if (abilityCapability != null) {
             for (Ability ability : abilityCapability.getAbilities()) {
-                ability.onRightClickEmpty(event);
+                if (ability instanceof PlayerAbility) {
+                    ((PlayerAbility)ability).onRightClickEmpty(event);
+                }
             }
         }
     }
@@ -27,7 +29,9 @@ public class AbilityCommonEventHandler {
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
         if (abilityCapability != null) {
             for (Ability ability : abilityCapability.getAbilities()) {
-                ability.onRightClickBlock(event);
+                if (ability instanceof PlayerAbility) {
+                    ((PlayerAbility)ability).onRightClickBlock(event);
+                }
             }
         }
     }
@@ -38,7 +42,9 @@ public class AbilityCommonEventHandler {
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
         if (abilityCapability != null) {
             for (Ability ability : abilityCapability.getAbilities()) {
-                ability.onRightClickWithItem(event);
+                if (ability instanceof PlayerAbility) {
+                    ((PlayerAbility)ability).onRightClickWithItem(event);
+                }
             }
         }
     }
@@ -49,7 +55,9 @@ public class AbilityCommonEventHandler {
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
         if (abilityCapability != null) {
             for (Ability ability : abilityCapability.getAbilities()) {
-                ability.onRightClickEntity(event);
+                if (ability instanceof PlayerAbility) {
+                    ((PlayerAbility)ability).onRightClickEntity(event);
+                }
             }
         }
     }
@@ -60,7 +68,9 @@ public class AbilityCommonEventHandler {
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
         if (abilityCapability != null) {
             for (Ability ability : abilityCapability.getAbilities()) {
-                ability.onLeftClickEmpty(event);
+                if (ability instanceof PlayerAbility) {
+                    ((PlayerAbility)ability).onLeftClickEmpty(event);
+                }
             }
         }
     }
@@ -71,7 +81,9 @@ public class AbilityCommonEventHandler {
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
         if (abilityCapability != null) {
             for (Ability ability : abilityCapability.getAbilities()) {
-                ability.onLeftClickBlock(event);
+                if (ability instanceof PlayerAbility) {
+                    ((PlayerAbility)ability).onLeftClickBlock(event);
+                }
             }
         }
     }
@@ -82,7 +94,9 @@ public class AbilityCommonEventHandler {
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
         if (abilityCapability != null) {
             for (Ability ability : abilityCapability.getAbilities()) {
-                ability.onLeftClickEntity(event);
+                if (ability instanceof PlayerAbility) {
+                    ((PlayerAbility)ability).onLeftClickEntity(event);
+                }
             }
         }
     }
@@ -93,7 +107,9 @@ public class AbilityCommonEventHandler {
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
         if (abilityCapability != null) {
             for (Ability ability : abilityCapability.getAbilities()) {
-                ability.onTakeDamage(event);
+                if (ability instanceof PlayerAbility) {
+                    ((PlayerAbility)ability).onTakeDamage(event);
+                }
             }
         }
     }
@@ -104,7 +120,9 @@ public class AbilityCommonEventHandler {
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
         if (abilityCapability != null) {
             for (Ability ability : abilityCapability.getAbilities()) {
-                ability.onJump(event);
+                if (ability instanceof PlayerAbility) {
+                    ((PlayerAbility)ability).onJump(event);
+                }
             }
         }
     }

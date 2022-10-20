@@ -5,6 +5,7 @@ import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoFirstPersonRen
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
+import com.bobmowzie.mowziesmobs.server.ability.PlayerAbility;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
 import com.bobmowzie.mowziesmobs.server.item.ItemEarthTalisman;
@@ -317,7 +318,9 @@ public class PlayerCapability {
                     AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
                     if (abilityCapability != null) {
                         for (Ability ability : abilityCapability.getAbilities()) {
-                            ability.onLeftMouseDown(player);
+                            if (ability instanceof PlayerAbility) {
+                                ((PlayerAbility)ability).onLeftMouseDown(player);
+                            }
                         }
                     }
                 }
@@ -330,7 +333,9 @@ public class PlayerCapability {
                     AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
                     if (abilityCapability != null) {
                         for (Ability ability : abilityCapability.getAbilities()) {
-                            ability.onRightMouseDown(player);
+                            if (ability instanceof PlayerAbility) {
+                                ((PlayerAbility)ability).onRightMouseDown(player);
+                            }
                         }
                     }
                 }
@@ -343,7 +348,9 @@ public class PlayerCapability {
                     AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
                     if (abilityCapability != null) {
                         for (Ability ability : abilityCapability.getAbilities()) {
-                            ability.onLeftMouseUp(player);
+                            if (ability instanceof PlayerAbility) {
+                                ((PlayerAbility)ability).onLeftMouseUp(player);
+                            }
                         }
                     }
                 }
@@ -356,7 +363,9 @@ public class PlayerCapability {
                     AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
                     if (abilityCapability != null) {
                         for (Ability ability : abilityCapability.getAbilities()) {
-                            ability.onRightMouseUp(player);
+                            if (ability instanceof PlayerAbility) {
+                                ((PlayerAbility)ability).onRightMouseUp(player);
+                            }
                         }
                     }
                 }
@@ -369,7 +378,9 @@ public class PlayerCapability {
                 AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
                 if (abilityCapability != null) {
                     for (Ability ability : abilityCapability.getAbilities()) {
-                        ability.onSneakDown(player);
+                        if (ability instanceof PlayerAbility) {
+                            ((PlayerAbility) ability).onSneakDown(player);
+                        }
                     }
                 }
             }
@@ -380,7 +391,9 @@ public class PlayerCapability {
                 AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
                 if (abilityCapability != null) {
                     for (Ability ability : abilityCapability.getAbilities()) {
-                        ability.onSneakUp(player);
+                        if (ability instanceof PlayerAbility) {
+                            ((PlayerAbility) ability).onSneakUp(player);
+                        }
                     }
                 }
             }

@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection.AbilitySectionDuration;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection.AbilitySectionInstant;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieGeckoEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
@@ -27,11 +28,11 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import java.util.List;
 import java.util.Random;
 
-public class Ability {
+public class Ability<T extends LivingEntity> {
     private final AbilitySection[] sectionTrack;
     private final int cooldownMax;
-    private final AbilityType<? extends Ability> abilityType;
-    private final LivingEntity user;
+    private final AbilityType<T, ? extends Ability> abilityType;
+    private final T user;
     private final AbilityCapability.IAbilityCapability abilityCapability;
 
     private int ticksInUse;
@@ -42,38 +43,18 @@ public class Ability {
 
     protected Random rand;
 
-    protected AnimationBuilder activeThirdPersonAnimation;
-    protected AnimationBuilder activeFirstPersonAnimation;
+    protected AnimationBuilder activeAnimation;
 
-    protected ItemStack heldItemMainHandVisualOverride;
-    protected ItemStack heldItemOffHandVisualOverride;
-
-    public enum HandDisplay {
-        DEFAULT,
-        DONT_RENDER,
-        FORCE_RENDER
-    }
-
-    protected HandDisplay firstPersonMainHandDisplay;
-    protected HandDisplay firstPersonOffHandDisplay;
-
-    public Ability(AbilityType<? extends Ability> abilityType, LivingEntity user, AbilitySection[] sectionTrack, int cooldownMax) {
+    public Ability(AbilityType<T, ? extends Ability> abilityType, T user, AbilitySection[] sectionTrack, int cooldownMax) {
         this.abilityType = abilityType;
         this.user = user;
         this.abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(user);
         this.sectionTrack = sectionTrack;
         this.cooldownMax = cooldownMax;
         this.rand = new Random();
-        if (user.level.isClientSide) {
-            this.activeThirdPersonAnimation = new AnimationBuilder().addAnimation("idle");
-            heldItemMainHandVisualOverride = null;
-            heldItemOffHandVisualOverride = null;
-            firstPersonMainHandDisplay = HandDisplay.DEFAULT;
-            firstPersonOffHandDisplay = HandDisplay.DEFAULT;
-        }
     }
 
-    public Ability(AbilityType<? extends Ability> abilityType, LivingEntity user, AbilitySection[] sectionTrack) {
+    public Ability(AbilityType<T, ? extends Ability> abilityType, T user, AbilitySection[] sectionTrack) {
         this(abilityType, user, sectionTrack, 0);
     }
 
@@ -85,26 +66,16 @@ public class Ability {
         isUsing = true;
     }
 
-    public void playAnimation(String animationName, GeckoPlayer.Perspective perspective, boolean shouldLoop) {
-        if (getUser() instanceof Player && getUser().level.isClientSide()) {
+    public void playAnimation(String animationName, boolean shouldLoop) {
+        if (getUser() instanceof MowzieGeckoEntity && getUser().level.isClientSide()) {
+            MowzieGeckoEntity entity = (MowzieGeckoEntity) getUser();
             AnimationBuilder newActiveAnimation = new AnimationBuilder().addAnimation(animationName, shouldLoop);
-            if (perspective == GeckoPlayer.Perspective.FIRST_PERSON) {
-                activeFirstPersonAnimation = newActiveAnimation;
-            }
-            else {
-                activeThirdPersonAnimation = newActiveAnimation;
-            }
-            MowzieAnimationController<GeckoPlayer> controller = GeckoPlayer.getAnimationController((Player) getUser(), perspective);
-            GeckoPlayer geckoPlayer = GeckoPlayer.getGeckoPlayer((Player) getUser(), perspective);
-            if (controller != null && geckoPlayer != null) {
-                controller.playAnimation(geckoPlayer, newActiveAnimation);
+            activeAnimation = newActiveAnimation;
+            MowzieAnimationController<MowzieGeckoEntity> controller = entity.getController();
+            if (controller != null) {
+                controller.playAnimation(entity, newActiveAnimation);
             }
         }
-    }
-
-    public void playAnimation(String animationName, boolean shouldLoop) {
-        playAnimation(animationName, GeckoPlayer.Perspective.FIRST_PERSON, shouldLoop);
-        playAnimation(animationName, GeckoPlayer.Perspective.THIRD_PERSON, shouldLoop);
     }
 
     public void tick() {
@@ -144,13 +115,6 @@ public class Ability {
         cooldownTimer = getMaxCooldown();
         currentSectionIndex = 0;
         if (!runsInBackground()) abilityCapability.setActiveAbility(null);
-
-        if (getUser().level.isClientSide) {
-            heldItemMainHandVisualOverride = null;
-            heldItemOffHandVisualOverride = null;
-            firstPersonMainHandDisplay = HandDisplay.DEFAULT;
-            firstPersonOffHandDisplay = HandDisplay.DEFAULT;
-        }
     }
 
     public void interrupt() {
@@ -191,7 +155,7 @@ public class Ability {
         return isUsing;
     }
 
-    public LivingEntity getUser() {
+    public T getUser() {
         return user;
     }
 
@@ -286,16 +250,9 @@ public class Ability {
     }
 
     public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e, GeckoPlayer.Perspective perspective) {
-        AnimationBuilder whichAnimation;
-        if (perspective == GeckoPlayer.Perspective.FIRST_PERSON) {
-            whichAnimation = activeFirstPersonAnimation;
-        }
-        else {
-            whichAnimation = activeThirdPersonAnimation;
-        }
-        if (whichAnimation == null || whichAnimation.getRawAnimationList().isEmpty())
+        if (activeAnimation == null || activeAnimation.getRawAnimationList().isEmpty())
             return PlayState.STOP;
-        e.getController().setAnimation(whichAnimation);
+        e.getController().setAnimation(activeAnimation);
         return PlayState.CONTINUE;
     }
 
@@ -305,6 +262,10 @@ public class Ability {
 
     public boolean isAnimating() {
         return isUsing();
+    }
+
+    public AbilityType<T, ? extends Ability> getAbilityType() {
+        return abilityType;
     }
 
     public List<LivingEntity> getEntityLivingBaseNearby(LivingEntity player, double distanceX, double distanceY, double distanceZ, double radius) {
@@ -317,26 +278,6 @@ public class Ability {
 
     public <T extends Entity> List<T> getEntitiesNearby(LivingEntity player, Class<T> entityClass, double dX, double dY, double dZ, double r) {
         return player.level.getEntitiesOfClass(entityClass, player.getBoundingBox().inflate(dX, dY, dZ), e -> e != player && player.distanceTo(e) <= r);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public ItemStack heldItemMainHandOverride() {
-        return heldItemMainHandVisualOverride;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public ItemStack heldItemOffHandOverride() {
-        return heldItemOffHandVisualOverride;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public HandDisplay getFirstPersonMainHandDisplay() {
-        return firstPersonMainHandDisplay;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public HandDisplay getFirstPersonOffHandDisplay() {
-        return firstPersonOffHandDisplay;
     }
 
     public CompoundTag writeNBT() {
@@ -363,67 +304,6 @@ public class Ability {
         else {
             cooldownTimer = compound.getInt("cooldown_timer");
         }
-    }
-
-    // Events
-    public void onRightClickEmpty(PlayerInteractEvent.RightClickEmpty event) {
-
-    }
-
-    public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-
-    }
-
-    public void onRightClickWithItem(PlayerInteractEvent.RightClickItem event) {
-
-    }
-
-    public void onRightClickEntity(PlayerInteractEvent.EntityInteract event) {
-
-    }
-
-    public void onLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event) {
-
-    }
-
-    public void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
-
-    }
-
-    public void onLeftClickEntity(AttackEntityEvent event) {
-
-    }
-
-    public void onTakeDamage(LivingHurtEvent event) {
-
-    }
-
-    public void onJump(LivingEvent.LivingJumpEvent event) {
-
-    }
-
-    public void onRightMouseDown(Player player) {
-
-    }
-
-    public void onLeftMouseDown(Player player) {
-
-    }
-
-    public void onRightMouseUp(Player player) {
-
-    }
-
-    public void onLeftMouseUp(Player player) {
-
-    }
-
-    public void onSneakDown(Player player) {
-
-    }
-
-    public void onSneakUp(Player player) {
-
     }
 
     // Client events

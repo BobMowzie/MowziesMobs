@@ -4,10 +4,7 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
-import com.bobmowzie.mowziesmobs.server.ability.Ability;
-import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
-import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
-import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
+import com.bobmowzie.mowziesmobs.server.ability.*;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulder;
 import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
@@ -30,7 +27,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-public class SpawnBoulderAbility extends Ability {
+public class SpawnBoulderAbility extends PlayerAbility {
     private static int MAX_CHARGE = 60;
     public static final double SPAWN_BOULDER_REACH = 5;
 
@@ -39,7 +36,7 @@ public class SpawnBoulderAbility extends Ability {
     private BlockState spawnBoulderBlock = Blocks.DIRT.defaultBlockState();
     private int spawnBoulderCharge = 0;
 
-    public SpawnBoulderAbility(AbilityType<? extends Ability> abilityType, LivingEntity user) {
+    public SpawnBoulderAbility(AbilityType<Player, ? extends Ability> abilityType, Player user) {
         super(abilityType, user,  new AbilitySection[] {
                 new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, MAX_CHARGE),
                 new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),

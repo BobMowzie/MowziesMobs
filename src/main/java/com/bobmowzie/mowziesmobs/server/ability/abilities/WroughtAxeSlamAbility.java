@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.ability.abilities;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
+import com.bobmowzie.mowziesmobs.server.ability.PlayerAbility;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import net.minecraft.world.entity.LivingEntity;
@@ -10,10 +11,10 @@ import net.minecraft.world.entity.player.Player;
 
 import static com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack.SWING_DURATION_VER;
 
-public class WroughtAxeSlamAbility extends Ability {
+public class WroughtAxeSlamAbility extends PlayerAbility {
     private EntityAxeAttack axeAttack;
 
-    public WroughtAxeSlamAbility(AbilityType<WroughtAxeSlamAbility> abilityType, LivingEntity user) {
+    public WroughtAxeSlamAbility(AbilityType<Player, WroughtAxeSlamAbility> abilityType, Player user) {
         super(abilityType, user, new AbilitySection[] {
                 new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, SWING_DURATION_VER / 2 - 2),
                 new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),

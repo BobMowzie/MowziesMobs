@@ -20,22 +20,22 @@ import javax.annotation.Nullable;
 public enum AbilityHandler {
     INSTANCE;
 
-    public static final AbilityType<FireballAbility> FIREBALL_ABILITY = new AbilityType<>("fireball", FireballAbility::new);
-    public static final AbilityType<SunstrikeAbility> SUNSTRIKE_ABILITY = new AbilityType<>("sunstrike", SunstrikeAbility::new);
-    public static final AbilityType<SolarBeamAbility> SOLAR_BEAM_ABILITY = new AbilityType<>("solar_beam", SolarBeamAbility::new);
-    public static final AbilityType<WroughtAxeSwingAbility> WROUGHT_AXE_SWING_ABILITY = new AbilityType<>("wrought_axe_swing", WroughtAxeSwingAbility::new);
-    public static final AbilityType<WroughtAxeSlamAbility> WROUGHT_AXE_SLAM_ABILITY = new AbilityType<>("wrought_axe_slam", WroughtAxeSlamAbility::new);
-    public static final AbilityType<IceBreathAbility> ICE_BREATH_ABILITY = new AbilityType<>("ice_breath", IceBreathAbility::new);
-    public static final AbilityType<SpawnBoulderAbility> SPAWN_BOULDER_ABILITY = new AbilityType<>("spawn_boulder", SpawnBoulderAbility::new);
-    public static final AbilityType<TunnelingAbility> TUNNELING_ABILITY = new AbilityType<>("tunneling", TunnelingAbility::new);
-    public static final AbilityType<SimpleAnimationAbility> HIT_BOULDER_ABILITY = new AbilityType<>("hit_boulder", (type, player) ->
-            new SimpleAnimationAbility(type, player, "hit_boulder", 10, false, false)
+    public static final AbilityType<Player, FireballAbility> FIREBALL_ABILITY = new AbilityType<>("fireball", FireballAbility::new);
+    public static final AbilityType<Player, SunstrikeAbility> SUNSTRIKE_ABILITY = new AbilityType<>("sunstrike", SunstrikeAbility::new);
+    public static final AbilityType<Player, SolarBeamAbility> SOLAR_BEAM_ABILITY = new AbilityType<>("solar_beam", SolarBeamAbility::new);
+    public static final AbilityType<Player, WroughtAxeSwingAbility> WROUGHT_AXE_SWING_ABILITY = new AbilityType<>("wrought_axe_swing", WroughtAxeSwingAbility::new);
+    public static final AbilityType<Player, WroughtAxeSlamAbility> WROUGHT_AXE_SLAM_ABILITY = new AbilityType<>("wrought_axe_slam", WroughtAxeSlamAbility::new);
+    public static final AbilityType<Player, IceBreathAbility> ICE_BREATH_ABILITY = new AbilityType<>("ice_breath", IceBreathAbility::new);
+    public static final AbilityType<Player, SpawnBoulderAbility> SPAWN_BOULDER_ABILITY = new AbilityType<>("spawn_boulder", SpawnBoulderAbility::new);
+    public static final AbilityType<Player, TunnelingAbility> TUNNELING_ABILITY = new AbilityType<>("tunneling", TunnelingAbility::new);
+    public static final AbilityType<Player, SimplePlayerAnimationAbility> HIT_BOULDER_ABILITY = new AbilityType<>("hit_boulder", (type, player) ->
+            new SimplePlayerAnimationAbility(type, (Player) player, "hit_boulder", 10, false, false)
     );
-    public static final AbilityType<SpawnPillarAbility> SPAWN_PILLAR_ABILITY = new AbilityType<>("spawn_pillar", SpawnPillarAbility::new);
-    public static final AbilityType<SimpleAnimationAbility> BACKSTAB_ABILITY = new AbilityType<>("backstab", (type, player) ->
-            new SimpleAnimationAbility(type, player, "backstab", 12, true, true)
+    public static final AbilityType<Player, SpawnPillarAbility> SPAWN_PILLAR_ABILITY = new AbilityType<>("spawn_pillar", SpawnPillarAbility::new);
+    public static final AbilityType<Player, SimplePlayerAnimationAbility> BACKSTAB_ABILITY = new AbilityType<>("backstab", (type, player) ->
+            new SimplePlayerAnimationAbility(type, (Player) player, "backstab", 12, true, true)
     );
-    public static final AbilityType<?>[] PLAYER_ABILITIES = new AbilityType[] {
+    public static final AbilityType<Player, ? extends PlayerAbility>[] PLAYER_ABILITIES = new AbilityType[] {
             SUNSTRIKE_ABILITY,
             SOLAR_BEAM_ABILITY,
             WROUGHT_AXE_SWING_ABILITY,
@@ -54,7 +54,7 @@ public enum AbilityHandler {
     }
 
     @Nullable
-    public Ability getAbility(LivingEntity entity, AbilityType<?> abilityType) {
+    public Ability getAbility(LivingEntity entity, AbilityType<?, ?> abilityType) {
         AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability(entity);
         if (abilityCapability != null) {
             return abilityCapability.getAbilityMap().get(abilityType);
@@ -62,7 +62,7 @@ public enum AbilityHandler {
         return null;
     }
 
-    public <T extends LivingEntity> void sendAbilityMessage(T entity, AbilityType<?> abilityType) {
+    public <T extends LivingEntity> void sendAbilityMessage(T entity, AbilityType<?, ?> abilityType) {
         if (entity.level.isClientSide) {
             return;
         }
@@ -76,7 +76,7 @@ public enum AbilityHandler {
         }
     }
 
-    public <T extends LivingEntity> void sendInterruptAbilityMessage(T entity, AbilityType<?> abilityType) {
+    public <T extends LivingEntity> void sendInterruptAbilityMessage(T entity, AbilityType<?, ?> abilityType) {
         if (entity.level.isClientSide) {
             return;
         }
@@ -90,7 +90,7 @@ public enum AbilityHandler {
         }
     }
 
-    public <T extends Player> void sendPlayerTryAbilityMessage(T entity, AbilityType<?> ability) {
+    public <T extends Player> void sendPlayerTryAbilityMessage(T entity, AbilityType<?, ?> ability) {
         if (!(entity.level.isClientSide && entity instanceof LocalPlayer)) {
             return;
         }

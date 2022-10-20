@@ -1,15 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.ability.abilities.geomancy;
 
-import com.bobmowzie.mowziesmobs.server.ability.Ability;
-import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
-import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
-import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
+import com.bobmowzie.mowziesmobs.server.ability.*;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityPillar;
 import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.state.BlockState;
@@ -18,15 +14,15 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingEvent;
 
-public class SpawnPillarAbility extends Ability {
+public class SpawnPillarAbility extends PlayerAbility {
     private static int MAX_DURATION = 120;
     private static int MAX_RANGE_TO_GROUND = 12;
     private BlockPos spawnPillarPos;
     private BlockState spawnPillarBlock;
     private EntityPillar pillar;
 
-    public SpawnPillarAbility(AbilityType<? extends Ability> abilityType, LivingEntity user) {
-        super(abilityType, user,  new AbilitySection[] {
+    public SpawnPillarAbility(AbilityType<Player, ? extends Ability> abilityType, Player user) {
+        super(abilityType, user, new AbilitySection[] {
                 new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 2),
                 new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.ACTIVE, MAX_DURATION)
         });

@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieGeckoEntity;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -30,15 +31,15 @@ public class AbilityCapability {
 
     public interface IAbilityCapability extends INBTSerializable<CompoundTag> {
 
-        void activateAbility(LivingEntity entity, AbilityType<?> ability);
+        void activateAbility(LivingEntity entity, AbilityType<?, ?> ability);
 
         void instanceAbilities(LivingEntity entity);
 
         void tick(LivingEntity entity);
 
-        AbilityType<?>[] getAbilityTypesOnEntity(LivingEntity entity);
+        AbilityType<?, ?>[] getAbilityTypesOnEntity(LivingEntity entity);
 
-        Map<AbilityType<?>, Ability> getAbilityMap();
+        Map<AbilityType<?, ?>, Ability> getAbilityMap();
 
         Collection<Ability> getAbilities();
 
@@ -60,14 +61,14 @@ public class AbilityCapability {
     }
 
     public static class AbilityCapabilityImp implements IAbilityCapability {
-        SortedMap<AbilityType<?>, Ability> abilityInstances = new TreeMap<>();
+        SortedMap<AbilityType<?, ?>, Ability> abilityInstances = new TreeMap<>();
         Ability activeAbility = null;
         Map<String, Tag> nbtMap = new HashMap<>();
 
         @Override
         public void instanceAbilities(LivingEntity entity) {
             setActiveAbility(null);
-            for (AbilityType<?> abilityType : getAbilityTypesOnEntity(entity)) {
+            for (AbilityType<? extends LivingEntity, ?> abilityType : getAbilityTypesOnEntity(entity)) {
                 Ability ability = abilityType.makeInstance(entity);
                 abilityInstances.put(abilityType, ability);
                 if (nbtMap.containsKey(abilityType.getName())) ability.readNBT(nbtMap.get(abilityType.getName()));
@@ -75,7 +76,7 @@ public class AbilityCapability {
         }
 
         @Override
-        public void activateAbility(LivingEntity entity, AbilityType<?> abilityType) {
+        public void activateAbility(LivingEntity entity, AbilityType<?, ?> abilityType) {
             Ability ability = abilityInstances.get(abilityType);
             if (ability != null) {
                 boolean tryResult = ability.tryAbility();
@@ -92,15 +93,18 @@ public class AbilityCapability {
         }
 
         @Override
-        public AbilityType<?>[] getAbilityTypesOnEntity(LivingEntity entity) {
+        public AbilityType<?, ?>[] getAbilityTypesOnEntity(LivingEntity entity) {
             if (entity instanceof Player) {
                 return AbilityHandler.PLAYER_ABILITIES;
+            }
+            if (entity instanceof MowzieGeckoEntity) {
+                return ((MowzieGeckoEntity) entity).getAbilities();
             }
             return new AbilityType[0];
         }
 
         @Override
-        public Map<AbilityType<?>, Ability> getAbilityMap() {
+        public Map<AbilityType<?, ?>, Ability> getAbilityMap() {
             return abilityInstances;
         }
 
@@ -152,7 +156,7 @@ public class AbilityCapability {
         @Override
         public CompoundTag serializeNBT() {
             CompoundTag compound = new CompoundTag();
-            for (Map.Entry<AbilityType<?>, Ability> abilityEntry : getAbilityMap().entrySet()) {
+            for (Map.Entry<AbilityType<?, ?>, Ability> abilityEntry : getAbilityMap().entrySet()) {
                 CompoundTag nbt = abilityEntry.getValue().writeNBT();
                 if (!nbt.isEmpty()) {
                     compound.put(abilityEntry.getKey().getName(), nbt);

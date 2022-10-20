@@ -9,6 +9,7 @@ import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
+import com.bobmowzie.mowziesmobs.server.ability.PlayerAbility;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBlockSwapper;
@@ -38,7 +39,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 
 import java.util.List;
 
-public class TunnelingAbility extends Ability {
+public class TunnelingAbility extends PlayerAbility {
     private int doubleTapTimer = 0;
     public boolean prevUnderground;
     public BlockState justDug = Blocks.DIRT.defaultBlockState();
@@ -53,7 +54,7 @@ public class TunnelingAbility extends Ability {
     private InteractionHand whichHand;
     private ItemStack gauntletStack;
 
-    public TunnelingAbility(AbilityType<? extends Ability> abilityType, LivingEntity user) {
+    public TunnelingAbility(AbilityType<Player, ? extends Ability> abilityType, Player user) {
         super(abilityType, user, new AbilitySection[] {
                 new AbilitySection.AbilitySectionInfinite(AbilitySection.AbilitySectionType.ACTIVE)
         });
@@ -66,7 +67,7 @@ public class TunnelingAbility extends Ability {
     }
 
     public void playGauntletAnimation() {
-        if (getUser() instanceof Player) {
+        if (getUser() != null) {
             if (gauntletStack != null && gauntletStack.getItem() == ItemHandler.EARTHBORE_GAUNTLET) {
                 Player player = (Player) getUser();
                 ItemHandler.EARTHBORE_GAUNTLET.playAnimation(player, gauntletStack, ItemEarthboreGauntlet.ANIM_OPEN);
@@ -75,7 +76,7 @@ public class TunnelingAbility extends Ability {
     }
 
     public void stopGauntletAnimation() {
-        if (getUser() instanceof Player) {
+        if (getUser() != null) {
             if (gauntletStack != null && gauntletStack.getItem() == ItemHandler.EARTHBORE_GAUNTLET) {
                 Player player = (Player) getUser();
                 ItemHandler.EARTHBORE_GAUNTLET.playAnimation(player, gauntletStack, ItemEarthboreGauntlet.ANIM_REST);

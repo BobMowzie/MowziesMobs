@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoRenderPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
+import com.bobmowzie.mowziesmobs.server.ability.PlayerAbility;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
@@ -37,8 +38,11 @@ public class GeckoPlayerItemInHandLayer extends RenderLayer<AbstractClientPlayer
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(entitylivingbaseIn);
         if (abilityCapability != null && abilityCapability.getActiveAbility() != null) {
             Ability ability = abilityCapability.getActiveAbility();
-            mainHandStack = ability.heldItemMainHandOverride() != null ? ability.heldItemMainHandOverride() : mainHandStack;
-            offHandStack = ability.heldItemOffHandOverride() != null ? ability.heldItemOffHandOverride() : offHandStack;
+            if (ability instanceof PlayerAbility) {
+                PlayerAbility playerAbility = (PlayerAbility) ability;
+                mainHandStack = playerAbility.heldItemMainHandOverride() != null ? playerAbility.heldItemMainHandOverride() : mainHandStack;
+                offHandStack = playerAbility.heldItemOffHandOverride() != null ? playerAbility.heldItemOffHandOverride() : offHandStack;
+            }
         }
         ItemStack itemstack = flag ? offHandStack : mainHandStack;
         ItemStack itemstack1 = flag ? mainHandStack : offHandStack;
