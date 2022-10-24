@@ -7,18 +7,19 @@ import com.bobmowzie.mowziesmobs.server.ai.UseAbilityAI;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieGeckoEntity;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityGeomancyBase;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityPillar;
 import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -29,9 +30,12 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 
 public class EntitySculptor extends MowzieGeckoEntity {
     public static final AbilityType<EntitySculptor, StartTestAbility> START_TEST = new AbilityType<>("testStart", StartTestAbility::new);
+    public static final AbilityType<EntitySculptor, EndTestAbility> END_TEST = new AbilityType<>("testEnd", EndTestAbility::new);
 
     public boolean handLOpen = true;
     public boolean handROpen = true;
+
+    private EntityPillar pillar;
 
     public EntitySculptor(EntityType<? extends MowzieEntity> type, Level world) {
         super(type, world);
@@ -53,7 +57,10 @@ public class EntitySculptor extends MowzieGeckoEntity {
     @Override
     public void tick() {
         super.tick();
-        if (getActiveAbility() == null) sendAbilityMessage(START_TEST);
+        if (getActiveAbility() == null) {
+            if (pillar == null) sendAbilityMessage(START_TEST);
+            else sendAbilityMessage(END_TEST);
+        }
     }
 
     private <ENTITY extends IAnimatable> void instructionListener(CustomInstructionKeyframeEvent<ENTITY> event) {
@@ -79,7 +86,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     @Override
     public AbilityType<?, ?>[] getAbilities() {
-        return new AbilityType[] {START_TEST};
+        return new AbilityType[] {START_TEST, END_TEST};
     }
 
     public static class StartTestAbility extends Ability<EntitySculptor> {
@@ -91,7 +98,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
         public StartTestAbility(AbilityType<EntitySculptor, StartTestAbility> abilityType, EntitySculptor user) {
             super(abilityType, user, new AbilitySection[] {
-                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 40),
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 18),
                     new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.ACTIVE, 100)
             });
         }
@@ -109,7 +116,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
                     if (blockAbove.isSuffocating(getUser().level, spawnPillarPos.above()) || blockAbove.isAir())
                         return false;
                 }
-                return EffectGeomancy.isBlockDiggable(spawnPillarBlock);
+                return true;
             }
             return false;
         }
@@ -124,12 +131,57 @@ public class EntitySculptor extends MowzieGeckoEntity {
         protected void beginSection(AbilitySection section) {
             super.beginSection(section);
             if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
+                if (spawnPillarBlock == null || !EffectGeomancy.isBlockDiggable(spawnPillarBlock)) spawnPillarBlock = Blocks.STONE.defaultBlockState();
                 pillar = new EntityPillar(EntityHandler.PILLAR.get(), getUser().level, getUser(), spawnPillarBlock, spawnPillarPos);
+                pillar.setTier(EntityGeomancyBase.GeomancyTier.SMALL);
                 pillar.setPos(spawnPillarPos.getX() + 0.5F, spawnPillarPos.getY() + 1, spawnPillarPos.getZ() + 0.5F);
                 if (!getUser().level.isClientSide && pillar.checkCanSpawn()) {
                     getUser().level.addFreshEntity(pillar);
                 }
+                getUser().pillar = pillar;
             }
+        }
+
+        @Override
+        public void end() {
+            super.end();
+            if (pillar != null) pillar.stopRising();
+        }
+    }
+
+    public static class EndTestAbility extends Ability<EntitySculptor> {
+
+        public EndTestAbility(AbilityType<EntitySculptor, EndTestAbility> abilityType, EntitySculptor user) {
+            super(abilityType, user, new AbilitySection[] {
+                    new AbilitySection.AbilitySectionInfinite(AbilitySection.AbilitySectionType.ACTIVE),
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 20)
+            });
+        }
+
+        @Override
+        public boolean tryAbility() {
+            return getUser().pillar != null;
+        }
+
+        @Override
+        public void start() {
+            super.start();
+            playAnimation("testStart", false);
+            if (getUser().pillar != null) getUser().pillar.startFalling();
+        }
+
+        @Override
+        public void tick() {
+            super.tick();
+            if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
+                if (getUser().pillar == null || getUser().pillar.isRemoved()) nextSection();
+            }
+        }
+
+        @Override
+        public void end() {
+            super.end();
+            if (getUser() != null) getUser().pillar = null;
         }
     }
 }

@@ -25,7 +25,8 @@ import java.util.List;
 public class EntityPillar extends EntityGeomancyBase {
     private static final EntityDataAccessor<Float> HEIGHT = SynchedEntityData.defineId(EntityPillar.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Boolean> RISING = SynchedEntityData.defineId(EntityPillar.class, EntityDataSerializers.BOOLEAN);
-    private static final float RISING_SPEED = 0.4f;
+    private static final EntityDataAccessor<Boolean> FALLING = SynchedEntityData.defineId(EntityPillar.class, EntityDataSerializers.BOOLEAN);
+    private static final float RISING_SPEED = 0.25f;
 
     public float prevPrevHeight = 0;
     public float prevHeight = 0;
@@ -69,39 +70,49 @@ public class EntityPillar extends EntityGeomancyBase {
     public void tick() {
         prevPrevHeight = prevHeight;
         prevHeight = getHeight();
-        if (isRising() && !level.isClientSide()) {
-            float height = getHeight();
+        if (!level.isClientSide()) {
+            if (isRising()) {
+                float height = getHeight();
 
-            if (height == 0.0) {
-                currentPiece = new EntityPillarPiece(EntityHandler.PILLAR_PIECE.get(), this.level, this, new Vec3(this.getX(), this.getY() - 1.0f, this.getZ()));
-                level.addFreshEntity(currentPiece);
+                if (height == 0.0) {
+                    currentPiece = new EntityPillarPiece(EntityHandler.PILLAR_PIECE.get(), this.level, this, new Vec3(this.getX(), this.getY() - 1.0f, this.getZ()));
+                    level.addFreshEntity(currentPiece);
+                }
+
+                height += RISING_SPEED;
+                setHeight(height);
+
+                if (Math.floor(height) > Math.floor(prevHeight)) {
+                    currentPiece = new EntityPillarPiece(EntityHandler.PILLAR_PIECE.get(), this.level, this, new Vec3(this.getX(), this.getY() + Math.floor(height) - 1.0f, this.getZ()));
+                    level.addFreshEntity(currentPiece);
+                }
+
+                List<EntityBoulder> boulders = level.getEntitiesOfClass(EntityBoulder.class, getBoundingBox().deflate(0.1f));
+                for (EntityBoulder boulder : boulders) {
+                    if (!boulder.isTravelling() && boulder.getTier().ordinal() > this.getTier().ordinal()) {
+                        this.setTier(boulder.getTier());
+                        boulder.explode();
+                    }
+                }
             }
-
-            height += RISING_SPEED;
-            setHeight(height);
-
-            if (Math.floor(height) > Math.floor(prevHeight)) {
-//                currentPiece.absMoveTo(this.getX(), this.getY() + Math.floor(height) - 1.0, this.getZ(), 0, 0);
-                currentPiece = new EntityPillarPiece(EntityHandler.PILLAR_PIECE.get(), this.level, this, new Vec3(this.getX(), this.getY() + Math.floor(height) - 1.0f, this.getZ()));
-                level.addFreshEntity(currentPiece);
-            }
-//            currentPiece.absMoveTo(this.getX(), this.getY() + height - 1.0f, this.getZ(), 0, 0);
-
-            List<EntityBoulder> boulders = level.getEntitiesOfClass(EntityBoulder.class, getBoundingBox().deflate(0.1f));
-            for (EntityBoulder boulder : boulders) {
-                if (!boulder.isTravelling() && boulder.getTier().ordinal() > this.getTier().ordinal()) {
-                    this.setTier(boulder.getTier());
-                    boulder.explode();
+            else if (isFalling()) {
+                float height = getHeight();
+                height -= RISING_SPEED;
+                setHeight(height);
+                if (height <= 0.0) {
+                    remove(RemovalReason.DISCARDED);
                 }
             }
         }
 
         this.setBoundingBox(this.makeBoundingBox());
 
-        List<Entity> popUpEntities = level.getEntities(this, getBoundingBox().deflate(0.1f));
+        AABB popUpBounds = getBoundingBox().deflate(0.1f);
+        List<Entity> popUpEntities = level.getEntities(this, popUpBounds);
         for (Entity entity : popUpEntities) {
             if (entity.isPickable() && !(entity instanceof EntityBoulder) && !(entity instanceof EntityPillar) && !(entity instanceof EntityPillarPiece)) {
-                entity.setDeltaMovement(0, RISING_SPEED, 0);
+                double belowAmount = entity.getY() - (getY() + getHeight());
+                if (belowAmount < 0.0) entity.move(MoverType.PISTON, new Vec3(0, -belowAmount, 0));
             }
         }
         super.tick();
@@ -119,6 +130,7 @@ public class EntityPillar extends EntityGeomancyBase {
         super.defineSynchedData();
         getEntityData().define(HEIGHT, 0.0f);
         getEntityData().define(RISING, true);
+        getEntityData().define(FALLING, false);
     }
 
     public float getHeight() {
@@ -138,6 +150,15 @@ public class EntityPillar extends EntityGeomancyBase {
 
     public boolean isRising() {
         return getEntityData().get(RISING);
+    }
+
+    public void startFalling() {
+        getEntityData().set(RISING, false);
+        getEntityData().set(FALLING, true);
+    }
+
+    public boolean isFalling() {
+        return getEntityData().get(FALLING);
     }
 
     @Override

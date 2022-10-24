@@ -70,5 +70,5 @@ repositories {
 
 dependencies {
     minecraft "net.minecraftforge:forge:1.18.2-40.1.73"
-    implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.18:3.0.41')
+    implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.18:3.0.46')
 }

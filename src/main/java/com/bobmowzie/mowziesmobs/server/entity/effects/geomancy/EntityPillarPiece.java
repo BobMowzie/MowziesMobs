@@ -59,6 +59,10 @@ public class EntityPillarPiece extends Entity {
                 remove(RemovalReason.DISCARDED);
                 return;
             }
+            if (pillar.isFalling() && pillar.getHeight() + pillar.getY() < getY() + 1) {
+                remove(RemovalReason.DISCARDED);
+                return;
+            }
             setTier(pillar.getTier());
         }
 
