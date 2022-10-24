@@ -16,7 +16,6 @@ import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseDown;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseUp;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.power.Power;
-import com.bobmowzie.mowziesmobs.server.power.PowerGeomancy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -100,8 +99,6 @@ public class PlayerCapability {
         void removePackMember(EntityBarakoanToPlayer tribePlayer);
 
         void addPackMember(EntityBarakoanToPlayer tribePlayer);
-
-        PowerGeomancy getGeomancy();
 
         void setUsingSolarBeam(boolean b);
 
@@ -217,10 +214,6 @@ public class PlayerCapability {
             return prevMotion;
         }
 
-        public PowerGeomancy getGeomancy() {
-            return geomancy;
-        }
-
         public void setUsingSolarBeam(boolean b) { this.usingSolarBeam = b; }
 
         public boolean getUsingSolarBeam() { return this.usingSolarBeam; }
@@ -246,8 +239,7 @@ public class PlayerCapability {
 
         public Vec3 prevMotion;
 
-        public PowerGeomancy geomancy = new PowerGeomancy(this);
-        public Power[] powers = new Power[]{geomancy};
+        public Power[] powers = new Power[]{};
 
         @Override
         public void addedToWorld(EntityJoinWorldEvent event) {

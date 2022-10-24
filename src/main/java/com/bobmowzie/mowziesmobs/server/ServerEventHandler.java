@@ -290,22 +290,6 @@ public final class ServerEventHandler {
             event.setCanceled(true);
             return;
         }
-
-        if (living instanceof Player) {
-            Player player = (Player) living;
-            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
-            if (playerCapability != null && event.isCancelable()) {
-                if (
-                        playerCapability.getUsingSolarBeam() ||
-                        playerCapability.getGeomancy().isSpawningBoulder() ||
-                        playerCapability.getGeomancy().tunneling ||
-                        playerCapability.getUntilAxeSwing() > 0
-                ) {
-                    event.setCanceled(true);
-                    return;
-                }
-            }
-        }
     }
 
     @SubscribeEvent
