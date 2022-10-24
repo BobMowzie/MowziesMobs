@@ -48,6 +48,8 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements IA
 
     private AnimationFactory factory = new AnimationFactory(this);
 
+    private boolean doRemoveTimer = true;
+
     public EntityGeomancyBase(EntityType<? extends EntityMagicEffect> type, Level worldIn) {
         super(type, worldIn);
     }
@@ -87,9 +89,11 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements IA
     @Override
     public void tick() {
         super.tick();
-        int newDeathTime = getDeathTime() - 1;
-        setDeathTime(newDeathTime);
-        if (newDeathTime < 0) this.explode();
+        if (doRemoveTimer()) {
+            int newDeathTime = getDeathTime() - 1;
+            setDeathTime(newDeathTime);
+            if (newDeathTime < 0) this.explode();
+        }
     }
 
     @Override
@@ -250,5 +254,13 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements IA
     @Override
     public void registerControllers(AnimationData data) {
 
+    }
+
+    public boolean doRemoveTimer() {
+        return doRemoveTimer;
+    }
+
+    public void setDoRemoveTimer(boolean doRemoveTimer) {
+        this.doRemoveTimer = doRemoveTimer;
     }
 }

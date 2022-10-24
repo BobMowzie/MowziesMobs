@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.BlockModelRenderer;
-import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulder;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderBase;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityGeomancyBase;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
@@ -14,7 +14,7 @@ import java.util.Random;
 /**
  * Created by BobMowzie on 4/14/2017.
  */
-public class ModelBoulder<T extends EntityBoulder> extends AdvancedModelBase {
+public class ModelBoulder<T extends EntityBoulderBase> extends AdvancedModelBase {
 
     public BlockModelRenderer boulder0block1;
     public AdvancedModelRenderer boulder1;
@@ -316,8 +316,8 @@ public class ModelBoulder<T extends EntityBoulder> extends AdvancedModelBase {
 
     @Override
     public void setupAnim(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (entityIn instanceof EntityBoulder) {
-            EntityBoulder entity = (EntityBoulder) entityIn;
+        if (entityIn instanceof EntityBoulderBase) {
+            EntityBoulderBase entity = (EntityBoulderBase) entityIn;
             size = entity.getTier();
             resetToDefaultPose();
             int tick = Math.max(entity.tickCount, 0);

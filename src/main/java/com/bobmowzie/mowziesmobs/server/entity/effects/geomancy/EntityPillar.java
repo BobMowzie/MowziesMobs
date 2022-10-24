@@ -2,10 +2,9 @@ package com.bobmowzie.mowziesmobs.server.entity.effects.geomancy;
 
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityMagicEffect;
+import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -17,7 +16,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib3.core.manager.AnimationData;
 
 import java.util.HashMap;
 import java.util.List;
@@ -87,8 +85,8 @@ public class EntityPillar extends EntityGeomancyBase {
                     level.addFreshEntity(currentPiece);
                 }
 
-                List<EntityBoulder> boulders = level.getEntitiesOfClass(EntityBoulder.class, getBoundingBox().deflate(0.1f));
-                for (EntityBoulder boulder : boulders) {
+                List<EntityBoulderProjectile> boulders = level.getEntitiesOfClass(EntityBoulderProjectile.class, getBoundingBox().deflate(0.1f));
+                for (EntityBoulderProjectile boulder : boulders) {
                     if (!boulder.isTravelling() && boulder.getTier().ordinal() > this.getTier().ordinal()) {
                         this.setTier(boulder.getTier());
                         boulder.explode();
@@ -110,7 +108,7 @@ public class EntityPillar extends EntityGeomancyBase {
         AABB popUpBounds = getBoundingBox().deflate(0.1f);
         List<Entity> popUpEntities = level.getEntities(this, popUpBounds);
         for (Entity entity : popUpEntities) {
-            if (entity.isPickable() && !(entity instanceof EntityBoulder) && !(entity instanceof EntityPillar) && !(entity instanceof EntityPillarPiece)) {
+            if (entity.isPickable() && !(entity instanceof EntityBoulderBase) && !(entity instanceof EntityPillar) && !(entity instanceof EntityPillarPiece) && entity.canBeCollidedWith()) {
                 double belowAmount = entity.getY() - (getY() + getHeight());
                 if (belowAmount < 0.0) entity.move(MoverType.PISTON, new Vec3(0, -belowAmount, 0));
             }
@@ -172,5 +170,10 @@ public class EntityPillar extends EntityGeomancyBase {
         super.readAdditionalSaveData(compound);
         setHeight(compound.getFloat("height"));
         stopRising();
+    }
+
+    @Override
+    public boolean doRemoveTimer() {
+        return !(caster instanceof EntitySculptor);
     }
 }

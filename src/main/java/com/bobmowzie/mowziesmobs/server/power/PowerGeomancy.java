@@ -9,8 +9,9 @@ import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBlockSwapper;
-import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulder;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderBase;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityFallingBlock;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderProjectile;
 import com.bobmowzie.mowziesmobs.server.message.MessagePlayerStartSummonBoulder;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.core.BlockPos;
@@ -182,7 +183,7 @@ public class PowerGeomancy extends Power {
             }
             else {
                 int size = (int)Math.min(Math.max(0, Math.floor(spawnBoulderCharge/10.f) - 1), 2) + 1;
-                EntityType<EntityBoulder> type = EntityHandler.BOULDERS[size].get();
+                EntityType<EntityBoulderProjectile> type = EntityHandler.BOULDERS[size].get();
                 if (!player.level.noCollision(type.getAABB(spawnBoulderPos.getX() + 0.5F, spawnBoulderPos.getY() + 2, spawnBoulderPos.getZ() + 0.5F))) {
                     spawnBoulder(player);
                 }
@@ -257,7 +258,7 @@ public class PowerGeomancy extends Power {
     private void spawnBoulder(Player player) {
         int size = (int)Math.min(Math.max(0, Math.floor(spawnBoulderCharge/10.f) - 1), 2);
         if (spawnBoulderCharge >= 60) size = 3;
-        EntityBoulder boulder = new EntityBoulder(EntityHandler.BOULDERS[size].get(), player.level, player, spawnBoulderBlock, spawnBoulderPos);
+        EntityBoulderBase boulder = new EntityBoulderBase(EntityHandler.BOULDERS[size].get(), player.level, player, spawnBoulderBlock, spawnBoulderPos);
         boulder.setPos(spawnBoulderPos.getX() + 0.5F, spawnBoulderPos.getY() + 2, spawnBoulderPos.getZ() + 0.5F);
         if (!player.level.isClientSide && boulder.checkCanSpawn()) {
             player.level.addFreshEntity(boulder);

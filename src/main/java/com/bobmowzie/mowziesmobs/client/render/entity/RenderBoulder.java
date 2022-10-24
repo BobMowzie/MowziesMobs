@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBoulder;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.BlockLayer;
-import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulder;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderBase;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityGeomancyBase;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderBoulder extends EntityRenderer<EntityBoulder> {
+public class RenderBoulder extends EntityRenderer<EntityBoulderBase> {
     private static final ResourceLocation TEXTURE_DIRT = new ResourceLocation("textures/blocks/dirt.png");
     private static final ResourceLocation TEXTURE_STONE = new ResourceLocation("textures/blocks/stone.png");
     private static final ResourceLocation TEXTURE_SANDSTONE = new ResourceLocation("textures/blocks/sandstone.png");
@@ -41,7 +41,7 @@ public class RenderBoulder extends EntityRenderer<EntityBoulder> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(EntityBoulder entity) {
+    public ResourceLocation getTextureLocation(EntityBoulderBase entity) {
 //        if (entity.storedBlock != null) {
 //            return Minecraft.getInstance().getBlockRendererDispatcher().getModelForState(entity.storedBlock).;
 //        }
@@ -54,7 +54,7 @@ public class RenderBoulder extends EntityRenderer<EntityBoulder> {
     }
 
     @Override
-    public void render(EntityBoulder entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
+    public void render(EntityBoulderBase entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
         model.setupAnim(entityIn, 0, 0, entityIn.tickCount + partialTicks, 0, 0);
         BlockRenderDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRenderer();

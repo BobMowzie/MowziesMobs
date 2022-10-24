@@ -78,12 +78,12 @@ public abstract class EntityMagicEffect extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
-
+        setCasterID(compound.getInt("caster"));
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
-
+        compound.putInt("caster", getCasterID());
     }
 
     public List<LivingEntity> getEntityLivingBaseNearby(double radius) {
