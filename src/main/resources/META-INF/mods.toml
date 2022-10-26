@@ -25,6 +25,6 @@ issueTrackerURL="https://github.com/BobMowzie/MowziesMobs/issues"
 [[dependencies.mowziesmobs]]
     modId="geckolib3"
     mandatory=true
-    versionRange="[3.0.57,)"
+    versionRange="[3.0.99,)"
     ordering="BEFORE"
     side="BOTH"
