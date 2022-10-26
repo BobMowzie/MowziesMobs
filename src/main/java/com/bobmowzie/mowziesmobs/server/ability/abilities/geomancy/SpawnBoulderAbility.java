@@ -8,6 +8,7 @@ import com.bobmowzie.mowziesmobs.server.ability.*;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderBase;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderProjectile;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityGeomancyBase;
 import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.client.Minecraft;
@@ -16,6 +17,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
@@ -95,9 +97,9 @@ public class SpawnBoulderAbility extends PlayerAbility {
             }
 
             int size = getBoulderSize() + 1;
-            EntityType<EntityBoulderProjectile> type = EntityHandler.BOULDERS[size].get();
+            EntityDimensions dim = EntityBoulderBase.SIZE_MAP.get(EntityGeomancyBase.GeomancyTier.values()[size + 1]);
             if (
-                    !getUser().level.noCollision(type.getAABB(spawnBoulderPos.getX() + 0.5F, spawnBoulderPos.getY() + 2, spawnBoulderPos.getZ() + 0.5F))
+                    !getUser().level.noCollision(dim.makeBoundingBox(spawnBoulderPos.getX() + 0.5F, spawnBoulderPos.getY() + 2, spawnBoulderPos.getZ() + 0.5F))
                     || getUser().distanceToSqr(spawnBoulderPos.getX(), spawnBoulderPos.getY(), spawnBoulderPos.getZ()) > 36
             ) {
                 nextSection();
@@ -126,7 +128,7 @@ public class SpawnBoulderAbility extends PlayerAbility {
 
         int size = getBoulderSize();
         if (spawnBoulderCharge >= 60) size = 3;
-        EntityBoulderBase boulder = new EntityBoulderBase(EntityHandler.BOULDERS[size].get(), getUser().level, getUser(), spawnBoulderBlock, spawnBoulderPos);
+        EntityBoulderProjectile boulder = new EntityBoulderProjectile(EntityHandler.BOULDER_PROJECTILE.get(), getUser().level, getUser(), spawnBoulderBlock, spawnBoulderPos, EntityGeomancyBase.GeomancyTier.values()[size + 1]);
         boulder.setPos(spawnBoulderPos.getX() + 0.5F, spawnBoulderPos.getY() + 2, spawnBoulderPos.getZ() + 0.5F);
         if (!getUser().level.isClientSide && boulder.checkCanSpawn()) {
             getUser().level.addFreshEntity(boulder);

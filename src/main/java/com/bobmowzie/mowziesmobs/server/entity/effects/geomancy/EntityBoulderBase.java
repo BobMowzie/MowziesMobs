@@ -9,15 +9,14 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -29,20 +28,27 @@ public class EntityBoulderBase extends EntityGeomancyBase {
     public GeomancyTier boulderSize = GeomancyTier.SMALL;
     protected int finishedRisingTick = 4;
 
+    public static final HashMap<GeomancyTier, EntityDimensions> SIZE_MAP = new HashMap<>();
+    static {
+        SIZE_MAP.put(GeomancyTier.NONE, EntityDimensions.scalable(1, 1));
+        SIZE_MAP.put(GeomancyTier.SMALL, EntityDimensions.scalable(1, 1));
+        SIZE_MAP.put(GeomancyTier.MEDIUM, EntityDimensions.scalable(2, 1.5f));
+        SIZE_MAP.put(GeomancyTier.LARGE, EntityDimensions.scalable(3, 2.5f));
+        SIZE_MAP.put(GeomancyTier.HUGE, EntityDimensions.scalable(4, 3.5f));
+    }
+
     public EntityBoulderBase(EntityType<? extends EntityBoulderBase> type, Level world) {
         super(type, world);
         finishedRisingTick = 4;
         animationOffset = random.nextFloat() * 8;
+        setTier(GeomancyTier.SMALL);
     }
 
-    public EntityBoulderBase(EntityType<? extends EntityBoulderBase> type, Level world, LivingEntity caster, BlockState blockState, BlockPos pos) {
+    public EntityBoulderBase(EntityType<? extends EntityBoulderBase> type, Level world, LivingEntity caster, BlockState blockState, BlockPos pos, GeomancyTier tier) {
         super(type, world, caster, blockState, pos);
         finishedRisingTick = 4;
         animationOffset = random.nextFloat() * 8;
-        if (type == EntityHandler.BOULDER_SMALL.get()) setTier(GeomancyTier.SMALL);
-        else if (type == EntityHandler.BOULDER_MEDIUM.get()) setTier(GeomancyTier.MEDIUM);
-        else if (type == EntityHandler.BOULDER_LARGE.get()) setTier(GeomancyTier.LARGE);
-        else if (type == EntityHandler.BOULDER_HUGE.get()) setTier(GeomancyTier.HUGE);
+        setTier(tier);
         setSizeParams();
     }
 
@@ -62,6 +68,12 @@ public class EntityBoulderBase extends EntityGeomancyBase {
         else if (size == GeomancyTier.HUGE) {
             finishedRisingTick = 90;
         }
+    }
+
+    @Override
+    protected @NotNull AABB makeBoundingBox() {
+        EntityDimensions dim = EntityBoulderBase.SIZE_MAP.get(getTier());
+        return dim.makeBoundingBox(this.position());
     }
 
     @Override

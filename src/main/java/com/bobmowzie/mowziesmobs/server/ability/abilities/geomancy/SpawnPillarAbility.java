@@ -36,7 +36,7 @@ public class SpawnPillarAbility extends PlayerAbility {
 
     @Override
     public boolean tryAbility() {
-        Vec3 from = getUser().getPosition(0);
+        Vec3 from = getUser().position();
         Vec3 to = from.subtract(0, MAX_RANGE_TO_GROUND, 0);
         BlockHitResult result = getUser().level.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, getUser()));
         if (result.getType() != HitResult.Type.MISS) {

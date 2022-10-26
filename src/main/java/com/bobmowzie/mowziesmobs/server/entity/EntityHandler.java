@@ -66,11 +66,7 @@ public class EntityHandler {
     private static EntityType.Builder<EntityBoulderProjectile> boulderBuilder() {
         return EntityType.Builder.of(EntityBoulderProjectile::new, MobCategory.MISC);
     }
-    public static final RegistryObject<EntityType<EntityBoulderProjectile>> BOULDER_SMALL = REG.register("boulder_small", () -> boulderBuilder().sized(1, 1).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "boulder_small").toString()));;
-    public static final RegistryObject<EntityType<EntityBoulderProjectile>> BOULDER_MEDIUM = REG.register("boulder_medium", () -> boulderBuilder().sized(2, 1.5f).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "boulder_medium").toString()));
-    public static final RegistryObject<EntityType<EntityBoulderProjectile>> BOULDER_LARGE = REG.register("boulder_large", () -> boulderBuilder().sized(3, 2.5f).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "boulder_large").toString()));
-    public static final RegistryObject<EntityType<EntityBoulderProjectile>> BOULDER_HUGE = REG.register("boulder_huge", () -> boulderBuilder().sized(4, 3.5f).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "boulder_huge").toString()));
-    public static final RegistryObject<EntityType<EntityBoulderProjectile>>[] BOULDERS = new RegistryObject[] {BOULDER_SMALL, BOULDER_MEDIUM, BOULDER_LARGE, BOULDER_HUGE};
+    public static final RegistryObject<EntityType<EntityBoulderProjectile>> BOULDER_PROJECTILE = REG.register("boulder_projectile", () -> boulderBuilder().sized(1, 1).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "boulder_projectile").toString()));
     private static EntityType.Builder<EntityPillar> pillarBuilder() {
         return EntityType.Builder.of(EntityPillar::new, MobCategory.MISC);
     }

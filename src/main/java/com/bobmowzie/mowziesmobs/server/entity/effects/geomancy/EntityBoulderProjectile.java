@@ -19,7 +19,9 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +39,8 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
         super(type, world);
     }
 
-    public EntityBoulderProjectile(EntityType<? extends EntityBoulderProjectile> type, Level world, LivingEntity caster, BlockState blockState, BlockPos pos) {
-        super(type, world, caster, blockState, pos);
+    public EntityBoulderProjectile(EntityType<? extends EntityBoulderProjectile> type, Level world, LivingEntity caster, BlockState blockState, BlockPos pos, GeomancyTier tier) {
+        super(type, world, caster, blockState, pos, tier);
     }
 
     public void setSizeParams() {
@@ -61,10 +63,14 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
     }
 
     @Override
+    protected @NotNull AABB makeBoundingBox() {
+        AABB boundingBox = super.makeBoundingBox();
+        if (!travelling) boundingBox = boundingBox.expandTowards(0, -0.5, 0);
+        return boundingBox;
+    }
+
+    @Override
     public void tick() {
-        if (!travelling) {
-            setBoundingBox(getType().getAABB(getX(), getY(), getZ()).expandTowards(0, -0.5, 0));
-        }
         super.tick();
         if (ridingEntities != null) ridingEntities.clear();
         List<Entity> onTopOfEntities = level.getEntities(this, getBoundingBox().contract(0, getBbHeight() - 1, 0).move(new Vec3(0, getBbHeight() - 0.5, 0)).inflate(0.6,0.5,0.6));
