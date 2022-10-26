@@ -31,7 +31,7 @@ public abstract class MowzieAnimatedGeoModel<T extends IAnimatable & IAnimationT
         // Each animation has it's own collection of animations (called the
         // EntityAnimationManager), which allows for multiple independent animations
         AnimationData manager = entity.getFactory().getOrCreateAnimationData(uniqueID);
-        if (manager.startTick == null) {
+        if (manager.startTick == -1) {
             manager.startTick = (double) (entity.tickTimer() + Minecraft.getInstance().getRenderPartialTicks());    // Set start ticks when animation starts playing
         }
 
