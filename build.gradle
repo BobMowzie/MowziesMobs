@@ -12,7 +12,7 @@ buildscript {
 
 apply plugin: "net.minecraftforge.gradle"
 
-version = "1.5.30"
+version = "1.5.31"
 group = "com.bobmowzie.mowziesmobs"
 archivesBaseName = "mowziesmobs"
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -70,5 +70,5 @@ repositories {
 
 dependencies {
     minecraft "net.minecraftforge:forge:1.18.2-40.1.73"
-    implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.18:3.0.46')
+    implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.18:3.0.48')
 }
