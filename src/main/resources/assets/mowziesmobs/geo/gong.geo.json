@@ -1,0 +1,49 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.gong",
+				"texture_width": 128,
+				"texture_height": 128,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 3.5,
+				"visible_bounds_offset": [0, 1.25, 0]
+			},
+			"bones": [
+				{
+					"name": "root",
+					"pivot": [14, -15.25, -8.5],
+					"cubes": [
+						{"origin": [-14, 0.25, -2.5], "size": [5, 6, 5], "uv": [34, 18]},
+						{"origin": [-13, 6.25, -1.5], "size": [3, 21, 3], "uv": [0, 34]},
+						{"origin": [-14, 27.25, -2.5], "size": [5, 2, 5], "uv": [45, 29]},
+						{"origin": [-15, 24.25, -1], "size": [30, 2, 2], "uv": [0, 10]},
+						{"origin": [-16, 29.25, -3.5], "size": [32, 3, 7], "uv": [0, 0]},
+						{"origin": [-9, 26.25, 0], "size": [18, 3, 0], "uv": [0, 31]},
+						{"origin": [9, 27.25, -2.5], "size": [5, 2, 5], "uv": [12, 45]},
+						{"origin": [10, 6.25, -1.5], "size": [3, 21, 3], "uv": [33, 31]},
+						{"origin": [9, 0.25, -2.5], "size": [5, 6, 5], "uv": [12, 34]}
+					]
+				},
+				{
+					"name": "chain",
+					"parent": "root",
+					"pivot": [0, 24.25, 0],
+					"cubes": [
+						{"origin": [-7, 20.25, 0], "size": [14, 4, 0], "uv": [34, 14]}
+					]
+				},
+				{
+					"name": "gong",
+					"parent": "chain",
+					"pivot": [0, 20.25, 0],
+					"cubes": [
+						{"origin": [-8, 4.25, -0.5], "size": [16, 16, 1], "uv": [0, 14]},
+						{"origin": [-2, 10.25, -1], "size": [4, 4, 2], "uv": [45, 36]}
+					]
+				}
+			]
+		}
+	]
+}
