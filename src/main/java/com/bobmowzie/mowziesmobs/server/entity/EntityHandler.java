@@ -3,10 +3,7 @@ package com.bobmowzie.mowziesmobs.server.entity;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.*;
 import com.bobmowzie.mowziesmobs.server.entity.effects.*;
-import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderBase;
-import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderProjectile;
-import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityPillar;
-import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityPillarPiece;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.*;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityBabyFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
@@ -63,10 +60,14 @@ public class EntityHandler {
         return EntityType.Builder.of(EntitySolarBeam::new, MobCategory.MISC);
     }
     public static final RegistryObject<EntityType<EntitySolarBeam>> SOLAR_BEAM = REG.register("solar_beam", () -> solarBeamBuilder().sized(0.1F, 0.1F).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "solar_beam").toString()));
-    private static EntityType.Builder<EntityBoulderProjectile> boulderBuilder() {
+    private static EntityType.Builder<EntityBoulderProjectile> boulderProjectileBuilder() {
         return EntityType.Builder.of(EntityBoulderProjectile::new, MobCategory.MISC);
     }
-    public static final RegistryObject<EntityType<EntityBoulderProjectile>> BOULDER_PROJECTILE = REG.register("boulder_projectile", () -> boulderBuilder().sized(1, 1).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "boulder_projectile").toString()));
+    public static final RegistryObject<EntityType<EntityBoulderProjectile>> BOULDER_PROJECTILE = REG.register("boulder_projectile", () -> boulderProjectileBuilder().sized(1, 1).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "boulder_projectile").toString()));
+    private static EntityType.Builder<EntityBoulderPlatform> boulderPlatformBuilder() {
+        return EntityType.Builder.of(EntityBoulderPlatform::new, MobCategory.MISC);
+    }
+    public static final RegistryObject<EntityType<EntityBoulderPlatform>> BOULDER_PLATFORM = REG.register("boulder_platform", () -> boulderPlatformBuilder().sized(1, 1).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "boulder_platform").toString()));
     private static EntityType.Builder<EntityPillar> pillarBuilder() {
         return EntityType.Builder.of(EntityPillar::new, MobCategory.MISC);
     }

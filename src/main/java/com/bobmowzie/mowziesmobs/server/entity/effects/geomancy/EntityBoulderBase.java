@@ -85,6 +85,7 @@ public class EntityBoulderBase extends EntityGeomancyBase {
         if (storedBlock == null) storedBlock = getBlock();
 
         super.tick();
+        setBoundingBox(makeBoundingBox());
         move(MoverType.SELF, getDeltaMovement());
         if (boulderSize == GeomancyTier.HUGE && tickCount < finishedRisingTick) {
             float f = this.getBbWidth() / 2.0F;

@@ -118,7 +118,10 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
         }
     }
 
-
+    @Override
+    public boolean isPickable() {
+        return true;
+    }
 
     @Override
     public boolean skipAttackInteraction(Entity entityIn) {

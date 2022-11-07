@@ -68,6 +68,7 @@ public class EntityPillar extends EntityGeomancyBase {
     public void tick() {
         prevPrevHeight = prevHeight;
         prevHeight = getHeight();
+
         if (!level.isClientSide()) {
             if (isRising()) {
                 float height = getHeight();
@@ -108,12 +109,13 @@ public class EntityPillar extends EntityGeomancyBase {
         AABB popUpBounds = getBoundingBox().deflate(0.1f);
         List<Entity> popUpEntities = level.getEntities(this, popUpBounds);
         for (Entity entity : popUpEntities) {
-            if (entity.isPickable() && !(entity instanceof EntityBoulderBase) && !(entity instanceof EntityPillar) && !(entity instanceof EntityPillarPiece) && entity.canBeCollidedWith()) {
+            if (entity.isPickable() && !(entity instanceof EntityBoulderBase) && !(entity instanceof EntityPillar) && !(entity instanceof EntityPillarPiece)) {
                 double belowAmount = entity.getY() - (getY() + getHeight());
                 if (belowAmount < 0.0) entity.move(MoverType.PISTON, new Vec3(0, -belowAmount, 0));
             }
         }
         super.tick();
+        if (caster == null || caster.isRemoved()) explode();
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.bobmowzie.mowziesmobs.server.ai.UseAbilityAI;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieGeckoEntity;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderPlatform;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityGeomancyBase;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityPillar;
 import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
@@ -29,6 +30,8 @@ import software.bernie.geckolib3.core.event.CustomInstructionKeyframeEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 
 public class EntitySculptor extends MowzieGeckoEntity {
+    public static int TEST_HEIGHT = 40;
+
     public static final AbilityType<EntitySculptor, StartTestAbility> START_TEST = new AbilityType<>("testStart", StartTestAbility::new);
     public static final AbilityType<EntitySculptor, EndTestAbility> END_TEST = new AbilityType<>("testEnd", EndTestAbility::new);
 
@@ -55,12 +58,21 @@ public class EntitySculptor extends MowzieGeckoEntity {
     }
 
     @Override
+    public boolean requiresCustomPersistence() {
+        return true;
+    }
+
+    @Override
     public void tick() {
         super.tick();
         if (getActiveAbility() == null) {
-            if (pillar == null) sendAbilityMessage(START_TEST);
-            else sendAbilityMessage(END_TEST);
+            if (pillar == null && onGround) sendAbilityMessage(START_TEST);
+//            else sendAbilityMessage(END_TEST);
         }
+    }
+
+    public EntityPillar getPillar() {
+        return pillar;
     }
 
     private <ENTITY extends IAnimatable> void instructionListener(CustomInstructionKeyframeEvent<ENTITY> event) {
@@ -99,7 +111,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
         public StartTestAbility(AbilityType<EntitySculptor, StartTestAbility> abilityType, EntitySculptor user) {
             super(abilityType, user, new AbilitySection[] {
                     new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 18),
-                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.ACTIVE, 100)
+                    new AbilitySection.AbilitySectionInfinite(AbilitySection.AbilitySectionType.ACTIVE)
             });
         }
 
@@ -130,15 +142,29 @@ public class EntitySculptor extends MowzieGeckoEntity {
         @Override
         protected void beginSection(AbilitySection section) {
             super.beginSection(section);
-            if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
+            if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE && spawnPillarPos != null) {
                 if (spawnPillarBlock == null || !EffectGeomancy.isBlockDiggable(spawnPillarBlock)) spawnPillarBlock = Blocks.STONE.defaultBlockState();
                 pillar = new EntityPillar(EntityHandler.PILLAR.get(), getUser().level, getUser(), spawnPillarBlock, spawnPillarPos);
                 pillar.setTier(EntityGeomancyBase.GeomancyTier.SMALL);
                 pillar.setPos(spawnPillarPos.getX() + 0.5F, spawnPillarPos.getY() + 1, spawnPillarPos.getZ() + 0.5F);
+                pillar.setDoRemoveTimer(false);
                 if (!getUser().level.isClientSide && pillar.checkCanSpawn()) {
                     getUser().level.addFreshEntity(pillar);
                 }
                 getUser().pillar = pillar;
+
+                BlockPos spawnBoulderPos = spawnPillarPos.north(6);
+                EntityBoulderPlatform boulderPlatform = new EntityBoulderPlatform(EntityHandler.BOULDER_PLATFORM.get(), getUser().getLevel(), getUser(), Blocks.STONE.defaultBlockState(), spawnBoulderPos, EntityGeomancyBase.GeomancyTier.MEDIUM);
+                boulderPlatform.setPos(spawnBoulderPos.getX() + 0.5F, spawnBoulderPos.getY() + 2, spawnBoulderPos.getZ() + 0.5F);
+                getUser().getLevel().addFreshEntity(boulderPlatform);
+            }
+        }
+
+        @Override
+        public void tick() {
+            super.tick();
+            if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE && pillar != null && pillar.getHeight() > TEST_HEIGHT) {
+                nextSection();
             }
         }
 

@@ -31,7 +31,7 @@ public abstract class EntityMagicEffect extends Entity {
 
     public EntityMagicEffect(EntityType<? extends EntityMagicEffect> type, Level world, LivingEntity caster) {
         super(type, world);
-        if (!world.isClientSide) {
+        if (!world.isClientSide && caster != null) {
             this.setCasterID(caster.getId());
         }
     }
