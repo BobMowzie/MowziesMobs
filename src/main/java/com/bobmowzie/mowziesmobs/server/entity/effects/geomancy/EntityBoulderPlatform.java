@@ -76,15 +76,16 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
             EntityPillar pillar = sculptor.getPillar();
             if (pillar != null) {
                 Vec3 startLocation = position();
-                Vec2 fromPillarPos = new Vec2((float) (startLocation.x - caster.getX()), (float) (startLocation.z - caster.getZ()));
+                Vec2 fromPillarPos = new Vec2((float) (caster.getX() - startLocation.x), (float) (caster.getZ() - startLocation.z));
                 float horizontalOffset = random.nextFloat(1, MAX_DIST_HORIZONTAL);
                 float verticalOffset = random.nextFloat(0, MAX_DIST_VERTICAL);
+                if (startLocation.y() - pillar.getY() + verticalOffset > EntitySculptor.TEST_HEIGHT) verticalOffset = (float) (EntitySculptor.TEST_HEIGHT - startLocation.y());
 
-                float baseAngle = (float) Math.toDegrees(Math.atan2(fromPillarPos.y, fromPillarPos.x));
-                float minRandomAngle = (float) (Math.pow(2, -fromPillarPos.length()) * 90f);
+                float baseAngle = (float) -Math.toDegrees(Math.atan2(fromPillarPos.y, fromPillarPos.x));
+                float minRandomAngle = (float) (Math.min(Math.pow(2f, -fromPillarPos.length() + 4), 1f) * 90f);
                 float randomAngle = random.nextFloat(minRandomAngle, 180f);
                 if (random.nextBoolean()) randomAngle *= -1;
-                randomAngle *= 1f - Math.pow((startLocation.y() - pillar.getY()) / EntitySculptor.TEST_HEIGHT, 10f);
+                randomAngle *= 1f - Math.pow((startLocation.y() - pillar.getY()) / EntitySculptor.TEST_HEIGHT, 7f);
                 Vec3 offset = new Vec3(horizontalOffset, verticalOffset, 0);
                 float finalAngle = (float) Math.toRadians(MathHelper.wrapDegrees(baseAngle + randomAngle));
                 System.out.println(randomAngle);
