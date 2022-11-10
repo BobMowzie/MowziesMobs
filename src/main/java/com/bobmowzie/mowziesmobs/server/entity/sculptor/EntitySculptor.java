@@ -31,6 +31,7 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 
 public class EntitySculptor extends MowzieGeckoEntity {
     public static int TEST_HEIGHT = 40;
+    public static int TEST_RADIUS = 16;
 
     public static final AbilityType<EntitySculptor, StartTestAbility> START_TEST = new AbilityType<>("testStart", StartTestAbility::new);
     public static final AbilityType<EntitySculptor, EndTestAbility> END_TEST = new AbilityType<>("testEnd", EndTestAbility::new);
@@ -144,7 +145,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
             super.beginSection(section);
             if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE && spawnPillarPos != null) {
                 if (spawnPillarBlock == null || !EffectGeomancy.isBlockDiggable(spawnPillarBlock)) spawnPillarBlock = Blocks.STONE.defaultBlockState();
-                pillar = new EntityPillar(EntityHandler.PILLAR.get(), getUser().level, getUser(), spawnPillarBlock, spawnPillarPos);
+                pillar = new EntityPillar(EntityHandler.PILLAR.get(), getUser().level, getUser(), Blocks.STONE.defaultBlockState(), spawnPillarPos);
                 pillar.setTier(EntityGeomancyBase.GeomancyTier.SMALL);
                 pillar.setPos(spawnPillarPos.getX() + 0.5F, spawnPillarPos.getY() + 1, spawnPillarPos.getZ() + 0.5F);
                 pillar.setDoRemoveTimer(false);
