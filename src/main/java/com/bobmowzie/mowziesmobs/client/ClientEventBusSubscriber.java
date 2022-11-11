@@ -58,6 +58,7 @@ public class ClientEventBusSubscriber {
         EntityRenderers.register(EntityHandler.FALLING_BLOCK.get(), RenderFallingBlock::new);
         EntityRenderers.register(EntityHandler.BLOCK_SWAPPER.get(), RenderNothing::new);
         EntityRenderers.register(EntityHandler.CAMERA_SHAKE.get(), RenderNothing::new);
+//        EntityRenderers.register(EntityHandler.TEST_ENTITY.get(), RenderNothing::new);
 
         MenuScreens.register(ContainerHandler.CONTAINER_BARAKOAYA_TRADE, GuiBarakoayaTrade::new);
         MenuScreens.register(ContainerHandler.CONTAINER_BARAKO_TRADE, GuiBarakoTrade::new);

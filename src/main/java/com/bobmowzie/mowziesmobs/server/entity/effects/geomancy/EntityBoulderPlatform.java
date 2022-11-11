@@ -6,21 +6,23 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.shadowed.eliotlash.mclib.utils.MathHelper;
-import software.bernie.shadowed.eliotlash.mclib.utils.MathUtils;
+
+import java.util.List;
 
 public class EntityBoulderPlatform extends EntityBoulderBase {
     private static final float MAX_DIST_HORIZONTAL = 4.0f;
-    private static final float MAX_DIST_VERTICAL = 2.5f;
+    private static final float MAX_DIST_VERTICAL = 2.4f;
     private static final int MAX_TRIES = 10;
 
     private EntityBoulderPlatform nextBoulder;
+
+    protected boolean isMainPath = false;
 
     public EntityBoulderPlatform(EntityType<? extends EntityBoulderBase> type, Level world) {
         super(type, world);
@@ -38,10 +40,11 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
     @Override
     public void tick() {
         super.tick();
+        if (tickTimer() % 5 == 0) {
+            checkJumpPath(this);
+        }
         if (tickTimer() == 7 && !level.isClientSide()) {
-//            int numNextBoulders = (int) (Math.pow(random.nextFloat(), 16) * 3) + 1;
-//            for (int i = 0; i < numNextBoulders; i++)
-                nextBoulder();
+            nextBoulders();
         }
 
         if (caster instanceof EntitySculptor && !caster.isRemoved()) {
@@ -56,18 +59,33 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
         }
     }
 
-    public EntityBoulderPlatform nextBoulder() {
+    public void nextBoulders() {
+        if (caster instanceof EntitySculptor) {
+            EntitySculptor sculptor = (EntitySculptor) caster;
+            EntityPillar pillar = sculptor.getPillar();
+            if (pillar != null) {
+
+                if (!isMainPath && random.nextFloat() > 0.75) return;
+
+                int numNextBoulders = (int) (Math.pow(random.nextFloat(), 16) * 3) + 1;
+                for (int i = 0; i < numNextBoulders; i++) {
+                    nextSingleBoulder();
+                }
+            }
+        }
+    }
+
+    public void nextSingleBoulder() {
         if (caster instanceof EntitySculptor) {
             EntitySculptor sculptor = (EntitySculptor) caster;
             EntityPillar pillar = sculptor.getPillar();
             if (pillar != null) {
                 int baseHeight = (int) sculptor.getPillar().position().y;
-
                 int whichTierIndex = (int) (Math.pow(random.nextFloat(), 2) * (GeomancyTier.values().length - 2) + 1);
                 GeomancyTier nextTier = GeomancyTier.values()[whichTierIndex];
                 EntityBoulderPlatform nextBoulder = new EntityBoulderPlatform(EntityHandler.BOULDER_PLATFORM.get(), getLevel(), caster, getBlock(), blockPosition(), nextTier);
 
-                for (int i = 0; i < MAX_TRIES; i++) {
+                for (int j = 0; j < MAX_TRIES; j++) {
                     Vec3 randomPos;
                     if (position().y() < baseHeight + EntitySculptor.TEST_HEIGHT) {
                         randomPos = chooseRandomLocation(nextBoulder);
@@ -75,19 +93,31 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
                     // If the platform is already at max height, next platform should move towards sculptor
                     else if (position().multiply(1, 0, 1).distanceTo(sculptor.position().multiply(1, 0, 1)) > MAX_DIST_HORIZONTAL) {
                         randomPos = chooseTowardsSculptorLocation(nextBoulder);
-                    }
-                    else return null;
+                    } else return;
                     nextBoulder.setPos(randomPos);
 
                     if (level.noCollision(nextBoulder)) {
-                        getLevel().addFreshEntity(nextBoulder);
-                        this.nextBoulder = nextBoulder;
-                        return nextBoulder;
+                        AABB toCheck = nextBoulder.getBoundingBox().inflate(MAX_DIST_HORIZONTAL, MAX_DIST_VERTICAL / 2f + 1.5f, MAX_DIST_HORIZONTAL).move(0, -MAX_DIST_VERTICAL / 2f - 1.5f, 0);
+                        List<EntityBoulderPlatform> platforms = level.getEntitiesOfClass(EntityBoulderPlatform.class, toCheck);
+                        boolean obstructsPath = false;
+                        for (EntityBoulderPlatform platform : platforms) {
+                            if (platform != nextBoulder && !nextBoulder.checkJumpPath(platform)) {
+                                obstructsPath = true;
+                                break;
+                            }
+                        }
+                        if (!obstructsPath) {
+                            getLevel().addFreshEntity(nextBoulder);
+                            if (isMainPath && this.nextBoulder == null) {
+                                this.nextBoulder = nextBoulder;
+                                this.nextBoulder.setMainPath();
+                            }
+                            return;
+                        }
                     }
                 }
             }
         }
-        return null;
     }
 
     protected Vec3 chooseRandomLocation(EntityBoulderPlatform nextBoulder) {
@@ -95,10 +125,12 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
             EntitySculptor sculptor = (EntitySculptor) caster;
             EntityPillar pillar = sculptor.getPillar();
             if (pillar != null) {
+                EntityDimensions thisDims = SIZE_MAP.get(this.getTier());
+                EntityDimensions nextDims = SIZE_MAP.get(nextBoulder.getTier());
                 Vec3 startLocation = position();
                 Vec2 fromPillarPos = new Vec2((float) (caster.getX() - startLocation.x), (float) (caster.getZ() - startLocation.z));
-                float horizontalOffset = random.nextFloat(1, MAX_DIST_HORIZONTAL) + this.getBbWidth()/2f + nextBoulder.getBbWidth()/2f;
-                float verticalOffset = random.nextFloat(0, MAX_DIST_VERTICAL) - (nextBoulder.getBbHeight() - this.getBbHeight());
+                float horizontalOffset = random.nextFloat(1, MAX_DIST_HORIZONTAL) + thisDims.width/2f + nextDims.width/2f;
+                float verticalOffset = random.nextFloat(0, MAX_DIST_VERTICAL) - (nextDims.height - thisDims.height);
 
                 float baseAngle = (float) -Math.toDegrees(Math.atan2(fromPillarPos.y, fromPillarPos.x));
                 // Minimum and maximum angles force the angle to approach 90 degrees as it gets too close or too far from the pillar
@@ -111,8 +143,8 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
                 float finalAngle = (float) Math.toRadians(MathHelper.wrapDegrees(baseAngle + randomAngle));
                 offset = offset.yRot(finalAngle);
                 Vec3 nextLocation = startLocation.add(offset);
-                if (nextLocation.y() + nextBoulder.getBbHeight() > pillar.getY() + EntitySculptor.TEST_HEIGHT) {
-                    nextLocation = new Vec3(nextLocation.x(), pillar.getY() + EntitySculptor.TEST_HEIGHT - getBbHeight(), nextLocation.z());
+                if (nextLocation.y() + nextDims.height > pillar.getY() + EntitySculptor.TEST_HEIGHT) {
+                    nextLocation = new Vec3(nextLocation.x(), pillar.getY() + EntitySculptor.TEST_HEIGHT - nextDims.height, nextLocation.z());
                 }
 
                 return nextLocation;
@@ -127,9 +159,11 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
             EntitySculptor sculptor = (EntitySculptor) caster;
             EntityPillar pillar = sculptor.getPillar();
             if (pillar != null) {
+                EntityDimensions thisDims = SIZE_MAP.get(this.getTier());
+                EntityDimensions nextDims = SIZE_MAP.get(nextBoulder.getTier());
                 Vec3 startLocation = position();
                 Vec2 fromPillarPos = new Vec2((float) (caster.getX() - startLocation.x), (float) (caster.getZ() - startLocation.z));
-                float horizontalOffset = random.nextFloat(1, MAX_DIST_HORIZONTAL) + this.getBbWidth()/2f + nextBoulder.getBbWidth()/2f;
+                float horizontalOffset = random.nextFloat(1, MAX_DIST_HORIZONTAL) + thisDims.width/2f + nextDims.width/2f;
 
                 float baseAngle = (float) -Math.toDegrees(Math.atan2(fromPillarPos.y, fromPillarPos.x));
                 Vec3 offset = new Vec3(horizontalOffset, 0, 0);
@@ -153,15 +187,37 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
     public boolean checkJumpPath(EntityBoulderPlatform platform) {
         EntityBoulderPlatform next = platform.getNextBoulder();
         if (next == null) return true;
+        EntityDimensions platDims = SIZE_MAP.get(platform.getTier());
+        EntityDimensions nextDims = SIZE_MAP.get(next.getTier());
 
         Vec3 toNext = next.position().subtract(platform.position());
-        Vec3 startPos = platform.position().add(toNext.multiply(1, 0, 1).normalize().scale(platform.getBbWidth()/2f));
-        Vec3 endPos = platform.position().add(toNext.multiply(1, 0, 1).normalize().scale(-next.getBbWidth()/2f));
+        Vec3 startPos = platform.position().add(0, platDims.height, 0).add(toNext.multiply(1, 0, 1).normalize().scale(platDims.width/2f));
+        Vec3 endPos = next.position().add(0, nextDims.height, 0).add(toNext.multiply(1, 0, 1).normalize().scale(-nextDims.width/2f));
 
-        float gravity = (float) net.minecraftforge.common.ForgeMod.ENTITY_GRAVITY.get().getDefaultValue();
+        double gravity = -net.minecraftforge.common.ForgeMod.ENTITY_GRAVITY.get().getDefaultValue();
+        double jumpVelY = 1D; // Player y jump speed with jump boost II
+        double heightDiff = endPos.y() - startPos.y();
+        // Quadratic formula to solve for time it takes to complete jump
+        double totalTime = (-jumpVelY - Math.sqrt(jumpVelY * jumpVelY - 4 * gravity * -heightDiff)) / (2 * gravity);
+        // Use time to get needed x and z velocities
+        double jumpVelX = (endPos.x() - startPos.x()) / totalTime;
+        double jumpVelZ = (endPos.z() - startPos.z()) / totalTime;
+        Vec3 jumpVel = new Vec3(jumpVelX, jumpVelY, jumpVelZ);
 
-        AABB playerBounds = EntityType.PLAYER.getDimensions().makeBoundingBox(0,0,0);
+        AABB thisBounds = SIZE_MAP.get(this.getTier()).makeBoundingBox(this.position());
+        int substeps = 5;
+        for (int i = 0; i < substeps; i++) {
+            double time = (totalTime/(double)substeps) * i;
+            Vec3 jumpPosition = new Vec3(0, gravity * time * time, 0).add(jumpVel.scale(time)).add(startPos);
+            AABB playerBounds = EntityType.PLAYER.getDimensions().makeBoundingBox(jumpPosition);
+            if (thisBounds.intersects(playerBounds)) return false;
+//            new TestEntity(EntityHandler.TEST_ENTITY, level, )
+        }
 
         return true;
+    }
+
+    public void setMainPath() {
+        isMainPath = true;
     }
 }

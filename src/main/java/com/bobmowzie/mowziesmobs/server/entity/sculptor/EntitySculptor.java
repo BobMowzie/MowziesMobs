@@ -154,10 +154,14 @@ public class EntitySculptor extends MowzieGeckoEntity {
                 }
                 getUser().pillar = pillar;
 
-                BlockPos spawnBoulderPos = spawnPillarPos.north(6);
-                EntityBoulderPlatform boulderPlatform = new EntityBoulderPlatform(EntityHandler.BOULDER_PLATFORM.get(), getUser().getLevel(), getUser(), Blocks.STONE.defaultBlockState(), spawnBoulderPos, EntityGeomancyBase.GeomancyTier.MEDIUM);
-                boulderPlatform.setPos(spawnBoulderPos.getX() + 0.5F, spawnBoulderPos.getY() + 2, spawnBoulderPos.getZ() + 0.5F);
-                getUser().getLevel().addFreshEntity(boulderPlatform);
+                int numStartBoulders = rand.nextInt(2, 4);
+                for (int i = 0; i < numStartBoulders; i++) {
+                    Vec3 spawnBoulderPos = pillar.position().add(new Vec3(rand.nextFloat(5, 10), 0, 0).yRot(rand.nextFloat((float) (2f * Math.PI))));
+                    EntityBoulderPlatform boulderPlatform = new EntityBoulderPlatform(EntityHandler.BOULDER_PLATFORM.get(), getUser().getLevel(), getUser(), Blocks.STONE.defaultBlockState(), BlockPos.ZERO, EntityGeomancyBase.GeomancyTier.MEDIUM);
+                    boulderPlatform.setPos(spawnBoulderPos.add(0, 1, 0));
+                    boulderPlatform.setMainPath();
+                    getUser().getLevel().addFreshEntity(boulderPlatform);
+                }
             }
         }
 

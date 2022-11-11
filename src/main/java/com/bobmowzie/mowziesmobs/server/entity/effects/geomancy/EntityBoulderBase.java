@@ -42,6 +42,7 @@ public class EntityBoulderBase extends EntityGeomancyBase {
         finishedRisingTick = 4;
         animationOffset = random.nextFloat() * 8;
         setTier(GeomancyTier.SMALL);
+        setBoundingBox(makeBoundingBox());
     }
 
     public EntityBoulderBase(EntityType<? extends EntityBoulderBase> type, Level world, LivingEntity caster, BlockState blockState, BlockPos pos, GeomancyTier tier) {
@@ -50,6 +51,7 @@ public class EntityBoulderBase extends EntityGeomancyBase {
         animationOffset = random.nextFloat() * 8;
         setTier(tier);
         setSizeParams();
+        setBoundingBox(makeBoundingBox());
     }
 
     public boolean checkCanSpawn() {

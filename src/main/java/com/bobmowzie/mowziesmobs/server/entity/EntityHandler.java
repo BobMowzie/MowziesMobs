@@ -117,6 +117,10 @@ public class EntityHandler {
         return EntityType.Builder.of(EntityCameraShake::new, MobCategory.MISC);
     }
     public static final RegistryObject<EntityType<EntityCameraShake>> CAMERA_SHAKE = REG.register("camera_shake", () -> cameraShakeBuilder().sized(1, 1).setUpdateInterval(Integer.MAX_VALUE).build(new ResourceLocation(MowziesMobs.MODID, "camera_shake").toString()));
+//    private static EntityType.Builder<TestEntity> testEntityBuilder() {
+//        return EntityType.Builder.of(TestEntity::new, MobCategory.MISC);
+//    }
+//    public static final RegistryObject<EntityType<TestEntity>> TEST_ENTITY = REG.register("test_entity", () -> testEntityBuilder().sized(1f, 2f).setUpdateInterval(Integer.MAX_VALUE).build(new ResourceLocation(MowziesMobs.MODID, "test_entity").toString()));
 
     @SubscribeEvent
     public static void onCreateAttributes(EntityAttributeCreationEvent event) {
