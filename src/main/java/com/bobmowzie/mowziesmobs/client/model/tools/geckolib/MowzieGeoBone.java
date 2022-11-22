@@ -1,104 +1,18 @@
 package com.bobmowzie.mowziesmobs.client.model.tools.geckolib;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.RigUtils;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.util.math.vector.*;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 
 public class MowzieGeoBone extends GeoBone {
-    private Matrix4f modelSpaceXform;
-    private boolean trackXform;
-    public Matrix4f rotMat;
-
-    private Matrix4f worldSpaceXform;
-    private Matrix3f worldSpaceNormal;
 
     public MowzieGeoBone() {
         super();
-        modelSpaceXform = new Matrix4f();
-        modelSpaceXform.setIdentity();
-        trackXform = false;
-        rotMat = null;
-
-        worldSpaceXform = new Matrix4f();
-        worldSpaceXform.setIdentity();
-        worldSpaceNormal = new Matrix3f();
-        worldSpaceNormal.setIdentity();
     }
 
     public MowzieGeoBone getParent() {
         return (MowzieGeoBone) parent;
     }
 
-    public boolean isTrackingXform() {
-        return trackXform;
-    }
-
-    public void setTrackXform(boolean trackXform) {
-        this.trackXform = trackXform;
-    }
-
-    public Matrix4f getModelSpaceXform() {
-        setTrackXform(true);
-        return modelSpaceXform;
-    }
-
-    public void setModelSpaceXform(Matrix4f modelSpaceXform) {
-        this.modelSpaceXform.set(modelSpaceXform);
-    }
-
-    public Vector3d getModelPosition() {
-        Matrix4f matrix = getModelSpaceXform();
-        Vector4f vec = new Vector4f(0, 0, 0, 1);
-        vec.transform(matrix);
-        return new Vector3d(-vec.getX() * 16f, vec.getY() * 16f, vec.getZ() * 16f);
-    }
-
-    public Matrix4f getWorldSpaceXform() {
-        setTrackXform(true);
-        return worldSpaceXform;
-    }
-
-    public void setWorldSpaceXform(Matrix4f worldSpaceXform) {
-        this.worldSpaceXform.set(worldSpaceXform);
-    }
-
-    public Vector3d getWorldPosition() {
-        Matrix4f matrix = getWorldSpaceXform();
-        Vector4f vec = new Vector4f(0, 0, 0, 1);
-        vec.transform(matrix);
-        return new Vector3d(vec.getX(), vec.getY(), vec.getZ());
-    }
-
-    public void setModelPosition(Vector3d pos) {
-        // TODO: Doesn't work on bones with parent transforms
-        MowzieGeoBone parent = getParent();
-        Matrix4f identity = new Matrix4f();
-        identity.setIdentity();
-        Matrix4f matrix = parent == null ? identity : parent.getModelSpaceXform().copy();
-        matrix.invert();
-        Vector4f vec = new Vector4f(-(float) pos.getX() / 16f, (float) pos.getY() / 16f, (float) pos.getZ() / 16f, 1);
-        vec.transform(matrix);
-        setPosition(-vec.getX() * 16f, vec.getY() * 16f, vec.getZ() * 16f);
-    }
-
-    public Matrix4f getModelRotationMat() {
-        Matrix4f matrix = getModelSpaceXform().copy();
-        RigUtils.removeMatrixTranslation(matrix);
-        return matrix;
-    }
-
-    public void setModelRotationMat(Matrix4f mat) {
-        rotMat = mat;
-    }
-
-    public void setWorldSpaceNormal(Matrix3f worldSpaceNormal) {
-        this.worldSpaceNormal = worldSpaceNormal;
-    }
-
-    public Matrix3f getWorldSpaceNormal() {
-        return worldSpaceNormal;
-    }
 
     // Position utils
     public void addPosition(Vector3d vec) {
