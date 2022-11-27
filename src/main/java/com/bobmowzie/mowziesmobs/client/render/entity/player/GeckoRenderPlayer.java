@@ -8,11 +8,7 @@ import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerThirdPerson
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelPlayerAnimated;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.entity.FrozenRenderHandler;
-import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoCapeLayer;
-import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoElytraLayer;
-import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoHeldItemLayer;
-import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoParrotVariantLayer;
-import com.bobmowzie.mowziesmobs.client.render.entity.layer.IGeckoRenderLayer;
+import com.bobmowzie.mowziesmobs.client.render.entity.layer.*;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
@@ -76,7 +72,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
 		this.entityModel = new ModelPlayerAnimated<>(0.0f, false);
 
 		this.layerRenderers.clear();
-		this.addLayer(new BipedArmorLayer<>(this, new ModelBipedAnimated<>(0.5F), new ModelBipedAnimated<>(1.0F)));
+		this.addLayer(new GeckoArmorLayer<>(this, new ModelBipedAnimated<>(0.5F), new ModelBipedAnimated<>(1.0F)));
 		this.addLayer(new GeckoHeldItemLayer(this));
 		this.addLayer(new ArrowLayer<>(this));
 		this.addLayer(new Deadmau5HeadLayer(this));
