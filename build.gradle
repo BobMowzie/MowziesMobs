@@ -11,7 +11,7 @@ buildscript {
 
 apply plugin: "net.minecraftforge.gradle"
 
-version = "1.5.26"
+version = "1.5.27"
 group = "com.bobmowzie.mowziesmobs"
 archivesBaseName = "mowziesmobs"
 
