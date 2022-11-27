@@ -20,6 +20,7 @@ public class WroughtHelmModel<T extends LivingEntity> extends BipedModel<T> {
         this.textureWidth = 64;
         this.textureHeight = 32;
         bipedHead.cubeList.clear();
+        bipedHeadwear.cubeList.clear();
 
         shape1 = new ModelRenderer(this);
         shape1.setRotationPoint(0.0F, 0.0F, 0.0F);

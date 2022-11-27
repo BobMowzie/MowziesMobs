@@ -51,6 +51,7 @@ public class SolVisageModel<T extends LivingEntity> extends BipedModel<T> {
         this.textureWidth = 128;
         this.textureHeight = 128;
         bipedHead.cubeList.clear();
+        bipedHeadwear.cubeList.clear();
         this.headdress5 = new ModelRenderer(this, 27, 76);
         this.headdress5.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.headdress5.addBox(-3.0F, -18.0F, 0.0F, 6, 12, 0, 0.0F);

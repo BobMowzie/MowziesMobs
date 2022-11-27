@@ -19,6 +19,7 @@ public class BarakoaMaskModel<T extends LivingEntity> extends BipedModel<T> {
         this.textureWidth = 128;
         this.textureHeight = 64;
         bipedHead.cubeList.clear();
+        bipedHeadwear.cubeList.clear();
         this.maskLeft = new ModelRenderer(this, 48, 18);
         this.maskLeft.setRotationPoint(0.0F, 0.0F, -1.0F);
         this.maskLeft.addBox(-7.0F, -8.0F, 0.0F, 7, 14, 2, 0.0F);
