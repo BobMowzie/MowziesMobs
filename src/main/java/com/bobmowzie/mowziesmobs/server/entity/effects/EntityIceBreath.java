@@ -194,14 +194,4 @@ public class EntityIceBreath extends EntityMagicEffect {
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double dX, double dY, double dZ, double r) {
         return level.getEntitiesOfClass(entityClass, getBoundingBox().inflate(dX, dY, dZ), e -> e != this && distanceTo(e) <= r + e.getBbWidth() / 2f && e.getY() <= getY() + dY);
     }
-
-    @Override
-    protected void readAdditionalSaveData(CompoundTag compound) {
-
-    }
-
-    @Override
-    protected void addAdditionalSaveData(CompoundTag compound) {
-
-    }
 }

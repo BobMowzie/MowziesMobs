@@ -111,16 +111,6 @@ public class EntityIceBall extends EntityMagicEffect {
         super.defineSynchedData();
     }
 
-    @Override
-    protected void addAdditionalSaveData(CompoundTag compound) {
-
-    }
-
-    @Override
-    protected void readAdditionalSaveData(CompoundTag compound) {
-
-    }
-
     public void shoot(double x, double y, double z, float velocity, float inaccuracy) {
         setDeltaMovement(x * velocity, y * velocity, z * velocity);
     }

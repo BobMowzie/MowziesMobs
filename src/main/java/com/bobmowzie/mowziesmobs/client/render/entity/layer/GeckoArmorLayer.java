@@ -32,6 +32,7 @@ public class GeckoArmorLayer<T extends LivingEntity, M extends HumanoidModel<T>,
                     HumanoidModel<T> humanoidModel = (HumanoidModel<T>) model;
                     this.getParentModel().copyPropertiesTo(humanoidModel);
                     this.setPartVisibility(p_117124_, p_117122_);
+                    this.setPartVisibility((A) humanoidModel, p_117122_);
                     boolean flag = this.usesInnerModel(p_117122_);
                     boolean flag1 = itemstack.hasFoil();
                     if (armoritem instanceof net.minecraft.world.item.DyeableLeatherItem) {

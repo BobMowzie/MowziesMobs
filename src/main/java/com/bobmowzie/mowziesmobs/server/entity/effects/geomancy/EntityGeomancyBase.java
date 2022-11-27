@@ -224,6 +224,7 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements IA
 
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
         BlockState blockState = getBlock();
         if (blockState != null) compound.put("block", NbtUtils.writeBlockState(blockState));
         compound.putInt("deathTime", getDeathTime());
@@ -232,6 +233,7 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements IA
 
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
         Tag blockStateCompound = compound.get("block");
         if (blockStateCompound != null) {
             BlockState blockState = NbtUtils.readBlockState((CompoundTag) blockStateCompound);

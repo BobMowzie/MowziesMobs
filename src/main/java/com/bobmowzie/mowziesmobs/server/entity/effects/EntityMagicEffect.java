@@ -67,7 +67,10 @@ public abstract class EntityMagicEffect extends Entity {
     public void tick() {
         super.tick();
         if (tickCount == 1) {
-            caster = (LivingEntity) level.getEntity(getCasterID());
+            Entity casterEntity = level.getEntity(getCasterID());
+            if (casterEntity instanceof LivingEntity) {
+                caster = (LivingEntity) level.getEntity(getCasterID());
+            }
         }
     }
 
