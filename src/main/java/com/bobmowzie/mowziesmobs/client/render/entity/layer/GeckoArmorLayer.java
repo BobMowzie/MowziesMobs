@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.render.entity.layer;
 
+import com.bobmowzie.mowziesmobs.client.model.entity.ModelBipedAnimated;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.HumanoidModel;
@@ -39,6 +40,7 @@ public class GeckoArmorLayer<T extends LivingEntity, M extends HumanoidModel<T>,
                         float f1 = (float) (i >> 8 & 255) / 255.0F;
                         float f2 = (float) (i & 255) / 255.0F;
                         this.renderModel(p_117119_, p_117120_, p_117123_, flag1, model, f, f1, f2, this.getArmorResource(p_117121_, itemstack, p_117122_, null));
+                        ModelBipedAnimated.setUseMatrixMode(humanoidModel, true);
                         this.renderModel(p_117119_, p_117120_, p_117123_, flag1, model, 1.0F, 1.0F, 1.0F, this.getArmorResource(p_117121_, itemstack, p_117122_, "overlay"));
                     } else {
                         this.renderModel(p_117119_, p_117120_, p_117123_, flag1, model, 1.0F, 1.0F, 1.0F, this.getArmorResource(p_117121_, itemstack, p_117122_, null));
