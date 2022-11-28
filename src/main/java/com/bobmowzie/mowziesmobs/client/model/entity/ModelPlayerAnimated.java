@@ -31,7 +31,6 @@ public class ModelPlayerAnimated<T extends LivingEntity> extends PlayerModel<T> 
         ModelPartMatrix leftPantsMatrix = new ModelPartMatrix(leftPants, false);
         ModelPartMatrix rightPantsMatrix = new ModelPartMatrix(rightPants, false);
         ModelPartMatrix earMatrix = new ModelPartMatrix(ear, false);
-        ModelPartMatrix cloakMatrix = new ModelPartMatrix(cloak, false);
 
         Map<ModelPart, ModelPart> origToNew = new HashMap<>();
         origToNew.put(body, bodyMatrix);
@@ -48,7 +47,6 @@ public class ModelPlayerAnimated<T extends LivingEntity> extends PlayerModel<T> 
         origToNew.put(leftPants, leftPantsMatrix);
         origToNew.put(rightPants, rightPantsMatrix);
         origToNew.put(ear, earMatrix);
-        origToNew.put(cloak, cloakMatrix);
         
         this.body = bodyMatrix;
         this.head = headMatrix;
@@ -64,7 +62,6 @@ public class ModelPlayerAnimated<T extends LivingEntity> extends PlayerModel<T> 
         this.leftPants = leftPantsMatrix;
         this.rightPants = rightPantsMatrix;
         this.ear = earMatrix;
-        this.cloak = cloakMatrix;
         
         List<ModelPart> originalList = root.getAllParts().filter((p_170824_) -> {
             return !p_170824_.isEmpty();
