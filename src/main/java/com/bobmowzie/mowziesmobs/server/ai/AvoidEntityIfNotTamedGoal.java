@@ -12,8 +12,6 @@ public class AvoidEntityIfNotTamedGoal<T extends LivingEntity> extends AvoidEnti
 
     @Override
     public boolean shouldExecute() {
-        boolean isTamed;
-        isTamed = entity instanceof TameableEntity && ((TameableEntity) entity).isTamed();
-        return super.shouldExecute() && !isTamed;
+        return super.shouldExecute() && !(entity instanceof TameableEntity && ((TameableEntity) entity).isTamed());
     }
 }
