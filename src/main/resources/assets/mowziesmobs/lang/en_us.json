@@ -154,6 +154,8 @@
   "entity.mowziesmobs.barako.trade.button.hover": "Return later to replenish for free",
   "entity.mowziesmobs.barako.replenish.button.text": "Replenish",
   "entity.mowziesmobs.barako.replenish.button.hover": "Replenish your blessing for free",
+  "entity.mowziesmobs.sculptor.trade": "Sculptor",
+  "entity.mowziesmobs.sculptor.trade.button.text": "Begin Test",
 
   "_comment": "Death Messages",
   "death.attack.dart": "%1$s was shot by %2$s",

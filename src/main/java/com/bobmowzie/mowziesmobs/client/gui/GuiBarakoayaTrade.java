@@ -25,14 +25,9 @@ public final class GuiBarakoayaTrade extends AbstractContainerScreen<ContainerBa
 
     private final EntityBarakoaVillager barakoaya;
 
-    private final InventoryBarakoaya inventory;
-
-    private int cursorHit;
-
     public GuiBarakoayaTrade(ContainerBarakoayaTrade screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
-        this.barakoaya = screenContainer.getBarakoaya();
-        this.inventory = screenContainer.getInventoryBarakoaya();
+        this.barakoaya = screenContainer.getBarakoaVillager();
     }
 
     @Override

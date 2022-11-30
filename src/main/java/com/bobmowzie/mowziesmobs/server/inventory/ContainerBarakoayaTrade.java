@@ -6,17 +6,12 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public final class ContainerBarakoayaTrade extends AbstractContainerMenu {
-
-    private final EntityBarakoaVillager barakoaya;
-
-    private final InventoryBarakoaya inventory;
-
-    private final Player player;
+public final class ContainerBarakoayaTrade extends ContainerTradeBase {
+    private final EntityBarakoaVillager barakoaVillager;
+    private final InventoryBarakoaya inventoryBarakoaya;
 
     public ContainerBarakoayaTrade(int id, Inventory playerInventory) {
         this(id, (EntityBarakoaVillager) MowziesMobs.PROXY.getReferencedMob(), playerInventory);
@@ -26,88 +21,36 @@ public final class ContainerBarakoayaTrade extends AbstractContainerMenu {
         this(id, barakoaya, new InventoryBarakoaya(barakoaya), playerInv);
     }
 
-    public ContainerBarakoayaTrade(int id, EntityBarakoaVillager barakoaya, InventoryBarakoaya inventory, Inventory playerInv) {
-        super(ContainerHandler.CONTAINER_BARAKOAYA_TRADE, id);
-        this.barakoaya = barakoaya;
-        this.inventory = inventory;
-        this.player = playerInv.player;
-        addSlot(new Slot(inventory, 0, 80, 54));
-        addSlot(new SlotResult(inventory, 1, 133, 54));
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 9; col++) {
-                addSlot(new Slot(playerInv, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));
-            }
-        }
-        for (int col = 0; col < 9; col++) {
-            addSlot(new Slot(playerInv, col, 8 + col * 18, 142));
-        }
+    public ContainerBarakoayaTrade(int id, EntityBarakoaVillager barakoaVillager, InventoryBarakoaya inventory, Inventory playerInv) {
+        super(ContainerHandler.CONTAINER_BARAKOAYA_TRADE, id, barakoaVillager, inventory, playerInv);
+        this.inventoryBarakoaya = inventory;
+        this.barakoaVillager = barakoaVillager;
     }
 
     @Override
-    public boolean stillValid(Player player) {
-        return barakoaya != null && inventory.stillValid(player) && barakoaya.isAlive() && barakoaya.distanceTo(player) < 8;
+    protected void addCustomSlots(Inventory playerInv) {
+        addSlot(new Slot(getInventory(), 0, 80, 54));
+        addSlot(new SlotResult(getInventory(), 1, 133, 54));
     }
 
     @Override
     public void slotsChanged(Container inv) {
-        inventory.reset();
+        inventoryBarakoaya.reset();
         super.slotsChanged(inv);
-    }
-
-    @Override
-    public ItemStack quickMoveStack(Player player, int index) {
-        ItemStack stack = ItemStack.EMPTY;
-        Slot slot = slots.get(index);
-        if (slot != null && slot.hasItem()) {
-            ItemStack contained = slot.getItem();
-            stack = contained.copy();
-            if (index == 1) {
-                if (!moveItemStackTo(contained, 2, 38, true)) {
-                    return ItemStack.EMPTY;
-                }
-                slot.onQuickCraft(contained, stack);
-            } else if (index != 0) {
-                if (index >= 2 && index < 29) {
-                    if (!moveItemStackTo(contained, 29, 38, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (index >= 29 && index < 38 && !moveItemStackTo(contained, 2, 29, false)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (!moveItemStackTo(contained, 2, 38, false)) {
-                return ItemStack.EMPTY;
-            }
-            if (contained.getCount() == 0) {
-                slot.set(ItemStack.EMPTY);
-            } else {
-                slot.setChanged();
-            }
-            if (contained.getCount() == stack.getCount()) {
-                return ItemStack.EMPTY;
-            }
-            slot.onTake(player, contained);
-        }
-        return stack;
     }
 
     @Override
     public void removed(Player player) {
         super.removed(player);
-        if (barakoaya != null) barakoaya.setCustomer(null);
-        if (!player.level.isClientSide) {
-            ItemStack stack = inventory.removeItemNoUpdate(0);
-            if (stack != ItemStack.EMPTY) {
-                player.drop(stack, false);
-            }
-        }
+        if (barakoaVillager != null) barakoaVillager.setCustomer(null);
     }
 
-    public EntityBarakoaVillager getBarakoaya() {
-        return barakoaya;
+    public EntityBarakoaVillager getBarakoaVillager() {
+        return barakoaVillager;
     }
 
     public InventoryBarakoaya getInventoryBarakoaya() {
-        return inventory;
+        return inventoryBarakoaya;
     }
 
     private class SlotResult extends Slot {
@@ -138,7 +81,7 @@ public final class ContainerBarakoayaTrade extends AbstractContainerMenu {
 
         @Override
         protected void checkTakeAchievements(ItemStack stack) {
-            stack.onCraftedBy(barakoaya.level, player, removeCount);
+            stack.onCraftedBy(barakoaVillager.level, player, removeCount);
             removeCount = 0;
         }
 
@@ -150,8 +93,8 @@ public final class ContainerBarakoayaTrade extends AbstractContainerMenu {
         @Override
         public void onTake(Player player, ItemStack stack) {
             checkTakeAchievements(stack);
-            if (barakoaya != null && barakoaya.isOfferingTrade()) {
-                Trade trade = barakoaya.getOfferingTrade();
+            if (barakoaVillager != null && barakoaVillager.isOfferingTrade()) {
+                Trade trade = barakoaVillager.getOfferingTrade();
                 ItemStack input = container.getItem(0);
                 ItemStack tradeInput = trade.getInput();
                 if (input.getItem() == tradeInput.getItem() && input.getCount() >= tradeInput.getCount()) {

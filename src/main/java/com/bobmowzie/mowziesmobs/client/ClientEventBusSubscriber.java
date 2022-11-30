@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.client;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoTrade;
 import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoayaTrade;
+import com.bobmowzie.mowziesmobs.client.gui.GuiSculptorTrade;
 import com.bobmowzie.mowziesmobs.client.render.entity.*;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
@@ -62,6 +63,7 @@ public class ClientEventBusSubscriber {
 
         MenuScreens.register(ContainerHandler.CONTAINER_BARAKOAYA_TRADE, GuiBarakoayaTrade::new);
         MenuScreens.register(ContainerHandler.CONTAINER_BARAKO_TRADE, GuiBarakoTrade::new);
+        MenuScreens.register(ContainerHandler.CONTAINER_SCULPTOR_TRADE, GuiSculptorTrade::new);
     }
 
     @SubscribeEvent

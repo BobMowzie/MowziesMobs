@@ -1,23 +1,39 @@
 package com.bobmowzie.mowziesmobs.server.entity.sculptor;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.ai.UseAbilityAI;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieGeckoEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderPlatform;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityGeomancyBase;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityPillar;
+import com.bobmowzie.mowziesmobs.server.inventory.ContainerSculptorTrade;
 import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -25,9 +41,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.registries.ForgeRegistries;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.event.CustomInstructionKeyframeEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
+
+import java.util.Optional;
 
 public class EntitySculptor extends MowzieGeckoEntity {
     public static int TEST_HEIGHT = 40;
@@ -36,8 +55,12 @@ public class EntitySculptor extends MowzieGeckoEntity {
     public static final AbilityType<EntitySculptor, StartTestAbility> START_TEST = new AbilityType<>("testStart", StartTestAbility::new);
     public static final AbilityType<EntitySculptor, EndTestAbility> END_TEST = new AbilityType<>("testEnd", EndTestAbility::new);
 
+    private static final EntityDataAccessor<ItemStack> DESIRES = SynchedEntityData.defineId(EntitySculptor.class, EntityDataSerializers.ITEM_STACK);
+    private static final EntityDataAccessor<Boolean> IS_TRADING = SynchedEntityData.defineId(EntitySculptor.class, EntityDataSerializers.BOOLEAN);
+
     public boolean handLOpen = true;
     public boolean handROpen = true;
+    private Player customer;
 
     private EntityPillar pillar;
 
@@ -52,10 +75,35 @@ public class EntitySculptor extends MowzieGeckoEntity {
         goalSelector.addGoal(2, new UseAbilityAI<>(this, START_TEST));
     }
 
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        Item tradeItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(ConfigHandler.COMMON.MOBS.BARAKO.whichItem.get()));
+        getEntityData().define(DESIRES, new ItemStack(tradeItem, ConfigHandler.COMMON.MOBS.BARAKO.howMany.get()));
+        getEntityData().define(IS_TRADING, false);
+    }
+
     public static AttributeSupplier.Builder createAttributes() {
         return MowzieEntity.createAttributes().add(Attributes.ATTACK_DAMAGE, 10)
                 .add(Attributes.MAX_HEALTH, 40)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1);
+    }
+
+    public void setDesires(ItemStack stack) {
+        getEntityData().set(DESIRES, stack);
+    }
+
+    public ItemStack getDesires() {
+        return getEntityData().get(DESIRES);
+    }
+
+    public boolean fulfillDesire(Slot input) {
+        ItemStack desires = getDesires();
+        if (canPayFor(input.getItem(), desires)) {
+            input.remove(desires.getCount());
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -66,10 +114,65 @@ public class EntitySculptor extends MowzieGeckoEntity {
     @Override
     public void tick() {
         super.tick();
-        if (getActiveAbility() == null) {
-            if (pillar == null && onGround) sendAbilityMessage(START_TEST);
-//            else sendAbilityMessage(END_TEST);
+//        if (getActiveAbility() == null) {
+//            if (pillar == null && onGround) sendAbilityMessage(START_TEST);
+//        }
+    }
+
+    public void setTrading(boolean trading) {
+        entityData.set(IS_TRADING, trading);
+    }
+
+    public boolean isTrading() {
+        return entityData.get(IS_TRADING);
+    }
+
+    public Player getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Player customer) {
+        setTrading(customer != null);
+        this.customer = customer;
+    }
+
+    public void openGUI(Player playerEntity) {
+        setCustomer(playerEntity);
+        MowziesMobs.PROXY.setReferencedMob(this);
+        if (!this.level.isClientSide && getTarget() == null && isAlive()) {
+            playerEntity.openMenu(new MenuProvider() {
+                @Override
+                public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player) {
+                    return new ContainerSculptorTrade(id, EntitySculptor.this, playerInventory);
+                }
+
+                @Override
+                public Component getDisplayName() {
+                    return EntitySculptor.this.getDisplayName();
+                }
+            });
         }
+    }
+
+    @Override
+    protected InteractionResult mobInteract(Player player, InteractionHand hand) {
+        if (canTradeWith(player) && getTarget() == null && isAlive()) {
+            openGUI(player);
+            return InteractionResult.SUCCESS;
+        }
+        return InteractionResult.PASS;
+    }
+
+    public boolean canTradeWith(Player player) {
+        return !isTrading() && !(getHealth() <= 0);
+    }
+
+    public boolean doesItemSatisfyDesire(ItemStack stack) {
+        return canPayFor(stack, getDesires());
+    }
+
+    private static boolean canPayFor(ItemStack stack, ItemStack worth) {
+        return stack.getItem() == worth.getItem() && stack.getCount() >= worth.getCount();
     }
 
     public EntityPillar getPillar() {

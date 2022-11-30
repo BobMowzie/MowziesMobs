@@ -10,12 +10,14 @@ import net.minecraftforge.fml.common.Mod;
 public class ContainerHandler {
     public static final MenuType<ContainerBarakoayaTrade> CONTAINER_BARAKOAYA_TRADE = new MenuType<>(ContainerBarakoayaTrade::new);
     public static final MenuType<ContainerBarakoTrade> CONTAINER_BARAKO_TRADE = new MenuType<>(ContainerBarakoTrade::new);
+    public static final MenuType<ContainerSculptorTrade> CONTAINER_SCULPTOR_TRADE = new MenuType<>(ContainerSculptorTrade::new);
 
     @SubscribeEvent
     public static void registerAll(RegistryEvent.Register<MenuType<?>> event) {
         event.getRegistry().registerAll(
                 CONTAINER_BARAKOAYA_TRADE.setRegistryName("barakoaya_trade"),
-                CONTAINER_BARAKO_TRADE.setRegistryName("barako_trade")
+                CONTAINER_BARAKO_TRADE.setRegistryName("barako_trade"),
+                CONTAINER_SCULPTOR_TRADE.setRegistryName("sculptor_trade")
         );
     }
 }
