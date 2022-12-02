@@ -211,7 +211,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
     }
 
     public boolean canTradeWith(Player player) {
-        return !isTrading() && !(getHealth() <= 0);
+        return !isTrading() && !(getHealth() <= 0) && !testing;
     }
 
     public boolean doesItemSatisfyDesire(ItemStack stack) {

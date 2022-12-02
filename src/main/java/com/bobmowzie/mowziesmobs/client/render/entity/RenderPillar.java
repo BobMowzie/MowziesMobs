@@ -68,7 +68,7 @@ public class RenderPillar extends RenderGeomancyBase<EntityPillar> {
         float height = pillar.prevPrevHeight + (pillar.prevHeight - pillar.prevPrevHeight) * partialTicks;
         matrixStackIn.translate(0, height - 0.5f, 0);
 
-        int numRenders = (int) Math.ceil(pillar.getHeight());
+        int numRenders = (int) Math.ceil(pillar.getHeight()) + 1;
         for (int i = 0; i < numRenders; i++) {
             matrixStackIn.translate(0, -1, 0);
             super.render(model, pillar, partialTicks, type, matrixStackIn, renderTypeBuffer, vertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -76,11 +76,15 @@ public class RenderPillar extends RenderGeomancyBase<EntityPillar> {
     }
 
     @Override
-    public void preparePositionRotationScale(GeoBone bone, PoseStack stack) {
-        RenderUtils.translate(bone, stack);
-        RenderUtils.moveToPivot(bone, stack);
-        RenderUtils.rotate(bone, stack);
-        RenderUtils.scale(bone, stack);
+    public void renderRecursively(GeoBone bone, PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        poseStack.pushPose();
+        RenderUtils.translateMatrixToBone(poseStack, bone);
+        RenderUtils.translateToPivotPoint(poseStack, bone);
+        RenderUtils.rotateMatrixAroundBone(poseStack, bone);
+        RenderUtils.scaleMatrixForBone(poseStack, bone);
+        renderCubesOfBone(bone, poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        renderChildBones(bone, poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        poseStack.popPose();
     }
 
     @Override

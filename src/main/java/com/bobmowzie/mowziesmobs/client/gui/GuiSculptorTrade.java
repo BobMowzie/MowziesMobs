@@ -56,11 +56,6 @@ public final class GuiSculptorTrade extends AbstractContainerScreen<ContainerScu
     	if (button == beginButton) {
             updateButton();
             MowziesMobs.NETWORK.sendToServer(new MessageSculptorTrade(sculptor));
-            if (!Minecraft.getInstance().isLocalServer()) {
-                if (sculptor.fulfillDesire(menu.getSlot(0))) {
-                    menu.broadcastChanges();
-                }
-            }
     	}
     }
 
