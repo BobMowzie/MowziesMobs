@@ -48,7 +48,7 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
                 pillar = sculptor.getPillar();
             }
         }
-        if (sculptor == null || sculptor.isRemoved() || pillar == null || pillar.isRemoved()) {
+        if (sculptor == null || sculptor.isRemoved() || pillar == null || pillar.isRemoved() || pillar.isFalling()) {
             remove(RemovalReason.DISCARDED);
             return;
         }

@@ -61,6 +61,11 @@ public class EntitySculptor extends MowzieGeckoEntity {
     public boolean handLOpen = true;
     public boolean handROpen = true;
     private Player customer;
+    private Player testingPlayer;
+    private Optional<Double> prevPlayerVelY;
+    private Optional<Vec3> prevPlayerPosition;
+    private int ticksAcceleratingUpward;
+    private boolean testing;
 
     private EntityPillar pillar;
 
@@ -114,9 +119,51 @@ public class EntitySculptor extends MowzieGeckoEntity {
     @Override
     public void tick() {
         super.tick();
-//        if (getActiveAbility() == null) {
-//            if (pillar == null && onGround) sendAbilityMessage(START_TEST);
-//        }
+        if (testing && !level.isClientSide()) {
+            if (testingPlayer == null) {
+                sendAbilityMessage(END_TEST);
+                prevPlayerPosition = Optional.empty();
+                prevPlayerVelY = Optional.empty();
+            }
+            else {
+
+                // Check if testing player is flying
+                if (testingPlayer.getAbilities().flying) playerCheated(testingPlayer);
+                if (!testingPlayer.isOnGround()) {
+                    double playerVelY = testingPlayer.getDeltaMovement().y();
+                    if (prevPlayerVelY != null && prevPlayerVelY.isPresent()) {
+                        double acceleration = playerVelY - prevPlayerVelY.get();
+                        if (acceleration >= 0.0) {
+                            ticksAcceleratingUpward++;
+                        }
+                        else if (ticksAcceleratingUpward > 0) {
+                            ticksAcceleratingUpward--;
+                        }
+                        if (ticksAcceleratingUpward > 5) playerCheated(testingPlayer);
+                    }
+                    prevPlayerVelY = Optional.of(playerVelY);
+                }
+                else {
+                    ticksAcceleratingUpward = 0;
+                    prevPlayerVelY = Optional.empty();
+                }
+
+                // Check if testing player teleported
+                Vec3 currPosition = testingPlayer.position();
+                if (prevPlayerPosition != null && prevPlayerPosition.isPresent()) {
+                    if (currPosition.distanceTo(prevPlayerPosition.get()) > 3.0) {
+                        playerCheated(testingPlayer);
+                    }
+                }
+                prevPlayerPosition = Optional.of(currPosition);
+            }
+        }
+    }
+
+    public void playerCheated(Player player) {
+        if (player == testingPlayer) {
+            sendAbilityMessage(END_TEST);
+        }
     }
 
     public void setTrading(boolean trading) {
@@ -241,6 +288,8 @@ public class EntitySculptor extends MowzieGeckoEntity {
         public void start() {
             super.start();
             playAnimation("testStart", false);
+            getUser().testing = true;
+            getUser().testingPlayer = getUser().getCustomer();
         }
 
         @Override
@@ -315,7 +364,11 @@ public class EntitySculptor extends MowzieGeckoEntity {
         @Override
         public void end() {
             super.end();
-            if (getUser() != null) getUser().pillar = null;
+            if (getUser() != null) {
+                getUser().pillar = null;
+                getUser().testingPlayer = null;
+                getUser().testing = true;
+            }
         }
     }
 }
