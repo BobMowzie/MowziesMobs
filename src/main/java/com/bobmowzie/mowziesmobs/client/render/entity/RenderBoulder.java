@@ -55,16 +55,18 @@ public class RenderBoulder extends EntityRenderer<EntityBoulderBase> {
 
     @Override
     public void render(EntityBoulderBase entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
-        matrixStackIn.pushPose();
-        model.setupAnim(entityIn, 0, 0, entityIn.tickCount + partialTicks, 0, 0);
-        BlockRenderDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRenderer();
-        AdvancedModelRenderer root;
-        if (entityIn.boulderSize == EntityGeomancyBase.GeomancyTier.SMALL) root = model.boulder0block1;
-        else  if (entityIn.boulderSize == EntityGeomancyBase.GeomancyTier.MEDIUM) root = model.boulder1;
-        else  if (entityIn.boulderSize == EntityGeomancyBase.GeomancyTier.LARGE) root = model.boulder2;
-        else root = model.boulder3;
-        matrixStackIn.translate(-0.5f, 0.5f, -0.5f);
-        BlockLayer.processModelRenderer(root, matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1, blockrendererdispatcher);
-        matrixStackIn.popPose();
+        if (entityIn.active) {
+            matrixStackIn.pushPose();
+            model.setupAnim(entityIn, 0, 0, entityIn.risingTick + partialTicks, 0, 0);
+            BlockRenderDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRenderer();
+            AdvancedModelRenderer root;
+            if (entityIn.boulderSize == EntityGeomancyBase.GeomancyTier.SMALL) root = model.boulder0block1;
+            else if (entityIn.boulderSize == EntityGeomancyBase.GeomancyTier.MEDIUM) root = model.boulder1;
+            else if (entityIn.boulderSize == EntityGeomancyBase.GeomancyTier.LARGE) root = model.boulder2;
+            else root = model.boulder3;
+            matrixStackIn.translate(-0.5f, 0.5f, -0.5f);
+            BlockLayer.processModelRenderer(root, matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1, blockrendererdispatcher);
+            matrixStackIn.popPose();
+        }
     }
 }

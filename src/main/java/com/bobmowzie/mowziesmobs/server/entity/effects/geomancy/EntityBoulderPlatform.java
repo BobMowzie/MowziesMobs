@@ -53,8 +53,12 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
             return;
         }
 
-        if (tickTimer() == 7 && !level.isClientSide()) {
+        if (tickTimer() == 1 && !level.isClientSide()) {
             nextBoulders();
+        }
+
+        if (pillar != null && !level.isClientSide()) {
+            if (pillar.isRising() && pillar.getY() + pillar.getHeight() >= this.getY()) activate();
         }
     }
 

@@ -301,7 +301,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
                 pillar.setTier(EntityGeomancyBase.GeomancyTier.SMALL);
                 pillar.setPos(spawnPillarPos.getX() + 0.5F, spawnPillarPos.getY() + 1, spawnPillarPos.getZ() + 0.5F);
                 pillar.setDoRemoveTimer(false);
-                if (!getUser().level.isClientSide && pillar.checkCanSpawn()) {
+                if (pillar.checkCanSpawn()) {
                     getUser().level.addFreshEntity(pillar);
                 }
                 getUser().pillar = pillar;

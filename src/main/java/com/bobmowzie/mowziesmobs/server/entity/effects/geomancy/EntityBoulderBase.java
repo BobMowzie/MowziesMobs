@@ -23,10 +23,14 @@ import java.util.List;
  * Created by BobMowzie on 4/14/2017.
  */
 public class EntityBoulderBase extends EntityGeomancyBase {
+    private static final byte ACTIVATE_ID = 67;
+
     public BlockState storedBlock;
     public float animationOffset = 0;
     public GeomancyTier boulderSize = GeomancyTier.SMALL;
     protected int finishedRisingTick = 4;
+    public int risingTick = 0;
+    public boolean active = false;
 
     public static final HashMap<GeomancyTier, EntityDimensions> SIZE_MAP = new HashMap<>();
     static {
@@ -54,6 +58,11 @@ public class EntityBoulderBase extends EntityGeomancyBase {
         setBoundingBox(makeBoundingBox());
     }
 
+    @Override
+    public boolean canBeCollidedWith() {
+        return active;
+    }
+
     public boolean checkCanSpawn() {
         if (!level.getEntitiesOfClass(EntityBoulderBase.class, getBoundingBox().deflate(0.01)).isEmpty()) return false;
         return level.noCollision(this, getBoundingBox().deflate(0.01));
@@ -78,6 +87,19 @@ public class EntityBoulderBase extends EntityGeomancyBase {
         return dim.makeBoundingBox(this.position());
     }
 
+    public void activate() {
+        active = true;
+        level.broadcastEntityEvent(this, ACTIVATE_ID);
+    }
+
+    @Override
+    public void handleEntityEvent(byte id) {
+        super.handleEntityEvent(id);
+        if (id == ACTIVATE_ID) {
+            active = true;
+        }
+    }
+
     @Override
     public void tick() {
         if (firstTick) {
@@ -89,23 +111,23 @@ public class EntityBoulderBase extends EntityGeomancyBase {
         super.tick();
         setBoundingBox(makeBoundingBox());
         move(MoverType.SELF, getDeltaMovement());
-        if (boulderSize == GeomancyTier.HUGE && tickCount < finishedRisingTick) {
+        if (boulderSize == GeomancyTier.HUGE && risingTick < finishedRisingTick) {
             float f = this.getBbWidth() / 2.0F;
-            AABB aabb = new AABB(getX() - (double)f, getY() - 0.5, getZ() - (double)f, getX() + (double)f, getY() + Math.min(tickCount/(float)finishedRisingTick * 3.5f, 3.5f), getZ() + (double)f);
+            AABB aabb = new AABB(getX() - (double)f, getY() - 0.5, getZ() - (double)f, getX() + (double)f, getY() + Math.min(risingTick/(float)finishedRisingTick * 3.5f, 3.5f), getZ() + (double)f);
             setBoundingBox(aabb);
         }
 
-        if (tickCount < finishedRisingTick) {
+        if (risingTick < finishedRisingTick) {
             List<Entity> popUpEntities = level.getEntities(this, getBoundingBox());
             for (Entity entity:popUpEntities) {
                 if (entity.isPickable() && !(entity instanceof EntityBoulderBase)) {
-                    if (boulderSize != GeomancyTier.HUGE) entity.move(MoverType.SHULKER_BOX, new Vec3(0, 2 * (Math.pow(2, -tickCount * (0.6 - 0.1 * boulderSize.ordinal()))), 0));
+                    if (boulderSize != GeomancyTier.HUGE) entity.move(MoverType.SHULKER_BOX, new Vec3(0, 2 * (Math.pow(2, -risingTick * (0.6 - 0.1 * boulderSize.ordinal()))), 0));
                     else entity.move(MoverType.SHULKER_BOX, new Vec3(0, 0.6f, 0));
                 }
             }
         }
 
-        if (tickCount == 1) {
+        if (risingTick == 1) {
             for (int i = 0; i < 20 * getBbWidth(); i++) {
                 Vec3 particlePos = new Vec3(random.nextFloat() * 1.3 * getBbWidth(), 0, 0);
                 particlePos = particlePos.yRot((float) (random.nextFloat() * 2 * Math.PI));
@@ -133,11 +155,11 @@ public class EntityBoulderBase extends EntityGeomancyBase {
                 });
             }
         }
-        if (tickCount == 30 && boulderSize == GeomancyTier.HUGE) {
+        if (risingTick == 30 && boulderSize == GeomancyTier.HUGE) {
             playSound(MMSounds.EFFECT_GEOMANCY_RUMBLE_2.get(), 2, 0.7f);
         }
 
-        int dripTick = tickCount - 2;
+        int dripTick = risingTick - 2;
         if (boulderSize == GeomancyTier.HUGE) dripTick -= 20;
         int dripNumber = (int)(getBbWidth() * 6 * Math.pow(1.03 + 0.04 * 1/getBbWidth(), -(dripTick)));
         if (dripNumber >= 1 && dripTick > 0) {
@@ -146,10 +168,13 @@ public class EntityBoulderBase extends EntityGeomancyBase {
                 Vec3 particlePos = new Vec3(random.nextFloat() * 0.6 * getBbWidth(), 0, 0);
                 particlePos = particlePos.yRot((float)(random.nextFloat() * 2 * Math.PI));
                 float offsetY;
-                if (boulderSize == GeomancyTier.HUGE && tickCount < finishedRisingTick) offsetY = random.nextFloat() * (getBbHeight()-1) - getBbHeight() * (finishedRisingTick - tickCount)/finishedRisingTick;
+                if (boulderSize == GeomancyTier.HUGE && risingTick < finishedRisingTick) offsetY = random.nextFloat() * (getBbHeight()-1) - getBbHeight() * (finishedRisingTick - risingTick)/finishedRisingTick;
                 else offsetY = random.nextFloat() * (getBbHeight()-1);
                 level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, storedBlock), getX() + particlePos.x, getY() + offsetY, getZ() + particlePos.z, 0, -1, 0);
             }
+        }
+        if (active) {
+            risingTick++;
         }
     }
 }
