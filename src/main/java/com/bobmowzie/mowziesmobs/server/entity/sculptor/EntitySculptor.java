@@ -9,6 +9,7 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieGeckoEntity;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBlockSwapper;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderPlatform;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityGeomancyBase;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityPillar;
@@ -40,6 +41,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -126,38 +128,41 @@ public class EntitySculptor extends MowzieGeckoEntity {
                 prevPlayerVelY = Optional.empty();
             }
             else {
-
-                // Check if testing player is flying
-                if (testingPlayer.getAbilities().flying) playerCheated(testingPlayer);
-                if (!testingPlayer.isOnGround()) {
-                    double playerVelY = testingPlayer.getDeltaMovement().y();
-                    if (prevPlayerVelY != null && prevPlayerVelY.isPresent()) {
-                        double acceleration = playerVelY - prevPlayerVelY.get();
-                        if (acceleration >= 0.0) {
-                            ticksAcceleratingUpward++;
-                        }
-                        else if (ticksAcceleratingUpward > 0) {
-                            ticksAcceleratingUpward--;
-                        }
-                        if (ticksAcceleratingUpward > 5) playerCheated(testingPlayer);
-                    }
-                    prevPlayerVelY = Optional.of(playerVelY);
-                }
-                else {
-                    ticksAcceleratingUpward = 0;
-                    prevPlayerVelY = Optional.empty();
-                }
-
-                // Check if testing player teleported
-                Vec3 currPosition = testingPlayer.position();
-                if (prevPlayerPosition != null && prevPlayerPosition.isPresent()) {
-                    if (currPosition.distanceTo(prevPlayerPosition.get()) > 3.0) {
-                        playerCheated(testingPlayer);
-                    }
-                }
-                prevPlayerPosition = Optional.of(currPosition);
+                checkIfPlayerCheats();
             }
         }
+    }
+
+    private void checkIfPlayerCheats() {
+        // Check if testing player is flying
+        if (testingPlayer.getAbilities().flying) playerCheated(testingPlayer);
+        if (!testingPlayer.isOnGround()) {
+            double playerVelY = testingPlayer.getDeltaMovement().y();
+            if (prevPlayerVelY != null && prevPlayerVelY.isPresent()) {
+                double acceleration = playerVelY - prevPlayerVelY.get();
+                if (acceleration >= 0.0) {
+                    ticksAcceleratingUpward++;
+                }
+                else if (ticksAcceleratingUpward > 0) {
+                    ticksAcceleratingUpward--;
+                }
+                if (ticksAcceleratingUpward > 5) playerCheated(testingPlayer);
+            }
+            prevPlayerVelY = Optional.of(playerVelY);
+        }
+        else {
+            ticksAcceleratingUpward = 0;
+            prevPlayerVelY = Optional.empty();
+        }
+
+        // Check if testing player teleported
+        Vec3 currPosition = testingPlayer.position();
+        if (prevPlayerPosition != null && prevPlayerPosition.isPresent()) {
+            if (currPosition.distanceTo(prevPlayerPosition.get()) > 3.0) {
+                playerCheated(testingPlayer);
+            }
+        }
+        prevPlayerPosition = Optional.of(currPosition);
     }
 
     public void playerCheated(Player player) {
@@ -320,8 +325,24 @@ public class EntitySculptor extends MowzieGeckoEntity {
         @Override
         public void tick() {
             super.tick();
-            if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE && pillar != null && pillar.getHeight() > TEST_HEIGHT) {
-                nextSection();
+            if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
+                if (!getUser().getLevel().isClientSide()) {
+                    int k = getTicksInSection();
+                    if (k < TEST_HEIGHT + 3) {
+                        for (int i = -TEST_RADIUS; i < TEST_RADIUS; i++) {
+                            for (int j = -TEST_RADIUS; j < TEST_RADIUS; j++) {
+                                if (new Vec2(i, j).length() < TEST_RADIUS) {
+                                    BlockPos pos = getUser().blockPosition().east(i).north(j).above(k);
+                                    EntityBlockSwapper swapper = new EntityBlockSwapper.EntityBlockSwapperSculptor(EntityHandler.BLOCK_SWAPPER.get(), getUser().getLevel(), pos, Blocks.AIR.defaultBlockState(), 200, false, false);
+                                    getUser().getLevel().addFreshEntity(swapper);
+                                }
+                            }
+                        }
+                    }
+                }
+                if (pillar != null && pillar.getHeight() > TEST_HEIGHT) {
+                    nextSection();
+                }
             }
         }
 
@@ -367,7 +388,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
             if (getUser() != null) {
                 getUser().pillar = null;
                 getUser().testingPlayer = null;
-                getUser().testing = true;
+                getUser().testing = false;
             }
         }
     }
