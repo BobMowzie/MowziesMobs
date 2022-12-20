@@ -341,7 +341,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
                     }
                 }*/
                 if (getTicksInSection() == 0 && !getUser().getLevel().isClientSide()) {
-                    EntityBlockSwapper.EntityBlockSwapperSculptor swapper = new EntityBlockSwapper.EntityBlockSwapperSculptor(EntityHandler.BLOCK_SWAPPER_SCULPTOR.get(), getUser().getLevel(), getUser().blockPosition(), Blocks.AIR.defaultBlockState(), 200, false, false, TEST_HEIGHT + 3, TEST_RADIUS);
+                    EntityBlockSwapper.EntityBlockSwapperSculptor swapper = new EntityBlockSwapper.EntityBlockSwapperSculptor(EntityHandler.BLOCK_SWAPPER_SCULPTOR.get(), getUser().getLevel(), getUser().blockPosition(), Blocks.AIR.defaultBlockState(), 60, false, false);
                     getUser().getLevel().addFreshEntity(swapper);
                 }
                 if (pillar != null && pillar.getHeight() > TEST_HEIGHT) {

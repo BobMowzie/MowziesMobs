@@ -188,12 +188,16 @@ public class EntityBlockSwapper extends Entity {
         public EntityBlockSwapperSculptor(EntityType<? extends EntityBlockSwapperSculptor> type, Level world) {
             super(type, world);
             breakParticlesEnd = false;
+            this.height = EntitySculptor.TEST_HEIGHT + 3;
+            this.radius = EntitySculptor.TEST_RADIUS;
+            this.origStates = new BlockState[height][radius * 2][radius * 2];
+            setBoundingBox(makeBoundingBox());
         }
 
-        public EntityBlockSwapperSculptor(EntityType<? extends EntityBlockSwapperSculptor> type, Level world, BlockPos pos, BlockState newBlock, int duration, boolean breakParticlesStart, boolean breakParticlesEnd, int height, int radius) {
+        public EntityBlockSwapperSculptor(EntityType<? extends EntityBlockSwapperSculptor> type, Level world, BlockPos pos, BlockState newBlock, int duration, boolean breakParticlesStart, boolean breakParticlesEnd) {
             super(type, world);
-            this.height = height;
-            this.radius = radius;
+            this.height = EntitySculptor.TEST_HEIGHT + 3;
+            this.radius = EntitySculptor.TEST_RADIUS;
             this.origStates = new BlockState[height][radius * 2][radius * 2];
             setStorePos(pos);
             setRestoreTime(duration);
@@ -305,6 +309,43 @@ public class EntityBlockSwapper extends Entity {
         @Override
         protected boolean canRestoreBlock() {
             return tickCount > duration && level.getEntitiesOfClass(EntityBoulderPlatform.class, this.getBoundingBox()).isEmpty();
+        }
+
+        @Override
+        public void addAdditionalSaveData(CompoundTag compound) {
+            compound.putInt("restoreTime", getRestoreTime());
+            compound.putInt("storePosX", getStorePos().getX());
+            compound.putInt("storePosY", getStorePos().getY());
+            compound.putInt("storePosZ", getStorePos().getZ());
+            for (int i = 0; i < radius * 2; i++) {
+                for (int j = 0; j < radius * 2; j++) {
+                    for (int k = 0; k < height; k++) {
+                        BlockState block = origStates[k][i][j];
+                        if (block != null) compound.put("block_" + i + "_" + j + "_" + k, NbtUtils.writeBlockState(block));
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void readAdditionalSaveData(CompoundTag compound) {
+            setRestoreTime(compound.getInt("restoreTime"));
+            setStorePos(new BlockPos(
+                    compound.getInt("storePosX"),
+                    compound.getInt("storePosY"),
+                    compound.getInt("storePosZ")
+            ));
+            for (int i = 0; i < radius * 2; i++) {
+                for (int j = 0; j < radius * 2; j++) {
+                    for (int k = 0; k < height; k++) {
+                        Tag blockNBT = compound.get("block_" + i + "_" + j + "_" + k);
+                        if (blockNBT != null) {
+                            BlockState blockState = NbtUtils.readBlockState((CompoundTag) blockNBT);
+                            origStates[k][i][j] = blockState;
+                        }
+                    }
+                }
+            }
         }
     }
 }
