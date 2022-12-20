@@ -326,7 +326,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
         public void tick() {
             super.tick();
             if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
-                if (!getUser().getLevel().isClientSide()) {
+                /*if (!getUser().getLevel().isClientSide()) {
                     int k = getTicksInSection();
                     if (k < TEST_HEIGHT + 3) {
                         for (int i = -TEST_RADIUS; i < TEST_RADIUS; i++) {
@@ -339,6 +339,10 @@ public class EntitySculptor extends MowzieGeckoEntity {
                             }
                         }
                     }
+                }*/
+                if (getTicksInSection() == 0 && !getUser().getLevel().isClientSide()) {
+                    EntityBlockSwapper.EntityBlockSwapperSculptor swapper = new EntityBlockSwapper.EntityBlockSwapperSculptor(EntityHandler.BLOCK_SWAPPER_SCULPTOR.get(), getUser().getLevel(), getUser().blockPosition(), Blocks.AIR.defaultBlockState(), 200, false, false, TEST_HEIGHT + 3, TEST_RADIUS);
+                    getUser().getLevel().addFreshEntity(swapper);
                 }
                 if (pillar != null && pillar.getHeight() > TEST_HEIGHT) {
                     nextSection();

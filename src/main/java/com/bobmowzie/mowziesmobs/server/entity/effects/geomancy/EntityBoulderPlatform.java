@@ -53,7 +53,7 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
             return;
         }
 
-        if (tickTimer() == 1 && !level.isClientSide()) {
+        if (tickTimer() == 2 && !level.isClientSide()) {
             nextBoulders();
         }
 
@@ -87,8 +87,8 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
             } else return;
             nextBoulder.setPos(randomPos);
 
-            // Make sure boulder has no collision
-            if (level.noCollision(nextBoulder)) {
+            // Make sure boulder has no collision, even with the future fully-grown pillar
+            if (level.noCollision(nextBoulder) && !pillar.getBoundingBox().setMaxY(pillar.getY() + EntitySculptor.TEST_HEIGHT).intersects(nextBoulder.getBoundingBox())) {
                 // Check nearby boulders below to make sure this boulder doesn't block jumping path
                 AABB toCheck = nextBoulder.getBoundingBox().inflate(MAX_DIST_HORIZONTAL, MAX_DIST_VERTICAL / 2f + 1.5f, MAX_DIST_HORIZONTAL).move(0, -MAX_DIST_VERTICAL / 2f - 1.5f, 0);
                 List<EntityBoulderPlatform> platforms = level.getEntitiesOfClass(EntityBoulderPlatform.class, toCheck);

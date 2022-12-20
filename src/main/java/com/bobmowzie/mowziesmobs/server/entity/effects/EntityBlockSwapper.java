@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderPlatform;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityPillarPiece;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import net.minecraft.core.BlockPos;
@@ -12,11 +13,15 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
@@ -30,8 +35,8 @@ public class EntityBlockSwapper extends Entity {
     private static final EntityDataAccessor<Optional<BlockState>> ORIG_BLOCK_STATE = SynchedEntityData.defineId(EntityBlockSwapper.class, EntityDataSerializers.BLOCK_STATE);
     private static final EntityDataAccessor<Integer> RESTORE_TIME = SynchedEntityData.defineId(EntityBlockSwapper.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<BlockPos> POS = SynchedEntityData.defineId(EntityBlockSwapper.class, EntityDataSerializers.BLOCK_POS);
-    private int duration;
-    private final boolean breakParticlesEnd;
+    protected int duration;
+    protected boolean breakParticlesEnd;
     private BlockPos pos;
 
     public EntityBlockSwapper(EntityType<? extends EntityBlockSwapper> type, Level world) {
@@ -51,10 +56,16 @@ public class EntityBlockSwapper extends Entity {
             world.setBlock(pos, newBlock, 19);
         }
         List<EntityBlockSwapper> swappers = world.getEntitiesOfClass(EntityBlockSwapper.class, getBoundingBox());
-        if (!swappers.isEmpty()) {
-            EntityBlockSwapper swapper = swappers.get(0);
-            setOrigBlock(swapper.getOrigBlock());
-            swapper.discard();
+        for (EntityBlockSwapper swapper : swappers) {
+            if (swapper == this) continue;
+            if (swapper instanceof EntityBlockSwapperSculptor) {
+                EntityBlockSwapperSculptor swapperSculptor = (EntityBlockSwapperSculptor) swapper;
+                setOrigBlock(swapperSculptor.getOrigBlockAtLocation(pos));
+            }
+            else {
+                setOrigBlock(swapper.getOrigBlock());
+                swapper.discard();
+            }
         }
     }
 
@@ -63,6 +74,10 @@ public class EntityBlockSwapper extends Entity {
             EntityBlockSwapper swapper = new EntityBlockSwapper(EntityHandler.BLOCK_SWAPPER.get(), world, pos, newBlock, duration, breakParticlesStart, breakParticlesEnd);
             world.addFreshEntity(swapper);
         }
+    }
+
+    public boolean isBlockPosInsideSwapper(BlockPos pos) {
+        return pos.equals(getStorePos());
     }
 
     @Override
@@ -106,9 +121,20 @@ public class EntityBlockSwapper extends Entity {
     }
 
     public void restoreBlock() {
+        List<EntityBlockSwapper> swappers = level.getEntitiesOfClass(EntityBlockSwapper.class, getBoundingBox());
         if (!level.isClientSide) {
-            if (breakParticlesEnd) level.destroyBlock(pos, false);
-            level.setBlock(pos, getOrigBlock(), 19);
+            boolean canReplace = true;
+            for (EntityBlockSwapper swapper : swappers) {
+                if (swapper == this) continue;
+                if (swapper.isBlockPosInsideSwapper(pos)) {
+                    canReplace = false;
+                    break;
+                }
+            }
+            if (canReplace) {
+                if (breakParticlesEnd) level.destroyBlock(pos, false);
+                level.setBlock(pos, getOrigBlock(), 19);
+            }
             discard();
         }
     }
@@ -153,15 +179,132 @@ public class EntityBlockSwapper extends Entity {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
+    // Like the regular block swapper, but clears out a whole cylinder for the sculptor's test
     public static class EntityBlockSwapperSculptor extends EntityBlockSwapper {
+        private int height;
+        private int radius;
+        private BlockState[][][] origStates;
 
-        public EntityBlockSwapperSculptor(EntityType<? extends EntityBlockSwapper> type, Level world, BlockPos pos, BlockState newBlock, int duration, boolean breakParticlesStart, boolean breakParticlesEnd) {
-            super(type, world, pos, newBlock, duration, breakParticlesStart, breakParticlesEnd);
+        public EntityBlockSwapperSculptor(EntityType<? extends EntityBlockSwapperSculptor> type, Level world) {
+            super(type, world);
+            breakParticlesEnd = false;
+        }
+
+        public EntityBlockSwapperSculptor(EntityType<? extends EntityBlockSwapperSculptor> type, Level world, BlockPos pos, BlockState newBlock, int duration, boolean breakParticlesStart, boolean breakParticlesEnd, int height, int radius) {
+            super(type, world);
+            this.height = height;
+            this.radius = radius;
+            this.origStates = new BlockState[height][radius * 2][radius * 2];
+            setStorePos(pos);
+            setRestoreTime(duration);
+            this.breakParticlesEnd = breakParticlesEnd;
+            setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+            setBoundingBox(makeBoundingBox());
+
+            // Get any other sculptor block swappers it overlaps with. We need special logic to make sure they can't replace each other's blocks
+            List<EntityBlockSwapperSculptor> swapperSculptors = world.getEntitiesOfClass(EntityBlockSwapperSculptor.class, getBoundingBox());
+
+            // Loop over the blocks inside this one and replace them
+            if (!world.isClientSide) {
+                for (int k = 0; k < height; k++) {
+                    for (int i = -radius; i < radius; i++) {
+                        for (int j = -radius; j < radius; j++) {
+                            if (new Vec2(i, j).length() < radius) {
+                                BlockPos thisPos = pos.offset(i, k, j);
+                                origStates[k][i + radius][j + radius] = world.getBlockState(thisPos);
+                                if (breakParticlesStart) world.destroyBlock(thisPos, false);
+                                world.setBlock(thisPos, newBlock, 19);
+                                for (EntityBlockSwapperSculptor swapper : swapperSculptors) {
+                                    if (swapper == this) continue;
+                                    if (swapper.getOrigBlockAtLocation(thisPos) != null) {
+                                        origStates[k][i + radius][j + radius] = swapper.getOrigBlockAtLocation(thisPos);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Now handle any regular block swappers it overlaps with
+            List<EntityBlockSwapperSculptor> swappers = world.getEntitiesOfClass(EntityBlockSwapperSculptor.class, getBoundingBox());
+            if (!swappers.isEmpty()) {
+                for (EntityBlockSwapper swapper : swappers) {
+                    if (swapper == this) continue;
+                    if (!(swapper instanceof EntityBlockSwapperSculptor)) {
+                        setOrigBlockAtLocation(swapper.getStorePos(), swapper.getOrigBlock());
+                    }
+                }
+            }
+        }
+
+        @Override
+        public boolean isBlockPosInsideSwapper(BlockPos pos) {
+            return new Vec2(pos.getX() - this.getStorePos().getX(), pos.getZ() - this.getStorePos().getZ()).length() < radius && getBoundingBox().contains(new Vec3(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5));
+        }
+
+        public void setOrigBlockAtLocation(BlockPos pos, BlockState state) {
+            if (isBlockPosInsideSwapper(pos)) {
+                BlockPos indices = posToArrayIndices(pos);
+                origStates[indices.getY()][indices.getX()][indices.getZ()] = state;
+            }
+        }
+
+        public BlockState getOrigBlockAtLocation(BlockPos pos) {
+            if (isBlockPosInsideSwapper(pos)) {
+                BlockPos indices = posToArrayIndices(pos);
+                return origStates[indices.getY()][indices.getX()][indices.getZ()];
+            }
+            return null;
+        }
+
+        protected BlockPos posToArrayIndices(BlockPos pos) {
+            return pos.subtract(getStorePos()).offset(radius, 0, radius);
+        }
+
+        @Override
+        protected AABB makeBoundingBox() {
+            return EntityDimensions.scalable(radius * 2, height).makeBoundingBox(position());
+        }
+
+        @Override
+        public void restoreBlock() {
+            if (!level.isClientSide) {
+                List<EntityBlockSwapper> swappers = level.getEntitiesOfClass(EntityBlockSwapper.class, getBoundingBox());
+                for (int k = 0; k < height; k++) {
+                    for (int i = -radius; i < radius; i++) {
+                        for (int j = -radius; j < radius; j++) {
+                            if (new Vec2(i, j).length() < radius) {
+                                if (!level.isClientSide) {
+                                    BlockPos thisPos = getStorePos().offset(i, k, j);
+                                    boolean canReplace = true;
+                                    for (EntityBlockSwapper swapper : swappers) {
+                                        if (swapper == this) continue;
+                                        if (swapper.isBlockPosInsideSwapper(thisPos)) {
+                                            canReplace = false;
+                                            break;
+                                        }
+                                    }
+                                    if (canReplace) {
+                                        BlockState restoreState = origStates[k][i + radius][j + radius];
+                                        if (restoreState != null) {
+                                            if (breakParticlesEnd) level.destroyBlock(thisPos, false);
+                                            level.setBlock(thisPos, restoreState, 19);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                discard();
+            }
         }
 
         @Override
         protected boolean canRestoreBlock() {
-            return super.canRestoreBlock() && level.getEntitiesOfClass(EntityPillarPiece.class, this.getBoundingBox().inflate(EntitySculptor.TEST_RADIUS, 3, EntitySculptor.TEST_RADIUS)).isEmpty();
+            return tickCount > duration && level.getEntitiesOfClass(EntityBoulderPlatform.class, this.getBoundingBox()).isEmpty();
         }
     }
 }

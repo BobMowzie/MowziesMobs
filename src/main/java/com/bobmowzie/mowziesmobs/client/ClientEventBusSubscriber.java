@@ -58,6 +58,7 @@ public class ClientEventBusSubscriber {
         EntityRenderers.register(EntityHandler.SUPER_NOVA.get(), RenderSuperNova::new);
         EntityRenderers.register(EntityHandler.FALLING_BLOCK.get(), RenderFallingBlock::new);
         EntityRenderers.register(EntityHandler.BLOCK_SWAPPER.get(), RenderNothing::new);
+        EntityRenderers.register(EntityHandler.BLOCK_SWAPPER_SCULPTOR.get(), RenderNothing::new);
         EntityRenderers.register(EntityHandler.CAMERA_SHAKE.get(), RenderNothing::new);
 //        EntityRenderers.register(EntityHandler.TEST_ENTITY.get(), RenderNothing::new);
 
