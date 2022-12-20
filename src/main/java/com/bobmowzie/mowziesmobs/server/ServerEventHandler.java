@@ -17,6 +17,7 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.*;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
+import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
@@ -309,6 +310,8 @@ public final class ServerEventHandler {
             }
 
             if (entity instanceof Player) {
+                cheatSculptor((Player) entity);
+
                 BlockState block = event.getPlacedBlock();
                 if (
                         block.getBlock() == Blocks.FIRE ||
@@ -341,6 +344,10 @@ public final class ServerEventHandler {
             if (event.getEmptyBucket().getItem() == Items.LAVA_BUCKET) {
                 aggroBarakoa(event.getPlayer());
             }
+
+            if (event.getEmptyBucket().getItem() == Items.WATER_BUCKET) {
+                cheatSculptor(event.getPlayer());
+            }
         }
     }
 
@@ -356,6 +363,8 @@ public final class ServerEventHandler {
             event.setCanceled(true);
             return;
         }
+
+        cheatSculptor(event.getPlayer());
 
         BlockState block = event.getState();
         if (block.getBlock() == Blocks.GOLD_BLOCK ||
@@ -722,6 +731,13 @@ public final class ServerEventHandler {
                     if (barakoa.canAttack(player)) barakoa.setMisbehavedPlayerId(player.getUUID());
                 }
             }
+        }
+    }
+
+    private void cheatSculptor(Player player) {
+        List<EntitySculptor> sculptors = player.level.getEntitiesOfClass(EntitySculptor.class, player.getBoundingBox().inflate(EntitySculptor.TEST_RADIUS, EntitySculptor.TEST_HEIGHT, EntitySculptor.TEST_RADIUS), EntitySculptor::isTesting);
+        for (EntitySculptor sculptor : sculptors) {
+            sculptor.playerCheated();
         }
     }
 }

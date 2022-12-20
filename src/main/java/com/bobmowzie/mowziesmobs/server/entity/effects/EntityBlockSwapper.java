@@ -308,7 +308,7 @@ public class EntityBlockSwapper extends Entity {
 
         @Override
         protected boolean canRestoreBlock() {
-            return tickCount > duration && level.getEntitiesOfClass(EntityBoulderPlatform.class, this.getBoundingBox()).isEmpty();
+            return tickCount > duration && level.getEntitiesOfClass(EntitySculptor.class, this.getBoundingBox(), EntitySculptor::isTesting).isEmpty();
         }
 
         @Override

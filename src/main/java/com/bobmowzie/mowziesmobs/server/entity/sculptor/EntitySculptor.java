@@ -25,6 +25,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -96,6 +98,26 @@ public class EntitySculptor extends MowzieGeckoEntity {
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1);
     }
 
+    @Override
+    public boolean causeFallDamage(float p_147187_, float p_147188_, DamageSource p_147189_) {
+        return false;
+    }
+
+    @Override
+    public boolean isPushedByFluid() {
+        return false;
+    }
+
+    @Override
+    public void push(double x, double y, double z) {
+        super.push(0, y, 0);
+    }
+
+    @Override
+    public boolean canBePushedByEntity(Entity entity) {
+        return false;
+    }
+
     public void setDesires(ItemStack stack) {
         getEntityData().set(DESIRES, stack);
     }
@@ -120,6 +142,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     @Override
     public void tick() {
+        setDeltaMovement(0, getDeltaMovement().y, 0);
         super.tick();
         if (testing && !level.isClientSide()) {
             if (testingPlayer == null) {
@@ -135,7 +158,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     private void checkIfPlayerCheats() {
         // Check if testing player is flying
-        if (testingPlayer.getAbilities().flying) playerCheated(testingPlayer);
+        if (testingPlayer.getAbilities().flying) playerCheated();
         if (!testingPlayer.isOnGround()) {
             double playerVelY = testingPlayer.getDeltaMovement().y();
             if (prevPlayerVelY != null && prevPlayerVelY.isPresent()) {
@@ -146,7 +169,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
                 else if (ticksAcceleratingUpward > 0) {
                     ticksAcceleratingUpward--;
                 }
-                if (ticksAcceleratingUpward > 5) playerCheated(testingPlayer);
+                if (ticksAcceleratingUpward > 5) playerCheated();
             }
             prevPlayerVelY = Optional.of(playerVelY);
         }
@@ -159,14 +182,14 @@ public class EntitySculptor extends MowzieGeckoEntity {
         Vec3 currPosition = testingPlayer.position();
         if (prevPlayerPosition != null && prevPlayerPosition.isPresent()) {
             if (currPosition.distanceTo(prevPlayerPosition.get()) > 3.0) {
-                playerCheated(testingPlayer);
+                playerCheated();
             }
         }
         prevPlayerPosition = Optional.of(currPosition);
     }
 
-    public void playerCheated(Player player) {
-        if (player == testingPlayer) {
+    public void playerCheated() {
+        if (isTesting() && testingPlayer != null) {
             sendAbilityMessage(END_TEST);
         }
     }
@@ -186,6 +209,10 @@ public class EntitySculptor extends MowzieGeckoEntity {
     public void setCustomer(Player customer) {
         setTrading(customer != null);
         this.customer = customer;
+    }
+
+    public boolean isTesting() {
+        return testing;
     }
 
     public void openGUI(Player playerEntity) {
@@ -326,20 +353,6 @@ public class EntitySculptor extends MowzieGeckoEntity {
         public void tick() {
             super.tick();
             if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
-                /*if (!getUser().getLevel().isClientSide()) {
-                    int k = getTicksInSection();
-                    if (k < TEST_HEIGHT + 3) {
-                        for (int i = -TEST_RADIUS; i < TEST_RADIUS; i++) {
-                            for (int j = -TEST_RADIUS; j < TEST_RADIUS; j++) {
-                                if (new Vec2(i, j).length() < TEST_RADIUS) {
-                                    BlockPos pos = getUser().blockPosition().east(i).north(j).above(k);
-                                    EntityBlockSwapper swapper = new EntityBlockSwapper.EntityBlockSwapperSculptor(EntityHandler.BLOCK_SWAPPER.get(), getUser().getLevel(), pos, Blocks.AIR.defaultBlockState(), 200, false, false);
-                                    getUser().getLevel().addFreshEntity(swapper);
-                                }
-                            }
-                        }
-                    }
-                }*/
                 if (getTicksInSection() == 0 && !getUser().getLevel().isClientSide()) {
                     EntityBlockSwapper.EntityBlockSwapperSculptor swapper = new EntityBlockSwapper.EntityBlockSwapperSculptor(EntityHandler.BLOCK_SWAPPER_SCULPTOR.get(), getUser().getLevel(), getUser().blockPosition(), Blocks.AIR.defaultBlockState(), 60, false, false);
                     getUser().getLevel().addFreshEntity(swapper);

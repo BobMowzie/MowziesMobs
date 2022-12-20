@@ -963,7 +963,8 @@ public class EntityBarako extends MowzieLLibraryEntity implements LeaderSunstrik
         return super.finalizeSpawn(world, difficulty, reason, livingData, compound);
     }
 
-    public boolean causeFallDamage(float distance, float damageMultiplier) {
+    @Override
+    public boolean causeFallDamage(float p_147187_, float p_147188_, DamageSource p_147189_) {
         return false;
     }
 
