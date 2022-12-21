@@ -1,16 +1,21 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects.geomancy;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
+import com.google.common.collect.Iterables;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import software.bernie.geckolib3.core.util.MathUtil;
 import software.bernie.shadowed.eliotlash.mclib.utils.MathHelper;
 
 import java.util.List;
@@ -26,12 +31,20 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
 
     protected boolean isMainPath = false;
 
+    protected boolean descending = false;
+
+    private boolean spawnedNextBoulders = false;
+
     public EntityBoulderPlatform(EntityType<? extends EntityBoulderBase> type, Level world) {
         super(type, world);
     }
 
     public EntityBoulderPlatform(EntityType<? extends EntityBoulderBase> type, Level world, LivingEntity caster, BlockState blockState, BlockPos pos, GeomancyTier tier) {
         super(type, world, caster, blockState, pos, tier);
+    }
+
+    public void descend() {
+        this.descending = true;
     }
 
     @Override
@@ -42,40 +55,65 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
     @Override
     public void tick() {
         super.tick();
-        if (tickTimer() == 1) {
+        if (sculptor == null || pillar == null) {
             if (caster instanceof EntitySculptor) {
                 sculptor = (EntitySculptor) caster;
                 pillar = sculptor.getPillar();
             }
         }
-        if (sculptor == null || sculptor.isRemoved() || pillar == null || pillar.isRemoved() || pillar.isFalling()) {
+        if (tickTimer() > 2 && hasSyncedCaster && (sculptor == null || sculptor.isRemoved() || pillar == null || pillar.isRemoved() || (pillar.isFalling() && !descending))) {
             explode();
             return;
         }
 
-        if (tickTimer() == 2 && !level.isClientSide()) {
+        if (tickTimer() >= 2 && !spawnedNextBoulders && hasSyncedCaster) {
             nextBoulders();
         }
 
         if (pillar != null && !level.isClientSide()) {
-            if (pillar.isRising() && pillar.getY() + pillar.getHeight() >= this.getY()) activate();
+            if (pillar.getY() + pillar.getHeight() >= this.getY()) activate();
+        }
+
+        if (descending) {
+            move(MoverType.SELF, new Vec3(0, -EntityPillar.RISING_SPEED, 0));
+            if (Iterables.size(level.getBlockCollisions(this, getBoundingBox().inflate(0.1))) > 0) {
+                discard();
+                return;
+            }
         }
     }
 
     public void nextBoulders() {
-        if (!isMainPath && random.nextFloat() > 0.75) return;
+        if (caster == null || sculptor == null || pillar == null) return;
+        spawnedNextBoulders = true;
+        if (level.isClientSide()) return;
 
-        int numNextBoulders = (int) (Math.pow(random.nextFloat(), 16) * 3) + 1;
+        // If it's not the main path, path has a random chance of ending. Chance is weighted by the number of live paths.
+        if (!isMainPath) {
+            if (random.nextFloat() < MathUtils.fit(sculptor.numLivePaths, 3, 7, 0.0, 0.4)) {
+                sculptor.numLivePaths--;
+                return;
+            }
+        }
+
+        // Path has a random chance of branching. Chance is weighted by the number of live paths.
+        int numNextBoulders = 1;
+        if (random.nextFloat() < MathUtils.fit(sculptor.numLivePaths, 1, 5, 0.2, 0.0)) {
+            numNextBoulders = 2;
+        }
+
         for (int i = 0; i < numNextBoulders; i++) {
-            nextSingleBoulder();
+            boolean success = nextSingleBoulder();
+            if (success && i > 0) sculptor.numLivePaths++;
         }
     }
 
-    public void nextSingleBoulder() {
+    public boolean nextSingleBoulder() {
         int whichTierIndex = (int) (Math.pow(random.nextFloat(), 2) * (GeomancyTier.values().length - 2) + 1);
         GeomancyTier nextTier = GeomancyTier.values()[whichTierIndex];
         EntityBoulderPlatform nextBoulder = new EntityBoulderPlatform(EntityHandler.BOULDER_PLATFORM.get(), getLevel(), caster, getBlock(), blockPosition(), nextTier);
 
+        // Try many times to find a good placement for the next boulder
         for (int j = 0; j < MAX_TRIES; j++) {
             Vec3 randomPos;
             if (getHeightFrac() < 1f) {
@@ -84,11 +122,14 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
             // If the platform is already at max height, next platform should move towards sculptor
             else if (position().multiply(1, 0, 1).distanceTo(sculptor.position().multiply(1, 0, 1)) > MAX_DIST_HORIZONTAL) {
                 randomPos = chooseTowardsSculptorLocation(nextBoulder);
-            } else return;
+            } else return false;
             nextBoulder.setPos(randomPos);
 
             // Make sure boulder has no collision, even with the future fully-grown pillar
-            if (level.noCollision(nextBoulder) && !pillar.getBoundingBox().setMaxY(pillar.getY() + EntitySculptor.TEST_HEIGHT).intersects(nextBoulder.getBoundingBox())) {
+            if (
+                    level.getEntitiesOfClass(EntityBoulderPlatform.class, nextBoulder.getBoundingBox(), (b) -> b != this).isEmpty()
+                    && !pillar.getBoundingBox().setMaxY(pillar.getY() + EntitySculptor.TEST_HEIGHT).intersects(nextBoulder.getBoundingBox())
+            ) {
                 // Check nearby boulders below to make sure this boulder doesn't block jumping path
                 AABB toCheck = nextBoulder.getBoundingBox().inflate(MAX_DIST_HORIZONTAL, MAX_DIST_VERTICAL / 2f + 1.5f, MAX_DIST_HORIZONTAL).move(0, -MAX_DIST_VERTICAL / 2f - 1.5f, 0);
                 List<EntityBoulderPlatform> platforms = level.getEntitiesOfClass(EntityBoulderPlatform.class, toCheck);
@@ -105,10 +146,13 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
                         this.nextBoulder = nextBoulder;
                         this.nextBoulder.setMainPath();
                     }
-                    return;
+                    return true;
                 }
             }
         }
+        // If the main path can't find a good placement, it needs to try again next tick. Branched paths can end.
+        if (isMainPath) spawnedNextBoulders = false;
+        return false;
     }
 
     protected Vec3 chooseRandomLocation(EntityBoulderPlatform nextBoulder) {
@@ -125,7 +169,8 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
         float maxRandomAngle = 180f - (float) (Math.min(Math.pow(3f, fromPillarPos.length() - EntitySculptor.TEST_RADIUS), 1f) * 90f);
         float randomAngle = random.nextFloat(minRandomAngle, maxRandomAngle);
         if (random.nextBoolean()) randomAngle *= -1;
-        randomAngle *= 1f - Math.pow(getHeightFrac(), 5f);
+        // random angle tends towards center as the platforms reach higher up
+        randomAngle *= 1f - Math.pow(getHeightFrac(), 5f) * 0.75;
         Vec3 offset = new Vec3(horizontalOffset, verticalOffset, 0);
         float finalAngle = (float) Math.toRadians(MathHelper.wrapDegrees(baseAngle + randomAngle));
         offset = offset.yRot(finalAngle);
@@ -151,10 +196,6 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
         offset = offset.yRot(finalAngle);
 
         return startLocation.add(offset);
-    }
-
-    protected Vec3 startLocation() {
-        return position();
     }
 
     public EntityBoulderPlatform getNextBoulder() {
@@ -206,5 +247,21 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
             }
         }
         return -1;
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
+        compound.putBoolean("SpawnedNext", spawnedNextBoulders);
+        compound.putBoolean("Descending", descending);
+        compound.putBoolean("MainPath", isMainPath);
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
+        spawnedNextBoulders = compound.getBoolean("SpawnedNext");
+        descending = compound.getBoolean("Descending");
+        isMainPath = compound.getBoolean("MainPath");
     }
 }

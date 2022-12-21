@@ -54,7 +54,6 @@ public final class GuiSculptorTrade extends AbstractContainerScreen<ContainerScu
 
     protected void actionPerformed(Button button) {
     	if (button == beginButton) {
-            updateButton();
             MowziesMobs.NETWORK.sendToServer(new MessageSculptorTrade(sculptor));
     	}
     }

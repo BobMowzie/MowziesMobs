@@ -12,4 +12,10 @@ public final class MathUtils {
         x = x < domainMin ? domainMin : x > domainMax ? domainMax : x;
         return (rangeMax - rangeMin) * (x - domainMin) / (domainMax - domainMin) + rangeMin;
     }
+
+    public static double fit(double pct, double lbound, double hbound, double start, double end) {
+        double npct = (pct - lbound) / (hbound - lbound);
+        npct = Math.max(Math.min(1, npct), 0);
+        return start + npct * (end - start);
+    }
 }

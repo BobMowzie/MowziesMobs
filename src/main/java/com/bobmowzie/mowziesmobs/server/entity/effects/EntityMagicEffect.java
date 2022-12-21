@@ -1,10 +1,15 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.entity.ILinkedEntity;
+import com.bobmowzie.mowziesmobs.server.message.MessageInterruptAbility;
+import com.bobmowzie.mowziesmobs.server.message.MessageLinkEntities;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,15 +20,20 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PacketDistributor;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Created by BobMowzie on 9/2/2018.
  */
-public abstract class EntityMagicEffect extends Entity {
+public abstract class EntityMagicEffect extends Entity implements ILinkedEntity {
     public LivingEntity caster;
-    private static final EntityDataAccessor<Integer> CASTER = SynchedEntityData.defineId(EntityMagicEffect.class, EntityDataSerializers.INT);
+    protected boolean hasSyncedCaster = false;
+    private static final EntityDataAccessor<Optional<UUID>> CASTER = SynchedEntityData.defineId(EntityMagicEffect.class, EntityDataSerializers.OPTIONAL_UUID);
 
     public EntityMagicEffect(EntityType<? extends EntityMagicEffect> type, Level worldIn) {
         super(type, worldIn);
@@ -32,7 +42,7 @@ public abstract class EntityMagicEffect extends Entity {
     public EntityMagicEffect(EntityType<? extends EntityMagicEffect> type, Level world, LivingEntity caster) {
         super(type, world);
         if (!world.isClientSide && caster != null) {
-            this.setCasterID(caster.getId());
+            this.setCasterID(caster.getUUID());
         }
     }
 
@@ -43,15 +53,15 @@ public abstract class EntityMagicEffect extends Entity {
 
     @Override
     protected void defineSynchedData() {
-        getEntityData().define(CASTER, -1);
+        getEntityData().define(CASTER, Optional.empty());
     }
 
-    public int getCasterID() {
+    public Optional<UUID> getCasterID() {
         return getEntityData().get(CASTER);
     }
 
-    public void setCasterID(int id) {
-        getEntityData().set(CASTER, id);
+    public void setCasterID(UUID id) {
+        getEntityData().set(CASTER, Optional.of(id));
     }
 
     @Override
@@ -66,12 +76,22 @@ public abstract class EntityMagicEffect extends Entity {
     @Override
     public void tick() {
         super.tick();
-        if (tickCount == 1) {
-            Entity casterEntity = level.getEntity(getCasterID());
+        if (!level.isClientSide() && getCasterID().isPresent() && caster == null) {
+            Entity casterEntity = ((ServerLevel)this.level).getEntity(getCasterID().get());
             if (casterEntity instanceof LivingEntity) {
-                caster = (LivingEntity) level.getEntity(getCasterID());
+                caster = (LivingEntity) casterEntity;
+                MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> this), new MessageLinkEntities(this, caster));
             }
+            hasSyncedCaster = true;
         }
+    }
+
+    @Override
+    public void link(Entity entity) {
+        if (entity instanceof LivingEntity) {
+            caster = (LivingEntity) entity;
+        }
+        hasSyncedCaster = true;
     }
 
     @Override
@@ -81,12 +101,14 @@ public abstract class EntityMagicEffect extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
-        setCasterID(compound.getInt("caster"));
+        setCasterID(compound.getUUID("caster"));
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
-        compound.putInt("caster", getCasterID());
+        if (getCasterID().isPresent()) {
+            compound.putUUID("caster", getCasterID().get());
+        }
     }
 
     public List<LivingEntity> getEntityLivingBaseNearby(double radius) {

@@ -227,7 +227,7 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements IA
         super.addAdditionalSaveData(compound);
         BlockState blockState = getBlock();
         if (blockState != null) compound.put("block", NbtUtils.writeBlockState(blockState));
-        compound.putInt("deathTime", getDeathTime());
+        if (doRemoveTimer()) compound.putInt("deathTime", getDeathTime());
         compound.putInt("tier", getTier().ordinal());
     }
 
@@ -239,7 +239,13 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements IA
             BlockState blockState = NbtUtils.readBlockState((CompoundTag) blockStateCompound);
             setBlock(blockState);
         }
-        setDeathTime(compound.getInt("deathTime"));
+        if (compound.contains("deathTime")) {
+            doRemoveTimer = true;
+            setDeathTime(compound.getInt("deathTime"));
+        }
+        else {
+            doRemoveTimer = false;
+        }
         setTier(GeomancyTier.values()[compound.getInt("tier")]);
     }
 

@@ -71,7 +71,7 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
 
     @Override
     public void tick() {
-        if (tickCount > 10) activate();
+        if (tickCount == 1) activate();
         super.tick();
         if (ridingEntities != null) ridingEntities.clear();
         List<Entity> onTopOfEntities = level.getEntities(this, getBoundingBox().contract(0, getBbHeight() - 1, 0).move(new Vec3(0, getBbHeight() - 0.5, 0)).inflate(0.6,0.5,0.6));

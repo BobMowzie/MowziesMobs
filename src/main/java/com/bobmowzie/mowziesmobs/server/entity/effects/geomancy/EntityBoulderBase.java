@@ -9,6 +9,7 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -176,5 +177,11 @@ public class EntityBoulderBase extends EntityGeomancyBase {
         if (active) {
             risingTick++;
         }
+    }
+
+    @Override
+    protected void explode() {
+        if (active) super.explode();
+        else discard();
     }
 }

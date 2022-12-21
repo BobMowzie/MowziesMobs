@@ -24,7 +24,7 @@ public class EntityPillar extends EntityGeomancyBase {
     private static final EntityDataAccessor<Float> HEIGHT = SynchedEntityData.defineId(EntityPillar.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Boolean> RISING = SynchedEntityData.defineId(EntityPillar.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> FALLING = SynchedEntityData.defineId(EntityPillar.class, EntityDataSerializers.BOOLEAN);
-    private static final float RISING_SPEED = 0.25f;
+    public static final float RISING_SPEED = 0.25f;
 
     public float prevPrevHeight = 0;
     public float prevHeight = 0;
@@ -66,6 +66,10 @@ public class EntityPillar extends EntityGeomancyBase {
 
     @Override
     public void tick() {
+        if (caster instanceof EntitySculptor) {
+            EntitySculptor sculptor = (EntitySculptor)caster;
+            if (sculptor.getPillar() == null) sculptor.setPillar(this);
+        }
         prevPrevHeight = prevHeight;
         prevHeight = getHeight();
 
@@ -115,7 +119,7 @@ public class EntityPillar extends EntityGeomancyBase {
             }
         }
         super.tick();
-        if (caster == null || caster.isRemoved()) explode();
+        if (hasSyncedCaster && (caster == null || caster.isRemoved())) explode();
     }
 
     @Override
@@ -165,13 +169,16 @@ public class EntityPillar extends EntityGeomancyBase {
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         compound.putFloat("height", getHeight());
+        compound.putBoolean("rising", isRising());
+        compound.putBoolean("falling", isFalling());
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
         setHeight(compound.getFloat("height"));
-        stopRising();
+        getEntityData().set(RISING, compound.getBoolean("rising"));
+        getEntityData().set(FALLING, compound.getBoolean("falling"));
     }
 
     @Override

@@ -43,4 +43,9 @@ public final class ContainerSculptorTrade extends ContainerTradeBase {
     public InventorySculptor getInventorySculptor() {
         return inventorySculptor;
     }
+
+    @Override
+    public boolean stillValid(Player player) {
+        return super.stillValid(player) && !sculptor.isTesting();
+    }
 }

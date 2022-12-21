@@ -14,9 +14,11 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderPla
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityGeomancyBase;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityPillar;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerSculptorTrade;
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -43,14 +45,15 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.event.CustomInstructionKeyframeEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public class EntitySculptor extends MowzieGeckoEntity {
     public static int TEST_HEIGHT = 40;
@@ -58,9 +61,11 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     public static final AbilityType<EntitySculptor, StartTestAbility> START_TEST = new AbilityType<>("testStart", StartTestAbility::new);
     public static final AbilityType<EntitySculptor, EndTestAbility> END_TEST = new AbilityType<>("testEnd", EndTestAbility::new);
+    public static final AbilityType<EntitySculptor, PassTestAbility> PASS_TEST = new AbilityType<>("testPass", PassTestAbility::new);
 
     private static final EntityDataAccessor<ItemStack> DESIRES = SynchedEntityData.defineId(EntitySculptor.class, EntityDataSerializers.ITEM_STACK);
     private static final EntityDataAccessor<Boolean> IS_TRADING = SynchedEntityData.defineId(EntitySculptor.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Optional<UUID>> TESTING_PLAYER = SynchedEntityData.defineId(EntitySculptor.class, EntityDataSerializers.OPTIONAL_UUID);
 
     public boolean handLOpen = true;
     public boolean handROpen = true;
@@ -72,6 +77,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
     private boolean testing;
 
     private EntityPillar pillar;
+    public int numLivePaths = 0;
 
     public EntitySculptor(EntityType<? extends MowzieEntity> type, Level world) {
         super(type, world);
@@ -90,6 +96,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
         Item tradeItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(ConfigHandler.COMMON.MOBS.BARAKO.whichItem.get()));
         getEntityData().define(DESIRES, new ItemStack(tradeItem, ConfigHandler.COMMON.MOBS.BARAKO.howMany.get()));
         getEntityData().define(IS_TRADING, false);
+        getEntityData().define(TESTING_PLAYER, Optional.empty());
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -144,6 +151,17 @@ public class EntitySculptor extends MowzieGeckoEntity {
     public void tick() {
         setDeltaMovement(0, getDeltaMovement().y, 0);
         super.tick();
+        if (testingPlayer == null && getTestingPlayerID().isPresent()) {
+            testingPlayer = level.getPlayerByUUID(getTestingPlayerID().get());
+        }
+
+        if (testingPlayer != null) {
+            getLookControl().setLookAt(testingPlayer);
+        }
+        else if (customer != null) {
+            getLookControl().setLookAt(customer);
+        }
+
         if (testing && !level.isClientSide()) {
             if (testingPlayer == null) {
                 sendAbilityMessage(END_TEST);
@@ -157,9 +175,10 @@ public class EntitySculptor extends MowzieGeckoEntity {
     }
 
     private void checkIfPlayerCheats() {
+        if (isTesting() && testingPlayer == null) return;
         // Check if testing player is flying
         if (testingPlayer.getAbilities().flying) playerCheated();
-        if (!testingPlayer.isOnGround()) {
+        if (testingPlayer != null && !testingPlayer.isOnGround()) {
             double playerVelY = testingPlayer.getDeltaMovement().y();
             if (prevPlayerVelY != null && prevPlayerVelY.isPresent()) {
                 double acceleration = playerVelY - prevPlayerVelY.get();
@@ -179,13 +198,15 @@ public class EntitySculptor extends MowzieGeckoEntity {
         }
 
         // Check if testing player teleported
-        Vec3 currPosition = testingPlayer.position();
-        if (prevPlayerPosition != null && prevPlayerPosition.isPresent()) {
-            if (currPosition.distanceTo(prevPlayerPosition.get()) > 3.0) {
-                playerCheated();
+        if (testingPlayer != null) {
+            Vec3 currPosition = testingPlayer.position();
+            if (prevPlayerPosition != null && prevPlayerPosition.isPresent()) {
+                if (currPosition.distanceTo(prevPlayerPosition.get()) > 3.0) {
+                    playerCheated();
+                }
             }
+            prevPlayerPosition = Optional.of(currPosition);
         }
-        prevPlayerPosition = Optional.of(currPosition);
     }
 
     public void playerCheated() {
@@ -215,6 +236,20 @@ public class EntitySculptor extends MowzieGeckoEntity {
         return testing;
     }
 
+    public Optional<UUID> getTestingPlayerID() {
+        return getEntityData().get(TESTING_PLAYER);
+    }
+
+    public void setTestingPlayerID(UUID playerID) {
+        if (playerID == null) getEntityData().set(TESTING_PLAYER, Optional.empty());
+        else getEntityData().set(TESTING_PLAYER, Optional.of(playerID));
+    }
+
+    public void setTestingPlayer(Player testingPlayer) {
+        this.testingPlayer = testingPlayer;
+        setTestingPlayerID(testingPlayer == null ? null : testingPlayer.getUUID());
+    }
+
     public void openGUI(Player playerEntity) {
         setCustomer(playerEntity);
         MowziesMobs.PROXY.setReferencedMob(this);
@@ -235,9 +270,14 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     @Override
     protected InteractionResult mobInteract(Player player, InteractionHand hand) {
-        if (canTradeWith(player) && getTarget() == null && isAlive()) {
-            openGUI(player);
-            return InteractionResult.SUCCESS;
+        if (isTesting()) {
+            if (player == testingPlayer) sendAbilityMessage(PASS_TEST);
+        }
+        else {
+            if (canTradeWith(player) && getTarget() == null && isAlive()) {
+                openGUI(player);
+                return InteractionResult.SUCCESS;
+            }
         }
         return InteractionResult.PASS;
     }
@@ -256,6 +296,10 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     public EntityPillar getPillar() {
         return pillar;
+    }
+
+    public void setPillar(EntityPillar pillar) {
+        this.pillar = pillar;
     }
 
     private <ENTITY extends IAnimatable> void instructionListener(CustomInstructionKeyframeEvent<ENTITY> event) {
@@ -281,7 +325,26 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     @Override
     public AbilityType<?, ?>[] getAbilities() {
-        return new AbilityType[] {START_TEST, END_TEST};
+        return new AbilityType[] {START_TEST, END_TEST, PASS_TEST};
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
+        if (testingPlayer != null && getTestingPlayerID().isPresent()) {
+            compound.putUUID("TestingPlayer", getTestingPlayerID().get());
+            compound.putInt("NumLivePaths", numLivePaths);
+        }
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
+        if (compound.contains("TestingPlayer")) {
+            testing = true;
+            setTestingPlayerID(compound.getUUID("TestingPlayer"));
+            numLivePaths = compound.getInt("NumLivePaths");
+        }
     }
 
     public static class StartTestAbility extends Ability<EntitySculptor> {
@@ -289,12 +352,11 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
         private BlockPos spawnPillarPos;
         private BlockState spawnPillarBlock;
-        private EntityPillar pillar;
 
         public StartTestAbility(AbilityType<EntitySculptor, StartTestAbility> abilityType, EntitySculptor user) {
             super(abilityType, user, new AbilitySection[] {
                     new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 18),
-                    new AbilitySection.AbilitySectionInfinite(AbilitySection.AbilitySectionType.ACTIVE)
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.ACTIVE, (int) (TEST_HEIGHT / EntityPillar.RISING_SPEED))
             });
         }
 
@@ -321,43 +383,59 @@ public class EntitySculptor extends MowzieGeckoEntity {
             super.start();
             playAnimation("testStart", false);
             getUser().testing = true;
-            getUser().testingPlayer = getUser().getCustomer();
+            getUser().setTestingPlayer(getUser().getCustomer());
         }
 
         @Override
         protected void beginSection(AbilitySection section) {
             super.beginSection(section);
             if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE && spawnPillarPos != null) {
-                if (spawnPillarBlock == null || !EffectGeomancy.isBlockDiggable(spawnPillarBlock)) spawnPillarBlock = Blocks.STONE.defaultBlockState();
-                pillar = new EntityPillar(EntityHandler.PILLAR.get(), getUser().level, getUser(), Blocks.STONE.defaultBlockState(), spawnPillarPos);
-                pillar.setTier(EntityGeomancyBase.GeomancyTier.SMALL);
-                pillar.setPos(spawnPillarPos.getX() + 0.5F, spawnPillarPos.getY() + 1, spawnPillarPos.getZ() + 0.5F);
-                pillar.setDoRemoveTimer(false);
-                if (pillar.checkCanSpawn()) {
-                    getUser().level.addFreshEntity(pillar);
+                if (!getUser().getLevel().isClientSide()) {
+                    EntityBlockSwapper.EntityBlockSwapperSculptor swapper = new EntityBlockSwapper.EntityBlockSwapperSculptor(EntityHandler.BLOCK_SWAPPER_SCULPTOR.get(), getUser().getLevel(), getUser().blockPosition(), Blocks.AIR.defaultBlockState(), 60, false, false);
+                    getUser().getLevel().addFreshEntity(swapper);
                 }
-                getUser().pillar = pillar;
 
-                int numStartBoulders = rand.nextInt(2, 4);
+                if (spawnPillarBlock == null || !EffectGeomancy.isBlockDiggable(spawnPillarBlock)) spawnPillarBlock = Blocks.STONE.defaultBlockState();
+                getUser().pillar = new EntityPillar(EntityHandler.PILLAR.get(), getUser().level, getUser(), Blocks.STONE.defaultBlockState(), spawnPillarPos);
+                getUser().pillar.setTier(EntityGeomancyBase.GeomancyTier.SMALL);
+                getUser().pillar.setPos(spawnPillarPos.getX() + 0.5F, spawnPillarPos.getY() + 1, spawnPillarPos.getZ() + 0.5F);
+                getUser().pillar.setDoRemoveTimer(false);
+                if (getUser().pillar.checkCanSpawn()) {
+                    getUser().level.addFreshEntity(getUser().pillar);
+                }
+
+                int numStartBoulders = rand.nextInt(2, 5);
+                float angleOffset = rand.nextFloat((float) (2f * Math.PI));
                 for (int i = 0; i < numStartBoulders; i++) {
-                    Vec3 spawnBoulderPos = pillar.position().add(new Vec3(rand.nextFloat(5, 10), 0, 0).yRot(rand.nextFloat((float) (2f * Math.PI))));
+                    float angleInc = (float) (2f * Math.PI) / ((float) numStartBoulders * 2f);
+                    float angle = angleOffset + angleInc * (i * 2) + rand.nextFloat(angleInc);
+                    Vec3 spawnBoulderPos = getUser().pillar.position().add(new Vec3(rand.nextFloat(5, 10), 0, 0).yRot(angle));
                     EntityBoulderPlatform boulderPlatform = new EntityBoulderPlatform(EntityHandler.BOULDER_PLATFORM.get(), getUser().getLevel(), getUser(), Blocks.STONE.defaultBlockState(), BlockPos.ZERO, EntityGeomancyBase.GeomancyTier.MEDIUM);
                     boulderPlatform.setPos(spawnBoulderPos.add(0, 1, 0));
-                    boulderPlatform.setMainPath();
+                    if (i == 0) boulderPlatform.setMainPath();
                     getUser().getLevel().addFreshEntity(boulderPlatform);
                 }
+                getUser().numLivePaths = numStartBoulders;
             }
         }
 
         @Override
-        public void tick() {
-            super.tick();
+        public void tickUsing() {
+            super.tickUsing();
             if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
-                if (getTicksInSection() == 0 && !getUser().getLevel().isClientSide()) {
-                    EntityBlockSwapper.EntityBlockSwapperSculptor swapper = new EntityBlockSwapper.EntityBlockSwapperSculptor(EntityHandler.BLOCK_SWAPPER_SCULPTOR.get(), getUser().getLevel(), getUser().blockPosition(), Blocks.AIR.defaultBlockState(), 60, false, false);
-                    getUser().getLevel().addFreshEntity(swapper);
+                List<Player> players = getUser().getPlayersNearby(5, 5, 5, 5);
+                for (Player player : players) {
+                    Vec3 userPos = getUser().position().multiply(1, 0, 1);
+                    Vec3 playerPos = player.position().multiply(1, 0, 1);
+                    Vec3 vec = userPos.subtract(playerPos).normalize().scale(-Math.min(1.0 / userPos.distanceToSqr(playerPos), 2));
+                    player.push(vec.x, vec.y, vec.z);
                 }
-                if (pillar != null && pillar.getHeight() > TEST_HEIGHT) {
+
+                if (!getUser().getLevel().isClientSide() && getUser().pillar != null) {
+                    getUser().setPos(getUser().pillar.position().add(0, getUser().pillar.getHeight(), 0));
+                }
+
+                if (getUser().pillar != null && getUser().pillar.getHeight() > TEST_HEIGHT) {
                     nextSection();
                 }
             }
@@ -366,13 +444,14 @@ public class EntitySculptor extends MowzieGeckoEntity {
         @Override
         public void end() {
             super.end();
-            if (pillar != null) pillar.stopRising();
+            if (getUser().pillar != null) getUser().pillar.stopRising();
+            getUser().numLivePaths = 0;
         }
     }
 
     public static class EndTestAbility extends Ability<EntitySculptor> {
 
-        public EndTestAbility(AbilityType<EntitySculptor, EndTestAbility> abilityType, EntitySculptor user) {
+        public EndTestAbility(AbilityType<EntitySculptor, ? extends EndTestAbility> abilityType, EntitySculptor user) {
             super(abilityType, user, new AbilitySection[] {
                     new AbilitySection.AbilitySectionInfinite(AbilitySection.AbilitySectionType.ACTIVE),
                     new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 20)
@@ -392,9 +471,12 @@ public class EntitySculptor extends MowzieGeckoEntity {
         }
 
         @Override
-        public void tick() {
-            super.tick();
+        public void tickUsing() {
+            super.tickUsing();
             if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
+                if (!getUser().getLevel().isClientSide() && getUser().pillar != null) {
+                    getUser().setPos(getUser().pillar.position().add(0, getUser().pillar.getHeight(), 0));
+                }
                 if (getUser().pillar == null || getUser().pillar.isRemoved()) nextSection();
             }
         }
@@ -404,9 +486,43 @@ public class EntitySculptor extends MowzieGeckoEntity {
             super.end();
             if (getUser() != null) {
                 getUser().pillar = null;
-                getUser().testingPlayer = null;
+                getUser().setTestingPlayer(null);
                 getUser().testing = false;
+                getUser().numLivePaths = 0;
             }
+        }
+
+        @Override
+        public boolean canCancelActiveAbility() {
+            return true;
+        }
+    }
+
+    public static class PassTestAbility extends EndTestAbility {
+
+        public PassTestAbility(AbilityType<EntitySculptor, PassTestAbility> abilityType, EntitySculptor user) {
+            super(abilityType, user);
+        }
+
+        @Override
+        public void start() {
+            if (getUser().testingPlayer != null) {
+                List<EntityBoulderPlatform> platforms = getUser().getLevel().getEntitiesOfClass(EntityBoulderPlatform.class, getUser().testingPlayer.getBoundingBox().expandTowards(0, -6, 0));
+                EntityBoulderPlatform platformBelowPlayer = platforms.get(0);
+                platformBelowPlayer.descend();
+            }
+            super.start();
+        }
+
+        @Override
+        public void end() {
+            super.end();
+            getUser().spawnAtLocation(ItemHandler.EARTHBORE_GAUNTLET.getDefaultInstance());
+        }
+
+        @Override
+        public boolean canCancelActiveAbility() {
+            return false;
         }
     }
 }
