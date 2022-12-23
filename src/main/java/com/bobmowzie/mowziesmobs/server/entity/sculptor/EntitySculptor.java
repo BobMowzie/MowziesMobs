@@ -56,8 +56,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class EntitySculptor extends MowzieGeckoEntity {
-    public static int TEST_HEIGHT = 40;
+    public static int TEST_HEIGHT = 50;
+    public static int TEST_RADIUS_BOTTOM = 6;
     public static int TEST_RADIUS = 16;
+    public static int TEST_MAX_RADIUS_HEIGHT = 10;
+    public static double TEST_RADIUS_FALLOFF = 5;
 
     public static final AbilityType<EntitySculptor, StartTestAbility> START_TEST = new AbilityType<>("testStart", StartTestAbility::new);
     public static final AbilityType<EntitySculptor, EndTestAbility> END_TEST = new AbilityType<>("testEnd", EndTestAbility::new);
@@ -175,9 +178,14 @@ public class EntitySculptor extends MowzieGeckoEntity {
     }
 
     private void checkIfPlayerCheats() {
-        if (isTesting() && testingPlayer == null) return;
+        if (!isTesting() || testingPlayer == null) return;
+
+        // Check if player moved too far away
+        if (testingPlayer != null && testingPlayer.position().multiply(1, 0, 1).distanceTo(position().multiply(1, 0, 1)) > TEST_RADIUS + 3) playerCheated();
+        if (testingPlayer != null && pillar != null && testingPlayer.getY() < pillar.getY() - 10) playerCheated();
+
         // Check if testing player is flying
-        if (testingPlayer.getAbilities().flying) playerCheated();
+        if (testingPlayer != null && testingPlayer.getAbilities().flying) playerCheated();
         if (testingPlayer != null && !testingPlayer.isOnGround()) {
             double playerVelY = testingPlayer.getDeltaMovement().y();
             if (prevPlayerVelY != null && prevPlayerVelY.isPresent()) {
@@ -213,6 +221,10 @@ public class EntitySculptor extends MowzieGeckoEntity {
         if (isTesting() && testingPlayer != null) {
             sendAbilityMessage(END_TEST);
         }
+    }
+
+    public static double testRadiusAtHeight(double height) {
+        return TEST_RADIUS_BOTTOM + Math.pow(Math.min(height / (double) TEST_MAX_RADIUS_HEIGHT, 1), TEST_RADIUS_FALLOFF) * (TEST_RADIUS - TEST_RADIUS_BOTTOM);
     }
 
     public void setTrading(boolean trading) {
@@ -409,7 +421,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
                 for (int i = 0; i < numStartBoulders; i++) {
                     float angleInc = (float) (2f * Math.PI) / ((float) numStartBoulders * 2f);
                     float angle = angleOffset + angleInc * (i * 2) + rand.nextFloat(angleInc);
-                    Vec3 spawnBoulderPos = getUser().pillar.position().add(new Vec3(rand.nextFloat(5, 10), 0, 0).yRot(angle));
+                    Vec3 spawnBoulderPos = getUser().pillar.position().add(new Vec3(rand.nextFloat(3, 6), 0, 0).yRot(angle));
                     EntityBoulderPlatform boulderPlatform = new EntityBoulderPlatform(EntityHandler.BOULDER_PLATFORM.get(), getUser().getLevel(), getUser(), Blocks.STONE.defaultBlockState(), BlockPos.ZERO, EntityGeomancyBase.GeomancyTier.MEDIUM);
                     boulderPlatform.setPos(spawnBoulderPos.add(0, 1, 0));
                     if (i == 0) boulderPlatform.setMainPath();

@@ -128,6 +128,7 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
             // Make sure boulder has no collision, even with the future fully-grown pillar
             if (
                     level.getEntitiesOfClass(EntityBoulderPlatform.class, nextBoulder.getBoundingBox(), (b) -> b != this).isEmpty()
+                    && Iterables.size(level.getBlockCollisions(nextBoulder, nextBoulder.getBoundingBox())) == 0
                     && !pillar.getBoundingBox().setMaxY(pillar.getY() + EntitySculptor.TEST_HEIGHT).intersects(nextBoulder.getBoundingBox())
             ) {
                 // Check nearby boulders below to make sure this boulder doesn't block jumping path
@@ -166,7 +167,8 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
         float baseAngle = (float) -Math.toDegrees(Math.atan2(fromPillarPos.y, fromPillarPos.x));
         // Minimum and maximum angles force the angle to approach 90 degrees as it gets too close or too far from the pillar
         float minRandomAngle = (float) (Math.min(Math.pow(3f, -fromPillarPos.length() + 3), 1f) * 90f);
-        float maxRandomAngle = 180f - (float) (Math.min(Math.pow(3f, fromPillarPos.length() - EntitySculptor.TEST_RADIUS), 1f) * 90f);
+        double radius = EntitySculptor.testRadiusAtHeight(startLocation.y + verticalOffset + nextDims.height - pillar.getY());
+        float maxRandomAngle = 180f - (float) (Math.min(Math.pow(3f, fromPillarPos.length() - radius), 1f) * 90f);
         float randomAngle = random.nextFloat(minRandomAngle, maxRandomAngle);
         if (random.nextBoolean()) randomAngle *= -1;
         // random angle tends towards center as the platforms reach higher up

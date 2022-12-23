@@ -213,8 +213,9 @@ public class EntityBlockSwapper extends Entity {
                 for (int k = 0; k < height; k++) {
                     for (int i = -radius; i < radius; i++) {
                         for (int j = -radius; j < radius; j++) {
-                            if (new Vec2(i, j).length() < radius) {
-                                BlockPos thisPos = pos.offset(i, k, j);
+                            BlockPos thisPos = pos.offset(i, k, j);
+                            if (isBlockPosInsideSwapper(thisPos)) {
+                                if (world.getBlockState(thisPos).getBlock() == Blocks.BEDROCK) continue;
                                 origStates[k][i + radius][j + radius] = world.getBlockState(thisPos);
                                 if (breakParticlesStart) world.destroyBlock(thisPos, false);
                                 world.setBlock(thisPos, newBlock, 19);
@@ -245,7 +246,7 @@ public class EntityBlockSwapper extends Entity {
 
         @Override
         public boolean isBlockPosInsideSwapper(BlockPos pos) {
-            return new Vec2(pos.getX() - this.getStorePos().getX(), pos.getZ() - this.getStorePos().getZ()).length() < radius && getBoundingBox().contains(new Vec3(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5));
+            return new Vec2(pos.getX() - this.getStorePos().getX(), pos.getZ() - this.getStorePos().getZ()).length() < EntitySculptor.testRadiusAtHeight(pos.getY() - getY()) && getBoundingBox().contains(new Vec3(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5));
         }
 
         public void setOrigBlockAtLocation(BlockPos pos, BlockState state) {
@@ -279,9 +280,9 @@ public class EntityBlockSwapper extends Entity {
                 for (int k = 0; k < height; k++) {
                     for (int i = -radius; i < radius; i++) {
                         for (int j = -radius; j < radius; j++) {
-                            if (new Vec2(i, j).length() < radius) {
-                                if (!level.isClientSide) {
-                                    BlockPos thisPos = getStorePos().offset(i, k, j);
+                            if (!level.isClientSide) {
+                                BlockPos thisPos = getStorePos().offset(i, k, j);
+                                if (isBlockPosInsideSwapper(thisPos)) {
                                     boolean canReplace = true;
                                     for (EntityBlockSwapper swapper : swappers) {
                                         if (swapper == this) continue;

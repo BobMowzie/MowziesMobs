@@ -735,7 +735,7 @@ public final class ServerEventHandler {
     }
 
     private void cheatSculptor(Player player) {
-        List<EntitySculptor> sculptors = player.level.getEntitiesOfClass(EntitySculptor.class, player.getBoundingBox().inflate(EntitySculptor.TEST_RADIUS, EntitySculptor.TEST_HEIGHT, EntitySculptor.TEST_RADIUS), EntitySculptor::isTesting);
+        List<EntitySculptor> sculptors = player.level.getEntitiesOfClass(EntitySculptor.class, player.getBoundingBox().inflate(EntitySculptor.TEST_RADIUS + 3, EntitySculptor.TEST_HEIGHT, EntitySculptor.TEST_RADIUS + 3), EntitySculptor::isTesting);
         for (EntitySculptor sculptor : sculptors) {
             sculptor.playerCheated();
         }

@@ -66,9 +66,11 @@ jar {
 
 repositories {
     maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+    maven { url "https://www.cursemaven.com" }
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:1.18.2-40.1.73"
     implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.18:3.0.56')
+    implementation fg.deobf("curse.maven:worldedit-225608:3697298")
 }
