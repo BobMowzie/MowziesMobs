@@ -20,7 +20,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 
-public class WroughtnautChamberStructure extends MowzieStructure {
+public class WroughtnautChamberStructure extends MowzieStructure<NoneFeatureConfiguration> {
     public WroughtnautChamberStructure(Codec<NoneFeatureConfiguration> codec) {
         super(codec, ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig, ConfiguredFeatureHandler.FERROUS_WROUGHTNAUT_BIOMES, WroughtnautChamberStructure::generatePieces, false, false, true);
     }

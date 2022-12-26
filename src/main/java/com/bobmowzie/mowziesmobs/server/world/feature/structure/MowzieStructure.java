@@ -19,6 +19,7 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.JigsawConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.structure.PostPlacementProcessor;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
@@ -29,16 +30,21 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public abstract class MowzieStructure extends StructureFeature<NoneFeatureConfiguration> {
+public abstract class MowzieStructure<C extends FeatureConfiguration> extends StructureFeature<C> {
     private final ConfigHandler.GenerationConfig config;
 
-    public MowzieStructure(Codec<NoneFeatureConfiguration> codec, ConfigHandler.GenerationConfig config, Set<ResourceLocation> allowedBiomes, PieceGenerator<NoneFeatureConfiguration> generator, boolean doCheckHeight, boolean doAvoidWater, boolean doAvoidStructures) {
+    public MowzieStructure(Codec<C> codec, ConfigHandler.GenerationConfig config, Set<ResourceLocation> allowedBiomes, PieceGenerator<C> generator, boolean doCheckHeight, boolean doAvoidWater, boolean doAvoidStructures) {
         super(codec, PieceGeneratorSupplier.simple((c) -> MowzieStructure.checkLocation(c, config, allowedBiomes, doCheckHeight, doAvoidWater, doAvoidStructures), generator), PostPlacementProcessor.NONE);
         this.config = config;
     }
 
-    public MowzieStructure(Codec<NoneFeatureConfiguration> codec, ConfigHandler.GenerationConfig config, Set<ResourceLocation> allowedBiomes, PieceGenerator<NoneFeatureConfiguration> generator) {
+    public MowzieStructure(Codec<C> codec, ConfigHandler.GenerationConfig config, Set<ResourceLocation> allowedBiomes, PieceGenerator<C> generator) {
         this(codec, config, allowedBiomes, generator, true, true, true);
+    }
+
+    public MowzieStructure(Codec<C> codec, ConfigHandler.GenerationConfig config, PieceGeneratorSupplier<C> generatorSupplier) {
+        super(codec, generatorSupplier);
+        this.config = config;
     }
 
     protected static <C extends FeatureConfiguration> boolean checkLocation(PieceGeneratorSupplier.Context<C> context, ConfigHandler.GenerationConfig config, Set<ResourceLocation> allowedBiomes, boolean checkHeight, boolean avoidWater, boolean avoidStructures) {

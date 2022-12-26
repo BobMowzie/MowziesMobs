@@ -21,7 +21,7 @@ import java.util.Arrays;
 
 // Edited from Telepathic Grunt's base code
 
-public class BarakoaVillageStructure extends MowzieStructure {
+public class BarakoaVillageStructure extends MowzieStructure<NoneFeatureConfiguration> {
     public BarakoaVillageStructure(Codec<NoneFeatureConfiguration> codec) {
         super(codec, ConfigHandler.COMMON.MOBS.BARAKO.generationConfig, ConfiguredFeatureHandler.BARAKO_BIOMES, BarakoaVillageStructure::generatePieces);
     }

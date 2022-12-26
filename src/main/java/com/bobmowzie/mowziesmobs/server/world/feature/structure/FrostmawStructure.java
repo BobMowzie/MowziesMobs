@@ -11,7 +11,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 
-public class FrostmawStructure extends MowzieStructure {
+public class FrostmawStructure extends MowzieStructure<NoneFeatureConfiguration> {
     public FrostmawStructure(Codec<NoneFeatureConfiguration> codec) {
         super(codec, ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig, ConfiguredFeatureHandler.FROSTMAW_BIOMES, FrostmawStructure::generatePieces);
     }

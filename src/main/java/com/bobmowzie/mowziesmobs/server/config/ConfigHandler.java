@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 @Mod.EventBusSubscriber(modid = MowziesMobs.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public final class  ConfigHandler {
+public final class ConfigHandler {
     private ConfigHandler() {}
 
     private static final String LANG_PREFIX = "config." + MowziesMobs.MODID + ".";
@@ -430,6 +430,28 @@ public final class  ConfigHandler {
         public final BooleanValue healsOutOfBattle;
     }
 
+    public static class Sculptor {
+        Sculptor(final ForgeConfigSpec.Builder builder) {
+            builder.push("sculptor");
+            generationConfig = new GenerationConfig(builder, 25, 8,
+                    new BiomeConfig(builder, Collections.singletonList("MOUNTAIN"), new ArrayList<>(), new ArrayList<>()),
+                    120, 200,
+                    new ArrayList<>()
+            );
+            combatConfig = new CombatConfig(builder, 1, 1);
+            this.healsOutOfBattle = builder.comment("Disable/enable the Sculptor healing while not in combat")
+                    .translation(LANG_PREFIX + "heals_out_of_battle")
+                    .define("heals_out_of_battle", true);
+            builder.pop();
+        }
+
+        public final GenerationConfig generationConfig;
+
+        public final CombatConfig combatConfig;
+
+        public final BooleanValue healsOutOfBattle;
+    }
+
     public static class WroughtHelm {
         WroughtHelm(final ForgeConfigSpec.Builder builder) {
             builder.push("wrought_helm");
@@ -606,6 +628,7 @@ public final class  ConfigHandler {
             FROSTMAW = new Frostmaw(builder);
             BARAKO = new Barako(builder);
             FERROUS_WROUGHTNAUT = new FerrousWroughtnaut(builder);
+            SCULPTOR = new Sculptor(builder);
             GROTTOL = new Grottol(builder);
             LANTERN = new Lantern(builder);
             BARAKOA = new Barakoa(builder);
@@ -619,6 +642,8 @@ public final class  ConfigHandler {
         public final Barako BARAKO;
 
         public final FerrousWroughtnaut FERROUS_WROUGHTNAUT;
+
+        public final Sculptor SCULPTOR;
 
         public final Grottol GROTTOL;
 
