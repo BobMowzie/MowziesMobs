@@ -16,6 +16,7 @@ import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.bobmowzie.mowziesmobs.server.world.feature.ConfiguredFeatureHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
+import com.bobmowzie.mowziesmobs.server.world.feature.structure.jigsaw.JigsawHandler;
 import com.bobmowzie.mowziesmobs.server.world.spawn.SpawnHandler;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
@@ -75,6 +76,7 @@ public final class MowziesMobs {
         LootTableHandler.init();
 
         event.enqueueWork(() -> {
+            JigsawHandler.registerJigsawElements();
             FeatureHandler.registerStructurePieces();
             ConfiguredFeatureHandler.registerConfiguredFeatures();
         });

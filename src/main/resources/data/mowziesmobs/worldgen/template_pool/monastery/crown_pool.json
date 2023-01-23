@@ -3,7 +3,7 @@
   // Yes, worldgen json files can have comments. Minecraft does "lenient" parsing of these json files.
 
   // This is the name of the template pool itself. I tend to just put the file path and file name here with modid.
-  "name": "mowziesmobs:monastery/courtyard_entrance_pool",
+  "name": "mowziesmobs:monastery/crown",
 
   // The template pool to refer to if the entries in 'elements' fails to generate.
   "fallback": "minecraft:empty",
@@ -21,7 +21,7 @@
         // Note, this will automatically check into the 'structures' folder for the nbt file.
         // The final path would look like 'resources/data/structure_tutorial/structures/run_down_house_left_side.nbt'
         // The Jigsaw block in the structure will point to side_pool.json to spawn the other half of the house.
-        "location": "mowziesmobs:monastery/monastery_doorway",
+        "location": "mowziesmobs:monastery/monastery_crown",
 
         // Processor JSON files can be used to randomize or replace blocks dynamically. Here, we don't do any of that.
         "processors": "minecraft:empty",
@@ -47,7 +47,7 @@
         // Note, this will automatically check into the 'structures' folder for the nbt file.
         // The final path would look like 'resources/data/structure_tutorial/structures/run_down_house_left_side.nbt'
         // The Jigsaw block in the structure will point to side_pool.json to spawn the other half of the house.
-        "location": "minecraft:empty",
+        "location": "mowziesmobs:monastery/monastery_no_crown",
 
         // Processor JSON files can be used to randomize or replace blocks dynamically. Here, we don't do any of that.
         "processors": "minecraft:empty",
