@@ -55,8 +55,21 @@ public class MowzieJigsawManager {
         } else {
             PoolElementStructurePiece poolelementstructurepiece = pieceFactory.create(structuremanager, structurepoolelement, genPos, structurepoolelement.getGroundLevelDelta(), rotation, structurepoolelement.getBoundingBox(structuremanager, genPos, rotation));
             BoundingBox pieceBoundingBox = poolelementstructurepiece.getBoundingBox();
-            int centerX = (pieceBoundingBox.maxX() + pieceBoundingBox.minX()) / 2;
-            int centerZ = (pieceBoundingBox.maxZ() + pieceBoundingBox.minZ()) / 2;
+            int offsetX = 0;
+            int offsetZ = 0;
+            if (structurepoolelement instanceof MowziePoolElement) {
+                if (rotation.ordinal() % 2 == 0) {
+                    offsetX = ((MowziePoolElement) structurepoolelement).offsetX;
+                    offsetZ = ((MowziePoolElement) structurepoolelement).offsetZ;
+                }
+                else {
+                    offsetX = ((MowziePoolElement) structurepoolelement).offsetZ;
+                    offsetZ = ((MowziePoolElement) structurepoolelement).offsetX;
+                }
+            }
+            int centerX = offsetX + (pieceBoundingBox.maxX() + pieceBoundingBox.minX()) / 2;
+            int centerZ = offsetZ + (pieceBoundingBox.maxZ() + pieceBoundingBox.minZ()) / 2;
+            System.out.println(centerX + " " + centerZ);
             int height;
             if (useTerrainHeight) {
                 height = genPos.getY() + chunkgenerator.getFirstFreeHeight(centerX, centerZ, Heightmap.Types.WORLD_SURFACE_WG, levelheightaccessor);
@@ -226,8 +239,8 @@ public class MowzieJigsawManager {
 
                                 for(StructureTemplate.StructureBlockInfo nextPieceJigsawBlock : nextPieceJigsawBlocks) {
                                     boolean canAttach;
-                                    if (nextPieceCandidate instanceof TwoWayPoolElement) {
-                                        canAttach = TwoWayPoolElement.canAttachTwoWays(thisPieceJigsawBlock, nextPieceJigsawBlock);
+                                    if (nextPieceCandidate instanceof MowziePoolElement && ((MowziePoolElement) nextPieceCandidate).twoWay()) {
+                                        canAttach = MowziePoolElement.canAttachTwoWays(thisPieceJigsawBlock, nextPieceJigsawBlock);
                                     }
                                     else {
                                         canAttach = JigsawBlock.canAttach(thisPieceJigsawBlock, nextPieceJigsawBlock);
@@ -260,7 +273,9 @@ public class MowzieJigsawManager {
                                             nextPieceBoundingBoxPlaced.encapsulate(new BlockPos(nextPieceBoundingBoxPlaced.minX(), nextPieceBoundingBoxPlaced.minY() + j2, nextPieceBoundingBoxPlaced.minZ()));
                                         }
 
-                                        if (!Shapes.joinIsNotEmpty(freeSpace.getValue(), Shapes.create(AABB.of(nextPieceBoundingBoxPlaced).deflate(0.25D)), BooleanOp.ONLY_SECOND)) {
+                                        boolean ignoreBounds = false;
+                                        if (nextPieceCandidate instanceof MowziePoolElement) ignoreBounds = ((MowziePoolElement) nextPieceCandidate).ignoresBounds();
+                                        if (ignoreBounds || !Shapes.joinIsNotEmpty(freeSpace.getValue(), Shapes.create(AABB.of(nextPieceBoundingBoxPlaced).deflate(0.25D)), BooleanOp.ONLY_SECOND)) {
                                             freeSpace.setValue(Shapes.joinUnoptimized(freeSpace.getValue(), Shapes.create(AABB.of(nextPieceBoundingBoxPlaced)), BooleanOp.ONLY_FIRST));
                                             int i3 = piece.getGroundLevelDelta();
                                             int k2;
