@@ -113,10 +113,26 @@ public class MowziePoolElement extends SinglePoolElement {
     @Override
     public BoundingBox getBoundingBox(StructureManager structureManager, BlockPos blockPos, Rotation rotation) {
         BoundingBox superBox = super.getBoundingBox(structureManager, blockPos, rotation);
-        int boundsMinX1 = rotation.ordinal() % 2 == 0 ? boundsMinX : boundsMinZ;
-        int boundsMaxX1 = rotation.ordinal() % 2 == 0 ? boundsMaxX : boundsMaxZ;
-        int boundsMinZ1 = rotation.ordinal() % 2 == 0 ? boundsMinZ : boundsMinX;
-        int boundsMaxZ1 = rotation.ordinal() % 2 == 0 ? boundsMaxZ : boundsMaxX;
-        return new BoundingBox(superBox.minX() + boundsMinX1, superBox.minY() + boundsMinY, superBox.minZ() + boundsMinZ1, superBox.maxX() + boundsMaxX1, superBox.maxY() + boundsMaxY, superBox.maxZ() + boundsMaxZ1);
+        BlockPos offsetMin = BlockPos.ZERO;
+        BlockPos offsetMax = BlockPos.ZERO;
+        switch (rotation) {
+            case NONE -> {
+                offsetMin = new BlockPos(boundsMinX, boundsMinY, boundsMinZ);
+                offsetMax = new BlockPos(boundsMaxX, boundsMaxY, boundsMaxZ);
+            }
+            case CLOCKWISE_90 -> {
+                offsetMin = new BlockPos(boundsMinZ, boundsMinY, -boundsMaxX);
+                offsetMax = new BlockPos(boundsMaxZ, boundsMaxY, -boundsMinX);
+            }
+            case CLOCKWISE_180 -> {
+                offsetMin = new BlockPos(-boundsMaxX, boundsMinY, -boundsMaxZ);
+                offsetMax = new BlockPos(-boundsMinX, boundsMaxY, -boundsMinZ);
+            }
+            case COUNTERCLOCKWISE_90 -> {
+                offsetMin = new BlockPos(-boundsMaxZ, boundsMinY, boundsMinX);
+                offsetMax = new BlockPos(-boundsMinZ, boundsMaxY, boundsMaxX);
+            }
+        }
+        return new BoundingBox(superBox.minX() + offsetMin.getX(), superBox.minY() + offsetMin.getY(), superBox.minZ() + offsetMin.getZ(), superBox.maxX() + offsetMax.getX(), superBox.maxY() + offsetMax.getY(), superBox.maxZ() + offsetMax.getZ());
     }
 }

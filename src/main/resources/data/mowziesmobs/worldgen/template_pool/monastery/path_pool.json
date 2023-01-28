@@ -14,7 +14,7 @@
     {
 
       // How likely out of all the element for this one to be chosen.
-      "weight": 10,
+      "weight": 12,
       "element": {
 
         // The Identifier of the nbt file itself of the structure piece.
@@ -34,14 +34,13 @@
         // There's 'minecraft:legacy_single_pool_element' but that swaps the behavior of
         // Air and Structure Void in your piece as well as change the attachment mechanism.
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
-        "element_type": "mowziesmobs:mowzie_element",
-        "bounds_max_y": -1
+        "element_type": "mowziesmobs:mowzie_element"
       }
     },
     {
 
       // How likely out of all the element for this one to be chosen.
-      "weight": 5,
+      "weight": 3,
       "element": {
 
         // The Identifier of the nbt file itself of the structure piece.
@@ -67,7 +66,7 @@
     {
 
       // How likely out of all the element for this one to be chosen.
-      "weight": 4,
+      "weight": 2,
       "element": {
 
         // The Identifier of the nbt file itself of the structure piece.
@@ -87,8 +86,7 @@
         // There's 'minecraft:legacy_single_pool_element' but that swaps the behavior of
         // Air and Structure Void in your piece as well as change the attachment mechanism.
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
-        "element_type": "mowziesmobs:mowzie_element",
-        "bounds_max_y": -1
+        "element_type": "mowziesmobs:mowzie_element"
       }
     },
     {
@@ -114,8 +112,7 @@
         // There's 'minecraft:legacy_single_pool_element' but that swaps the behavior of
         // Air and Structure Void in your piece as well as change the attachment mechanism.
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
-        "element_type": "mowziesmobs:mowzie_element",
-        "bounds_max_y": -1
+        "element_type": "mowziesmobs:mowzie_element"
       }
     }
   ]
