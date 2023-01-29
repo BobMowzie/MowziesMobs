@@ -24,7 +24,7 @@
         "location": "mowziesmobs:monastery/monastery_wall_straight",
 
         // Processor JSON files can be used to randomize or replace blocks dynamically. Here, we don't do any of that.
-        "processors": "minecraft:empty",
+        "processors": "mowziesmobs:monastery",
 
         // If set to 'terrain_matching', the house would be deformed to fit the change in land.
         // That's best for roads so lets stay 'rigid' for now.
@@ -50,7 +50,7 @@
         "location": "mowziesmobs:monastery/monastery_wall_corner",
 
         // Processor JSON files can be used to randomize or replace blocks dynamically. Here, we don't do any of that.
-        "processors": "minecraft:empty",
+        "processors": "mowziesmobs:monastery",
 
         // If set to 'terrain_matching', the house would be deformed to fit the change in land.
         // That's best for roads so lets stay 'rigid' for now.
@@ -76,7 +76,7 @@
         "location": "mowziesmobs:monastery/monastery_wall_3way",
 
         // Processor JSON files can be used to randomize or replace blocks dynamically. Here, we don't do any of that.
-        "processors": "minecraft:empty",
+        "processors": "mowziesmobs:monastery",
 
         // If set to 'terrain_matching', the house would be deformed to fit the change in land.
         // That's best for roads so lets stay 'rigid' for now.
@@ -102,7 +102,7 @@
         "location": "mowziesmobs:monastery/monastery_wall_4way",
 
         // Processor JSON files can be used to randomize or replace blocks dynamically. Here, we don't do any of that.
-        "processors": "minecraft:empty",
+        "processors": "mowziesmobs:monastery",
 
         // If set to 'terrain_matching', the house would be deformed to fit the change in land.
         // That's best for roads so lets stay 'rigid' for now.

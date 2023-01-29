@@ -178,7 +178,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
     }
 
     private void checkIfPlayerCheats() {
-        if (!isTesting() || testingPlayer == null) return;
+        if (!isTesting() || testingPlayer == null || testingPlayer.isCreative()) return;
 
         // Check if player moved too far away
         if (testingPlayer != null && testingPlayer.position().multiply(1, 0, 1).distanceTo(position().multiply(1, 0, 1)) > TEST_RADIUS + 3) playerCheated();

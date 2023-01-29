@@ -1,0 +1,43 @@
+{
+  "processors": [
+    {
+      "processor_type": "mowziesmobs:base_processor"
+    },
+    {
+      "processor_type": "mowziesmobs:block_swap_processor",
+      "to_replace": [
+        {
+          "Name": "minecraft:white_concrete"
+        }
+      ],
+      "replace_with": {
+        "default": {
+          "Name": "minecraft:white_concrete"
+        },
+        "entries": [
+          {
+            "blockState": {
+              "Name": "minecraft:diorite"
+            },
+            "weight": 1
+          },
+          {
+            "blockState": {
+              "Name": "minecraft:calcite"
+            },
+            "weight": 1
+          },
+          {
+            "blockState": {
+              "Name": "minecraft:white_concrete"
+            },
+            "weight": 1
+          }
+        ]
+      }
+    },
+    {
+      "processor_type": "mowziesmobs:roots_processor"
+    }
+  ]
+}
