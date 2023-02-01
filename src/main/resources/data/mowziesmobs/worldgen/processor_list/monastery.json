@@ -37,6 +37,60 @@
       }
     },
     {
+      "processor_type": "mowziesmobs:block_swap_processor",
+      "to_replace": [
+        {
+          "Name": "minecraft:cobbled_deepslate_slab"
+        }
+      ],
+      "replace_with": {
+        "default": {
+          "Name": "minecraft:cobbled_deepslate_slab"
+        },
+        "entries": [
+          {
+            "blockState": {
+              "Name": "minecraft:cobbled_deepslate_slab"
+            },
+            "weight": 7
+          },
+          {
+            "blockState": {
+              "Name": "minecraft:polished_deepslate_slab"
+            },
+            "weight": 3
+          }
+        ]
+      }
+    },
+    {
+      "processor_type": "mowziesmobs:block_swap_processor",
+      "to_replace": [
+        {
+          "Name": "minecraft:cobbled_deepslate_stairs"
+        }
+      ],
+      "replace_with": {
+        "default": {
+          "Name": "minecraft:cobbled_deepslate_stairs"
+        },
+        "entries": [
+          {
+            "blockState": {
+              "Name": "minecraft:cobbled_deepslate_stairs"
+            },
+            "weight": 7
+          },
+          {
+            "blockState": {
+              "Name": "minecraft:polished_deepslate_stairs"
+            },
+            "weight": 3
+          }
+        ]
+      }
+    },
+    {
       "processor_type": "mowziesmobs:roots_processor"
     }
   ]

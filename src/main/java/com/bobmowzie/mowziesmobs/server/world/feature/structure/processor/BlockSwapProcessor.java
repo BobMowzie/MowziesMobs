@@ -6,7 +6,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
@@ -20,15 +19,18 @@ public class BlockSwapProcessor extends StructureProcessor {
     public static final Codec<BlockSwapProcessor> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(
                     BlockState.CODEC.listOf().fieldOf("to_replace").forGetter(config -> config.toReplace),
-                    BlockStateRandomizer.CODEC.fieldOf("replace_with").forGetter(config -> config.replaceWith))
-            .apply(instance, instance.stable(BlockSwapProcessor::new)));
+                    BlockStateRandomizer.CODEC.fieldOf("replace_with").forGetter(config -> config.replaceWith),
+                    Codec.BOOL.optionalFieldOf("copy_properties", true).forGetter(config -> config.copyProperties)
+    ).apply(instance, instance.stable(BlockSwapProcessor::new)));
 
     List<BlockState> toReplace;
     BlockStateRandomizer replaceWith;
+    boolean copyProperties;
 
-    public BlockSwapProcessor(List<BlockState> toReplace, BlockStateRandomizer replaceWith) {
+    public BlockSwapProcessor(List<BlockState> toReplace, BlockStateRandomizer replaceWith, boolean copyProperties) {
         this.toReplace = toReplace;
         this.replaceWith = replaceWith;
+        this.copyProperties = copyProperties;
     }
 
     protected StructureProcessorType<?> getType() {
@@ -43,18 +45,14 @@ public class BlockSwapProcessor extends StructureProcessor {
                     return blockInfoGlobal;
                 }
                 Random random = structurePlacementData.getRandom(blockInfoGlobal.pos);
-                blockInfoGlobal = new StructureTemplate.StructureBlockInfo(blockInfoGlobal.pos, replaceWith.chooseRandomState(random), blockInfoGlobal.nbt);
+                BlockState newState = replaceWith.chooseRandomState(random);
+                if (copyProperties) {
+                    newState = newState.getBlock().withPropertiesOf(blockInfoGlobal.state);
+                }
+                blockInfoGlobal = new StructureTemplate.StructureBlockInfo(blockInfoGlobal.pos, newState, blockInfoGlobal.nbt);
                 break;
             }
         }
         return blockInfoGlobal;
     }
-
-    public BlockState chooseRandomState(Random random) {
-        float v = random.nextFloat();
-        if (v < 0.333) return Blocks.DIORITE.defaultBlockState();
-        else if (v < 0.666) return Blocks.CALCITE.defaultBlockState();
-        else return Blocks.WHITE_CONCRETE.defaultBlockState();
-    }
-
 }

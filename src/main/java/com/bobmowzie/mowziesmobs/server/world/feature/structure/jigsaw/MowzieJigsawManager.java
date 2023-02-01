@@ -75,7 +75,6 @@ public class MowzieJigsawManager {
             int centerZ = (pieceBoundingBox.maxZ() + pieceBoundingBox.minZ()) / 2;
             int height;
             if (useTerrainHeight) {
-                System.out.println((centerX + offset.getX()) + " " + (centerZ + offset.getZ()));
                 height = genPos.getY() + chunkgenerator.getFirstFreeHeight(centerX + offset.getX(), centerZ + offset.getZ(), Heightmap.Types.WORLD_SURFACE_WG, levelheightaccessor) + offset.getY();
             } else {
                 height = genPos.getY();
@@ -90,7 +89,7 @@ public class MowzieJigsawManager {
                     List<PoolElementStructurePiece> list = Lists.newArrayList();
                     list.add(poolelementstructurepiece);
                     if (jigsawconfiguration.maxDepth() > 0) {
-                        int i1 = 1000;
+                        int i1 = 140;
                         AABB aabb = new AABB((double)(centerX - i1), (double)(height - i1), (double)(centerZ - i1), (double)(centerX + i1 + 1), (double)(height + i1 + 1), (double)(centerZ + i1 + 1));
                         Placer jigsawplacement$placer = new Placer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom);
                         VoxelShape shape = Shapes.join(Shapes.create(aabb), Shapes.create(AABB.of(pieceBoundingBox)), BooleanOp.ONLY_FIRST);
@@ -107,14 +106,14 @@ public class MowzieJigsawManager {
                         }
 
                         // Handle dead ends to connect them together
-                        Placer deadEndConnectorPlacer = new DeadEndConnectorPlacer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom, jigsawplacement$placer.placing, mustConnectPools, replacePools, deadEndConnectorPool);
-                        while(!deadEndConnectorPlacer.placing.isEmpty()) {
-                            PieceState pieceState = deadEndConnectorPlacer.placing.removeFirst();
-                            if (pieceState.depth > 80) {
-                                break;
-                            }
-                            deadEndConnectorPlacer.tryPlacingChildren(pieceState, villageBoundaryAdjust, levelheightaccessor);
-                        }
+//                        Placer deadEndConnectorPlacer = new DeadEndConnectorPlacer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom, jigsawplacement$placer.placing, mustConnectPools, replacePools, deadEndConnectorPool);
+//                        while(!deadEndConnectorPlacer.placing.isEmpty()) {
+//                            PieceState pieceState = deadEndConnectorPlacer.placing.removeFirst();
+//                            if (pieceState.depth > 80) {
+//                                break;
+//                            }
+//                            deadEndConnectorPlacer.tryPlacingChildren(pieceState, villageBoundaryAdjust, levelheightaccessor);
+//                        }
 
                         list.forEach(p_210282_::addPiece);
                     }
@@ -397,7 +396,7 @@ public class MowzieJigsawManager {
                 List<StructureTemplate.StructureBlockInfo> jigsawBlocks = getJigsawBlocksFromPieceState(pieceState);
                 boolean addedAny = false;
                 for (StructureTemplate.StructureBlockInfo jigsawBlock : jigsawBlocks) {
-                    if (jigsawMustConnect(jigsawBlock) && isJigsawBlockFacingFreeSpace(jigsawBlock, pieceState.free)) {
+                    if (jigsawMustConnect(jigsawBlock) && canJigsawBlockFitNextPiece(jigsawBlock, pieceState.free)) {
                         needConnecting.add(jigsawBlock);
                         addedAny = true;
                     }
