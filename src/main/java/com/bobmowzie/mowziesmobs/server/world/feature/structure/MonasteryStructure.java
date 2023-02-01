@@ -23,12 +23,19 @@ import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.world.StructureSpawnListGatherEvent;
 import org.apache.logging.log4j.Level;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 
 // Based on Telepathicgrunt's tutorial class: https://github.com/TelepathicGrunt/StructureTutorialMod/blob/1.18.0-Forge-Jigsaw/src/main/java/com/telepathicgrunt/structuretutorial/structures/RunDownHouseStructure.java
 public class MonasteryStructure extends MowzieStructure<JigsawConfiguration> {
+
+    public static final Set<String> MUST_CONNECT_POOLS = Set.of(MowziesMobs.MODID + ":monastery/path_pool", MowziesMobs.MODID + ":monastery/path_connector_pool");
+    public static final Set<String> REPLACE_POOLS = Set.of(MowziesMobs.MODID + ":monastery/path_pool");
+    public static final String STRAIGHT_POOL = MowziesMobs.MODID + ":monastery/dead_end_connect_pool";
+
     public MonasteryStructure(Codec<JigsawConfiguration> codec) {
         // Create the pieces layout of the structure and give it to the game
         super(codec, ConfigHandler.COMMON.MOBS.SCULPTOR.generationConfig, (context) -> MonasteryStructure.createPiecesGenerator(
@@ -78,7 +85,7 @@ public class MonasteryStructure extends MowzieStructure<JigsawConfiguration> {
         JigsawConfiguration newConfig = new JigsawConfiguration(
                 Holder.direct(context.registryAccess().ownedRegistryOrThrow(Registry.TEMPLATE_POOL_REGISTRY)
                         .get(new ResourceLocation(MowziesMobs.MODID, "monastery/start_pool"))),
-                10
+                11
         );
 
         PieceGeneratorSupplier.Context<JigsawConfiguration> newContext = new PieceGeneratorSupplier.Context<>(
@@ -102,8 +109,9 @@ public class MonasteryStructure extends MowzieStructure<JigsawConfiguration> {
                         blockpos, // Position of the structure. Y value is ignored if last parameter is set to true.
                         false,  // Special boundary adjustments for villages. It's... hard to explain. Keep this false and make your pieces not be partially intersecting.
                         // Either not intersecting or fully contained will make children pieces spawn just fine. It's easier that way.
-                        true // Place at heightmap (top land). Set this to false for structure to be place at the passed in blockpos's Y value instead.
+                        true, // Place at heightmap (top land). Set this to false for structure to be place at the passed in blockpos's Y value instead.
                         // Definitely keep this false when placing structures in the nether as otherwise, heightmap placing will put the structure on the Bedrock roof.
+                        MUST_CONNECT_POOLS, REPLACE_POOLS, STRAIGHT_POOL
                 );
 
         if(structurePiecesGenerator.isPresent()) {

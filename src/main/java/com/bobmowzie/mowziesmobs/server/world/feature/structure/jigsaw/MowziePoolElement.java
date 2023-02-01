@@ -35,7 +35,8 @@ public class MowziePoolElement extends SinglePoolElement {
                     Codec.INT.optionalFieldOf("bounds_max_y", 0).forGetter(element -> element.boundsMaxY),
                     Codec.INT.optionalFieldOf("offset_x", 0).forGetter(element -> element.offsetX),
                     Codec.INT.optionalFieldOf("offset_y", 0).forGetter(element -> element.offsetY),
-                    Codec.INT.optionalFieldOf("offset_z", 0).forGetter(element -> element.offsetZ)
+                    Codec.INT.optionalFieldOf("offset_z", 0).forGetter(element -> element.offsetZ),
+                    Codec.INT.optionalFieldOf("max_depth", -1).forGetter(element -> element.maxDepth)
             ).apply(builder, MowziePoolElement::new));
 
     /**
@@ -66,11 +67,17 @@ public class MowziePoolElement extends SinglePoolElement {
     public final int offsetY;
     public final int offsetZ;
 
+    /**
+     * Maximum iteration depth at which this piece can be chosen
+     */
+    public final int maxDepth;
+
     protected MowziePoolElement(Either<ResourceLocation, StructureTemplate> p_210415_, Holder<StructureProcessorList> p_210416_, StructureTemplatePool.Projection p_210417_, boolean ignoreBounds, boolean twoWay,
                                 int boundsMinX, int boundsMaxX,
                                 int boundsMinZ, int boundsMaxZ,
                                 int boundsMinY, int boundsMaxY,
-                                int offsetX, int offsetY, int offsetZ
+                                int offsetX, int offsetY, int offsetZ,
+                                int maxDepth
     ) {
         super(p_210415_, p_210416_, p_210417_);
         this.ignoreBounds = ignoreBounds;
@@ -84,6 +91,7 @@ public class MowziePoolElement extends SinglePoolElement {
         this.offsetX = offsetX;
         this.offsetY = offsetY;
         this.offsetZ = offsetZ;
+        this.maxDepth = maxDepth;
     }
 
     public static boolean canAttachTwoWays(StructureTemplate.StructureBlockInfo p_54246_, StructureTemplate.StructureBlockInfo p_54247_) {
