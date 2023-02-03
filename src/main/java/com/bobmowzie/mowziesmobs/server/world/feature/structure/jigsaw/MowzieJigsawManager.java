@@ -88,7 +88,7 @@ public class MowzieJigsawManager {
                 return Optional.of((p_210282_, p_210283_) -> {
                     List<PoolElementStructurePiece> list = Lists.newArrayList();
                     list.add(poolelementstructurepiece);
-                    if (jigsawconfiguration.maxDepth() > 0) {
+                    if (jigsawconfiguration.maxDepth() >= 0) {
                         int i1 = 140;
                         AABB aabb = new AABB((double)(centerX - i1), (double)(height - i1), (double)(centerZ - i1), (double)(centerX + i1 + 1), (double)(height + i1 + 1), (double)(centerZ + i1 + 1));
                         Placer jigsawplacement$placer = new Placer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom);
@@ -275,11 +275,11 @@ public class MowzieJigsawManager {
                 for (Rotation nextPieceRotation : Rotation.getShuffled(this.random)) {
                     List<StructureTemplate.StructureBlockInfo> nextPieceJigsawBlocks = nextPieceCandidate.getShuffledJigsawBlocks(this.structureManager, BlockPos.ZERO, nextPieceRotation, this.random);
                     BoundingBox nextPieceBoundingBoxOrigin = nextPieceCandidate.getBoundingBox(this.structureManager, BlockPos.ZERO, nextPieceRotation);
-                    int l;
+                    int largestSizeOfNextNextPiece;
                     // Village boundary adjustment
                     if (villageBoundaryAdjust && nextPieceBoundingBoxOrigin.getYSpan() <= 16) {
-                        // Map each jigsaw block to the size of the largest next piece it can generate and l becomes the largest of these
-                        l = nextPieceJigsawBlocks.stream().mapToInt((blockInfo) -> {
+                        // Map each jigsaw block to the size of the largest next piece it can generate and largestSizeOfNextNextPiece becomes the largest of these
+                        largestSizeOfNextNextPiece = nextPieceJigsawBlocks.stream().mapToInt((blockInfo) -> {
                             // If the next piece's jigsaw block would place inside its own bounding box, return 0
                             if (!nextPieceBoundingBoxOrigin.isInside(blockInfo.pos.relative(JigsawBlock.getFrontFacing(blockInfo.state)))) {
                                 return 0;
@@ -299,7 +299,7 @@ public class MowzieJigsawManager {
                             }
                         }).max().orElse(0);
                     } else {
-                        l = 0;
+                        largestSizeOfNextNextPiece = 0;
                     }
 
                     for (StructureTemplate.StructureBlockInfo nextPieceJigsawBlock : nextPieceJigsawBlocks) {
@@ -335,8 +335,8 @@ public class MowzieJigsawManager {
                             int i2 = l1 - nextPieceMinY;
                             BoundingBox nextPieceBoundingBoxPlaced = nextPieceBoundingBox.moved(0, i2, 0);
                             BlockPos blockpos5 = nextPiecePos.offset(0, i2, 0);
-                            if (l > 0) {
-                                int j2 = Math.max(l + 1, nextPieceBoundingBoxPlaced.maxY() - nextPieceBoundingBoxPlaced.minY());
+                            if (largestSizeOfNextNextPiece > 0) {
+                                int j2 = Math.max(largestSizeOfNextNextPiece + 1, nextPieceBoundingBoxPlaced.maxY() - nextPieceBoundingBoxPlaced.minY());
                                 nextPieceBoundingBoxPlaced.encapsulate(new BlockPos(nextPieceBoundingBoxPlaced.minX(), nextPieceBoundingBoxPlaced.minY() + j2, nextPieceBoundingBoxPlaced.minZ()));
                             }
 

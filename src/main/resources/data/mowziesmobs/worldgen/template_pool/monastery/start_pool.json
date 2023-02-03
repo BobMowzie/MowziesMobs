@@ -39,8 +39,9 @@
         "bounds_max_x": -2,
         "bounds_min_z": 2,
         "bounds_max_z": -2,
-        "bounds_max_y": -1,
-        "offset_z": -12
+        "bounds_min_y": 1,
+        "offset_z": -12,
+        "offset_y": 1
       }
     }
   ]

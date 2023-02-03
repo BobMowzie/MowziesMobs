@@ -19,6 +19,9 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureMana
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
+import java.util.Collections;
+import java.util.List;
+
 public class MowziePoolElement extends SinglePoolElement {
     public static final Codec<MowziePoolElement> CODEC = RecordCodecBuilder.create((builder) -> builder
             .group(
@@ -36,7 +39,8 @@ public class MowziePoolElement extends SinglePoolElement {
                     Codec.INT.optionalFieldOf("offset_x", 0).forGetter(element -> element.offsetX),
                     Codec.INT.optionalFieldOf("offset_y", 0).forGetter(element -> element.offsetY),
                     Codec.INT.optionalFieldOf("offset_z", 0).forGetter(element -> element.offsetZ),
-                    Codec.INT.optionalFieldOf("max_depth", -1).forGetter(element -> element.maxDepth)
+                    Codec.INT.optionalFieldOf("max_depth", -1).forGetter(element -> element.maxDepth),
+                    Codec.STRING.listOf().optionalFieldOf("priority_pools", Collections.emptyList()).forGetter(element -> element.priorityPools)
             ).apply(builder, MowziePoolElement::new));
 
     /**
@@ -72,12 +76,17 @@ public class MowziePoolElement extends SinglePoolElement {
      */
     public final int maxDepth;
 
+    /**
+     * Pools to generate first if present on child jigsaws
+     */
+    public final List<String> priorityPools;
+
     protected MowziePoolElement(Either<ResourceLocation, StructureTemplate> p_210415_, Holder<StructureProcessorList> p_210416_, StructureTemplatePool.Projection p_210417_, boolean ignoreBounds, boolean twoWay,
                                 int boundsMinX, int boundsMaxX,
                                 int boundsMinZ, int boundsMaxZ,
                                 int boundsMinY, int boundsMaxY,
                                 int offsetX, int offsetY, int offsetZ,
-                                int maxDepth
+                                int maxDepth, List<String> priorityPools
     ) {
         super(p_210415_, p_210416_, p_210417_);
         this.ignoreBounds = ignoreBounds;
@@ -92,6 +101,7 @@ public class MowziePoolElement extends SinglePoolElement {
         this.offsetY = offsetY;
         this.offsetZ = offsetZ;
         this.maxDepth = maxDepth;
+        this.priorityPools = priorityPools;
     }
 
     public static boolean canAttachTwoWays(StructureTemplate.StructureBlockInfo p_54246_, StructureTemplate.StructureBlockInfo p_54247_) {
