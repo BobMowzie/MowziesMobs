@@ -40,12 +40,12 @@ public class MowzieJigsawManager {
             PieceGeneratorSupplier.Context<JigsawConfiguration> context,
             PieceFactory pieceFactory, BlockPos genPos, boolean villageBoundaryAdjust, boolean useTerrainHeight
     ) {
-        return addPieces(context, pieceFactory, genPos, villageBoundaryAdjust, useTerrainHeight, null, null, null);
+        return addPieces(context, pieceFactory, genPos, villageBoundaryAdjust, useTerrainHeight, 80, null, null, null);
     }
 
     public static Optional<PieceGenerator<JigsawConfiguration>> addPieces(
             PieceGeneratorSupplier.Context<JigsawConfiguration> context,
-            PieceFactory pieceFactory, BlockPos genPos, boolean villageBoundaryAdjust, boolean useTerrainHeight,
+            PieceFactory pieceFactory, BlockPos genPos, boolean villageBoundaryAdjust, boolean useTerrainHeight, int maxDistFromStart,
             Set<String> mustConnectPools, Set<String> replacePools, String deadEndConnectorPool
     ) {
         WorldgenRandom worldgenrandom = new WorldgenRandom(new LegacyRandomSource(0L));
@@ -68,7 +68,7 @@ public class MowzieJigsawManager {
             BoundingBox pieceBoundingBox = poolelementstructurepiece.getBoundingBox();
             BlockPos offset = BlockPos.ZERO;
             if (structurepoolelement instanceof MowziePoolElement) {
-                offset = new BlockPos(((MowziePoolElement) structurepoolelement).offsetX, ((MowziePoolElement) structurepoolelement).offsetY, ((MowziePoolElement) structurepoolelement).offsetZ);
+                offset = ((MowziePoolElement) structurepoolelement).offset;
                 offset = offset.rotate(rotation);
             }
             int centerX = (pieceBoundingBox.maxX() + pieceBoundingBox.minX()) / 2;
@@ -89,8 +89,7 @@ public class MowzieJigsawManager {
                     List<PoolElementStructurePiece> list = Lists.newArrayList();
                     list.add(poolelementstructurepiece);
                     if (jigsawconfiguration.maxDepth() >= 0) {
-                        int i1 = 140;
-                        AABB aabb = new AABB((double)(centerX - i1), (double)(height - i1), (double)(centerZ - i1), (double)(centerX + i1 + 1), (double)(height + i1 + 1), (double)(centerZ + i1 + 1));
+                        AABB aabb = new AABB((double)(centerX - maxDistFromStart), (double)(height - maxDistFromStart), (double)(centerZ - maxDistFromStart), (double)(centerX + maxDistFromStart + 1), (double)(height + maxDistFromStart + 1), (double)(centerZ + maxDistFromStart + 1));
                         Placer jigsawplacement$placer = new Placer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom);
                         VoxelShape shape = Shapes.join(Shapes.create(aabb), Shapes.create(AABB.of(pieceBoundingBox)), BooleanOp.ONLY_FIRST);
                         // Place starting piece
@@ -315,7 +314,7 @@ public class MowzieJigsawManager {
                             BoundingBox nextPieceBoundingBox = nextPieceCandidate.getBoundingBox(this.structureManager, nextPiecePos, nextPieceRotation);
                             int nextPieceMinY = nextPieceBoundingBox.minY();
                             if (nextPieceCandidate instanceof MowziePoolElement) {
-                                nextPieceMinY -= ((MowziePoolElement) nextPieceCandidate).boundsMinY;
+                                nextPieceMinY -= ((MowziePoolElement) nextPieceCandidate).boundsMinOffset.getY();
                             }
                             StructureTemplatePool.Projection structuretemplatepool$projection1 = nextPieceCandidate.getProjection();
                             boolean nextPieceIsRigid = structuretemplatepool$projection1 == StructureTemplatePool.Projection.RIGID;
@@ -519,7 +518,7 @@ public class MowzieJigsawManager {
                             BoundingBox nextPieceBoundingBox = nextPieceCandidate.getBoundingBox(this.structureManager, nextPiecePos, nextPieceRotation);
                             int nextPieceMinY = nextPieceBoundingBox.minY();
                             if (nextPieceCandidate instanceof MowziePoolElement) {
-                                nextPieceMinY -= ((MowziePoolElement) nextPieceCandidate).boundsMinY;
+                                nextPieceMinY -= ((MowziePoolElement) nextPieceCandidate).boundsMinOffset.getY();
                             }
                             StructureTemplatePool.Projection structuretemplatepool$projection1 = nextPieceCandidate.getProjection();
                             boolean nextPieceIsRigid = structuretemplatepool$projection1 == StructureTemplatePool.Projection.RIGID;
@@ -546,7 +545,6 @@ public class MowzieJigsawManager {
 
                             if (nextPieceCandidate instanceof MowziePoolElement)
                                 ignoreBounds = ((MowziePoolElement) nextPieceCandidate).ignoresBounds();
-//                            ignoreBounds = true;
                             if (ignoreBounds || !Shapes.joinIsNotEmpty(pieceState.free.getValue(), Shapes.create(AABB.of(nextPieceBoundingBoxPlaced).deflate(0.25D)), BooleanOp.ONLY_SECOND)) {
                                 int pieceGroundLevelDelta = pieceState.piece.getGroundLevelDelta();
                                 int k2;

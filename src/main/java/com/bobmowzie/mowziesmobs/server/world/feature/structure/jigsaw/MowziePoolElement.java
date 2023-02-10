@@ -8,19 +8,17 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.block.JigsawBlock;
+import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.JigsawBlockEntity;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-
-import java.util.Collections;
-import java.util.List;
 
 public class MowziePoolElement extends SinglePoolElement {
     public static final Codec<MowziePoolElement> CODEC = RecordCodecBuilder.create((builder) -> builder
@@ -30,17 +28,12 @@ public class MowziePoolElement extends SinglePoolElement {
                     projectionCodec(),
                     Codec.BOOL.optionalFieldOf("ignore_bounds", false).forGetter(element -> element.ignoreBounds),
                     Codec.BOOL.optionalFieldOf("two_way", false).forGetter(element -> element.twoWay),
-                    Codec.INT.optionalFieldOf("bounds_min_x", 0).forGetter(element -> element.boundsMinX),
-                    Codec.INT.optionalFieldOf("bounds_max_x", 0).forGetter(element -> element.boundsMaxX),
-                    Codec.INT.optionalFieldOf("bounds_min_z", 0).forGetter(element -> element.boundsMinZ),
-                    Codec.INT.optionalFieldOf("bounds_max_z", 0).forGetter(element -> element.boundsMaxZ),
-                    Codec.INT.optionalFieldOf("bounds_min_y", 0).forGetter(element -> element.boundsMinY),
-                    Codec.INT.optionalFieldOf("bounds_max_y", 0).forGetter(element -> element.boundsMaxY),
-                    Codec.INT.optionalFieldOf("offset_x", 0).forGetter(element -> element.offsetX),
-                    Codec.INT.optionalFieldOf("offset_y", 0).forGetter(element -> element.offsetY),
-                    Codec.INT.optionalFieldOf("offset_z", 0).forGetter(element -> element.offsetZ),
+                    BlockPos.CODEC.optionalFieldOf("bounds_min_offset", BlockPos.ZERO).forGetter(element -> element.boundsMinOffset),
+                    BlockPos.CODEC.optionalFieldOf("bounds_max_offset", BlockPos.ZERO).forGetter(element -> element.boundsMaxOffset),
+                    BlockPos.CODEC.optionalFieldOf("offset", BlockPos.ZERO).forGetter(element -> element.offset),
                     Codec.INT.optionalFieldOf("max_depth", -1).forGetter(element -> element.maxDepth),
-                    Codec.STRING.listOf().optionalFieldOf("priority_pools", Collections.emptyList()).forGetter(element -> element.priorityPools)
+                    Codec.INT.optionalFieldOf("min_height", -1).forGetter(element -> element.minHeight),
+                    Codec.INT.optionalFieldOf("max_height", -1).forGetter(element -> element.maxHeight)
             ).apply(builder, MowziePoolElement::new));
 
     /**
@@ -57,19 +50,13 @@ public class MowziePoolElement extends SinglePoolElement {
     /**
      * Adjust the piece's bounds on all 6 sides
      */
-    public final int boundsMinX;
-    public final int boundsMaxX;
-    public final int boundsMinZ;
-    public final int boundsMaxZ;
-    public final int boundsMinY;
-    public final int boundsMaxY;
+    public final BlockPos boundsMinOffset;
+    public final BlockPos boundsMaxOffset;
 
     /**
      * Offset the piece's location
      */
-    public final int offsetX;
-    public final int offsetY;
-    public final int offsetZ;
+    public final BlockPos offset;
 
     /**
      * Maximum iteration depth at which this piece can be chosen
@@ -77,31 +64,24 @@ public class MowziePoolElement extends SinglePoolElement {
     public final int maxDepth;
 
     /**
-     * Pools to generate first if present on child jigsaws
+     * Distances to stop the piece from placing too high or too low down.
      */
-    public final List<String> priorityPools;
+    public final int minHeight;
+    public final int maxHeight;
 
     protected MowziePoolElement(Either<ResourceLocation, StructureTemplate> p_210415_, Holder<StructureProcessorList> p_210416_, StructureTemplatePool.Projection p_210417_, boolean ignoreBounds, boolean twoWay,
-                                int boundsMinX, int boundsMaxX,
-                                int boundsMinZ, int boundsMaxZ,
-                                int boundsMinY, int boundsMaxY,
-                                int offsetX, int offsetY, int offsetZ,
-                                int maxDepth, List<String> priorityPools
+                                BlockPos boundsMinOffset, BlockPos boundsMaxOffset, BlockPos offset,
+                                int maxDepth, int minHeight, int maxHeight
     ) {
         super(p_210415_, p_210416_, p_210417_);
         this.ignoreBounds = ignoreBounds;
         this.twoWay = twoWay;
-        this.boundsMinX = boundsMinX;
-        this.boundsMaxX = boundsMaxX;
-        this.boundsMinZ = boundsMinZ;
-        this.boundsMaxZ = boundsMaxZ;
-        this.boundsMinY = boundsMinY;
-        this.boundsMaxY = boundsMaxY;
-        this.offsetX = offsetX;
-        this.offsetY = offsetY;
-        this.offsetZ = offsetZ;
+        this.boundsMinOffset = boundsMinOffset;
+        this.boundsMaxOffset = boundsMaxOffset;
+        this.offset = offset;
         this.maxDepth = maxDepth;
-        this.priorityPools = priorityPools;
+        this.minHeight = minHeight;
+        this.maxHeight = maxHeight;
     }
 
     public static boolean canAttachTwoWays(StructureTemplate.StructureBlockInfo p_54246_, StructureTemplate.StructureBlockInfo p_54247_) {
@@ -125,32 +105,16 @@ public class MowziePoolElement extends SinglePoolElement {
     }
 
     public Vec3i offset() {
-        return new Vec3i(offsetX, offsetY, offsetZ);
+        return new Vec3i(offset.getX(), offset.getY(), offset.getZ());
     }
 
     @Override
     public BoundingBox getBoundingBox(StructureManager structureManager, BlockPos blockPos, Rotation rotation) {
-        BoundingBox superBox = super.getBoundingBox(structureManager, blockPos, rotation);
-        BlockPos offsetMin = BlockPos.ZERO;
-        BlockPos offsetMax = BlockPos.ZERO;
-        switch (rotation) {
-            case NONE -> {
-                offsetMin = new BlockPos(boundsMinX, boundsMinY, boundsMinZ);
-                offsetMax = new BlockPos(boundsMaxX, boundsMaxY, boundsMaxZ);
-            }
-            case CLOCKWISE_90 -> {
-                offsetMin = new BlockPos(boundsMinZ, boundsMinY, -boundsMaxX);
-                offsetMax = new BlockPos(boundsMaxZ, boundsMaxY, -boundsMinX);
-            }
-            case CLOCKWISE_180 -> {
-                offsetMin = new BlockPos(-boundsMaxX, boundsMinY, -boundsMaxZ);
-                offsetMax = new BlockPos(-boundsMinX, boundsMaxY, -boundsMinZ);
-            }
-            case COUNTERCLOCKWISE_90 -> {
-                offsetMin = new BlockPos(-boundsMaxZ, boundsMinY, boundsMinX);
-                offsetMax = new BlockPos(-boundsMinZ, boundsMaxY, boundsMaxX);
-            }
-        }
-        return new BoundingBox(superBox.minX() + offsetMin.getX(), superBox.minY() + offsetMin.getY(), superBox.minZ() + offsetMin.getZ(), superBox.maxX() + offsetMax.getX(), superBox.maxY() + offsetMax.getY(), superBox.maxZ() + offsetMax.getZ());
+        StructureTemplate structuretemplate = this.getTemplate(structureManager);
+
+        Vec3i sizeVec = structuretemplate.getSize().offset(-1, -1, -1);
+        BlockPos blockpos = StructureTemplate.transform(BlockPos.ZERO.offset(boundsMinOffset), Mirror.NONE, rotation, BlockPos.ZERO);
+        BlockPos blockpos1 = StructureTemplate.transform(BlockPos.ZERO.offset(sizeVec).offset(boundsMaxOffset), Mirror.NONE, rotation, BlockPos.ZERO);
+        return BoundingBox.fromCorners(blockpos, blockpos1).move(blockPos);
     }
 }

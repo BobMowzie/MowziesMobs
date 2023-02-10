@@ -111,6 +111,7 @@ public class MonasteryStructure extends MowzieStructure<JigsawConfiguration> {
                         // Either not intersecting or fully contained will make children pieces spawn just fine. It's easier that way.
                         true, // Place at heightmap (top land). Set this to false for structure to be place at the passed in blockpos's Y value instead.
                         // Definitely keep this false when placing structures in the nether as otherwise, heightmap placing will put the structure on the Bedrock roof.
+                        140,
                         MUST_CONNECT_POOLS, REPLACE_POOLS, STRAIGHT_POOL
                 );
 
