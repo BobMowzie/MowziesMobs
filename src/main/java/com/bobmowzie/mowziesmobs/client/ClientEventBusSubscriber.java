@@ -4,13 +4,17 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoTrade;
 import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.client.gui.GuiSculptorTrade;
+import com.bobmowzie.mowziesmobs.client.render.block.GongRenderer;
 import com.bobmowzie.mowziesmobs.client.render.entity.*;
+import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
+import com.bobmowzie.mowziesmobs.server.block.entity.BlockEntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderBase;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderProjectile;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerHandler;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -61,6 +65,8 @@ public class ClientEventBusSubscriber {
         EntityRenderers.register(EntityHandler.BLOCK_SWAPPER_SCULPTOR.get(), RenderNothing::new);
         EntityRenderers.register(EntityHandler.CAMERA_SHAKE.get(), RenderNothing::new);
 //        EntityRenderers.register(EntityHandler.TEST_ENTITY.get(), RenderNothing::new);
+
+        BlockEntityRenderers.register(BlockEntityHandler.GONG_BLOCK_ENTITY.get(), GongRenderer::new);
 
         MenuScreens.register(ContainerHandler.CONTAINER_BARAKOAYA_TRADE, GuiBarakoayaTrade::new);
         MenuScreens.register(ContainerHandler.CONTAINER_BARAKO_TRADE, GuiBarakoTrade::new);

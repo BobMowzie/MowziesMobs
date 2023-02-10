@@ -8,6 +8,7 @@ import com.bobmowzie.mowziesmobs.server.ServerProxy;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityCommonEventHandler;
 import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
+import com.bobmowzie.mowziesmobs.server.block.entity.BlockEntityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
@@ -55,6 +56,7 @@ public final class MowziesMobs {
         EntityHandler.REG.register(bus);
         MMSounds.REG.register(bus);
         BlockHandler.REG.register(bus);
+        BlockEntityHandler.REG.register(bus);
         ParticleHandler.REG.register(bus);
         FeatureHandler.REG.register(bus);
         FeatureHandler.FEATURES.register(bus);
