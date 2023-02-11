@@ -2,9 +2,6 @@ package com.bobmowzie.mowziesmobs.server.block.entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -37,13 +34,9 @@ public class GongBlockEntity extends BlockEntity {
             ++entity.ticks;
         }
 
-        if (entity.ticks >= 50) {
+        if (entity.ticks >= 148) {
             entity.shaking = false;
             entity.ticks = 0;
-        }
-
-        if (entity.ticks >= 5) {
-            level.playSound((Player)null, pos, SoundEvents.BELL_RESONATE, SoundSource.BLOCKS, 1.0F, 1.0F);
         }
     }
 

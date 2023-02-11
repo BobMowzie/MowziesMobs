@@ -62,7 +62,7 @@ public class GongRenderer implements BlockEntityRenderer<GongBlockEntity> {
         float f = (float)entity.ticks + delta;
         float f1 = 0.0F;
         if (entity.shaking) {
-            float f3 = Mth.sin(f / (float)Math.PI) / (4.0F + f / 3.0F);
+            float f3 = Mth.sin(f / (float)Math.PI) / (4.0F + f / 2.0F);
             if (entity.clickDirection == Direction.NORTH) {
                 f1 = f3;
             } else if (entity.clickDirection == Direction.SOUTH) {
