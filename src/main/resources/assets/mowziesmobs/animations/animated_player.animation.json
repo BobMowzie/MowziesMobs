@@ -5325,6 +5325,9 @@
 				},
 				"Body": {
 					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
 						"0.0833": {
 							"vector": [0, 0, 0]
 						},
@@ -5448,42 +5451,106 @@
 				},
 				"ArmBreathController": {
 					"position": {
-						"vector": [1, 0, 0]
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.2083": {
+							"vector": [1, 0, 0]
+						},
+						"0.75": {
+							"vector": [-1, 0, 0]
+						}
 					}
 				},
 				"HeadLookController": {
 					"position": {
-						"vector": [-1, 0, 0]
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.2083": {
+							"vector": [1, 0, 0]
+						},
+						"0.75": {
+							"vector": [-1, 0, 0]
+						}
 					}
 				},
 				"ArmSwingController": {
 					"position": {
-						"vector": [-1, 0, 0]
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.2083": {
+							"vector": [1, 0, 0]
+						},
+						"0.75": {
+							"vector": [-1, 0, 0]
+						}
 					}
 				},
 				"LegWalkController": {
 					"position": {
-						"vector": [-1, 0, 0]
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.2083": {
+							"vector": [1, 0, 0]
+						},
+						"0.75": {
+							"vector": [-1, 0, 0]
+						}
 					}
 				},
 				"BodyRotateController": {
 					"position": {
-						"vector": [1, 0, 0]
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.2083": {
+							"vector": [1, 0, 0]
+						},
+						"0.75": {
+							"vector": [-1, 0, 0]
+						}
 					}
 				},
 				"CrouchController": {
 					"position": {
-						"vector": [-1, 0, 0]
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.2083": {
+							"vector": [1, 0, 0]
+						},
+						"0.75": {
+							"vector": [-1, 0, 0]
+						}
 					}
 				},
 				"SwimController": {
 					"position": {
-						"vector": [-1, 0, 0]
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.2083": {
+							"vector": [1, 0, 0]
+						},
+						"0.75": {
+							"vector": [-1, 0, 0]
+						}
 					}
 				},
 				"ArmPitchController": {
 					"position": {
-						"vector": [-1, 0, 0]
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.2083": {
+							"vector": [1, 0, 0]
+						},
+						"0.75": {
+							"vector": [-1, 0, 0]
+						}
 					}
 				},
 				"FaceVelocityController": {
@@ -5682,17 +5749,17 @@
 				},
 				"HeadLookController": {
 					"position": {
-						"vector": [-1, 0, 0]
+						"vector": [1, 0, 0]
 					}
 				},
 				"ArmSwingController": {
 					"position": {
-						"vector": [-1, 0, 0]
+						"vector": [1, 0, 0]
 					}
 				},
 				"LegWalkController": {
 					"position": {
-						"vector": [-1, 0, 0]
+						"vector": [1, 0, 0]
 					}
 				},
 				"BodyRotateController": {
@@ -5702,17 +5769,17 @@
 				},
 				"CrouchController": {
 					"position": {
-						"vector": [-1, 0, 0]
+						"vector": [1, 0, 0]
 					}
 				},
 				"SwimController": {
 					"position": {
-						"vector": [-1, 0, 0]
+						"vector": [1, 0, 0]
 					}
 				},
 				"ArmPitchController": {
 					"position": {
-						"vector": [-1, 0, 0]
+						"vector": [1, 0, 0]
 					}
 				},
 				"FaceVelocityController": {

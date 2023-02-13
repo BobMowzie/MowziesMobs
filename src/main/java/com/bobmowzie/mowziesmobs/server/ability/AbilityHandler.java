@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.ability;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.*;
+import com.bobmowzie.mowziesmobs.server.ability.abilities.geomancy.BoulderRollAbility;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.geomancy.SpawnBoulderAbility;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.geomancy.SpawnPillarAbility;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
@@ -32,6 +33,8 @@ public enum AbilityHandler {
             new SimplePlayerAnimationAbility(type, (Player) player, "hit_boulder", 10, false, false)
     );
     public static final AbilityType<Player, SpawnPillarAbility> SPAWN_PILLAR_ABILITY = new AbilityType<>("spawn_pillar", SpawnPillarAbility::new);
+    public static final AbilityType<Player, BoulderRollAbility> BOULDER_ROLL_ABILITY = new AbilityType<>("boulder_roll", BoulderRollAbility::new);
+
     public static final AbilityType<Player, SimplePlayerAnimationAbility> BACKSTAB_ABILITY = new AbilityType<>("backstab", (type, player) ->
             new SimplePlayerAnimationAbility(type, (Player) player, "backstab", 12, true, true)
     );
@@ -45,7 +48,8 @@ public enum AbilityHandler {
             SPAWN_PILLAR_ABILITY,
             TUNNELING_ABILITY,
             HIT_BOULDER_ABILITY,
-            BACKSTAB_ABILITY
+            BACKSTAB_ABILITY,
+            BOULDER_ROLL_ABILITY
     };
 
     @Nullable
