@@ -1,0 +1,26 @@
+{
+  "variants": {
+    "shape=east_west": {
+      "model": "mowziesmobs:block/raked_sand",
+      "y": 90
+    },
+    "shape=north_east": {
+      "model": "mowziesmobs:block/raked_sand_corner",
+      "y": 270
+    },
+    "shape=north_south": {
+      "model": "mowziesmobs:block/raked_sand"
+    },
+    "shape=north_west": {
+      "model": "mowziesmobs:block/raked_sand_corner",
+      "y": 180
+    },
+    "shape=south_east": {
+      "model": "mowziesmobs:block/raked_sand_corner"
+    },
+    "shape=south_west": {
+      "model": "mowziesmobs:block/raked_sand_corner",
+      "y": 90
+    }
+  }
+}
