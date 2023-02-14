@@ -1,34 +1,44 @@
 package com.bobmowzie.mowziesmobs.server.ability.abilities.geomancy;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
+import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.*;
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 
 public class BoulderRollAbility extends PlayerAbility {
     private static int START_UP = 15;
+    float spinAmount = 0;
 
     public BoulderRollAbility(AbilityType<Player, ? extends Ability> abilityType, Player user) {
         super(abilityType, user,  new AbilitySection[] {
-                new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 15),
-                new AbilitySection.AbilitySectionInfinite(AbilitySection.AbilitySectionType.ACTIVE),
-                new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 12)
+                new AbilitySection.AbilitySectionInfinite(AbilitySection.AbilitySectionType.ACTIVE)
         });
     }
 
-    @Override
-    public void start() {
-        super.start();
-        playAnimation("boulder_roll_start", false);
-    }
+
 
     @Override
     protected void beginSection(AbilitySection section) {
         super.beginSection(section);
-        if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
-            playAnimation("boulder_roll_loop", true);
+    }
+
+    @Override
+    public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e, GeckoPlayer.Perspective perspective) {
+        e.getController().transitionLengthTicks = 0;
+        if (perspective == GeckoPlayer.Perspective.THIRD_PERSON) {
+            e.getController().setAnimation(new AnimationBuilder().addAnimation("boulder_roll_loop_still", true));
         }
+        return PlayState.CONTINUE;
     }
 
 
@@ -67,5 +77,12 @@ public class BoulderRollAbility extends PlayerAbility {
         return getUser().hasEffect(EffectHandler.GEOMANCY) && getUser().isSprinting() && super.canUse();
     }
 
-
+    @Override
+    public void codeAnimations(MowzieAnimatedGeoModel<? extends IAnimatable> model, float partialTick) {
+        super.codeAnimations(model, partialTick);
+        float spinSpeed = 0.35f;
+        spinAmount += partialTick * spinSpeed;
+        MowzieGeoBone centerOfMass = model.getMowzieBone("CenterOfMass");
+        centerOfMass.addRotationX(-spinAmount);
+    }
 }
