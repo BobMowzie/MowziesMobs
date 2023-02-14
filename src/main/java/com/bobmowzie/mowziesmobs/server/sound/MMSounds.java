@@ -269,6 +269,9 @@ public final class MMSounds {
     public static final RegistryObject<SoundEvent> EFFECT_GEOMANCY_BOULDER_CHARGE = create("geomancy.bouldercharge");
     public static final RegistryObject<SoundEvent> EFFECT_GEOMANCY_MAGIC_CHARGE_SMALL = create("geomancy.magicchargesmall");
 
+    public static final RegistryObject<SoundEvent> BLOCK_GONG = create("block.gong");
+    public static final RegistryObject<SoundEvent> BLOCK_RAKE_SAND = create("block.rakesand");
+
     public static final RegistryObject<SoundEvent> MISC_GROUNDHIT_1 = create("misc.groundhit1");
     public static final RegistryObject<SoundEvent> MISC_GROUNDHIT_2 = create("misc.groundhit2");
 

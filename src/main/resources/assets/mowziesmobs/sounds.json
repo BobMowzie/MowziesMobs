@@ -670,6 +670,14 @@
 		"sounds": [ "mowziesmobs:entity/naga/swoop" ],
 		"subtitle": "subtitles.mowziesmobs.naga.swoop"
 	},
+	"block.gong": {
+		"sounds": [ "mowziesmobs:random/gong" ],
+		"subtitle": "subtitles.mowziesmobs.block.gong"
+	},
+	"block.rakesand": {
+		"sounds": [ "minecraft:item/shovel/flatten1" ],
+		"subtitle": "subtitles.mowziesmobs.block.rakesand"
+	},
 	"misc.groundhit1": {
 		"sounds": [ "mowziesmobs:entity/misc/ground_hit1" ],
 		"subtitle": "subtitles.mowziesmobs.ground_hit"

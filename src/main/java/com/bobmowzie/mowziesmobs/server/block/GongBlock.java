@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.block;
 import com.bobmowzie.mowziesmobs.server.block.entity.BlockEntityHandler;
 import com.bobmowzie.mowziesmobs.server.block.entity.GongBlockEntity;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -104,7 +105,7 @@ public class GongBlock extends BaseEntityBlock {
             }
 
             ((GongBlockEntity)blockentity).onHit(p_152192_);
-            p_152190_.playSound((Player)null, p_152191_, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 2.0F, 1.0F);
+            p_152190_.playSound((Player)null, p_152191_, MMSounds.BLOCK_GONG.get(), SoundSource.BLOCKS, 2.0F, 1.0F);
             p_152190_.gameEvent(p_152189_, GameEvent.RING_BELL, p_152191_);
             return true;
         } else {

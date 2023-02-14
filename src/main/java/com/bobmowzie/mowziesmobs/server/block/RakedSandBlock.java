@@ -47,9 +47,9 @@ public class RakedSandBlock extends SandBlock {
         return canSupportRigidBlock(p_49396_, p_49397_.below());
     }
 
-    public void onPlace(BlockState p_49408_, Level p_49409_, BlockPos p_49410_, BlockState p_49411_, boolean p_49412_) {
-        if (!p_49411_.is(p_49408_.getBlock())) {
-            this.updateState(p_49408_, p_49409_, p_49410_, p_49412_);
+    public void onPlace(BlockState blockState, Level level, BlockPos pos, BlockState previousState, boolean p_49412_) {
+        if (!previousState.is(blockState.getBlock())) {
+            this.updateState(blockState, level, pos, p_49412_);
         }
     }
 
