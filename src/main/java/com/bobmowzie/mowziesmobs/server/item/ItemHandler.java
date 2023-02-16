@@ -52,6 +52,7 @@ public final class ItemHandler {
     public static final ItemNagaFang NAGA_FANG = null;
     public static final ItemNagaFangDagger NAGA_FANG_DAGGER = null;
     public static final ItemEarthboreGauntlet EARTHBORE_GAUNTLET = null;
+    public static final ItemSculptorStaff SCULPTOR_STAFF = null;
     public static final Item LOGO = null;
     public static final RecordItem PETIOLE_MUSIC_DISC = null;
 
@@ -98,6 +99,7 @@ public final class ItemHandler {
             new ItemNagaFang(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("naga_fang"),
             new ItemNagaFangDagger(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("naga_fang_dagger"),
             new ItemEarthboreGauntlet(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).defaultDurability(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.durability.get()).rarity(Rarity.RARE)).setRegistryName("earthbore_gauntlet"),
+            new ItemSculptorStaff(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).defaultDurability(1000).rarity(Rarity.RARE)).setRegistryName("sculptor_staff"),
             new ItemSandRake(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).defaultDurability(64)).setRegistryName("sand_rake"),
             new Item(new Item.Properties()).setRegistryName("logo"),
             new RecordItem(14, MMSounds.MUSIC_PETIOLE, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1).rarity(Rarity.RARE)).setRegistryName("music_disc_petiole"),

@@ -23,7 +23,7 @@ import java.util.Random;
 
 @OnlyIn(Dist.CLIENT)
 public class MMModels {
-    public static final String[] HAND_MODEL_ITEMS = new String[] {"wrought_axe", "spear", "earthbore_gauntlet"};
+    public static final String[] HAND_MODEL_ITEMS = new String[] {"wrought_axe", "spear", "earthbore_gauntlet", "sculptor_staff"};
 
     @SubscribeEvent
     public static void onModelBakeEvent(ModelBakeEvent event) {

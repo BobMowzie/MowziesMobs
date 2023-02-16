@@ -42,10 +42,10 @@ public class ModelSculptor extends MowzieAnimatedGeoModel<EntitySculptor> {
     @Override
     public void codeAnimations(EntitySculptor entity, Integer uniqueID, AnimationEvent<?> customPredicate) {
         IBone head = this.getBone("head");
-        IBone handClosedL = this.getBone("handClosedL");
-        IBone handClosedR = this.getBone("handClosedR");
-        IBone handOpenL = this.getBone("handOpenL");
-        IBone handOpenR = this.getBone("handOpenR");
+        IBone handClosedL = this.getBone("handClosedLeft");
+        IBone handClosedR = this.getBone("handClosedRight");
+        IBone handOpenL = this.getBone("handOpenLeft");
+        IBone handOpenR = this.getBone("handOpenRight");
         IBone backCloth = this.getBone("clothBack");
 
         EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
@@ -61,6 +61,8 @@ public class ModelSculptor extends MowzieAnimatedGeoModel<EntitySculptor> {
 
         beadsCorrections(entity);
         skirtCorrections(entity);
+
+        staffRendering(entity);
     }
 
     private void beadsCorrections(EntitySculptor entity) {
@@ -93,29 +95,29 @@ public class ModelSculptor extends MowzieAnimatedGeoModel<EntitySculptor> {
 
     private void skirtCorrections(EntitySculptor entity) {
         MowzieGeoBone headJoint = this.getMowzieBone("head_joint");
-        MowzieGeoBone thighR = this.getMowzieBone("thighR");
-        MowzieGeoBone thighJointR = this.getMowzieBone("thighJointR");
-        MowzieGeoBone thighJointL = this.getMowzieBone("thighJointL");
-        MowzieGeoBone calfR = this.getMowzieBone("calfR");
-        MowzieGeoBone thighL = this.getMowzieBone("thighL");
-        MowzieGeoBone calfL = this.getMowzieBone("calfL");
-        MowzieGeoBone footR = this.getMowzieBone("footR");
+        MowzieGeoBone thighR = this.getMowzieBone("thighRight");
+        MowzieGeoBone thighJointR = this.getMowzieBone("thighJointRight");
+        MowzieGeoBone thighJointL = this.getMowzieBone("thighJointLeft");
+        MowzieGeoBone calfR = this.getMowzieBone("calfRight");
+        MowzieGeoBone thighL = this.getMowzieBone("thighLeft");
+        MowzieGeoBone calfL = this.getMowzieBone("calfLeft");
+        MowzieGeoBone footR = this.getMowzieBone("footRight");
 
         MowzieGeoBone skirtBack = this.getMowzieBone("skirtBack");
         MowzieGeoBone skirtFront = this.getMowzieBone("skirtFront");
-        MowzieGeoBone skirtL = this.getMowzieBone("skirtL");
-        MowzieGeoBone skirtR = this.getMowzieBone("skirtR");
-        MowzieGeoBone skirtJointL = this.getMowzieBone("skirtJointL");
-        MowzieGeoBone skirtJointR = this.getMowzieBone("skirtJointR");
-        MowzieGeoBone skirtJoint2L = this.getMowzieBone("skirtJoint2L");
-        MowzieGeoBone skirtJoint2R = this.getMowzieBone("skirtJoint2R");
-        MowzieGeoBone skirtEndR = this.getMowzieBone("skirtEndR");
-        MowzieGeoBone skirtEndL = this.getMowzieBone("skirtEndL");
+        MowzieGeoBone skirtL = this.getMowzieBone("skirtLeft");
+        MowzieGeoBone skirtR = this.getMowzieBone("skirtRight");
+        MowzieGeoBone skirtJointL = this.getMowzieBone("skirtJointLeft");
+        MowzieGeoBone skirtJointR = this.getMowzieBone("skirtJointRight");
+        MowzieGeoBone skirtJoint2L = this.getMowzieBone("skirtJoint2Left");
+        MowzieGeoBone skirtJoint2R = this.getMowzieBone("skirtJoint2Right");
+        MowzieGeoBone skirtEndR = this.getMowzieBone("skirtEndRight");
+        MowzieGeoBone skirtEndL = this.getMowzieBone("skirtEndLeft");
 
-        MowzieGeoBone skirtLocFrontR = this.getMowzieBone("skirtFrontLocR");
-        MowzieGeoBone skirtLocFrontL = this.getMowzieBone("skirtFrontLocL");
-        MowzieGeoBone skirtLocBackR = this.getMowzieBone("skirtBackLocR");
-        MowzieGeoBone skirtLocBackL = this.getMowzieBone("skirtBackLocL");
+        MowzieGeoBone skirtLocFrontR = this.getMowzieBone("skirtFrontLocRight");
+        MowzieGeoBone skirtLocFrontL = this.getMowzieBone("skirtFrontLocLeft");
+        MowzieGeoBone skirtLocBackR = this.getMowzieBone("skirtBackLocRight");
+        MowzieGeoBone skirtLocBackL = this.getMowzieBone("skirtBackLocLeft");
 
         headJoint.setHidden(false);
 
@@ -133,9 +135,7 @@ public class ModelSculptor extends MowzieAnimatedGeoModel<EntitySculptor> {
         skirtJointR.addPosition(Math.max(-0.9f * rightDot, -0.7f), 0, Math.max(-0.7f * rightDot, -0.5f));
         skirtJointL.addPosition(-Math.max(-0.9f * leftDot, -0.7f), 0, Math.max(-0.7f * leftDot, -0.5f));
 
-        MowzieGeoBone test = this.getMowzieBone("test");
-        MowzieGeoBone test2 = this.getMowzieBone("test2");
-        MowzieGeoBone test3 = this.getMowzieBone("test3");
+
 
         Quaternion rightRot = RigUtils.betweenVectors(thighToSkirtEndR, thighToKneeR);
         Quaternion leftRot = RigUtils.betweenVectors(thighToSkirtEndL, thighToKneeL);
@@ -172,6 +172,32 @@ public class ModelSculptor extends MowzieAnimatedGeoModel<EntitySculptor> {
         mat.invert();
         frontCloth2.setModelRotationMat(mat);
     }
+
+    private void staffRendering(EntitySculptor entity) {
+        MowzieGeoBone itemHandLeft = this.getMowzieBone("itemHandLeft");
+        MowzieGeoBone itemHandRight = this.getMowzieBone("itemHandRight");
+        MowzieGeoBone backItem = this.getMowzieBone("backItem");
+
+        itemHandLeft.setHidden(true);
+        itemHandRight.setHidden(true);
+        backItem.setHidden(true);
+
+        MowzieGeoBone staffController = this.getMowzieBone("staffController");
+
+        switch ((int) staffController.getPositionX()){
+            case -1:
+                itemHandRight.setHidden(false);
+                break;
+            case 0:
+                backItem.setHidden(false);
+                break;
+            case 1:
+                itemHandLeft.setHidden(false);
+                break;
+        }
+    }
+
+
 
     private static Vec3 Vec3(Vector3d vec) {
         return new Vec3(vec.x, vec.y, vec.z);

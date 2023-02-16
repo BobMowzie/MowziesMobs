@@ -5,6 +5,7 @@ import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.ai.UseAbilityAI;
+import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
@@ -48,7 +49,10 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.event.CustomInstructionKeyframeEvent;
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 
 import java.util.List;
@@ -106,6 +110,23 @@ public class EntitySculptor extends MowzieGeckoEntity {
         return MowzieEntity.createAttributes().add(Attributes.ATTACK_DAMAGE, 10)
                 .add(Attributes.MAX_HEALTH, 40)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1);
+    }
+
+    protected <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event)
+    {
+        getController().transitionLengthTicks = 0;
+        AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability();
+        if (abilityCapability == null) {
+            return PlayState.STOP;
+        }
+
+        if (abilityCapability.getActiveAbility() != null) {
+            return abilityCapability.animationPredicate(event, null);
+        }
+        else {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("test_fail_start", true));
+            return PlayState.CONTINUE;
+        }
     }
 
     @Override
@@ -478,7 +499,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
         @Override
         public void start() {
             super.start();
-            playAnimation("testStart", false);
+            playAnimation("test_fail_start", false);
             if (getUser().pillar != null) getUser().pillar.startFalling();
         }
 

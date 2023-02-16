@@ -1,0 +1,29 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.unknown",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 5,
+				"visible_bounds_height": 4.5,
+				"visible_bounds_offset": [0, 1.75, 0]
+			},
+			"bones": [
+				{
+					"name": "staff",
+					"pivot": [0, 23.2773, -0.08047],
+					"cubes": [
+						{"origin": [0, 28, 0], "size": [14, 3, 0], "uv": [16, 20]},
+						{"origin": [-1, 21, -1], "size": [2, 16, 2], "uv": [47, 3]},
+						{"origin": [-2, 34, -2], "size": [4, 10, 4], "uv": [0, 0]},
+						{"origin": [-6, 38, 0], "size": [12, 12, 0], "uv": [17, 2]},
+						{"origin": [-3, 6, -0.5], "size": [2, 16, 1], "pivot": [-2, 7.5, 0], "rotation": [0, 0, 7.75], "uv": [56, 4]},
+						{"origin": [-3.35415, 1.30993, -1.5], "size": [5, 5, 3], "pivot": [-3.25, 6.25, 0], "rotation": [0, 0, -50], "uv": [0, 15], "mirror": true}
+					]
+				}
+			]
+		}
+	]
+}
