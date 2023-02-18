@@ -274,6 +274,7 @@ public class MowzieJigsawManager {
                 for (Rotation nextPieceRotation : Rotation.getShuffled(this.random)) {
                     List<StructureTemplate.StructureBlockInfo> nextPieceJigsawBlocks = nextPieceCandidate.getShuffledJigsawBlocks(this.structureManager, BlockPos.ZERO, nextPieceRotation, this.random);
                     BoundingBox nextPieceBoundingBoxOrigin = nextPieceCandidate.getBoundingBox(this.structureManager, BlockPos.ZERO, nextPieceRotation);
+
                     int largestSizeOfNextNextPiece;
                     // Village boundary adjustment
                     if (villageBoundaryAdjust && nextPieceBoundingBoxOrigin.getYSpan() <= 16) {
@@ -337,6 +338,15 @@ public class MowzieJigsawManager {
                             if (largestSizeOfNextNextPiece > 0) {
                                 int j2 = Math.max(largestSizeOfNextNextPiece + 1, nextPieceBoundingBoxPlaced.maxY() - nextPieceBoundingBoxPlaced.minY());
                                 nextPieceBoundingBoxPlaced.encapsulate(new BlockPos(nextPieceBoundingBoxPlaced.minX(), nextPieceBoundingBoxPlaced.minY() + j2, nextPieceBoundingBoxPlaced.minZ()));
+                            }
+
+                            // Check height params
+                            if (nextPieceCandidate instanceof MowziePoolElement) {
+                                int freeHeight = this.chunkGenerator.getFirstFreeHeight(nextPieceBoundingBoxPlaced.minX() + nextPieceBoundingBoxPlaced.getXSpan() / 2, nextPieceBoundingBoxPlaced.minZ() + nextPieceBoundingBoxPlaced.getZSpan() / 2, Heightmap.Types.WORLD_SURFACE_WG, heightAccessor);
+                                Optional<Integer> maxHeight = ((MowziePoolElement) nextPieceCandidate).maxHeight;
+                                Optional<Integer> minHeight = ((MowziePoolElement) nextPieceCandidate).minHeight;
+                                if (maxHeight.isPresent() && thisPieceMinY - freeHeight > maxHeight.get()) continue;
+                                if (minHeight.isPresent() && thisPieceMinY - freeHeight < minHeight.get()) continue;
                             }
 
                             boolean ignoreBounds = false;

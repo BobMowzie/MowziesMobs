@@ -20,6 +20,8 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlac
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
+import java.util.Optional;
+
 public class MowziePoolElement extends SinglePoolElement {
     public static final Codec<MowziePoolElement> CODEC = RecordCodecBuilder.create((builder) -> builder
             .group(
@@ -32,8 +34,8 @@ public class MowziePoolElement extends SinglePoolElement {
                     BlockPos.CODEC.optionalFieldOf("bounds_max_offset", BlockPos.ZERO).forGetter(element -> element.boundsMaxOffset),
                     BlockPos.CODEC.optionalFieldOf("offset", BlockPos.ZERO).forGetter(element -> element.offset),
                     Codec.INT.optionalFieldOf("max_depth", -1).forGetter(element -> element.maxDepth),
-                    Codec.INT.optionalFieldOf("min_height", -1).forGetter(element -> element.minHeight),
-                    Codec.INT.optionalFieldOf("max_height", -1).forGetter(element -> element.maxHeight)
+                    Codec.INT.optionalFieldOf("min_height").forGetter(element -> element.minHeight),
+                    Codec.INT.optionalFieldOf("max_height").forGetter(element -> element.maxHeight)
             ).apply(builder, MowziePoolElement::new));
 
     /**
@@ -66,12 +68,12 @@ public class MowziePoolElement extends SinglePoolElement {
     /**
      * Distances to stop the piece from placing too high or too low down.
      */
-    public final int minHeight;
-    public final int maxHeight;
+    public final Optional<Integer> minHeight;
+    public final Optional<Integer> maxHeight;
 
     protected MowziePoolElement(Either<ResourceLocation, StructureTemplate> p_210415_, Holder<StructureProcessorList> p_210416_, StructureTemplatePool.Projection p_210417_, boolean ignoreBounds, boolean twoWay,
                                 BlockPos boundsMinOffset, BlockPos boundsMaxOffset, BlockPos offset,
-                                int maxDepth, int minHeight, int maxHeight
+                                int maxDepth, Optional<Integer> minHeight, Optional<Integer> maxHeight
     ) {
         super(p_210415_, p_210416_, p_210417_);
         this.ignoreBounds = ignoreBounds;

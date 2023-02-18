@@ -3,7 +3,7 @@
   // Yes, worldgen json files can have comments. Minecraft does "lenient" parsing of these json files.
 
   // This is the name of the template pool itself. I tend to just put the file path and file name here with modid.
-  "name": "mowziesmobs:monastery/path_connector_pool",
+  "name": "mowziesmobs:monastery/tower_down_pool",
 
   // The template pool to refer to if the entries in 'elements' fails to generate.
   "fallback": "minecraft:empty",
@@ -14,14 +14,14 @@
     {
 
       // How likely out of all the element for this one to be chosen.
-      "weight": 20,
+      "weight": 1,
       "element": {
 
         // The Identifier of the nbt file itself of the structure piece.
         // Note, this will automatically check into the 'structures' folder for the nbt file.
         // The final path would look like 'resources/data/structure_tutorial/structures/run_down_house_left_side.nbt'
         // The Jigsaw block in the structure will point to side_pool.json to spawn the other half of the house.
-        "location": "mowziesmobs:monastery/monastery_wall_connector",
+        "location": "mowziesmobs:monastery/monastery_tower_base",
 
         // Processor JSON files can be used to randomize or replace blocks dynamically. Here, we don't do any of that.
         "processors": "mowziesmobs:monastery",
@@ -35,14 +35,13 @@
         // Air and Structure Void in your piece as well as change the attachment mechanism.
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
-        "two_way": true,
         "bounds_min_offset": [
-          0, 0, 2
+          1, 0, 1
         ],
         "bounds_max_offset": [
-          0, 0, -2
+          -1, -1, -1
         ],
-        "ignore_bounds": true
+        "max_height": 7
       }
     },
     {
@@ -55,7 +54,7 @@
         // Note, this will automatically check into the 'structures' folder for the nbt file.
         // The final path would look like 'resources/data/structure_tutorial/structures/run_down_house_left_side.nbt'
         // The Jigsaw block in the structure will point to side_pool.json to spawn the other half of the house.
-        "location": "mowziesmobs:monastery/monastery_doorway",
+        "location": "mowziesmobs:monastery/monastery_tower_middle",
 
         // Processor JSON files can be used to randomize or replace blocks dynamically. Here, we don't do any of that.
         "processors": "mowziesmobs:monastery",
@@ -70,14 +69,12 @@
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
         "bounds_min_offset": [
-          2, 0, -1
+          1, 0, 1
         ],
         "bounds_max_offset": [
-          -2, 0, 1
+          -1, -1, -1
         ],
-        "max_depth": 11,
-        "min_height": -4,
-        "max_height": 4
+        "min_height": 7
       }
     }
   ]

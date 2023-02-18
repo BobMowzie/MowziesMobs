@@ -85,7 +85,7 @@ public class MonasteryStructure extends MowzieStructure<JigsawConfiguration> {
         JigsawConfiguration newConfig = new JigsawConfiguration(
                 Holder.direct(context.registryAccess().ownedRegistryOrThrow(Registry.TEMPLATE_POOL_REGISTRY)
                         .get(new ResourceLocation(MowziesMobs.MODID, "monastery/start_pool"))),
-                13
+                23
         );
 
         PieceGeneratorSupplier.Context<JigsawConfiguration> newContext = new PieceGeneratorSupplier.Context<>(
