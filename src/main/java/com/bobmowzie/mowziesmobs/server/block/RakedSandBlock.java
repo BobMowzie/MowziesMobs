@@ -48,9 +48,7 @@ public class RakedSandBlock extends SandBlock {
     }
 
     public void onPlace(BlockState blockState, Level level, BlockPos pos, BlockState previousState, boolean p_49412_) {
-        if (!previousState.is(blockState.getBlock())) {
-            this.updateState(blockState, level, pos, p_49412_);
-        }
+        this.updateState(blockState, level, pos, p_49412_);
     }
 
     protected BlockState updateState(BlockState state, Level level, BlockPos pos, boolean p_49393_) {
