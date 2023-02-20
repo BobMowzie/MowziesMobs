@@ -34,7 +34,10 @@
         // There's 'minecraft:legacy_single_pool_element' but that swaps the behavior of
         // Air and Structure Void in your piece as well as change the attachment mechanism.
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
-        "element_type": "mowziesmobs:mowzie_element"
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds_min_offset": [
+          0, -80, 0
+        ]
       }
     },
     {
@@ -60,7 +63,10 @@
         // There's 'minecraft:legacy_single_pool_element' but that swaps the behavior of
         // Air and Structure Void in your piece as well as change the attachment mechanism.
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
-        "element_type": "mowziesmobs:mowzie_element"
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds_min_offset": [
+          0, -80, 0
+        ]
       }
     }
   ]

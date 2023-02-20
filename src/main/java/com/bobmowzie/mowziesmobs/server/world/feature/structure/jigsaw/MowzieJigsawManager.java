@@ -345,8 +345,8 @@ public class MowzieJigsawManager {
                                 int freeHeight = this.chunkGenerator.getFirstFreeHeight(nextPieceBoundingBoxPlaced.minX() + nextPieceBoundingBoxPlaced.getXSpan() / 2, nextPieceBoundingBoxPlaced.minZ() + nextPieceBoundingBoxPlaced.getZSpan() / 2, Heightmap.Types.WORLD_SURFACE_WG, heightAccessor);
                                 Optional<Integer> maxHeight = ((MowziePoolElement) nextPieceCandidate).maxHeight;
                                 Optional<Integer> minHeight = ((MowziePoolElement) nextPieceCandidate).minHeight;
-                                if (maxHeight.isPresent() && thisPieceMinY - freeHeight > maxHeight.get()) continue;
-                                if (minHeight.isPresent() && thisPieceMinY - freeHeight < minHeight.get()) continue;
+                                if (maxHeight.isPresent() && nextPieceMinY - freeHeight > maxHeight.get()) continue;
+                                if (minHeight.isPresent() && nextPieceMinY - freeHeight < minHeight.get()) continue;
                             }
 
                             boolean ignoreBounds = false;
@@ -480,6 +480,8 @@ public class MowzieJigsawManager {
                 }
 
                 if (nextPieceCandidate instanceof MowziePoolElement) {
+                    int minDepth = ((MowziePoolElement) nextPieceCandidate).minDepth;
+                    if (minDepth != -1 && pieceState.depth < minDepth) continue;
                     int maxDepth = ((MowziePoolElement) nextPieceCandidate).maxDepth;
                     if (maxDepth != -1 && pieceState.depth > maxDepth) continue;
                 }

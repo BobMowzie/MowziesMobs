@@ -33,6 +33,7 @@ public class MowziePoolElement extends SinglePoolElement {
                     BlockPos.CODEC.optionalFieldOf("bounds_min_offset", BlockPos.ZERO).forGetter(element -> element.boundsMinOffset),
                     BlockPos.CODEC.optionalFieldOf("bounds_max_offset", BlockPos.ZERO).forGetter(element -> element.boundsMaxOffset),
                     BlockPos.CODEC.optionalFieldOf("offset", BlockPos.ZERO).forGetter(element -> element.offset),
+                    Codec.INT.optionalFieldOf("min_depth", -1).forGetter(element -> element.maxDepth),
                     Codec.INT.optionalFieldOf("max_depth", -1).forGetter(element -> element.maxDepth),
                     Codec.INT.optionalFieldOf("min_height").forGetter(element -> element.minHeight),
                     Codec.INT.optionalFieldOf("max_height").forGetter(element -> element.maxHeight)
@@ -63,6 +64,7 @@ public class MowziePoolElement extends SinglePoolElement {
     /**
      * Maximum iteration depth at which this piece can be chosen
      */
+    public final int minDepth;
     public final int maxDepth;
 
     /**
@@ -73,7 +75,8 @@ public class MowziePoolElement extends SinglePoolElement {
 
     protected MowziePoolElement(Either<ResourceLocation, StructureTemplate> p_210415_, Holder<StructureProcessorList> p_210416_, StructureTemplatePool.Projection p_210417_, boolean ignoreBounds, boolean twoWay,
                                 BlockPos boundsMinOffset, BlockPos boundsMaxOffset, BlockPos offset,
-                                int maxDepth, Optional<Integer> minHeight, Optional<Integer> maxHeight
+                                int minDepth,int maxDepth,
+                                Optional<Integer> minHeight, Optional<Integer> maxHeight
     ) {
         super(p_210415_, p_210416_, p_210417_);
         this.ignoreBounds = ignoreBounds;
@@ -81,6 +84,7 @@ public class MowziePoolElement extends SinglePoolElement {
         this.boundsMinOffset = boundsMinOffset;
         this.boundsMaxOffset = boundsMaxOffset;
         this.offset = offset;
+        this.minDepth = minDepth;
         this.maxDepth = maxDepth;
         this.minHeight = minHeight;
         this.maxHeight = maxHeight;
