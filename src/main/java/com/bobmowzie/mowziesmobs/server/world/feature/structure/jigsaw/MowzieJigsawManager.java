@@ -342,11 +342,13 @@ public class MowzieJigsawManager {
 
                             // Check height params
                             if (nextPieceCandidate instanceof MowziePoolElement) {
-                                int freeHeight = this.chunkGenerator.getFirstFreeHeight(nextPieceBoundingBoxPlaced.minX() + nextPieceBoundingBoxPlaced.getXSpan() / 2, nextPieceBoundingBoxPlaced.minZ() + nextPieceBoundingBoxPlaced.getZSpan() / 2, Heightmap.Types.WORLD_SURFACE_WG, heightAccessor);
                                 Optional<Integer> maxHeight = ((MowziePoolElement) nextPieceCandidate).maxHeight;
                                 Optional<Integer> minHeight = ((MowziePoolElement) nextPieceCandidate).minHeight;
-                                if (maxHeight.isPresent() && nextPieceMinY - freeHeight > maxHeight.get()) continue;
-                                if (minHeight.isPresent() && nextPieceMinY - freeHeight < minHeight.get()) continue;
+                                if (maxHeight.isPresent() || minHeight.isPresent()) {
+                                    int freeHeight = this.chunkGenerator.getFirstFreeHeight(nextPieceBoundingBoxPlaced.minX() + nextPieceBoundingBoxPlaced.getXSpan() / 2, nextPieceBoundingBoxPlaced.minZ() + nextPieceBoundingBoxPlaced.getZSpan() / 2, Heightmap.Types.WORLD_SURFACE_WG, heightAccessor);
+                                    if (maxHeight.isPresent() && nextPieceMinY - freeHeight > maxHeight.get()) continue;
+                                    if (minHeight.isPresent() && nextPieceMinY - freeHeight < minHeight.get()) continue;
+                                }
                             }
 
                             boolean ignoreBounds = false;
