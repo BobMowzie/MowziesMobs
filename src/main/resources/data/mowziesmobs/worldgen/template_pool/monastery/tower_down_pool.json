@@ -41,7 +41,7 @@
         "bounds_max_offset": [
           -1, 0, -1
         ],
-        "max_height": 4
+        "max_height": 7
       }
     },
     {
@@ -68,7 +68,7 @@
         // Air and Structure Void in your piece as well as change the attachment mechanism.
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
-        "min_height": 4
+        "min_height": 7
       }
     }
   ]

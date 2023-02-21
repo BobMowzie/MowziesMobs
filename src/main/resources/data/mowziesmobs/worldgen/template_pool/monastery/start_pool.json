@@ -36,10 +36,10 @@
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
         "bounds_min_offset": [
-          2, -79, 2
+          3, -79, 3
         ],
         "bounds_max_offset": [
-          -2, 0, -2
+          -3, 0, -3
         ],
         "offset": [
           0, -79, -12
