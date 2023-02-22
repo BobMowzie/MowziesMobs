@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.world.feature.structure.jigsaw;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.*;
 import net.minecraft.data.worldgen.Pools;
@@ -22,7 +23,7 @@ import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
 import net.minecraft.world.level.levelgen.structure.pools.*;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -93,21 +94,24 @@ public class MowzieJigsawManager {
                         Placer jigsawplacement$placer = new Placer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom);
                         VoxelShape shape = Shapes.join(Shapes.create(aabb), Shapes.create(AABB.of(pieceBoundingBox)), BooleanOp.ONLY_FIRST);
                         // Place starting piece
-                        jigsawplacement$placer.placing.addLast(new PieceState(poolelementstructurepiece, new MutableObject<>(shape), 0));
+                        PieceState startingPiece = new PieceState(poolelementstructurepiece, new MutableObject<>(shape), 0);
+                        for (StructureBlockInfo structureBlockInfo : jigsawplacement$placer.getJigsawBlocksFromPieceState(startingPiece)) {
+                            jigsawplacement$placer.placing.addLast(new Pair<>(structureBlockInfo, startingPiece));
+                        }
 
                         // Iteratively place child pieces until 'placing' is empty or max depth is reached
                         while(!jigsawplacement$placer.placing.isEmpty()) {
-                            PieceState jigsawplacement$piecestate = jigsawplacement$placer.placing.removeFirst();
-                            if (jigsawplacement$piecestate.depth > jigsawconfiguration.maxDepth()) {
+                            Pair<StructureBlockInfo, PieceState> nextJigsawBlock = jigsawplacement$placer.placing.removeFirst();
+                            if (nextJigsawBlock.getSecond().depth > jigsawconfiguration.maxDepth()) {
                                 break;
                             }
-                            jigsawplacement$placer.tryPlacingChildren(jigsawplacement$piecestate, villageBoundaryAdjust, levelheightaccessor);
+                            jigsawplacement$placer.tryPlacingChildren(nextJigsawBlock.getFirst(), nextJigsawBlock.getSecond(), villageBoundaryAdjust, levelheightaccessor);
                         }
 
                         Placer fallbackPlacer = new FallbackPlacer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom, jigsawplacement$placer.placing);
                         while(!fallbackPlacer.placing.isEmpty()) {
-                            PieceState piecestate = fallbackPlacer.placing.removeFirst();
-                            fallbackPlacer.tryPlacingChildren(piecestate, villageBoundaryAdjust, levelheightaccessor);
+                            Pair<StructureBlockInfo, PieceState> nextJigsawBlock = fallbackPlacer.placing.removeFirst();
+                            fallbackPlacer.tryPlacingChildren(nextJigsawBlock.getFirst(), nextJigsawBlock.getSecond(), villageBoundaryAdjust, levelheightaccessor);
                         }
 
                         // Handle dead ends to connect them together
@@ -143,7 +147,7 @@ public class MowzieJigsawManager {
         }
     }
 
-    public record PieceSelection(PieceState pieceState, StructurePoolElement origPiece, StructurePoolElement nextPiece, PoolElementStructurePiece poolelementstructurepiece, StructureTemplate.StructureBlockInfo origJigsaw, StructureTemplate.StructureBlockInfo connectedJigsaw, StructureTemplate.StructureBlockInfo nextJigsaw, BoundingBox nextPieceBoundingBoxPlaced, int l2) {};
+    public record PieceSelection(PieceState pieceState, StructurePoolElement origPiece, StructurePoolElement nextPiece, PoolElementStructurePiece poolelementstructurepiece, StructureBlockInfo origJigsaw, StructureBlockInfo connectedJigsaw, StructureBlockInfo nextJigsaw, BoundingBox nextPieceBoundingBoxPlaced, int l2) {};
 
     static class Placer {
         final Registry<StructureTemplatePool> pools;
@@ -153,7 +157,7 @@ public class MowzieJigsawManager {
         final StructureManager structureManager;
         final List<? super PoolElementStructurePiece> pieces;
         protected final Random random;
-        final Deque<PieceState> placing = Queues.newArrayDeque();
+        final Deque<Pair<StructureBlockInfo, PieceState>> placing = Queues.newArrayDeque();
 
         Placer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, Random p_210329_) {
             this.pools = p_210323_;
@@ -165,40 +169,37 @@ public class MowzieJigsawManager {
             this.random = p_210329_;
         }
 
-        void tryPlacingChildren(PieceState pieceState, boolean villageBoundaryAdjust, LevelHeightAccessor heightAccessor) {
-            // Loop through all jigsaw blocks in this piece
-            for(StructureTemplate.StructureBlockInfo thisPieceJigsawBlock : getJigsawBlocksFromPieceState(pieceState)) {
-                String pool = selectPool(thisPieceJigsawBlock);
-                ResourceLocation poolResourceLocation = new ResourceLocation(pool);
-                Optional<StructureTemplatePool> poolOptional = this.pools.getOptional(poolResourceLocation);
-                // If pool exists and is not empty
-                if (poolOptional.isPresent() && (poolOptional.get().size() != 0 || Objects.equals(poolResourceLocation, Pools.EMPTY.location()))) {
-                    ResourceLocation fallbackPoolResourceLocation = poolOptional.get().getFallback();
-                    Optional<StructureTemplatePool> fallbackPoolOptional = this.pools.getOptional(fallbackPoolResourceLocation);
-                    // If fallback pool exists and is not empty
-                    if (fallbackPoolOptional.isPresent() && (fallbackPoolOptional.get().size() != 0 || Objects.equals(fallbackPoolResourceLocation, Pools.EMPTY.location()))) {
+        void tryPlacingChildren(StructureBlockInfo thisPieceJigsawBlock, PieceState pieceState, boolean villageBoundaryAdjust, LevelHeightAccessor heightAccessor) {
+            String pool = selectPool(thisPieceJigsawBlock);
+            ResourceLocation poolResourceLocation = new ResourceLocation(pool);
+            Optional<StructureTemplatePool> poolOptional = this.pools.getOptional(poolResourceLocation);
+            // If pool exists and is not empty
+            if (poolOptional.isPresent() && (poolOptional.get().size() != 0 || Objects.equals(poolResourceLocation, Pools.EMPTY.location()))) {
+                ResourceLocation fallbackPoolResourceLocation = poolOptional.get().getFallback();
+                Optional<StructureTemplatePool> fallbackPoolOptional = this.pools.getOptional(fallbackPoolResourceLocation);
+                // If fallback pool exists and is not empty
+                if (fallbackPoolOptional.isPresent() && (fallbackPoolOptional.get().size() != 0 || Objects.equals(fallbackPoolResourceLocation, Pools.EMPTY.location()))) {
 
-                        PieceSelection pieceSelection = selectPiece(pieceState, poolOptional.get(), fallbackPoolOptional.get(), villageBoundaryAdjust, thisPieceJigsawBlock, heightAccessor);
+                    PieceSelection pieceSelection = selectPiece(pieceState, poolOptional.get(), fallbackPoolOptional.get(), villageBoundaryAdjust, thisPieceJigsawBlock, heightAccessor);
 
-                        if (pieceSelection != null) addNextPieceState(pieceSelection);
-                    } else {
-                        LOGGER.warn("Empty or non-existent fallback pool: {}", (Object)fallbackPoolResourceLocation);
-                    }
+                    if (pieceSelection != null) addNextPieceState(pieceSelection);
                 } else {
-                    LOGGER.warn("Empty or non-existent pool: {}", (Object)poolResourceLocation);
+                    LOGGER.warn("Empty or non-existent fallback pool: {}", (Object)fallbackPoolResourceLocation);
                 }
+            } else {
+                LOGGER.warn("Empty or non-existent pool: {}", (Object)poolResourceLocation);
             }
 
         }
 
-        List<StructureTemplate.StructureBlockInfo> getJigsawBlocksFromPieceState(PieceState pieceState) {
+        List<StructureBlockInfo> getJigsawBlocksFromPieceState(PieceState pieceState) {
             StructurePoolElement structurepoolelement = pieceState.piece.getElement();
             BlockPos blockpos = pieceState.piece.getPosition();
             Rotation rotation = pieceState.piece.getRotation();
             return structurepoolelement.getShuffledJigsawBlocks(this.structureManager, blockpos, rotation, this.random);
         }
 
-        String selectPool(StructureTemplate.StructureBlockInfo thisPieceJigsawBlock) {
+        String selectPool(StructureBlockInfo thisPieceJigsawBlock) {
             return thisPieceJigsawBlock.nbt.getString("pool");
         }
 
@@ -208,7 +209,7 @@ public class MowzieJigsawManager {
             return structurePoolElements;
         }
 
-        boolean isJigsawBlockFacingFreeSpace(StructureTemplate.StructureBlockInfo jigsawBlockInfo, MutableObject<VoxelShape> freeSpace) {
+        boolean isJigsawBlockFacingFreeSpace(StructureBlockInfo jigsawBlockInfo, MutableObject<VoxelShape> freeSpace) {
             Direction direction = JigsawBlock.getFrontFacing(jigsawBlockInfo.state);
             BlockPos thisJigsawBlockPos = jigsawBlockInfo.pos;
             BlockPos nextJigsawBlockPos = thisJigsawBlockPos.relative(direction);
@@ -216,7 +217,7 @@ public class MowzieJigsawManager {
             return !Shapes.joinIsNotEmpty(freeSpace.getValue(), Shapes.create(aabb.deflate(0.25D)), BooleanOp.ONLY_SECOND);
         }
 
-        boolean canJigsawBlockFitNextPiece(StructureTemplate.StructureBlockInfo jigsawBlockInfo, MutableObject<VoxelShape> freeSpace) {
+        boolean canJigsawBlockFitNextPiece(StructureBlockInfo jigsawBlockInfo, MutableObject<VoxelShape> freeSpace) {
             Direction direction = JigsawBlock.getFrontFacing(jigsawBlockInfo.state);
             BlockPos thisJigsawBlockPos = jigsawBlockInfo.pos;
             BlockPos nextJigsawBlockPos = thisJigsawBlockPos.relative(direction);
@@ -243,10 +244,21 @@ public class MowzieJigsawManager {
             pieceSelection.poolelementstructurepiece.addJunction(new JigsawJunction(pieceSelection.origJigsaw.pos.getX(), pieceSelection.l2 - pieceSelection.connectedJigsaw.pos.getY() + k2, pieceSelection.origJigsaw.pos.getZ(), -k1, pieceSelection.origPiece.getProjection()));
             this.pieces.add(pieceSelection.poolelementstructurepiece);
             PieceState nextPieceState = new PieceState(pieceSelection.poolelementstructurepiece, pieceSelection.pieceState.free, pieceSelection.pieceState.depth + 1);
-            this.placing.addLast(nextPieceState);
+            List<StructureBlockInfo> nextJigsaws = getJigsawBlocksFromPieceState(nextPieceState);
+            if (!(pieceSelection.poolelementstructurepiece.getElement() instanceof MowziePoolElement) || !((MowziePoolElement) pieceSelection.poolelementstructurepiece.getElement()).twoWay()) {
+                nextJigsaws.removeIf(jigsaw -> {
+                    Direction direction = JigsawBlock.getFrontFacing(pieceSelection.origJigsaw.state);
+                    BlockPos thisJigsawBlockPos = pieceSelection.origJigsaw.pos;
+                    BlockPos nextJigsawBlockPos = thisJigsawBlockPos.relative(direction);
+                    return jigsaw.pos.equals(nextJigsawBlockPos);
+                });
+            }
+            for (StructureBlockInfo jigsaw : nextJigsaws) {
+                this.placing.addLast(new Pair<>(jigsaw, nextPieceState));
+            }
         }
 
-        PieceSelection selectPiece(PieceState pieceState, StructureTemplatePool poolOptional, StructureTemplatePool fallbackPoolOptional, boolean villageBoundaryAdjust, StructureTemplate.StructureBlockInfo thisPieceJigsawBlock, LevelHeightAccessor heightAccessor) {
+        PieceSelection selectPiece(PieceState pieceState, StructureTemplatePool poolOptional, StructureTemplatePool fallbackPoolOptional, boolean villageBoundaryAdjust, StructureBlockInfo thisPieceJigsawBlock, LevelHeightAccessor heightAccessor) {
             BoundingBox thisPieceBoundingBox = pieceState.piece.getBoundingBox();
             int thisPieceMinY = thisPieceBoundingBox.minY();
             Direction direction = JigsawBlock.getFrontFacing(thisPieceJigsawBlock.state);
@@ -273,7 +285,7 @@ public class MowzieJigsawManager {
 
                 // Iterate through possible rotations of this element
                 for (Rotation nextPieceRotation : Rotation.getShuffled(this.random)) {
-                    List<StructureTemplate.StructureBlockInfo> nextPieceJigsawBlocks = nextPieceCandidate.getShuffledJigsawBlocks(this.structureManager, BlockPos.ZERO, nextPieceRotation, this.random);
+                    List<StructureBlockInfo> nextPieceJigsawBlocks = nextPieceCandidate.getShuffledJigsawBlocks(this.structureManager, BlockPos.ZERO, nextPieceRotation, this.random);
                     BoundingBox nextPieceBoundingBoxOrigin = nextPieceCandidate.getBoundingBox(this.structureManager, BlockPos.ZERO, nextPieceRotation);
 
                     int largestSizeOfNextNextPiece;
@@ -303,7 +315,7 @@ public class MowzieJigsawManager {
                         largestSizeOfNextNextPiece = 0;
                     }
 
-                    for (StructureTemplate.StructureBlockInfo nextPieceJigsawBlock : nextPieceJigsawBlocks) {
+                    for (StructureBlockInfo nextPieceJigsawBlock : nextPieceJigsawBlocks) {
                         boolean canAttach;
                         if (nextPieceCandidate instanceof MowziePoolElement && ((MowziePoolElement) nextPieceCandidate).twoWay()) {
                             canAttach = MowziePoolElement.canAttachTwoWays(thisPieceJigsawBlock, nextPieceJigsawBlock);
@@ -393,7 +405,7 @@ public class MowzieJigsawManager {
 
     static final class FallbackPlacer extends Placer {
 
-        FallbackPlacer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, Random p_210329_, Deque<PieceState> oldPlacing) {
+        FallbackPlacer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, Random p_210329_, Deque<Pair<StructureBlockInfo, PieceState>> oldPlacing) {
             super(p_210323_, p_210324_, p_210325_, p_210326_, p_210327_, p_210328_, p_210329_);
             this.placing.addAll(oldPlacing);
         }
@@ -416,22 +428,20 @@ public class MowzieJigsawManager {
             this.mustConnectPools = mustConnectPools;
             this.toReplacePools = toReplacePools;
             this.deadEndConnectorPool = deadEndConnectorPool;
-            List<StructureTemplate.StructureBlockInfo> needConnecting = new ArrayList<>();
+            List<StructureBlockInfo> needConnecting = new ArrayList<>();
             while (!oldPlacing.isEmpty()) {
                 PieceState pieceState = oldPlacing.removeFirst();
-                List<StructureTemplate.StructureBlockInfo> jigsawBlocks = getJigsawBlocksFromPieceState(pieceState);
-                boolean addedAny = false;
-                for (StructureTemplate.StructureBlockInfo jigsawBlock : jigsawBlocks) {
+                List<StructureBlockInfo> jigsawBlocks = getJigsawBlocksFromPieceState(pieceState);
+                for (StructureBlockInfo jigsawBlock : jigsawBlocks) {
                     if (jigsawMustConnect(jigsawBlock) && canJigsawBlockFitNextPiece(jigsawBlock, pieceState.free)) {
                         needConnecting.add(jigsawBlock);
-                        addedAny = true;
+                        this.placing.addLast(new Pair<>(jigsawBlock, pieceState));
                     }
                 }
-                if (addedAny) this.placing.addLast(pieceState);
             }
             for (int i = 1; i < needConnecting.size(); i += 2) {
-                StructureTemplate.StructureBlockInfo first = needConnecting.get(i);
-                StructureTemplate.StructureBlockInfo second = needConnecting.get(i - 1);
+                StructureBlockInfo first = needConnecting.get(i);
+                StructureBlockInfo second = needConnecting.get(i - 1);
                 destinations.put(first.pos, second.pos);
                 destinations.put(second.pos, first.pos);
             }
@@ -439,7 +449,7 @@ public class MowzieJigsawManager {
 
         // Replace the pool with dead end connector pool
         @Override
-        String selectPool(StructureTemplate.StructureBlockInfo thisPieceJigsawBlock) {
+        String selectPool(StructureBlockInfo thisPieceJigsawBlock) {
             String pool = super.selectPool(thisPieceJigsawBlock);
             if (toReplacePools != null && toReplacePools.contains(pool)) {
                 pool = deadEndConnectorPool;
@@ -454,7 +464,7 @@ public class MowzieJigsawManager {
             return structurePoolElements;
         }
 
-        boolean jigsawMustConnect(StructureTemplate.StructureBlockInfo jigsaw) {
+        boolean jigsawMustConnect(StructureBlockInfo jigsaw) {
             return mustConnectPools.contains(jigsaw.nbt.getString("pool"));
         }
 
@@ -463,7 +473,7 @@ public class MowzieJigsawManager {
             super.addNextPieceState(pieceSelection);
         }
 
-        PieceSelection selectPiece(PieceState pieceState, StructureTemplatePool pool, StructureTemplatePool fallbackPool, boolean villageBoundaryAdjust, StructureTemplate.StructureBlockInfo thisPieceJigsawBlock, LevelHeightAccessor heightAccessor) {
+        PieceSelection selectPiece(PieceState pieceState, StructureTemplatePool pool, StructureTemplatePool fallbackPool, boolean villageBoundaryAdjust, StructureBlockInfo thisPieceJigsawBlock, LevelHeightAccessor heightAccessor) {
             // If this isn't coming after a must-connect jigsaw block, use normal placement
             if (!jigsawMustConnect(thisPieceJigsawBlock)) return super.selectPiece(pieceState, pool, fallbackPool, villageBoundaryAdjust, thisPieceJigsawBlock, heightAccessor);
 
@@ -505,7 +515,7 @@ public class MowzieJigsawManager {
 
                 // Iterate through possible rotations of this element
                 for (Rotation nextPieceRotation : Rotation.getShuffled(this.random)) {
-                    List<StructureTemplate.StructureBlockInfo> nextPieceJigsawBlocks = nextPieceCandidate.getShuffledJigsawBlocks(this.structureManager, BlockPos.ZERO, nextPieceRotation, this.random);
+                    List<StructureBlockInfo> nextPieceJigsawBlocks = nextPieceCandidate.getShuffledJigsawBlocks(this.structureManager, BlockPos.ZERO, nextPieceRotation, this.random);
                     BoundingBox nextPieceBoundingBoxOrigin = nextPieceCandidate.getBoundingBox(this.structureManager, BlockPos.ZERO, nextPieceRotation);
                     int l;
                     // Village boundary adjustment
@@ -534,7 +544,7 @@ public class MowzieJigsawManager {
                         l = 0;
                     }
 
-                    for (StructureTemplate.StructureBlockInfo nextPieceJigsawBlock : nextPieceJigsawBlocks) {
+                    for (StructureBlockInfo nextPieceJigsawBlock : nextPieceJigsawBlocks) {
                         boolean canAttach;
                         if (nextPieceCandidate instanceof MowziePoolElement && ((MowziePoolElement) nextPieceCandidate).twoWay()) {
                             canAttach = MowziePoolElement.canAttachTwoWays(thisPieceJigsawBlock, nextPieceJigsawBlock);
@@ -597,11 +607,11 @@ public class MowzieJigsawManager {
                                     l2 = k + k1 / 2;
                                 }
 
-                                StructureTemplate.StructureBlockInfo nextJigsaw = null;
+                                StructureBlockInfo nextJigsaw = null;
                                 StructurePoolElement nextStructurepoolelement = poolelementstructurepiece.getElement();
                                 BlockPos blockpos = poolelementstructurepiece.getPosition();
                                 Rotation rotation = poolelementstructurepiece.getRotation();
-                                for (StructureTemplate.StructureBlockInfo otherJigsaw : nextStructurepoolelement.getShuffledJigsawBlocks(this.structureManager, blockpos, rotation, this.random)) {
+                                for (StructureBlockInfo otherJigsaw : nextStructurepoolelement.getShuffledJigsawBlocks(this.structureManager, blockpos, rotation, this.random)) {
                                     if (jigsawMustConnect(otherJigsaw)) {
                                         if (otherJigsaw.pos.distSqr(destination) <= 1) {
                                             // Connected!
