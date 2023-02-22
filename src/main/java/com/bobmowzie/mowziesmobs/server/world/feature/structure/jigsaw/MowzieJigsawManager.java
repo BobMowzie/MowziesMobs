@@ -104,6 +104,12 @@ public class MowzieJigsawManager {
                             jigsawplacement$placer.tryPlacingChildren(jigsawplacement$piecestate, villageBoundaryAdjust, levelheightaccessor);
                         }
 
+                        Placer fallbackPlacer = new FallbackPlacer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom, jigsawplacement$placer.placing);
+                        while(!fallbackPlacer.placing.isEmpty()) {
+                            PieceState piecestate = fallbackPlacer.placing.removeFirst();
+                            fallbackPlacer.tryPlacingChildren(piecestate, villageBoundaryAdjust, levelheightaccessor);
+                        }
+
                         // Handle dead ends to connect them together
 //                        Placer deadEndConnectorPlacer = new DeadEndConnectorPlacer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom, jigsawplacement$placer.placing, mustConnectPools, replacePools, deadEndConnectorPool);
 //                        while(!deadEndConnectorPlacer.placing.isEmpty()) {
@@ -198,12 +204,7 @@ public class MowzieJigsawManager {
 
         List<StructurePoolElement> addPoolElements(PieceState pieceState, StructureTemplatePool pool, StructureTemplatePool fallbackPool) {
             List<StructurePoolElement> structurePoolElements = Lists.newArrayList();
-//            // Only add pool elements if not at max depth
-//            if (pieceState.depth != this.maxDepth) {
-                structurePoolElements.addAll(pool.getShuffledTemplates(this.random));
-//            }
-//            // If at max depth, only fallback pool elements will be used
-//            structurePoolElements.addAll(fallbackPool.getShuffledTemplates(this.random));
+            structurePoolElements.addAll(pool.getShuffledTemplates(this.random));
             return structurePoolElements;
         }
 
@@ -388,6 +389,20 @@ public class MowzieJigsawManager {
             return null;
         }
 
+    }
+
+    static final class FallbackPlacer extends Placer {
+
+        FallbackPlacer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, Random p_210329_, Deque<PieceState> oldPlacing) {
+            super(p_210323_, p_210324_, p_210325_, p_210326_, p_210327_, p_210328_, p_210329_);
+            this.placing.addAll(oldPlacing);
+        }
+
+        List<StructurePoolElement> addPoolElements(PieceState pieceState, StructureTemplatePool pool, StructureTemplatePool fallbackPool) {
+            List<StructurePoolElement> structurePoolElements = Lists.newArrayList();
+            structurePoolElements.addAll(fallbackPool.getShuffledTemplates(this.random));
+            return structurePoolElements;
+        }
     }
 
     static final class DeadEndConnectorPlacer extends Placer {

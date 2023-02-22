@@ -6,7 +6,7 @@
   "name": "mowziesmobs:monastery/path_connector_pool",
 
   // The template pool to refer to if the entries in 'elements' fails to generate.
-  "fallback": "minecraft:empty",
+  "fallback": "mowziesmobs:monastery/fallback/path_connector_fallback_pool",
 
   // Here you can list as many nbt files or configured features to spawn.
   // Do note that configured features needs a special element entry stuff.
