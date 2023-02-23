@@ -69,7 +69,7 @@ public class MowzieJigsawManager {
             BoundingBox pieceBoundingBox = poolelementstructurepiece.getBoundingBox();
             BlockPos offset = BlockPos.ZERO;
             if (structurepoolelement instanceof MowziePoolElement) {
-                offset = ((MowziePoolElement) structurepoolelement).offset;
+                offset = ((MowziePoolElement) structurepoolelement).bounds.offset;
                 offset = offset.rotate(rotation);
             }
             int centerX = (pieceBoundingBox.maxX() + pieceBoundingBox.minX()) / 2;
@@ -108,7 +108,7 @@ public class MowzieJigsawManager {
                             jigsawplacement$placer.tryPlacingChildren(nextJigsawBlock.getFirst(), nextJigsawBlock.getSecond(), villageBoundaryAdjust, levelheightaccessor);
                         }
 
-                        Placer fallbackPlacer = new FallbackPlacer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom, jigsawplacement$placer.placing);
+                        Placer fallbackPlacer = new FallbackPlacer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom, jigsawplacement$placer);
                         while(!fallbackPlacer.placing.isEmpty()) {
                             Pair<StructureBlockInfo, PieceState> nextJigsawBlock = fallbackPlacer.placing.removeFirst();
                             fallbackPlacer.tryPlacingChildren(nextJigsawBlock.getFirst(), nextJigsawBlock.getSecond(), villageBoundaryAdjust, levelheightaccessor);
@@ -328,7 +328,7 @@ public class MowzieJigsawManager {
                             BoundingBox nextPieceBoundingBox = nextPieceCandidate.getBoundingBox(this.structureManager, nextPiecePos, nextPieceRotation);
                             int nextPieceMinY = nextPieceBoundingBox.minY();
                             if (nextPieceCandidate instanceof MowziePoolElement) {
-                                nextPieceMinY -= ((MowziePoolElement) nextPieceCandidate).boundsMinOffset.getY();
+                                nextPieceMinY -= ((MowziePoolElement) nextPieceCandidate).bounds.boundsMinOffset.getY();
                             }
                             StructureTemplatePool.Projection structuretemplatepool$projection1 = nextPieceCandidate.getProjection();
                             boolean nextPieceIsRigid = structuretemplatepool$projection1 == StructureTemplatePool.Projection.RIGID;
@@ -405,9 +405,9 @@ public class MowzieJigsawManager {
 
     static final class FallbackPlacer extends Placer {
 
-        FallbackPlacer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, Random p_210329_, Deque<Pair<StructureBlockInfo, PieceState>> oldPlacing) {
+        FallbackPlacer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, Random p_210329_, Placer previousPlacer) {
             super(p_210323_, p_210324_, p_210325_, p_210326_, p_210327_, p_210328_, p_210329_);
-            this.placing.addAll(oldPlacing);
+            this.placing.addAll(previousPlacer.placing);
         }
 
         List<StructurePoolElement> addPoolElements(PieceState pieceState, StructureTemplatePool pool, StructureTemplatePool fallbackPool) {
@@ -557,7 +557,7 @@ public class MowzieJigsawManager {
                             BoundingBox nextPieceBoundingBox = nextPieceCandidate.getBoundingBox(this.structureManager, nextPiecePos, nextPieceRotation);
                             int nextPieceMinY = nextPieceBoundingBox.minY();
                             if (nextPieceCandidate instanceof MowziePoolElement) {
-                                nextPieceMinY -= ((MowziePoolElement) nextPieceCandidate).boundsMinOffset.getY();
+                                nextPieceMinY -= ((MowziePoolElement) nextPieceCandidate).bounds.boundsMinOffset.getY();
                             }
                             StructureTemplatePool.Projection structuretemplatepool$projection1 = nextPieceCandidate.getProjection();
                             boolean nextPieceIsRigid = structuretemplatepool$projection1 == StructureTemplatePool.Projection.RIGID;

@@ -36,12 +36,18 @@
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
         "two_way": true,
-        "bounds_min_offset": [
-          0, -80, 1
-        ],
-        "bounds_max_offset": [
-          0, 0, -1
-        ],
+        "bounds": {
+          "bounds_min_offset": [
+            0,
+            -80,
+            1
+          ],
+          "bounds_max_offset": [
+            0,
+            0,
+            -1
+          ]
+        },
         "min_height": -4,
         "max_height": 8
       }
@@ -70,12 +76,18 @@
         // Air and Structure Void in your piece as well as change the attachment mechanism.
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
-        "bounds_min_offset": [
-          2, -80, -1
-        ],
-        "bounds_max_offset": [
-          -2, 0, 1
-        ],
+        "bounds": {
+          "bounds_min_offset": [
+            2,
+            -80,
+            -1
+          ],
+          "bounds_max_offset": [
+            -2,
+            0,
+            1
+          ]
+        },
         "min_height": -4,
         "max_height": 8,
         "max_depth": 11
@@ -107,12 +119,18 @@
         // Air and Structure Void in your piece as well as change the attachment mechanism.
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
-        "bounds_min_offset": [
-          1, -80, 1
-        ],
-        "bounds_max_offset": [
-          -1, 0, -1
-        ],
+        "bounds": {
+          "bounds_min_offset": [
+            1,
+            -80,
+            1
+          ],
+          "bounds_max_offset": [
+            -1,
+            0,
+            -1
+          ]
+        },
         "max_height": -4
       }
     },
@@ -140,12 +158,18 @@
         // Air and Structure Void in your piece as well as change the attachment mechanism.
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
-        "bounds_min_offset": [
-          3, 0, 3
-        ],
-        "bounds_max_offset": [
-          -3, 0, -3
-        ],
+        "bounds": {
+          "bounds_min_offset": [
+            3,
+            0,
+            3
+          ],
+          "bounds_max_offset": [
+            -3,
+            0,
+            -3
+          ]
+        },
         "min_height": 8
       }
     }

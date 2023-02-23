@@ -16,7 +16,6 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
@@ -28,11 +27,8 @@ public class MowziePoolElement extends SinglePoolElement {
                     templateCodec(),
                     processorsCodec(),
                     projectionCodec(),
-                    Codec.BOOL.optionalFieldOf("ignore_bounds", false).forGetter(element -> element.ignoreBounds),
+                    BoundsParams.CODEC.optionalFieldOf("bounds", new BoundsParams(false, BlockPos.ZERO, BlockPos.ZERO, BlockPos.ZERO)).forGetter(element -> element.bounds),
                     Codec.BOOL.optionalFieldOf("two_way", false).forGetter(element -> element.twoWay),
-                    BlockPos.CODEC.optionalFieldOf("bounds_min_offset", BlockPos.ZERO).forGetter(element -> element.boundsMinOffset),
-                    BlockPos.CODEC.optionalFieldOf("bounds_max_offset", BlockPos.ZERO).forGetter(element -> element.boundsMaxOffset),
-                    BlockPos.CODEC.optionalFieldOf("offset", BlockPos.ZERO).forGetter(element -> element.offset),
                     Codec.INT.optionalFieldOf("min_depth", -1).forGetter(element -> element.maxDepth),
                     Codec.INT.optionalFieldOf("max_depth", -1).forGetter(element -> element.maxDepth),
                     Codec.INT.optionalFieldOf("min_height").forGetter(element -> element.minHeight),
@@ -40,26 +36,14 @@ public class MowziePoolElement extends SinglePoolElement {
             ).apply(builder, MowziePoolElement::new));
 
     /**
-     * Whether this piece should ignore the usual piece boundary checks.
-     * Enabling this allows this piece to spawn while overlapping other pieces.
+     * Bounds related parameters
      */
-    public final boolean ignoreBounds;
+    public final BoundsParams bounds;
 
     /**
      * Whether this piece's horizontal jigsaw blocks can connect in both directions
      */
     public final boolean twoWay;
-
-    /**
-     * Adjust the piece's bounds on all 6 sides
-     */
-    public final BlockPos boundsMinOffset;
-    public final BlockPos boundsMaxOffset;
-
-    /**
-     * Offset the piece's location
-     */
-    public final BlockPos offset;
 
     /**
      * Maximum iteration depth at which this piece can be chosen
@@ -73,17 +57,13 @@ public class MowziePoolElement extends SinglePoolElement {
     public final Optional<Integer> minHeight;
     public final Optional<Integer> maxHeight;
 
-    protected MowziePoolElement(Either<ResourceLocation, StructureTemplate> p_210415_, Holder<StructureProcessorList> p_210416_, StructureTemplatePool.Projection p_210417_, boolean ignoreBounds, boolean twoWay,
-                                BlockPos boundsMinOffset, BlockPos boundsMaxOffset, BlockPos offset,
+    protected MowziePoolElement(Either<ResourceLocation, StructureTemplate> p_210415_, Holder<StructureProcessorList> p_210416_, StructureTemplatePool.Projection p_210417_, BoundsParams bounds, boolean twoWay,
                                 int minDepth,int maxDepth,
                                 Optional<Integer> minHeight, Optional<Integer> maxHeight
     ) {
         super(p_210415_, p_210416_, p_210417_);
-        this.ignoreBounds = ignoreBounds;
+        this.bounds = bounds;
         this.twoWay = twoWay;
-        this.boundsMinOffset = boundsMinOffset;
-        this.boundsMaxOffset = boundsMaxOffset;
-        this.offset = offset;
         this.minDepth = minDepth;
         this.maxDepth = maxDepth;
         this.minHeight = minHeight;
@@ -103,7 +83,7 @@ public class MowziePoolElement extends SinglePoolElement {
     }
 
     public boolean ignoresBounds() {
-        return this.ignoreBounds;
+        return this.bounds.ignoreBounds;
     }
 
     public boolean twoWay() {
@@ -111,7 +91,7 @@ public class MowziePoolElement extends SinglePoolElement {
     }
 
     public Vec3i offset() {
-        return new Vec3i(offset.getX(), offset.getY(), offset.getZ());
+        return new Vec3i(bounds.offset.getX(), bounds.offset.getY(), bounds.offset.getZ());
     }
 
     @Override
@@ -119,8 +99,42 @@ public class MowziePoolElement extends SinglePoolElement {
         StructureTemplate structuretemplate = this.getTemplate(structureManager);
 
         Vec3i sizeVec = structuretemplate.getSize().offset(-1, -1, -1);
-        BlockPos blockpos = StructureTemplate.transform(BlockPos.ZERO.offset(boundsMinOffset), Mirror.NONE, rotation, BlockPos.ZERO);
-        BlockPos blockpos1 = StructureTemplate.transform(BlockPos.ZERO.offset(sizeVec).offset(boundsMaxOffset), Mirror.NONE, rotation, BlockPos.ZERO);
+        BlockPos blockpos = StructureTemplate.transform(BlockPos.ZERO.offset(bounds.boundsMinOffset), Mirror.NONE, rotation, BlockPos.ZERO);
+        BlockPos blockpos1 = StructureTemplate.transform(BlockPos.ZERO.offset(sizeVec).offset(bounds.boundsMaxOffset), Mirror.NONE, rotation, BlockPos.ZERO);
         return BoundingBox.fromCorners(blockpos, blockpos1).move(blockPos);
+    }
+
+    public static class BoundsParams {
+        public static final Codec<BoundsParams> CODEC = RecordCodecBuilder.create((builder) -> builder
+                .group(
+                        Codec.BOOL.optionalFieldOf("ignore_bounds", false).forGetter(element -> element.ignoreBounds),
+                        BlockPos.CODEC.optionalFieldOf("bounds_min_offset", BlockPos.ZERO).forGetter(element -> element.boundsMinOffset),
+                        BlockPos.CODEC.optionalFieldOf("bounds_max_offset", BlockPos.ZERO).forGetter(element -> element.boundsMaxOffset),
+                        BlockPos.CODEC.optionalFieldOf("offset", BlockPos.ZERO).forGetter(element -> element.offset)
+                ).apply(builder, BoundsParams::new));
+
+        /**
+         * Whether this piece should ignore the usual piece boundary checks.
+         * Enabling this allows this piece to spawn while overlapping other pieces.
+         */
+        public final boolean ignoreBounds;
+
+        /**
+         * Adjust the piece's bounds on all 6 sides
+         */
+        public final BlockPos boundsMinOffset;
+        public final BlockPos boundsMaxOffset;
+
+        /**
+         * Offset the piece's location
+         */
+        public final BlockPos offset;
+
+        private BoundsParams(boolean ignoreBounds, BlockPos boundsMinOffset, BlockPos boundsMaxOffset, BlockPos offset) {
+            this.ignoreBounds = ignoreBounds;
+            this.boundsMinOffset = boundsMinOffset;
+            this.boundsMaxOffset = boundsMaxOffset;
+            this.offset = offset;
+        }
     }
 }
