@@ -75,7 +75,7 @@
         // Air and Structure Void in your piece as well as change the attachment mechanism.
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
-        "max_allowed_paths": 2,
+        "max_allowed_paths": 4,
         "num_paths_override": 1
       }
     }

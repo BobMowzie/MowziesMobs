@@ -14,7 +14,7 @@
     {
 
       // How likely out of all the element for this one to be chosen.
-      "weight": 20,
+      "weight": 17,
       "element": {
 
         // The Identifier of the nbt file itself of the structure piece.
@@ -46,8 +46,7 @@
             0,
             -1
           ]
-        },
-        "min_required_paths": 2
+        }
       }
     },
     {
@@ -82,7 +81,13 @@
           ]
         },
         "min_depth": 4,
-        "min_required_paths": 2
+        "forbidden_parents": [
+          "mowziesmobs:monastery/monastery_wall_4way",
+          "mowziesmobs:monastery/monastery_wall_3way",
+          "mowziesmobs:monastery/monastery_wall_corner",
+          "mowziesmobs:monastery/monastery_center_back_3way"
+        ],
+        "forbidden_parents_depth": 2
       }
     },
     {
@@ -121,7 +126,14 @@
           ]
         },
         "min_depth": 4,
-        "max_allowed_paths": 3
+        "max_allowed_paths": 2,
+        "forbidden_parents": [
+          "mowziesmobs:monastery/monastery_wall_4way",
+          "mowziesmobs:monastery/monastery_wall_3way",
+          "mowziesmobs:monastery/monastery_wall_corner",
+          "mowziesmobs:monastery/monastery_center_back_3way"
+        ],
+        "forbidden_parents_depth": 2
       }
     },
     {
@@ -156,7 +168,14 @@
             0
           ]
         },
-        "max_allowed_paths": 2
+        "max_allowed_paths": 1,
+        "forbidden_parents": [
+          "mowziesmobs:monastery/monastery_wall_4way",
+          "mowziesmobs:monastery/monastery_wall_3way",
+          "mowziesmobs:monastery/monastery_wall_corner",
+          "mowziesmobs:monastery/monastery_center_back_3way"
+        ],
+        "forbidden_parents_depth": 2
       }
     },
 

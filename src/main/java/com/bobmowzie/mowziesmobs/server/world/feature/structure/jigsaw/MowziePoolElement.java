@@ -19,6 +19,8 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureMana
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class MowziePoolElement extends SinglePoolElement {
@@ -35,7 +37,9 @@ public class MowziePoolElement extends SinglePoolElement {
                     Codec.INT.optionalFieldOf("max_height").forGetter(element -> element.maxHeight),
                     Codec.INT.optionalFieldOf("min_required_paths").forGetter(element -> element.minRequiredPaths),
                     Codec.INT.optionalFieldOf("max_allowed_paths").forGetter(element -> element.maxAllowedPaths),
-                    Codec.INT.optionalFieldOf("num_paths_override").forGetter(element -> element.numPathsOverride)
+                    Codec.INT.optionalFieldOf("num_paths_override").forGetter(element -> element.numPathsOverride),
+                    Codec.STRING.listOf().optionalFieldOf("forbidden_parents", Collections.emptyList()).forGetter(element -> element.forbiddenParents),
+                    Codec.INT.optionalFieldOf("forbidden_parents_depth", 1).forGetter(element -> element.forbiddenParentsDepth)
             ).apply(builder, MowziePoolElement::new));
 
     /**
@@ -67,11 +71,18 @@ public class MowziePoolElement extends SinglePoolElement {
     public final Optional<Integer> maxAllowedPaths;
     public final Optional<Integer> numPathsOverride;
 
+    /**
+     * Prevent pieces from generating with certain parent pieces
+     */
+    public final List<String> forbiddenParents;
+    public final int forbiddenParentsDepth;
+
 
     protected MowziePoolElement(Either<ResourceLocation, StructureTemplate> p_210415_, Holder<StructureProcessorList> p_210416_, StructureTemplatePool.Projection p_210417_, BoundsParams bounds, boolean twoWay,
                                 int minDepth, int maxDepth,
                                 Optional<Integer> minHeight, Optional<Integer> maxHeight,
-                                Optional<Integer> minRequiredPaths, Optional<Integer> maxAllowedPaths, Optional<Integer> numPathsOverride) {
+                                Optional<Integer> minRequiredPaths, Optional<Integer> maxAllowedPaths, Optional<Integer> numPathsOverride,
+                                List<String> forbiddenParents, int forbiddenParentsDepth) {
         super(p_210415_, p_210416_, p_210417_);
         this.bounds = bounds;
         this.twoWay = twoWay;
@@ -82,6 +93,8 @@ public class MowziePoolElement extends SinglePoolElement {
         this.minRequiredPaths = minRequiredPaths;
         this.maxAllowedPaths = maxAllowedPaths;
         this.numPathsOverride = numPathsOverride;
+        this.forbiddenParents = forbiddenParents;
+        this.forbiddenParentsDepth = forbiddenParentsDepth;
     }
 
     public static boolean canAttachTwoWays(StructureTemplate.StructureBlockInfo p_54246_, StructureTemplate.StructureBlockInfo p_54247_) {
@@ -106,6 +119,27 @@ public class MowziePoolElement extends SinglePoolElement {
 
     public Vec3i offset() {
         return new Vec3i(bounds.offset.getX(), bounds.offset.getY(), bounds.offset.getZ());
+    }
+
+    public boolean checkCriteria(MowzieJigsawManager.PieceState pieceState, MowzieJigsawManager.Placer placer) {
+        int maxDepth = this.maxDepth;
+        if (maxDepth != -1 && pieceState.depth > maxDepth) return false;
+        MowzieJigsawManager.PieceState parent = pieceState;
+        for (int i = 0; i < this.forbiddenParentsDepth; i++) {
+            String parentName = parent.piece.getElement().toString().split("[\\[\\]]")[2];
+            if (this.forbiddenParents.contains(parentName)) {
+                return false;
+            }
+            parent = parent.parent;
+        }
+
+        if (!(placer instanceof MowzieJigsawManager.FallbackPlacer)) {
+            if (this.minRequiredPaths.isPresent() && placer.numPaths < this.minRequiredPaths.get())
+                return false;
+            if (this.maxAllowedPaths.isPresent() && placer.numPaths > this.maxAllowedPaths.get())
+                return false;
+        }
+        return true;
     }
 
     @Override

@@ -77,7 +77,7 @@
             0
           ]
         },
-        "max_allowed_paths": 2,
+        "max_allowed_paths": 4,
         "num_paths_override": 1
       }
     }

@@ -94,7 +94,7 @@ public class MowzieJigsawManager {
                         Placer jigsawplacement$placer = new Placer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom, pathJigsawName);
                         VoxelShape shape = Shapes.join(Shapes.create(aabb), Shapes.create(AABB.of(pieceBoundingBox)), BooleanOp.ONLY_FIRST);
                         // Place starting piece
-                        PieceState startingPiece = new PieceState(poolelementstructurepiece, new MutableObject<>(shape), 0);
+                        PieceState startingPiece = new PieceState(poolelementstructurepiece, new MutableObject<>(shape), 0, null);
                         for (StructureBlockInfo structureBlockInfo : jigsawplacement$placer.getJigsawBlocksFromPieceState(startingPiece)) {
                             jigsawplacement$placer.placing.addLast(new Pair<>(structureBlockInfo, startingPiece));
                         }
@@ -139,11 +139,15 @@ public class MowzieJigsawManager {
         final PoolElementStructurePiece piece;
         final MutableObject<VoxelShape> free;
         final int depth;
+        final PieceState parent;
+        final Set<PieceState> children;
 
-        PieceState(PoolElementStructurePiece p_210311_, MutableObject<VoxelShape> p_210312_, int p_210313_) {
+        PieceState(PoolElementStructurePiece p_210311_, MutableObject<VoxelShape> p_210312_, int p_210313_, PieceState parent) {
             this.piece = p_210311_;
             this.free = p_210312_;
             this.depth = p_210313_;
+            this.parent = parent;
+            this.children = new HashSet<>();
         }
     }
 
@@ -251,7 +255,7 @@ public class MowzieJigsawManager {
             pieceSelection.pieceState.piece.addJunction(new JigsawJunction(pieceSelection.connectedJigsaw.pos.getX(), pieceSelection.l2 - thisPieceHeightFromBottomToJigsawBlock + pieceGroundLevelDelta, pieceSelection.connectedJigsaw.pos.getZ(), k1, pieceSelection.nextPiece.getProjection()));
             pieceSelection.poolelementstructurepiece.addJunction(new JigsawJunction(pieceSelection.origJigsaw.pos.getX(), pieceSelection.l2 - pieceSelection.connectedJigsaw.pos.getY() + k2, pieceSelection.origJigsaw.pos.getZ(), -k1, pieceSelection.origPiece.getProjection()));
             this.pieces.add(pieceSelection.poolelementstructurepiece);
-            PieceState nextPieceState = new PieceState(pieceSelection.poolelementstructurepiece, pieceSelection.pieceState.free, pieceSelection.pieceState.depth + 1);
+            PieceState nextPieceState = new PieceState(pieceSelection.poolelementstructurepiece, pieceSelection.pieceState.free, pieceSelection.pieceState.depth + 1, pieceSelection.pieceState);
 
             // Queue up the next jigsaw pieces
             List<StructureBlockInfo> nextJigsaws = getJigsawBlocksFromPieceState(nextPieceState);
@@ -280,6 +284,8 @@ public class MowzieJigsawManager {
             for (StructureBlockInfo jigsaw : nextJigsaws) {
                 this.placing.addLast(new Pair<>(jigsaw, nextPieceState));
             }
+
+            pieceSelection.pieceState.children.add(nextPieceState);
         }
 
         PieceSelection selectPiece(PieceState pieceState, StructureTemplatePool poolOptional, StructureTemplatePool fallbackPoolOptional, boolean villageBoundaryAdjust, StructureBlockInfo thisPieceJigsawBlock, LevelHeightAccessor heightAccessor) {
@@ -304,15 +310,7 @@ public class MowzieJigsawManager {
 
                 if (nextPieceCandidate instanceof MowziePoolElement) {
                     MowziePoolElement mowziePoolElement = (MowziePoolElement) nextPieceCandidate;
-                    int maxDepth = mowziePoolElement.maxDepth;
-                    if (maxDepth != -1 && pieceState.depth > maxDepth) continue;
-
-                    if (!(this instanceof FallbackPlacer)) {
-                        if (mowziePoolElement.minRequiredPaths.isPresent() && numPaths < mowziePoolElement.minRequiredPaths.get())
-                            continue;
-                        if (mowziePoolElement.maxAllowedPaths.isPresent() && numPaths > mowziePoolElement.maxAllowedPaths.get())
-                            continue;
-                    }
+                    if (!mowziePoolElement.checkCriteria(pieceState, this)) continue;
                 }
 
                 // Iterate through possible rotations of this element
