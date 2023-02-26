@@ -149,7 +149,8 @@
         },
         "max_height": 8,
         "min_height": -4,
-        "max_depth": 23
+        "max_depth": 23,
+        "max_allowed_paths": 2
       }
     }
   ]

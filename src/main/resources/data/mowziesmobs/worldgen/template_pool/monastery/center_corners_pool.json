@@ -42,7 +42,9 @@
           -80,
           1
         ]
-      }
+      },
+      "min_required_paths": 2,
+      "num_paths_override": 0
     },
     {
       // How likely out of all the element for this one to be chosen.
@@ -69,7 +71,9 @@
             -80,
             0
           ]
-        }
+        },
+        "max_allowed_paths": 3,
+        "num_paths_override": 1
       }
     },
     {
@@ -102,7 +106,9 @@
             -80,
             0
           ]
-        }
+        },
+        "max_allowed_paths": 2,
+        "num_paths_override": 2
       }
     }
   ]

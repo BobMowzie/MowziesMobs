@@ -46,7 +46,8 @@
             0,
             -1
           ]
-        }
+        },
+        "min_required_paths": 2
       }
     },
     {
@@ -80,7 +81,8 @@
             1
           ]
         },
-        "min_depth": 4
+        "min_depth": 4,
+        "min_required_paths": 2
       }
     },
     {
@@ -118,7 +120,8 @@
             -1
           ]
         },
-        "min_depth": 4
+        "min_depth": 4,
+        "max_allowed_paths": 3
       }
     },
     {
@@ -152,7 +155,8 @@
             -80,
             0
           ]
-        }
+        },
+        "max_allowed_paths": 2
       }
     },
 

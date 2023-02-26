@@ -32,7 +32,10 @@ public class MowziePoolElement extends SinglePoolElement {
                     Codec.INT.optionalFieldOf("min_depth", -1).forGetter(element -> element.maxDepth),
                     Codec.INT.optionalFieldOf("max_depth", -1).forGetter(element -> element.maxDepth),
                     Codec.INT.optionalFieldOf("min_height").forGetter(element -> element.minHeight),
-                    Codec.INT.optionalFieldOf("max_height").forGetter(element -> element.maxHeight)
+                    Codec.INT.optionalFieldOf("max_height").forGetter(element -> element.maxHeight),
+                    Codec.INT.optionalFieldOf("min_required_paths").forGetter(element -> element.minRequiredPaths),
+                    Codec.INT.optionalFieldOf("max_allowed_paths").forGetter(element -> element.maxAllowedPaths),
+                    Codec.INT.optionalFieldOf("num_paths_override").forGetter(element -> element.numPathsOverride)
             ).apply(builder, MowziePoolElement::new));
 
     /**
@@ -57,10 +60,18 @@ public class MowziePoolElement extends SinglePoolElement {
     public final Optional<Integer> minHeight;
     public final Optional<Integer> maxHeight;
 
+    /**
+     * Only allow the piece to spawn when this many active paths are generating
+     */
+    public final Optional<Integer> minRequiredPaths;
+    public final Optional<Integer> maxAllowedPaths;
+    public final Optional<Integer> numPathsOverride;
+
+
     protected MowziePoolElement(Either<ResourceLocation, StructureTemplate> p_210415_, Holder<StructureProcessorList> p_210416_, StructureTemplatePool.Projection p_210417_, BoundsParams bounds, boolean twoWay,
-                                int minDepth,int maxDepth,
-                                Optional<Integer> minHeight, Optional<Integer> maxHeight
-    ) {
+                                int minDepth, int maxDepth,
+                                Optional<Integer> minHeight, Optional<Integer> maxHeight,
+                                Optional<Integer> minRequiredPaths, Optional<Integer> maxAllowedPaths, Optional<Integer> numPathsOverride) {
         super(p_210415_, p_210416_, p_210417_);
         this.bounds = bounds;
         this.twoWay = twoWay;
@@ -68,6 +79,9 @@ public class MowziePoolElement extends SinglePoolElement {
         this.maxDepth = maxDepth;
         this.minHeight = minHeight;
         this.maxHeight = maxHeight;
+        this.minRequiredPaths = minRequiredPaths;
+        this.maxAllowedPaths = maxAllowedPaths;
+        this.numPathsOverride = numPathsOverride;
     }
 
     public static boolean canAttachTwoWays(StructureTemplate.StructureBlockInfo p_54246_, StructureTemplate.StructureBlockInfo p_54247_) {

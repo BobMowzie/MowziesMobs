@@ -46,7 +46,8 @@
             0,
             -1
           ]
-        }
+        },
+        "num_paths_override": 0
       }
     }
   ]

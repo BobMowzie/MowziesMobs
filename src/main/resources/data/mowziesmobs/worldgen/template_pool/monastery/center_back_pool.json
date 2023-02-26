@@ -41,7 +41,9 @@
             -80,
             0
           ]
-        }
+        },
+        "min_required_paths": 2,
+        "num_paths_override": 0
       }
     },
     {
@@ -74,7 +76,9 @@
             -80,
             0
           ]
-        }
+        },
+        "max_allowed_paths": 2,
+        "num_paths_override": 1
       }
     }
   ]

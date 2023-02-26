@@ -41,12 +41,12 @@ public class MowzieJigsawManager {
             PieceGeneratorSupplier.Context<JigsawConfiguration> context,
             PieceFactory pieceFactory, BlockPos genPos, boolean villageBoundaryAdjust, boolean useTerrainHeight
     ) {
-        return addPieces(context, pieceFactory, genPos, villageBoundaryAdjust, useTerrainHeight, 80, null, null, null);
+        return addPieces(context, pieceFactory, genPos, villageBoundaryAdjust, useTerrainHeight, 80, null, null, null, null);
     }
 
     public static Optional<PieceGenerator<JigsawConfiguration>> addPieces(
             PieceGeneratorSupplier.Context<JigsawConfiguration> context,
-            PieceFactory pieceFactory, BlockPos genPos, boolean villageBoundaryAdjust, boolean useTerrainHeight, int maxDistFromStart,
+            PieceFactory pieceFactory, BlockPos genPos, boolean villageBoundaryAdjust, boolean useTerrainHeight, int maxDistFromStart, String pathJigsawName,
             Set<String> mustConnectPools, Set<String> replacePools, String deadEndConnectorPool
     ) {
         WorldgenRandom worldgenrandom = new WorldgenRandom(new LegacyRandomSource(0L));
@@ -91,7 +91,7 @@ public class MowzieJigsawManager {
                     list.add(poolelementstructurepiece);
                     if (jigsawconfiguration.maxDepth() >= 0) {
                         AABB aabb = new AABB((double)(centerX - maxDistFromStart), (double)(height - maxDistFromStart), (double)(centerZ - maxDistFromStart), (double)(centerX + maxDistFromStart + 1), (double)(height + maxDistFromStart + 1), (double)(centerZ + maxDistFromStart + 1));
-                        Placer jigsawplacement$placer = new Placer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom);
+                        Placer jigsawplacement$placer = new Placer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom, pathJigsawName);
                         VoxelShape shape = Shapes.join(Shapes.create(aabb), Shapes.create(AABB.of(pieceBoundingBox)), BooleanOp.ONLY_FIRST);
                         // Place starting piece
                         PieceState startingPiece = new PieceState(poolelementstructurepiece, new MutableObject<>(shape), 0);
@@ -108,7 +108,7 @@ public class MowzieJigsawManager {
                             jigsawplacement$placer.tryPlacingChildren(nextJigsawBlock.getFirst(), nextJigsawBlock.getSecond(), villageBoundaryAdjust, levelheightaccessor);
                         }
 
-                        Placer fallbackPlacer = new FallbackPlacer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom, jigsawplacement$placer);
+                        Placer fallbackPlacer = new FallbackPlacer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom, pathJigsawName, jigsawplacement$placer);
                         while(!fallbackPlacer.placing.isEmpty()) {
                             Pair<StructureBlockInfo, PieceState> nextJigsawBlock = fallbackPlacer.placing.removeFirst();
                             fallbackPlacer.tryPlacingChildren(nextJigsawBlock.getFirst(), nextJigsawBlock.getSecond(), villageBoundaryAdjust, levelheightaccessor);
@@ -157,9 +157,12 @@ public class MowzieJigsawManager {
         final StructureManager structureManager;
         final List<? super PoolElementStructurePiece> pieces;
         protected final Random random;
-        final Deque<Pair<StructureBlockInfo, PieceState>> placing = Queues.newArrayDeque();
+        protected final String pathJigsawName;
 
-        Placer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, Random p_210329_) {
+        final Deque<Pair<StructureBlockInfo, PieceState>> placing = Queues.newArrayDeque();
+        protected int numPaths;
+
+        Placer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, Random p_210329_, String pathJigsawName) {
             this.pools = p_210323_;
             this.maxDepth = p_210324_;
             this.factory = p_210325_;
@@ -167,9 +170,14 @@ public class MowzieJigsawManager {
             this.structureManager = p_210327_;
             this.pieces = p_210328_;
             this.random = p_210329_;
+            this.pathJigsawName = pathJigsawName;
+            this.numPaths = 0;
         }
 
         void tryPlacingChildren(StructureBlockInfo thisPieceJigsawBlock, PieceState pieceState, boolean villageBoundaryAdjust, LevelHeightAccessor heightAccessor) {
+            if (thisPieceJigsawBlock.nbt.getString("target").equals(pathJigsawName)) {
+                numPaths--;
+            }
             String pool = selectPool(thisPieceJigsawBlock);
             ResourceLocation poolResourceLocation = new ResourceLocation(pool);
             Optional<StructureTemplatePool> poolOptional = this.pools.getOptional(poolResourceLocation);
@@ -244,7 +252,10 @@ public class MowzieJigsawManager {
             pieceSelection.poolelementstructurepiece.addJunction(new JigsawJunction(pieceSelection.origJigsaw.pos.getX(), pieceSelection.l2 - pieceSelection.connectedJigsaw.pos.getY() + k2, pieceSelection.origJigsaw.pos.getZ(), -k1, pieceSelection.origPiece.getProjection()));
             this.pieces.add(pieceSelection.poolelementstructurepiece);
             PieceState nextPieceState = new PieceState(pieceSelection.poolelementstructurepiece, pieceSelection.pieceState.free, pieceSelection.pieceState.depth + 1);
+
+            // Queue up the next jigsaw pieces
             List<StructureBlockInfo> nextJigsaws = getJigsawBlocksFromPieceState(nextPieceState);
+            // Skip the jigsaw piece that just connected (unless its two-way)
             if (!(pieceSelection.poolelementstructurepiece.getElement() instanceof MowziePoolElement) || !((MowziePoolElement) pieceSelection.poolelementstructurepiece.getElement()).twoWay()) {
                 nextJigsaws.removeIf(jigsaw -> {
                     Direction direction = JigsawBlock.getFrontFacing(pieceSelection.origJigsaw.state);
@@ -253,6 +264,19 @@ public class MowzieJigsawManager {
                     return jigsaw.pos.equals(nextJigsawBlockPos);
                 });
             }
+
+            // Count up the number of next paths. Check for overridden count first.
+            if (pieceSelection.nextPiece instanceof MowziePoolElement && ((MowziePoolElement) pieceSelection.nextPiece).numPathsOverride.isPresent()) {
+                numPaths += ((MowziePoolElement) pieceSelection.nextPiece).numPathsOverride.get();
+            }
+            else {
+                for (StructureBlockInfo jigsaw : nextJigsaws) {
+                    if (jigsaw.nbt.getString("target").equals(pathJigsawName)) {
+                        numPaths++;
+                    }
+                }
+            }
+
             for (StructureBlockInfo jigsaw : nextJigsaws) {
                 this.placing.addLast(new Pair<>(jigsaw, nextPieceState));
             }
@@ -279,8 +303,16 @@ public class MowzieJigsawManager {
                 }
 
                 if (nextPieceCandidate instanceof MowziePoolElement) {
-                    int maxDepth = ((MowziePoolElement) nextPieceCandidate).maxDepth;
+                    MowziePoolElement mowziePoolElement = (MowziePoolElement) nextPieceCandidate;
+                    int maxDepth = mowziePoolElement.maxDepth;
                     if (maxDepth != -1 && pieceState.depth > maxDepth) continue;
+
+                    if (!(this instanceof FallbackPlacer)) {
+                        if (mowziePoolElement.minRequiredPaths.isPresent() && numPaths < mowziePoolElement.minRequiredPaths.get())
+                            continue;
+                        if (mowziePoolElement.maxAllowedPaths.isPresent() && numPaths > mowziePoolElement.maxAllowedPaths.get())
+                            continue;
+                    }
                 }
 
                 // Iterate through possible rotations of this element
@@ -405,9 +437,10 @@ public class MowzieJigsawManager {
 
     static final class FallbackPlacer extends Placer {
 
-        FallbackPlacer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, Random p_210329_, Placer previousPlacer) {
-            super(p_210323_, p_210324_, p_210325_, p_210326_, p_210327_, p_210328_, p_210329_);
+        FallbackPlacer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, Random p_210329_, String pathJigsawName, Placer previousPlacer) {
+            super(p_210323_, p_210324_, p_210325_, p_210326_, p_210327_, p_210328_, p_210329_, pathJigsawName);
             this.placing.addAll(previousPlacer.placing);
+            this.numPaths = previousPlacer.numPaths;
         }
 
         List<StructurePoolElement> addPoolElements(PieceState pieceState, StructureTemplatePool pool, StructureTemplatePool fallbackPool) {
@@ -423,14 +456,15 @@ public class MowzieJigsawManager {
         private Set<String> toReplacePools;
         private String deadEndConnectorPool;
 
-        DeadEndConnectorPlacer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, Random p_210329_, Deque<PieceState> oldPlacing, Set<String> mustConnectPools, Set<String> toReplacePools, String deadEndConnectorPool) {
-            super(p_210323_, p_210324_, p_210325_, p_210326_, p_210327_, p_210328_, p_210329_);
+        DeadEndConnectorPlacer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, Random p_210329_, Placer oldPlacer, String pathJigsawName, Set<String> mustConnectPools, Set<String> toReplacePools, String deadEndConnectorPool) {
+            super(p_210323_, p_210324_, p_210325_, p_210326_, p_210327_, p_210328_, p_210329_, pathJigsawName);
+            this.numPaths = oldPlacer.numPaths;
             this.mustConnectPools = mustConnectPools;
             this.toReplacePools = toReplacePools;
             this.deadEndConnectorPool = deadEndConnectorPool;
             List<StructureBlockInfo> needConnecting = new ArrayList<>();
-            while (!oldPlacing.isEmpty()) {
-                PieceState pieceState = oldPlacing.removeFirst();
+            while (!oldPlacer.placing.isEmpty()) {
+                PieceState pieceState = oldPlacer.placing.removeFirst().getSecond();
                 List<StructureBlockInfo> jigsawBlocks = getJigsawBlocksFromPieceState(pieceState);
                 for (StructureBlockInfo jigsawBlock : jigsawBlocks) {
                     if (jigsawMustConnect(jigsawBlock) && canJigsawBlockFitNextPiece(jigsawBlock, pieceState.free)) {

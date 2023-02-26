@@ -42,7 +42,8 @@
             -1
           ],
           "ignore_bounds": true
-        }
+        },
+        "min_required_paths": 2
       }
     },
     {
@@ -75,7 +76,8 @@
             0,
             -1
           ]
-        }
+        },
+        "min_required_paths": 2
       }
     },
     {
@@ -108,7 +110,8 @@
             0,
             -1
           ]
-        }
+        },
+        "min_required_paths": 2
       }
     },
     {
@@ -149,7 +152,8 @@
         },
         "two_way": true,
         "min_height": -4,
-        "max_height": 8
+        "max_height": 8,
+        "max_allowed_paths": 2
       }
     }
   ]
