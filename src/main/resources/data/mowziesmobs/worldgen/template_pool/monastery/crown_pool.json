@@ -45,8 +45,7 @@
             0,
             0,
             0
-          ],
-          "ignore_bounds": true
+          ]
         },
         "min_depth": 5
       }

@@ -40,7 +40,8 @@
             0,
             -80,
             0
-          ]
+          ],
+          "special_bounds": "wall"
         },
         "min_required_paths": 2,
         "num_paths_override": 0
@@ -75,7 +76,8 @@
             0,
             -80,
             0
-          ]
+          ],
+          "special_bounds": "wall"
         },
         "max_allowed_paths": 4,
         "num_paths_override": 1

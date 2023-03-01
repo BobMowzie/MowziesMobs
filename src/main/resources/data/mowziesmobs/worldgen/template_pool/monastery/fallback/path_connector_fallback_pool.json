@@ -13,7 +13,7 @@
   "elements": [
     {
       // How likely out of all the element for this one to be chosen.
-      "weight": 20,
+      "weight": 1,
       "element": {
         // The Identifier of the nbt file itself of the structure piece.
         // Note, this will automatically check into the 'structures' folder for the nbt file.
@@ -31,7 +31,8 @@
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
-          "ignore_bounds": true
+          "bounds_min_offset": [ 0, -80, 1 ],
+          "bounds_max_offset": [ -1, 0, -1 ]
         }
       }
     }

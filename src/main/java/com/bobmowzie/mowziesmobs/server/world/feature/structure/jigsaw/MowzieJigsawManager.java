@@ -94,7 +94,7 @@ public class MowzieJigsawManager {
                         Placer jigsawplacement$placer = new Placer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom, pathJigsawName);
                         VoxelShape shape = Shapes.join(Shapes.create(aabb), Shapes.create(AABB.of(pieceBoundingBox)), BooleanOp.ONLY_FIRST);
                         // Place starting piece
-                        PieceState startingPiece = new PieceState(poolelementstructurepiece, new MutableObject<>(shape), 0, null);
+                        PieceState startingPiece = new PieceState(poolelementstructurepiece, new MutableObject<>(shape), 0, null, new MutableObject<>(new HashMap<>()));
                         for (StructureBlockInfo structureBlockInfo : jigsawplacement$placer.getJigsawBlocksFromPieceState(startingPiece)) {
                             jigsawplacement$placer.placing.addLast(new Pair<>(structureBlockInfo, startingPiece));
                         }
@@ -108,20 +108,20 @@ public class MowzieJigsawManager {
                             jigsawplacement$placer.tryPlacingChildren(nextJigsawBlock.getFirst(), nextJigsawBlock.getSecond(), villageBoundaryAdjust, levelheightaccessor);
                         }
 
-                        Placer fallbackPlacer = new FallbackPlacer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom, pathJigsawName, jigsawplacement$placer);
-                        while(!fallbackPlacer.placing.isEmpty()) {
-                            Pair<StructureBlockInfo, PieceState> nextJigsawBlock = fallbackPlacer.placing.removeFirst();
-                            fallbackPlacer.tryPlacingChildren(nextJigsawBlock.getFirst(), nextJigsawBlock.getSecond(), villageBoundaryAdjust, levelheightaccessor);
+                        // Handle dead ends to connect them together
+                        Placer deadEndConnectorPlacer = new DeadEndConnectorPlacer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom, pathJigsawName, jigsawplacement$placer, mustConnectPools, replacePools, deadEndConnectorPool);
+                        while(!deadEndConnectorPlacer.placing.isEmpty()) {
+                            Pair<StructureBlockInfo, PieceState> nextJigsawBlock = deadEndConnectorPlacer.placing.removeFirst();
+                            if (nextJigsawBlock.getSecond().depth > jigsawconfiguration.maxDepth() * 2) {
+                                break;
+                            }
+                            deadEndConnectorPlacer.tryPlacingChildren(nextJigsawBlock.getFirst(), nextJigsawBlock.getSecond(), villageBoundaryAdjust, levelheightaccessor);
                         }
 
-                        // Handle dead ends to connect them together
-//                        Placer deadEndConnectorPlacer = new DeadEndConnectorPlacer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom, jigsawplacement$placer.placing, mustConnectPools, replacePools, deadEndConnectorPool);
-//                        while(!deadEndConnectorPlacer.placing.isEmpty()) {
-//                            PieceState pieceState = deadEndConnectorPlacer.placing.removeFirst();
-//                            if (pieceState.depth > 80) {
-//                                break;
-//                            }
-//                            deadEndConnectorPlacer.tryPlacingChildren(pieceState, villageBoundaryAdjust, levelheightaccessor);
+//                        Placer fallbackPlacer = new FallbackPlacer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom, pathJigsawName, jigsawplacement$placer);
+//                        while(!fallbackPlacer.placing.isEmpty()) {
+//                            Pair<StructureBlockInfo, PieceState> nextJigsawBlock = fallbackPlacer.placing.removeFirst();
+//                            fallbackPlacer.tryPlacingChildren(nextJigsawBlock.getFirst(), nextJigsawBlock.getSecond(), villageBoundaryAdjust, levelheightaccessor);
 //                        }
 
                         list.forEach(p_210282_::addPiece);
@@ -138,16 +138,18 @@ public class MowzieJigsawManager {
     static class PieceState {
         final PoolElementStructurePiece piece;
         final MutableObject<VoxelShape> free;
+        final MutableObject<Map<String, VoxelShape>> specialBounds;
         final int depth;
         final PieceState parent;
         final Set<PieceState> children;
 
-        PieceState(PoolElementStructurePiece p_210311_, MutableObject<VoxelShape> p_210312_, int p_210313_, PieceState parent) {
+        PieceState(PoolElementStructurePiece p_210311_, MutableObject<VoxelShape> p_210312_, int p_210313_, PieceState parent, MutableObject<Map<String, VoxelShape>> specialBounds) {
             this.piece = p_210311_;
             this.free = p_210312_;
             this.depth = p_210313_;
             this.parent = parent;
             this.children = new HashSet<>();
+            this.specialBounds = specialBounds;
         }
     }
 
@@ -240,6 +242,24 @@ public class MowzieJigsawManager {
         }
 
         void addNextPieceState(PieceSelection pieceSelection) {
+            // Subtract the bounding box from the free space
+            if (!(pieceSelection.nextPiece instanceof MowziePoolElement && ((MowziePoolElement) pieceSelection.nextPiece).ignoresBounds())) {
+                pieceSelection.pieceState.free.setValue(Shapes.joinUnoptimized(pieceSelection.pieceState.free.getValue(), Shapes.create(AABB.of(pieceSelection.nextPieceBoundingBoxPlaced)), BooleanOp.ONLY_FIRST));
+            }
+
+            // Special bounds - add this piece's bounds to any special bounds its set to
+            if (pieceSelection.nextPiece instanceof MowziePoolElement) {
+                MowziePoolElement mowziePoolElement = (MowziePoolElement) pieceSelection.nextPiece;
+                Optional<String> specialBounds = mowziePoolElement.bounds.specialBounds;
+                if (specialBounds.isPresent()) {
+                    if (pieceSelection.pieceState.specialBounds.getValue().containsKey(specialBounds.get())) {
+                        pieceSelection.pieceState.specialBounds.getValue().put(specialBounds.get(), Shapes.joinUnoptimized(pieceSelection.pieceState.specialBounds.getValue().get(specialBounds.get()), Shapes.create(AABB.of(pieceSelection.nextPieceBoundingBoxPlaced)), BooleanOp.OR));
+                    } else {
+                        pieceSelection.pieceState.specialBounds.getValue().put(specialBounds.get(), Shapes.create(AABB.of(pieceSelection.nextPieceBoundingBoxPlaced)));
+                    }
+                }
+            }
+
             BoundingBox thisPieceBoundingBox = pieceSelection.pieceState.piece.getBoundingBox();
             int thisPieceMinY = thisPieceBoundingBox.minY();
             int thisPieceHeightFromBottomToJigsawBlock = pieceSelection.origJigsaw.pos.getY() - thisPieceMinY;
@@ -255,7 +275,7 @@ public class MowzieJigsawManager {
             pieceSelection.pieceState.piece.addJunction(new JigsawJunction(pieceSelection.connectedJigsaw.pos.getX(), pieceSelection.l2 - thisPieceHeightFromBottomToJigsawBlock + pieceGroundLevelDelta, pieceSelection.connectedJigsaw.pos.getZ(), k1, pieceSelection.nextPiece.getProjection()));
             pieceSelection.poolelementstructurepiece.addJunction(new JigsawJunction(pieceSelection.origJigsaw.pos.getX(), pieceSelection.l2 - pieceSelection.connectedJigsaw.pos.getY() + k2, pieceSelection.origJigsaw.pos.getZ(), -k1, pieceSelection.origPiece.getProjection()));
             this.pieces.add(pieceSelection.poolelementstructurepiece);
-            PieceState nextPieceState = new PieceState(pieceSelection.poolelementstructurepiece, pieceSelection.pieceState.free, pieceSelection.pieceState.depth + 1, pieceSelection.pieceState);
+            PieceState nextPieceState = new PieceState(pieceSelection.poolelementstructurepiece, pieceSelection.pieceState.free, pieceSelection.pieceState.depth + 1, pieceSelection.pieceState, pieceSelection.pieceState.specialBounds);
 
             // Queue up the next jigsaw pieces
             List<StructureBlockInfo> nextJigsaws = getJigsawBlocksFromPieceState(nextPieceState);
@@ -398,8 +418,18 @@ public class MowzieJigsawManager {
                             if (nextPieceCandidate instanceof MowziePoolElement)
                                 ignoreBounds = ((MowziePoolElement) nextPieceCandidate).ignoresBounds();
                             if (ignoreBounds || !Shapes.joinIsNotEmpty(pieceState.free.getValue(), Shapes.create(AABB.of(nextPieceBoundingBoxPlaced).deflate(0.25D)), BooleanOp.ONLY_SECOND)) {
-                                if (!ignoreBounds)
-                                    pieceState.free.setValue(Shapes.joinUnoptimized(pieceState.free.getValue(), Shapes.create(AABB.of(nextPieceBoundingBoxPlaced)), BooleanOp.ONLY_FIRST));
+                                // Special bounding boxes
+                                if (nextPieceCandidate instanceof MowziePoolElement) {
+                                    MowziePoolElement mowziePoolElement = (MowziePoolElement) nextPieceCandidate;
+
+                                    Optional<String> needsOverlapBounds = mowziePoolElement.bounds.needsOverlapBounds;
+                                    if (needsOverlapBounds.isPresent() && pieceState.specialBounds.getValue().containsKey(needsOverlapBounds.get())) {
+                                        if (!Shapes.joinIsNotEmpty(pieceState.specialBounds.getValue().get(needsOverlapBounds.get()), Shapes.create(AABB.of(nextPieceBoundingBoxPlaced).deflate(0.25D)), BooleanOp.AND)) {
+                                            continue;
+                                        }
+                                    }
+                                }
+
                                 int pieceGroundLevelDelta = pieceState.piece.getGroundLevelDelta();
                                 int k2;
                                 if (nextPieceIsRigid) {
@@ -454,7 +484,7 @@ public class MowzieJigsawManager {
         private Set<String> toReplacePools;
         private String deadEndConnectorPool;
 
-        DeadEndConnectorPlacer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, Random p_210329_, Placer oldPlacer, String pathJigsawName, Set<String> mustConnectPools, Set<String> toReplacePools, String deadEndConnectorPool) {
+        DeadEndConnectorPlacer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, Random p_210329_, String pathJigsawName, Placer oldPlacer, Set<String> mustConnectPools, Set<String> toReplacePools, String deadEndConnectorPool) {
             super(p_210323_, p_210324_, p_210325_, p_210326_, p_210327_, p_210328_, p_210329_, pathJigsawName);
             this.numPaths = oldPlacer.numPaths;
             this.mustConnectPools = mustConnectPools;
@@ -505,6 +535,7 @@ public class MowzieJigsawManager {
             super.addNextPieceState(pieceSelection);
         }
 
+        @Override
         PieceSelection selectPiece(PieceState pieceState, StructureTemplatePool pool, StructureTemplatePool fallbackPool, boolean villageBoundaryAdjust, StructureBlockInfo thisPieceJigsawBlock, LevelHeightAccessor heightAccessor) {
             // If this isn't coming after a must-connect jigsaw block, use normal placement
             if (!jigsawMustConnect(thisPieceJigsawBlock)) return super.selectPiece(pieceState, pool, fallbackPool, villageBoundaryAdjust, thisPieceJigsawBlock, heightAccessor);
@@ -539,21 +570,19 @@ public class MowzieJigsawManager {
                 }
 
                 if (nextPieceCandidate instanceof MowziePoolElement) {
-                    int minDepth = ((MowziePoolElement) nextPieceCandidate).minDepth;
-                    if (minDepth != -1 && pieceState.depth < minDepth) continue;
-                    int maxDepth = ((MowziePoolElement) nextPieceCandidate).maxDepth;
-                    if (maxDepth != -1 && pieceState.depth > maxDepth) continue;
+                    MowziePoolElement mowziePoolElement = (MowziePoolElement) nextPieceCandidate;
+                    if (!mowziePoolElement.checkCriteria(pieceState, this)) continue;
                 }
 
                 // Iterate through possible rotations of this element
                 for (Rotation nextPieceRotation : Rotation.getShuffled(this.random)) {
                     List<StructureBlockInfo> nextPieceJigsawBlocks = nextPieceCandidate.getShuffledJigsawBlocks(this.structureManager, BlockPos.ZERO, nextPieceRotation, this.random);
                     BoundingBox nextPieceBoundingBoxOrigin = nextPieceCandidate.getBoundingBox(this.structureManager, BlockPos.ZERO, nextPieceRotation);
-                    int l;
+                    int largestSizeOfNextNextPiece;
                     // Village boundary adjustment
                     if (villageBoundaryAdjust && nextPieceBoundingBoxOrigin.getYSpan() <= 16) {
-                        // Map each jigsaw block to the size of the largest next piece it can generate and l becomes the largest of these
-                        l = nextPieceJigsawBlocks.stream().mapToInt((blockInfo) -> {
+                        // Map each jigsaw block to the size of the largest next piece it can generate and largestSizeOfNextNextPiece becomes the largest of these
+                        largestSizeOfNextNextPiece = nextPieceJigsawBlocks.stream().mapToInt((blockInfo) -> {
                             // If the next piece's jigsaw block would place inside its own bounding box, return 0
                             if (!nextPieceBoundingBoxOrigin.isInside(blockInfo.pos.relative(JigsawBlock.getFrontFacing(blockInfo.state)))) {
                                 return 0;
@@ -573,7 +602,7 @@ public class MowzieJigsawManager {
                             }
                         }).max().orElse(0);
                     } else {
-                        l = 0;
+                        largestSizeOfNextNextPiece = 0;
                     }
 
                     for (StructureBlockInfo nextPieceJigsawBlock : nextPieceJigsawBlocks) {
@@ -609,14 +638,37 @@ public class MowzieJigsawManager {
                             int i2 = l1 - nextPieceMinY;
                             BoundingBox nextPieceBoundingBoxPlaced = nextPieceBoundingBox.moved(0, i2, 0);
                             BlockPos blockpos5 = nextPiecePos.offset(0, i2, 0);
-                            if (l > 0) {
-                                int j2 = Math.max(l + 1, nextPieceBoundingBoxPlaced.maxY() - nextPieceBoundingBoxPlaced.minY());
+                            if (largestSizeOfNextNextPiece > 0) {
+                                int j2 = Math.max(largestSizeOfNextNextPiece + 1, nextPieceBoundingBoxPlaced.maxY() - nextPieceBoundingBoxPlaced.minY());
                                 nextPieceBoundingBoxPlaced.encapsulate(new BlockPos(nextPieceBoundingBoxPlaced.minX(), nextPieceBoundingBoxPlaced.minY() + j2, nextPieceBoundingBoxPlaced.minZ()));
+                            }
+
+                            // Check height params
+                            if (nextPieceCandidate instanceof MowziePoolElement) {
+                                Optional<Integer> maxHeight = ((MowziePoolElement) nextPieceCandidate).maxHeight;
+                                Optional<Integer> minHeight = ((MowziePoolElement) nextPieceCandidate).minHeight;
+                                if (maxHeight.isPresent() || minHeight.isPresent()) {
+                                    int freeHeight = this.chunkGenerator.getFirstFreeHeight(nextPieceBoundingBoxPlaced.minX() + nextPieceBoundingBoxPlaced.getXSpan() / 2, nextPieceBoundingBoxPlaced.minZ() + nextPieceBoundingBoxPlaced.getZSpan() / 2, Heightmap.Types.WORLD_SURFACE_WG, heightAccessor);
+                                    if (maxHeight.isPresent() && nextPieceMinY - freeHeight > maxHeight.get()) continue;
+                                    if (minHeight.isPresent() && nextPieceMinY - freeHeight < minHeight.get()) continue;
+                                }
                             }
 
                             if (nextPieceCandidate instanceof MowziePoolElement)
                                 ignoreBounds = ((MowziePoolElement) nextPieceCandidate).ignoresBounds();
                             if (ignoreBounds || !Shapes.joinIsNotEmpty(pieceState.free.getValue(), Shapes.create(AABB.of(nextPieceBoundingBoxPlaced).deflate(0.25D)), BooleanOp.ONLY_SECOND)) {
+                                // Special bounding boxes
+                                if (nextPieceCandidate instanceof MowziePoolElement) {
+                                    MowziePoolElement mowziePoolElement = (MowziePoolElement) nextPieceCandidate;
+
+                                    Optional<String> needsOverlapBounds = mowziePoolElement.bounds.needsOverlapBounds;
+                                    if (needsOverlapBounds.isPresent() && pieceState.specialBounds.getValue().containsKey(needsOverlapBounds.get())) {
+                                        if (!Shapes.joinIsNotEmpty(pieceState.specialBounds.getValue().get(needsOverlapBounds.get()), Shapes.create(AABB.of(nextPieceBoundingBoxPlaced).deflate(0.25D)), BooleanOp.AND)) {
+                                            continue;
+                                        }
+                                    }
+                                }
+
                                 int pieceGroundLevelDelta = pieceState.piece.getGroundLevelDelta();
                                 int k2;
                                 if (nextPieceIsRigid) {
@@ -673,7 +725,6 @@ public class MowzieJigsawManager {
                 }
             }
             if (pieceSelection != null) {
-                if (!ignoreBounds) pieceState.free.setValue(Shapes.joinUnoptimized(pieceState.free.getValue(), Shapes.create(AABB.of(pieceSelection.nextPieceBoundingBoxPlaced)), BooleanOp.ONLY_FIRST));
                 this.destinations.remove(pieceSelection.origJigsaw.pos);
                 this.destinations.put(pieceSelection.nextJigsaw.pos, destination);
                 this.destinations.put(destination, pieceSelection.nextJigsaw.pos);

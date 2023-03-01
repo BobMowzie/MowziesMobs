@@ -45,7 +45,8 @@
             0,
             0,
             -1
-          ]
+          ],
+          "special_bounds": "wall"
         },
         "min_required_paths": 2,
         "num_paths_override": 0
@@ -75,6 +76,9 @@
         // Air and Structure Void in your piece as well as change the attachment mechanism.
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "special_bounds": "wall"
+        },
         "max_allowed_paths": 4,
         "num_paths_override": 1
       }

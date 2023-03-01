@@ -45,7 +45,8 @@
             0,
             0,
             -1
-          ]
+          ],
+          "special_bounds": "wall"
         },
         "num_paths_override": 0
       }

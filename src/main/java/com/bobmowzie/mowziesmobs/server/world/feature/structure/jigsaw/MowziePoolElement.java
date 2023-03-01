@@ -29,7 +29,7 @@ public class MowziePoolElement extends SinglePoolElement {
                     templateCodec(),
                     processorsCodec(),
                     projectionCodec(),
-                    BoundsParams.CODEC.optionalFieldOf("bounds", new BoundsParams(false, BlockPos.ZERO, BlockPos.ZERO, BlockPos.ZERO)).forGetter(element -> element.bounds),
+                    BoundsParams.CODEC.optionalFieldOf("bounds", new BoundsParams(false, BlockPos.ZERO, BlockPos.ZERO, BlockPos.ZERO, Optional.empty(), Optional.empty())).forGetter(element -> element.bounds),
                     Codec.BOOL.optionalFieldOf("two_way", false).forGetter(element -> element.twoWay),
                     Codec.INT.optionalFieldOf("min_depth", -1).forGetter(element -> element.maxDepth),
                     Codec.INT.optionalFieldOf("max_depth", -1).forGetter(element -> element.maxDepth),
@@ -158,7 +158,9 @@ public class MowziePoolElement extends SinglePoolElement {
                         Codec.BOOL.optionalFieldOf("ignore_bounds", false).forGetter(element -> element.ignoreBounds),
                         BlockPos.CODEC.optionalFieldOf("bounds_min_offset", BlockPos.ZERO).forGetter(element -> element.boundsMinOffset),
                         BlockPos.CODEC.optionalFieldOf("bounds_max_offset", BlockPos.ZERO).forGetter(element -> element.boundsMaxOffset),
-                        BlockPos.CODEC.optionalFieldOf("offset", BlockPos.ZERO).forGetter(element -> element.offset)
+                        BlockPos.CODEC.optionalFieldOf("offset", BlockPos.ZERO).forGetter(element -> element.offset),
+                        Codec.STRING.optionalFieldOf("special_bounds").forGetter(element -> element.specialBounds),
+                        Codec.STRING.optionalFieldOf("needs_overlap_bounds").forGetter(element -> element.specialBounds)
                 ).apply(builder, BoundsParams::new));
 
         /**
@@ -178,11 +180,23 @@ public class MowziePoolElement extends SinglePoolElement {
          */
         public final BlockPos offset;
 
-        private BoundsParams(boolean ignoreBounds, BlockPos boundsMinOffset, BlockPos boundsMaxOffset, BlockPos offset) {
+        /**
+         * Name of a special bounding box this contributes to
+         */
+        public final Optional<String> specialBounds;
+
+        /**
+         * Name of a special bounding box this piece needs to overlap with
+         */
+        public final Optional<String> needsOverlapBounds;
+
+        private BoundsParams(boolean ignoreBounds, BlockPos boundsMinOffset, BlockPos boundsMaxOffset, BlockPos offset, Optional<String> specialBounds, Optional<String> needsOverlapBounds) {
             this.ignoreBounds = ignoreBounds;
             this.boundsMinOffset = boundsMinOffset;
             this.boundsMaxOffset = boundsMaxOffset;
             this.offset = offset;
+            this.specialBounds = specialBounds;
+            this.needsOverlapBounds = needsOverlapBounds;
         }
     }
 }
