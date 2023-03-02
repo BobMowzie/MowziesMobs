@@ -38,7 +38,7 @@
         "bounds": {
           "bounds_min_offset": [
             0,
-            -80,
+            0,
             1
           ],
           "bounds_max_offset": [
@@ -46,7 +46,8 @@
             0,
             -1
           ],
-          "special_bounds": "wall"
+          "special_bounds": "wall",
+          "check_bounds_min_offset": [ 0, -80, 0 ]
         },
         "num_paths_override": 0
       }

@@ -38,7 +38,7 @@
         "bounds": {
           "bounds_min_offset": [
             0,
-            -80,
+            0,
             1
           ],
           "bounds_max_offset": [
@@ -77,7 +77,7 @@
         "bounds": {
           "bounds_min_offset": [
             1,
-            -80,
+            0,
             1
           ]
         }
@@ -105,7 +105,7 @@
         "bounds": {
           "ignore_bounds": true,
           "needs_overlap_bounds": "wall",
-          "bounds_min_offset": [ 0, -80, 1 ],
+          "bounds_min_offset": [ 0, 0, 1 ],
           "bounds_max_offset": [ 0, 0, -1 ]
         }
       }

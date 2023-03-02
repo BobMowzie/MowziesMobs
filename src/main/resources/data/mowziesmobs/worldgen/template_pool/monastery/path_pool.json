@@ -14,7 +14,7 @@
     {
 
       // How likely out of all the element for this one to be chosen.
-      "weight": 17,
+      "weight": 15,
       "element": {
 
         // The Identifier of the nbt file itself of the structure piece.
@@ -38,7 +38,7 @@
         "bounds": {
           "bounds_min_offset": [
             0,
-            -80,
+            0,
             1
           ],
           "bounds_max_offset": [
@@ -46,7 +46,9 @@
             0,
             -1
           ],
-          "special_bounds": "wall"
+          "special_bounds": "wall",
+          "check_bounds_min_offset": [ 0, -80, 0 ],
+          "check_bounds_max_offset": [ 0, 80, 0 ]
         }
       }
     },
@@ -75,11 +77,9 @@
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
-          "bounds_min_offset": [
-            1,
-            -80,
-            1
-          ]
+          "bounds_min_offset": [ 1, 0, 1 ],
+          "check_bounds_min_offset": [ 0, -80, 0 ],
+          "check_bounds_max_offset": [ 0, 80, 0 ]
         },
         "min_depth": 4,
         "forbidden_parents": [
@@ -117,7 +117,7 @@
         "bounds": {
           "bounds_min_offset": [
             0,
-            -80,
+            0,
             0
           ],
           "bounds_max_offset": [
@@ -125,10 +125,12 @@
             0,
             -1
           ],
-          "special_bounds": "wall"
+          "special_bounds": "wall",
+          "check_bounds_min_offset": [ 0, -80, 0 ],
+          "check_bounds_max_offset": [ 0, 80, 0 ]
         },
         "min_depth": 4,
-        "max_allowed_paths": 2,
+        "max_allowed_paths": 4,
         "forbidden_parents": [
           "mowziesmobs:monastery/monastery_wall_4way",
           "mowziesmobs:monastery/monastery_wall_3way",
@@ -166,12 +168,14 @@
         "bounds": {
           "bounds_min_offset": [
             0,
-            -80,
+            0,
             0
           ],
-          "special_bounds": "wall"
+          "special_bounds": "wall",
+          "check_bounds_min_offset": [ 0, -80, 0 ],
+          "check_bounds_max_offset": [ 0, 80, 0 ]
         },
-        "max_allowed_paths": 1,
+        "max_allowed_paths": 3,
         "forbidden_parents": [
           "mowziesmobs:monastery/monastery_wall_4way",
           "mowziesmobs:monastery/monastery_wall_3way",
@@ -203,7 +207,7 @@
         "bounds": {
           "ignore_bounds": true,
           "needs_overlap_bounds": "wall",
-          "bounds_min_offset": [ 0, -80, 1 ],
+          "bounds_min_offset": [ 0, 0, 1 ],
           "bounds_max_offset": [ 0, 0, -1 ]
         },
         "forbidden_parents": [
@@ -211,13 +215,13 @@
         ],
         "forbidden_parents_depth": 3
       }
-    }/*,
+    },
 
     // Room elements
     {
 
       // How likely out of all the element for this one to be chosen.
-      "weight": 4,
+      "weight": 8,
       "element": {
 
         // The Identifier of the nbt file itself of the structure piece.
@@ -239,17 +243,11 @@
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
-          "bounds_min_offset": [
-            1,
-            -80,
-            1
-          ],
-          "bounds_max_offset": [
-            -1,
-            0,
-            -1
-          ],
-          "special_bounds": "tower"
+          "bounds_min_offset": [ 1, 0, 1 ],
+          "bounds_max_offset": [ -1, 0, -1 ],
+          "special_bounds": "tower",
+          "check_bounds_min_offset": [ 0, -80, 0 ],
+          "check_bounds_max_offset": [ 0, 80, 0 ]
         },
         "max_height": -4
       }
@@ -257,7 +255,7 @@
     {
 
       // How likely out of all the element for this one to be chosen.
-      "weight": 4,
+      "weight": 8,
       "element": {
 
         // The Identifier of the nbt file itself of the structure piece.
@@ -279,20 +277,14 @@
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
-          "bounds_min_offset": [
-            4,
-            0,
-            2
-          ],
-          "bounds_max_offset": [
-            -4,
-            0,
-            -2
-          ],
-          "special_bounds": "tower"
+          "bounds_min_offset": [ 4, 0, 2 ],
+          "bounds_max_offset": [ -4, 0, -2 ],
+          "special_bounds": "tower",
+          "check_bounds_min_offset": [ 0, -80, 0 ],
+          "check_bounds_max_offset": [ 0, 80, 0 ]
         },
         "min_height": 8
       }
-    }*/
+    }
   ]
 }

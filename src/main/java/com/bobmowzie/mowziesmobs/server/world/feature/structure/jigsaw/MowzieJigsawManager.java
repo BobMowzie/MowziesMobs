@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.JigsawBlock;
+import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -23,6 +24,7 @@ import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
 import net.minecraft.world.level.levelgen.structure.pools.*;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.BooleanOp;
@@ -108,21 +110,11 @@ public class MowzieJigsawManager {
                             jigsawplacement$placer.tryPlacingChildren(nextJigsawBlock.getFirst(), nextJigsawBlock.getSecond(), villageBoundaryAdjust, levelheightaccessor);
                         }
 
-                        // Handle dead ends to connect them together
-                        Placer deadEndConnectorPlacer = new DeadEndConnectorPlacer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom, pathJigsawName, jigsawplacement$placer, mustConnectPools, replacePools, deadEndConnectorPool);
-                        while(!deadEndConnectorPlacer.placing.isEmpty()) {
-                            Pair<StructureBlockInfo, PieceState> nextJigsawBlock = deadEndConnectorPlacer.placing.removeFirst();
-                            if (nextJigsawBlock.getSecond().depth > jigsawconfiguration.maxDepth() * 2) {
-                                break;
-                            }
-                            deadEndConnectorPlacer.tryPlacingChildren(nextJigsawBlock.getFirst(), nextJigsawBlock.getSecond(), villageBoundaryAdjust, levelheightaccessor);
+                        Placer fallbackPlacer = new FallbackPlacer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom, pathJigsawName, jigsawplacement$placer);
+                        while(!fallbackPlacer.placing.isEmpty()) {
+                            Pair<StructureBlockInfo, PieceState> nextJigsawBlock = fallbackPlacer.placing.removeFirst();
+                            fallbackPlacer.tryPlacingChildren(nextJigsawBlock.getFirst(), nextJigsawBlock.getSecond(), villageBoundaryAdjust, levelheightaccessor);
                         }
-
-//                        Placer fallbackPlacer = new FallbackPlacer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom, pathJigsawName, jigsawplacement$placer);
-//                        while(!fallbackPlacer.placing.isEmpty()) {
-//                            Pair<StructureBlockInfo, PieceState> nextJigsawBlock = fallbackPlacer.placing.removeFirst();
-//                            fallbackPlacer.tryPlacingChildren(nextJigsawBlock.getFirst(), nextJigsawBlock.getSecond(), villageBoundaryAdjust, levelheightaccessor);
-//                        }
 
                         list.forEach(p_210282_::addPiece);
                     }
@@ -182,7 +174,7 @@ public class MowzieJigsawManager {
 
         void tryPlacingChildren(StructureBlockInfo thisPieceJigsawBlock, PieceState pieceState, boolean villageBoundaryAdjust, LevelHeightAccessor heightAccessor) {
             if (thisPieceJigsawBlock.nbt.getString("target").equals(pathJigsawName)) {
-                numPaths--;
+                if (numPaths > 0) numPaths--;
             }
             String pool = selectPool(thisPieceJigsawBlock);
             ResourceLocation poolResourceLocation = new ResourceLocation(pool);
@@ -415,9 +407,12 @@ public class MowzieJigsawManager {
                             }
 
                             boolean ignoreBounds = false;
-                            if (nextPieceCandidate instanceof MowziePoolElement)
+                            BoundingBox spaceCheckBounds = nextPieceBoundingBoxPlaced;
+                            if (nextPieceCandidate instanceof MowziePoolElement) {
                                 ignoreBounds = ((MowziePoolElement) nextPieceCandidate).ignoresBounds();
-                            if (ignoreBounds || !Shapes.joinIsNotEmpty(pieceState.free.getValue(), Shapes.create(AABB.of(nextPieceBoundingBoxPlaced).deflate(0.25D)), BooleanOp.ONLY_SECOND)) {
+                                spaceCheckBounds = ((MowziePoolElement) nextPieceCandidate).getCheckBoundingBox(this.structureManager, nextPiecePos, nextPieceRotation).moved(0, i2, 0);
+                            }
+                            if (ignoreBounds || !Shapes.joinIsNotEmpty(pieceState.free.getValue(), Shapes.create(AABB.of(spaceCheckBounds).deflate(0.25D)), BooleanOp.ONLY_SECOND)) {
                                 // Special bounding boxes
                                 if (nextPieceCandidate instanceof MowziePoolElement) {
                                     MowziePoolElement mowziePoolElement = (MowziePoolElement) nextPieceCandidate;
@@ -478,6 +473,7 @@ public class MowzieJigsawManager {
         }
     }
 
+    /* DOESNT WORK. Maybe try again later
     static final class DeadEndConnectorPlacer extends Placer {
         Map<BlockPos, BlockPos> destinations = new HashMap<>();
         private Set<String> mustConnectPools;
@@ -492,20 +488,35 @@ public class MowzieJigsawManager {
             this.deadEndConnectorPool = deadEndConnectorPool;
             List<StructureBlockInfo> needConnecting = new ArrayList<>();
             while (!oldPlacer.placing.isEmpty()) {
-                PieceState pieceState = oldPlacer.placing.removeFirst().getSecond();
-                List<StructureBlockInfo> jigsawBlocks = getJigsawBlocksFromPieceState(pieceState);
-                for (StructureBlockInfo jigsawBlock : jigsawBlocks) {
-                    if (jigsawMustConnect(jigsawBlock) && canJigsawBlockFitNextPiece(jigsawBlock, pieceState.free)) {
-                        needConnecting.add(jigsawBlock);
-                        this.placing.addLast(new Pair<>(jigsawBlock, pieceState));
-                    }
+                Pair<StructureBlockInfo, PieceState> toPlace = oldPlacer.placing.removeFirst();
+                StructureBlockInfo jigsawBlock = toPlace.getFirst();
+                PieceState pieceState = toPlace.getSecond();
+                if (jigsawMustConnect(jigsawBlock) && canJigsawBlockFitNextPiece(jigsawBlock, pieceState.free)) {
+                    needConnecting.add(jigsawBlock);
+                    this.placing.addLast(toPlace);
                 }
             }
-            for (int i = 1; i < needConnecting.size(); i += 2) {
-                StructureBlockInfo first = needConnecting.get(i);
-                StructureBlockInfo second = needConnecting.get(i - 1);
-                destinations.put(first.pos, second.pos);
-                destinations.put(second.pos, first.pos);
+
+            // Match each pos with its closest neighbor - naive approach for now. Robust approach needs Kuhn–Munkres algorithm
+            Set<StructureBlockInfo> used = new HashSet<>();
+            for (StructureBlockInfo block1 : needConnecting) {
+                if (used.contains(block1)) continue;
+                StructureBlockInfo closest = null;
+                double bestDist = Double.MAX_VALUE;
+                for (StructureBlockInfo block2 : needConnecting) {
+                    if (block1 == block2 || used.contains(block2)) continue;
+                    double dist = block1.pos.distSqr(block2.pos);
+                    if (dist < bestDist) {
+                        bestDist = dist;
+                        closest = block2;
+                    }
+                }
+                if (closest != null) {
+                    destinations.put(block1.pos, closest.pos);
+                    destinations.put(closest.pos, block1.pos);
+                    used.add(block1);
+                    used.add(closest);
+                }
             }
         }
 
@@ -703,10 +714,12 @@ public class MowzieJigsawManager {
                                             this.destinations.remove(destination);
                                             return new PieceSelection(pieceState, structurepoolelement, nextPieceCandidate, poolelementstructurepiece, thisPieceJigsawBlock, nextPieceJigsawBlock, null, nextPieceBoundingBoxPlaced, l2);
                                         }
-                                        if (canJigsawBlockFitNextPiece(otherJigsaw, pieceState.free)) {
-                                            nextJigsaw = otherJigsaw;
-                                            break;
-                                        }
+                                        nextJigsaw = otherJigsaw;
+                                        break;
+//                                        if (canJigsawBlockFitNextPiece(otherJigsaw, pieceState.free)) {
+//                                            nextJigsaw = otherJigsaw;
+//                                            break;
+//                                        }
                                     }
                                 }
                                 if (nextJigsaw == null) continue;
@@ -731,5 +744,5 @@ public class MowzieJigsawManager {
             }
             return pieceSelection;
         }
-    }
+    }*/
 }

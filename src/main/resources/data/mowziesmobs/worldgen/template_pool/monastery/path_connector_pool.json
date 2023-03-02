@@ -39,7 +39,7 @@
         "bounds": {
           "bounds_min_offset": [
             0,
-            -80,
+            0,
             1
           ],
           "bounds_max_offset": [
@@ -47,9 +47,9 @@
             0,
             -1
           ]
-        }//,
-//        "min_height": -4,
-//        "max_height": 8
+        },
+        "min_height": -4,
+        "max_height": 8
       }
     },
     {
@@ -79,17 +79,19 @@
         "bounds": {
           "bounds_min_offset": [
             2,
-            -80,
+            0,
             -1
           ],
           "bounds_max_offset": [
             -2,
             0,
             1
-          ]
+          ],
+          "check_bounds_min_offset": [ 0, -80, 0 ],
+          "check_bounds_max_offset": [ 0, 80, 0 ]
         },
-//        "min_height": -4,
-//        "max_height": 8,
+        "min_height": -4,
+        "max_height": 8,
         "max_depth": 11
       }
     },
@@ -115,7 +117,7 @@
         "bounds": {
           "ignore_bounds": true,
           "needs_overlap_bounds": "wall",
-          "bounds_min_offset": [ 0, -80, 1 ],
+          "bounds_min_offset": [ 0, 0, 1 ],
           "bounds_max_offset": [ 0, 0, -1 ]
         },
         "forbidden_parents": [
@@ -123,7 +125,7 @@
         ],
         "forbidden_parents_depth": 3
       }
-    }/*,
+    },
 
     // Tower elements
     {
@@ -153,14 +155,16 @@
         "bounds": {
           "bounds_min_offset": [
             1,
-            -80,
+            0,
             1
           ],
           "bounds_max_offset": [
             -1,
             0,
             -1
-          ]
+          ],
+          "check_bounds_min_offset": [ 0, -80, 0 ],
+          "check_bounds_max_offset": [ 0, 80, 0 ]
         },
         "max_height": -4
       }
@@ -199,10 +203,12 @@
             -3,
             0,
             -3
-          ]
+          ],
+          "check_bounds_min_offset": [ 0, -80, 0 ],
+          "check_bounds_max_offset": [ 0, 80, 0 ]
         },
         "min_height": 8
       }
-    }*/
+    }
   ]
 }

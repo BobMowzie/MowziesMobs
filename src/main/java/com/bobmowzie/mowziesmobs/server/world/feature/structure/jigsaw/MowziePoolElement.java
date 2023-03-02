@@ -29,7 +29,7 @@ public class MowziePoolElement extends SinglePoolElement {
                     templateCodec(),
                     processorsCodec(),
                     projectionCodec(),
-                    BoundsParams.CODEC.optionalFieldOf("bounds", new BoundsParams(false, BlockPos.ZERO, BlockPos.ZERO, BlockPos.ZERO, Optional.empty(), Optional.empty())).forGetter(element -> element.bounds),
+                    BoundsParams.CODEC.optionalFieldOf("bounds", new BoundsParams(false, BlockPos.ZERO, BlockPos.ZERO, BlockPos.ZERO, Optional.empty(), Optional.empty(), BlockPos.ZERO, BlockPos.ZERO)).forGetter(element -> element.bounds),
                     Codec.BOOL.optionalFieldOf("two_way", false).forGetter(element -> element.twoWay),
                     Codec.INT.optionalFieldOf("min_depth", -1).forGetter(element -> element.maxDepth),
                     Codec.INT.optionalFieldOf("max_depth", -1).forGetter(element -> element.maxDepth),
@@ -152,6 +152,15 @@ public class MowziePoolElement extends SinglePoolElement {
         return BoundingBox.fromCorners(blockpos, blockpos1).move(blockPos);
     }
 
+    public BoundingBox getCheckBoundingBox(StructureManager structureManager, BlockPos blockPos, Rotation rotation) {
+        StructureTemplate structuretemplate = this.getTemplate(structureManager);
+
+        Vec3i sizeVec = structuretemplate.getSize().offset(-1, -1, -1);
+        BlockPos blockpos = StructureTemplate.transform(BlockPos.ZERO.offset(bounds.boundsMinOffset).offset(bounds.checkBoundsMinOffset), Mirror.NONE, rotation, BlockPos.ZERO);
+        BlockPos blockpos1 = StructureTemplate.transform(BlockPos.ZERO.offset(sizeVec).offset(bounds.boundsMaxOffset).offset(bounds.checkBoundsMaxOffset), Mirror.NONE, rotation, BlockPos.ZERO);
+        return BoundingBox.fromCorners(blockpos, blockpos1).move(blockPos);
+    }
+
     public static class BoundsParams {
         public static final Codec<BoundsParams> CODEC = RecordCodecBuilder.create((builder) -> builder
                 .group(
@@ -160,7 +169,9 @@ public class MowziePoolElement extends SinglePoolElement {
                         BlockPos.CODEC.optionalFieldOf("bounds_max_offset", BlockPos.ZERO).forGetter(element -> element.boundsMaxOffset),
                         BlockPos.CODEC.optionalFieldOf("offset", BlockPos.ZERO).forGetter(element -> element.offset),
                         Codec.STRING.optionalFieldOf("special_bounds").forGetter(element -> element.specialBounds),
-                        Codec.STRING.optionalFieldOf("needs_overlap_bounds").forGetter(element -> element.specialBounds)
+                        Codec.STRING.optionalFieldOf("needs_overlap_bounds").forGetter(element -> element.specialBounds),
+                        BlockPos.CODEC.optionalFieldOf("check_bounds_min_offset", BlockPos.ZERO).forGetter(element -> element.checkBoundsMinOffset),
+                        BlockPos.CODEC.optionalFieldOf("check_bounds_max_offset", BlockPos.ZERO).forGetter(element -> element.checkBoundsMaxOffset)
                 ).apply(builder, BoundsParams::new));
 
         /**
@@ -190,13 +201,21 @@ public class MowziePoolElement extends SinglePoolElement {
          */
         public final Optional<String> needsOverlapBounds;
 
-        private BoundsParams(boolean ignoreBounds, BlockPos boundsMinOffset, BlockPos boundsMaxOffset, BlockPos offset, Optional<String> specialBounds, Optional<String> needsOverlapBounds) {
+        /**
+         * Adjust the bounding box the piece uses to check other pieces. Often larger than its own bounding box.
+         */
+        public final BlockPos checkBoundsMinOffset;
+        public final BlockPos checkBoundsMaxOffset;
+
+        private BoundsParams(boolean ignoreBounds, BlockPos boundsMinOffset, BlockPos boundsMaxOffset, BlockPos offset, Optional<String> specialBounds, Optional<String> needsOverlapBounds, BlockPos checkBoundsMinOffset, BlockPos checkBoundsMaxOffset) {
             this.ignoreBounds = ignoreBounds;
             this.boundsMinOffset = boundsMinOffset;
             this.boundsMaxOffset = boundsMaxOffset;
             this.offset = offset;
             this.specialBounds = specialBounds;
             this.needsOverlapBounds = needsOverlapBounds;
+            this.checkBoundsMinOffset = boundsMinOffset;
+            this.checkBoundsMaxOffset = boundsMaxOffset;
         }
     }
 }

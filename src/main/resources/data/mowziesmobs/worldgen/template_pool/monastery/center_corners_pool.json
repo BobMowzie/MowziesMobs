@@ -33,9 +33,11 @@
         "bounds": {
           "bounds_min_offset": [
             1,
-            -80,
+            0,
             1
-          ]
+          ],
+          "check_bounds_min_offset": [ 0, -80, 0 ],
+          "check_bounds_max_offset": [ 0, 80, 0 ]
         },
         "min_required_paths": 2,
         "num_paths_override": 0
@@ -61,12 +63,8 @@
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
-          "bounds_min_offset": [
-            0,
-            -80,
-            0
-          ],
-          "special_bounds": "wall"
+          "special_bounds": "wall",
+          "check_bounds_min_offset": [ 0, -80, 0 ]
         },
         "max_allowed_paths": 4,
         "num_paths_override": 1
@@ -97,12 +95,8 @@
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
-          "bounds_min_offset": [
-            0,
-            -80,
-            0
-          ],
-          "special_bounds": "wall"
+          "special_bounds": "wall",
+          "check_bounds_min_offset": [ 0, -80, 0 ]
         },
         "max_allowed_paths": 3,
         "num_paths_override": 2

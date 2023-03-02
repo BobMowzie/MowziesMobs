@@ -38,14 +38,15 @@
         "bounds": {
           "bounds_min_offset": [
             2,
-            -80,
+            0,
             -1
           ],
           "bounds_max_offset": [
             -2,
             0,
             0
-          ]
+          ],
+          "check_bounds_min_offset": [ 0, -80, 0 ]
         },
         "num_paths_override": 0
       }

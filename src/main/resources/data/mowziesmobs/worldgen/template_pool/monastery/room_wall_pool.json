@@ -141,7 +141,7 @@
         "bounds": {
           "bounds_min_offset": [
             0,
-            -80,
+            0,
             2
           ],
           "bounds_max_offset": [
@@ -153,7 +153,7 @@
         "two_way": true,
         "min_height": -4,
         "max_height": 8,
-        "max_allowed_paths": 2
+        "max_allowed_paths": 4
       }
     }
   ]
