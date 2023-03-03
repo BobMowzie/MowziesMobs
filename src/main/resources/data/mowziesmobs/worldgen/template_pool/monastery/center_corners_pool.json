@@ -33,7 +33,7 @@
         "bounds": {
           "bounds_min_offset": [
             1,
-            0,
+            5,
             1
           ],
           "check_bounds_min_offset": [ 0, -80, 0 ],

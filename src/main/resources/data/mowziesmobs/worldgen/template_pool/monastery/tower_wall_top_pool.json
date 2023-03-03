@@ -138,14 +138,17 @@
         "bounds": {
           "bounds_min_offset": [
             0,
-            0,
+            5,
             1
           ],
           "bounds_max_offset": [
             0,
             0,
             -1
-          ]
+          ],
+          "check_bounds_min_offset": [ 0, -80, 0 ],
+          "check_bounds_max_offset": [ 0, 80, 0 ],
+          "special_bounds": "wall"
         },
         "max_height": 8,
         "min_height": -4,

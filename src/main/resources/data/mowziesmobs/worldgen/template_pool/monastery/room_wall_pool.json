@@ -141,7 +141,7 @@
         "bounds": {
           "bounds_min_offset": [
             0,
-            0,
+            5,
             2
           ],
           "bounds_max_offset": [

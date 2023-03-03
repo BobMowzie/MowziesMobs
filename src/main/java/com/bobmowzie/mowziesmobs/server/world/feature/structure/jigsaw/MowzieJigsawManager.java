@@ -116,6 +116,14 @@ public class MowzieJigsawManager {
                             fallbackPlacer.tryPlacingChildren(nextJigsawBlock.getFirst(), nextJigsawBlock.getSecond(), villageBoundaryAdjust, levelheightaccessor);
                         }
 
+                        list.sort((p1, p2) -> {
+                            int i1, i2;
+                            i1 = i2 = 0;
+                            if (p1.getElement() instanceof MowziePoolElement) i1 = ((MowziePoolElement) p1.getElement()).placeOrder;
+                            if (p2.getElement() instanceof MowziePoolElement) i2 = ((MowziePoolElement) p2.getElement()).placeOrder;
+                            return Integer.compare(i1, i2);
+                        });
+
                         list.forEach(p_210282_::addPiece);
                     }
                 });

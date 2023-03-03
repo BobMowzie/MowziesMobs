@@ -36,6 +36,7 @@
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
+          "bounds_min_offset": [ 0, 5, 0],
           "special_bounds": "wall",
           "check_bounds_min_offset": [ 0, -80, 0 ]
         },
@@ -68,6 +69,7 @@
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
+          "bounds_min_offset": [ 0, 5, 0],
           "check_bounds_min_offset": [ 0, -80, 0 ],
           "special_bounds": "wall"
         },

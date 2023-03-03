@@ -6,7 +6,7 @@
   "name": "mowziesmobs:monastery/tower_up_pool",
 
   // The template pool to refer to if the entries in 'elements' fails to generate.
-  "fallback": "mowziesmobs:monastery/fallback/tower_up_fallback_pool",
+  "fallback": "mowziesmobs:monastery/tower_up_pool",
 
   // Here you can list as many nbt files or configured features to spawn.
   // Do note that configured features needs a special element entry stuff.
@@ -62,18 +62,6 @@
         // Air and Structure Void in your piece as well as change the attachment mechanism.
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
-        "bounds": {
-          "bounds_min_offset": [
-            3,
-            0,
-            3
-          ],
-          "bounds_max_offset": [
-            -3,
-            0,
-            -3
-          ]
-        },
         "min_height": -4,
         "max_depth": 23
       }
@@ -102,18 +90,6 @@
         // Air and Structure Void in your piece as well as change the attachment mechanism.
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
-        "bounds": {
-          "bounds_min_offset": [
-            3,
-            0,
-            3
-          ],
-          "bounds_max_offset": [
-            -3,
-            0,
-            -3
-          ]
-        },
         "min_height": -4,
         "min_depth": 23
       }
