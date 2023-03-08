@@ -37,8 +37,7 @@
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
           "ignore_bounds": true
-        },
-        "place_order": -1
+        }
       }
     },
     {
