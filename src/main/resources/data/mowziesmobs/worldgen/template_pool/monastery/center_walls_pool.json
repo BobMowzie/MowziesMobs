@@ -21,7 +21,7 @@
         // Note, this will automatically check into the 'structures' folder for the nbt file.
         // The final path would look like 'resources/data/structure_tutorial/structures/run_down_house_left_side.nbt'
         // The Jigsaw block in the structure will point to side_pool.json to spawn the other half of the house.
-        "location": "mowziesmobs:monastery/monastery_wall_straight",
+        "location": "mowziesmobs:monastery/monastery_wall_straight_center",
 
         // Processor JSON files can be used to randomize or replace blocks dynamically. Here, we don't do any of that.
         "processors": "mowziesmobs:monastery",
@@ -37,12 +37,12 @@
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
           "bounds_min_offset": [
-            0,
+            1,
             5,
             1
           ],
           "bounds_max_offset": [
-            0,
+            -1,
             0,
             -1
           ],

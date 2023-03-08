@@ -221,8 +221,8 @@ public class MowziePoolElement extends SinglePoolElement {
             this.offset = offset;
             this.specialBounds = specialBounds;
             this.needsOverlapBounds = needsOverlapBounds;
-            this.checkBoundsMinOffset = boundsMinOffset;
-            this.checkBoundsMaxOffset = boundsMaxOffset;
+            this.checkBoundsMinOffset = checkBoundsMinOffset;
+            this.checkBoundsMaxOffset = checkBoundsMaxOffset;
         }
     }
 }

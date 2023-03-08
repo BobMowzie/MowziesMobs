@@ -36,8 +36,7 @@
             5,
             1
           ],
-          "check_bounds_min_offset": [ 0, -80, 0 ],
-          "check_bounds_max_offset": [ 0, 80, 0 ]
+          "check_bounds_min_offset": [ 0, -80, 0 ]
         },
         "min_required_paths": 2,
         "num_paths_override": 0
