@@ -8,10 +8,14 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.StructureFeatureManager;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.JigsawBlock;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.JigsawBlockEntity;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
@@ -22,6 +26,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 public class MowziePoolElement extends SinglePoolElement {
     public static final Codec<MowziePoolElement> CODEC = RecordCodecBuilder.create((builder) -> builder
@@ -166,6 +171,12 @@ public class MowziePoolElement extends SinglePoolElement {
         BlockPos blockpos = StructureTemplate.transform(BlockPos.ZERO.offset(bounds.boundsMinOffset).offset(bounds.checkBoundsMinOffset), Mirror.NONE, rotation, BlockPos.ZERO);
         BlockPos blockpos1 = StructureTemplate.transform(BlockPos.ZERO.offset(sizeVec).offset(bounds.boundsMaxOffset).offset(bounds.checkBoundsMaxOffset), Mirror.NONE, rotation, BlockPos.ZERO);
         return BoundingBox.fromCorners(blockpos, blockpos1).move(blockPos);
+    }
+
+    @Override
+    public boolean place(StructureManager structureManager, WorldGenLevel worldGenLevel, StructureFeatureManager structureFeatureManager, ChunkGenerator generator, BlockPos jigsawPiecePos, BlockPos structureBasePos, Rotation rotation, BoundingBox boundingBox, Random random, boolean p_210444_) {
+        boolean toReturn = super.place(structureManager, worldGenLevel, structureFeatureManager, generator, jigsawPiecePos, structureBasePos, rotation, boundingBox, random, p_210444_);
+        return toReturn;
     }
 
     public static class BoundsParams {
