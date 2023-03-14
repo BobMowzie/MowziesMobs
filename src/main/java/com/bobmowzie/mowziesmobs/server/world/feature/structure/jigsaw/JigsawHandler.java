@@ -8,10 +8,12 @@ import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElementType;
 
 public class JigsawHandler {
-    public static StructurePoolElementType<MowziePoolElement> TWO_WAY_ELEMENT;
+    public static StructurePoolElementType<MowziePoolElement> MOWZIE_ELEMENT;
+    public static StructurePoolElementType<FallbackPoolElement> FALLBACK_ELEMENT;
 
     public static void registerJigsawElements() {
-        TWO_WAY_ELEMENT = register("mowzie_element", MowziePoolElement.CODEC);
+        MOWZIE_ELEMENT = register("mowzie_element", MowziePoolElement.CODEC);
+        FALLBACK_ELEMENT = register("fallback_element", FallbackPoolElement.CODEC);
     }
 
     private static <P extends StructurePoolElement> StructurePoolElementType<P> register(String name, Codec<P> codec) {

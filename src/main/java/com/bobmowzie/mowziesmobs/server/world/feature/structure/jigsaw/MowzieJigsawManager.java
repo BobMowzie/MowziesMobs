@@ -164,7 +164,7 @@ public class MowzieJigsawManager {
         protected final String pathJigsawName;
 
         final Deque<Pair<StructureBlockInfo, PieceState>> placing = Queues.newArrayDeque();
-        final Deque<Pair<StructureBlockInfo, PieceState>> deadEnds = Queues.newArrayDeque();
+        final Deque<Pair<StructureBlockInfo, PieceState>> fallbacks = Queues.newArrayDeque();
         protected int numPaths;
 
         Placer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, Random p_210329_, String pathJigsawName) {
@@ -196,7 +196,6 @@ public class MowzieJigsawManager {
                     PieceSelection pieceSelection = selectPiece(pieceState, poolOptional.get(), fallbackPoolOptional.get(), villageBoundaryAdjust, thisPieceJigsawBlock, heightAccessor);
 
                     if (pieceSelection != null) addNextPieceState(pieceSelection);
-                    else this.deadEnds.addLast(new Pair<>(thisPieceJigsawBlock, pieceState));
                 } else {
                     LOGGER.warn("Empty or non-existent fallback pool: {}", (Object)fallbackPoolResourceLocation);
                 }
@@ -324,8 +323,11 @@ public class MowzieJigsawManager {
             List<StructurePoolElement> structurePoolElements = addPoolElements(pieceState, poolOptional, fallbackPoolOptional);
             for(StructurePoolElement nextPieceCandidate : structurePoolElements) {
                 // If empty element, break from the loop and spawn nothing
-                if (nextPieceCandidate instanceof SinglePoolElement && ((SinglePoolElement) nextPieceCandidate).toString().equals("Single[Left[minecraft:empty]]")) {
+                if (nextPieceCandidate == FallbackPoolElement.INSTANCE) {
                     break;
+                }
+                if (nextPieceCandidate == EmptyPoolElement.INSTANCE || nextPieceCandidate instanceof SinglePoolElement && ((SinglePoolElement) nextPieceCandidate).toString().equals("Single[Left[minecraft:empty]]")) {
+                    return null;
                 }
 
                 if (nextPieceCandidate instanceof MowziePoolElement) {
@@ -461,6 +463,7 @@ public class MowzieJigsawManager {
                     }
                 }
             }
+            this.fallbacks.addLast(new Pair<>(thisPieceJigsawBlock, pieceState));
             return null;
         }
 
@@ -471,7 +474,7 @@ public class MowzieJigsawManager {
         FallbackPlacer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, Random p_210329_, String pathJigsawName, Placer previousPlacer) {
             super(p_210323_, p_210324_, p_210325_, p_210326_, p_210327_, p_210328_, p_210329_, pathJigsawName);
             this.placing.addAll(previousPlacer.placing);
-            this.placing.addAll(previousPlacer.deadEnds);
+            this.placing.addAll(previousPlacer.fallbacks);
             this.numPaths = previousPlacer.numPaths;
         }
 
