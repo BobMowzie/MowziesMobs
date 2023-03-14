@@ -45,7 +45,7 @@ public class MonasteryStructure extends MowzieStructure<JigsawConfiguration> {
 
     @Override
     public GenerationStep.Decoration step() {
-        return GenerationStep.Decoration.VEGETAL_DECORATION;
+        return GenerationStep.Decoration.UNDERGROUND_DECORATION;
     }
 
     /**
