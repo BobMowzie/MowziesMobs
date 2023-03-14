@@ -37,14 +37,14 @@
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
           "bounds_min_offset": [
-            2,
+            4,
             0,
-            2
+            4
           ],
           "bounds_max_offset": [
+            -4,
             -2,
-            -2,
-            -2
+            -4
           ]
         },
         "place_order": -2

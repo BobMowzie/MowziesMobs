@@ -37,7 +37,7 @@
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
           "bounds_min_offset": [ 3, 3, 3 ],
-          "bounds_max_offset": [ -3, 0, -3 ],
+          "bounds_max_offset": [ -3, -3, -3 ],
           "ignore_bounds": true
         },
         "place_order": -1

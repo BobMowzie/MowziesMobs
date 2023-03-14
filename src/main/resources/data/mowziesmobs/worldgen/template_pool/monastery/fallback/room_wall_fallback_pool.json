@@ -35,10 +35,9 @@
         // Air and Structure Void in your piece as well as change the attachment mechanism.
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
-        "bounds_max_offset": [
-          0, 0, -1
-        ],
-        "ignore_bounds": true
+        "bounds": {
+          "ignore_bounds": true
+        }
       }
     },
     {
@@ -65,9 +64,9 @@
         // Air and Structure Void in your piece as well as change the attachment mechanism.
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
-        "bounds_max_offset": [
-          0, 0, -1
-        ]
+        "bounds": {
+          "bounds_max_offset": [ 0, 0, -1 ]
+        }
       }
     },
     {
@@ -94,9 +93,9 @@
         // Air and Structure Void in your piece as well as change the attachment mechanism.
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
-        "bounds_max_offset": [
-          0, 0, -1
-        ]
+        "bounds": {
+          "bounds_max_offset": [ 0, 0, -1 ]
+        }
       }
     }
   ]
