@@ -92,6 +92,19 @@
     },
     {
       "processor_type": "mowziesmobs:roots_processor"
+    },
+    {
+      "processor_type": "mowziesmobs:block_swap_processor",
+      "to_replace": [
+        {
+          "Name": "minecraft:crimson_trapdoor"
+        }
+      ],
+      "replace_with": {
+        "default": {
+          "Name": "minecraft:dark_oak_trapdoor"
+        }
+      }
     }
   ]
 }

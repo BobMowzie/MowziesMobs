@@ -177,12 +177,6 @@ public class MowziePoolElement extends SinglePoolElement {
         return BoundingBox.fromCorners(blockpos, blockpos1).move(blockPos);
     }
 
-    @Override
-    public boolean place(StructureManager structureManager, WorldGenLevel worldGenLevel, StructureFeatureManager structureFeatureManager, ChunkGenerator generator, BlockPos jigsawPiecePos, BlockPos structureBasePos, Rotation rotation, BoundingBox boundingBox, Random random, boolean p_210444_) {
-        boolean toReturn = super.place(structureManager, worldGenLevel, structureFeatureManager, generator, jigsawPiecePos, structureBasePos, rotation, boundingBox, random, p_210444_);
-        return toReturn;
-    }
-
     public static class BoundsParams {
         public static final Codec<BoundsParams> CODEC = RecordCodecBuilder.create((builder) -> builder
                 .group(
