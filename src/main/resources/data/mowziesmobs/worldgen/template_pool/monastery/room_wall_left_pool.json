@@ -3,10 +3,10 @@
   // Yes, worldgen json files can have comments. Minecraft does "lenient" parsing of these json files.
 
   // This is the name of the template pool itself. I tend to just put the file path and file name here with modid.
-  "name": "mowziesmobs:monastery/room_wall_pool",
+  "name": "mowziesmobs:monastery/room_wall_left_pool",
 
   // The template pool to refer to if the entries in 'elements' fails to generate.
-  "fallback": "mowziesmobs:monastery/fallback/room_wall_fallback_pool",
+  "fallback": "mowziesmobs:monastery/fallback/room_wall_left_fallback_pool",
 
   // Here you can list as many nbt files or configured features to spawn.
   // Do note that configured features needs a special element entry stuff.

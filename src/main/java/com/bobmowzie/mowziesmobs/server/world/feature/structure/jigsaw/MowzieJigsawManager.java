@@ -242,7 +242,7 @@ public class MowzieJigsawManager {
 
         void addNextPieceState(PieceSelection pieceSelection) {
             // Subtract the bounding box from the free space
-            if (!(pieceSelection.nextPiece instanceof MowziePoolElement && ((MowziePoolElement) pieceSelection.nextPiece).ignoresBounds())) {
+            if (!(pieceSelection.nextPiece instanceof MowziePoolElement && (((MowziePoolElement) pieceSelection.nextPiece).ignoresBounds() || !((MowziePoolElement) pieceSelection.nextPiece).placeBounds()))) {
                 pieceSelection.pieceState.free.setValue(Shapes.joinUnoptimized(pieceSelection.pieceState.free.getValue(), Shapes.create(AABB.of(pieceSelection.nextPieceBoundingBoxPlaced)), BooleanOp.ONLY_FIRST));
             }
 
@@ -422,7 +422,8 @@ public class MowzieJigsawManager {
                                 ignoreBounds = ((MowziePoolElement) nextPieceCandidate).ignoresBounds();
                                 spaceCheckBounds = ((MowziePoolElement) nextPieceCandidate).getCheckBoundingBox(this.structureManager, nextPiecePos, nextPieceRotation).moved(0, i2, 0);
                             }
-                            if (ignoreBounds || !Shapes.joinIsNotEmpty(pieceState.free.getValue(), Shapes.create(AABB.of(spaceCheckBounds).deflate(0.25D)), BooleanOp.ONLY_SECOND)) {
+                            VoxelShape freeSpace = Shapes.joinUnoptimized(pieceState.free.getValue(), Shapes.create(AABB.of(pieceState.piece.getBoundingBox())), BooleanOp.OR);
+                            if (ignoreBounds || !Shapes.joinIsNotEmpty(freeSpace, Shapes.create(AABB.of(spaceCheckBounds).deflate(0.25D)), BooleanOp.ONLY_SECOND)) {
                                 // Special bounding boxes
                                 if (nextPieceCandidate instanceof MowziePoolElement) {
                                     MowziePoolElement mowziePoolElement = (MowziePoolElement) nextPieceCandidate;
