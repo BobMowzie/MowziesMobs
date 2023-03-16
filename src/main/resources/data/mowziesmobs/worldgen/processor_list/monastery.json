@@ -4,6 +4,9 @@
       "processor_type": "mowziesmobs:base_processor"
     },
     {
+      "processor_type": "mowziesmobs:base_deco_processor"
+    },
+    {
       "processor_type": "mowziesmobs:block_swap_processor",
       "to_replace": [
         {
