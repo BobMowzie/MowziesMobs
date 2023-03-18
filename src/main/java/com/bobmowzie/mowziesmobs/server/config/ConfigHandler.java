@@ -279,7 +279,7 @@ public final class ConfigHandler {
             builder.push("naga");
             spawnConfig = new SpawnConfig(builder,
                     15, 2, 4, 1,
-                    new BiomeConfig(builder, Arrays.asList("BEACH,MOUNTAIN", "BEACH,HILLS"), Collections.singletonList("minecraft:stone_shore"), new ArrayList<>()),
+                    new BiomeConfig(builder, Arrays.asList("BEACH,MOUNTAIN", "BEACH,HILLS"), Collections.singletonList("minecraft:stony_shore"), new ArrayList<>()),
                     Collections.emptyList(),
                     Collections.emptyList(),
                     -65, 70, false, true, false,

@@ -112,7 +112,9 @@ public class MonasteryStructure extends MowzieStructure<JigsawConfiguration> {
                         true, // Place at heightmap (top land). Set this to false for structure to be place at the passed in blockpos's Y value instead.
                         // Definitely keep this false when placing structures in the nether as otherwise, heightmap placing will put the structure on the Bedrock roof.
                         140,
-                        "mowziesmobs:monastery/path", MUST_CONNECT_POOLS, REPLACE_POOLS, STRAIGHT_POOL
+                        "mowziesmobs:monastery/path",
+                        "mowziesmobs:monastery/interior",
+                        MUST_CONNECT_POOLS, REPLACE_POOLS, STRAIGHT_POOL
                 );
 
         if(structurePiecesGenerator.isPresent()) {

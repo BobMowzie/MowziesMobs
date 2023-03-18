@@ -1,0 +1,33 @@
+{
+  "name": "mowziesmobs:monastery/interior/wall_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 5,
+      "element": {
+        "location": "minecraft:empty",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_bookshelf",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_desk",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element"
+      }
+    }
+  ]
+}

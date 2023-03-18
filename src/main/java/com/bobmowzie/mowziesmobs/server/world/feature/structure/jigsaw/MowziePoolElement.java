@@ -8,14 +8,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.StructureFeatureManager;
-import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.JigsawBlock;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.JigsawBlockEntity;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
@@ -26,7 +22,6 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 public class MowziePoolElement extends SinglePoolElement {
     public static final Codec<MowziePoolElement> CODEC = RecordCodecBuilder.create((builder) -> builder
@@ -34,7 +29,7 @@ public class MowziePoolElement extends SinglePoolElement {
                     templateCodec(),
                     processorsCodec(),
                     projectionCodec(),
-                    BoundsParams.CODEC.optionalFieldOf("bounds", new BoundsParams(false, BlockPos.ZERO, BlockPos.ZERO, BlockPos.ZERO, Optional.empty(), Optional.empty(), BlockPos.ZERO, BlockPos.ZERO, true, false)).forGetter(element -> element.bounds),
+                    BoundsParams.CODEC.optionalFieldOf("bounds", new BoundsParams(false, BlockPos.ZERO, BlockPos.ZERO, BlockPos.ZERO, Optional.empty(), Optional.empty(), BlockPos.ZERO, BlockPos.ZERO, true, false, Optional.empty(), Optional.empty())).forGetter(element -> element.bounds),
                     Codec.BOOL.optionalFieldOf("two_way", false).forGetter(element -> element.twoWay),
                     Codec.INT.optionalFieldOf("min_depth", -1).forGetter(element -> element.maxDepth),
                     Codec.INT.optionalFieldOf("max_depth", -1).forGetter(element -> element.maxDepth),
@@ -177,6 +172,20 @@ public class MowziePoolElement extends SinglePoolElement {
         return BoundingBox.fromCorners(blockpos, blockpos1).move(blockPos);
     }
 
+    public BoundingBox getInteriorBoundingBox(StructureManager structureManager, BlockPos blockPos, Rotation rotation) {
+        if (bounds.interiorBoundsMaxOffset.isEmpty() && bounds.interiorBoundsMinOffset.isEmpty()) return null;
+        BlockPos interiorBoundsMinOffset = BlockPos.ZERO;
+        BlockPos interiorBoundsMaxOffset = BlockPos.ZERO;
+        if (bounds.interiorBoundsMinOffset.isPresent()) interiorBoundsMinOffset = bounds.interiorBoundsMinOffset.get();
+        if (bounds.interiorBoundsMaxOffset.isPresent()) interiorBoundsMaxOffset = bounds.interiorBoundsMaxOffset.get();
+        StructureTemplate structuretemplate = this.getTemplate(structureManager);
+
+        Vec3i sizeVec = structuretemplate.getSize().offset(-1, -1, -1);
+        BlockPos blockpos = StructureTemplate.transform(BlockPos.ZERO.offset(bounds.boundsMinOffset).offset(interiorBoundsMinOffset), Mirror.NONE, rotation, BlockPos.ZERO);
+        BlockPos blockpos1 = StructureTemplate.transform(BlockPos.ZERO.offset(sizeVec).offset(bounds.boundsMaxOffset).offset(interiorBoundsMaxOffset), Mirror.NONE, rotation, BlockPos.ZERO);
+        return BoundingBox.fromCorners(blockpos, blockpos1).move(blockPos);
+    }
+
     public static class BoundsParams {
         public static final Codec<BoundsParams> CODEC = RecordCodecBuilder.create((builder) -> builder
                 .group(
@@ -185,11 +194,13 @@ public class MowziePoolElement extends SinglePoolElement {
                         BlockPos.CODEC.optionalFieldOf("bounds_max_offset", BlockPos.ZERO).forGetter(element -> element.boundsMaxOffset),
                         BlockPos.CODEC.optionalFieldOf("offset", BlockPos.ZERO).forGetter(element -> element.offset),
                         Codec.STRING.optionalFieldOf("special_bounds").forGetter(element -> element.specialBounds),
-                        Codec.STRING.optionalFieldOf("needs_overlap_bounds").forGetter(element -> element.specialBounds),
+                        Codec.STRING.optionalFieldOf("needs_overlap_bounds").forGetter(element -> element.needsOverlapBounds),
                         BlockPos.CODEC.optionalFieldOf("check_bounds_min_offset", BlockPos.ZERO).forGetter(element -> element.checkBoundsMinOffset),
                         BlockPos.CODEC.optionalFieldOf("check_bounds_max_offset", BlockPos.ZERO).forGetter(element -> element.checkBoundsMaxOffset),
                         Codec.BOOL.optionalFieldOf("place_bounds", true).forGetter(element -> element.placeBounds),
-                        Codec.BOOL.optionalFieldOf("ignore_parent_bounds", false).forGetter(element -> element.ignoreParentBounds)
+                        Codec.BOOL.optionalFieldOf("ignore_parent_bounds", false).forGetter(element -> element.ignoreParentBounds),
+                        BlockPos.CODEC.optionalFieldOf("interior_bounds_min_offset").forGetter(element -> element.interiorBoundsMinOffset),
+                        BlockPos.CODEC.optionalFieldOf("interior_bounds_max_offset").forGetter(element -> element.interiorBoundsMaxOffset)
                 ).apply(builder, BoundsParams::new));
 
         /**
@@ -235,7 +246,13 @@ public class MowziePoolElement extends SinglePoolElement {
          */
         public final boolean ignoreParentBounds;
 
-        private BoundsParams(boolean ignoreBounds, BlockPos boundsMinOffset, BlockPos boundsMaxOffset, BlockPos offset, Optional<String> specialBounds, Optional<String> needsOverlapBounds, BlockPos checkBoundsMinOffset, BlockPos checkBoundsMaxOffset, boolean placeBounds, boolean ignoreParentBounds) {
+        /**
+         * Interior space for furniture and etc
+         */
+        public final Optional<BlockPos> interiorBoundsMinOffset;
+        public final Optional<BlockPos> interiorBoundsMaxOffset;
+
+        private BoundsParams(boolean ignoreBounds, BlockPos boundsMinOffset, BlockPos boundsMaxOffset, BlockPos offset, Optional<String> specialBounds, Optional<String> needsOverlapBounds, BlockPos checkBoundsMinOffset, BlockPos checkBoundsMaxOffset, boolean placeBounds, boolean ignoreParentBounds, Optional<BlockPos> interiorBoundsMinOffset, Optional<BlockPos> interiorBoundsMaxOffset) {
             this.ignoreBounds = ignoreBounds;
             this.boundsMinOffset = boundsMinOffset;
             this.boundsMaxOffset = boundsMaxOffset;
@@ -246,6 +263,8 @@ public class MowziePoolElement extends SinglePoolElement {
             this.checkBoundsMaxOffset = checkBoundsMaxOffset;
             this.placeBounds = placeBounds;
             this.ignoreParentBounds = ignoreParentBounds;
+            this.interiorBoundsMinOffset = interiorBoundsMinOffset;
+            this.interiorBoundsMaxOffset = interiorBoundsMaxOffset;
         }
     }
 }

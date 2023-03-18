@@ -39,14 +39,8 @@ public class MowzieJigsawManager {
 
     public static Optional<PieceGenerator<JigsawConfiguration>> addPieces(
             PieceGeneratorSupplier.Context<JigsawConfiguration> context,
-            PieceFactory pieceFactory, BlockPos genPos, boolean villageBoundaryAdjust, boolean useTerrainHeight
-    ) {
-        return addPieces(context, pieceFactory, genPos, villageBoundaryAdjust, useTerrainHeight, 80, null, null, null, null);
-    }
-
-    public static Optional<PieceGenerator<JigsawConfiguration>> addPieces(
-            PieceGeneratorSupplier.Context<JigsawConfiguration> context,
-            PieceFactory pieceFactory, BlockPos genPos, boolean villageBoundaryAdjust, boolean useTerrainHeight, int maxDistFromStart, String pathJigsawName,
+            PieceFactory pieceFactory, BlockPos genPos, boolean villageBoundaryAdjust, boolean useTerrainHeight, int maxDistFromStart,
+            String pathJigsawName, String interiorJigsawName,
             Set<String> mustConnectPools, Set<String> replacePools, String deadEndConnectorPool
     ) {
         WorldgenRandom worldgenrandom = new WorldgenRandom(new LegacyRandomSource(0L));
@@ -86,32 +80,45 @@ public class MowzieJigsawManager {
             } else {
                 int l = pieceBoundingBox.minY() + poolelementstructurepiece.getGroundLevelDelta();
                 poolelementstructurepiece.move(0, height - l, 0);
-                return Optional.of((p_210282_, p_210283_) -> {
+                return Optional.of((builder, p_210283_) -> {
                     List<PoolElementStructurePiece> list = Lists.newArrayList();
                     list.add(poolelementstructurepiece);
                     if (jigsawconfiguration.maxDepth() >= 0) {
                         AABB aabb = new AABB((double)(centerX - maxDistFromStart), (double)(height - maxDistFromStart), (double)(centerZ - maxDistFromStart), (double)(centerX + maxDistFromStart + 1), (double)(height + maxDistFromStart + 1), (double)(centerZ + maxDistFromStart + 1));
-                        Placer jigsawplacement$placer = new Placer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom, pathJigsawName);
                         VoxelShape shape = Shapes.join(Shapes.create(aabb), Shapes.create(AABB.of(pieceBoundingBox)), BooleanOp.ONLY_FIRST);
+
+                        // Bounding voxelshapes
+                        MutableObject<VoxelShape> free = new MutableObject<>(shape);
+                        MutableObject<VoxelShape> interiorFree = new MutableObject<>(Shapes.empty());
+                        MutableObject<Map<String, VoxelShape>> specialBounds = new MutableObject<>(new HashMap<>());
+
+                        Placer placer = new Placer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom, pathJigsawName, interiorJigsawName, free, interiorFree, specialBounds);
+
                         // Place starting piece
-                        PieceState startingPiece = new PieceState(poolelementstructurepiece, new MutableObject<>(shape), 0, null, new MutableObject<>(new HashMap<>()));
-                        for (StructureBlockInfo structureBlockInfo : jigsawplacement$placer.getJigsawBlocksFromPieceState(startingPiece)) {
-                            jigsawplacement$placer.placing.addLast(new Pair<>(structureBlockInfo, startingPiece));
+                        PieceState startingPiece = new PieceState(poolelementstructurepiece, 0, null);
+                        for (StructureBlockInfo structureBlockInfo : placer.getJigsawBlocksFromPieceState(startingPiece)) {
+                            placer.placing.addLast(new Pair<>(structureBlockInfo, startingPiece));
                         }
 
                         // Iteratively place child pieces until 'placing' is empty or max depth is reached
-                        while(!jigsawplacement$placer.placing.isEmpty()) {
-                            Pair<StructureBlockInfo, PieceState> nextJigsawBlock = jigsawplacement$placer.placing.removeFirst();
+                        while(!placer.placing.isEmpty()) {
+                            Pair<StructureBlockInfo, PieceState> nextJigsawBlock = placer.placing.removeFirst();
                             if (nextJigsawBlock.getSecond().depth > jigsawconfiguration.maxDepth()) {
                                 break;
                             }
-                            jigsawplacement$placer.tryPlacingChildren(nextJigsawBlock.getFirst(), nextJigsawBlock.getSecond(), villageBoundaryAdjust, levelheightaccessor);
+                            placer.tryPlacingChildren(nextJigsawBlock.getFirst(), nextJigsawBlock.getSecond(), villageBoundaryAdjust, levelheightaccessor);
                         }
 
-                        Placer fallbackPlacer = new FallbackPlacer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom, pathJigsawName, jigsawplacement$placer);
+                        Placer fallbackPlacer = new FallbackPlacer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom, pathJigsawName, interiorJigsawName, free, interiorFree, specialBounds, placer);
                         while(!fallbackPlacer.placing.isEmpty()) {
                             Pair<StructureBlockInfo, PieceState> nextJigsawBlock = fallbackPlacer.placing.removeFirst();
                             fallbackPlacer.tryPlacingChildren(nextJigsawBlock.getFirst(), nextJigsawBlock.getSecond(), villageBoundaryAdjust, levelheightaccessor);
+                        }
+
+                        Placer interiorPlacer = new InteriorPlacer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom, pathJigsawName, interiorJigsawName, free, interiorFree, specialBounds, fallbackPlacer);
+                        while(!interiorPlacer.placing.isEmpty()) {
+                            Pair<StructureBlockInfo, PieceState> nextJigsawBlock = interiorPlacer.placing.removeFirst();
+                            interiorPlacer.tryPlacingChildren(nextJigsawBlock.getFirst(), nextJigsawBlock.getSecond(), villageBoundaryAdjust, levelheightaccessor);
                         }
 
                         list.sort((p1, p2) -> {
@@ -122,7 +129,7 @@ public class MowzieJigsawManager {
                             return Integer.compare(i1, i2);
                         });
 
-                        list.forEach(p_210282_::addPiece);
+                        list.forEach(builder::addPiece);
                     }
                 });
             }
@@ -135,23 +142,19 @@ public class MowzieJigsawManager {
 
     static class PieceState {
         final PoolElementStructurePiece piece;
-        final MutableObject<VoxelShape> free;
-        final MutableObject<Map<String, VoxelShape>> specialBounds;
         final int depth;
         final PieceState parent;
         final Set<PieceState> children;
 
-        PieceState(PoolElementStructurePiece p_210311_, MutableObject<VoxelShape> p_210312_, int p_210313_, PieceState parent, MutableObject<Map<String, VoxelShape>> specialBounds) {
+        PieceState(PoolElementStructurePiece p_210311_, int p_210313_, PieceState parent) {
             this.piece = p_210311_;
-            this.free = p_210312_;
             this.depth = p_210313_;
             this.parent = parent;
             this.children = new HashSet<>();
-            this.specialBounds = specialBounds;
         }
     }
 
-    public record PieceSelection(PieceState pieceState, StructurePoolElement origPiece, StructurePoolElement nextPiece, PoolElementStructurePiece poolelementstructurepiece, StructureBlockInfo origJigsaw, StructureBlockInfo connectedJigsaw, StructureBlockInfo nextJigsaw, BoundingBox nextPieceBoundingBoxPlaced, int l2) {};
+    public record PieceSelection(PieceState pieceState, StructurePoolElement origPiece, StructurePoolElement nextPiece, PoolElementStructurePiece poolelementstructurepiece, StructureBlockInfo origJigsaw, StructureBlockInfo connectedJigsaw, StructureBlockInfo nextJigsaw, BoundingBox nextPieceBoundingBoxPlaced, BoundingBox nextPieceInteriorBoundingBox, int l2) {};
 
     static class Placer {
         final Registry<StructureTemplatePool> pools;
@@ -162,12 +165,20 @@ public class MowzieJigsawManager {
         final List<? super PoolElementStructurePiece> pieces;
         protected final Random random;
         protected final String pathJigsawName;
+        protected final String interiorJigsawName;
+
+        MutableObject<VoxelShape> free;
+        MutableObject<VoxelShape> interiorFree;
+        MutableObject<Map<String, VoxelShape>> specialBounds;
 
         final Deque<Pair<StructureBlockInfo, PieceState>> placing = Queues.newArrayDeque();
         final Deque<Pair<StructureBlockInfo, PieceState>> fallbacks = Queues.newArrayDeque();
+        final Deque<Pair<StructureBlockInfo, PieceState>> interior = Queues.newArrayDeque();
         protected int numPaths;
 
-        Placer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, Random p_210329_, String pathJigsawName) {
+        Placer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, Random p_210329_,
+               String pathJigsawName, String interiorJigsawName,
+               MutableObject<VoxelShape> free, MutableObject<VoxelShape> interiorFree, MutableObject<Map<String, VoxelShape>> specialBounds) {
             this.pools = p_210323_;
             this.maxDepth = p_210324_;
             this.factory = p_210325_;
@@ -175,11 +186,19 @@ public class MowzieJigsawManager {
             this.structureManager = p_210327_;
             this.pieces = p_210328_;
             this.random = p_210329_;
-            this.pathJigsawName = pathJigsawName;
             this.numPaths = 0;
+
+            this.pathJigsawName = pathJigsawName;
+            this.interiorJigsawName = interiorJigsawName;
+
+            this.free = free;
+            this.interiorFree = interiorFree;
+            this.specialBounds = specialBounds;
         }
 
         void tryPlacingChildren(StructureBlockInfo thisPieceJigsawBlock, PieceState pieceState, boolean villageBoundaryAdjust, LevelHeightAccessor heightAccessor) {
+            if (skipJigsawBlock(thisPieceJigsawBlock, pieceState)) return;
+
             if (thisPieceJigsawBlock.nbt.getString("target").equals(pathJigsawName)) {
                 if (numPaths > 0) numPaths--;
             }
@@ -203,6 +222,14 @@ public class MowzieJigsawManager {
                 LOGGER.warn("Empty or non-existent pool: {}", (Object)poolResourceLocation);
             }
 
+        }
+
+        protected boolean skipJigsawBlock(StructureBlockInfo thisPieceJigsawBlock, PieceState pieceState) {
+            if (thisPieceJigsawBlock.nbt.getString("target").equals(interiorJigsawName)) {
+                interior.add(Pair.of(thisPieceJigsawBlock, pieceState));
+                return true;
+            }
+            return false;
         }
 
         List<StructureBlockInfo> getJigsawBlocksFromPieceState(PieceState pieceState) {
@@ -238,73 +265,6 @@ public class MowzieJigsawManager {
             Vec3i offset = direction.getNormal();
             aabb = aabb.inflate(2).move(offset.getX() * 2, offset.getY() * 2, offset.getZ() * 2);
             return !Shapes.joinIsNotEmpty(freeSpace.getValue(), Shapes.create(aabb.deflate(0.25D)), BooleanOp.ONLY_SECOND);
-        }
-
-        void addNextPieceState(PieceSelection pieceSelection) {
-            // Subtract the bounding box from the free space
-            if (!(pieceSelection.nextPiece instanceof MowziePoolElement && (((MowziePoolElement) pieceSelection.nextPiece).ignoresBounds() || !((MowziePoolElement) pieceSelection.nextPiece).placeBounds()))) {
-                pieceSelection.pieceState.free.setValue(Shapes.joinUnoptimized(pieceSelection.pieceState.free.getValue(), Shapes.create(AABB.of(pieceSelection.nextPieceBoundingBoxPlaced)), BooleanOp.ONLY_FIRST));
-            }
-
-            // Special bounds - add this piece's bounds to any special bounds its set to
-            if (pieceSelection.nextPiece instanceof MowziePoolElement) {
-                MowziePoolElement mowziePoolElement = (MowziePoolElement) pieceSelection.nextPiece;
-                Optional<String> specialBounds = mowziePoolElement.bounds.specialBounds;
-                if (specialBounds.isPresent()) {
-                    if (pieceSelection.pieceState.specialBounds.getValue().containsKey(specialBounds.get())) {
-                        pieceSelection.pieceState.specialBounds.getValue().put(specialBounds.get(), Shapes.joinUnoptimized(pieceSelection.pieceState.specialBounds.getValue().get(specialBounds.get()), Shapes.create(AABB.of(pieceSelection.nextPieceBoundingBoxPlaced)), BooleanOp.OR));
-                    } else {
-                        pieceSelection.pieceState.specialBounds.getValue().put(specialBounds.get(), Shapes.create(AABB.of(pieceSelection.nextPieceBoundingBoxPlaced)));
-                    }
-                }
-            }
-
-            BoundingBox thisPieceBoundingBox = pieceSelection.pieceState.piece.getBoundingBox();
-            int thisPieceMinY = thisPieceBoundingBox.minY();
-            int thisPieceHeightFromBottomToJigsawBlock = pieceSelection.origJigsaw.pos.getY() - thisPieceMinY;
-            int pieceGroundLevelDelta = pieceSelection.pieceState.piece.getGroundLevelDelta();
-            int k1 = thisPieceHeightFromBottomToJigsawBlock - pieceSelection.connectedJigsaw.pos.getY() + JigsawBlock.getFrontFacing(pieceSelection.origJigsaw.state).getStepY();
-            int k2;
-            if (pieceSelection.nextPiece.getProjection() == StructureTemplatePool.Projection.RIGID) {
-                k2 = pieceGroundLevelDelta - k1;
-            } else {
-                k2 = pieceSelection.nextPiece.getGroundLevelDelta();
-            }
-
-            pieceSelection.pieceState.piece.addJunction(new JigsawJunction(pieceSelection.connectedJigsaw.pos.getX(), pieceSelection.l2 - thisPieceHeightFromBottomToJigsawBlock + pieceGroundLevelDelta, pieceSelection.connectedJigsaw.pos.getZ(), k1, pieceSelection.nextPiece.getProjection()));
-            pieceSelection.poolelementstructurepiece.addJunction(new JigsawJunction(pieceSelection.origJigsaw.pos.getX(), pieceSelection.l2 - pieceSelection.connectedJigsaw.pos.getY() + k2, pieceSelection.origJigsaw.pos.getZ(), -k1, pieceSelection.origPiece.getProjection()));
-            this.pieces.add(pieceSelection.poolelementstructurepiece);
-            PieceState nextPieceState = new PieceState(pieceSelection.poolelementstructurepiece, pieceSelection.pieceState.free, pieceSelection.pieceState.depth + 1, pieceSelection.pieceState, pieceSelection.pieceState.specialBounds);
-
-            // Queue up the next jigsaw pieces
-            List<StructureBlockInfo> nextJigsaws = getJigsawBlocksFromPieceState(nextPieceState);
-            // Skip the jigsaw piece that just connected (unless its two-way)
-            if (!(pieceSelection.poolelementstructurepiece.getElement() instanceof MowziePoolElement) || !((MowziePoolElement) pieceSelection.poolelementstructurepiece.getElement()).twoWay()) {
-                nextJigsaws.removeIf(jigsaw -> {
-                    Direction direction = JigsawBlock.getFrontFacing(pieceSelection.origJigsaw.state);
-                    BlockPos thisJigsawBlockPos = pieceSelection.origJigsaw.pos;
-                    BlockPos nextJigsawBlockPos = thisJigsawBlockPos.relative(direction);
-                    return jigsaw.pos.equals(nextJigsawBlockPos);
-                });
-            }
-
-            // Count up the number of next paths. Check for overridden count first.
-            if (pieceSelection.nextPiece instanceof MowziePoolElement && ((MowziePoolElement) pieceSelection.nextPiece).numPathsOverride.isPresent()) {
-                numPaths += ((MowziePoolElement) pieceSelection.nextPiece).numPathsOverride.get();
-            }
-            else {
-                for (StructureBlockInfo jigsaw : nextJigsaws) {
-                    if (jigsaw.nbt.getString("target").equals(pathJigsawName)) {
-                        numPaths++;
-                    }
-                }
-            }
-
-            for (StructureBlockInfo jigsaw : nextJigsaws) {
-                this.placing.addLast(new Pair<>(jigsaw, nextPieceState));
-            }
-
-            pieceSelection.pieceState.children.add(nextPieceState);
         }
 
         PieceSelection selectPiece(PieceState pieceState, StructureTemplatePool poolOptional, StructureTemplatePool fallbackPoolOptional, boolean villageBoundaryAdjust, StructureBlockInfo thisPieceJigsawBlock, LevelHeightAccessor heightAccessor) {
@@ -416,21 +376,14 @@ public class MowzieJigsawManager {
                                 }
                             }
 
-                            boolean ignoreBounds = false;
-                            BoundingBox spaceCheckBounds = nextPieceBoundingBoxPlaced;
-                            if (nextPieceCandidate instanceof MowziePoolElement) {
-                                ignoreBounds = ((MowziePoolElement) nextPieceCandidate).ignoresBounds();
-                                spaceCheckBounds = ((MowziePoolElement) nextPieceCandidate).getCheckBoundingBox(this.structureManager, nextPiecePos, nextPieceRotation).moved(0, i2, 0);
-                            }
-                            VoxelShape freeSpace = Shapes.joinUnoptimized(pieceState.free.getValue(), Shapes.create(AABB.of(pieceState.piece.getBoundingBox())), BooleanOp.OR);
-                            if (ignoreBounds || !Shapes.joinIsNotEmpty(freeSpace, Shapes.create(AABB.of(spaceCheckBounds).deflate(0.25D)), BooleanOp.ONLY_SECOND)) {
+                            if (checkBounds(nextPieceCandidate, pieceState, nextPieceBoundingBoxPlaced, nextPiecePos, nextPieceRotation, i2)) {
                                 // Special bounding boxes
                                 if (nextPieceCandidate instanceof MowziePoolElement) {
                                     MowziePoolElement mowziePoolElement = (MowziePoolElement) nextPieceCandidate;
 
                                     Optional<String> needsOverlapBounds = mowziePoolElement.bounds.needsOverlapBounds;
-                                    if (needsOverlapBounds.isPresent() && pieceState.specialBounds.getValue().containsKey(needsOverlapBounds.get())) {
-                                        if (!Shapes.joinIsNotEmpty(pieceState.specialBounds.getValue().get(needsOverlapBounds.get()), Shapes.create(AABB.of(nextPieceBoundingBoxPlaced).deflate(0.25D)), BooleanOp.AND)) {
+                                    if (needsOverlapBounds.isPresent() && specialBounds.getValue().containsKey(needsOverlapBounds.get())) {
+                                        if (!Shapes.joinIsNotEmpty(specialBounds.getValue().get(needsOverlapBounds.get()), Shapes.create(AABB.of(nextPieceBoundingBoxPlaced).deflate(0.25D)), BooleanOp.AND)) {
                                             continue;
                                         }
                                     }
@@ -458,7 +411,12 @@ public class MowzieJigsawManager {
                                     l2 = k + k1 / 2;
                                 }
 
-                                return new PieceSelection(pieceState, structurepoolelement, nextPieceCandidate, poolelementstructurepiece, thisPieceJigsawBlock, nextPieceJigsawBlock, null, nextPieceBoundingBoxPlaced, l2);
+                                BoundingBox interiorBounds = null;
+                                if (nextPieceCandidate instanceof MowziePoolElement) {
+                                    interiorBounds = ((MowziePoolElement) nextPieceCandidate).getInteriorBoundingBox(this.structureManager, nextPiecePos, nextPieceRotation);
+                                    if (interiorBounds != null) interiorBounds = interiorBounds.moved(0, i2, 0);
+                                }
+                                return new PieceSelection(pieceState, structurepoolelement, nextPieceCandidate, poolelementstructurepiece, thisPieceJigsawBlock, nextPieceJigsawBlock, null, nextPieceBoundingBoxPlaced, interiorBounds, l2);
                             }
                         }
                     }
@@ -468,14 +426,102 @@ public class MowzieJigsawManager {
             return null;
         }
 
+        protected boolean checkBounds(StructurePoolElement nextPieceCandidate, PieceState pieceState, BoundingBox nextPieceBoundingBoxPlaced, BlockPos nextPiecePos, Rotation nextPieceRotation, int i2) {
+            boolean ignoreBounds = false;
+            BoundingBox spaceCheckBounds = nextPieceBoundingBoxPlaced;
+            if (nextPieceCandidate instanceof MowziePoolElement) {
+                ignoreBounds = ((MowziePoolElement) nextPieceCandidate).ignoresBounds();
+                spaceCheckBounds = ((MowziePoolElement) nextPieceCandidate).getCheckBoundingBox(this.structureManager, nextPiecePos, nextPieceRotation).moved(0, i2, 0);
+            }
+            VoxelShape freeSpace = Shapes.joinUnoptimized(free.getValue(), Shapes.create(AABB.of(pieceState.piece.getBoundingBox())), BooleanOp.OR);
+            return ignoreBounds || !Shapes.joinIsNotEmpty(freeSpace, Shapes.create(AABB.of(spaceCheckBounds).deflate(0.25D)), BooleanOp.ONLY_SECOND);
+        }
+
+        void addNextPieceState(PieceSelection pieceSelection) {
+            // Subtract the bounding box from the free space
+            if (!(pieceSelection.nextPiece instanceof MowziePoolElement && (((MowziePoolElement) pieceSelection.nextPiece).ignoresBounds() || !((MowziePoolElement) pieceSelection.nextPiece).placeBounds()))) {
+                free.setValue(Shapes.joinUnoptimized(free.getValue(), Shapes.create(AABB.of(pieceSelection.nextPieceBoundingBoxPlaced)), BooleanOp.ONLY_FIRST));
+            }
+
+            // Add the bounds to the interior space
+            if (pieceSelection.nextPiece instanceof MowziePoolElement && pieceSelection.nextPieceInteriorBoundingBox != null) {
+                interiorFree.setValue(Shapes.joinUnoptimized(interiorFree.getValue(), Shapes.create(AABB.of(pieceSelection.nextPieceInteriorBoundingBox)), BooleanOp.OR));
+            }
+
+            // Special bounds - add this piece's bounds to any special bounds its set to
+            if (pieceSelection.nextPiece instanceof MowziePoolElement) {
+                MowziePoolElement mowziePoolElement = (MowziePoolElement) pieceSelection.nextPiece;
+                Optional<String> nextPieceSpecialBounds = mowziePoolElement.bounds.specialBounds;
+                if (nextPieceSpecialBounds.isPresent()) {
+                    if (specialBounds.getValue().containsKey(nextPieceSpecialBounds.get())) {
+                        specialBounds.getValue().put(nextPieceSpecialBounds.get(), Shapes.joinUnoptimized(specialBounds.getValue().get(nextPieceSpecialBounds.get()), Shapes.create(AABB.of(pieceSelection.nextPieceBoundingBoxPlaced)), BooleanOp.OR));
+                    } else {
+                        specialBounds.getValue().put(nextPieceSpecialBounds.get(), Shapes.create(AABB.of(pieceSelection.nextPieceBoundingBoxPlaced)));
+                    }
+                }
+            }
+
+            BoundingBox thisPieceBoundingBox = pieceSelection.pieceState.piece.getBoundingBox();
+            int thisPieceMinY = thisPieceBoundingBox.minY();
+            int thisPieceHeightFromBottomToJigsawBlock = pieceSelection.origJigsaw.pos.getY() - thisPieceMinY;
+            int pieceGroundLevelDelta = pieceSelection.pieceState.piece.getGroundLevelDelta();
+            int k1 = thisPieceHeightFromBottomToJigsawBlock - pieceSelection.connectedJigsaw.pos.getY() + JigsawBlock.getFrontFacing(pieceSelection.origJigsaw.state).getStepY();
+            int k2;
+            if (pieceSelection.nextPiece.getProjection() == StructureTemplatePool.Projection.RIGID) {
+                k2 = pieceGroundLevelDelta - k1;
+            } else {
+                k2 = pieceSelection.nextPiece.getGroundLevelDelta();
+            }
+
+            pieceSelection.pieceState.piece.addJunction(new JigsawJunction(pieceSelection.connectedJigsaw.pos.getX(), pieceSelection.l2 - thisPieceHeightFromBottomToJigsawBlock + pieceGroundLevelDelta, pieceSelection.connectedJigsaw.pos.getZ(), k1, pieceSelection.nextPiece.getProjection()));
+            pieceSelection.poolelementstructurepiece.addJunction(new JigsawJunction(pieceSelection.origJigsaw.pos.getX(), pieceSelection.l2 - pieceSelection.connectedJigsaw.pos.getY() + k2, pieceSelection.origJigsaw.pos.getZ(), -k1, pieceSelection.origPiece.getProjection()));
+            this.pieces.add(pieceSelection.poolelementstructurepiece);
+            PieceState nextPieceState = new PieceState(pieceSelection.poolelementstructurepiece, pieceSelection.pieceState.depth + 1, pieceSelection.pieceState);
+
+            // Queue up the next jigsaw pieces
+            List<StructureBlockInfo> nextJigsaws = getJigsawBlocksFromPieceState(nextPieceState);
+            // Skip the jigsaw piece that just connected (unless its two-way)
+            if (!(pieceSelection.poolelementstructurepiece.getElement() instanceof MowziePoolElement) || !((MowziePoolElement) pieceSelection.poolelementstructurepiece.getElement()).twoWay()) {
+                nextJigsaws.removeIf(jigsaw -> {
+                    Direction direction = JigsawBlock.getFrontFacing(pieceSelection.origJigsaw.state);
+                    BlockPos thisJigsawBlockPos = pieceSelection.origJigsaw.pos;
+                    BlockPos nextJigsawBlockPos = thisJigsawBlockPos.relative(direction);
+                    return jigsaw.pos.equals(nextJigsawBlockPos);
+                });
+            }
+
+            // Count up the number of next paths. Check for overridden count first.
+            if (pieceSelection.nextPiece instanceof MowziePoolElement && ((MowziePoolElement) pieceSelection.nextPiece).numPathsOverride.isPresent()) {
+                numPaths += ((MowziePoolElement) pieceSelection.nextPiece).numPathsOverride.get();
+            }
+            else {
+                for (StructureBlockInfo jigsaw : nextJigsaws) {
+                    if (jigsaw.nbt.getString("target").equals(pathJigsawName)) {
+                        numPaths++;
+                    }
+                }
+            }
+
+            for (StructureBlockInfo jigsaw : nextJigsaws) {
+                this.placing.addLast(new Pair<>(jigsaw, nextPieceState));
+            }
+
+            pieceSelection.pieceState.children.add(nextPieceState);
+        }
+
     }
 
     static final class FallbackPlacer extends Placer {
 
-        FallbackPlacer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, Random p_210329_, String pathJigsawName, Placer previousPlacer) {
-            super(p_210323_, p_210324_, p_210325_, p_210326_, p_210327_, p_210328_, p_210329_, pathJigsawName);
+        FallbackPlacer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, Random p_210329_,
+                       String pathJigsawName, String interiorJigsawName,
+                       MutableObject<VoxelShape> free, MutableObject<VoxelShape> interiorFree, MutableObject<Map<String, VoxelShape>> specialBounds,
+                       Placer previousPlacer)
+        {
+            super(p_210323_, p_210324_, p_210325_, p_210326_, p_210327_, p_210328_, p_210329_, pathJigsawName, interiorJigsawName, free, interiorFree, specialBounds);
             this.placing.addAll(previousPlacer.placing);
             this.placing.addAll(previousPlacer.fallbacks);
+            this.interior.addAll(previousPlacer.interior);
             this.numPaths = previousPlacer.numPaths;
         }
 
@@ -483,6 +529,25 @@ public class MowzieJigsawManager {
             List<StructurePoolElement> structurePoolElements = Lists.newArrayList();
             structurePoolElements.addAll(fallbackPool.getShuffledTemplates(this.random));
             return structurePoolElements;
+        }
+    }
+
+    static final class InteriorPlacer extends Placer {
+
+        InteriorPlacer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, Random p_210329_,
+                       String pathJigsawName, String interiorJigsawName,
+                       MutableObject<VoxelShape> free, MutableObject<VoxelShape> interiorFree, MutableObject<Map<String, VoxelShape>> specialBounds,
+                       Placer previousPlacer)
+        {
+            super(p_210323_, p_210324_, p_210325_, p_210326_, p_210327_, p_210328_, p_210329_, pathJigsawName, interiorJigsawName, free, interiorFree, specialBounds);
+            this.placing.addAll(previousPlacer.interior);
+            this.free = interiorFree;
+            this.numPaths = previousPlacer.numPaths;
+        }
+
+        @Override
+        protected boolean skipJigsawBlock(StructureBlockInfo thisPieceJigsawBlock, PieceState pieceState) {
+            return false;
         }
     }
 
