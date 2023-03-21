@@ -40,7 +40,7 @@
           "bounds_max_offset": [ -3, -3, -3 ],
           "ignore_bounds": true
         },
-        "place_order": -5
+        "gen_order": -5
       }
     }
   ]

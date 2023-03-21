@@ -97,12 +97,13 @@ public class MowzieJigsawManager {
                         // Place starting piece
                         PieceState startingPiece = new PieceState(poolelementstructurepiece, 0, null);
                         for (StructureBlockInfo structureBlockInfo : placer.getJigsawBlocksFromPieceState(startingPiece)) {
-                            placer.placing.addLast(new Pair<>(structureBlockInfo, startingPiece));
+                            placer.placing.add(new Pair<>(structureBlockInfo, startingPiece));
                         }
 
                         // Iteratively place child pieces until 'placing' is empty or max depth is reached
                         while(!placer.placing.isEmpty()) {
-                            Pair<StructureBlockInfo, PieceState> nextJigsawBlock = placer.placing.removeFirst();
+                            Pair<StructureBlockInfo, PieceState> nextJigsawBlock = placer.placing.first();
+                            placer.placing.remove(nextJigsawBlock);
                             if (nextJigsawBlock.getSecond().depth > jigsawconfiguration.maxDepth()) {
                                 break;
                             }
@@ -111,21 +112,23 @@ public class MowzieJigsawManager {
 
                         Placer fallbackPlacer = new FallbackPlacer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom, pathJigsawName, interiorJigsawName, free, interiorFree, specialBounds, placer);
                         while(!fallbackPlacer.placing.isEmpty()) {
-                            Pair<StructureBlockInfo, PieceState> nextJigsawBlock = fallbackPlacer.placing.removeFirst();
+                            Pair<StructureBlockInfo, PieceState> nextJigsawBlock = fallbackPlacer.placing.first();
+                            fallbackPlacer.placing.remove(nextJigsawBlock);
                             fallbackPlacer.tryPlacingChildren(nextJigsawBlock.getFirst(), nextJigsawBlock.getSecond(), villageBoundaryAdjust, levelheightaccessor);
                         }
 
                         Placer interiorPlacer = new InteriorPlacer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom, pathJigsawName, interiorJigsawName, free, interiorFree, specialBounds, fallbackPlacer);
                         while(!interiorPlacer.placing.isEmpty()) {
-                            Pair<StructureBlockInfo, PieceState> nextJigsawBlock = interiorPlacer.placing.removeFirst();
+                            Pair<StructureBlockInfo, PieceState> nextJigsawBlock = interiorPlacer.placing.first();
+                            interiorPlacer.placing.remove(nextJigsawBlock);
                             interiorPlacer.tryPlacingChildren(nextJigsawBlock.getFirst(), nextJigsawBlock.getSecond(), villageBoundaryAdjust, levelheightaccessor);
                         }
 
                         list.sort((p1, p2) -> {
                             int i1, i2;
                             i1 = i2 = 0;
-                            if (p1.getElement() instanceof MowziePoolElement) i1 = ((MowziePoolElement) p1.getElement()).placeOrder;
-                            if (p2.getElement() instanceof MowziePoolElement) i2 = ((MowziePoolElement) p2.getElement()).placeOrder;
+                            if (p1.getElement() instanceof MowziePoolElement) i1 = ((MowziePoolElement) p1.getElement()).genOrder;
+                            if (p2.getElement() instanceof MowziePoolElement) i2 = ((MowziePoolElement) p2.getElement()).genOrder;
                             return Integer.compare(i1, i2);
                         });
 
@@ -156,6 +159,17 @@ public class MowzieJigsawManager {
 
     public record PieceSelection(PieceState pieceState, StructurePoolElement origPiece, StructurePoolElement nextPiece, PoolElementStructurePiece poolelementstructurepiece, StructureBlockInfo origJigsaw, StructureBlockInfo connectedJigsaw, StructureBlockInfo nextJigsaw, BoundingBox nextPieceBoundingBoxPlaced, BoundingBox nextPieceInteriorBoundingBox, int l2) {};
 
+    public static Comparator<Pair<StructureBlockInfo, PieceState>> placeOrderComparator = (p1, p2) -> {
+        int p1Order = 0;
+        int p2Order = 0;
+        if (p1.getSecond().piece.getElement() instanceof MowziePoolElement) p1Order = ((MowziePoolElement) p1.getSecond().piece.getElement()).placeOrder;
+        if (p2.getSecond().piece.getElement() instanceof MowziePoolElement) p2Order = ((MowziePoolElement) p2.getSecond().piece.getElement()).placeOrder;
+        int result = Integer.compare(p1Order, p2Order);
+        if (result == 0) result = Integer.compare(p1.getSecond().depth, p2.getSecond().depth);
+        if (result == 0) result = Integer.compare(p1.hashCode(), p2.hashCode());
+        return result;
+    };
+
     static class Placer {
         final Registry<StructureTemplatePool> pools;
         final int maxDepth;
@@ -171,9 +185,9 @@ public class MowzieJigsawManager {
         MutableObject<VoxelShape> interiorFree;
         MutableObject<Map<String, VoxelShape>> specialBounds;
 
-        final Deque<Pair<StructureBlockInfo, PieceState>> placing = Queues.newArrayDeque();
-        final Deque<Pair<StructureBlockInfo, PieceState>> fallbacks = Queues.newArrayDeque();
-        final Deque<Pair<StructureBlockInfo, PieceState>> interior = Queues.newArrayDeque();
+        final SortedSet<Pair<StructureBlockInfo, PieceState>> placing = new TreeSet<>(placeOrderComparator);
+        final SortedSet<Pair<StructureBlockInfo, PieceState>> fallbacks = new TreeSet<>(placeOrderComparator);
+        final SortedSet<Pair<StructureBlockInfo, PieceState>> interior = new TreeSet<>(placeOrderComparator);
         protected int numPaths;
 
         Placer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, Random p_210329_,
@@ -422,7 +436,7 @@ public class MowzieJigsawManager {
                     }
                 }
             }
-            this.fallbacks.addLast(new Pair<>(thisPieceJigsawBlock, pieceState));
+            this.fallbacks.add(new Pair<>(thisPieceJigsawBlock, pieceState));
             return null;
         }
 
@@ -503,7 +517,7 @@ public class MowzieJigsawManager {
             }
 
             for (StructureBlockInfo jigsaw : nextJigsaws) {
-                this.placing.addLast(new Pair<>(jigsaw, nextPieceState));
+                this.placing.add(new Pair<>(jigsaw, nextPieceState));
             }
 
             pieceSelection.pieceState.children.add(nextPieceState);
