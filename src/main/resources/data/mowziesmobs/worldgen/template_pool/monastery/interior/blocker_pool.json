@@ -12,7 +12,7 @@
         "bounds": {
           "bounds_max_offset": [ 0, 0, -1 ]
         },
-        "place_order": -5
+        "gen_order": 10
       }
     }
   ]

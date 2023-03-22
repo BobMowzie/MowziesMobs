@@ -40,8 +40,7 @@ public class MowziePoolElement extends SinglePoolElement {
                     Codec.INT.optionalFieldOf("num_paths_override").forGetter(element -> element.numPathsOverride),
                     Codec.STRING.listOf().optionalFieldOf("forbidden_parents", Collections.emptyList()).forGetter(element -> element.forbiddenParents),
                     Codec.INT.optionalFieldOf("forbidden_parents_depth", 1).forGetter(element -> element.forbiddenParentsDepth),
-                    Codec.INT.optionalFieldOf("gen_order", 0).forGetter(element -> element.genOrder),
-                    Codec.INT.optionalFieldOf("place_order", 0).forGetter(element -> element.placeOrder)
+                    Codec.INT.optionalFieldOf("gen_order", 0).forGetter(element -> element.genOrder)
             ).apply(builder, MowziePoolElement::new));
 
     /**
@@ -84,17 +83,12 @@ public class MowziePoolElement extends SinglePoolElement {
      */
     public final int genOrder;
 
-    /**
-     * Control the order in which jigsaw blocks are processed and placed.
-     */
-    public final int placeOrder;
-
     protected MowziePoolElement(Either<ResourceLocation, StructureTemplate> p_210415_, Holder<StructureProcessorList> p_210416_, StructureTemplatePool.Projection p_210417_, BoundsParams bounds, boolean twoWay,
                                 int minDepth, int maxDepth,
                                 Optional<Integer> minHeight, Optional<Integer> maxHeight,
                                 Optional<Integer> minRequiredPaths, Optional<Integer> maxAllowedPaths, Optional<Integer> numPathsOverride,
                                 List<String> forbiddenParents, int forbiddenParentsDepth,
-                                int genOrder, int placeOrder) {
+                                int genOrder) {
         super(p_210415_, p_210416_, p_210417_);
         this.bounds = bounds;
         this.twoWay = twoWay;
@@ -108,7 +102,6 @@ public class MowziePoolElement extends SinglePoolElement {
         this.forbiddenParents = forbiddenParents;
         this.forbiddenParentsDepth = forbiddenParentsDepth;
         this.genOrder = genOrder;
-        this.placeOrder = placeOrder;
     }
 
     public static boolean canAttachTwoWays(StructureTemplate.StructureBlockInfo p_54246_, StructureTemplate.StructureBlockInfo p_54247_) {

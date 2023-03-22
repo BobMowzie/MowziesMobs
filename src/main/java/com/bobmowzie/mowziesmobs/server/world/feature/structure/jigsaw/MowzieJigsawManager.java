@@ -159,11 +159,14 @@ public class MowzieJigsawManager {
 
     public record PieceSelection(PieceState pieceState, StructurePoolElement origPiece, StructurePoolElement nextPiece, PoolElementStructurePiece poolelementstructurepiece, StructureBlockInfo origJigsaw, StructureBlockInfo connectedJigsaw, StructureBlockInfo nextJigsaw, BoundingBox nextPieceBoundingBoxPlaced, BoundingBox nextPieceInteriorBoundingBox, int l2) {};
 
+    private static Map<String, Integer> poolPlaceOrder = new HashMap<>();
+    static {
+        poolPlaceOrder.put("mowziesmobs:monastery/interior/blocker_pool", -5);
+    }
+
     public static Comparator<Pair<StructureBlockInfo, PieceState>> placeOrderComparator = (p1, p2) -> {
-        int p1Order = 0;
-        int p2Order = 0;
-        if (p1.getSecond().piece.getElement() instanceof MowziePoolElement) p1Order = ((MowziePoolElement) p1.getSecond().piece.getElement()).placeOrder;
-        if (p2.getSecond().piece.getElement() instanceof MowziePoolElement) p2Order = ((MowziePoolElement) p2.getSecond().piece.getElement()).placeOrder;
+        int p1Order = poolPlaceOrder.getOrDefault(p1.getFirst().nbt.getString("pool"), 0);
+        int p2Order = poolPlaceOrder.getOrDefault(p2.getFirst().nbt.getString("pool"), 0);
         int result = Integer.compare(p1Order, p2Order);
         if (result == 0) result = Integer.compare(p1.getSecond().depth, p2.getSecond().depth);
         if (result == 0) result = Integer.compare(p1.hashCode(), p2.hashCode());
@@ -562,6 +565,17 @@ public class MowzieJigsawManager {
         @Override
         protected boolean skipJigsawBlock(StructureBlockInfo thisPieceJigsawBlock, PieceState pieceState) {
             return false;
+        }
+
+        @Override
+        protected boolean checkBounds(StructurePoolElement nextPieceCandidate, PieceState pieceState, BoundingBox nextPieceBoundingBoxPlaced, BlockPos nextPiecePos, Rotation nextPieceRotation, int i2) {
+            boolean ignoreBounds = false;
+            BoundingBox spaceCheckBounds = nextPieceBoundingBoxPlaced;
+            if (nextPieceCandidate instanceof MowziePoolElement) {
+                ignoreBounds = ((MowziePoolElement) nextPieceCandidate).ignoresBounds();
+                spaceCheckBounds = ((MowziePoolElement) nextPieceCandidate).getCheckBoundingBox(this.structureManager, nextPiecePos, nextPieceRotation).moved(0, i2, 0);
+            }
+            return ignoreBounds || !Shapes.joinIsNotEmpty(free.getValue(), Shapes.create(AABB.of(spaceCheckBounds).deflate(0.25D)), BooleanOp.ONLY_SECOND);
         }
     }
 
