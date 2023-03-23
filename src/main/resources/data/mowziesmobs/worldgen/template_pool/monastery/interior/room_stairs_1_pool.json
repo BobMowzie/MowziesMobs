@@ -1,0 +1,15 @@
+{
+  "name": "mowziesmobs:monastery/interior/room_stairs_1_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_room_stairs_1",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element"
+      }
+    }
+  ]
+}

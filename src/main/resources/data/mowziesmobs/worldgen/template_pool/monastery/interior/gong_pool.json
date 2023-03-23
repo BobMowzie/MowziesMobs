@@ -1,16 +1,16 @@
 {
-  "name": "mowziesmobs:monastery/interior/blocker_pool",
+  "name": "mowziesmobs:monastery/interior/gong_pool",
   "fallback": "minecraft:empty",
   "elements": [
     {
       "weight": 1,
       "element": {
-        "location": "mowziesmobs:monastery/interior/monastery_interior_blocker",
+        "location": "mowziesmobs:monastery/interior/monastery_gong",
         "processors": "mowziesmobs:monastery",
         "projection": "rigid",
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
-          "bounds_max_offset": [ 0, 0, -1 ]
+          "ignore_bounds": true
         }
       }
     }

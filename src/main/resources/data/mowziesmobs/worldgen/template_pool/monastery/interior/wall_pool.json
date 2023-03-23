@@ -2,15 +2,15 @@
   "name": "mowziesmobs:monastery/interior/wall_pool",
   "fallback": "minecraft:empty",
   "elements": [
-//    {
-//      "weight": 5,
-//      "element": {
-//        "location": "minecraft:empty",
-//        "processors": "minecraft:empty",
-//        "projection": "rigid",
-//        "element_type": "minecraft:single_pool_element"
-//      }
-//    },
+    {
+      "weight": 5,
+      "element": {
+        "location": "minecraft:empty",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
     {
       "weight": 1,
       "element": {
@@ -32,10 +32,13 @@
     {
       "weight": 1,
       "element": {
-        "location": "mowziesmobs:monastery/interior/monastery_gong",
+        "location": "mowziesmobs:monastery/interior/monastery_gong_helper",
         "processors": "mowziesmobs:monastery",
         "projection": "rigid",
-        "element_type": "mowziesmobs:mowzie_element"
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "bounds_max_offset": [ 0, -2, 0 ]
+        }
       }
     },
     {
@@ -51,6 +54,15 @@
       "weight": 1,
       "element": {
         "location": "mowziesmobs:monastery/interior/monastery_banners",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_dummies",
         "processors": "mowziesmobs:monastery",
         "projection": "rigid",
         "element_type": "mowziesmobs:mowzie_element"

@@ -61,6 +61,16 @@ public class GongBlock extends BaseEntityBlock {
 
     }
 
+    @Override
+    public BlockState rotate(BlockState state, Rotation rotation) {
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+    }
+
+    @Override
+    public BlockState mirror(BlockState state, Mirror mirror) {
+        return state.rotate(mirror.getRotation(state.getValue(FACING)));
+    }
+
     public void onProjectileHit(Level p_49708_, BlockState p_49709_, BlockHitResult p_49710_, Projectile p_49711_) {
         Entity entity = p_49711_.getOwner();
         Player player = entity instanceof Player ? (Player)entity : null;
