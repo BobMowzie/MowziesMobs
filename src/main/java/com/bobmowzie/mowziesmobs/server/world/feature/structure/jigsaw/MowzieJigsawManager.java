@@ -161,11 +161,11 @@ public class MowzieJigsawManager {
 
     private static Map<String, Integer> poolPlaceOrder = new HashMap<>();
     static {
-        poolPlaceOrder.put("mowziesmobs:monastery/interior/blocker_pool", -5);
-        poolPlaceOrder.put("mowziesmobs:monastery/interior/tower_stairs_1_pool", -4);
-        poolPlaceOrder.put("mowziesmobs:monastery/interior/tower_stairs_2_pool", -4);
-        poolPlaceOrder.put("mowziesmobs:monastery/interior/room_stairs_1_pool", -4);
-        poolPlaceOrder.put("mowziesmobs:monastery/interior/room_stairs_2_pool", -4);
+        poolPlaceOrder.put("mowziesmobs:monastery/interior/blocker_pool", -4);
+        poolPlaceOrder.put("mowziesmobs:monastery/interior/tower_stairs_1_pool", -5);
+        poolPlaceOrder.put("mowziesmobs:monastery/interior/tower_stairs_2_pool", -5);
+        poolPlaceOrder.put("mowziesmobs:monastery/interior/room_stairs_1_pool", -5);
+        poolPlaceOrder.put("mowziesmobs:monastery/interior/room_stairs_2_pool", -5);
     }
 
     public static Comparator<Pair<StructureBlockInfo, PieceState>> placeOrderComparator = (p1, p2) -> {
@@ -403,8 +403,8 @@ public class MowzieJigsawManager {
                                     MowziePoolElement mowziePoolElement = (MowziePoolElement) nextPieceCandidate;
 
                                     Optional<String> needsOverlapBounds = mowziePoolElement.bounds.needsOverlapBounds;
-                                    if (needsOverlapBounds.isPresent() && specialBounds.getValue().containsKey(needsOverlapBounds.get())) {
-                                        if (!Shapes.joinIsNotEmpty(specialBounds.getValue().get(needsOverlapBounds.get()), Shapes.create(AABB.of(nextPieceBoundingBoxPlaced).deflate(0.25D)), BooleanOp.AND)) {
+                                    if (needsOverlapBounds.isPresent()) {
+                                        if (!specialBounds.getValue().containsKey(needsOverlapBounds.get()) || !Shapes.joinIsNotEmpty(specialBounds.getValue().get(needsOverlapBounds.get()), Shapes.create(AABB.of(nextPieceBoundingBoxPlaced).deflate(0.25D)), BooleanOp.AND)) {
                                             continue;
                                         }
                                     }

@@ -37,6 +37,7 @@
         "element_type": "mowziesmobs:mowzie_element",
         "max_height": -1,
         "bounds": {
+          "special_bounds": "tower",
           "interior_bounds_min_offset": [ 1, 0, 1 ],
           "interior_bounds_max_offset": [ -1, 0, -1 ]
         }
@@ -68,6 +69,7 @@
         "element_type": "mowziesmobs:mowzie_element",
         "min_height": -1,
         "bounds": {
+          "special_bounds": "tower",
           "interior_bounds_min_offset": [ 1, 0, 1 ],
           "interior_bounds_max_offset": [ -1, 0, -1 ]
         }

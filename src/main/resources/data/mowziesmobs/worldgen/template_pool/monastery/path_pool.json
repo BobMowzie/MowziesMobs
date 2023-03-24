@@ -177,6 +177,8 @@
         "forbidden_parents_depth": 2
       }
     },
+
+    // Gap elements
     {
       // How likely out of all the element for this one to be chosen.
       "weight": 1,
@@ -208,6 +210,22 @@
         "forbidden_parents_depth": 3
       }
     },
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/monastery_tower_gap",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "ignore_bounds": true,
+          "needs_overlap_bounds": "tower",
+          "bounds_min_offset": [ 0, 2, 0 ],
+          "bounds_max_offset": [ 0, -2, 0 ]
+        },
+        "gen_order": 3
+      }
+    },
 
     // Room elements
     {
@@ -235,9 +253,9 @@
         // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
+          "special_bounds": "tower",
           "bounds_min_offset": [ 1, 0, 1 ],
           "bounds_max_offset": [ -1, 0, -1 ],
-          "special_bounds": "tower",
           "check_bounds_min_offset": [ 0, -80, 0 ],
           "check_bounds_max_offset": [ 0, 80, 0 ],
           "interior_bounds_min_offset": [ 1, 0, 1 ],
