@@ -68,11 +68,11 @@ public class RockSlingAbility extends PlayerAbility {
         else{
             for(int i = 0; i < 3; i++) {
                 Vec3 spawnPos = new Vec3(0D, -1D, 2D).yRot((float) Math.toRadians(-getUser().getYRot())).yRot((float) Math.toRadians(-90 + (i * 80))).add(getUser().position());
-                EntityRockSling boulder = new EntityRockSling(EntityHandler.BOULDER_PROJECTILE.get(), getUser().level, getUser(), spawnBoulderBlock, spawnBoulderPos, EntityGeomancyBase.GeomancyTier.values()[1]);
+                EntityRockSling boulder = new EntityRockSling(EntityHandler.ROCK_SLING.get(), getUser().level, getUser(), spawnBoulderBlock, spawnBoulderPos, EntityGeomancyBase.GeomancyTier.values()[1]);
                 boulder.setPos(spawnPos.x() + 0.5F, spawnPos.y() + 2, spawnPos.z() + 0.5F);
                 boulder.setLaunchVec(getUser().getViewVector(1f).multiply(1f,0.9f,1f));
                 boulder.setTravelling(true);
-                boulder.setDamage(3);
+                boulder.setDamage(4);
                 if (!getUser().level.isClientSide && boulder.checkCanSpawn()) {
                     getUser().level.addFreshEntity(boulder);
                 }

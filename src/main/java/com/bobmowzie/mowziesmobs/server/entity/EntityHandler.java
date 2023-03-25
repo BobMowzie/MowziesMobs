@@ -64,6 +64,10 @@ public class EntityHandler {
         return EntityType.Builder.of(EntityBoulderProjectile::new, MobCategory.MISC);
     }
     public static final RegistryObject<EntityType<EntityBoulderProjectile>> BOULDER_PROJECTILE = REG.register("boulder_projectile", () -> boulderProjectileBuilder().sized(1, 1).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "boulder_projectile").toString()));
+    private static EntityType.Builder<EntityRockSling> rockSlingBuilder() {
+        return EntityType.Builder.of(EntityRockSling::new, MobCategory.MISC);
+    }
+    public static final RegistryObject<EntityType<EntityRockSling>> ROCK_SLING = REG.register("rock_sling", () -> rockSlingBuilder().sized(1, 1).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "rock_sling").toString()));
     private static EntityType.Builder<EntityBoulderPlatform> boulderPlatformBuilder() {
         return EntityType.Builder.of(EntityBoulderPlatform::new, MobCategory.MISC);
     }

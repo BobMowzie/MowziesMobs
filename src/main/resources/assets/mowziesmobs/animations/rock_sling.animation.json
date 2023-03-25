@@ -1,0 +1,17 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"roll": {
+			"loop": true,
+			"animation_length": 1,
+			"bones": {
+				"root": {
+					"rotation": {
+						"vector": ["Math.lerp(0,360,query.anim_time*1)", "Math.lerp(60,420,query.anim_time*1)", 0]
+					}
+				}
+			}
+		}
+	},
+	"geckolib_format_version": 2
+}
