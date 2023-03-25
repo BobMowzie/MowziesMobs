@@ -186,4 +186,12 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
     public boolean isTravelling() {
         return travelling;
     }
+
+    public void setTravelling(boolean travel){
+        travelling = travel;
+    }
+
+    public void setDamage(int dam){
+        damage = dam;
+    }
 }

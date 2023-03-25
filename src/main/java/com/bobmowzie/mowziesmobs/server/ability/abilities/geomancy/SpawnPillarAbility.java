@@ -31,7 +31,8 @@ public class SpawnPillarAbility extends PlayerAbility {
     @Override
     public void start() {
         super.start();
-        playAnimation("spawn_boulder_start", false);
+        playAnimation("pillar_spawn", false);
+        getUser().setDeltaMovement(getUser().getDeltaMovement().add(0d,-2d,0d));
     }
 
     @Override
@@ -65,7 +66,7 @@ public class SpawnPillarAbility extends PlayerAbility {
     }
 
     private void spawnPillar() {
-        playAnimation("spawn_boulder_instant", false);
+        //playAnimation("spawn_boulder_instant", false);
 
         pillar = new EntityPillar(EntityHandler.PILLAR.get(), getUser().level, getUser(), spawnPillarBlock, spawnPillarPos);
         pillar.setPos(spawnPillarPos.getX() + 0.5F, spawnPillarPos.getY() + 1, spawnPillarPos.getZ() + 0.5F);

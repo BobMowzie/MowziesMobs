@@ -47,6 +47,7 @@ public class ItemSculptorStaff extends MowzieToolItem implements IAnimatable, IS
     public ItemSculptorStaff(Properties properties) {
         super(1f,2f, Tiers.STONE, BlockTags.MINEABLE_WITH_HOE, properties);
         GeckoLibNetwork.registerSyncable(this);
+
     }
 
     @Override
@@ -60,6 +61,13 @@ public class ItemSculptorStaff extends MowzieToolItem implements IAnimatable, IS
                 return renderer;
             }
         });
+    }
+
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        AbilityHandler.INSTANCE.sendAbilityMessage(player, AbilityHandler.ROCK_SLING);
+        player.startUsingItem(hand);
+        return new InteractionResultHolder<ItemStack>(InteractionResult.SUCCESS, player.getItemInHand(hand));
     }
 
     @Override
