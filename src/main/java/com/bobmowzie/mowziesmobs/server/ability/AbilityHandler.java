@@ -2,10 +2,7 @@ package com.bobmowzie.mowziesmobs.server.ability;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.*;
-import com.bobmowzie.mowziesmobs.server.ability.abilities.geomancy.BoulderRollAbility;
-import com.bobmowzie.mowziesmobs.server.ability.abilities.geomancy.RockSlingAbility;
-import com.bobmowzie.mowziesmobs.server.ability.abilities.geomancy.SpawnBoulderAbility;
-import com.bobmowzie.mowziesmobs.server.ability.abilities.geomancy.SpawnPillarAbility;
+import com.bobmowzie.mowziesmobs.server.ability.abilities.geomancy.*;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.message.MessageInterruptAbility;
@@ -34,6 +31,7 @@ public enum AbilityHandler {
             new SimplePlayerAnimationAbility(type, (Player) player, "hit_boulder", 10, false, false)
     );
     public static final AbilityType<Player, SpawnPillarAbility> SPAWN_PILLAR_ABILITY = new AbilityType<>("spawn_pillar", SpawnPillarAbility::new);
+    public static final AbilityType<Player, GroundSlamAbility> GROUND_SLAM_ABILITY = new AbilityType<>("ground_slam", GroundSlamAbility::new);
     public static final AbilityType<Player, BoulderRollAbility> BOULDER_ROLL_ABILITY = new AbilityType<>("boulder_roll", BoulderRollAbility::new);
 
     public static final AbilityType<Player, SimplePlayerAnimationAbility> BACKSTAB_ABILITY = new AbilityType<>("backstab", (type, player) ->
@@ -54,7 +52,8 @@ public enum AbilityHandler {
             HIT_BOULDER_ABILITY,
             BACKSTAB_ABILITY,
             BOULDER_ROLL_ABILITY,
-            ROCK_SLING
+            ROCK_SLING,
+            GROUND_SLAM_ABILITY
     };
 
     @Nullable
