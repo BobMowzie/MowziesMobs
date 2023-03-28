@@ -1,0 +1,18 @@
+{
+  "name": "mowziesmobs:monastery/interior/gong_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_banners",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "ignore_bounds": true
+        }
+      }
+    }
+  ]
+}

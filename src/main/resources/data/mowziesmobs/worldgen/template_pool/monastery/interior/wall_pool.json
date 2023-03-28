@@ -38,7 +38,8 @@
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
           "bounds_max_offset": [ 0, -2, 0 ]
-        }
+        },
+        "gen_order": -5
       }
     },
     {
@@ -53,10 +54,14 @@
     {
       "weight": 1,
       "element": {
-        "location": "mowziesmobs:monastery/interior/monastery_banners",
+        "location": "mowziesmobs:monastery/interior/monastery_banners_helper",
         "processors": "mowziesmobs:monastery",
         "projection": "rigid",
-        "element_type": "mowziesmobs:mowzie_element"
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "bounds_max_offset": [ 0, -1, 0 ]
+        },
+        "gen_order": -5
       }
     },
     {

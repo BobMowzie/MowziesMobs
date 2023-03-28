@@ -68,7 +68,7 @@ public class BoulderRollAbility extends PlayerAbility {
     @Override
     public void onRightMouseUp(Player player) {
         super.onRightMouseUp(player);
-        nextSection();
+        if (isUsing()) nextSection();
     }
 
     @Override
