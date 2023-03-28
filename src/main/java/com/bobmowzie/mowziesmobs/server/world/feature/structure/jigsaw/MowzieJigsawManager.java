@@ -302,6 +302,13 @@ public class MowzieJigsawManager {
 
             // Loop through pool elements
             List<StructurePoolElement> structurePoolElements = addPoolElements(pieceState, poolOptional, fallbackPoolOptional);
+            structurePoolElements.sort((p1, p2) -> {
+                int i1, i2;
+                i1 = i2 = 0;
+                if (p1 instanceof MowziePoolElement) i1 = ((MowziePoolElement) p1).priority;
+                if (p2 instanceof MowziePoolElement) i2 = ((MowziePoolElement) p2).priority;
+                return Integer.compare(i1, i2);
+            });
             for(StructurePoolElement nextPieceCandidate : structurePoolElements) {
                 // If empty element, break from the loop and spawn nothing
                 if (nextPieceCandidate == FallbackPoolElement.INSTANCE) {

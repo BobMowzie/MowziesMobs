@@ -6,7 +6,7 @@
   "name": "mowziesmobs:monastery/tower_wall_pool",
 
   // The template pool to refer to if the entries in 'elements' fails to generate.
-  "fallback": "mowziesmobs:monastery/fallback/tower_wall_fallback_pool",
+  "fallback": "minecraft:empty",//"mowziesmobs:monastery/fallback/tower_wall_fallback_pool",
 
   // Here you can list as many nbt files or configured features to spawn.
   // Do note that configured features needs a special element entry stuff.
@@ -81,7 +81,8 @@
           "bounds_min_offset": [ 0, 2, 0 ],
           "bounds_max_offset": [ 0, -2, 0 ]
         },
-        "gen_order": 3
+        "gen_order": 3,
+        "priority": -1
       }
     }
   ]
