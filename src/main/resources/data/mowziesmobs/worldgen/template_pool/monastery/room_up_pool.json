@@ -17,6 +17,9 @@
           "special_bounds": "tower",
           "interior_bounds_min_offset": [ 1, 0, 1 ],
           "interior_bounds_max_offset": [ -1, 0, -1 ]
+        },
+        "tags": {
+          "inherits_tag": true
         }
       }
     },
@@ -35,6 +38,9 @@
           "special_bounds": "tower",
           "interior_bounds_min_offset": [ 1, 0, 1 ],
           "interior_bounds_max_offset": [ -1, 0, -1 ]
+        },
+        "tags": {
+          "inherits_tag": true
         }
       }
     }

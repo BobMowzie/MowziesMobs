@@ -347,7 +347,7 @@ public class MowziePoolElement extends SinglePoolElement {
     public static class TagsParams {
         public static final Codec<TagsParams> CODEC = RecordCodecBuilder.create((builder) -> builder
                 .group(
-                        Tag.CODEC.listOf().fieldOf("possible_tags").forGetter(element -> element.tags),
+                        Tag.CODEC.listOf().optionalFieldOf("possible_tags", Collections.emptyList()).forGetter(element -> element.tags),
                         Codec.BOOL.optionalFieldOf("inherits_tag", false).forGetter(element -> element.inheritsTag),
                         Codec.STRING.optionalFieldOf("needs_tag").forGetter(element -> element.needsTag),
                         Codec.INT.optionalFieldOf("needs_tag_depth", 1).forGetter(element -> element.needsTagDepth)

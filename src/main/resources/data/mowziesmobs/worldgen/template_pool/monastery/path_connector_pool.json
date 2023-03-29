@@ -108,6 +108,13 @@
         },
         "conditions": {
           "max_height": -4
+        },
+        "tags": {
+          "possible_tags": [
+            {"tag": "dojo", "weight": 1},
+            {"tag": "storage", "weight": 1},
+            {"tag": "library", "weight": 1}
+          ]
         }
       }
     },
@@ -128,6 +135,13 @@
         },
         "conditions": {
           "min_height": 8
+        },
+        "tags": {
+          "possible_tags": [
+            {"tag": "dojo", "weight": 1},
+            {"tag": "storage", "weight": 1},
+            {"tag": "library", "weight": 1}
+          ]
         }
       }
     }

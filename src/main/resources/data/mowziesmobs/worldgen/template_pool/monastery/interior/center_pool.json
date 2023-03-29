@@ -3,6 +3,9 @@
   "fallback": "minecraft:empty",
   "elements": [
 
+    // ****************************************************************************************************************
+    // General
+    // ****************************************************************************************************************
     {
       "weight": 1,
       "element": {
@@ -14,7 +17,7 @@
     },
 
     {
-      "weight": 4,
+      "weight": 3,
       "element": {
         "location": "mowziesmobs:monastery/interior/monastery_landing",
         "processors": "mowziesmobs:monastery",
@@ -32,10 +35,35 @@
     {
       "weight": 1,
       "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_partition",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "bounds_min_offset": [ 0, 0, 2 ]
+        },
+        "conditions": {
+          "forbidden_parents": [
+            "mowziesmobs:monastery/monastery_room_top"
+          ],
+          "forbidden_parents_depth": 2
+        }
+      }
+    },
+
+    // ****************************************************************************************************************
+    // Library
+    // ****************************************************************************************************************
+    {
+      "weight": 1,
+      "element": {
         "location": "mowziesmobs:monastery/interior/monastery_bookshelf",
         "processors": "mowziesmobs:monastery",
         "projection": "rigid",
-        "element_type": "mowziesmobs:mowzie_element"
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "library"
+        }
       }
     },
 
@@ -45,7 +73,10 @@
         "location": "mowziesmobs:monastery/interior/monastery_desk",
         "processors": "mowziesmobs:monastery",
         "projection": "rigid",
-        "element_type": "mowziesmobs:mowzie_element"
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "library"
+        }
       }
     }
 

@@ -3,35 +3,18 @@
   "fallback": "minecraft:empty",
   "elements": [
 
-    {
-      "weight": 5,
-      "element": {
-        "location": "minecraft:empty",
-        "processors": "minecraft:empty",
-        "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
-      }
-    },
-
-    {
-      "weight": 1,
-      "element": {
-        "location": "mowziesmobs:monastery/interior/monastery_bookshelf",
-        "processors": "mowziesmobs:monastery",
-        "projection": "rigid",
-        "element_type": "mowziesmobs:mowzie_element"
-      }
-    },
-
-    {
-      "weight": 1,
-      "element": {
-        "location": "mowziesmobs:monastery/interior/monastery_desk",
-        "processors": "mowziesmobs:monastery",
-        "projection": "rigid",
-        "element_type": "mowziesmobs:mowzie_element"
-      }
-    },
+    // ****************************************************************************************************************
+    // General
+    // ****************************************************************************************************************
+//    {
+//      "weight": 5,
+//      "element": {
+//        "location": "minecraft:empty",
+//        "processors": "minecraft:empty",
+//        "projection": "rigid",
+//        "element_type": "minecraft:single_pool_element"
+//      }
+//    },
 
     {
       "weight": 1,
@@ -50,16 +33,6 @@
     {
       "weight": 1,
       "element": {
-        "location": "mowziesmobs:monastery/interior/monastery_barrels",
-        "processors": "mowziesmobs:monastery",
-        "projection": "rigid",
-        "element_type": "mowziesmobs:mowzie_element"
-      }
-    },
-
-    {
-      "weight": 1,
-      "element": {
         "location": "mowziesmobs:monastery/interior/monastery_banners_helper",
         "processors": "mowziesmobs:monastery",
         "projection": "rigid",
@@ -71,13 +44,116 @@
       }
     },
 
+    // ****************************************************************************************************************
+    // Library
+    // ****************************************************************************************************************
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_bookshelf",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "library"
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_desk",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "library"
+        }
+      }
+    },
+
+    // ****************************************************************************************************************
+    // Storage
+    // ****************************************************************************************************************
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_barrels",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "storage"
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_barrels_1",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "storage"
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_barrels_2",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "storage"
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_barrels_3",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "storage"
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_barrels_4",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "storage"
+        }
+      }
+    },
+
+    // ****************************************************************************************************************
+    // Dojo
+    // ****************************************************************************************************************
     {
       "weight": 1,
       "element": {
         "location": "mowziesmobs:monastery/interior/monastery_dummies",
         "processors": "mowziesmobs:monastery",
         "projection": "rigid",
-        "element_type": "mowziesmobs:mowzie_element"
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "dojo"
+        }
       }
     }
 

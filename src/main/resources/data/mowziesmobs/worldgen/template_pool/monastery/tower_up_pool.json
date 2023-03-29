@@ -10,11 +10,16 @@
         "processors": "mowziesmobs:monastery",
         "projection": "rigid",
         "element_type": "mowziesmobs:mowzie_element",
-        "max_height": -1,
         "bounds": {
           "special_bounds": "tower",
           "interior_bounds_min_offset": [ 1, 0, 1 ],
           "interior_bounds_max_offset": [ -1, 0, -1 ]
+        },
+        "conditions": {
+          "max_height": -1
+        },
+        "tags": {
+          "inherits_tag": true
         }
       }
     },
@@ -26,11 +31,16 @@
         "processors": "mowziesmobs:monastery",
         "projection": "rigid",
         "element_type": "mowziesmobs:mowzie_element",
-        "min_height": -1,
         "bounds": {
           "special_bounds": "tower",
           "interior_bounds_min_offset": [ 1, 0, 1 ],
           "interior_bounds_max_offset": [ -1, 0, -1 ]
+        },
+        "conditions": {
+          "min_height": -1
+        },
+        "tags": {
+          "inherits_tag": true
         }
       }
     }
