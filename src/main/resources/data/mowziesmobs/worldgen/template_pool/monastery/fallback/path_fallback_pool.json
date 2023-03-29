@@ -4,7 +4,7 @@
   "elements": [
 
     {
-      "weight": 20,
+      "weight": 1,
       "element": {
         "location": "mowziesmobs:monastery/monastery_wall_connector_end",
         "processors": "mowziesmobs:monastery",
@@ -27,7 +27,8 @@
             "mowziesmobs:monastery/monastery_room_middle",
             "mowziesmobs:monastery/monastery_room_top"
           ]
-        }
+        },
+        "priority": 1
       }
     },
 
@@ -53,8 +54,36 @@
             "mowziesmobs:monastery/monastery_wall_straight_center",
             "mowziesmobs:monastery/monastery_doorway"
           ]
+        },
+        "priority": 2
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/monastery_room",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "special_bounds": "tower",
+          "bounds_min_offset": [ 1, 0, 1 ],
+          "bounds_max_offset": [ -1, 0, -1 ],
+          "check_bounds_min_offset": [ 0, -80, 0 ],
+          "check_bounds_max_offset": [ 0, 80, 0 ],
+          "interior_bounds_min_offset": [ 1, 0, 1 ],
+          "interior_bounds_max_offset": [ -1, 0, -1 ]
+        },
+        "tags": {
+          "possible_tags": [
+            {"tag": "dojo", "weight": 1},
+            {"tag": "storage", "weight": 1},
+            {"tag": "library", "weight": 1}
+          ]
         }
       }
     }
+
   ]
 }

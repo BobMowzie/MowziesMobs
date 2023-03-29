@@ -25,7 +25,8 @@
         "element_type": "mowziesmobs:mowzie_element",
         "conditions": {
           "forbidden_parents": [
-            "mowziesmobs:monastery/monastery_room_base"
+            "mowziesmobs:monastery/monastery_room_base",
+            "mowziesmobs:monastery/monastery_room"
           ],
           "forbidden_parents_depth": 2
         }

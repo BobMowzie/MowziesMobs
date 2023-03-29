@@ -148,6 +148,37 @@
     // ****************************************************************************************************************
     // Room elements
     // ****************************************************************************************************************
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/monastery_room",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "special_bounds": "tower",
+          "bounds_min_offset": [ 1, 0, 1 ],
+          "bounds_max_offset": [ -1, 0, -1 ],
+          "check_bounds_min_offset": [ 0, -80, 0 ],
+          "check_bounds_max_offset": [ 0, 80, 0 ],
+          "interior_bounds_min_offset": [ 1, 0, 1 ],
+          "interior_bounds_max_offset": [ -1, 0, -1 ]
+        },
+        "conditions": {
+          "min_height": -4,
+          "max_height": 8
+        },
+        "tags": {
+          "possible_tags": [
+            {"tag": "dojo", "weight": 1},
+            {"tag": "storage", "weight": 1},
+            {"tag": "library", "weight": 1}
+          ]
+        }
+      }
+    },
+
     {
       "weight": 5,
       "element": {

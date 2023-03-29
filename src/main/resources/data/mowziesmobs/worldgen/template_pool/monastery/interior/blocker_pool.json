@@ -11,7 +11,8 @@
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
           "bounds_max_offset": [ 0, 0, -1 ]
-        }
+        },
+        "gen_order": -1
       }
     }
   ]
