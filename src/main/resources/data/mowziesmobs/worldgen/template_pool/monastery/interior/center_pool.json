@@ -2,6 +2,7 @@
   "name": "mowziesmobs:monastery/interior/wall_pool",
   "fallback": "minecraft:empty",
   "elements": [
+
     {
       "weight": 1,
       "element": {
@@ -11,6 +12,7 @@
         "element_type": "minecraft:single_pool_element"
       }
     },
+
     {
       "weight": 4,
       "element": {
@@ -18,12 +20,15 @@
         "processors": "mowziesmobs:monastery",
         "projection": "rigid",
         "element_type": "mowziesmobs:mowzie_element",
-        "forbidden_parents": [
-          "mowziesmobs:monastery/monastery_room_base"
-        ],
-        "forbidden_parents_depth": 2
+        "conditions": {
+          "forbidden_parents": [
+            "mowziesmobs:monastery/monastery_room_base"
+          ],
+          "forbidden_parents_depth": 2
+        }
       }
     },
+
     {
       "weight": 1,
       "element": {
@@ -33,6 +38,7 @@
         "element_type": "mowziesmobs:mowzie_element"
       }
     },
+
     {
       "weight": 1,
       "element": {
@@ -42,5 +48,6 @@
         "element_type": "mowziesmobs:mowzie_element"
       }
     }
+
   ]
 }

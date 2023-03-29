@@ -95,7 +95,9 @@ public class MowzieJigsawManager {
                         Placer placer = new Placer(registry, jigsawconfiguration.maxDepth(), pieceFactory, chunkgenerator, structuremanager, list, worldgenrandom, pathJigsawName, interiorJigsawName, free, interiorFree, specialBounds);
 
                         // Place starting piece
-                        PieceState startingPiece = new PieceState(poolelementstructurepiece, 0, null);
+                        String tag = null;
+                        if (poolelementstructurepiece.getElement() instanceof MowziePoolElement) tag = ((MowziePoolElement) poolelementstructurepiece.getElement()).getRandomTag(worldgenrandom);
+                        PieceState startingPiece = new PieceState(poolelementstructurepiece, 0, null, tag);
                         for (StructureBlockInfo structureBlockInfo : placer.getJigsawBlocksFromPieceState(startingPiece)) {
                             placer.placing.add(new Pair<>(structureBlockInfo, startingPiece));
                         }
@@ -148,12 +150,14 @@ public class MowzieJigsawManager {
         final int depth;
         final PieceState parent;
         final Set<PieceState> children;
+        final String tag;
 
-        PieceState(PoolElementStructurePiece p_210311_, int p_210313_, PieceState parent) {
+        PieceState(PoolElementStructurePiece p_210311_, int p_210313_, PieceState parent, String tag) {
             this.piece = p_210311_;
             this.depth = p_210313_;
             this.parent = parent;
             this.children = new HashSet<>();
+            this.tag = tag;
         }
     }
 
@@ -395,8 +399,8 @@ public class MowzieJigsawManager {
 
                             // Check height params
                             if (nextPieceCandidate instanceof MowziePoolElement) {
-                                Optional<Integer> maxHeight = ((MowziePoolElement) nextPieceCandidate).maxHeight;
-                                Optional<Integer> minHeight = ((MowziePoolElement) nextPieceCandidate).minHeight;
+                                Optional<Integer> maxHeight = ((MowziePoolElement) nextPieceCandidate).conditions.maxHeight;
+                                Optional<Integer> minHeight = ((MowziePoolElement) nextPieceCandidate).conditions.minHeight;
                                 if (maxHeight.isPresent() || minHeight.isPresent()) {
                                     int freeHeight = this.chunkGenerator.getFirstFreeHeight(nextPieceBoundingBoxPlaced.minX() + nextPieceBoundingBoxPlaced.getXSpan() / 2, nextPieceBoundingBoxPlaced.minZ() + nextPieceBoundingBoxPlaced.getZSpan() / 2, Heightmap.Types.WORLD_SURFACE_WG, heightAccessor);
                                     if (maxHeight.isPresent() && nextPieceMinY - freeHeight > maxHeight.get()) continue;
@@ -504,7 +508,13 @@ public class MowzieJigsawManager {
             pieceSelection.pieceState.piece.addJunction(new JigsawJunction(pieceSelection.connectedJigsaw.pos.getX(), pieceSelection.l2 - thisPieceHeightFromBottomToJigsawBlock + pieceGroundLevelDelta, pieceSelection.connectedJigsaw.pos.getZ(), k1, pieceSelection.nextPiece.getProjection()));
             pieceSelection.poolelementstructurepiece.addJunction(new JigsawJunction(pieceSelection.origJigsaw.pos.getX(), pieceSelection.l2 - pieceSelection.connectedJigsaw.pos.getY() + k2, pieceSelection.origJigsaw.pos.getZ(), -k1, pieceSelection.origPiece.getProjection()));
             this.pieces.add(pieceSelection.poolelementstructurepiece);
-            PieceState nextPieceState = new PieceState(pieceSelection.poolelementstructurepiece, pieceSelection.pieceState.depth + 1, pieceSelection.pieceState);
+            String tag = null;
+            if (pieceSelection.nextPiece instanceof MowziePoolElement) {
+                MowziePoolElement mowziePoolElement = (MowziePoolElement) pieceSelection.nextPiece;
+                if (mowziePoolElement.tags.inheritsTag) tag = pieceSelection.pieceState.tag;
+                else tag = ((MowziePoolElement) pieceSelection.nextPiece).getRandomTag(random);
+            }
+            PieceState nextPieceState = new PieceState(pieceSelection.poolelementstructurepiece, pieceSelection.pieceState.depth + 1, pieceSelection.pieceState, tag);
 
             // Queue up the next jigsaw pieces
             List<StructureBlockInfo> nextJigsaws = getJigsawBlocksFromPieceState(nextPieceState);
@@ -519,8 +529,8 @@ public class MowzieJigsawManager {
             }
 
             // Count up the number of next paths. Check for overridden count first.
-            if (pieceSelection.nextPiece instanceof MowziePoolElement && ((MowziePoolElement) pieceSelection.nextPiece).numPathsOverride.isPresent()) {
-                numPaths += ((MowziePoolElement) pieceSelection.nextPiece).numPathsOverride.get();
+            if (pieceSelection.nextPiece instanceof MowziePoolElement && ((MowziePoolElement) pieceSelection.nextPiece).conditions.numPathsOverride.isPresent()) {
+                numPaths += ((MowziePoolElement) pieceSelection.nextPiece).conditions.numPathsOverride.get();
             }
             else {
                 for (StructureBlockInfo jigsaw : nextJigsaws) {

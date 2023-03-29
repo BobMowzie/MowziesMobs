@@ -22,6 +22,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 public class MowziePoolElement extends SinglePoolElement {
     public static final Codec<MowziePoolElement> CODEC = RecordCodecBuilder.create((builder) -> builder
@@ -30,16 +31,9 @@ public class MowziePoolElement extends SinglePoolElement {
                     processorsCodec(),
                     projectionCodec(),
                     BoundsParams.CODEC.optionalFieldOf("bounds", new BoundsParams(false, BlockPos.ZERO, BlockPos.ZERO, BlockPos.ZERO, Optional.empty(), Optional.empty(), BlockPos.ZERO, BlockPos.ZERO, true, false, Optional.empty(), Optional.empty())).forGetter(element -> element.bounds),
+                    ConditionsParams.CODEC.optionalFieldOf("conditions", new ConditionsParams(-1, -1, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Collections.emptyList(), 1)).forGetter(element -> element.conditions),
+                    TagsParams.CODEC.optionalFieldOf("tags", new TagsParams(Collections.emptyList(), false, Optional.empty(), 1)).forGetter(element -> element.tags),
                     Codec.BOOL.optionalFieldOf("two_way", false).forGetter(element -> element.twoWay),
-                    Codec.INT.optionalFieldOf("min_depth", -1).forGetter(element -> element.maxDepth),
-                    Codec.INT.optionalFieldOf("max_depth", -1).forGetter(element -> element.maxDepth),
-                    Codec.INT.optionalFieldOf("min_height").forGetter(element -> element.minHeight),
-                    Codec.INT.optionalFieldOf("max_height").forGetter(element -> element.maxHeight),
-                    Codec.INT.optionalFieldOf("min_required_paths").forGetter(element -> element.minRequiredPaths),
-                    Codec.INT.optionalFieldOf("max_allowed_paths").forGetter(element -> element.maxAllowedPaths),
-                    Codec.INT.optionalFieldOf("num_paths_override").forGetter(element -> element.numPathsOverride),
-                    Codec.STRING.listOf().optionalFieldOf("forbidden_parents", Collections.emptyList()).forGetter(element -> element.forbiddenParents),
-                    Codec.INT.optionalFieldOf("forbidden_parents_depth", 1).forGetter(element -> element.forbiddenParentsDepth),
                     Codec.INT.optionalFieldOf("gen_order", 0).forGetter(element -> element.genOrder),
                     Codec.INT.optionalFieldOf("priority", 0).forGetter(element -> element.priority)
             ).apply(builder, MowziePoolElement::new));
@@ -50,34 +44,19 @@ public class MowziePoolElement extends SinglePoolElement {
     public final BoundsParams bounds;
 
     /**
+     * Generation conditions parameters
+     */
+    public final ConditionsParams conditions;
+
+    /**
+     * Tag related parameters
+     */
+    public final TagsParams tags;
+
+    /**
      * Whether this piece's horizontal jigsaw blocks can connect in both directions
      */
     public final boolean twoWay;
-
-    /**
-     * Maximum iteration depth at which this piece can be chosen
-     */
-    public final int minDepth;
-    public final int maxDepth;
-
-    /**
-     * Distances to stop the piece from placing too high or too low down.
-     */
-    public final Optional<Integer> minHeight;
-    public final Optional<Integer> maxHeight;
-
-    /**
-     * Only allow the piece to spawn when this many active paths are generating
-     */
-    public final Optional<Integer> minRequiredPaths;
-    public final Optional<Integer> maxAllowedPaths;
-    public final Optional<Integer> numPathsOverride;
-
-    /**
-     * Prevent pieces from generating with certain parent pieces
-     */
-    public final List<String> forbiddenParents;
-    public final int forbiddenParentsDepth;
 
     /**
      * Control the order in which pieces generate. Higher numbers generate last.
@@ -89,24 +68,14 @@ public class MowziePoolElement extends SinglePoolElement {
      */
     public final int priority;
 
-    protected MowziePoolElement(Either<ResourceLocation, StructureTemplate> p_210415_, Holder<StructureProcessorList> p_210416_, StructureTemplatePool.Projection p_210417_, BoundsParams bounds, boolean twoWay,
-                                int minDepth, int maxDepth,
-                                Optional<Integer> minHeight, Optional<Integer> maxHeight,
-                                Optional<Integer> minRequiredPaths, Optional<Integer> maxAllowedPaths, Optional<Integer> numPathsOverride,
-                                List<String> forbiddenParents, int forbiddenParentsDepth,
-                                int genOrder, int priority) {
+    protected MowziePoolElement(Either<ResourceLocation, StructureTemplate> p_210415_, Holder<StructureProcessorList> p_210416_, StructureTemplatePool.Projection p_210417_,
+                                BoundsParams bounds, ConditionsParams conditions, TagsParams tags,
+                                boolean twoWay, int genOrder, int priority) {
         super(p_210415_, p_210416_, p_210417_);
         this.bounds = bounds;
+        this.conditions = conditions;
+        this.tags = tags;
         this.twoWay = twoWay;
-        this.minDepth = minDepth;
-        this.maxDepth = maxDepth;
-        this.minHeight = minHeight;
-        this.maxHeight = maxHeight;
-        this.minRequiredPaths = minRequiredPaths;
-        this.maxAllowedPaths = maxAllowedPaths;
-        this.numPathsOverride = numPathsOverride;
-        this.forbiddenParents = forbiddenParents;
-        this.forbiddenParentsDepth = forbiddenParentsDepth;
         this.genOrder = genOrder;
         this.priority = priority;
     }
@@ -140,24 +109,58 @@ public class MowziePoolElement extends SinglePoolElement {
     }
 
     public boolean checkCriteria(MowzieJigsawManager.PieceState pieceState, MowzieJigsawManager.Placer placer) {
-        int maxDepth = this.maxDepth;
+        int maxDepth = this.conditions.maxDepth;
         if (maxDepth != -1 && pieceState.depth > maxDepth) return false;
+
+        int minDepth = this.conditions.minDepth;
+        if (minDepth != -1 && pieceState.depth < minDepth) return false;
+
         MowzieJigsawManager.PieceState parent = pieceState;
-        for (int i = 0; i < this.forbiddenParentsDepth; i++) {
+        for (int i = 0; i < this.conditions.forbiddenParentsDepth; i++) {
             String parentName = parent.piece.getElement().toString().split("[\\[\\]]")[2];
-            if (this.forbiddenParents.contains(parentName)) {
+            if (this.conditions.forbiddenParents.contains(parentName)) {
                 return false;
             }
             parent = parent.parent;
         }
 
+        if (this.tags.needsTag.isPresent()) {
+            parent = pieceState;
+            boolean foundTag = false;
+            for (int i = 0; i < this.tags.needsTagDepth; i++) {
+                if (this.tags.needsTag.get().equals(parent.tag)) {
+                    foundTag = true;
+                    break;
+                }
+                parent = parent.parent;
+            }
+            if (!foundTag) return false;
+        }
+
         if (!(placer instanceof MowzieJigsawManager.FallbackPlacer)) {
-            if (this.minRequiredPaths.isPresent() && placer.numPaths < this.minRequiredPaths.get())
+            if (this.conditions.minRequiredPaths.isPresent() && placer.numPaths < this.conditions.minRequiredPaths.get())
                 return false;
-            if (this.maxAllowedPaths.isPresent() && placer.numPaths > this.maxAllowedPaths.get())
+            if (this.conditions.maxAllowedPaths.isPresent() && placer.numPaths > this.conditions.maxAllowedPaths.get())
                 return false;
         }
         return true;
+    }
+
+    public String getRandomTag(Random random) {
+        if (tags.tags.isEmpty()) return null;
+
+        int total = 0;
+        for (Tag tag : this.tags.tags) {
+            total += tag.weight;
+        }
+
+        float rand = random.nextFloat() * total;
+        total = 0;
+        for (Tag tag : this.tags.tags) {
+            total += tag.weight;
+            if (total >= rand) return tag.tag;
+        }
+        return null;
     }
 
     @Override
@@ -272,6 +275,111 @@ public class MowziePoolElement extends SinglePoolElement {
             this.ignoreParentBounds = ignoreParentBounds;
             this.interiorBoundsMinOffset = interiorBoundsMinOffset;
             this.interiorBoundsMaxOffset = interiorBoundsMaxOffset;
+        }
+    }
+
+    public static class ConditionsParams {
+        public static final Codec<ConditionsParams> CODEC = RecordCodecBuilder.create((builder) -> builder
+                .group(
+                        Codec.INT.optionalFieldOf("min_depth", -1).forGetter(element -> element.minDepth),
+                        Codec.INT.optionalFieldOf("max_depth", -1).forGetter(element -> element.maxDepth),
+                        Codec.INT.optionalFieldOf("min_height").forGetter(element -> element.minHeight),
+                        Codec.INT.optionalFieldOf("max_height").forGetter(element -> element.maxHeight),
+                        Codec.INT.optionalFieldOf("min_required_paths").forGetter(element -> element.minRequiredPaths),
+                        Codec.INT.optionalFieldOf("max_allowed_paths").forGetter(element -> element.maxAllowedPaths),
+                        Codec.INT.optionalFieldOf("num_paths_override").forGetter(element -> element.numPathsOverride),
+                        Codec.STRING.listOf().optionalFieldOf("forbidden_parents", Collections.emptyList()).forGetter(element -> element.forbiddenParents),
+                        Codec.INT.optionalFieldOf("forbidden_parents_depth", 1).forGetter(element -> element.forbiddenParentsDepth)
+                ).apply(builder, ConditionsParams::new));
+
+        /**
+         * Maximum iteration depth at which this piece can be chosen
+         */
+        public final int minDepth;
+        public final int maxDepth;
+
+        /**
+         * Distances to stop the piece from placing too high or too low down.
+         */
+        public final Optional<Integer> minHeight;
+        public final Optional<Integer> maxHeight;
+
+        /**
+         * Only allow the piece to spawn when this many active paths are generating
+         */
+        public final Optional<Integer> minRequiredPaths;
+        public final Optional<Integer> maxAllowedPaths;
+        public final Optional<Integer> numPathsOverride;
+
+        /**
+         * Prevent pieces from generating with certain parent pieces
+         */
+        public final List<String> forbiddenParents;
+        public final int forbiddenParentsDepth;
+
+        private ConditionsParams(
+                int minDepth, int maxDepth,
+                Optional<Integer> minHeight, Optional<Integer> maxHeight,
+                Optional<Integer> minRequiredPaths, Optional<Integer> maxAllowedPaths, Optional<Integer> numPathsOverride,
+                List<String> forbiddenParents, int forbiddenParentsDepth
+        ) {
+            this.minDepth = minDepth;
+            this.maxDepth = maxDepth;
+            this.minHeight = minHeight;
+            this.maxHeight = maxHeight;
+            this.minRequiredPaths = minRequiredPaths;
+            this.maxAllowedPaths = maxAllowedPaths;
+            this.numPathsOverride = numPathsOverride;
+            this.forbiddenParents = forbiddenParents;
+            this.forbiddenParentsDepth = forbiddenParentsDepth;
+        }
+    }
+
+    public record Tag(String tag, int weight) {
+        public static final Codec<Tag> CODEC = RecordCodecBuilder.create((builder) -> builder
+                .group(
+                        Codec.STRING.fieldOf("tag").forGetter(element -> element.tag),
+                        Codec.INT.optionalFieldOf("weight", 1).forGetter(element -> element.weight)
+                ).apply(builder, Tag::new));
+
+    }
+
+    public static class TagsParams {
+        public static final Codec<TagsParams> CODEC = RecordCodecBuilder.create((builder) -> builder
+                .group(
+                        Tag.CODEC.listOf().fieldOf("possible_tags").forGetter(element -> element.tags),
+                        Codec.BOOL.optionalFieldOf("inherits_tag", false).forGetter(element -> element.inheritsTag),
+                        Codec.STRING.optionalFieldOf("needs_tag").forGetter(element -> element.needsTag),
+                        Codec.INT.optionalFieldOf("needs_tag_depth", 1).forGetter(element -> element.needsTagDepth)
+                ).apply(builder, TagsParams::new));
+
+        /**
+         * List of tags and their weights
+         */
+        public final List<Tag> tags;
+
+        /**
+         * Inherit tag from parent piece.
+         */
+        public final boolean inheritsTag;
+
+        /**
+         * Needs a parent piece to have this tag in order to generate.
+         */
+        public final Optional<String> needsTag;
+
+        /**
+         * Search through this many parents to find the needed tag.
+         */
+        public final int needsTagDepth;
+
+        private TagsParams(
+                List<Tag> tags, boolean inheritsTag, Optional<String> needsTag, int needsTagDepth
+        ) {
+            this.tags = tags;
+            this.inheritsTag = inheritsTag;
+            this.needsTag = needsTag;
+            this.needsTagDepth = needsTagDepth;
         }
     }
 }

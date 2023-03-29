@@ -1,39 +1,15 @@
 {
-  // More info on template pools can be found here: https://minecraft.gamepedia.com/Custom_world_generation#JSON_format_8
-  // Yes, worldgen json files can have comments. Minecraft does "lenient" parsing of these json files.
-
-  // This is the name of the template pool itself. I tend to just put the file path and file name here with modid.
   "name": "mowziesmobs:monastery/path_pool",
-
-  // The template pool to refer to if the entries in 'elements' fails to generate.
   "fallback": "mowziesmobs:monastery/fallback/path_fallback_pool",
 
-  // Here you can list as many nbt files or configured features to spawn.
-  // Do note that configured features needs a special element entry stuff.
   "elements": [
-    {
 
-      // How likely out of all the element for this one to be chosen.
+    {
       "weight": 15,
       "element": {
-
-        // The Identifier of the nbt file itself of the structure piece.
-        // Note, this will automatically check into the 'structures' folder for the nbt file.
-        // The final path would look like 'resources/data/structure_tutorial/structures/run_down_house_left_side.nbt'
-        // The Jigsaw block in the structure will point to side_pool.json to spawn the other half of the house.
         "location": "mowziesmobs:monastery/monastery_wall_straight",
-
-        // Processor JSON files can be used to randomize or replace blocks dynamically. Here, we don't do any of that.
         "processors": "mowziesmobs:monastery",
-
-        // If set to 'terrain_matching', the house would be deformed to fit the change in land.
-        // That's best for roads so lets stay 'rigid' for now.
         "projection": "rigid",
-
-        // The kind of element we are spawning. This one is most likely what you want.
-        // There's 'minecraft:legacy_single_pool_element' but that swaps the behavior of
-        // Air and Structure Void in your piece as well as change the attachment mechanism.
-        // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
           "bounds_min_offset": [ 0, 5, 1 ],
@@ -44,159 +20,98 @@
         }
       }
     },
-    {
 
-      // How likely out of all the element for this one to be chosen.
+    {
       "weight": 5,
       "element": {
-
-        // The Identifier of the nbt file itself of the structure piece.
-        // Note, this will automatically check into the 'structures' folder for the nbt file.
-        // The final path would look like 'resources/data/structure_tutorial/structures/run_down_house_left_side.nbt'
-        // The Jigsaw block in the structure will point to side_pool.json to spawn the other half of the house.
         "location": "mowziesmobs:monastery/monastery_wall_corner",
-
-        // Processor JSON files can be used to randomize or replace blocks dynamically. Here, we don't do any of that.
         "processors": "mowziesmobs:monastery",
-
-        // If set to 'terrain_matching', the house would be deformed to fit the change in land.
-        // That's best for roads so lets stay 'rigid' for now.
         "projection": "rigid",
-
-        // The kind of element we are spawning. This one is most likely what you want.
-        // There's 'minecraft:legacy_single_pool_element' but that swaps the behavior of
-        // Air and Structure Void in your piece as well as change the attachment mechanism.
-        // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
           "bounds_min_offset": [ 1, 5, 1 ],
           "check_bounds_min_offset": [ 0, -80, 0 ],
           "check_bounds_max_offset": [ 0, 80, 0 ]
         },
-        "min_depth": 4,
-        "forbidden_parents": [
-          "mowziesmobs:monastery/monastery_wall_4way",
-          "mowziesmobs:monastery/monastery_wall_3way",
-          "mowziesmobs:monastery/monastery_wall_corner",
-          "mowziesmobs:monastery/monastery_center_back_3way"
-        ],
-        "forbidden_parents_depth": 2
+        "conditions": {
+          "min_depth": 4,
+          "forbidden_parents": [
+            "mowziesmobs:monastery/monastery_wall_4way",
+            "mowziesmobs:monastery/monastery_wall_3way",
+            "mowziesmobs:monastery/monastery_wall_corner",
+            "mowziesmobs:monastery/monastery_center_back_3way"
+          ],
+          "forbidden_parents_depth": 2
+        }
       }
     },
+
     {
-      // How likely out of all the element for this one to be chosen.
       "weight": 2,
       "element": {
-
-        // The Identifier of the nbt file itself of the structure piece.
-        // Note, this will automatically check into the 'structures' folder for the nbt file.
-        // The final path would look like 'resources/data/structure_tutorial/structures/run_down_house_left_side.nbt'
-        // The Jigsaw block in the structure will point to side_pool.json to spawn the other half of the house.
         "location": "mowziesmobs:monastery/monastery_wall_3way",
-
-        // Processor JSON files can be used to randomize or replace blocks dynamically. Here, we don't do any of that.
         "processors": "mowziesmobs:monastery",
-
-        // If set to 'terrain_matching', the house would be deformed to fit the change in land.
-        // That's best for roads so lets stay 'rigid' for now.
         "projection": "rigid",
-
-        // The kind of element we are spawning. This one is most likely what you want.
-        // There's 'minecraft:legacy_single_pool_element' but that swaps the behavior of
-        // Air and Structure Void in your piece as well as change the attachment mechanism.
-        // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
-          "bounds_min_offset": [
-            0,
-            5,
-            0
-          ],
-          "bounds_max_offset": [
-            0,
-            0,
-            -1
-          ],
+          "bounds_min_offset": [ 0, 5, 0 ],
+          "bounds_max_offset": [ 0, 0, -1 ],
           "special_bounds": "wall",
           "check_bounds_min_offset": [ 0, -80, 0 ],
           "check_bounds_max_offset": [ 0, 80, 0 ]
         },
-        "min_depth": 4,
-        "max_allowed_paths": 4,
-        "forbidden_parents": [
-          "mowziesmobs:monastery/monastery_wall_4way",
-          "mowziesmobs:monastery/monastery_wall_3way",
-          "mowziesmobs:monastery/monastery_wall_corner",
-          "mowziesmobs:monastery/monastery_center_back_3way"
-        ],
-        "forbidden_parents_depth": 2
+        "conditions": {
+          "min_depth": 4,
+          "max_allowed_paths": 4,
+          "forbidden_parents": [
+            "mowziesmobs:monastery/monastery_wall_4way",
+            "mowziesmobs:monastery/monastery_wall_3way",
+            "mowziesmobs:monastery/monastery_wall_corner",
+            "mowziesmobs:monastery/monastery_center_back_3way"
+          ],
+          "forbidden_parents_depth": 2
+        }
       }
     },
-    {
 
-      // How likely out of all the element for this one to be chosen.
+    {
       "weight": 1,
       "element": {
-
-        // The Identifier of the nbt file itself of the structure piece.
-        // Note, this will automatically check into the 'structures' folder for the nbt file.
-        // The final path would look like 'resources/data/structure_tutorial/structures/run_down_house_left_side.nbt'
-        // The Jigsaw block in the structure will point to side_pool.json to spawn the other half of the house.
         "location": "mowziesmobs:monastery/monastery_wall_4way",
-
-        // Processor JSON files can be used to randomize or replace blocks dynamically. Here, we don't do any of that.
         "processors": "mowziesmobs:monastery",
-
-        // If set to 'terrain_matching', the house would be deformed to fit the change in land.
-        // That's best for roads so lets stay 'rigid' for now.
         "projection": "rigid",
-
-        // The kind of element we are spawning. This one is most likely what you want.
-        // There's 'minecraft:legacy_single_pool_element' but that swaps the behavior of
-        // Air and Structure Void in your piece as well as change the attachment mechanism.
-        // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
         "min_depth": 4,
         "bounds": {
-          "bounds_min_offset": [
-            0,
-            5,
-            0
-          ],
+          "bounds_min_offset": [ 0, 5, 0 ],
           "special_bounds": "wall",
           "check_bounds_min_offset": [ 0, -80, 0 ],
           "check_bounds_max_offset": [ 0, 80, 0 ]
         },
-        "max_allowed_paths": 3,
-        "forbidden_parents": [
-          "mowziesmobs:monastery/monastery_wall_4way",
-          "mowziesmobs:monastery/monastery_wall_3way",
-          "mowziesmobs:monastery/monastery_wall_corner",
-          "mowziesmobs:monastery/monastery_center_back_3way"
-        ],
-        "forbidden_parents_depth": 2
+        "conditions": {
+          "max_allowed_paths": 3,
+          "forbidden_parents": [
+            "mowziesmobs:monastery/monastery_wall_4way",
+            "mowziesmobs:monastery/monastery_wall_3way",
+            "mowziesmobs:monastery/monastery_wall_corner",
+            "mowziesmobs:monastery/monastery_center_back_3way"
+          ],
+          "forbidden_parents_depth": 2
+        }
       }
     },
 
+    // ****************************************************************************************************************
     // Gap elements
+    // ****************************************************************************************************************
     {
-      // How likely out of all the element for this one to be chosen.
       "weight": 1,
       "element": {
-        // The Identifier of the nbt file itself of the structure piece.
-        // Note, this will automatically check into the 'structures' folder for the nbt file.
-        // The final path would look like 'resources/data/structure_tutorial/structures/run_down_house_left_side.nbt'
-        // The Jigsaw block in the structure will point to side_pool.json to spawn the other half of the house.
         "location": "mowziesmobs:monastery/monastery_wall_connector_gap",
-        // Processor JSON files can be used to randomize or replace blocks dynamically. Here, we don't do any of that.
         "processors": "mowziesmobs:monastery",
-        // If set to 'terrain_matching', the house would be deformed to fit the change in land.
-        // That's best for roads so lets stay 'rigid' for now.
+
         "projection": "rigid",
-        // The kind of element we are spawning. This one is most likely what you want.
-        // There's 'minecraft:legacy_single_pool_element' but that swaps the behavior of
-        // Air and Structure Void in your piece as well as change the attachment mechanism.
-        // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
+
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
           "ignore_bounds": true,
@@ -204,12 +119,15 @@
           "bounds_min_offset": [ 0, 5, 1 ],
           "bounds_max_offset": [ 0, 0, -1 ]
         },
-        "forbidden_parents": [
-          "mowziesmobs:monastery/monastery_center"
-        ],
-        "forbidden_parents_depth": 3
+        "conditions": {
+          "forbidden_parents": [
+            "mowziesmobs:monastery/monastery_center"
+          ],
+          "forbidden_parents_depth": 3
+        }
       }
     },
+
     {
       "weight": 1,
       "element": {
@@ -227,30 +145,15 @@
       }
     },
 
+    // ****************************************************************************************************************
     // Room elements
+    // ****************************************************************************************************************
     {
-
-      // How likely out of all the element for this one to be chosen.
       "weight": 5,
       "element": {
-
-        // The Identifier of the nbt file itself of the structure piece.
-        // Note, this will automatically check into the 'structures' folder for the nbt file.
-        // The final path would look like 'resources/data/structure_tutorial/structures/run_down_house_left_side.nbt'
-        // The Jigsaw block in the structure will point to side_pool.json to spawn the other half of the house.
         "location": "mowziesmobs:monastery/monastery_room_base",
-
-        // Processor JSON files can be used to randomize or replace blocks dynamically. Here, we don't do any of that.
         "processors": "mowziesmobs:monastery",
-
-        // If set to 'terrain_matching', the house would be deformed to fit the change in land.
-        // That's best for roads so lets stay 'rigid' for now.
         "projection": "rigid",
-
-        // The kind of element we are spawning. This one is most likely what you want.
-        // There's 'minecraft:legacy_single_pool_element' but that swaps the behavior of
-        // Air and Structure Void in your piece as well as change the attachment mechanism.
-        // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
           "special_bounds": "tower",
@@ -261,32 +164,18 @@
           "interior_bounds_min_offset": [ 1, 0, 1 ],
           "interior_bounds_max_offset": [ -1, 0, -1 ]
         },
-        "max_height": -4
+        "conditions": {
+          "max_height": -4
+        }
       }
     },
-    {
 
-      // How likely out of all the element for this one to be chosen.
+    {
       "weight": 5,
       "element": {
-
-        // The Identifier of the nbt file itself of the structure piece.
-        // Note, this will automatically check into the 'structures' folder for the nbt file.
-        // The final path would look like 'resources/data/structure_tutorial/structures/run_down_house_left_side.nbt'
-        // The Jigsaw block in the structure will point to side_pool.json to spawn the other half of the house.
         "location": "mowziesmobs:monastery/monastery_room_top",
-
-        // Processor JSON files can be used to randomize or replace blocks dynamically. Here, we don't do any of that.
         "processors": "mowziesmobs:monastery",
-
-        // If set to 'terrain_matching', the house would be deformed to fit the change in land.
-        // That's best for roads so lets stay 'rigid' for now.
         "projection": "rigid",
-
-        // The kind of element we are spawning. This one is most likely what you want.
-        // There's 'minecraft:legacy_single_pool_element' but that swaps the behavior of
-        // Air and Structure Void in your piece as well as change the attachment mechanism.
-        // It's only for old Vanilla Jigsaw Structures so don't use it. Stick with non-legacy.
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
           "special_bounds": "tower",
@@ -295,7 +184,9 @@
           "interior_bounds_min_offset": [ 1, 0, 1 ],
           "interior_bounds_max_offset": [ -1, 0, -1 ]
         },
-        "min_height": 8
+        "conditions": {
+          "min_height": 8
+        }
       }
     }
   ]
