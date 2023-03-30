@@ -1,5 +1,5 @@
 {
-  "name": "mowziesmobs:monastery/interior/wall_pool",
+  "name": "mowziesmobs:monastery/interior/center_pool",
   "fallback": "minecraft:empty",
   "elements": [
 
@@ -79,7 +79,35 @@
           "needs_tag": "library"
         }
       }
-    }
+    },
 
+    // ****************************************************************************************************************
+    // Dojo
+    // ****************************************************************************************************************
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_dojo",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "dojo"
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_dummies",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "dojo"
+        }
+      }
+    }
   ]
 }
