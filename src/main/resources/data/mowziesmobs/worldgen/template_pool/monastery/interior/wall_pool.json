@@ -63,6 +63,45 @@
     {
       "weight": 1,
       "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_bookshelf_2",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "library"
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_bookshelf_3",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "library"
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_bookshelf_4",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "library"
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
         "location": "mowziesmobs:monastery/interior/monastery_desk",
         "processors": "mowziesmobs:monastery",
         "projection": "rigid",
@@ -200,6 +239,19 @@
       "weight": 1,
       "element": {
         "location": "mowziesmobs:monastery/interior/monastery_shrine",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "dojo"
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_weapons",
         "processors": "mowziesmobs:monastery",
         "projection": "rigid",
         "element_type": "mowziesmobs:mowzie_element",

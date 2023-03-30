@@ -6,6 +6,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 public class GongBlockEntity extends BlockEntity {
     public int ticks;
@@ -50,5 +52,14 @@ public class GongBlockEntity extends BlockEntity {
         }
 
         this.level.blockEvent(blockpos, this.getBlockState().getBlock(), 1, p_58835_.get3DDataValue());
+    }
+
+    @Override
+    public AABB getRenderBoundingBox() {
+        AABB bounds = super.getRenderBoundingBox();
+        bounds = bounds.expandTowards(new Vec3(facing.getClockWise().step()));
+        bounds = bounds.expandTowards(new Vec3(facing.getCounterClockWise().step()));
+        bounds = bounds.expandTowards(0, 2, 0);
+        return bounds;
     }
 }
