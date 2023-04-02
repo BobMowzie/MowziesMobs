@@ -138,6 +138,19 @@
       }
     },
 
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_desk_4",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "library"
+        }
+      }
+    },
+
     // ****************************************************************************************************************
     // Storage
     // ****************************************************************************************************************
