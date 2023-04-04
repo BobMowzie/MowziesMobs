@@ -58,7 +58,7 @@
     {
       "weight": 1,
       "element": {
-        "location": "mowziesmobs:monastery/monastery_tower_window2",
+        "location": "mowziesmobs:monastery/monastery_tower_window_tall",
         "processors": "mowziesmobs:monastery",
         "projection": "rigid",
         "element_type": "mowziesmobs:mowzie_element",
@@ -76,7 +76,7 @@
     {
       "weight": 3,
       "element": {
-        "location": "mowziesmobs:monastery/monastery_tower_window2",
+        "location": "mowziesmobs:monastery/monastery_tower_window_tall",
         "processors": "mowziesmobs:monastery",
         "projection": "rigid",
         "element_type": "mowziesmobs:mowzie_element",

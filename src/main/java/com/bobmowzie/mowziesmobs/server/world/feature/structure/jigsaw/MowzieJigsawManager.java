@@ -165,6 +165,8 @@ public class MowzieJigsawManager {
 
     private static Map<String, Integer> poolPlaceOrder = new HashMap<>();
     static {
+        poolPlaceOrder.put("mowziesmobs:monastery/interior/wall_corner_pool", -2);
+        poolPlaceOrder.put("mowziesmobs:monastery/interior/wall_middle_pool", -2);
         poolPlaceOrder.put("mowziesmobs:monastery/interior/center_pool", -3);
         poolPlaceOrder.put("mowziesmobs:monastery/interior/blocker_pool", -4);
         poolPlaceOrder.put("mowziesmobs:monastery/interior/tower_stairs_1_pool", -5);

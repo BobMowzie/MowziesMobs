@@ -67,6 +67,7 @@ public class BaseDecoProcessor extends StructureProcessor {
                     pos = pos.relative(Direction.UP, 1 - y);
 
                     if (levelReader.getBlockState(pos).getMaterial().isSolid()) continue;
+                    if (levelReader.getBlockState(pos.below()).getBlock() == Blocks.DARK_OAK_PLANKS) continue;
 
                     if (state.hasProperty(HorizontalDirectionalBlock.FACING)) {
                         if (state.getBlock() instanceof StairBlock) {

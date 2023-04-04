@@ -1,5 +1,5 @@
 {
-  "name": "mowziesmobs:monastery/interior/wall_pool",
+  "name": "mowziesmobs:monastery/interior/wall_corner_pool",
   "fallback": "minecraft:empty",
   "elements": [
 
@@ -41,6 +41,19 @@
           "bounds_max_offset": [ 0, -1, 0 ]
         },
         "gen_order": -5
+      }
+    },
+
+    {
+      "weight": 3,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_corner_elevated",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "inherits_tag": true
+        }
       }
     },
 
@@ -219,19 +232,6 @@
       }
     },
 
-    {
-      "weight": 1,
-      "element": {
-        "location": "mowziesmobs:monastery/interior/monastery_shelf",
-        "processors": "mowziesmobs:monastery",
-        "projection": "rigid",
-        "element_type": "mowziesmobs:mowzie_element",
-        "tags": {
-          "needs_tag": "storage"
-        }
-      }
-    },
-
     // ****************************************************************************************************************
     // Dojo
     // ****************************************************************************************************************
@@ -264,33 +264,20 @@
     {
       "weight": 1,
       "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_shrine",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "dojo"
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
         "location": "mowziesmobs:monastery/interior/monastery_weapons",
-        "processors": "mowziesmobs:monastery",
-        "projection": "rigid",
-        "element_type": "mowziesmobs:mowzie_element",
-        "tags": {
-          "needs_tag": "dojo"
-        }
-      }
-    },
-
-    {
-      "weight": 1,
-      "element": {
-        "location": "mowziesmobs:monastery/interior/monastery_punching_bag_wall",
-        "processors": "mowziesmobs:monastery",
-        "projection": "rigid",
-        "element_type": "mowziesmobs:mowzie_element",
-        "tags": {
-          "needs_tag": "dojo"
-        }
-      }
-    },
-
-    {
-      "weight": 1,
-      "element": {
-        "location": "mowziesmobs:monastery/interior/monastery_training_post_wall",
         "processors": "mowziesmobs:monastery",
         "projection": "rigid",
         "element_type": "mowziesmobs:mowzie_element",

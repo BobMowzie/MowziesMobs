@@ -41,13 +41,10 @@
         "projection": "rigid",
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
-          "bounds_min_offset": [ 0, 0, 2 ]
+          "bounds_min_offset": [ 0, 1, 2 ]
         },
-        "conditions": {
-          "forbidden_parents": [
-            "mowziesmobs:monastery/monastery_room_top"
-          ],
-          "forbidden_parents_depth": 2
+        "tags": {
+          "inherits_tag": true
         }
       }
     },
@@ -71,12 +68,122 @@
     {
       "weight": 1,
       "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_bookshelf_2",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "library"
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_bookshelf_3",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "library"
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_bookshelf_4",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "library"
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
         "location": "mowziesmobs:monastery/interior/monastery_desk",
         "processors": "mowziesmobs:monastery",
         "projection": "rigid",
         "element_type": "mowziesmobs:mowzie_element",
         "tags": {
           "needs_tag": "library"
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_desk_2",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "library"
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_desk_3",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "library"
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_desk_4",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "library"
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_statue_center",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "library"
+        },
+        "bounds": {
+          "bounds_min_offset": [0, 0, 1]
+        }
+      }
+    },
+
+    // ****************************************************************************************************************
+    // Storage
+    // ****************************************************************************************************************
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_shelf",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "storage"
         }
       }
     },
@@ -93,6 +200,10 @@
         "element_type": "mowziesmobs:mowzie_element",
         "tags": {
           "needs_tag": "dojo"
+        },
+        "bounds": {
+          "bounds_min_offset": [2, 0, 2],
+          "bounds_max_offset": [-2, 0, -2]
         }
       }
     },
@@ -101,6 +212,48 @@
       "weight": 1,
       "element": {
         "location": "mowziesmobs:monastery/interior/monastery_dummies",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "dojo"
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_statue_center",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "dojo"
+        },
+        "bounds": {
+          "bounds_min_offset": [0, 0, 1]
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_punching_bag_center",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "dojo"
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_training_post_center",
         "processors": "mowziesmobs:monastery",
         "projection": "rigid",
         "element_type": "mowziesmobs:mowzie_element",

@@ -1,5 +1,5 @@
 {
-  "name": "mowziesmobs:monastery/interior/wall_pool",
+  "name": "mowziesmobs:monastery/interior/wall_middle_pool",
   "fallback": "minecraft:empty",
   "elements": [
 
@@ -151,6 +151,22 @@
       }
     },
 
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_statue",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "library"
+        },
+        "bounds": {
+          "bounds_min_offset": [0, 0, 1]
+        }
+      }
+    },
+
     // ****************************************************************************************************************
     // Storage
     // ****************************************************************************************************************
@@ -264,33 +280,62 @@
     {
       "weight": 1,
       "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_shrine",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "dojo"
+        }
+      }
+    },
+
+    {
+      "weight": 2,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_punching_bag",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "dojo"
+        }
+      }
+    },
+
+    {
+      "weight": 2,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_training_post",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "dojo"
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_statue",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "tags": {
+          "needs_tag": "dojo"
+        },
+        "bounds": {
+          "bounds_min_offset": [0, 0, 1]
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
         "location": "mowziesmobs:monastery/interior/monastery_weapons",
-        "processors": "mowziesmobs:monastery",
-        "projection": "rigid",
-        "element_type": "mowziesmobs:mowzie_element",
-        "tags": {
-          "needs_tag": "dojo"
-        }
-      }
-    },
-
-    {
-      "weight": 1,
-      "element": {
-        "location": "mowziesmobs:monastery/interior/monastery_punching_bag_wall",
-        "processors": "mowziesmobs:monastery",
-        "projection": "rigid",
-        "element_type": "mowziesmobs:mowzie_element",
-        "tags": {
-          "needs_tag": "dojo"
-        }
-      }
-    },
-
-    {
-      "weight": 1,
-      "element": {
-        "location": "mowziesmobs:monastery/interior/monastery_training_post_wall",
         "processors": "mowziesmobs:monastery",
         "projection": "rigid",
         "element_type": "mowziesmobs:mowzie_element",
