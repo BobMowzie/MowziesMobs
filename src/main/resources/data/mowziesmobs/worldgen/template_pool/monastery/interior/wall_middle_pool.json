@@ -160,9 +160,6 @@
         "element_type": "mowziesmobs:mowzie_element",
         "tags": {
           "needs_tag": "library"
-        },
-        "bounds": {
-          "bounds_min_offset": [0, 0, 1]
         }
       }
     },
@@ -325,9 +322,6 @@
         "element_type": "mowziesmobs:mowzie_element",
         "tags": {
           "needs_tag": "dojo"
-        },
-        "bounds": {
-          "bounds_min_offset": [0, 0, 1]
         }
       }
     },
