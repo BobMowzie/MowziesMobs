@@ -317,6 +317,9 @@ public class MowzieJigsawManager {
                 return Integer.compare(i1, i2);
             });
             for(StructurePoolElement nextPieceCandidate : structurePoolElements) {
+
+//                if (nextPieceCandidate.toString().contains("room") || nextPieceCandidate.toString().contains("tower")) continue;
+
                 // If empty element, break from the loop and spawn nothing
                 if (nextPieceCandidate == FallbackPoolElement.INSTANCE) {
                     break;

@@ -29,6 +29,7 @@
         "projection": "rigid",
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
+          "special_bounds": "corner",
           "bounds_min_offset": [ 1, 5, 1 ],
           "check_bounds_min_offset": [ 0, -80, 0 ],
           "check_bounds_max_offset": [ 0, 80, 0 ]
@@ -109,9 +110,7 @@
       "element": {
         "location": "mowziesmobs:monastery/monastery_wall_connector_gap",
         "processors": "mowziesmobs:monastery",
-
         "projection": "rigid",
-
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
           "ignore_bounds": true,
@@ -140,6 +139,29 @@
           "needs_overlap_bounds": "tower",
           "bounds_min_offset": [ 0, 2, 0 ],
           "bounds_max_offset": [ 0, -2, 0 ]
+        },
+        "gen_order": 3
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/monastery_corner_gap",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "ignore_bounds": true,
+          "needs_overlap_bounds": "corner",
+          "bounds_min_offset": [ 0, 5, 1 ],
+          "bounds_max_offset": [ 0, 0, -1 ]
+        },
+        "conditions": {
+          "forbidden_parents": [
+            "mowziesmobs:monastery/monastery_center"
+          ],
+          "forbidden_parents_depth": 3
         },
         "gen_order": 3
       }
