@@ -1,0 +1,14 @@
+{
+  "name": "mowziesmobs:monastery/room_wall_center_pool",
+  "fallback": "mowziesmobs:monastery/fallback/room_wall_center_fallback_pool",
+  "elements": [
+
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "mowziesmobs:fallback_element"
+      }
+    }
+
+  ]
+}

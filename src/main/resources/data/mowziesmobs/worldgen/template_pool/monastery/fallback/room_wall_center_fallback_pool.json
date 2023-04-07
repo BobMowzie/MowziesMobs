@@ -1,0 +1,34 @@
+{
+  "name": "mowziesmobs:monastery/room_wall_center_fallback_pool",
+  "fallback": "mowziesmobs:monastery/fallback/room_wall_center_fallback_pool",
+  "elements": [
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "minecraft:empty",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+
+    {
+      "weight": 4,
+      "element": {
+        "location": "mowziesmobs:monastery/monastery_tower_window1_center",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "bounds_max_offset": [ 0, 0, -1 ]
+        },
+        "conditions": {
+          "min_height": -1
+        },
+        "gen_order": 3
+      }
+    }
+
+  ]
+}

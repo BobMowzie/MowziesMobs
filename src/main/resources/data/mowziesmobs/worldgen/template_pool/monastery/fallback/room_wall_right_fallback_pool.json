@@ -4,7 +4,7 @@
   "elements": [
 
     {
-      "weight": 1,
+      "weight": 3,
       "element": {
         "location": "mowziesmobs:monastery/monastery_tower_blank",
         "processors": "mowziesmobs:monastery",
@@ -17,9 +17,9 @@
     },
 
     {
-      "weight": 4,
+      "weight": 1,
       "element": {
-        "location": "mowziesmobs:monastery/monastery_tower_window1_right",
+        "location": "mowziesmobs:monastery/monastery_tower_window1",
         "processors": "mowziesmobs:monastery",
         "projection": "rigid",
         "element_type": "mowziesmobs:mowzie_element",

@@ -45,7 +45,7 @@
     },
 
     {
-      "weight": 3,
+      "weight": 5,
       "element": {
         "location": "mowziesmobs:monastery/interior/monastery_corner_elevated",
         "processors": "mowziesmobs:monastery",
