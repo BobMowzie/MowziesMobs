@@ -41,7 +41,8 @@
         "projection": "rigid",
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
-          "bounds_min_offset": [ 0, 1, 2 ]
+          "bounds_min_offset": [ 0, 1, 2 ],
+          "bounds_max_offset": [ 0, 0, -1 ]
         },
         "tags": {
           "inherits_tag": true

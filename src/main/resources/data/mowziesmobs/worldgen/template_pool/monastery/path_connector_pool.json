@@ -16,10 +16,6 @@
           "bounds_max_offset": [ 0, 0, -1 ],
           "check_bounds_min_offset": [ 0, -80, 0 ],
           "check_bounds_max_offset": [ 0, 80, 0 ]
-        },
-        "conditions": {
-          "min_height": -4,
-          "max_height": 8
         }
       }
     },
@@ -32,8 +28,8 @@
         "projection": "rigid",
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
-          "bounds_min_offset": [ 2, 0, -1 ],
-          "bounds_max_offset": [ -2, 0, 1 ],
+          "bounds_min_offset": [ 1, 0, 0 ],
+          "bounds_max_offset": [ -1, 0, 0 ],
           "check_bounds_min_offset": [ 0, -80, 0 ],
           "check_bounds_max_offset": [ 0, 80, 0 ]
         },
@@ -116,7 +112,8 @@
             {"tag": "storage", "weight": 1},
             {"tag": "library", "weight": 1}
           ]
-        }
+        },
+        "priority": -1
       }
     },
 
@@ -144,7 +141,8 @@
             {"tag": "storage", "weight": 1},
             {"tag": "library", "weight": 1}
           ]
-        }
+        },
+        "priority": -1
       }
     },
 
@@ -170,7 +168,8 @@
             {"tag": "storage", "weight": 1},
             {"tag": "library", "weight": 1}
           ]
-        }
+        },
+        "priority": -1
       }
     }
 

@@ -21,10 +21,44 @@
         "projection": "rigid",
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
-          "bounds_max_offset": [ 0, 0, -1 ]
+          "special_bounds": "window",
+          "bounds_max_offset": [ 0, 0, -1 ],
+          "check_bounds_max_offset": [ 0, 80, 0 ],
+          "place_bounds": false,
+          "forbidden_overlap_bounds": "window"
         },
         "conditions": {
           "min_height": -1
+        },
+        "gen_order": 3
+      }
+    },
+
+    {
+      "weight": 4,
+      "element": {
+        "location": "mowziesmobs:monastery/monastery_room_extension",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "special_bounds": "window",
+          "bounds_min_offset": [ 0, 1, 1 ],
+          "bounds_max_offset": [ 0, -1, -1 ],
+          "interior_bounds_min_offset": [ 1, 0, 1 ],
+          "interior_bounds_max_offset": [ -1, -1, 1 ],
+          "check_bounds_max_offset": [ 0, 80, 0 ],
+          "place_bounds": false,
+          "forbidden_overlap_bounds": "window"
+        },
+        "conditions": {
+          "min_height": -1,
+          "forbidden_parents": [
+            "mowziesmobs:monastery/monastery_room_extension"
+          ]
+        },
+        "tags": {
+          "inherits_tag": true
         },
         "gen_order": 3
       }

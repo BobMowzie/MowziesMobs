@@ -425,6 +425,13 @@ public class MowzieJigsawManager {
                                             continue;
                                         }
                                     }
+
+                                    Optional<String> forbiddenOverlapBounds = mowziePoolElement.bounds.forbiddenOverlapBounds;
+                                    if (forbiddenOverlapBounds.isPresent()) {
+                                        if (specialBounds.getValue().containsKey(forbiddenOverlapBounds.get()) && Shapes.joinIsNotEmpty(specialBounds.getValue().get(forbiddenOverlapBounds.get()), Shapes.create(AABB.of(nextPieceBoundingBoxPlaced).deflate(0.25D)), BooleanOp.AND)) {
+                                            continue;
+                                        }
+                                    }
                                 }
 
                                 int pieceGroundLevelDelta = pieceState.piece.getGroundLevelDelta();
