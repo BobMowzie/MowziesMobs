@@ -112,8 +112,7 @@
             {"tag": "storage", "weight": 1},
             {"tag": "library", "weight": 1}
           ]
-        },
-        "priority": -1
+        }
       }
     },
 

@@ -41,8 +41,7 @@
         "projection": "rigid",
         "element_type": "mowziesmobs:mowzie_element",
         "bounds": {
-          "bounds_min_offset": [ 0, 1, 2 ],
-          "bounds_max_offset": [ 0, 0, -1 ]
+          "bounds_min_offset": [ 0, 1, 2 ]
         },
         "tags": {
           "inherits_tag": true
@@ -193,7 +192,7 @@
     // Dojo
     // ****************************************************************************************************************
     {
-      "weight": 1,
+      "weight": 2,
       "element": {
         "location": "mowziesmobs:monastery/interior/monastery_dojo",
         "processors": "mowziesmobs:monastery",
@@ -247,6 +246,13 @@
         "element_type": "mowziesmobs:mowzie_element",
         "tags": {
           "needs_tag": "dojo"
+        },
+        "conditions": {
+          "forbidden_parents": [
+            "mowziesmobs:monastery/monastery_room_top",
+            "mowziesmobs:monastery/monastery_room"
+          ],
+          "forbidden_parents_depth": 2
         }
       }
     },

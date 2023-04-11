@@ -186,7 +186,7 @@ public class GongBlock extends BaseEntityBlock {
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @javax.annotation.Nullable LivingEntity entity, ItemStack itemStack) {
         super.setPlacedBy(level, pos, state, entity, itemStack);
         if (!level.isClientSide) {
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < 3; i++) {
                 BlockPos abovePos = pos.above(i);
                 BlockPos blockpos1 = abovePos.relative(state.getValue(FACING).getClockWise());
                 BlockPos blockpos2 = abovePos;

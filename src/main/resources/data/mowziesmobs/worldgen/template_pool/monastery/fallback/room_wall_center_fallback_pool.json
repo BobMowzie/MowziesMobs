@@ -35,7 +35,7 @@
     },
 
     {
-      "weight": 4,
+      "weight": 2,
       "element": {
         "location": "mowziesmobs:monastery/monastery_room_extension",
         "processors": "mowziesmobs:monastery",
