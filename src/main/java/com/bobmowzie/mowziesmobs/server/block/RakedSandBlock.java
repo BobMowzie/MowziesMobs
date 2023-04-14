@@ -53,7 +53,7 @@ public class RakedSandBlock extends SandBlock {
         }
     }
 
-    protected BlockState updateState(BlockState state, Level level, BlockPos pos, boolean p_49393_) {
+    public BlockState updateState(BlockState state, Level level, BlockPos pos, boolean p_49393_) {
         state = this.updateDir(level, pos, state, true);
 
         return state;

@@ -47,7 +47,7 @@ public class ItemSandRake extends Item {
                 BlockPlaceContext blockPlaceContext = new BlockPlaceContext(player, context.getHand(), context.getItemInHand(), new BlockHitResult(context.getClickLocation(), context.getClickedFace(), context.getClickedPos(), context.isInside()));
                 BlockState blockstate1 = BlockHandler.RAKED_SAND.get().getStateForPlacement(blockPlaceContext);
                 BlockState blockstate2 = null;
-                if (blockstate.is(Tags.Blocks.SAND_COLORLESS) && level.isEmptyBlock(blockpos.above())) {
+                if (blockstate.is(Tags.Blocks.SAND_COLORLESS)) {
                     level.playSound(player, blockpos, MMSounds.BLOCK_RAKE_SAND.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
                     blockstate2 = blockstate1;
                 }
@@ -56,6 +56,7 @@ public class ItemSandRake extends Item {
                     if (!level.isClientSide) {
                         level.setBlock(blockpos, blockstate2, 11);
                         BlockHandler.RAKED_SAND.get().onPlace(blockstate2, level, blockpos, blockstate, false);
+                        BlockHandler.RAKED_SAND.get().updateState(blockstate2, level, blockpos, false);
                         context.getItemInHand().hurtAndBreak(1, player, (p_43122_) -> {
                             p_43122_.broadcastBreakEvent(context.getHand());
                         });

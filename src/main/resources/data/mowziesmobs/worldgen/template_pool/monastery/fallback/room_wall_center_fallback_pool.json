@@ -44,7 +44,7 @@
         "bounds": {
           "special_bounds": "window",
           "bounds_min_offset": [ 0, 1, 1 ],
-          "bounds_max_offset": [ 0, -1, -1 ],
+          "bounds_max_offset": [ 0, -1, -2 ],
           "interior_bounds_min_offset": [ 1, 0, 1 ],
           "interior_bounds_max_offset": [ -1, -1, 1 ],
           "check_bounds_max_offset": [ 0, 80, 0 ],
