@@ -22,10 +22,12 @@ import java.util.Random;
 
 public class RakedSandBlock extends SandBlock {
     public static final EnumProperty<RakedSandShape> SHAPE = EnumProperty.create("shape", RakedSandShape.class);
+    public final BlockState fallingState;
 
-    public RakedSandBlock(int dustColor, Properties properties) {
+    public RakedSandBlock(int dustColor, Properties properties, BlockState fallingState) {
         super(dustColor, properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(SHAPE, RakedSandShape.NORTH_SOUTH));
+        this.fallingState = fallingState;
     }
 
     public void tick(BlockState blockState, ServerLevel level, BlockPos pos, Random random) {

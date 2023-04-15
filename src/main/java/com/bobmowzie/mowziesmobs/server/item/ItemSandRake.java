@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
+import com.bobmowzie.mowziesmobs.server.block.RakedSandBlock;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,6 +18,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.Tags;
@@ -45,21 +47,26 @@ public class ItemSandRake extends Item {
             Player player = context.getPlayer();
             if (player != null) {
                 BlockPlaceContext blockPlaceContext = new BlockPlaceContext(player, context.getHand(), context.getItemInHand(), new BlockHitResult(context.getClickLocation(), context.getClickedFace(), context.getClickedPos(), context.isInside()));
-                BlockState blockstate1 = BlockHandler.RAKED_SAND.get().getStateForPlacement(blockPlaceContext);
-                BlockState blockstate2 = null;
+                RakedSandBlock origBlock = null;
                 if (blockstate.is(Tags.Blocks.SAND_COLORLESS)) {
-                    level.playSound(player, blockpos, MMSounds.BLOCK_RAKE_SAND.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
-                    blockstate2 = blockstate1;
+                    origBlock = BlockHandler.RAKED_SAND.get();
+                }
+                else if (blockstate.is(Tags.Blocks.SAND_RED)) {
+                    origBlock = BlockHandler.RED_RAKED_SAND.get();
                 }
 
-                if (blockstate2 != null) {
-                    if (!level.isClientSide) {
-                        level.setBlock(blockpos, blockstate2, 11);
-                        BlockHandler.RAKED_SAND.get().onPlace(blockstate2, level, blockpos, blockstate, false);
-                        BlockHandler.RAKED_SAND.get().updateState(blockstate2, level, blockpos, false);
-                        context.getItemInHand().hurtAndBreak(1, player, (p_43122_) -> {
-                            p_43122_.broadcastBreakEvent(context.getHand());
-                        });
+                if (origBlock != null) {
+                    BlockState blockState = origBlock.getStateForPlacement(blockPlaceContext);
+                    if (blockState != null) {
+                        level.playSound(player, blockpos, MMSounds.BLOCK_RAKE_SAND.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                        if (!level.isClientSide) {
+                            level.setBlock(blockpos, blockState, 11);
+                            origBlock.onPlace(blockState, level, blockpos, blockstate, false);
+                            origBlock.updateState(blockState, level, blockpos, false);
+                            context.getItemInHand().hurtAndBreak(1, player, (p_43122_) -> {
+                                p_43122_.broadcastBreakEvent(context.getHand());
+                            });
+                        }
                     }
 
                     return InteractionResult.sidedSuccess(level.isClientSide);
