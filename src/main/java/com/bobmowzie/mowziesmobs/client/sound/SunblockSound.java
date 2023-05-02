@@ -44,7 +44,7 @@ public class SunblockSound extends AbstractTickableSoundInstance {
             boolean barakoaHealing = false;
             if (entity instanceof EntityBarakoa) {
                 EntityBarakoa barakoa = (EntityBarakoa) entity;
-                barakoaHealing = barakoa.getAnimation() == EntityBarakoa.HEAL_LOOP_ANIMATION || barakoa.getAnimation() == EntityBarakoa.HEAL_START_ANIMATION;
+//                barakoaHealing = barakoa.getAnimation() == EntityBarakoa.HEAL_LOOP_ANIMATION || barakoa.getAnimation() == EntityBarakoa.HEAL_START_ANIMATION; TODO
             }
             boolean hasSunblock = entity.hasEffect(EffectHandler.SUNBLOCK);
             active = barakoaHealing || hasSunblock;

@@ -2,16 +2,23 @@ package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
+import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleRibbon;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.RibbonComponent;
+import com.bobmowzie.mowziesmobs.server.ability.Ability;
+import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
+import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
+import com.bobmowzie.mowziesmobs.server.ability.abilities.SimpleAnimationAbility;
 import com.bobmowzie.mowziesmobs.server.ai.EntityAIAvoidEntity;
+import com.bobmowzie.mowziesmobs.server.ai.UseAbilityAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.*;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.*;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
+import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
@@ -20,6 +27,8 @@ import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
+import com.mojang.math.Vector3d;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -55,20 +64,17 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public abstract class EntityBarakoa extends MowzieLLibraryEntity implements RangedAttackMob {
-    public static final Animation DIE_ANIMATION = Animation.create(70);
-    public static final Animation HURT_ANIMATION = Animation.create(10);
-    public static final Animation ATTACK_ANIMATION = Animation.create(19);
-    public static final Animation PROJECTILE_ATTACK_ANIMATION = Animation.create(20);
-    public static final Animation IDLE_ANIMATION = Animation.create(35);
-    public static final Animation ACTIVATE_ANIMATION = Animation.create(25);
-    public static final Animation DEACTIVATE_ANIMATION = Animation.create(26);
-    public static final Animation BLOCK_ANIMATION = Animation.create(10);
+public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedAttackMob {
+    public static final AbilityType<LivingEntity, SimpleAnimationAbility> DIE_ABILITY = new AbilityType<>("barakoa_die", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_die", 70));
+    public static final AbilityType<LivingEntity, SimpleAnimationAbility> HURT_ABILITY = new AbilityType<>("barakoa_hurt", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_hurt", 10));
+    public static final AbilityType<LivingEntity, SimpleAnimationAbility> ATTACK_ABILITY = new AbilityType<>("barakoa_attack", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_attack", 19));
+    public static final AbilityType<LivingEntity, SimpleAnimationAbility> IDLE_ABILITY = new AbilityType<>("barakoa_idle", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_idle", 35));
+    public static final AbilityType<LivingEntity, SimpleAnimationAbility> ACTIVATE_ABILITY = new AbilityType<>("barakoa_activate", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_activate", 25));
+    public static final AbilityType<LivingEntity, SimpleAnimationAbility> DEACTIVATE_ABILITY = new AbilityType<>("barakoa_deactivate", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_deactivate", 26));
+    public static final AbilityType<LivingEntity, SimpleAnimationAbility> BLOCK_ABILITY = new AbilityType<>("barakoa_block", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_block", 10));
 
-    public static final Animation TELEPORT_ANIMATION = Animation.create(27);
-    public static final Animation HEAL_START_ANIMATION = Animation.create(25);
-    public static final Animation HEAL_LOOP_ANIMATION = Animation.create(20);
-    public static final Animation HEAL_STOP_ANIMATION = Animation.create(6);
+    public static final AbilityType<LivingEntity, SimpleAnimationAbility> TELEPORT_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_teleport", 27));
+    public static final AbilityType<LivingEntity, SimpleAnimationAbility> HEAL_ABILITY = new AbilityType<>("barakoa_heal", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_heal", 25));
 
     private static final EntityDataAccessor<Boolean> DANCING = SynchedEntityData.defineId(EntityBarakoa.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> MASK = SynchedEntityData.defineId(EntityBarakoa.class, EntityDataSerializers.INT);
@@ -91,6 +97,8 @@ public abstract class EntityBarakoa extends MowzieLLibraryEntity implements Rang
     @OnlyIn(Dist.CLIENT)
     public Vec3[] staffPos;
     @OnlyIn(Dist.CLIENT)
+    public Vec3[] headPos;
+    @OnlyIn(Dist.CLIENT)
     public Vec3[] barakoPos;
     @OnlyIn(Dist.CLIENT)
     public Vec3[] myPos;
@@ -110,6 +118,7 @@ public abstract class EntityBarakoa extends MowzieLLibraryEntity implements Rang
             staffPos = new Vec3[]{new Vec3(0, 0, 0)};
             barakoPos = new Vec3[]{new Vec3(0, 0, 0)};
             myPos = new Vec3[]{new Vec3(0, 0, 0)};
+            headPos = new Vec3[]{new Vec3(0, 0, 0)};
         }
     }
 
@@ -118,21 +127,14 @@ public abstract class EntityBarakoa extends MowzieLLibraryEntity implements Rang
         super.registerGoals();
         setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, -8);
         goalSelector.addGoal(0, new FloatGoal(this));
-        goalSelector.addGoal(0, new AnimationActivateAI<>(this, ACTIVATE_ANIMATION));
-        goalSelector.addGoal(0, new AnimationDeactivateAI<>(this, DEACTIVATE_ANIMATION));
-        goalSelector.addGoal(1, new AnimationDieAI<>(this));
+        goalSelector.addGoal(0, new UseAbilityAI<>(this, ACTIVATE_ABILITY));
+        goalSelector.addGoal(0, new UseAbilityAI<>(this, DEACTIVATE_ABILITY));
+        goalSelector.addGoal(1, new UseAbilityAI<>(this, DIE_ABILITY)); // switch to die ai class
+        goalSelector.addGoal(3, new UseAbilityAI<>(this, HURT_ABILITY)); // switch to hurt ai class
         goalSelector.addGoal(3, new EntityAIAvoidEntity<>(this, EntitySunstrike.class, EntitySunstrike::isStriking, 3, 0.7F));
-        goalSelector.addGoal(2, new AnimationBlockAI<>(this, BLOCK_ANIMATION));
-        goalSelector.addGoal(2, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_BARAKOA_SWING.get(), null, 1, 2.5f, 1, 9, true));
-        goalSelector.addGoal(2, new AnimationProjectileAttackAI<EntityBarakoa>(this, PROJECTILE_ATTACK_ANIMATION, 9, MMSounds.ENTITY_BARAKOA_BLOWDART.get(), true) {
-            @Override
-            public void start() {
-                super.start();
-                playSound(MMSounds.ENTITY_BARAKOA_INHALE.get(), 0.7f, 1.2f);
-            }
-        });
-        goalSelector.addGoal(3, new AnimationTakeDamage<>(this));
-        goalSelector.addGoal(4, new SimpleAnimationAI<EntityBarakoa>(this, IDLE_ANIMATION, false, true) {
+//        goalSelector.addGoal(2, new AnimationBlockAI<>(this, BLOCK_ANIMATION));
+//        goalSelector.addGoal(2, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_BARAKOA_SWING.get(), null, 1, 2.5f, 1, 9, true));
+        /*goalSelector.addGoal(4, new SimpleAnimationAI<EntityBarakoa>(this, IDLE_ABILITY, false, true) {
             private LivingEntity talkTarget;
             private final TargetingConditions pred = TargetingConditions.forNonCombat().range(8);
 
@@ -153,7 +155,7 @@ public abstract class EntityBarakoa extends MowzieLLibraryEntity implements Rang
                 if (talkTarget != null) this.entity.lookControl.setLookAt(this.talkTarget, (float)this.entity.getMaxHeadYRot(), (float)this.entity.getMaxHeadXRot());
             }
         });
-        goalSelector.addGoal(2, new SimpleAnimationAI<EntityBarakoa>(this, TELEPORT_ANIMATION, true, false) {
+        goalSelector.addGoal(2, new SimpleAnimationAI<EntityBarakoa>(this, TELEPORT_ABILITY, true, false) {
             private Vec3 teleportStart;
 
             @Override
@@ -195,7 +197,7 @@ public abstract class EntityBarakoa extends MowzieLLibraryEntity implements Rang
                     EffectHandler.addOrCombineEffect(entity, MobEffects.GLOWING, 5, 0, false, false);
                 }
                 if (sunblocker.getAnimationTick() == 23)
-                    AnimationHandler.INSTANCE.sendAnimationMessage(entity, HEAL_LOOP_ANIMATION);
+                    AbilityHandler.INSTANCE.sendAbilityMessage(entity, HEAL_LOOP_ANIMATION);
             }
         });
         goalSelector.addGoal(2, new SimpleAnimationAI<EntityBarakoa>(this, HEAL_STOP_ANIMATION, false, false));
@@ -209,12 +211,12 @@ public abstract class EntityBarakoa extends MowzieLLibraryEntity implements Rang
                     sunblocker.getLookControl().setLookAt(sunblocker.getTarget(), entity.getMaxHeadYRot(), entity.getMaxHeadXRot());
                 }
                 else {
-                    AnimationHandler.INSTANCE.sendAnimationMessage(entity, HEAL_STOP_ANIMATION);
+                    AbilityHandler.INSTANCE.sendAbilityMessage(entity, HEAL_STOP_ANIMATION);
                 }
                 if (getAnimationTick() == 19)
-                    AnimationHandler.INSTANCE.sendAnimationMessage(entity, HEAL_LOOP_ANIMATION);
+                    AbilityHandler.INSTANCE.sendAbilityMessage(entity, HEAL_LOOP_ANIMATION);
             }
-        });
+        });*/
         goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.4));
         goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         goalSelector.addGoal(8, new LookAtPlayerGoal(this, EntityBarakoa.class, 8.0F));
@@ -252,18 +254,18 @@ public abstract class EntityBarakoa extends MowzieLLibraryEntity implements Rang
     }
 
     @Override
-    public Animation getDeathAnimation() {
-        return DIE_ANIMATION;
+    public AbilityType getDeathAbility() {
+        return DIE_ABILITY;
     }
 
     @Override
-    public Animation getHurtAnimation() {
-        return HURT_ANIMATION;
+    public AbilityType getHurtAbility() {
+        return HURT_ABILITY;
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        if (getAnimation() == DEACTIVATE_ANIMATION) {
+        if (getActiveAbilityType() == DEACTIVATE_ABILITY) {
             return null;
         }
         if (!active || danceTimer != 0 || (getEntitiesNearby(EntityBarakoa.class, 8, 3, 8, 8).isEmpty() && getEntitiesNearby(EntityBarako.class, 8, 3, 8, 8).isEmpty() && getEntitiesNearby(Player.class, 8, 3, 8, 8).isEmpty())) {
@@ -273,7 +275,7 @@ public abstract class EntityBarakoa extends MowzieLLibraryEntity implements Rang
             int i = Mth.nextInt(random, 0, 11);
             if (i < MMSounds.ENTITY_BARAKOA_TALK.size()) {
                 playSound(MMSounds.ENTITY_BARAKOA_TALK.get(i).get(), 1, 1.5f);
-                AnimationHandler.INSTANCE.sendAnimationMessage(this, IDLE_ANIMATION);
+                AbilityHandler.INSTANCE.sendAbilityMessage(this, IDLE_ABILITY);
             }
         } else {
             int i = Mth.nextInt(random, 0, 7);
@@ -310,18 +312,15 @@ public abstract class EntityBarakoa extends MowzieLLibraryEntity implements Rang
             }
             if (random.nextInt(80) == 0 && timeSinceAttack == 80 && getSensing().hasLineOfSight(getTarget())) {
                 attacking = true;
-                if (getAnimation() == NO_ANIMATION && getWeapon() == 0) {
+                if (getActiveAbility() == null && getWeapon() == 0) {
                     getNavigation().moveTo(getTarget(), 0.5);
                 }
             }
-            if (attacking && getAnimation() == NO_ANIMATION && getSensing().hasLineOfSight(getTarget())) {
+            if (attacking && getActiveAbility() == null && getSensing().hasLineOfSight(getTarget())) {
                 if (targetDistance <= 2.5 && getWeapon() == 0) {
                     attacking = false;
                     timeSinceAttack = 0;
-                    AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_ANIMATION);
-                }
-                if (getWeapon() == 1) {
-                    AnimationHandler.INSTANCE.sendAnimationMessage(this, PROJECTILE_ATTACK_ANIMATION);
+                    AbilityHandler.INSTANCE.sendAbilityMessage(this, ATTACK_ABILITY);
                 }
             }
         } else {
@@ -336,6 +335,10 @@ public abstract class EntityBarakoa extends MowzieLLibraryEntity implements Rang
         }
         if (reason == MobSpawnType.COMMAND && !(this instanceof EntityBarakoana) && !(this instanceof EntityBarakoaya) && !(this instanceof EntityBarakoayaToPlayer)) setMask(MaskType.from(Mth.nextInt(random, 1, 4)));
         return super.finalizeSpawn(world, difficulty, reason, livingData, compound);
+    }
+
+    public int getAnimationTick() {
+        return 0;
     }
 
     protected boolean canHoldVaryingWeapons() {
@@ -367,6 +370,28 @@ public abstract class EntityBarakoa extends MowzieLLibraryEntity implements Rang
         doWalk.updatePrevTimer();
         dancing.updatePrevTimer();
         super.tick();
+
+        if (level.isClientSide()) {
+            if (this.tickTimer() % 10 == 1) {
+                AdvancedParticleBase.spawnParticle(level, ParticleHandler.SUN.get(), getX(), getY(), getZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 10, true, false, new ParticleComponent[]{
+                        new ParticleComponent.PinLocation(headPos),
+                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.oscillate(13, 15, 12), false)
+                });
+            }
+            if (headPos.length > 0 && headPos[0] != null) {
+                if (random.nextFloat() < 0.3F) {
+                    int amount = random.nextInt(2) + 1;
+                    while (amount-- > 0) {
+                        float theta = random.nextFloat() * MathUtils.TAU;
+                        float r = random.nextFloat() * 0.4F;
+                        float x = r * Mth.cos(theta);
+                        float z = r * Mth.sin(theta);
+                        level.addParticle(ParticleTypes.LARGE_SMOKE, headPos[0].x() + x, headPos[0].y() + 0.1, headPos[0].z() + z, 0, 0, 0);
+                    }
+                }
+            }
+        }
+
         if (!level.isClientSide && active && !getActive()) {
             setActive(true);
         }
@@ -375,14 +400,14 @@ public abstract class EntityBarakoa extends MowzieLLibraryEntity implements Rang
             getNavigation().stop();
             setYRot(yRotO);
             yBodyRot = getYRot();
-            if ((onGround || isInWater() || isInLava()) && getAnimation() == NO_ANIMATION) {
-                AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);
+            if ((onGround || isInWater() || isInLava()) && getActiveAbility() == null) {
+                AbilityHandler.INSTANCE.sendAbilityMessage(this, ACTIVATE_ABILITY);
                 playSound(MMSounds.ENTITY_BARAKOA_EMERGE.get(), 1, 1);
             }
             return;
         }
         updateAttackAI();
-        if (getAnimation() != NO_ANIMATION) {
+        if (getActiveAbility() != null) {
             getNavigation().stop();
         }
 
@@ -391,7 +416,7 @@ public abstract class EntityBarakoa extends MowzieLLibraryEntity implements Rang
             danceTimer++;
         }
 
-        if (getAnimation() == NO_ANIMATION || getAnimation() == IDLE_ANIMATION) {
+        if (getActiveAbility() == null || getActiveAbilityType() == IDLE_ABILITY) {
             doWalk.increaseTimer();
         } else {
             doWalk.decreaseTimer();
@@ -404,11 +429,11 @@ public abstract class EntityBarakoa extends MowzieLLibraryEntity implements Rang
             danceTimer = 0;
             dancing.decreaseTimer();
         }
-        if (!level.isClientSide && getAnimation() == NO_ANIMATION && danceTimer == 0 && random.nextInt(800) == 0 && getTarget() != null) {
+        if (!level.isClientSide && getActiveAbility() == null && danceTimer == 0 && random.nextInt(800) == 0 && getTarget() != null) {
             setDancing(true);
             playSound(MMSounds.ENTITY_BARAKOA_BATTLECRY_2.get(), 1.2f, 1.5f);
         }
-        if (getAnimation() != NO_ANIMATION) {
+        if (getActiveAbility() != null) {
             danceTimer = 0;
         }
 
@@ -422,21 +447,21 @@ public abstract class EntityBarakoa extends MowzieLLibraryEntity implements Rang
             cryDelay = Mth.nextInt(random, -15, 30);
         }
 
-        if (getAnimation() == ATTACK_ANIMATION && getAnimationTick() == 5) {
+        if (getActiveAbilityType() == ATTACK_ABILITY && getAnimationTick() == 5) {
             playSound(MMSounds.ENTITY_BARAKOA_SHOUT.get(), 1, 1.1f);
         }
-//        if (getAnimation() == PROJECTILE_ATTACK_ANIMATION && getAnimationTick() == 1) {
+//        if (getActiveAbility() == PROJECTILE_ATTACK_ANIMATION && getAnimationTick() == 1) {
 //            playSound(MMSounds.ENTITY_BARAKOA_INHALE, 0.7f, 1.2f);
 //        }
 
-        if (level.isClientSide && getAnimation() == HEAL_START_ANIMATION && getAnimationTick() == 22 && staffPos != null && staffPos.length >= 1)
+        if (level.isClientSide && getActiveAbilityType() == HEAL_ABILITY && getAnimationTick() == 22 && staffPos != null && staffPos.length >= 1)
             staffPos[0] = position().add(0, getEyeHeight(), 0);
-        if ((getAnimation() == HEAL_START_ANIMATION && getAnimationTick() >= 23) || getAnimation() == HEAL_LOOP_ANIMATION) {
+        if ((getActiveAbilityType() == HEAL_ABILITY && getAnimationTick() >= 23)) {
             spawnHealParticles();
             sunBlockTarget();
         }
 
-        if (getAnimation() == TELEPORT_ANIMATION) {
+        if (getActiveAbilityType() == TELEPORT_ABILITY) {
             if (level.isClientSide) {
                 myPos[0] = position().add(0, 1.2f, 0);
                 if (getAnimationTick() == 5) {
@@ -482,17 +507,16 @@ public abstract class EntityBarakoa extends MowzieLLibraryEntity implements Rang
             hurt(DamageSource.indirectMagic(this, null), getHealth());
         }
 
-//        if (getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, TELEPORT_ANIMATION);
+//        if (getActiveAbility() == NO_ANIMATION) AbilityHandler.INSTANCE.sendAbilityMessage(this, TELEPORT_ANIMATION);
     }
 
-    @Override
-    protected void onAnimationFinish(Animation animation) {
-        if (animation == ACTIVATE_ANIMATION) {
+    protected void onAnimationFinish(Ability ability) {
+        if (ability.getAbilityType() == ACTIVATE_ABILITY) {
             setActive(true);
             active = true;
         }
-        if (animation == DEACTIVATE_ANIMATION) {
-            discard() ;
+        if (ability.getAbilityType() == DEACTIVATE_ABILITY) {
+            discard();
             ItemBarakoaMask mask = ItemHandler.BARAKOA_MASK_FURY;
             switch (getMask()) {
                 case BLISS:
@@ -632,7 +656,7 @@ public abstract class EntityBarakoa extends MowzieLLibraryEntity implements Rang
 
     @Override
     public boolean hurt(DamageSource source, float damage) {
-        if (getAnimation() == DEACTIVATE_ANIMATION) {
+        if (getActiveAbilityType() == DEACTIVATE_ABILITY) {
             return false;
         }
         Entity entity = source.getEntity();
@@ -651,10 +675,10 @@ public abstract class EntityBarakoa extends MowzieLLibraryEntity implements Rang
             float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
             angleFlag = (entityRelativeAngle <= arc / 2.0 && entityRelativeAngle >= -arc / 2.0) || (entityRelativeAngle >= 360 - arc / 2.0 || entityRelativeAngle <= -arc + 90 / 2.0);
         }
-        if (angleFlag && getMask().canBlock && entity instanceof LivingEntity && (getAnimation() == NO_ANIMATION || getAnimation() == HURT_ANIMATION || getAnimation() == BLOCK_ANIMATION) && !source.isBypassArmor()) {
+        if (angleFlag && getMask().canBlock && entity instanceof LivingEntity && (getActiveAbility() == null || getActiveAbilityType() == HURT_ABILITY || getActiveAbilityType() == BLOCK_ABILITY) && !source.isBypassArmor()) {
             blockingEntity = (LivingEntity) entity;
             playSound(SoundEvents.SHIELD_BLOCK, 0.3F, 1.5F);
-            AnimationHandler.INSTANCE.sendAnimationMessage(this, BLOCK_ANIMATION);
+            AbilityHandler.INSTANCE.sendAbilityMessage(this, BLOCK_ABILITY);
             return false;
         }
         return super.hurt(source, damage);
@@ -684,7 +708,6 @@ public abstract class EntityBarakoa extends MowzieLLibraryEntity implements Rang
         return active;
     }
 
-
     @Override
     public boolean causeFallDamage(float distance, float damageMultipler, DamageSource source) {
         if (active) {
@@ -696,11 +719,6 @@ public abstract class EntityBarakoa extends MowzieLLibraryEntity implements Rang
     @Override
     protected ConfigHandler.CombatConfig getCombatConfig() {
         return ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig;
-    }
-
-    @Override
-    public Animation[] getAnimations() {
-        return new Animation[]{DIE_ANIMATION, HURT_ANIMATION, ATTACK_ANIMATION, PROJECTILE_ATTACK_ANIMATION, BLOCK_ANIMATION, IDLE_ANIMATION, ACTIVATE_ANIMATION, DEACTIVATE_ANIMATION, TELEPORT_ANIMATION, HEAL_LOOP_ANIMATION, HEAL_START_ANIMATION, HEAL_STOP_ANIMATION};
     }
 
     public boolean isBarakoDevoted() {
@@ -755,5 +773,10 @@ public abstract class EntityBarakoa extends MowzieLLibraryEntity implements Rang
 
     protected void sunBlockTarget() {
 
+    }
+
+    @Override
+    public AbilityType<?, ?>[] getAbilities() {
+        return new AbilityType[] { DIE_ABILITY, HURT_ABILITY, ATTACK_ABILITY, IDLE_ABILITY, ACTIVATE_ABILITY, DEACTIVATE_ABILITY, BLOCK_ABILITY, TELEPORT_ABILITY, HEAL_ABILITY };
     }
 }

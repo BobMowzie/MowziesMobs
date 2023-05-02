@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
+import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
@@ -88,8 +89,8 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<Player> {
     }
 
     private void deactivate() {
-        if (getActive() && getAnimation() != DEACTIVATE_ANIMATION) {
-            AnimationHandler.INSTANCE.sendAnimationMessage(this, DEACTIVATE_ANIMATION);
+        if (getActive() && getActiveAbilityType() != DEACTIVATE_ABILITY) {
+            AbilityHandler.INSTANCE.sendAbilityMessage(this, DEACTIVATE_ABILITY);
             playSound(MMSounds.ENTITY_BARAKOA_RETRACT.get(), 1, 1);
         }
     }

@@ -32,12 +32,12 @@ public final class GuiBarakoayaTrade extends AbstractContainerScreen<ContainerBa
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int state) {
-        if (barakoaya.getAnimation() == IAnimatedEntity.NO_ANIMATION) {
-            if (isHovering(13, 23, 8, 14, mouseX, mouseY)) {
-                barakoaya.setAnimation(EntityBarakoaVillager.ATTACK_ANIMATION);
-                barakoaya.setAnimationTick(3);
-            }
-        }
+//        if (barakoaya.getAnimation() == IAnimatedEntity.NO_ANIMATION) {
+//            if (isHovering(13, 23, 8, 14, mouseX, mouseY)) {
+//                barakoaya.setAnimation(EntityBarakoaVillager.ATTACK_ANIMATION);
+//                barakoaya.setAnimationTick(3);
+//            }
+//        } TODO
         return super.mouseReleased(mouseX, mouseY, state);
     }
 

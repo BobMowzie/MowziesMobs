@@ -91,6 +91,16 @@ public class EntitySculptor extends MowzieGeckoEntity {
     }
 
     @Override
+    public AbilityType getHurtAbility() {
+        return null;
+    }
+
+    @Override
+    public AbilityType getDeathAbility() {
+        return null;
+    }
+
+    @Override
     protected void registerGoals() {
         super.registerGoals();
         goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));

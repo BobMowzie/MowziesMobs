@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
+import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ai.AvoidProjectilesGoal;
 import com.bobmowzie.mowziesmobs.server.ai.NearestAttackableTargetPredicateGoal;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
@@ -49,7 +50,7 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
                 if (this.level.getDifficulty() == Difficulty.PEACEFUL) return false;
                 if (getTarget() == target) return true;
                 if (getTarget() instanceof EntityBarako) return false;
-                if (getAnimation() != NO_ANIMATION) return false;
+                if (getActiveAbilityType() != null) return false;
                 ItemStack headArmorStack = ((Player) target).getInventory().armor.get(3);
                 return !(headArmorStack.getItem() instanceof BarakoaMask) || target == getMisbehavedPlayer();
             }
@@ -63,7 +64,7 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
         });
         this.goalSelector.addGoal(1, new TeleportToSafeSpotGoal(this));
         this.goalSelector.addGoal(1, new AvoidProjectilesGoal(this, Projectile.class, target -> {
-            return getAnimation() == HEAL_LOOP_ANIMATION || getAnimation() == HEAL_START_ANIMATION;
+            return getActiveAbilityType() == HEAL_ABILITY;
         }, 3.0F, 0.8D, 0.6D));
     }
 
@@ -101,9 +102,9 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
     public void tick() {
         super.tick();
         if (active && teleportAttempts > 3 && (getTarget() == null || !getTarget().isAlive())) hasTriedOrSucceededTeleport = true;
-        if (getAnimation() == HEAL_LOOP_ANIMATION && !canHeal(getTarget())) AnimationHandler.INSTANCE.sendAnimationMessage(this, HEAL_STOP_ANIMATION);
+//        if (getActiveAbilityType() == HEAL_LOOP_ABILITY && !canHeal(getTarget())) AbilityHandler.INSTANCE.sendAbilityMessage(this, HEAL_STOP_ABILITY); TODO
 
-//        if (getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, HEAL_START_ANIMATION);
+//        if (getActiveAbilityType() == NO_ABILITY) AbilityHandler.INSTANCE.sendAbilityMessage(this, HEAL_START_ABILITY);
     }
 
     @Override
@@ -145,7 +146,7 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
         @Override
         public boolean canUse() {
             if (!entity.active) return false;
-            if (entity.getAnimation() == TELEPORT_ANIMATION) return false;
+            if (entity.getActiveAbilityType() == TELEPORT_ABILITY) return false;
             if (entity.getTarget() != null && entity.canHeal(entity.getTarget()) && (
                     (entity.targetDistance >= 0 && entity.targetDistance < 7) || !hasTriedOrSucceededTeleport
             )) {
@@ -158,7 +159,7 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
         public void start() {
             super.start();
             hasTriedOrSucceededTeleport = true;
-            AnimationHandler.INSTANCE.sendAnimationMessage(entity, TELEPORT_ANIMATION);
+            AbilityHandler.INSTANCE.sendAbilityMessage(entity, TELEPORT_ABILITY);
         }
 
         private boolean findTeleportLocation() {
@@ -252,13 +253,13 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
         @Override
         public void start() {
             super.start();
-            AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityBarakoa.HEAL_START_ANIMATION);
+            AbilityHandler.INSTANCE.sendAbilityMessage(entity, EntityBarakoa.HEAL_ABILITY);
         }
 
         @Override
         public void stop() {
             super.stop();
-//            if (entity.getAnimation() == HEAL_LOOP_ANIMATION || entity.getAnimation() == HEAL_START_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityBarakoa.HEAL_STOP_ANIMATION);
+//            if (entity.getActiveAbilityType() == HEAL_LOOP_ABILITY || entity.getActiveAbilityType() == HEAL_START_ABILITY) AbilityHandler.INSTANCE.sendAbilityMessage(entity, EntityBarakoa.HEAL_STOP_ABILITY);
         }
     }
 
@@ -273,13 +274,13 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
     
     @Override
     public boolean isInvulnerableTo(DamageSource source) {
-        boolean teleporting = getAnimation() == TELEPORT_ANIMATION && getAnimationTick() <= 16;
+        boolean teleporting = getActiveAbilityType() == TELEPORT_ABILITY && getAnimationTick() <= 16;
         return super.isInvulnerableTo(source) || ((!active || teleporting || !hasTriedOrSucceededTeleport) && source != DamageSource.OUT_OF_WORLD && timeUntilDeath != 0);
     }
 
     @Override
     public void setSecondsOnFire(int seconds) {
-        boolean teleporting = getAnimation() == TELEPORT_ANIMATION && getAnimationTick() <= 16;
+        boolean teleporting = getActiveAbilityType() == TELEPORT_ABILITY && getAnimationTick() <= 16;
         if (!active || teleporting || !hasTriedOrSucceededTeleport) return;
         super.setSecondsOnFire(seconds);
     }

@@ -44,6 +44,10 @@ public abstract class MowzieGeckoEntity extends MowzieEntity implements IAnimata
 
     }
 
+    public abstract AbilityType getHurtAbility();
+
+    public abstract AbilityType getDeathAbility();
+
     protected <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event)
     {
         getController().transitionLengthTicks = 0;
@@ -82,6 +86,12 @@ public abstract class MowzieGeckoEntity extends MowzieEntity implements IAnimata
         AbilityCapability.IAbilityCapability capability = getAbilityCapability();
         if (capability == null) return null;
         return getAbilityCapability().getActiveAbility();
+    }
+
+    public AbilityType getActiveAbilityType() {
+        Ability ability = getActiveAbility();
+        if (ability == null) return null;
+        return ability.getAbilityType();
     }
 
     public Ability getAbility(AbilityType abilityType) {
