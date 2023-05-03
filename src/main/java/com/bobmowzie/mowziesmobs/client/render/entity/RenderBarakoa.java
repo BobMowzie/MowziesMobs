@@ -41,6 +41,7 @@ public class RenderBarakoa extends MowzieGeoEntityRenderer<EntityBarakoa> {
 
     public RenderBarakoa(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ModelBarakoa());
+        this.addLayer(new GeckoItemlayer<>(this,"mask", new ItemStack(ItemHandler.BARAKOA_MASK_FAITH, 1)));
         this.shadowRadius = 0.6f;
     }
 

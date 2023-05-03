@@ -52,6 +52,11 @@
 					"rotation": [-72.5, 0, 0]
 				},
 				{
+					"name": "mask",
+					"parent": "head",
+					"pivot": [0, 34.46987, -5.6455]
+				},
+				{
 					"name": "rightArm",
 					"parent": "chest",
 					"pivot": [-3.5, 25, 1]

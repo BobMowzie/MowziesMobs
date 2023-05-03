@@ -1,22 +1,19 @@
 package com.bobmowzie.mowziesmobs.client.render.entity.layer;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieGeckoEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Overlay;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
+import software.bernie.geckolib3.model.provider.GeoModelProvider;
 import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 import software.bernie.geckolib3.util.RenderUtils;
@@ -28,22 +25,19 @@ public class GeckoItemlayer<T extends MowzieGeckoEntity> extends GeoLayerRendere
 
     private MowzieGeckoEntity entity;
     private String boneName;
-    private String mobName;
     private ItemStack renderedItem;
-    private GeoModel mobModel;
 
-    public GeckoItemlayer(IGeoRenderer<T> entityRendererIn, String boneName, ItemStack renderedItem, String entityName) {
+    public GeckoItemlayer(IGeoRenderer<T> entityRendererIn, String boneName, ItemStack renderedItem) {
         super(entityRendererIn);
         this.boneName = boneName;
         this.renderedItem = renderedItem;
-        this.mobName = entityName;
-        this.mobModel = this.getEntityModel().getModel(new ResourceLocation(MowziesMobs.MODID, "geo/"+ entityName + ".geo.json"));
     }
 
     @Override
     public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, T entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         this.entity = entity;
-        renderRecursively(entity,this.mobModel.topLevelBones.get(0), poseStack, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY);
+        GeoModel model = this.entityRenderer.getGeoModelProvider().getModel(this.entityRenderer.getGeoModelProvider().getModelLocation(entity));
+        renderRecursively(entity, model.topLevelBones.get(0), poseStack, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY);
     }
 
 

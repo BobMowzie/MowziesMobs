@@ -3,6 +3,8 @@ package com.bobmowzie.mowziesmobs.server.item;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.LayerHandler;
 import com.bobmowzie.mowziesmobs.client.model.armor.BarakoaMaskModel;
+import com.bobmowzie.mowziesmobs.client.render.item.RenderBarakoaMask;
+import com.bobmowzie.mowziesmobs.client.render.item.RenderSculptorStaff;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
@@ -16,6 +18,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -32,14 +35,28 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.IItemRenderProperties;
+import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType;
+import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.manager.AnimationData;
+import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.item.GeoArmorItem;
+import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask {
+public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask, IAnimatable {
     private final MaskType type;
     private static final BarakoaMaskMaterial BARAKOA_MASK_MATERIAL = new BarakoaMaskMaterial();
+
+    public String controllerName = "controller";
+    public AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
     public ItemBarakoaMask(MaskType type, Item.Properties properties) {
         super(BARAKOA_MASK_MATERIAL, EquipmentSlot.HEAD, properties);
@@ -109,12 +126,25 @@ public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask {
         return false;
     }
 
+    @Override
+    public void initializeClient(Consumer<IItemRenderProperties> consumer) {
+        super.initializeClient(consumer);
+        consumer.accept(new IItemRenderProperties() {
+            @Override
+            public HumanoidModel<?> getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel<?> _default) {
+                if (armorSlot != EquipmentSlot.HEAD) return null;
+                return (HumanoidModel<?>) GeoArmorRenderer.getRenderer(ItemBarakoaMask.this.getClass(), entityLiving)
+                        .applyEntityStats(_default).setCurrentItem(entityLiving, itemStack, armorSlot)
+                        .applySlot(armorSlot);
+            }
+        });
+    }
+
     @Nullable
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
         String s = ChatFormatting.stripFormatting(stack.getHoverName().getString());
-        boolean wadoo = stack.hasCustomHoverName() && s != null && s.equals("Wadoo");
-        return new ResourceLocation(MowziesMobs.MODID, "textures/entity/barakoa_" + this.type.name + (wadoo ? "_wadoo" : "") + ".png").toString();
+        return new ResourceLocation(MowziesMobs.MODID, "textures/item/mask_" + this.type.name + ".png").toString();
     }
 
     @Override
@@ -127,6 +157,21 @@ public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask {
     @Override
     public ConfigHandler.ArmorConfig getConfig() {
         return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.BARAKOA_MASK.armorConfig;
+    }
+
+    public <P extends Item & IAnimatable> PlayState predicate(AnimationEvent<P> event) {
+        event.getController().setAnimation(new AnimationBuilder().addAnimation("empty", ILoopType.EDefaultLoopTypes.LOOP));
+        return PlayState.CONTINUE;
+    }
+
+    @Override
+    public void registerControllers(AnimationData data) {
+        data.addAnimationController(new AnimationController<>(this, controllerName, 3, this::predicate));
+    }
+
+    @Override
+    public AnimationFactory getFactory() {
+        return this.factory;
     }
 
     private static class BarakoaMaskMaterial implements ArmorMaterial {
@@ -169,26 +214,6 @@ public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask {
         @Override
         public float getKnockbackResistance() {
             return ArmorMaterials.LEATHER.getKnockbackResistance();
-        }
-    }
-
-    @Override
-    public void initializeClient(Consumer<IItemRenderProperties> consumer) {
-        consumer.accept(ItemBarakoaMask.ArmorRender.INSTANCE);
-    }
-
-    private static final class ArmorRender implements IItemRenderProperties {
-        private static final ItemBarakoaMask.ArmorRender INSTANCE = new ItemBarakoaMask.ArmorRender();
-        private static HumanoidModel<?> MODEL;
-
-        @Override
-        public HumanoidModel<?> getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel<?> _default) {
-            if (MODEL == null) {
-                EntityModelSet models = Minecraft.getInstance().getEntityModels();
-                ModelPart root = models.bakeLayer(LayerHandler.BARAKOA_MASK_LAYER);
-                MODEL = new BarakoaMaskModel<>(root);
-            }
-            return MODEL;
         }
     }
 }
