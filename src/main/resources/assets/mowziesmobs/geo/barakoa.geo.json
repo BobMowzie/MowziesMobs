@@ -40,21 +40,30 @@
 					]
 				},
 				{
-					"name": "neck",
+					"name": "neckJoint",
 					"parent": "chest",
-					"pivot": [0, 28.46987, 0.8545],
-					"rotation": [17.5, 0, 0]
+					"pivot": [0, 27.46987, 0.8545],
+					"rotation": [-55, 0, 0]
+				},
+				{
+					"name": "neck",
+					"parent": "neckJoint",
+					"pivot": [0, 27.46987, 0.8545]
+				},
+				{
+					"name": "headJoint",
+					"parent": "neck",
+					"pivot": [0, 29.9699, -6.1455]
 				},
 				{
 					"name": "head",
-					"parent": "neck",
-					"pivot": [0, 34.46987, 1.3545],
-					"rotation": [-72.5, 0, 0]
+					"parent": "headJoint",
+					"pivot": [0, 29.9699, -6.1455]
 				},
 				{
 					"name": "mask",
 					"parent": "head",
-					"pivot": [0, 34.46987, -5.6455]
+					"pivot": [0, 29.9699, -9.1455]
 				},
 				{
 					"name": "rightArm",

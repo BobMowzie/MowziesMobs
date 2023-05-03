@@ -120,6 +120,8 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             myPos = new Vec3[]{new Vec3(0, 0, 0)};
             headPos = new Vec3[]{new Vec3(0, 0, 0)};
         }
+
+        equipItemIfPossible(ItemHandler.BARAKOA_MASK_FAITH.getDefaultInstance());
     }
 
     @Override
