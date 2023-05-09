@@ -30,13 +30,13 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
 
     @Override
     public void codeAnimations(EntityBarakoa entity, Integer uniqueID, AnimationEvent<?> customPredicate) {
-        IBone head = this.getBone("head");
-        IBone neck = this.getBone("neck");
-
-        EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
-        head.setRotationX(head.getRotationX() + extraData.headPitch * ((float) Math.PI / 180F) / 2f);
-        head.setRotationY(head.getRotationY() + extraData.netHeadYaw * ((float) Math.PI / 180F) / 2f);
-        neck.setRotationX(neck.getRotationX() + extraData.headPitch * ((float) Math.PI / 180F) / 2f);
-        neck.setRotationY(neck.getRotationY() + extraData.netHeadYaw * ((float) Math.PI / 180F) / 2f);
+//        IBone head = this.getBone("head");
+//        IBone neck = this.getBone("neck");
+//
+//        EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
+//        head.setRotationX(head.getRotationX() + extraData.headPitch * ((float) Math.PI / 180F) / 2f);
+//        head.setRotationY(head.getRotationY() + extraData.netHeadYaw * ((float) Math.PI / 180F) / 2f);
+//        neck.setRotationX(neck.getRotationX() + extraData.headPitch * ((float) Math.PI / 180F) / 2f);
+//        neck.setRotationY(neck.getRotationY() + extraData.netHeadYaw * ((float) Math.PI / 180F) / 2f);
     }
 }

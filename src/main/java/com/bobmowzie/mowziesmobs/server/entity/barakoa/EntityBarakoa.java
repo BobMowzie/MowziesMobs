@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleRibbon;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
@@ -15,6 +16,7 @@ import com.bobmowzie.mowziesmobs.server.ability.abilities.SimpleAnimationAbility
 import com.bobmowzie.mowziesmobs.server.ai.EntityAIAvoidEntity;
 import com.bobmowzie.mowziesmobs.server.ai.UseAbilityAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.*;
+import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.*;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
@@ -63,6 +65,11 @@ import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.manager.AnimationData;
 
 public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedAttackMob {
     public static final AbilityType<LivingEntity, SimpleAnimationAbility> DIE_ABILITY = new AbilityType<>("barakoa_die", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_die", 70));
@@ -104,6 +111,8 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
     public Vec3[] myPos;
 
     protected Vec3 teleportDestination;
+
+    protected MowzieAnimationController<MowzieGeckoEntity> mask_controller = new MowzieAnimationController<>(this, "mask_controller", 0, this::predicateMask);
 
     public EntityBarakoa(EntityType<? extends EntityBarakoa> type, Level world) {
         super(type, world);
@@ -248,6 +257,18 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             }
             return true;
         }));
+    }
+
+    @Override
+    public void registerControllers(AnimationData data) {
+        super.registerControllers(data);
+        data.addAnimationController(mask_controller);
+    }
+
+    protected <E extends IAnimatable> PlayState predicateMask(AnimationEvent<E> event)
+    {
+        event.getController().setAnimation(new AnimationBuilder().loop("mask_twitch"));
+        return PlayState.CONTINUE;
     }
 
     @Override
