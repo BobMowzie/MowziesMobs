@@ -137,15 +137,15 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
     protected void registerGoals() {
         super.registerGoals();
         setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, -8);
-        goalSelector.addGoal(0, new FloatGoal(this));
-        goalSelector.addGoal(0, new UseAbilityAI<>(this, ACTIVATE_ABILITY));
-        goalSelector.addGoal(0, new UseAbilityAI<>(this, DEACTIVATE_ABILITY));
-        goalSelector.addGoal(1, new UseAbilityAI<>(this, DIE_ABILITY)); // switch to die ai class
-        goalSelector.addGoal(3, new UseAbilityAI<>(this, HURT_ABILITY)); // switch to hurt ai class
-        goalSelector.addGoal(3, new EntityAIAvoidEntity<>(this, EntitySunstrike.class, EntitySunstrike::isStriking, 3, 0.7F));
-//        goalSelector.addGoal(2, new AnimationBlockAI<>(this, BLOCK_ANIMATION));
-//        goalSelector.addGoal(2, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_BARAKOA_SWING.get(), null, 1, 2.5f, 1, 9, true));
-        /*goalSelector.addGoal(4, new SimpleAnimationAI<EntityBarakoa>(this, IDLE_ABILITY, false, true) {
+//        goalSelector.addGoal(0, new FloatGoal(this));
+//        goalSelector.addGoal(0, new UseAbilityAI<>(this, ACTIVATE_ABILITY));
+//        goalSelector.addGoal(0, new UseAbilityAI<>(this, DEACTIVATE_ABILITY));
+//        goalSelector.addGoal(1, new UseAbilityAI<>(this, DIE_ABILITY)); // switch to die ai class
+//        goalSelector.addGoal(3, new UseAbilityAI<>(this, HURT_ABILITY)); // switch to hurt ai class
+//        goalSelector.addGoal(3, new EntityAIAvoidEntity<>(this, EntitySunstrike.class, EntitySunstrike::isStriking, 3, 0.7F));
+/*        goalSelector.addGoal(2, new AnimationBlockAI<>(this, BLOCK_ANIMATION));
+        goalSelector.addGoal(2, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_BARAKOA_SWING.get(), null, 1, 2.5f, 1, 9, true));
+        goalSelector.addGoal(4, new SimpleAnimationAI<EntityBarakoa>(this, IDLE_ABILITY, false, true) {
             private LivingEntity talkTarget;
             private final TargetingConditions pred = TargetingConditions.forNonCombat().range(8);
 
@@ -228,12 +228,12 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
                     AbilityHandler.INSTANCE.sendAbilityMessage(entity, HEAL_LOOP_ANIMATION);
             }
         });*/
-        goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.4));
-        goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        goalSelector.addGoal(8, new LookAtPlayerGoal(this, EntityBarakoa.class, 8.0F));
-        goalSelector.addGoal(8, new LookAtPlayerGoal(this, EntityBarako.class, 8.0F));
-        goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-        registerTargetGoals();
+//        goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.4));
+//        goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+//        goalSelector.addGoal(8, new LookAtPlayerGoal(this, EntityBarakoa.class, 8.0F));
+//        goalSelector.addGoal(8, new LookAtPlayerGoal(this, EntityBarako.class, 8.0F));
+//        goalSelector.addGoal(8, new RandomLookAroundGoal(this));
+//        registerTargetGoals();
     }
 
     protected void registerTargetGoals() {
