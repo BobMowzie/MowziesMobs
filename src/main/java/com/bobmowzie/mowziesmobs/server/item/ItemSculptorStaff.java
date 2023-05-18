@@ -94,11 +94,11 @@ public class ItemSculptorStaff extends MowzieToolItem implements IAnimatable, IS
 
     @Override
     public void registerControllers(AnimationData animationData) {
-        animationData.addAnimationController(new AnimationController<>(this, controllerName, 3, this::predicate));
+//        animationData.addAnimationController(new AnimationController<>(this, controllerName, 3, this::predicate));
     }
 
     public <P extends Item & IAnimatable> PlayState predicate(AnimationEvent<P> event) {
-        event.getController().setAnimation(new AnimationBuilder().addAnimation("empty", ILoopType.EDefaultLoopTypes.LOOP));
+//        event.getController().setAnimation(new AnimationBuilder().addAnimation("empty", ILoopType.EDefaultLoopTypes.LOOP));
         return PlayState.CONTINUE;
     }
 

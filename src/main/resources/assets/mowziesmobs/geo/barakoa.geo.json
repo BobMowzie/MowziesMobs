@@ -30,27 +30,39 @@
 					]
 				},
 				{
-					"name": "chest",
+					"name": "chestJoint",
 					"parent": "stomach",
 					"pivot": [0, 23.21987, 1.1045],
-					"rotation": [45, 0, 0]
+					"rotation": [-10, 0, 0]
+				},
+				{
+					"name": "chest",
+					"parent": "chestJoint",
+					"pivot": [0, 23.21987, 1.1045],
+					"rotation": [55, 0, 0]
+				},
+				{
+					"name": "neckJoint",
+					"parent": "chest",
+					"pivot": [0, 27.46987, 0.8545],
+					"rotation": [-55, 0, 0]
 				},
 				{
 					"name": "neck",
-					"parent": "chest",
-					"pivot": [0, 28.46987, 0.8545],
-					"rotation": [17.5, 0, 0]
+					"parent": "neckJoint",
+					"pivot": [0, 27.46987, 0.8545],
+					"rotation": [72.5, 0, 0]
 				},
 				{
 					"name": "head",
 					"parent": "neck",
-					"pivot": [0, 34.46987, 1.3545],
+					"pivot": [0, 33.96987, 1.1045],
 					"rotation": [-72.5, 0, 0]
 				},
 				{
 					"name": "mask",
 					"parent": "head",
-					"pivot": [0, 33, -5.5]
+					"pivot": [0, 33.5, -3.75]
 				},
 				{
 					"name": "rightArm",
@@ -227,7 +239,7 @@
 						{"origin": [-5.5, 22.5, -5.5], "size": [11, 4, 0], "pivot": [0, 26.5, -5.5], "rotation": [-15, 0, 0], "uv": [0, 58]},
 						{"origin": [-5.5, 21.5, -5.5], "size": [11, 4, 0], "pivot": [0, 25.5, -5.5], "rotation": [-15, 0, 0], "uv": [54, 55]},
 						{"origin": [-5.5, 22.5, 5.5], "size": [11, 4, 0], "pivot": [0, 26.5, 5.5], "rotation": [15, 0, 0], "uv": [0, 50], "mirror": true},
-						{"origin": [-5.5, 21.5, 5.5], "size": [11, 4, 0], "pivot": [0, 25.5, 5.5], "rotation": [15, 0, 0], "uv": [54, 55]},
+						{"origin": [-5.5, 21.5, 5.5], "size": [11, 4, 0], "pivot": [0, 25.5, 5.5], "rotation": [15, 0, 0], "uv": [51, 4]},
 						{"origin": [-5.5, 23.5, 5.5], "size": [11, 4, 0], "pivot": [0, 27.5, 5.5], "rotation": [15, 0, 0], "uv": [58, 8]},
 						{"origin": [5.5, 23.5, -5.5], "size": [0, 4, 11], "pivot": [5.5, 27.5, 0], "rotation": [0, 0, -15], "uv": [33, 12]},
 						{"origin": [5.5, 22.5, -5.5], "size": [0, 4, 11], "pivot": [5.5, 26.5, 0], "rotation": [0, 0, -15], "uv": [0, 39]},
