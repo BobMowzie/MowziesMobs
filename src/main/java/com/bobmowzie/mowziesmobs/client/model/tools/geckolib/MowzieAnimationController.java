@@ -34,6 +34,8 @@ public class MowzieAnimationController<T extends IAnimatable & IAnimationTickabl
             }
             this.shouldResetTick = false;
         }
-        return Math.max(tick - this.tickOffset, 0.0D);
+        double adjustedTick = Math.max(tick - this.tickOffset, 0.0D);
+        if (this.currentAnimation != null && this.currentAnimation.loop.isRepeatingAfterEnd()) adjustedTick = adjustedTick % this.currentAnimation.animationLength;
+        return adjustedTick;
     }
 }

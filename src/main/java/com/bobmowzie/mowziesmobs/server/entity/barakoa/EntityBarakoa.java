@@ -228,12 +228,12 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
                     AbilityHandler.INSTANCE.sendAbilityMessage(entity, HEAL_LOOP_ANIMATION);
             }
         });*/
-//        goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.4));
-//        goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-//        goalSelector.addGoal(8, new LookAtPlayerGoal(this, EntityBarakoa.class, 8.0F));
-//        goalSelector.addGoal(8, new LookAtPlayerGoal(this, EntityBarako.class, 8.0F));
-//        goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-//        registerTargetGoals();
+        goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.4));
+        goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        goalSelector.addGoal(8, new LookAtPlayerGoal(this, EntityBarakoa.class, 8.0F));
+        goalSelector.addGoal(8, new LookAtPlayerGoal(this, EntityBarako.class, 8.0F));
+        goalSelector.addGoal(8, new RandomLookAroundGoal(this));
+        registerTargetGoals();
     }
 
     protected void registerTargetGoals() {

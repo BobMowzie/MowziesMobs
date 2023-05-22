@@ -47,22 +47,25 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
 
         float limbSwing = customPredicate.getLimbSwing();
         float limbSwingAmount = customPredicate.getLimbSwingAmount();
-        limbSwing = 0.5f * (entity.tickCount + customPredicate.getPartialTick());
-        limbSwingAmount = 0.7f;
-        float angle = 0.03f * (entity.tickCount + customPredicate.getPartialTick());
-        Vec3 moveVec = new Vec3(1.0, 0, 0);
-        moveVec = moveVec.yRot(angle);
+//        limbSwing = 0.5f * (entity.tickCount + customPredicate.getPartialTick());
+//        limbSwingAmount = 0.7f;
+        float animSpeed = 1.4f;
+
+//        float angle = 0.03f * (entity.tickCount + customPredicate.getPartialTick());
+//        Vec3 moveVec = new Vec3(1.0, 0, 0);
+//        moveVec = moveVec.yRot(angle);
+        Vec3 moveVec = entity.getDeltaMovement().normalize().yRot((float) Math.toRadians(entity.getYRot() + 90.0));
         float forward = (float) Math.max(0, new Vec3(1.0, 0, 0).dot(moveVec));
         float backward = (float) Math.max(0, new Vec3(-1.0, 0, 0).dot(moveVec));
         float left = (float) Math.max(0, new Vec3(0, 0, 1.0).dot(moveVec));
         float right = (float) Math.max(0, new Vec3(0, 0, -1.0).dot(moveVec));
-        walkForwardAnim(forward, limbSwing, limbSwingAmount);
-        walkBackwardAnim(backward, limbSwing, limbSwingAmount);
-        walkLeftAnim(left, limbSwing, limbSwingAmount);
-        walkRightAnim(right, limbSwing, limbSwingAmount);
+        walkForwardAnim(forward, limbSwing, limbSwingAmount, animSpeed);
+        walkBackwardAnim(backward, limbSwing, limbSwingAmount, animSpeed);
+        walkLeftAnim(left, limbSwing, limbSwingAmount, animSpeed);
+        walkRightAnim(right, limbSwing, limbSwingAmount, animSpeed);
     }
 
-    private void walkForwardAnim(float blend, float limbSwing, float limbSwingAmount) {
+    private void walkForwardAnim(float blend, float limbSwing, float limbSwingAmount, float speed) {
         MowzieGeoBone head = getMowzieBone("head");
         MowzieGeoBone neck = getMowzieBone("neck");
         MowzieGeoBone hips = getMowzieBone("hips");
@@ -85,49 +88,48 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
         MowzieGeoBone rightForeArm = getMowzieBone("rightForeArm");
         MowzieGeoBone rightHand = getMowzieBone("rightHand");
 
-        float globalSpeed = 1f;
         float globalHeight = 1.5f;
         float globalDegree = 1.5f;
 
-        hips.addPositionY(blend * (float) (Math.cos(limbSwing * globalSpeed) * 1.5f * globalHeight) * limbSwingAmount);
+        hips.addPositionY(blend * (float) (Math.cos(limbSwing * speed) * 1.5f * globalHeight) * limbSwingAmount);
         hips.addRotationX(blend * -0.18f * limbSwingAmount * globalHeight);
-        hips.addRotationY(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 1.0) * -0.1f * globalHeight) * limbSwingAmount);
-        chest.addRotationY(blend * (float) (-Math.cos(limbSwing * globalSpeed * 0.5 + 1.0) * -0.2f * globalHeight) * limbSwingAmount);
-        stomach.addRotationX(blend * -(float) (Math.cos(limbSwing * globalSpeed + 1.4) * 0.025 * globalHeight) * limbSwingAmount);
-        neck.addRotationY(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 1.0) * -0.1f * globalHeight) * limbSwingAmount);
-        neck.addRotationX(blend * -(float) (Math.cos(limbSwing * globalSpeed) * 0.175 * globalHeight) * limbSwingAmount);
-        head.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed + 0.175) * 0.175 * globalHeight + 0.18 * globalHeight) * limbSwingAmount);
+        hips.addRotationY(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 1.0) * -0.1f * globalHeight) * limbSwingAmount);
+        chest.addRotationY(blend * (float) (-Math.cos(limbSwing * speed * 0.5 + 1.0) * -0.2f * globalHeight) * limbSwingAmount);
+        stomach.addRotationX(blend * -(float) (Math.cos(limbSwing * speed + 1.4) * 0.025 * globalHeight) * limbSwingAmount);
+        neck.addRotationY(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 1.0) * -0.1f * globalHeight) * limbSwingAmount);
+        neck.addRotationX(blend * -(float) (Math.cos(limbSwing * speed) * 0.175 * globalHeight) * limbSwingAmount);
+        head.addRotationX(blend * (float) (Math.cos(limbSwing * speed + 0.175) * 0.175 * globalHeight + 0.18 * globalHeight) * limbSwingAmount);
 
-        leftThigh.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 1.5) * 0.55f * globalDegree) * limbSwingAmount);
-        leftThigh.addRotationY(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 1.5) * 0.1f * globalDegree - 0.15f) * limbSwingAmount);
-        leftShin.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 2.40) * -0.7f * globalDegree) * limbSwingAmount);
-        leftAnkle.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 2.40) * 1.1f * globalDegree + 0.1f * globalDegree) * limbSwingAmount);
-        leftFoot.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 2.5) * -1.3f * globalDegree - 0.4f * globalDegree) * limbSwingAmount);
-        leftFoot.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 1 - 0.2) * -0.2f * globalDegree) * limbSwingAmount);
-        leftToesBack.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 3.1) * 1.6f * globalDegree + 1.4f * globalDegree) * limbSwingAmount);
-        leftToesBack.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 1 + 0.1) * 0.3f * globalDegree) * limbSwingAmount);
+        leftThigh.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 1.5) * 0.55f * globalDegree) * limbSwingAmount);
+        leftThigh.addRotationY(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 1.5) * 0.1f * globalDegree - 0.15f) * limbSwingAmount);
+        leftShin.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 2.40) * -0.7f * globalDegree) * limbSwingAmount);
+        leftAnkle.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 2.40) * 1.1f * globalDegree + 0.1f * globalDegree) * limbSwingAmount);
+        leftFoot.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 2.5) * -1.3f * globalDegree - 0.4f * globalDegree) * limbSwingAmount);
+        leftFoot.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 1 - 0.2) * -0.2f * globalDegree) * limbSwingAmount);
+        leftToesBack.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 3.1) * 1.6f * globalDegree + 1.4f * globalDegree) * limbSwingAmount);
+        leftToesBack.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 1 + 0.1) * 0.3f * globalDegree) * limbSwingAmount);
 
-        rightThigh.addRotationX(blend * -(float) (Math.cos(limbSwing * globalSpeed * 0.5 + 1.5) * 0.55f * globalDegree) * limbSwingAmount);
-        rightThigh.addRotationY(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 1.5) * 0.1f * globalDegree + 0.15f) * limbSwingAmount);
-        rightShin.addRotationX(blend * -(float) (Math.cos(limbSwing * globalSpeed * 0.5 + 2.40) * -0.7f * globalDegree) * limbSwingAmount);
-        rightAnkle.addRotationX(blend * -(float) (Math.cos(limbSwing * globalSpeed * 0.5 + 2.40) * 1.1f * globalDegree - 0.1f * globalDegree) * limbSwingAmount);
-        rightFoot.addRotationX(blend * -(float) (Math.cos(limbSwing * globalSpeed * 0.5 + 2.5) * -1.3f * globalDegree + 0.4f * globalDegree) * limbSwingAmount);
-        rightFoot.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 1 - 0.2) * -0.2f * globalDegree) * limbSwingAmount);
-        rightToesBack.addRotationX(blend * -(float) (Math.cos(limbSwing * globalSpeed * 0.5 + 3.1) * 1.6f * globalDegree - 1.4f * globalDegree) * limbSwingAmount);
-        rightToesBack.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 1 + 0.1) * 0.3f * globalDegree) * limbSwingAmount);
+        rightThigh.addRotationX(blend * -(float) (Math.cos(limbSwing * speed * 0.5 + 1.5) * 0.55f * globalDegree) * limbSwingAmount);
+        rightThigh.addRotationY(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 1.5) * 0.1f * globalDegree + 0.15f) * limbSwingAmount);
+        rightShin.addRotationX(blend * -(float) (Math.cos(limbSwing * speed * 0.5 + 2.40) * -0.7f * globalDegree) * limbSwingAmount);
+        rightAnkle.addRotationX(blend * -(float) (Math.cos(limbSwing * speed * 0.5 + 2.40) * 1.1f * globalDegree - 0.1f * globalDegree) * limbSwingAmount);
+        rightFoot.addRotationX(blend * -(float) (Math.cos(limbSwing * speed * 0.5 + 2.5) * -1.3f * globalDegree + 0.4f * globalDegree) * limbSwingAmount);
+        rightFoot.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 1 - 0.2) * -0.2f * globalDegree) * limbSwingAmount);
+        rightToesBack.addRotationX(blend * -(float) (Math.cos(limbSwing * speed * 0.5 + 3.1) * 1.6f * globalDegree - 1.4f * globalDegree) * limbSwingAmount);
+        rightToesBack.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 1 + 0.1) * 0.3f * globalDegree) * limbSwingAmount);
 
         leftShoulder.addRotationY(blend * -0.85f * limbSwingAmount * globalHeight);
-        leftShoulder.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed + 0.52) * 0.09 * globalHeight + -0.75f * globalHeight) * limbSwingAmount);
-        leftForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed - 1.0) * 0.03 * globalHeight + 0.2f * globalHeight) * limbSwingAmount);
+        leftShoulder.addRotationX(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.09 * globalHeight + -0.75f * globalHeight) * limbSwingAmount);
+        leftForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.03 * globalHeight + 0.2f * globalHeight) * limbSwingAmount);
         leftHand.addRotationX(blend * 0.5f * limbSwingAmount * globalHeight);
 
         rightShoulder.addRotationY(blend * 0.85f * limbSwingAmount * globalHeight);
-        rightShoulder.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed + 0.52) * 0.09 * globalHeight + -0.75f * globalHeight) * limbSwingAmount);
-        rightForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed - 1.0) * 0.03 * globalHeight + 0.2f * globalHeight) * limbSwingAmount);
+        rightShoulder.addRotationX(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.09 * globalHeight + -0.75f * globalHeight) * limbSwingAmount);
+        rightForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.03 * globalHeight + 0.2f * globalHeight) * limbSwingAmount);
         rightHand.addRotationX(blend * 0.5f * limbSwingAmount * globalHeight);
     }
 
-    private void walkBackwardAnim(float blend, float limbSwing, float limbSwingAmount) {
+    private void walkBackwardAnim(float blend, float limbSwing, float limbSwingAmount, float speed) {
         MowzieGeoBone head = getMowzieBone("head");
         MowzieGeoBone neck = getMowzieBone("neck");
         MowzieGeoBone hips = getMowzieBone("hips");
@@ -150,49 +152,48 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
         MowzieGeoBone rightForeArm = getMowzieBone("rightForeArm");
         MowzieGeoBone rightHand = getMowzieBone("rightHand");
 
-        float globalSpeed = 1f;
         float globalHeight = 1.5f;
         float globalDegree = 1.5f;
 
-        hips.addPositionY(blend * (float) (Math.cos(limbSwing * globalSpeed) * 1.5f * globalHeight) * limbSwingAmount);
+        hips.addPositionY(blend * (float) (Math.cos(limbSwing * speed) * 1.5f * globalHeight) * limbSwingAmount);
         hips.addRotationX(blend * 0.18f * limbSwingAmount * globalHeight);
-        hips.addRotationY(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 1.0) * 0.1f * globalHeight) * limbSwingAmount);
-        chest.addRotationY(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 1.0) * -0.2f * globalHeight) * limbSwingAmount);
-        stomach.addRotationX(blend * -(float) (Math.cos(limbSwing * globalSpeed + 1.4) * 0.025 * globalHeight) * limbSwingAmount);
-        neck.addRotationY(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 1.0) * 0.1f * globalHeight) * limbSwingAmount);
-        neck.addRotationX(blend * -(float) (Math.cos(limbSwing * globalSpeed) * 0.175 * globalHeight) * limbSwingAmount);
-        head.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed + 0.175) * 0.175 * globalHeight - 0.18 * globalHeight) * limbSwingAmount);
+        hips.addRotationY(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 1.0) * 0.1f * globalHeight) * limbSwingAmount);
+        chest.addRotationY(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 1.0) * -0.2f * globalHeight) * limbSwingAmount);
+        stomach.addRotationX(blend * -(float) (Math.cos(limbSwing * speed + 1.4) * 0.025 * globalHeight) * limbSwingAmount);
+        neck.addRotationY(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 1.0) * 0.1f * globalHeight) * limbSwingAmount);
+        neck.addRotationX(blend * -(float) (Math.cos(limbSwing * speed) * 0.175 * globalHeight) * limbSwingAmount);
+        head.addRotationX(blend * (float) (Math.cos(limbSwing * speed + 0.175) * 0.175 * globalHeight - 0.18 * globalHeight) * limbSwingAmount);
 
-        leftThigh.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 - 1.5) * 0.55f * globalDegree - 0.3 * globalDegree) * limbSwingAmount);
-        leftThigh.addRotationY(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 - 1.5) * 0.1f * globalDegree - 0.15f) * limbSwingAmount);
-        leftShin.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 - 2.40) * -0.7f * globalDegree) * limbSwingAmount);
-        leftAnkle.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 - 2.40) * 1.1f * globalDegree + 0.1f * globalDegree) * limbSwingAmount);
-        leftFoot.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 - 2.5) * -1.3f * globalDegree - 0.4f * globalDegree) * limbSwingAmount);
-        leftFoot.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 1 + 0.2) * -0.2f * globalDegree) * limbSwingAmount);
-        leftToesBack.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 - 3.1) * 1.6f * globalDegree + 1.4f * globalDegree) * limbSwingAmount);
-        leftToesBack.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 1 - 0.1) * 0.3f * globalDegree) * limbSwingAmount);
+        leftThigh.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 0.5 - 1.5) * 0.55f * globalDegree - 0.3 * globalDegree) * limbSwingAmount);
+        leftThigh.addRotationY(blend * (float) (Math.cos(limbSwing * speed * 0.5 - 1.5) * 0.1f * globalDegree - 0.15f) * limbSwingAmount);
+        leftShin.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 0.5 - 2.40) * -0.7f * globalDegree) * limbSwingAmount);
+        leftAnkle.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 0.5 - 2.40) * 1.1f * globalDegree + 0.1f * globalDegree) * limbSwingAmount);
+        leftFoot.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 0.5 - 2.5) * -1.3f * globalDegree - 0.4f * globalDegree) * limbSwingAmount);
+        leftFoot.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 1 + 0.2) * -0.2f * globalDegree) * limbSwingAmount);
+        leftToesBack.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 0.5 - 3.1) * 1.6f * globalDegree + 1.4f * globalDegree) * limbSwingAmount);
+        leftToesBack.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 1 - 0.1) * 0.3f * globalDegree) * limbSwingAmount);
 
-        rightThigh.addRotationX(blend * -(float) (Math.cos(limbSwing * globalSpeed * 0.5 - 1.5) * 0.55f * globalDegree + 0.3 * globalDegree) * limbSwingAmount);
-        rightThigh.addRotationY(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 - 1.5) * 0.1f * globalDegree + 0.15f) * limbSwingAmount);
-        rightShin.addRotationX(blend * -(float) (Math.cos(limbSwing * globalSpeed * 0.5 - 2.40) * -0.7f * globalDegree) * limbSwingAmount);
-        rightAnkle.addRotationX(blend * -(float) (Math.cos(limbSwing * globalSpeed * 0.5 - 2.40) * 1.1f * globalDegree - 0.1f * globalDegree) * limbSwingAmount);
-        rightFoot.addRotationX(blend * -(float) (Math.cos(limbSwing * globalSpeed * 0.5 - 2.5) * -1.3f * globalDegree + 0.4f * globalDegree) * limbSwingAmount);
-        rightFoot.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 1 + 0.2) * -0.2f * globalDegree) * limbSwingAmount);
-        rightToesBack.addRotationX(blend * -(float) (Math.cos(limbSwing * globalSpeed * 0.5 - 3.1) * 1.6f * globalDegree - 1.4f * globalDegree) * limbSwingAmount);
-        rightToesBack.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 1 - 0.1) * 0.3f * globalDegree) * limbSwingAmount);
+        rightThigh.addRotationX(blend * -(float) (Math.cos(limbSwing * speed * 0.5 - 1.5) * 0.55f * globalDegree + 0.3 * globalDegree) * limbSwingAmount);
+        rightThigh.addRotationY(blend * (float) (Math.cos(limbSwing * speed * 0.5 - 1.5) * 0.1f * globalDegree + 0.15f) * limbSwingAmount);
+        rightShin.addRotationX(blend * -(float) (Math.cos(limbSwing * speed * 0.5 - 2.40) * -0.7f * globalDegree) * limbSwingAmount);
+        rightAnkle.addRotationX(blend * -(float) (Math.cos(limbSwing * speed * 0.5 - 2.40) * 1.1f * globalDegree - 0.1f * globalDegree) * limbSwingAmount);
+        rightFoot.addRotationX(blend * -(float) (Math.cos(limbSwing * speed * 0.5 - 2.5) * -1.3f * globalDegree + 0.4f * globalDegree) * limbSwingAmount);
+        rightFoot.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 1 + 0.2) * -0.2f * globalDegree) * limbSwingAmount);
+        rightToesBack.addRotationX(blend * -(float) (Math.cos(limbSwing * speed * 0.5 - 3.1) * 1.6f * globalDegree - 1.4f * globalDegree) * limbSwingAmount);
+        rightToesBack.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 1 - 0.1) * 0.3f * globalDegree) * limbSwingAmount);
 
         leftShoulder.addRotationY(blend * -1.0f * limbSwingAmount * globalHeight);
-        leftShoulder.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed + 0.52) * 0.09 * globalHeight + -0.75f * globalHeight) * limbSwingAmount);
-        leftForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed - 1.0) * 0.03 * globalHeight + 0.2f * globalHeight) * limbSwingAmount);
+        leftShoulder.addRotationX(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.09 * globalHeight + -0.75f * globalHeight) * limbSwingAmount);
+        leftForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.03 * globalHeight + 0.2f * globalHeight) * limbSwingAmount);
         leftHand.addRotationX(blend * 0.5f * limbSwingAmount * globalHeight);
 
         rightShoulder.addRotationY(blend * 1.0f * limbSwingAmount * globalHeight);
-        rightShoulder.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed + 0.52) * 0.09 * globalHeight + -0.75f * globalHeight) * limbSwingAmount);
-        rightForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed - 1.0) * 0.03 * globalHeight + 0.2f * globalHeight) * limbSwingAmount);
+        rightShoulder.addRotationX(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.09 * globalHeight + -0.75f * globalHeight) * limbSwingAmount);
+        rightForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.03 * globalHeight + 0.2f * globalHeight) * limbSwingAmount);
         rightHand.addRotationX(blend * 0.5f * limbSwingAmount * globalHeight);
     }
 
-    private void walkLeftAnim(float blend, float limbSwing, float limbSwingAmount) {
+    private void walkLeftAnim(float blend, float limbSwing, float limbSwingAmount, float speed) {
         MowzieGeoBone head = getMowzieBone("head");
         MowzieGeoBone neck = getMowzieBone("neck");
         MowzieGeoBone hips = getMowzieBone("hips");
@@ -215,64 +216,63 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
         MowzieGeoBone rightForeArm = getMowzieBone("rightForeArm");
         MowzieGeoBone rightHand = getMowzieBone("rightHand");
 
-        float globalSpeed = 1f;
         float globalHeight = 1.5f;
         float globalDegree = 1.5f;
 
-        hips.addPositionY(blend * (float) (Math.cos(limbSwing * globalSpeed) * 1.5f * globalHeight) * limbSwingAmount);
+        hips.addPositionY(blend * (float) (Math.cos(limbSwing * speed) * 1.5f * globalHeight) * limbSwingAmount);
         hips.addRotationX(blend * -0.1f * limbSwingAmount * globalHeight);
-        hips.addRotationY(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 1.0) * -0.1f * globalHeight) * limbSwingAmount);
+        hips.addRotationY(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 1.0) * -0.1f * globalHeight) * limbSwingAmount);
         hips.addRotationZ(blend * 0.08f * limbSwingAmount * globalHeight);
-        chest.addRotationY(blend * (float) (-Math.cos(limbSwing * globalSpeed * 0.5 + 1.0) * -0.2f * globalHeight) * limbSwingAmount);
-        stomach.addRotationX(blend * -(float) (Math.cos(limbSwing * globalSpeed + 1.4) * 0.025 * globalHeight) * limbSwingAmount);
-        stomach.addRotationZ(blend * -(float) (Math.cos(limbSwing * globalSpeed * 0.5 + 1.4) * 0.02 * globalHeight) * limbSwingAmount);
-        stomach.addRotationZ(blend * -(float) (Math.cos(limbSwing * globalSpeed - 0.5) * 0.02 * globalHeight) * limbSwingAmount);
-        neck.addRotationY(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 1.0) * -0.1f * globalHeight) * limbSwingAmount);
-        neck.addRotationX(blend * -(float) (Math.cos(limbSwing * globalSpeed) * 0.175 * globalHeight) * limbSwingAmount);
-        head.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed + 0.175) * 0.175 * globalHeight + 0.1 * globalHeight) * limbSwingAmount);
-        head.addRotationZ(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 1.4) * 0.02 * globalHeight) * limbSwingAmount);
-        head.addRotationZ(blend * (float) (Math.cos(limbSwing * globalSpeed - 0.5) * 0.02 * globalHeight) * limbSwingAmount);
+        chest.addRotationY(blend * (float) (-Math.cos(limbSwing * speed * 0.5 + 1.0) * -0.2f * globalHeight) * limbSwingAmount);
+        stomach.addRotationX(blend * -(float) (Math.cos(limbSwing * speed + 1.4) * 0.025 * globalHeight) * limbSwingAmount);
+        stomach.addRotationZ(blend * -(float) (Math.cos(limbSwing * speed * 0.5 + 1.4) * 0.02 * globalHeight) * limbSwingAmount);
+        stomach.addRotationZ(blend * -(float) (Math.cos(limbSwing * speed - 0.5) * 0.02 * globalHeight) * limbSwingAmount);
+        neck.addRotationY(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 1.0) * -0.1f * globalHeight) * limbSwingAmount);
+        neck.addRotationX(blend * -(float) (Math.cos(limbSwing * speed) * 0.175 * globalHeight) * limbSwingAmount);
+        head.addRotationX(blend * (float) (Math.cos(limbSwing * speed + 0.175) * 0.175 * globalHeight + 0.1 * globalHeight) * limbSwingAmount);
+        head.addRotationZ(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 1.4) * 0.02 * globalHeight) * limbSwingAmount);
+        head.addRotationZ(blend * (float) (Math.cos(limbSwing * speed - 0.5) * 0.02 * globalHeight) * limbSwingAmount);
         head.addRotationZ(blend * -0.03f * limbSwingAmount * globalHeight);
 
         leftThigh.addRotationX(blend * -0.05f * limbSwingAmount * globalHeight);
-        leftThigh.addRotationZ(blend * -(float) (Math.cos(limbSwing * globalSpeed * 0.5 + 1.5) * 0.55f * globalDegree + 0.05 * globalDegree) * limbSwingAmount);
-        leftThigh.addRotationY(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 1.5) * 0.1f * globalDegree - 0.15) * limbSwingAmount);
-        leftShin.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 2.40) * -0.7f * globalDegree) * limbSwingAmount);
-        leftAnkle.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 2.40) * 1.1f * globalDegree + 0.1f * globalDegree) * limbSwingAmount);
-        leftFoot.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 2.5) * -1.3f * globalDegree - 0.6f * globalDegree) * limbSwingAmount);
-        leftFoot.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 1 - 0.2) * -0.2f * globalDegree) * limbSwingAmount);
-        leftFoot.addRotationY(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 2.5) * -0.4f * globalDegree) * limbSwingAmount);
-        leftFoot.addRotationY(blend * (float) (Math.cos(limbSwing * globalSpeed * 1 - 0.2) * -0.2f * globalDegree) * limbSwingAmount);
-        leftToesBack.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 3.1) * 1.6f * globalDegree + 1.4f * globalDegree) * limbSwingAmount);
-        leftToesBack.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 1 + 0.1) * 0.3f * globalDegree) * limbSwingAmount);
+        leftThigh.addRotationZ(blend * -(float) (Math.cos(limbSwing * speed * 0.5 + 1.5) * 0.55f * globalDegree + 0.05 * globalDegree) * limbSwingAmount);
+        leftThigh.addRotationY(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 1.5) * 0.1f * globalDegree - 0.15) * limbSwingAmount);
+        leftShin.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 2.40) * -0.7f * globalDegree) * limbSwingAmount);
+        leftAnkle.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 2.40) * 1.1f * globalDegree + 0.1f * globalDegree) * limbSwingAmount);
+        leftFoot.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 2.5) * -1.3f * globalDegree - 0.6f * globalDegree) * limbSwingAmount);
+        leftFoot.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 1 - 0.2) * -0.2f * globalDegree) * limbSwingAmount);
+        leftFoot.addRotationY(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 2.5) * -0.4f * globalDegree) * limbSwingAmount);
+        leftFoot.addRotationY(blend * (float) (Math.cos(limbSwing * speed * 1 - 0.2) * -0.2f * globalDegree) * limbSwingAmount);
+        leftToesBack.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 3.1) * 1.6f * globalDegree + 1.4f * globalDegree) * limbSwingAmount);
+        leftToesBack.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 1 + 0.1) * 0.3f * globalDegree) * limbSwingAmount);
 
         rightThigh.addRotationX(blend * 0.05f * limbSwingAmount * globalHeight);
-        rightThigh.addRotationZ(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 1.5) * 0.55f * globalDegree - 0.05 * globalDegree) * limbSwingAmount);
-        rightThigh.addRotationY(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 1.5) * 0.1f * globalDegree + 0.15) * limbSwingAmount);
-        rightShin.addRotationX(blend * -(float) (Math.cos(limbSwing * globalSpeed * 0.5 + 2.40) * -0.7f * globalDegree) * limbSwingAmount);
-        rightAnkle.addRotationX(blend * -(float) (Math.cos(limbSwing * globalSpeed * 0.5 + 2.40) * 1.1f * globalDegree - 0.1f * globalDegree) * limbSwingAmount);
-        rightFoot.addRotationX(blend * -(float) (Math.cos(limbSwing * globalSpeed * 0.5 + 2.5) * -1.3f * globalDegree + 0.6f * globalDegree) * limbSwingAmount);
-        rightFoot.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 1 - 0.2) * -0.2f * globalDegree) * limbSwingAmount);
-        rightFoot.addRotationY(blend * -(float) (Math.cos(limbSwing * globalSpeed * 0.5 + 2.5) * -0.4f * globalDegree) * limbSwingAmount);
-        rightFoot.addRotationY(blend * (float) (Math.cos(limbSwing * globalSpeed * 1 - 0.2) * -0.2f * globalDegree) * limbSwingAmount);
-        rightToesBack.addRotationX(blend * -(float) (Math.cos(limbSwing * globalSpeed * 0.5 + 3.1) * 1.6f * globalDegree - 1.4f * globalDegree) * limbSwingAmount);
-        rightToesBack.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 1 + 0.1) * 0.3f * globalDegree) * limbSwingAmount);
+        rightThigh.addRotationZ(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 1.5) * 0.55f * globalDegree - 0.05 * globalDegree) * limbSwingAmount);
+        rightThigh.addRotationY(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 1.5) * 0.1f * globalDegree + 0.15) * limbSwingAmount);
+        rightShin.addRotationX(blend * -(float) (Math.cos(limbSwing * speed * 0.5 + 2.40) * -0.7f * globalDegree) * limbSwingAmount);
+        rightAnkle.addRotationX(blend * -(float) (Math.cos(limbSwing * speed * 0.5 + 2.40) * 1.1f * globalDegree - 0.1f * globalDegree) * limbSwingAmount);
+        rightFoot.addRotationX(blend * -(float) (Math.cos(limbSwing * speed * 0.5 + 2.5) * -1.3f * globalDegree + 0.6f * globalDegree) * limbSwingAmount);
+        rightFoot.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 1 - 0.2) * -0.2f * globalDegree) * limbSwingAmount);
+        rightFoot.addRotationY(blend * -(float) (Math.cos(limbSwing * speed * 0.5 + 2.5) * -0.4f * globalDegree) * limbSwingAmount);
+        rightFoot.addRotationY(blend * (float) (Math.cos(limbSwing * speed * 1 - 0.2) * -0.2f * globalDegree) * limbSwingAmount);
+        rightToesBack.addRotationX(blend * -(float) (Math.cos(limbSwing * speed * 0.5 + 3.1) * 1.6f * globalDegree - 1.4f * globalDegree) * limbSwingAmount);
+        rightToesBack.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 1 + 0.1) * 0.3f * globalDegree) * limbSwingAmount);
 
-        leftShin.addRotationX(blend * -(float) (Math.pow(Math.cos(limbSwing * 0.25 * globalSpeed - 0.6), 12) * 0.6f * globalHeight) * limbSwingAmount);
-        leftAnkle.addRotationX(blend * (float) (Math.pow(Math.cos(limbSwing * 0.25 * globalSpeed - 0.6), 12) * 0.6f * globalHeight) * limbSwingAmount);
+        leftShin.addRotationX(blend * -(float) (Math.pow(Math.cos(limbSwing * 0.25 * speed - 0.6), 12) * 0.6f * globalHeight) * limbSwingAmount);
+        leftAnkle.addRotationX(blend * (float) (Math.pow(Math.cos(limbSwing * 0.25 * speed - 0.6), 12) * 0.6f * globalHeight) * limbSwingAmount);
 
         leftShoulder.addRotationY(blend * -0.85f * limbSwingAmount * globalHeight);
-        leftShoulder.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed + 0.52) * 0.09 * globalHeight + -0.75f * globalHeight) * limbSwingAmount);
-        leftForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed - 1.0) * 0.03 * globalHeight + 0.2f * globalHeight) * limbSwingAmount);
+        leftShoulder.addRotationX(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.09 * globalHeight + -0.75f * globalHeight) * limbSwingAmount);
+        leftForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.03 * globalHeight + 0.2f * globalHeight) * limbSwingAmount);
         leftHand.addRotationX(blend * 0.5f * limbSwingAmount * globalHeight);
 
         rightShoulder.addRotationY(blend * 0.85f * limbSwingAmount * globalHeight);
-        rightShoulder.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed + 0.52) * 0.09 * globalHeight + -0.75f * globalHeight) * limbSwingAmount);
-        rightForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed - 1.0) * 0.03 * globalHeight + 0.2f * globalHeight) * limbSwingAmount);
+        rightShoulder.addRotationX(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.09 * globalHeight + -0.75f * globalHeight) * limbSwingAmount);
+        rightForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.03 * globalHeight + 0.2f * globalHeight) * limbSwingAmount);
         rightHand.addRotationX(blend * 0.5f * limbSwingAmount * globalHeight);
     }
 
-    private void walkRightAnim(float blend, float limbSwing, float limbSwingAmount) {
+    private void walkRightAnim(float blend, float limbSwing, float limbSwingAmount, float speed) {
         MowzieGeoBone head = getMowzieBone("head");
         MowzieGeoBone neck = getMowzieBone("neck");
         MowzieGeoBone hips = getMowzieBone("hips");
@@ -295,60 +295,59 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
         MowzieGeoBone rightForeArm = getMowzieBone("rightForeArm");
         MowzieGeoBone rightHand = getMowzieBone("rightHand");
 
-        float globalSpeed = 1f;
         float globalHeight = 1.5f;
         float globalDegree = 1.5f;
 
-        hips.addPositionY(blend * (float) (Math.cos(limbSwing * globalSpeed) * 1.5f * globalHeight) * limbSwingAmount);
+        hips.addPositionY(blend * (float) (Math.cos(limbSwing * speed) * 1.5f * globalHeight) * limbSwingAmount);
         hips.addRotationX(blend * -0.1f * limbSwingAmount * globalHeight);
-        hips.addRotationY(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 1.0) * -0.1f * globalHeight) * limbSwingAmount);
+        hips.addRotationY(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 1.0) * -0.1f * globalHeight) * limbSwingAmount);
         hips.addRotationZ(blend * -0.08f * limbSwingAmount * globalHeight);
-        chest.addRotationY(blend * (float) (-Math.cos(limbSwing * globalSpeed * 0.5 + 1.0) * -0.2f * globalHeight) * limbSwingAmount);
-        stomach.addRotationX(blend * -(float) (Math.cos(limbSwing * globalSpeed + 1.4) * 0.025 * globalHeight) * limbSwingAmount);
-        stomach.addRotationZ(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 1.4) * 0.02 * globalHeight) * limbSwingAmount);
-        stomach.addRotationZ(blend * (float) (Math.cos(limbSwing * globalSpeed - 0.5) * 0.02 * globalHeight) * limbSwingAmount);
-        neck.addRotationY(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 1.0) * -0.1f * globalHeight) * limbSwingAmount);
-        neck.addRotationX(blend * -(float) (Math.cos(limbSwing * globalSpeed) * 0.175 * globalHeight) * limbSwingAmount);
-        head.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed + 0.175) * 0.175 * globalHeight + 0.1 * globalHeight) * limbSwingAmount);
-        head.addRotationZ(blend * -(float) (Math.cos(limbSwing * globalSpeed * 0.5 + 1.4) * 0.02 * globalHeight) * limbSwingAmount);
-        head.addRotationZ(blend * -(float) (Math.cos(limbSwing * globalSpeed - 0.5) * 0.02 * globalHeight) * limbSwingAmount);
+        chest.addRotationY(blend * (float) (-Math.cos(limbSwing * speed * 0.5 + 1.0) * -0.2f * globalHeight) * limbSwingAmount);
+        stomach.addRotationX(blend * -(float) (Math.cos(limbSwing * speed + 1.4) * 0.025 * globalHeight) * limbSwingAmount);
+        stomach.addRotationZ(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 1.4) * 0.02 * globalHeight) * limbSwingAmount);
+        stomach.addRotationZ(blend * (float) (Math.cos(limbSwing * speed - 0.5) * 0.02 * globalHeight) * limbSwingAmount);
+        neck.addRotationY(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 1.0) * -0.1f * globalHeight) * limbSwingAmount);
+        neck.addRotationX(blend * -(float) (Math.cos(limbSwing * speed) * 0.175 * globalHeight) * limbSwingAmount);
+        head.addRotationX(blend * (float) (Math.cos(limbSwing * speed + 0.175) * 0.175 * globalHeight + 0.1 * globalHeight) * limbSwingAmount);
+        head.addRotationZ(blend * -(float) (Math.cos(limbSwing * speed * 0.5 + 1.4) * 0.02 * globalHeight) * limbSwingAmount);
+        head.addRotationZ(blend * -(float) (Math.cos(limbSwing * speed - 0.5) * 0.02 * globalHeight) * limbSwingAmount);
         head.addRotationZ(blend * 0.03f * limbSwingAmount * globalHeight);
 
         leftThigh.addRotationX(blend * 0.05f * limbSwingAmount * globalHeight);
-        leftThigh.addRotationZ(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 1.5) * 0.55f * globalDegree + 0.05 * globalDegree) * limbSwingAmount);
-        leftThigh.addRotationY(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 1.5) * 0.1f * globalDegree - 0.15) * limbSwingAmount);
-        leftShin.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 2.40) * -0.7f * globalDegree) * limbSwingAmount);
-        leftAnkle.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 2.40) * 1.1f * globalDegree + 0.1f * globalDegree) * limbSwingAmount);
-        leftFoot.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 2.5) * -1.3f * globalDegree - 0.6f * globalDegree) * limbSwingAmount);
-        leftFoot.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 1 - 0.2) * -0.2f * globalDegree) * limbSwingAmount);
-        leftFoot.addRotationY(blend * -(float) (Math.cos(limbSwing * globalSpeed * 0.5 + 2.5) * -0.4f * globalDegree) * limbSwingAmount);
-        leftFoot.addRotationY(blend * -(float) (Math.cos(limbSwing * globalSpeed * 1 - 0.2) * -0.2f * globalDegree) * limbSwingAmount);
-        leftToesBack.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 3.1) * 1.6f * globalDegree + 1.4f * globalDegree) * limbSwingAmount);
-        leftToesBack.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 1 + 0.1) * 0.3f * globalDegree) * limbSwingAmount);
+        leftThigh.addRotationZ(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 1.5) * 0.55f * globalDegree + 0.05 * globalDegree) * limbSwingAmount);
+        leftThigh.addRotationY(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 1.5) * 0.1f * globalDegree - 0.15) * limbSwingAmount);
+        leftShin.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 2.40) * -0.7f * globalDegree) * limbSwingAmount);
+        leftAnkle.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 2.40) * 1.1f * globalDegree + 0.1f * globalDegree) * limbSwingAmount);
+        leftFoot.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 2.5) * -1.3f * globalDegree - 0.6f * globalDegree) * limbSwingAmount);
+        leftFoot.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 1 - 0.2) * -0.2f * globalDegree) * limbSwingAmount);
+        leftFoot.addRotationY(blend * -(float) (Math.cos(limbSwing * speed * 0.5 + 2.5) * -0.4f * globalDegree) * limbSwingAmount);
+        leftFoot.addRotationY(blend * -(float) (Math.cos(limbSwing * speed * 1 - 0.2) * -0.2f * globalDegree) * limbSwingAmount);
+        leftToesBack.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 3.1) * 1.6f * globalDegree + 1.4f * globalDegree) * limbSwingAmount);
+        leftToesBack.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 1 + 0.1) * 0.3f * globalDegree) * limbSwingAmount);
 
         rightThigh.addRotationX(blend * -0.05f * limbSwingAmount * globalHeight);
-        rightThigh.addRotationZ(blend * -(float) (Math.cos(limbSwing * globalSpeed * 0.5 + 1.5) * 0.55f * globalDegree - 0.05 * globalDegree) * limbSwingAmount);
-        rightThigh.addRotationY(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 1.5) * 0.1f * globalDegree + 0.15) * limbSwingAmount);
-        rightShin.addRotationX(blend * -(float) (Math.cos(limbSwing * globalSpeed * 0.5 + 2.40) * -0.7f * globalDegree) * limbSwingAmount);
-        rightAnkle.addRotationX(blend * -(float) (Math.cos(limbSwing * globalSpeed * 0.5 + 2.40) * 1.1f * globalDegree - 0.1f * globalDegree) * limbSwingAmount);
-        rightFoot.addRotationX(blend * -(float) (Math.cos(limbSwing * globalSpeed * 0.5 + 2.5) * -1.3f * globalDegree + 0.6f * globalDegree) * limbSwingAmount);
-        rightFoot.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 1 - 0.2) * -0.2f * globalDegree) * limbSwingAmount);
-        rightFoot.addRotationY(blend * (float) (Math.cos(limbSwing * globalSpeed * 0.5 + 2.5) * -0.4f * globalDegree) * limbSwingAmount);
-        rightFoot.addRotationY(blend * -(float) (Math.cos(limbSwing * globalSpeed * 1 - 0.2) * -0.2f * globalDegree) * limbSwingAmount);
-        rightToesBack.addRotationX(blend * -(float) (Math.cos(limbSwing * globalSpeed * 0.5 + 3.1) * 1.6f * globalDegree - 1.4f * globalDegree) * limbSwingAmount);
-        rightToesBack.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed * 1 + 0.1) * 0.3f * globalDegree) * limbSwingAmount);
+        rightThigh.addRotationZ(blend * -(float) (Math.cos(limbSwing * speed * 0.5 + 1.5) * 0.55f * globalDegree - 0.05 * globalDegree) * limbSwingAmount);
+        rightThigh.addRotationY(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 1.5) * 0.1f * globalDegree + 0.15) * limbSwingAmount);
+        rightShin.addRotationX(blend * -(float) (Math.cos(limbSwing * speed * 0.5 + 2.40) * -0.7f * globalDegree) * limbSwingAmount);
+        rightAnkle.addRotationX(blend * -(float) (Math.cos(limbSwing * speed * 0.5 + 2.40) * 1.1f * globalDegree - 0.1f * globalDegree) * limbSwingAmount);
+        rightFoot.addRotationX(blend * -(float) (Math.cos(limbSwing * speed * 0.5 + 2.5) * -1.3f * globalDegree + 0.6f * globalDegree) * limbSwingAmount);
+        rightFoot.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 1 - 0.2) * -0.2f * globalDegree) * limbSwingAmount);
+        rightFoot.addRotationY(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 2.5) * -0.4f * globalDegree) * limbSwingAmount);
+        rightFoot.addRotationY(blend * -(float) (Math.cos(limbSwing * speed * 1 - 0.2) * -0.2f * globalDegree) * limbSwingAmount);
+        rightToesBack.addRotationX(blend * -(float) (Math.cos(limbSwing * speed * 0.5 + 3.1) * 1.6f * globalDegree - 1.4f * globalDegree) * limbSwingAmount);
+        rightToesBack.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 1 + 0.1) * 0.3f * globalDegree) * limbSwingAmount);
 
-        rightShin.addRotationX(blend * -(float) (Math.pow(Math.cos(limbSwing * 0.25 * globalSpeed - 0.6 + Math.PI/2.0), 12) * 0.6f * globalHeight) * limbSwingAmount);
-        rightAnkle.addRotationX(blend * (float) (Math.pow(Math.cos(limbSwing * 0.25 * globalSpeed - 0.6 + Math.PI/2.0), 12) * 0.6f * globalHeight) * limbSwingAmount);
+        rightShin.addRotationX(blend * -(float) (Math.pow(Math.cos(limbSwing * 0.25 * speed - 0.6 + Math.PI/2.0), 12) * 0.6f * globalHeight) * limbSwingAmount);
+        rightAnkle.addRotationX(blend * (float) (Math.pow(Math.cos(limbSwing * 0.25 * speed - 0.6 + Math.PI/2.0), 12) * 0.6f * globalHeight) * limbSwingAmount);
 
         leftShoulder.addRotationY(blend * -0.85f * limbSwingAmount * globalHeight);
-        leftShoulder.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed + 0.52) * 0.09 * globalHeight + -0.75f * globalHeight) * limbSwingAmount);
-        leftForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed - 1.0) * 0.03 * globalHeight + 0.2f * globalHeight) * limbSwingAmount);
+        leftShoulder.addRotationX(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.09 * globalHeight + -0.75f * globalHeight) * limbSwingAmount);
+        leftForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.03 * globalHeight + 0.2f * globalHeight) * limbSwingAmount);
         leftHand.addRotationX(blend * 0.5f * limbSwingAmount * globalHeight);
 
         rightShoulder.addRotationY(blend * 0.85f * limbSwingAmount * globalHeight);
-        rightShoulder.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed + 0.52) * 0.09 * globalHeight + -0.75f * globalHeight) * limbSwingAmount);
-        rightForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * globalSpeed - 1.0) * 0.03 * globalHeight + 0.2f * globalHeight) * limbSwingAmount);
+        rightShoulder.addRotationX(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.09 * globalHeight + -0.75f * globalHeight) * limbSwingAmount);
+        rightForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.03 * globalHeight + 0.2f * globalHeight) * limbSwingAmount);
         rightHand.addRotationX(blend * 0.5f * limbSwingAmount * globalHeight);
     }
 
