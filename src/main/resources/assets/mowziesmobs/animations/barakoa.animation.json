@@ -181,8 +181,80 @@
 				}
 			}
 		},
-		"barakoa_idle": {
-			"loop": true
+		"idle": {
+			"loop": true,
+			"bones": {
+				"rightShoulder": {
+					"rotation": {
+						"vector": [-27.5, -20, -32.5]
+					}
+				},
+				"rightForeArm": {
+					"rotation": {
+						"vector": [-22.5, 0, 0]
+					}
+				},
+				"rightHand": {
+					"rotation": {
+						"vector": [0, 0, -140]
+					}
+				},
+				"rightThumb": {
+					"rotation": {
+						"vector": [0, 0, 97.5]
+					}
+				},
+				"leftShoulder": {
+					"rotation": {
+						"vector": [-17.5, 17.5, 30]
+					}
+				},
+				"leftForeArm": {
+					"rotation": {
+						"vector": [-42.5, 0, 0]
+					}
+				},
+				"leftHand": {
+					"rotation": {
+						"vector": [0, 0, 115]
+					}
+				},
+				"leftThumb": {
+					"rotation": {
+						"vector": [0, 0, -95]
+					}
+				},
+				"locomotionAnimController": {
+					"position": {
+						"vector": [1, 0, 0]
+					}
+				}
+			}
+		},
+		"walk_switch": {
+			"loop": true,
+			"bones": {
+				"locomotionAnimController": {
+					"position": {
+						"vector": [1, 0, 0]
+					}
+				},
+				"walkRunSwitchController": {
+					"position": {
+						"vector": [0, 0, 0]
+					}
+				}
+			}
+		},
+		"run_switch": {
+			"loop": true,
+			"bones": {
+				"walkRunSwitchController": {
+					"position": {
+						"vector": [1, 0, 0]
+					}
+				}
+			}
 		}
 	},
 	"geckolib_format_version": 2

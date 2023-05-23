@@ -5,9 +5,9 @@ import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoMo
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
@@ -40,20 +40,23 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
         MowzieGeoBone head = getMowzieBone("head");
         MowzieGeoBone neck = getMowzieBone("neck");
         EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
-        head.addRotationX(extraData.headPitch * ((float) Math.PI / 180F) / 2f);
-        head.addRotationY(extraData.netHeadYaw * ((float) Math.PI / 180F) / 2f);
-        neck.addRotationX(extraData.headPitch * ((float) Math.PI / 180F) / 2f);
-        neck.addRotationY(extraData.netHeadYaw * ((float) Math.PI / 180F) / 2f);
+        float headYaw = Mth.wrapDegrees(extraData.netHeadYaw);
+        float headPitch = Mth.wrapDegrees(extraData.headPitch);
+        head.addRotationX(headPitch * ((float) Math.PI / 180F) / 2f);
+        head.addRotationY(headYaw * ((float) Math.PI / 180F) / 2f);
+        neck.addRotationX(headPitch * ((float) Math.PI / 180F) / 2f);
+        neck.addRotationY(headYaw * ((float) Math.PI / 180F) / 2f);
 
+        float animSpeed = 1.4f;
         float limbSwing = customPredicate.getLimbSwing();
         float limbSwingAmount = customPredicate.getLimbSwingAmount();
+
 //        limbSwing = 0.5f * (entity.tickCount + customPredicate.getPartialTick());
 //        limbSwingAmount = 1f;
-        float animSpeed = 1.4f;
-
 //        float angle = 0.03f * (entity.tickCount + customPredicate.getPartialTick());
 //        Vec3 moveVec = new Vec3(1.0, 0, 0);
 //        moveVec = moveVec.yRot(angle);
+
         Vec3 moveVec = entity.getDeltaMovement().normalize().yRot((float) Math.toRadians(entity.yBodyRot + 90.0));
         float forward = (float) Math.max(0, new Vec3(1.0, 0, 0).dot(moveVec));
         float backward = (float) Math.max(0, new Vec3(-1.0, 0, 0).dot(moveVec));
@@ -61,11 +64,15 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
         float right = (float) Math.max(0, new Vec3(0, 0, 1.0).dot(moveVec));
         limbSwingAmount *= 2;
         limbSwingAmount = Math.min(0.7f, limbSwingAmount);
-        walkForwardAnim(forward, limbSwing, limbSwingAmount, animSpeed);
-        walkBackwardAnim(backward, limbSwing, limbSwingAmount, animSpeed);
-        walkLeftAnim(left, limbSwing, limbSwingAmount, animSpeed);
-        walkRightAnim(right, limbSwing, limbSwingAmount, animSpeed);
-        runAnim(0.0f, limbSwing, limbSwingAmount, animSpeed);
+        float locomotionAnimController = getControllerValue("locomotionAnimController");
+        float runAnim = getControllerValue("walkRunSwitchController");
+        float walkAnim = 1.0f - runAnim;
+        walkForwardAnim(forward * locomotionAnimController * walkAnim, limbSwing, limbSwingAmount, animSpeed);
+        walkBackwardAnim(backward * locomotionAnimController * walkAnim, limbSwing, limbSwingAmount, animSpeed);
+        walkLeftAnim(left * locomotionAnimController * walkAnim, limbSwing, limbSwingAmount, animSpeed);
+        walkRightAnim(right * locomotionAnimController * walkAnim, limbSwing, limbSwingAmount, animSpeed);
+
+        runAnim(locomotionAnimController * runAnim, limbSwing, limbSwingAmount, animSpeed);
     }
 
     private void runAnim(float blend, float limbSwing, float limbSwingAmount, float speed) {
@@ -84,15 +91,16 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
         MowzieGeoBone rightAnkle = getMowzieBone("rightAnkle");
         MowzieGeoBone rightFoot = getMowzieBone("rightFoot");
         MowzieGeoBone rightToesBack = getMowzieBone("rightToesBack");
-        MowzieGeoBone leftShoulder = getMowzieBone("leftShoulder");
+        MowzieGeoBone leftArm = getMowzieBone("leftArm");
         MowzieGeoBone leftForeArm = getMowzieBone("leftForeArm");
         MowzieGeoBone leftHand = getMowzieBone("leftHand");
-        MowzieGeoBone rightShoulder = getMowzieBone("rightShoulder");
+        MowzieGeoBone rightArm = getMowzieBone("rightArm");
         MowzieGeoBone rightForeArm = getMowzieBone("rightForeArm");
         MowzieGeoBone rightHand = getMowzieBone("rightHand");
 
         float globalHeight = 1.5f;
         float globalDegree = 1.7f;
+        speed *= 0.8;
 
         hips.addPositionY(blend * (float) (Math.cos(limbSwing * speed - 1.7) * 2f * globalHeight + 4 * globalHeight) * limbSwingAmount);
         hips.addRotationX(blend * -0.4f * limbSwingAmount * globalHeight);
@@ -100,8 +108,8 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
         chest.addRotationY(blend * (float) (-Math.cos(limbSwing * speed * 0.5 + 1.0) * -0.2f * globalHeight) * limbSwingAmount);
         stomach.addRotationX(blend * -(float) (Math.cos(limbSwing * speed + 1.4 - 1.7) * 0.025 * globalHeight) * limbSwingAmount);
         neck.addRotationY(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 1.0) * -0.1f * globalHeight) * limbSwingAmount);
-        neck.addRotationX(blend * -(float) (Math.cos(limbSwing * speed - 1.5) * 0.19 * globalHeight - 0.2 * globalHeight) * limbSwingAmount);
-        head.addRotationX(blend * (float) (Math.cos(limbSwing * speed + 0.175 - 1.7) * 0.19 * globalHeight + 0.2 * globalHeight) * limbSwingAmount);
+        neck.addRotationX(blend * -(float) (Math.cos(limbSwing * speed - 1.5) * 0.25 * globalHeight - 0.2 * globalHeight) * limbSwingAmount);
+        head.addRotationX(blend * (float) (Math.cos(limbSwing * speed + 0.175 - 1.7) * 0.25 * globalHeight + 0.2 * globalHeight) * limbSwingAmount);
 
         leftThigh.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 1.5) * 0.55f * globalDegree) * limbSwingAmount);
         leftThigh.addRotationY(blend * (float) (Math.cos(limbSwing * speed * 0.5 + 1.5) * 0.1f * globalDegree - 0.2f) * limbSwingAmount);
@@ -119,15 +127,13 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
         rightToesBack.addRotationX(blend * (float) (-Math.cos(limbSwing * speed * 0.5 + 3.1) * 1.6f * globalDegree + 1.8f * globalDegree) * limbSwingAmount);
         rightToesBack.addRotationX(blend * (float) (-Math.cos(limbSwing * speed * 1 + 0.1) * 0.3f * globalDegree) * limbSwingAmount);
 
-        leftShoulder.addRotationY(blend * -0.85f * limbSwingAmount * globalHeight);
-        leftShoulder.addRotationX(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.12 * globalHeight + -0.75f * globalHeight) * limbSwingAmount);
-        leftForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.05 * globalHeight + 0.2f * globalHeight) * limbSwingAmount);
-        leftHand.addRotationX(blend * 0.5f * limbSwingAmount * globalHeight);
+        leftArm.addRotationY(blend * (float) -(Math.cos(limbSwing * speed + 0.52) * 0.09 * globalHeight) * limbSwingAmount);
+        leftArm.addRotationZ(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.09 * globalHeight) * limbSwingAmount);
+        leftForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.05 * globalHeight) * limbSwingAmount);
 
-        rightShoulder.addRotationY(blend * 0.85f * limbSwingAmount * globalHeight);
-        rightShoulder.addRotationX(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.12 * globalHeight + -0.75f * globalHeight) * limbSwingAmount);
-        rightForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.05 * globalHeight + 0.2f * globalHeight) * limbSwingAmount);
-        rightHand.addRotationX(blend * 0.5f * limbSwingAmount * globalHeight);
+        rightArm.addRotationY(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.09 * globalHeight) * limbSwingAmount);
+        rightArm.addRotationZ(blend * (float) -(Math.cos(limbSwing * speed + 0.52) * 0.09 * globalHeight) * limbSwingAmount);
+        rightForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.05 * globalHeight) * limbSwingAmount);
     }
 
     private void walkForwardAnim(float blend, float limbSwing, float limbSwingAmount, float speed) {
@@ -146,10 +152,10 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
         MowzieGeoBone rightAnkle = getMowzieBone("rightAnkle");
         MowzieGeoBone rightFoot = getMowzieBone("rightFoot");
         MowzieGeoBone rightToesBack = getMowzieBone("rightToesBack");
-        MowzieGeoBone leftShoulder = getMowzieBone("leftShoulder");
+        MowzieGeoBone leftArm = getMowzieBone("leftArm");
         MowzieGeoBone leftForeArm = getMowzieBone("leftForeArm");
         MowzieGeoBone leftHand = getMowzieBone("leftHand");
-        MowzieGeoBone rightShoulder = getMowzieBone("rightShoulder");
+        MowzieGeoBone rightArm = getMowzieBone("rightArm");
         MowzieGeoBone rightForeArm = getMowzieBone("rightForeArm");
         MowzieGeoBone rightHand = getMowzieBone("rightHand");
 
@@ -183,15 +189,13 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
         rightToesBack.addRotationX(blend * -(float) (Math.cos(limbSwing * speed * 0.5 + 3.1) * 1.6f * globalDegree - 1.4f * globalDegree) * limbSwingAmount);
         rightToesBack.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 1 + 0.1) * 0.3f * globalDegree) * limbSwingAmount);
 
-        leftShoulder.addRotationY(blend * -0.85f * limbSwingAmount * globalHeight);
-        leftShoulder.addRotationX(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.09 * globalHeight + -0.75f * globalHeight) * limbSwingAmount);
-        leftForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.03 * globalHeight + 0.2f * globalHeight) * limbSwingAmount);
-        leftHand.addRotationX(blend * 0.5f * limbSwingAmount * globalHeight);
+        leftArm.addRotationY(blend * (float) -(Math.cos(limbSwing * speed + 0.52) * 0.0707 * globalHeight) * limbSwingAmount);
+        leftArm.addRotationZ(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.0707 * globalHeight) * limbSwingAmount);
+        leftForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.03 * globalHeight) * limbSwingAmount);
 
-        rightShoulder.addRotationY(blend * 0.85f * limbSwingAmount * globalHeight);
-        rightShoulder.addRotationX(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.09 * globalHeight + -0.75f * globalHeight) * limbSwingAmount);
-        rightForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.03 * globalHeight + 0.2f * globalHeight) * limbSwingAmount);
-        rightHand.addRotationX(blend * 0.5f * limbSwingAmount * globalHeight);
+        rightArm.addRotationY(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.0707 * globalHeight) * limbSwingAmount);
+        rightArm.addRotationZ(blend * (float) -(Math.cos(limbSwing * speed + 0.52) * 0.0707 * globalHeight) * limbSwingAmount);
+        rightForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.03 * globalHeight) * limbSwingAmount);
     }
 
     private void walkBackwardAnim(float blend, float limbSwing, float limbSwingAmount, float speed) {
@@ -210,10 +214,10 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
         MowzieGeoBone rightAnkle = getMowzieBone("rightAnkle");
         MowzieGeoBone rightFoot = getMowzieBone("rightFoot");
         MowzieGeoBone rightToesBack = getMowzieBone("rightToesBack");
-        MowzieGeoBone leftShoulder = getMowzieBone("leftShoulder");
+        MowzieGeoBone leftArm = getMowzieBone("leftArm");
         MowzieGeoBone leftForeArm = getMowzieBone("leftForeArm");
         MowzieGeoBone leftHand = getMowzieBone("leftHand");
-        MowzieGeoBone rightShoulder = getMowzieBone("rightShoulder");
+        MowzieGeoBone rightArm = getMowzieBone("rightArm");
         MowzieGeoBone rightForeArm = getMowzieBone("rightForeArm");
         MowzieGeoBone rightHand = getMowzieBone("rightHand");
 
@@ -247,15 +251,13 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
         rightToesBack.addRotationX(blend * -(float) (Math.cos(limbSwing * speed * 0.5 - 3.1) * 1.6f * globalDegree - 1.4f * globalDegree) * limbSwingAmount);
         rightToesBack.addRotationX(blend * (float) (Math.cos(limbSwing * speed * 1 - 0.1) * 0.3f * globalDegree) * limbSwingAmount);
 
-        leftShoulder.addRotationY(blend * -1.0f * limbSwingAmount * globalHeight);
-        leftShoulder.addRotationX(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.09 * globalHeight + -0.75f * globalHeight) * limbSwingAmount);
-        leftForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.03 * globalHeight + 0.2f * globalHeight) * limbSwingAmount);
-        leftHand.addRotationX(blend * 0.5f * limbSwingAmount * globalHeight);
+        leftArm.addRotationY(blend * (float) -(Math.cos(limbSwing * speed + 0.52) * 0.0707 * globalHeight) * limbSwingAmount);
+        leftArm.addRotationZ(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.0707 * globalHeight) * limbSwingAmount);
+        leftForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.03 * globalHeight) * limbSwingAmount);
 
-        rightShoulder.addRotationY(blend * 1.0f * limbSwingAmount * globalHeight);
-        rightShoulder.addRotationX(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.09 * globalHeight + -0.75f * globalHeight) * limbSwingAmount);
-        rightForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.03 * globalHeight + 0.2f * globalHeight) * limbSwingAmount);
-        rightHand.addRotationX(blend * 0.5f * limbSwingAmount * globalHeight);
+        rightArm.addRotationY(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.0707 * globalHeight) * limbSwingAmount);
+        rightArm.addRotationZ(blend * (float) -(Math.cos(limbSwing * speed + 0.52) * 0.0707 * globalHeight) * limbSwingAmount);
+        rightForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.03 * globalHeight) * limbSwingAmount);
     }
 
     private void walkLeftAnim(float blend, float limbSwing, float limbSwingAmount, float speed) {
@@ -274,10 +276,10 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
         MowzieGeoBone rightAnkle = getMowzieBone("rightAnkle");
         MowzieGeoBone rightFoot = getMowzieBone("rightFoot");
         MowzieGeoBone rightToesBack = getMowzieBone("rightToesBack");
-        MowzieGeoBone leftShoulder = getMowzieBone("leftShoulder");
+        MowzieGeoBone leftArm = getMowzieBone("leftArm");
         MowzieGeoBone leftForeArm = getMowzieBone("leftForeArm");
         MowzieGeoBone leftHand = getMowzieBone("leftHand");
-        MowzieGeoBone rightShoulder = getMowzieBone("rightShoulder");
+        MowzieGeoBone rightArm = getMowzieBone("rightArm");
         MowzieGeoBone rightForeArm = getMowzieBone("rightForeArm");
         MowzieGeoBone rightHand = getMowzieBone("rightHand");
 
@@ -326,15 +328,13 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
         leftShin.addRotationX(blend * -(float) (Math.pow(Math.cos(limbSwing * 0.25 * speed - 0.6), 12) * 0.6f * globalHeight) * limbSwingAmount);
         leftAnkle.addRotationX(blend * (float) (Math.pow(Math.cos(limbSwing * 0.25 * speed - 0.6), 12) * 0.6f * globalHeight) * limbSwingAmount);
 
-        leftShoulder.addRotationY(blend * -0.85f * limbSwingAmount * globalHeight);
-        leftShoulder.addRotationX(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.09 * globalHeight + -0.75f * globalHeight) * limbSwingAmount);
-        leftForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.03 * globalHeight + 0.2f * globalHeight) * limbSwingAmount);
-        leftHand.addRotationX(blend * 0.5f * limbSwingAmount * globalHeight);
+        leftArm.addRotationY(blend * (float) -(Math.cos(limbSwing * speed + 0.52) * 0.0707 * globalHeight) * limbSwingAmount);
+        leftArm.addRotationZ(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.0707 * globalHeight) * limbSwingAmount);
+        leftForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.03 * globalHeight) * limbSwingAmount);
 
-        rightShoulder.addRotationY(blend * 0.85f * limbSwingAmount * globalHeight);
-        rightShoulder.addRotationX(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.09 * globalHeight + -0.75f * globalHeight) * limbSwingAmount);
-        rightForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.03 * globalHeight + 0.2f * globalHeight) * limbSwingAmount);
-        rightHand.addRotationX(blend * 0.5f * limbSwingAmount * globalHeight);
+        rightArm.addRotationY(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.0707 * globalHeight) * limbSwingAmount);
+        rightArm.addRotationZ(blend * (float) -(Math.cos(limbSwing * speed + 0.52) * 0.0707 * globalHeight) * limbSwingAmount);
+        rightForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.03 * globalHeight) * limbSwingAmount);
     }
 
     private void walkRightAnim(float blend, float limbSwing, float limbSwingAmount, float speed) {
@@ -353,10 +353,10 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
         MowzieGeoBone rightAnkle = getMowzieBone("rightAnkle");
         MowzieGeoBone rightFoot = getMowzieBone("rightFoot");
         MowzieGeoBone rightToesBack = getMowzieBone("rightToesBack");
-        MowzieGeoBone leftShoulder = getMowzieBone("leftShoulder");
+        MowzieGeoBone leftArm = getMowzieBone("leftArm");
         MowzieGeoBone leftForeArm = getMowzieBone("leftForeArm");
         MowzieGeoBone leftHand = getMowzieBone("leftHand");
-        MowzieGeoBone rightShoulder = getMowzieBone("rightShoulder");
+        MowzieGeoBone rightArm = getMowzieBone("rightArm");
         MowzieGeoBone rightForeArm = getMowzieBone("rightForeArm");
         MowzieGeoBone rightHand = getMowzieBone("rightHand");
 
@@ -405,15 +405,13 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
         rightShin.addRotationX(blend * -(float) (Math.pow(Math.cos(limbSwing * 0.25 * speed - 0.6 + Math.PI/2.0), 12) * 0.6f * globalHeight) * limbSwingAmount);
         rightAnkle.addRotationX(blend * (float) (Math.pow(Math.cos(limbSwing * 0.25 * speed - 0.6 + Math.PI/2.0), 12) * 0.6f * globalHeight) * limbSwingAmount);
 
-        leftShoulder.addRotationY(blend * -0.85f * limbSwingAmount * globalHeight);
-        leftShoulder.addRotationX(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.09 * globalHeight + -0.75f * globalHeight) * limbSwingAmount);
-        leftForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.03 * globalHeight + 0.2f * globalHeight) * limbSwingAmount);
-        leftHand.addRotationX(blend * 0.5f * limbSwingAmount * globalHeight);
+        leftArm.addRotationY(blend * (float) -(Math.cos(limbSwing * speed + 0.52) * 0.0707 * globalHeight) * limbSwingAmount);
+        leftArm.addRotationZ(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.0707 * globalHeight) * limbSwingAmount);
+        leftForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.03 * globalHeight) * limbSwingAmount);
 
-        rightShoulder.addRotationY(blend * 0.85f * limbSwingAmount * globalHeight);
-        rightShoulder.addRotationX(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.09 * globalHeight + -0.75f * globalHeight) * limbSwingAmount);
-        rightForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.03 * globalHeight + 0.2f * globalHeight) * limbSwingAmount);
-        rightHand.addRotationX(blend * 0.5f * limbSwingAmount * globalHeight);
+        rightArm.addRotationY(blend * (float) (Math.cos(limbSwing * speed + 0.52) * 0.0707 * globalHeight) * limbSwingAmount);
+        rightArm.addRotationZ(blend * (float) -(Math.cos(limbSwing * speed + 0.52) * 0.0707 * globalHeight) * limbSwingAmount);
+        rightForeArm.addRotationX(blend * (float) (Math.cos(limbSwing * speed - 1.0) * 0.03 * globalHeight) * limbSwingAmount);
     }
 
 }

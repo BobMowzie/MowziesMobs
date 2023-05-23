@@ -274,7 +274,7 @@ public class TunnelingAbility extends PlayerAbility {
     @Override
     public void codeAnimations(MowzieAnimatedGeoModel<? extends IAnimatable> model, float partialTick) {
         super.codeAnimations(model, partialTick);
-        float faceMotionController = 1f - model.getControllerValue("FaceVelocityController");
+        float faceMotionController = 1f - model.getControllerValueInverted("FaceVelocityController");
         Vec3 moveVec = getUser().getDeltaMovement().normalize();
         pitch = (float) Mth.lerp(0.3 * partialTick, pitch, moveVec.y());
         MowzieGeoBone com = model.getMowzieBone("CenterOfMass");

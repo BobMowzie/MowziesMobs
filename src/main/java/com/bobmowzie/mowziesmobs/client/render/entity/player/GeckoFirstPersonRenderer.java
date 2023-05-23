@@ -10,8 +10,6 @@ import com.bobmowzie.mowziesmobs.server.ability.PlayerAbility;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
@@ -25,7 +23,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -123,7 +120,7 @@ public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements IGeo
 
             PoseStack newMatrixStack = new PoseStack();
 
-            float fixedPitchController = 1f - this.modelProvider.getControllerValue("FixedPitchController" + sideName);
+            float fixedPitchController = 1f - this.modelProvider.getControllerValueInverted("FixedPitchController" + sideName);
             newMatrixStack.mulPose(new Quaternion(Vector3f.XP, pitch * fixedPitchController, true));
 
             newMatrixStack.last().normal().mul(bone.getWorldSpaceNormal());

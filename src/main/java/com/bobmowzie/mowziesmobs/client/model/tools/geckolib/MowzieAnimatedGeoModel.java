@@ -2,8 +2,6 @@ package com.bobmowzie.mowziesmobs.client.model.tools.geckolib;
 
 import com.bobmowzie.mowziesmobs.server.entity.IAnimationTickable;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
@@ -11,7 +9,6 @@ import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.resource.GeckoLibCache;
 
-import javax.annotation.Nullable;
 import java.util.Collections;
 
 public abstract class MowzieAnimatedGeoModel<T extends IAnimatable & IAnimationTickable> extends AnimatedGeoModel<T> {
@@ -62,8 +59,13 @@ public abstract class MowzieAnimatedGeoModel<T extends IAnimatable & IAnimationT
 
     }
 
-    public float getControllerValue(String controllerName) {
+    public float getControllerValueInverted(String controllerName) {
         if (!isInitialized()) return 1.0f;
         return 1.0f - getBone(controllerName).getPositionX();
+    }
+
+    public float getControllerValue(String controllerName) {
+        if (!isInitialized()) return 0.0f;
+        return getBone(controllerName).getPositionX();
     }
 }

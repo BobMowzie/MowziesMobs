@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
@@ -13,23 +12,13 @@ import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.SimpleAnimationAbility;
-import com.bobmowzie.mowziesmobs.server.ai.EntityAIAvoidEntity;
-import com.bobmowzie.mowziesmobs.server.ai.UseAbilityAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.*;
-import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.*;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
-import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
-import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import com.ilexiconn.llibrary.server.animation.Animation;
-import com.ilexiconn.llibrary.server.animation.AnimationHandler;
-import com.mojang.math.Vector3d;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -43,14 +32,12 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.BodyRotationControl;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.*;
@@ -67,7 +54,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.Animation;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 
@@ -112,7 +101,8 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
 
     protected Vec3 teleportDestination;
 
-    protected MowzieAnimationController<MowzieGeckoEntity> mask_controller = new MowzieAnimationController<>(this, "mask_controller", 0, this::predicateMask);
+    protected MowzieAnimationController<MowzieGeckoEntity> maskController = new MowzieAnimationController<>(this, "mask_controller", 0, this::predicateMask);
+    protected MowzieAnimationController<MowzieGeckoEntity> walkRunController = new MowzieAnimationController<>(this, "walk_run_controller", 4, this::predicateWalkRun);
 
     public EntityBarakoa(EntityType<? extends EntityBarakoa> type, Level world) {
         super(type, world);
@@ -262,13 +252,36 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
     @Override
     public void registerControllers(AnimationData data) {
         super.registerControllers(data);
-        data.addAnimationController(mask_controller);
+        data.addAnimationController(maskController);
+        data.addAnimationController(walkRunController);
     }
 
     protected <E extends IAnimatable> PlayState predicateMask(AnimationEvent<E> event)
     {
         event.getController().setAnimation(new AnimationBuilder().loop("mask_twitch"));
         return PlayState.CONTINUE;
+    }
+
+    protected <E extends IAnimatable> PlayState predicateWalkRun(AnimationEvent<E> event)
+    {
+        float threshold = 0.9f;
+        Animation currentAnim = event.getController().getCurrentAnimation();
+        if (currentAnim != null && currentAnim.animationName.equals("run_switch")) {
+            threshold = 0.7f;
+        }
+
+        if (event.getLimbSwingAmount() > threshold) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("run_switch", ILoopType.EDefaultLoopTypes.LOOP));
+        }
+        else {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("walk_switch", ILoopType.EDefaultLoopTypes.LOOP));
+        }
+        return PlayState.CONTINUE;
+    }
+
+    @Override
+    protected <E extends IAnimatable> void loopingAnimations(AnimationEvent<E> event) {
+        event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.LOOP));
     }
 
     @Override
@@ -299,7 +312,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             int i = Mth.nextInt(random, 0, 11);
             if (i < MMSounds.ENTITY_BARAKOA_TALK.size()) {
                 playSound(MMSounds.ENTITY_BARAKOA_TALK.get(i).get(), 1, 1.5f);
-                AbilityHandler.INSTANCE.sendAbilityMessage(this, IDLE_ABILITY);
+//                AbilityHandler.INSTANCE.sendAbilityMessage(this, IDLE_ABILITY); TODO
             }
         } else {
             int i = Mth.nextInt(random, 0, 7);
@@ -344,7 +357,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
                 if (targetDistance <= 2.5 && getWeapon() == 0) {
                     attacking = false;
                     timeSinceAttack = 0;
-                    AbilityHandler.INSTANCE.sendAbilityMessage(this, ATTACK_ABILITY);
+//                    AbilityHandler.INSTANCE.sendAbilityMessage(this, ATTACK_ABILITY); TODO
                 }
             }
         } else {

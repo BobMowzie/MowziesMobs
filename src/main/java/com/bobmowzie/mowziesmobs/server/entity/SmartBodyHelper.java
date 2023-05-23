@@ -38,8 +38,6 @@ public class SmartBodyHelper extends BodyRotationControl {
 		if (distSq > 2.5e-7) {
 			double moveAngle = (float) Mth.atan2(dz, dx) * (180 / (float) Math.PI) - 90;
 			entity.yBodyRot += Mth.wrapDegrees(moveAngle - entity.yBodyRot) * 0.6F;
-//			this.entity.renderYawOffset = this.entity.rotationYaw;
-//			this.entity.rotationYawHead = approach(this.entity.renderYawOffset, this.entity.rotationYawHead, 75.0F);
 			this.targetYawHead = this.entity.yHeadRot;
 			this.rotateTime = 0;
         } else if (entity.getPassengers().isEmpty() || !(entity.getPassengers().get(0) instanceof Mob)) {

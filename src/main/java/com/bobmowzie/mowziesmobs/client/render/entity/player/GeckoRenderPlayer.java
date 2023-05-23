@@ -6,7 +6,6 @@ import com.bobmowzie.mowziesmobs.client.model.entity.ModelPlayerAnimated;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.entity.FrozenRenderHandler;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.*;
-import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.*;
@@ -30,7 +29,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -202,7 +200,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
         this.modelProvider.setLivingAnimations(geckoPlayer, entityIn.getUUID().hashCode());
         if (this.modelProvider.isInitialized()) {
             this.applyRotationsPlayerRenderer(entityIn, matrixStackIn, f7, f, partialTicks, f1);
-            float bodyRotateAmount = this.modelProvider.getControllerValue("BodyRotateController");
+            float bodyRotateAmount = this.modelProvider.getControllerValueInverted("BodyRotateController");
             this.modelProvider.setRotationAngles(entityIn, f5, f8, f7, Mth.rotLerp(bodyRotateAmount, 0, f2), f6, partialTicks);
 
             MowzieGeoBone leftHeldItem = modelProvider.getMowzieBone("LeftHeldItem");
@@ -289,7 +287,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
                 matrixStackIn.mulPose(Vector3f.YP.rotation((float)(Math.signum(d3) * Math.acos(d2))));
             }
         } else if (f > 0.0F) {
-            float swimController = this.modelProvider.getControllerValue("SwimController");
+            float swimController = this.modelProvider.getControllerValueInverted("SwimController");
             this.applyRotationsLivingRenderer(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks, headYaw);
             float f3 = entityLiving.isInWater() ? -90.0F - entityLiving.getXRot() : -90.0F;
             float f4 = Mth.lerp(f, 0.0F, f3) * swimController;
@@ -309,7 +307,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
 
         Pose pose = entityLiving.getPose();
         if (pose != Pose.SLEEPING) {
-            float bodyRotateAmount = this.modelProvider.getControllerValue("BodyRotateController");
+            float bodyRotateAmount = this.modelProvider.getControllerValueInverted("BodyRotateController");
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180.0F - Mth.rotLerp(bodyRotateAmount, headYaw, rotationYaw)));
         }
 

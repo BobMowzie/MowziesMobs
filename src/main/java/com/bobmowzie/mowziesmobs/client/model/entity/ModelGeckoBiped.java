@@ -137,8 +137,8 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 		
 		this.swimAnimation = entityIn.getSwimAmount(partialTick);
 
-		float headLookAmount = getControllerValue("HeadLookController");
-		float armLookAmount = 1f - getControllerValue("ArmPitchController");
+		float headLookAmount = getControllerValueInverted("HeadLookController");
+		float armLookAmount = 1f - getControllerValueInverted("ArmPitchController");
 		float armLookAmountRight = getBone("ArmPitchController").getPositionY();
 		float armLookAmountLeft = getBone("ArmPitchController").getPositionZ();
 		boolean flag = entityIn.getFallFlyingTicks() > 4;
@@ -171,8 +171,8 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 			f = 1.0F;
 		}
 
-		float legWalkAmount = getControllerValue("LegWalkController");
-		float armSwingAmount = getControllerValue("ArmSwingController");
+		float legWalkAmount = getControllerValueInverted("LegWalkController");
+		float armSwingAmount = getControllerValueInverted("ArmSwingController");
 		float armSwingAmountRight = 1.0f - getBone("ArmSwingController").getPositionY();
 		float armSwingAmountLeft = 1.0f - getBone("ArmSwingController").getPositionZ();
 		this.bipedRightArm().addRotationX(armSwingAmount * armSwingAmountRight *Mth.cos(limbSwing * 0.6662F + (float)Math.PI) * 2.0F * limbSwingAmount * 0.5F / f);
@@ -205,7 +205,7 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 
 //		this.swingAnim(entityIn, ageInTicks);
 
-		float sneakController = getControllerValue("CrouchController");
+		float sneakController = getControllerValueInverted("CrouchController");
 		if (this.isSneak) {
 			this.bipedBody().addRotationX(-0.5F * sneakController);
 			this.getMowzieBone("Neck").addRotationX(0.5F * sneakController);
@@ -222,7 +222,7 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 			this.getMowzieBone("Waist").addPositionY(2f * (1f - sneakController));
 		}
 
-		float armBreathAmount = getControllerValue("ArmBreathController");
+		float armBreathAmount = getControllerValueInverted("ArmBreathController");
 		breathAnim(this.bipedRightArm(), this.bipedLeftArm(), ageInTicks, armBreathAmount);
 
 //		if (this.swimAnimation > 0.0F) {
@@ -301,7 +301,7 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 	}
 
 	private void poseRightArm(Player p_241654_1_) {
-		float armSwingAmount = getControllerValue("ArmSwingController");
+		float armSwingAmount = getControllerValueInverted("ArmSwingController");
 		switch(this.rightArmPose) {
 			case EMPTY:
 				break;
@@ -316,7 +316,7 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 	}
 
 	private void poseLeftArm(Player p_241655_1_) {
-		float armSwingAmount = getControllerValue("ArmSwingController");
+		float armSwingAmount = getControllerValueInverted("ArmSwingController");
 		switch(this.leftArmPose) {
 			case EMPTY:
 				break;

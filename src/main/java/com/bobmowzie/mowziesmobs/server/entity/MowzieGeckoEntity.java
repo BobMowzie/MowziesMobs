@@ -48,8 +48,7 @@ public abstract class MowzieGeckoEntity extends MowzieEntity implements IAnimata
 
     public abstract AbilityType getDeathAbility();
 
-    protected <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event)
-    {
+    protected <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
         getController().transitionLengthTicks = 0;
         AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability();
         if (abilityCapability == null) {
@@ -60,9 +59,13 @@ public abstract class MowzieGeckoEntity extends MowzieEntity implements IAnimata
             return abilityCapability.animationPredicate(event, null);
         }
         else {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("idle"));
+            loopingAnimations(event);
             return PlayState.CONTINUE;
         }
+    }
+
+    protected <E extends IAnimatable> void loopingAnimations(AnimationEvent<E> event) {
+        event.getController().setAnimation(new AnimationBuilder().addAnimation("idle"));
     }
 
     @Override

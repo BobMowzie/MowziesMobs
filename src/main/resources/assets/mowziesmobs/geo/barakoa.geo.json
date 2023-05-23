@@ -382,7 +382,11 @@
 					]
 				},
 				{
-					"name": "walk_anim_controller",
+					"name": "locomotionAnimController",
+					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "walkRunSwitchController",
 					"pivot": [0, 0, 0]
 				}
 			]
