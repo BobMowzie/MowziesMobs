@@ -54,10 +54,15 @@
 					"rotation": [72.5, 0, 0]
 				},
 				{
-					"name": "head",
+					"name": "headJoint",
 					"parent": "neck",
-					"pivot": [0, 33.96987, 1.1045],
+					"pivot": [0, 33.9699, 1.1045],
 					"rotation": [-72.5, 0, 0]
+				},
+				{
+					"name": "head",
+					"parent": "headJoint",
+					"pivot": [0, 33.96987, 1.1045]
 				},
 				{
 					"name": "mask",

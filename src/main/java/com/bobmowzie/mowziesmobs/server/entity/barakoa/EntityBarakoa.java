@@ -274,6 +274,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
     @Override
     protected BodyRotationControl createBodyControl() {
         return new SmartBodyHelper(this);
+//        return super.createBodyControl();
     }
 
     @Override
@@ -371,6 +372,8 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
     protected void updateCircling() {
         LivingEntity target = getTarget();
         if (target != null) {
+            this.lookAt(target, 30.0F, 30.0F);
+
             if (random.nextInt(200) == 0) {
                 circleDirection = !circleDirection;
             }
@@ -379,6 +382,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             } else {
                 circleTick--;
             }
+
             if (!attacking && targetDistance < 4.5) {
                 circleEntity(target, 7, 0.3f, true, circleTick, 0, 1.75f);
             } else {
