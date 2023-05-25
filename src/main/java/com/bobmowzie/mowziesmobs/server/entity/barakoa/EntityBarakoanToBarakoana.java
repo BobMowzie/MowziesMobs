@@ -39,7 +39,7 @@ public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> i
     }
 
     @Override
-    protected int getTribeCircleTick() {
+    protected int getGroupCircleTick() {
         if (leader == null) return 0;
         return leader.circleTick;
     }

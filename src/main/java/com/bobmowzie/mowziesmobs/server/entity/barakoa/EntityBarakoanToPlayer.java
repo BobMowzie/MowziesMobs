@@ -101,7 +101,7 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<Player> {
     }
 
     @Override
-    protected int getTribeCircleTick() {
+    protected int getGroupCircleTick() {
         PlayerCapability.IPlayerCapability capability = getPlayerCapability();
         if (capability == null) return 0;
         return capability.getTribeCircleTick();

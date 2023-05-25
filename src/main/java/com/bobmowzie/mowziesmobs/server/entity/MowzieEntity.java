@@ -4,14 +4,14 @@ import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
 import com.bobmowzie.mowziesmobs.client.sound.BossMusicPlayer;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.world.spawn.SpawnHandler;
-import com.ilexiconn.llibrary.server.animation.Animation;
-import com.ilexiconn.llibrary.server.animation.AnimationHandler;
-import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -44,7 +44,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -80,6 +79,8 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
     private static final UUID HEALTH_CONFIG_MODIFIER_UUID = UUID.fromString("eff1c400-910c-11ec-b909-0242ac120002");
     private static final UUID ATTACK_CONFIG_MODIFIER_UUID = UUID.fromString("f76a7c90-910c-11ec-b909-0242ac120002");
 
+    private static final EntityDataAccessor<Boolean> STRAFING = SynchedEntityData.defineId(MowzieEntity.class, EntityDataSerializers.BOOLEAN);
+
     public MowzieEntity(EntityType<? extends MowzieEntity> type, Level world) {
         super(type, world);
         if (world.isClientSide) {
@@ -106,6 +107,20 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
 
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes().add(Attributes.ATTACK_DAMAGE);
+    }
+
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        entityData.define(STRAFING, false);
+    }
+
+    public void setStrafing(boolean strafing) {
+        entityData.set(STRAFING, strafing);
+    }
+
+    public boolean isStrafing() {
+        return entityData.get(STRAFING);
     }
 
     protected ConfigHandler.SpawnConfig getSpawnConfig() {
@@ -387,11 +402,11 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
         return START_IA_HEALTH_UPDATE_ID;
     }
 
-    public void circleEntity(Entity target, float radius, float speed, boolean direction, int circleFrame, float offset, float moveSpeedMultiplier) {
+    public Vec3 circleEntityPosition(Entity target, float radius, float speed, boolean direction, int circleFrame, float offset) {
         int directionInt = direction ? 1 : -1;
         double t = directionInt * circleFrame * 0.5 * speed / radius + offset;
         Vec3 movePos = target.position().add(radius * Math.cos(t), 0, radius * Math.sin(t));
-        this.getNavigation().moveTo(movePos.x(), movePos.y(), movePos.z(), speed * moveSpeedMultiplier);
+        return movePos;
     }
 
     protected void repelEntities(float x, float y, float z, float radius) {

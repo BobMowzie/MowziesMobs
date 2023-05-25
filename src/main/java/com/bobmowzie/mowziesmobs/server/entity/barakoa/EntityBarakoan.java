@@ -11,6 +11,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.Optional;
@@ -74,20 +75,16 @@ public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarak
                 addAsPackMember();
             }
         }
-        if (shouldSetDead) discard() ;
+        if (shouldSetDead) discard();
     }
 
     @Override
-    protected void updateCircling() {
+    protected Vec3 updateCirclingPosition(float radius, float speed) {
         LivingEntity target = getTarget();
         if (leader != null && target != null) {
-            if (!attacking && targetDistance < 5) {
-                this.circleEntity(target, 7, 0.3f, true, getTribeCircleTick(), (float) ((index + 1) * (Math.PI * 2) / (getPackSize() + 1)), 1.75f);
-            } else {
-                this.circleEntity(target, 7, 0.3f, true, getTribeCircleTick(), (float) ((index + 1) * (Math.PI * 2) / (getPackSize() + 1)), 1);
-            }
+            return this.circleEntityPosition(target, radius, speed, true, getGroupCircleTick(), (float) ((index + 1) * (Math.PI * 2) / (getPackSize() + 1)));
         } else {
-            super.updateCircling();
+            return super.updateCirclingPosition(radius, speed);
         }
     }
 
@@ -129,7 +126,7 @@ public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarak
         return leader != null;
     }
 
-    protected abstract int getTribeCircleTick();
+    protected abstract int getGroupCircleTick();
 
     protected abstract int getPackSize();
 

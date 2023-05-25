@@ -1,5 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.control.BodyRotationControl;
@@ -36,10 +38,19 @@ public class SmartBodyHelper extends BodyRotationControl {
         double dz = delta(histPosZ);
         double distSq = dx * dx + dz * dz;
 		if (distSq > 2.5e-7) {
-			double moveAngle = (float) Mth.atan2(dz, dx) * (180 / (float) Math.PI) - 90;
-			entity.yBodyRot += Mth.wrapDegrees(moveAngle - entity.yBodyRot) * 0.6F;
-			this.targetYawHead = this.entity.yHeadRot;
-			this.rotateTime = 0;
+			boolean isStrafing = false;
+			if (entity instanceof MowzieEntity) {
+				isStrafing = ((MowzieEntity)entity).isStrafing();
+			}
+			if (!isStrafing) {
+				double moveAngle = (float) Mth.atan2(dz, dx) * (180 / (float) Math.PI) - 90;
+				entity.yBodyRot += Mth.wrapDegrees(moveAngle - entity.yBodyRot) * 0.6F;
+				this.targetYawHead = this.entity.yHeadRot;
+				this.rotateTime = 0;
+			}
+			else {
+				super.clientTick();
+			}
         } else if (entity.getPassengers().isEmpty() || !(entity.getPassengers().get(0) instanceof Mob)) {
 			float limit = MAX_ROTATE;
 			if (Math.abs(entity.yHeadRot - targetYawHead) > 15) {
