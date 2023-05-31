@@ -58,6 +58,7 @@ import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.Animation;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.builder.ILoopType;
+import software.bernie.geckolib3.core.easing.EasingType;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 
@@ -104,8 +105,8 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
 
     protected Vec3 teleportDestination;
 
-    protected MowzieAnimationController<MowzieGeckoEntity> maskController = new MowzieAnimationController<>(this, "mask_controller", 0, this::predicateMask);
-    protected MowzieAnimationController<MowzieGeckoEntity> walkRunController = new MowzieAnimationController<>(this, "walk_run_controller", 4, this::predicateWalkRun);
+    protected MowzieAnimationController<MowzieGeckoEntity> maskController = new MowzieAnimationController<>(this, "mask_controller", 0, this::predicateMask, this.random.nextDouble() * 150);
+    protected MowzieAnimationController<MowzieGeckoEntity> walkRunController = new MowzieAnimationController<>(this, "walk_run_controller", 4, EasingType.EaseInOutQuad, this::predicateWalkRun, 0);
 
     public EntityBarakoa(EntityType<? extends EntityBarakoa> type, Level world) {
         super(type, world);
@@ -285,13 +286,19 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
 
     @Override
     protected <E extends IAnimatable> void loopingAnimations(AnimationEvent<E> event) {
-        event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.LOOP));
+        if (isAggressive()) {
+            event.getController().transitionLengthTicks = 4;
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_aggressive", ILoopType.EDefaultLoopTypes.LOOP));
+        }
+        else {
+            event.getController().transitionLengthTicks = 4;
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.LOOP));
+        }
     }
 
     @Override
     protected BodyRotationControl createBodyControl() {
         return new SmartBodyHelper(this);
-//        return super.createBodyControl();
     }
 
     @Override
@@ -412,10 +419,10 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             if (this.tickTimer() % 10 == 1) {
                 AdvancedParticleBase.spawnParticle(level, ParticleHandler.SUN.get(), getX(), getY(), getZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 10, true, false, new ParticleComponent[]{
                         new ParticleComponent.PinLocation(headPos),
-                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.oscillate(13, 15, 12), false)
+                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.oscillate(11, 13, 12), false)
                 });
             }
-            if (headPos.length > 0 && headPos[0] != null) {
+            if (headPos != null && headPos.length > 0 && headPos[0] != null) {
                 if (random.nextFloat() < 0.3F) {
                     int amount = random.nextInt(2) + 1;
                     while (amount-- > 0) {

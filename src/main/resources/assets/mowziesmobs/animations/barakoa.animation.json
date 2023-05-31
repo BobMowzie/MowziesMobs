@@ -184,6 +184,26 @@
 		"idle": {
 			"loop": true,
 			"bones": {
+				"hips": {
+					"position": {
+						"vector": [0, 1, -0.1]
+					}
+				},
+				"stomach": {
+					"rotation": {
+						"vector": [-2.5, 0, 0]
+					}
+				},
+				"neck": {
+					"rotation": {
+						"vector": [-22.5, 0, 0]
+					}
+				},
+				"head": {
+					"rotation": {
+						"vector": [25, 0, 0]
+					}
+				},
 				"rightShoulder": {
 					"rotation": {
 						"vector": [-27.5, -20, -32.5]
@@ -224,9 +244,54 @@
 						"vector": [0, 0, -95]
 					}
 				},
+				"rightThigh": {
+					"rotation": {
+						"vector": [7.5, 0, 0]
+					}
+				},
+				"rightShin": {
+					"rotation": {
+						"vector": [-20, 0, 0]
+					}
+				},
+				"rightAnkle": {
+					"rotation": {
+						"vector": [15, 0, 0]
+					}
+				},
+				"rightFoot": {
+					"rotation": {
+						"vector": [-2.5, 0, 0]
+					}
+				},
+				"leftThigh": {
+					"rotation": {
+						"vector": [7.5, 0, 0]
+					}
+				},
+				"leftShin": {
+					"rotation": {
+						"vector": [-20, 0, 0]
+					}
+				},
+				"leftAnkle": {
+					"rotation": {
+						"vector": [15, 0, 0]
+					}
+				},
+				"leftFoot": {
+					"rotation": {
+						"vector": [-2.5, 0, 0]
+					}
+				},
 				"locomotionAnimController": {
 					"position": {
 						"vector": [1, 0, 0]
+					}
+				},
+				"tail": {
+					"rotation": {
+						"vector": [-5, 0, 0]
 					}
 				}
 			}
@@ -250,6 +315,51 @@
 			"loop": true,
 			"bones": {
 				"walkRunSwitchController": {
+					"position": {
+						"vector": [1, 0, 0]
+					}
+				}
+			}
+		},
+		"idle_aggressive": {
+			"loop": true,
+			"bones": {
+				"rightShoulder": {
+					"rotation": {
+						"vector": [32.5, -67.5, 0]
+					}
+				},
+				"rightForeArm": {
+					"rotation": {
+						"vector": [-7.5, 0, 0]
+					}
+				},
+				"rightHand": {
+					"rotation": {
+						"vector": [-20, -20, 0]
+					}
+				},
+				"leftShoulder": {
+					"rotation": {
+						"vector": [32.5, 57.5, 0]
+					}
+				},
+				"leftForeArm": {
+					"rotation": {
+						"vector": [-12.5, 0, 0]
+					}
+				},
+				"leftHand": {
+					"rotation": {
+						"vector": [-17.5, -7.5, 0]
+					}
+				},
+				"tail": {
+					"rotation": {
+						"vector": [2.5, 0, 0]
+					}
+				},
+				"locomotionAnimController": {
 					"position": {
 						"vector": [1, 0, 0]
 					}

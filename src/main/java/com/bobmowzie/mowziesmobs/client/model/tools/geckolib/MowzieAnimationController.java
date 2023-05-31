@@ -5,13 +5,22 @@ import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.easing.EasingType;
 
 public class MowzieAnimationController<T extends IAnimatable & IAnimationTickable> extends AnimationController<T> {
     private double tickOffset;
+    private double timingOffset;
 
-    public MowzieAnimationController(T animatable, String name, float transitionLengthTicks, IAnimationPredicate<T> animationPredicate) {
+    public MowzieAnimationController(T animatable, String name, float transitionLengthTicks, IAnimationPredicate<T> animationPredicate, double timingOffset) {
         super(animatable, name, transitionLengthTicks, animationPredicate);
         tickOffset = 0.0d;
+        this.timingOffset = timingOffset;
+    }
+
+    public MowzieAnimationController(T animatable, String name, float transitionLengthTicks, EasingType easingType, IAnimationPredicate<T> animationPredicate, double timingOffset) {
+        super(animatable, name, transitionLengthTicks, easingType, animationPredicate);
+        tickOffset = 0.0d;
+        this.timingOffset = timingOffset;
     }
 
     public void playAnimation(T animatable, AnimationBuilder animationBuilder) {
@@ -34,7 +43,7 @@ public class MowzieAnimationController<T extends IAnimatable & IAnimationTickabl
             }
             this.shouldResetTick = false;
         }
-        double adjustedTick = Math.max(tick - this.tickOffset, 0.0D);
+        double adjustedTick = Math.max(tick - this.tickOffset, 0.0D) + timingOffset;
         if (this.currentAnimation != null && this.currentAnimation.loop.isRepeatingAfterEnd()) adjustedTick = adjustedTick % this.currentAnimation.animationLength;
         return adjustedTick;
     }

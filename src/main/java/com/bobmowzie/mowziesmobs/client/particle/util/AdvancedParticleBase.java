@@ -16,6 +16,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class AdvancedParticleBase extends TextureSheetParticle {
+    public boolean doRender;
+
     public float airDrag;
     public float red, green, blue, alpha;
     public float prevRed, prevGreen, prevBlue, prevAlpha;
@@ -44,6 +46,8 @@ public class AdvancedParticleBase extends TextureSheetParticle {
         this.components = components;
         this.emissive = emissive;
         this.ribbon = null;
+
+        doRender = true;
 
         for (ParticleComponent component : components) {
             component.init(this);
@@ -140,6 +144,8 @@ public class AdvancedParticleBase extends TextureSheetParticle {
         for (ParticleComponent component : components) {
             component.preRender(this, partialTicks);
         }
+
+        if (!doRender) return;
 
         Vec3 Vector3d = renderInfo.getPosition();
         float f = (float)(Mth.lerp(partialTicks, this.xo, this.x) - Vector3d.x());

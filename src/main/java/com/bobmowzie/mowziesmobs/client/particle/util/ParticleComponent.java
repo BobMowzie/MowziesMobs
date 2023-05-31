@@ -253,16 +253,22 @@ public abstract class ParticleComponent {
 
         @Override
         public void init(AdvancedParticleBase particle) {
-            if (location != null && location.length > 0) {
+            if (location != null && location.length > 0 && location[0] != null) {
                 particle.setPos(location[0].x, location[0].y, location[0].z);
             }
         }
 
         @Override
         public void preUpdate(AdvancedParticleBase particle) {
-            if (location != null && location.length > 0) {
+            if (location != null && location.length > 0 && location[0] != null) {
                 particle.setPos(location[0].x, location[0].y, location[0].z);
             }
+        }
+
+        @Override
+        public void preRender(AdvancedParticleBase particle, float partialTicks) {
+            super.preRender(particle, partialTicks);
+            particle.doRender = location != null && location.length > 0 && location[0] != null;
         }
     }
 

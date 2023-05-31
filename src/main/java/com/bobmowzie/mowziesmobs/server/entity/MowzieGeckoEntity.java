@@ -11,6 +11,7 @@ import net.minecraft.world.level.Level;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.easing.EasingType;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -18,7 +19,7 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 public abstract class MowzieGeckoEntity extends MowzieEntity implements IAnimatable, IAnimationTickable {
 
     protected AnimationFactory factory = new AnimationFactory(this);
-    protected MowzieAnimationController<MowzieGeckoEntity> controller = new MowzieAnimationController<>(this, "controller", 10, this::predicate);
+    protected MowzieAnimationController<MowzieGeckoEntity> controller = new MowzieAnimationController<>(this, "controller", 5, EasingType.EaseInOutQuad, this::predicate, 0);
 
     public MowzieGeckoEntity(EntityType<? extends MowzieEntity> type, Level world) {
         super(type, world);

@@ -9,6 +9,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3d;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -56,5 +57,12 @@ public class RenderBarakoa extends MowzieGeoEntityRenderer<EntityBarakoa> {
     public void renderRecursively(GeoBone bone, PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         super.renderRecursively(bone, poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 
+    }
+
+    @Override
+    public boolean shouldRender(EntityBarakoa entity, Frustum p_114492_, double p_114493_, double p_114494_, double p_114495_) {
+        boolean result = super.shouldRender(entity, p_114492_, p_114493_, p_114494_, p_114495_);
+        if (!result) entity.headPos[0] = null;
+        return result;
     }
 }
