@@ -1,6 +1,5 @@
-package com.bobmowzie.mowziesmobs.server.ability.abilities;
+package com.bobmowzie.mowziesmobs.server.ability.abilities.player;
 
-import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.ability.PlayerAbility;

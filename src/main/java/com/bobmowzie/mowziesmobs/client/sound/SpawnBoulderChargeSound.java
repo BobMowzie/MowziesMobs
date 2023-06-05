@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.client.sound;
 
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
-import com.bobmowzie.mowziesmobs.server.ability.abilities.geomancy.SpawnBoulderAbility;
+import com.bobmowzie.mowziesmobs.server.ability.abilities.player.geomancy.SpawnBoulderAbility;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;

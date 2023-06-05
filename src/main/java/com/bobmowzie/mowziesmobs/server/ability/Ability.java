@@ -20,6 +20,7 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.Event;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -193,6 +194,14 @@ public class Ability<T extends LivingEntity> {
     public AbilitySection getCurrentSection() {
         if (currentSectionIndex >= getSectionTrack().length) return null;
         return getSectionTrack()[currentSectionIndex];
+    }
+
+    public boolean damageInterrupts() {
+        return false;
+    }
+
+    public void onTakeDamage(LivingHurtEvent event) {
+        if (event.getResult() == Event.Result.ALLOW && event.getAmount() > 0.0 && damageInterrupts()) interrupt();
     }
 
     /**

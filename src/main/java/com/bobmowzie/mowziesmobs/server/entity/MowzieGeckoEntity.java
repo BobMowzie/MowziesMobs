@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -50,13 +51,13 @@ public abstract class MowzieGeckoEntity extends MowzieEntity implements IAnimata
     public abstract AbilityType getDeathAbility();
 
     protected <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-        getController().transitionLengthTicks = 0;
         AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability();
         if (abilityCapability == null) {
             return PlayState.STOP;
         }
 
         if (abilityCapability.getActiveAbility() != null) {
+            getController().transitionLengthTicks = 0;
             return abilityCapability.animationPredicate(event, null);
         }
         else {

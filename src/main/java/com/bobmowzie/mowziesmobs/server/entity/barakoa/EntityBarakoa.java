@@ -11,7 +11,9 @@ import com.bobmowzie.mowziesmobs.client.particle.util.RibbonComponent;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
-import com.bobmowzie.mowziesmobs.server.ability.abilities.SimpleAnimationAbility;
+import com.bobmowzie.mowziesmobs.server.ability.abilities.mob.MeleeAttackAbility;
+import com.bobmowzie.mowziesmobs.server.ability.abilities.player.SimpleAnimationAbility;
+import com.bobmowzie.mowziesmobs.server.ai.UseAbilityAI;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.*;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
@@ -46,7 +48,6 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
@@ -67,7 +68,7 @@ import java.util.EnumSet;
 public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedAttackMob {
     public static final AbilityType<LivingEntity, SimpleAnimationAbility> DIE_ABILITY = new AbilityType<>("barakoa_die", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_die", 70));
     public static final AbilityType<LivingEntity, SimpleAnimationAbility> HURT_ABILITY = new AbilityType<>("barakoa_hurt", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_hurt", 10));
-    public static final AbilityType<LivingEntity, SimpleAnimationAbility> ATTACK_ABILITY = new AbilityType<>("barakoa_attack", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_attack", 19));
+    public static final AbilityType<EntityBarakoa, MeleeAttackAbility<EntityBarakoa>> ATTACK_ABILITY = new AbilityType<>("barakoa_attack", (type, entity) -> new MeleeAttackAbility<>(type, entity,"attack_slash", MMSounds.ENTITY_BARAKOA_SWING.get(), null, 1, 3.0f, 1, 7, 13, true));
     public static final AbilityType<LivingEntity, SimpleAnimationAbility> IDLE_ABILITY = new AbilityType<>("barakoa_idle", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_idle", 35));
     public static final AbilityType<LivingEntity, SimpleAnimationAbility> ACTIVATE_ABILITY = new AbilityType<>("barakoa_activate", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_activate", 25));
     public static final AbilityType<LivingEntity, SimpleAnimationAbility> DEACTIVATE_ABILITY = new AbilityType<>("barakoa_deactivate", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_deactivate", 26));
@@ -137,8 +138,9 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
 //        goalSelector.addGoal(1, new UseAbilityAI<>(this, DIE_ABILITY)); // switch to die ai class
 //        goalSelector.addGoal(3, new UseAbilityAI<>(this, HURT_ABILITY)); // switch to hurt ai class
 //        goalSelector.addGoal(3, new EntityAIAvoidEntity<>(this, EntitySunstrike.class, EntitySunstrike::isStriking, 3, 0.7F));
-/*        goalSelector.addGoal(2, new AnimationBlockAI<>(this, BLOCK_ANIMATION));
-        goalSelector.addGoal(2, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_BARAKOA_SWING.get(), null, 1, 2.5f, 1, 9, true));
+        goalSelector.addGoal(2, new UseAbilityAI<>(this, ATTACK_ABILITY));
+/*
+        goalSelector.addGoal(2, new AnimationBlockAI<>(this, BLOCK_ANIMATION));
         goalSelector.addGoal(4, new SimpleAnimationAI<EntityBarakoa>(this, IDLE_ABILITY, false, true) {
             private LivingEntity talkTarget;
             private final TargetingConditions pred = TargetingConditions.forNonCombat().range(8);
@@ -227,7 +229,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         goalSelector.addGoal(8, new LookAtPlayerGoal(this, EntityBarakoa.class, 8.0F));
         goalSelector.addGoal(8, new LookAtPlayerGoal(this, EntityBarako.class, 8.0F));
         goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-        goalSelector.addGoal(4, new CircleAttackGoal(this, 0.5D, 20, 6.5F));
+        goalSelector.addGoal(4, new CircleAttackGoal(this, 6.5F));
         registerTargetGoals();
     }
 
@@ -298,7 +300,8 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
 
     @Override
     protected BodyRotationControl createBodyControl() {
-        return new SmartBodyHelper(this);
+//        return new SmartBodyHelper(this);
+        return super.createBodyControl();
     }
 
     @Override
@@ -826,26 +829,18 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
 
     protected static class CircleAttackGoal extends Goal {
         private final EntityBarakoa mob;
-        private final double speedModifier;
-        private int attackIntervalMin;
         private final float attackRadius;
-        private int attackTime = -1;
-        private int seeTime;
         private int strafingLeftRightMul;
         private int strafingFrontBackMul;
-        private int strafingTime = -1;
         private boolean chasing = false;
 
-        public CircleAttackGoal(EntityBarakoa mob, double speedModifier, int attackIntervalMin, float attackRadius) {
+        protected boolean attacking = false;
+        private int timeSinceAttack = 0;
+
+        public CircleAttackGoal(EntityBarakoa mob, float attackRadius) {
             this.mob = mob;
-            this.speedModifier = speedModifier;
-            this.attackIntervalMin = attackIntervalMin;
             this.attackRadius = attackRadius;
             this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
-        }
-
-        public void setMinAttackInterval(int p_25798_) {
-            this.attackIntervalMin = p_25798_;
         }
 
         public boolean canUse() {
@@ -859,14 +854,14 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         public void start() {
             super.start();
             this.mob.setAggressive(true);
+            timeSinceAttack = mob.random.nextInt(80);
         }
 
         public void stop() {
             super.stop();
             this.mob.setAggressive(false);
-            this.seeTime = 0;
-            this.attackTime = -1;
             mob.setStrafing(false);
+            attacking = false;
         }
 
         public boolean requiresUpdateEveryTick() {
@@ -876,6 +871,10 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         public void tick() {
             LivingEntity target = this.mob.getTarget();
             if (target != null) {
+                if (timeSinceAttack < 80) {
+                    timeSinceAttack++;
+                }
+
                 double distToTarget = this.mob.distanceTo(target);
 
                 float frontBackDistBuffer = 2f;
@@ -894,39 +893,55 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
                     mob.setStrafing(false);
                 }
                 else {
-                    this.mob.getNavigation().stop();
-                    float strafeSpeed = 0.5f;
-                    Vec3 circlePos = mob.updateCirclingPosition(this.attackRadius, strafeSpeed - 0.2f);
-//                    mob.level.explode(mob, circlePos.x, circlePos.y, circlePos.z, 0.05f, Explosion.BlockInteraction.NONE);
-                    double distToCirclePos = this.mob.position().distanceTo(circlePos);
+                    // In range
+                    if (!attacking) {
+                        this.mob.getNavigation().stop();
+                        float strafeSpeed = 0.5f;
+                        Vec3 circlePos = mob.updateCirclingPosition(this.attackRadius, strafeSpeed - 0.2f);
+                        double distToCirclePos = this.mob.position().distanceTo(circlePos);
 
-                    if (distToCirclePos <= leftRightDistBuffer) {
-                        mob.setStrafing(true);
+                        if (distToCirclePos <= leftRightDistBuffer) {
+                            mob.setStrafing(true);
 
-                        if (distToTarget > this.attackRadius + 0.5) {
-                            this.strafingFrontBackMul = 1;
-                        } else if (distToTarget < this.attackRadius - 0.5) {
-                            this.strafingFrontBackMul = -1;
+                            if (distToTarget > this.attackRadius + 0.5) {
+                                this.strafingFrontBackMul = 1;
+                            } else if (distToTarget < this.attackRadius - 0.5) {
+                                this.strafingFrontBackMul = -1;
+                            } else {
+                                this.strafingFrontBackMul = 0;
+                            }
+
+                            Vec3 toTarget = target.position().subtract(this.mob.position()).multiply(1, 0, 1).normalize();
+                            Vec3 toCirclePos = circlePos.subtract(this.mob.position()).multiply(1, 0, 1).normalize();
+                            Vec3 cross = toTarget.cross(toCirclePos);
+                            if (cross.y > 0) strafingLeftRightMul = 1;
+                            else if (cross.y < 0) strafingLeftRightMul = -1;
+                            else strafingLeftRightMul = 0;
+
+                            float distScale = (float) Math.min(Math.pow(distToCirclePos * 1f / leftRightDistBuffer, 0.7), 1.0);
+
+                            this.mob.getMoveControl().strafe(this.strafingFrontBackMul * strafeSpeed, this.strafingLeftRightMul * strafeSpeed * distScale);
+                            this.mob.lookAt(target, 30.0F, 30.0F);
                         } else {
-                            this.strafingFrontBackMul = 0;
+                            mob.setStrafing(false);
+                            this.mob.getNavigation().moveTo(circlePos.x, circlePos.y, circlePos.z, 0.53);
+                            this.mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
                         }
-
-                        Vec3 toTarget = target.position().subtract(this.mob.position()).multiply(1, 0, 1).normalize();
-                        Vec3 toCirclePos = circlePos.subtract(this.mob.position()).multiply(1, 0, 1).normalize();
-                        Vec3 cross = toTarget.cross(toCirclePos);
-                        if (cross.y > 0) strafingLeftRightMul = 1;
-                        else if (cross.y < 0) strafingLeftRightMul = -1;
-                        else strafingLeftRightMul = 0;
-
-                        float distScale = (float) Math.min(Math.pow(distToCirclePos * 1f/leftRightDistBuffer, 0.7), 1.0);
-
-                        this.mob.getMoveControl().strafe(this.strafingFrontBackMul * strafeSpeed, this.strafingLeftRightMul * strafeSpeed * distScale);
-                        this.mob.lookAt(target, 30.0F, 30.0F);
                     }
-                    else {
-                        mob.setStrafing(false);
-                        this.mob.getNavigation().moveTo(circlePos.x, circlePos.y, circlePos.z, 0.53);
-                        this.mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
+
+                    // Attacking logic
+                    if (mob.random.nextInt(80) == 0 && timeSinceAttack >= 80 && mob.getSensing().hasLineOfSight(target)) {
+                        attacking = true;
+                        if (mob.getActiveAbility() == null) {
+                            mob.getNavigation().moveTo(target, 0.5);
+                        }
+                    }
+                    if (attacking && mob.getActiveAbility() == null && mob.getSensing().hasLineOfSight(target)) {
+                        if (distToTarget <= 3.0) {
+                            attacking = false;
+                            timeSinceAttack = 0;
+                            AbilityHandler.INSTANCE.sendAbilityMessage(mob, ATTACK_ABILITY);
+                        }
                     }
                 }
             }

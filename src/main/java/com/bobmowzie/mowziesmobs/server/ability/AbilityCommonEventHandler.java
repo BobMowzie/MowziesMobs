@@ -107,9 +107,7 @@ public class AbilityCommonEventHandler {
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
         if (abilityCapability != null) {
             for (Ability ability : abilityCapability.getAbilities()) {
-                if (ability instanceof PlayerAbility) {
-                    ((PlayerAbility)ability).onTakeDamage(event);
-                }
+                ability.onTakeDamage(event);
             }
         }
     }

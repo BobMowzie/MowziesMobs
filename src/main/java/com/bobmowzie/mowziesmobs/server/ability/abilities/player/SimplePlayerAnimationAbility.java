@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.server.ability.abilities;
+package com.bobmowzie.mowziesmobs.server.ability.abilities.player;
 
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
