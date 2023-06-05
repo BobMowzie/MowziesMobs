@@ -201,7 +201,7 @@ public class Ability<T extends LivingEntity> {
     }
 
     public void onTakeDamage(LivingHurtEvent event) {
-        if (event.getResult() == Event.Result.ALLOW && event.getAmount() > 0.0 && damageInterrupts()) interrupt();
+        if (isUsing() && event.getResult() != Event.Result.DENY && event.getAmount() > 0.0 && damageInterrupts()) AbilityHandler.INSTANCE.sendInterruptAbilityMessage(getUser(), getAbilityType());
     }
 
     /**

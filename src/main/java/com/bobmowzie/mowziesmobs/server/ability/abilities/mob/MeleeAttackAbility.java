@@ -16,7 +16,7 @@ public class MeleeAttackAbility<T extends MowzieGeckoEntity> extends Ability<T> 
     protected boolean hurtInterrupts;
     protected String animationName;
 
-    public MeleeAttackAbility(AbilityType<T, MeleeAttackAbility<T>> abilityType, T user, String animationName, SoundEvent attackSound, SoundEvent hitSound, float applyKnockbackMultiplier, float range, float damageMultiplier, int startup, int recovery, boolean hurtInterrupts) {
+    public MeleeAttackAbility(AbilityType<T, ? extends MeleeAttackAbility<T>> abilityType, T user, String animationName, SoundEvent attackSound, SoundEvent hitSound, float applyKnockbackMultiplier, float range, float damageMultiplier, int startup, int recovery, boolean hurtInterrupts) {
         super(abilityType, user, new AbilitySection[] {
                 new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, startup),
                 new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
@@ -34,8 +34,13 @@ public class MeleeAttackAbility<T extends MowzieGeckoEntity> extends Ability<T> 
     @Override
     public void tickUsing() {
         super.tickUsing();
-        if (getUser().getTarget() != null) getUser().lookAt(getUser().getTarget(), 30F, 30F);
+        if (getUser().getTarget() != null) {
+            getUser().lookAt(getUser().getTarget(), 30F, 30F);
+            getUser().getLookControl().setLookAt(getUser().getTarget(), 30F, 30F);
+        }
         getUser().getNavigation().stop();
+        getUser().getMoveControl().strafe(0, 0);
+        getUser().setStrafing(false);
     }
 
     @Override

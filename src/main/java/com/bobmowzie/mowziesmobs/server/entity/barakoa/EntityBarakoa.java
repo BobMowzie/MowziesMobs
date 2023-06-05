@@ -68,7 +68,7 @@ import java.util.EnumSet;
 public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedAttackMob {
     public static final AbilityType<LivingEntity, SimpleAnimationAbility> DIE_ABILITY = new AbilityType<>("barakoa_die", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_die", 70));
     public static final AbilityType<LivingEntity, SimpleAnimationAbility> HURT_ABILITY = new AbilityType<>("barakoa_hurt", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_hurt", 10));
-    public static final AbilityType<EntityBarakoa, MeleeAttackAbility<EntityBarakoa>> ATTACK_ABILITY = new AbilityType<>("barakoa_attack", (type, entity) -> new MeleeAttackAbility<>(type, entity,"attack_slash", MMSounds.ENTITY_BARAKOA_SWING.get(), null, 1, 3.0f, 1, 7, 13, true));
+    public static final AbilityType<EntityBarakoa, BarakoaAttackAbility> ATTACK_ABILITY = new AbilityType<>("barakoa_attack", (type, entity) -> new BarakoaAttackAbility(type, entity,"attack_slash", MMSounds.ENTITY_BARAKOA_SWING.get(), null, 1, 3.0f, 1, 11, 10, true));
     public static final AbilityType<LivingEntity, SimpleAnimationAbility> IDLE_ABILITY = new AbilityType<>("barakoa_idle", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_idle", 35));
     public static final AbilityType<LivingEntity, SimpleAnimationAbility> ACTIVATE_ABILITY = new AbilityType<>("barakoa_activate", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_activate", 25));
     public static final AbilityType<LivingEntity, SimpleAnimationAbility> DEACTIVATE_ABILITY = new AbilityType<>("barakoa_deactivate", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_deactivate", 26));
@@ -456,6 +456,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
 //        updateAttackAI();
         if (getActiveAbility() != null) {
             getNavigation().stop();
+            yHeadRot = yBodyRot = getYRot();
         }
 
         if (getDancing()) {
@@ -891,10 +892,11 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
                     this.mob.getNavigation().moveTo(target, 0.6);
                     this.mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
                     mob.setStrafing(false);
+                    this.mob.getMoveControl().strafe(0, 0);
                 }
                 else {
                     // In range
-                    if (!attacking) {
+                    if (!attacking && mob.getActiveAbility() == null) {
                         this.mob.getNavigation().stop();
                         float strafeSpeed = 0.5f;
                         Vec3 circlePos = mob.updateCirclingPosition(this.attackRadius, strafeSpeed - 0.2f);
@@ -924,20 +926,23 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
                             this.mob.lookAt(target, 30.0F, 30.0F);
                         } else {
                             mob.setStrafing(false);
+                            this.mob.getMoveControl().strafe(0, 0);
                             this.mob.getNavigation().moveTo(circlePos.x, circlePos.y, circlePos.z, 0.53);
                             this.mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
                         }
+                    }
+                    else {
+                        this.mob.getMoveControl().strafe(0, 0);
+                        mob.setStrafing(false);
                     }
 
                     // Attacking logic
                     if (mob.random.nextInt(80) == 0 && timeSinceAttack >= 80 && mob.getSensing().hasLineOfSight(target)) {
                         attacking = true;
-                        if (mob.getActiveAbility() == null) {
-                            mob.getNavigation().moveTo(target, 0.5);
-                        }
                     }
-                    if (attacking && mob.getActiveAbility() == null && mob.getSensing().hasLineOfSight(target)) {
-                        if (distToTarget <= 3.0) {
+                    if (attacking && mob.getActiveAbility() == null) {
+                        mob.getNavigation().moveTo(target, 0.5);
+                        if (distToTarget <= 3.75 && mob.getSensing().hasLineOfSight(target)) {
                             attacking = false;
                             timeSinceAttack = 0;
                             AbilityHandler.INSTANCE.sendAbilityMessage(mob, ATTACK_ABILITY);
@@ -945,6 +950,19 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
                     }
                 }
             }
+        }
+    }
+
+    private static class BarakoaAttackAbility extends MeleeAttackAbility<EntityBarakoa> {
+
+        public BarakoaAttackAbility(AbilityType<EntityBarakoa, ? extends BarakoaAttackAbility> abilityType, EntityBarakoa user, String animationName, SoundEvent attackSound, SoundEvent hitSound, float applyKnockbackMultiplier, float range, float damageMultiplier, int startup, int recovery, boolean hurtInterrupts) {
+            super(abilityType, user, animationName, attackSound, hitSound, applyKnockbackMultiplier, range, damageMultiplier, startup, recovery, hurtInterrupts);
+        }
+
+        @Override
+        public void tickUsing() {
+            super.tickUsing();
+            if (getTicksInUse() == 5) getUser().setDeltaMovement(getUser().getDeltaMovement().add(getUser().getForward().normalize().scale(0.5)));
         }
     }
 }
