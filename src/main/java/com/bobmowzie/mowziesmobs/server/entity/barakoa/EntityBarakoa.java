@@ -422,7 +422,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             if (this.tickTimer() % 10 == 1) {
                 AdvancedParticleBase.spawnParticle(level, ParticleHandler.SUN.get(), getX(), getY(), getZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 10, true, false, new ParticleComponent[]{
                         new ParticleComponent.PinLocation(headPos),
-                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.oscillate(11, 13, 12), false)
+                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.oscillate(9, 11, 12), false)
                 });
             }
             if (headPos != null && headPos.length > 0 && headPos[0] != null) {
@@ -433,7 +433,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
                         float r = random.nextFloat() * 0.4F;
                         float x = r * Mth.cos(theta);
                         float z = r * Mth.sin(theta);
-                        level.addParticle(ParticleTypes.LARGE_SMOKE, headPos[0].x() + x, headPos[0].y() + 0.1, headPos[0].z() + z, 0, 0, 0);
+                        level.addParticle(ParticleTypes.SMOKE, headPos[0].x() + x, headPos[0].y() + 0.1, headPos[0].z() + z, 0, 0, 0);
                     }
                 }
             }
@@ -862,6 +862,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             super.stop();
             this.mob.setAggressive(false);
             mob.setStrafing(false);
+            this.mob.getMoveControl().strafe(0, 0);
             attacking = false;
         }
 

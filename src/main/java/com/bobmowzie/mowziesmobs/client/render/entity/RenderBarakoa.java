@@ -44,7 +44,6 @@ public class RenderBarakoa extends MowzieGeoEntityRenderer<EntityBarakoa> {
         MowzieGeoBone head = getMowzieAnimatedGeoModel().getMowzieBone("head");
         Vector3d worldPos = head.getWorldPosition();
         animatable.headPos[0] = new Vec3(worldPos.x, worldPos.y, worldPos.z);
-
     }
 
     @Override

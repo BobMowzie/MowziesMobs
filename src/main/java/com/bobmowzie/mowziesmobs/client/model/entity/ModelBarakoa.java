@@ -37,6 +37,9 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
 
     @Override
     public void codeAnimations(EntityBarakoa entity, Integer uniqueID, AnimationEvent<?> customPredicate) {
+        MowzieGeoBone root = getMowzieBone("root");
+        root.multiplyScale(0.83f, 0.83f, 0.83f);
+
         MowzieGeoBone head = getMowzieBone("head");
         MowzieGeoBone neck = getMowzieBone("neck");
         EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
