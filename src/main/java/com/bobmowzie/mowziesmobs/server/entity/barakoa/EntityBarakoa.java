@@ -573,20 +573,24 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
     public void handleEntityEvent(byte id) {
         if (id == FOOTSTEP_ID) {
             footstepCounter++;
-            float rotation = (float) Math.toRadians(-yBodyRot);
-            Vec3 offset = new Vec3(0, 0, footstepCounter % 2 == 0 ? 0.25 : -0.25).yRot(rotation);
-            AdvancedParticleBase.spawnParticle(level, ParticleHandler.STRIX_FOOTPRINT.get(), getBlockX() + 0.5f, getY() + 0.01, getBlockZ() + 0.5f, 0, 0, 0, false, rotation, Math.PI/2f, 0, 0, 2.5F, 1, 0.95, 0.1, 1, 1, 200, true, false, new ParticleComponent[]{
+            float rotation = (float) Math.toRadians(yBodyRot + 180f);
+            Vec3 offset = new Vec3(0, 0, footstepCounter % 2 == 0 ? 0.3 : -0.3).yRot(rotation);
+            AdvancedParticleBase.spawnParticle(level, ParticleHandler.STRIX_FOOTPRINT.get(), getX() + offset.x(), getY() + 0.01, getZ() + offset.z(), 0, 0, 0, false, rotation, Math.PI/2f, 0, 0, 1F, 1, 0.95, 0.1, 1, 1, 400, true, false, new ParticleComponent[]{
                     new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.RED, new ParticleComponent.KeyTrack(
                             new float[]{0.995f, 0.05f},
-                            new float[]{0, 0.3f}
+                            new float[]{0, 0.15f}
                     ), false),
                     new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.GREEN, new ParticleComponent.KeyTrack(
                             new float[]{0.95f, 0.05f},
-                            new float[]{0, 0.3f}
+                            new float[]{0, 0.15f}
                     ), false),
                     new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.BLUE, new ParticleComponent.KeyTrack(
                             new float[]{0.1f, 0.05f},
-                            new float[]{0, 0.3f}
+                            new float[]{0, 0.15f}
+                    ), false),
+                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, new ParticleComponent.KeyTrack(
+                            new float[]{1f, 0.85f},
+                            new float[]{0, 0.15f}
                     ), false),
                     new ParticleComponent() {
                         @Override
