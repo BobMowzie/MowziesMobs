@@ -8,6 +8,7 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleRibbon;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.RibbonComponent;
+import com.bobmowzie.mowziesmobs.client.sound.BossMusicPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
@@ -50,6 +51,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -105,6 +107,9 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
     public Vec3[] myPos;
 
     protected Vec3 teleportDestination;
+
+    private static final byte FOOTSTEP_ID = 69;
+    private int footstepCounter = 0;
 
     protected MowzieAnimationController<MowzieGeckoEntity> maskController = new MowzieAnimationController<>(this, "mask_controller", 0, this::predicateMask, this.random.nextDouble() * 150);
     protected MowzieAnimationController<MowzieGeckoEntity> walkRunController = new MowzieAnimationController<>(this, "walk_run_controller", 4, EasingType.EaseInOutQuad, this::predicateWalkRun, 0);
@@ -556,6 +561,52 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         }
 
 //        if (getActiveAbility() == NO_ANIMATION) AbilityHandler.INSTANCE.sendAbilityMessage(this, TELEPORT_ANIMATION);
+    }
+
+    @Override
+    protected float nextStep() {
+        if (isOnGround()) this.level.broadcastEntityEvent(this, FOOTSTEP_ID);
+        return super.nextStep();
+    }
+
+    @Override
+    public void handleEntityEvent(byte id) {
+        if (id == FOOTSTEP_ID) {
+            footstepCounter++;
+            float rotation = (float) Math.toRadians(-yBodyRot);
+            Vec3 offset = new Vec3(0, 0, footstepCounter % 2 == 0 ? 0.25 : -0.25).yRot(rotation);
+            AdvancedParticleBase.spawnParticle(level, ParticleHandler.STRIX_FOOTPRINT.get(), getBlockX() + 0.5f, getY() + 0.01, getBlockZ() + 0.5f, 0, 0, 0, false, rotation, Math.PI/2f, 0, 0, 2.5F, 1, 0.95, 0.1, 1, 1, 200, true, false, new ParticleComponent[]{
+                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.RED, new ParticleComponent.KeyTrack(
+                            new float[]{0.995f, 0.05f},
+                            new float[]{0, 0.3f}
+                    ), false),
+                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.GREEN, new ParticleComponent.KeyTrack(
+                            new float[]{0.95f, 0.05f},
+                            new float[]{0, 0.3f}
+                    ), false),
+                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.BLUE, new ParticleComponent.KeyTrack(
+                            new float[]{0.1f, 0.05f},
+                            new float[]{0, 0.3f}
+                    ), false),
+                    new ParticleComponent() {
+                        @Override
+                        public void postUpdate(AdvancedParticleBase particle) {
+                            super.postUpdate(particle);
+                            if (random.nextFloat() < 0.3F) {
+                                int amount = 1;
+                                while (amount-- > 0) {
+                                    float theta = random.nextFloat() * MathUtils.TAU;
+                                    float r = random.nextFloat() * 0.2F;
+                                    float x = r * Mth.cos(theta);
+                                    float z = r * Mth.sin(theta);
+                                    level.addParticle(ParticleTypes.SMOKE, particle.getPosX() + x, particle.getPosY() + 0.05, particle.getPosZ() + z, 0, 0, 0);
+                                }
+                            }
+                        }
+                    }
+            });
+        }
+        else super.handleEntityEvent(id);
     }
 
     protected void onAnimationFinish(Ability ability) {

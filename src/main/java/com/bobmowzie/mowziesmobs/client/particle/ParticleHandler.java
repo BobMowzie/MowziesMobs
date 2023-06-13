@@ -72,6 +72,7 @@ public class ParticleHandler {
     public static final RegistryObject<ParticleType<AdvancedParticleData>> BURST_OUT = register("ring2", AdvancedParticleData.DESERIALIZER);
     public static final RegistryObject<ParticleType<AdvancedParticleData>> GLOW = register("glow", AdvancedParticleData.DESERIALIZER);
     public static final RegistryObject<ParticleType<AdvancedParticleData>> ARROW_HEAD = register("arrow_head", AdvancedParticleData.DESERIALIZER);
+    public static final RegistryObject<ParticleType<AdvancedParticleData>> STRIX_FOOTPRINT = register("strix_footprint", AdvancedParticleData.DESERIALIZER);
 
     public static final RegistryObject<ParticleType<RibbonParticleData>> RIBBON_FLAT = registerRibbon("ribbon_flat", RibbonParticleData.DESERIALIZER);
     public static final RegistryObject<ParticleType<RibbonParticleData>> RIBBON_STREAKS = registerRibbon("ribbon_streaks", RibbonParticleData.DESERIALIZER);
@@ -103,6 +104,7 @@ public class ParticleHandler {
         Minecraft.getInstance().particleEngine.register(ParticleHandler.BURST_OUT.get(), AdvancedParticleBase.Factory::new);
         Minecraft.getInstance().particleEngine.register(ParticleHandler.GLOW.get(), AdvancedParticleBase.Factory::new);
         Minecraft.getInstance().particleEngine.register(ParticleHandler.ARROW_HEAD.get(), AdvancedParticleBase.Factory::new);
+        Minecraft.getInstance().particleEngine.register(ParticleHandler.STRIX_FOOTPRINT.get(), ParticleDecal.Factory::new);
 
         Minecraft.getInstance().particleEngine.register(ParticleHandler.RIBBON_FLAT.get(), ParticleRibbon.Factory::new);
         Minecraft.getInstance().particleEngine.register(ParticleHandler.RIBBON_STREAKS.get(), ParticleRibbon.Factory::new);

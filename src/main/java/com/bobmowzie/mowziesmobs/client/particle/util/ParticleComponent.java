@@ -5,7 +5,10 @@ import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.function.Consumer;
 
 public abstract class ParticleComponent {
     public ParticleComponent() {
