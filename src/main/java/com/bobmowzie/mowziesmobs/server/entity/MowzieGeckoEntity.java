@@ -5,6 +5,7 @@ import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
+import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -49,6 +50,20 @@ public abstract class MowzieGeckoEntity extends MowzieEntity implements IAnimata
     public abstract AbilityType getHurtAbility();
 
     public abstract AbilityType getDeathAbility();
+
+
+    @Override
+    public boolean hurt(DamageSource source, float damage) {
+        boolean attack = super.hurt(source, damage);
+        if (attack) {
+            if (getHealth() > 0.0F && (getActiveAbility() == null || hurtInterruptsAnimation) && playsHurtAnimation) {
+                sendAbilityMessage(getHurtAbility());
+            } else if (getHealth() <= 0.0F) {
+                sendAbilityMessage(getDeathAbility());
+            }
+        }
+        return attack;
+    }
 
     protected <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
         AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability();

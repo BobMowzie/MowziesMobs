@@ -42,11 +42,6 @@ public class ParticleDecal extends AdvancedParticleBase {
 
         if (!doRender) return;
 
-        Vec3 Vector3d = renderInfo.getPosition();
-        float xInterp = (float)(Mth.lerp(partialTicks, this.xo, this.x) - Vector3d.x());
-        float yInterp = (float)(Mth.lerp(partialTicks, this.yo, this.y) - Vector3d.y());
-        float zInterp = (float)(Mth.lerp(partialTicks, this.zo, this.z) - Vector3d.z());
-
         float decalRot = 0.0f;
         if (rotation instanceof ParticleRotation.EulerAngles) {
             ParticleRotation.EulerAngles eulerRot = (ParticleRotation.EulerAngles) rotation;
@@ -54,27 +49,11 @@ public class ParticleDecal extends AdvancedParticleBase {
             decalRot = rotY;
         }
 
-        Vector3f[] avector3f = new Vector3f[]{new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};
-        float f4 = particleScale * 0.1f;
-
-        for(int i = 0; i < 4; ++i) {
-            Vector3f vector3f = avector3f[i];
-//            vector3f.transform(quaternion);
-            vector3f.mul(f4);
-            vector3f.add(xInterp, yInterp, zInterp);
-        }
-
         float u0 = this.getU0();
         float u1 = this.getU1();
         float v0 = this.getV0();
         float v1 = this.getV1();
         int lightColor = this.getLightColor(partialTicks);
-//        buffer.vertex(avector3f[0].x(), avector3f[0].y(), avector3f[0].z()).uv(u1, v1).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
-//        buffer.vertex(avector3f[1].x(), avector3f[1].y(), avector3f[1].z()).uv(u1, v0).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
-//        buffer.vertex(avector3f[2].x(), avector3f[2].y(), avector3f[2].z()).uv(u0, v0).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
-//        buffer.vertex(avector3f[3].x(), avector3f[3].y(), avector3f[3].z()).uv(u0, v1).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(lightColor).endVertex();
-
-//        System.out.println("CORRECT " + avector3f[0].x());
 
         int spriteSize = 8;
         int bufferSize = 32;
