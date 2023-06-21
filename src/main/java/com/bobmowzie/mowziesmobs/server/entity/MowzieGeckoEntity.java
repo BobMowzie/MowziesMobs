@@ -56,7 +56,7 @@ public abstract class MowzieGeckoEntity extends MowzieEntity implements IAnimata
     public boolean hurt(DamageSource source, float damage) {
         boolean attack = super.hurt(source, damage);
         if (attack) {
-            if (getHealth() > 0.0F && (getActiveAbility() == null || hurtInterruptsAnimation) && playsHurtAnimation) {
+            if (getHealth() > 0.0F && (getActiveAbility() == null || getActiveAbility().damageInterrupts()) && playsHurtAnimation) {
                 sendAbilityMessage(getHurtAbility());
             } else if (getHealth() <= 0.0F) {
                 sendAbilityMessage(getDeathAbility());

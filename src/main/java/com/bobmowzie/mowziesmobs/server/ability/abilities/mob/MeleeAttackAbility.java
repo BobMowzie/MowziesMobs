@@ -14,9 +14,9 @@ public class MeleeAttackAbility<T extends MowzieGeckoEntity> extends Ability<T> 
     protected float damageMultiplier;
     protected SoundEvent hitSound;
     protected boolean hurtInterrupts;
-    protected String animationName;
+    protected String[] animationNames;
 
-    public MeleeAttackAbility(AbilityType<T, ? extends MeleeAttackAbility<T>> abilityType, T user, String animationName, SoundEvent attackSound, SoundEvent hitSound, float applyKnockbackMultiplier, float range, float damageMultiplier, int startup, int recovery, boolean hurtInterrupts) {
+    public MeleeAttackAbility(AbilityType<T, ? extends MeleeAttackAbility<T>> abilityType, T user, String[] animationNames, SoundEvent attackSound, SoundEvent hitSound, float applyKnockbackMultiplier, float range, float damageMultiplier, int startup, int recovery, boolean hurtInterrupts) {
         super(abilityType, user, new AbilitySection[] {
                 new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, startup),
                 new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
@@ -28,7 +28,7 @@ public class MeleeAttackAbility<T extends MowzieGeckoEntity> extends Ability<T> 
         this.damageMultiplier = damageMultiplier;
         this.range = range;
         this.hurtInterrupts = hurtInterrupts;
-        this.animationName = animationName;
+        this.animationNames = animationNames;
     }
 
     @Override
@@ -46,6 +46,7 @@ public class MeleeAttackAbility<T extends MowzieGeckoEntity> extends Ability<T> 
     @Override
     public void start() {
         super.start();
+        String animationName = this.animationNames[getUser().getRandom().nextInt(animationNames.length)];
         playAnimation(animationName, false);
     }
 

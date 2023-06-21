@@ -15,9 +15,11 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.mob.MeleeAttackAbility;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.player.SimpleAnimationAbility;
+import com.bobmowzie.mowziesmobs.server.ai.EntityAIAvoidEntity;
 import com.bobmowzie.mowziesmobs.server.ai.UseAbilityAI;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.*;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
@@ -69,16 +71,26 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import java.util.EnumSet;
 
 public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedAttackMob {
-    public static final AbilityType<LivingEntity, SimpleAnimationAbility> DIE_ABILITY = new AbilityType<>("barakoa_die", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_die", 70));
+    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> DIE_ABILITY = new AbilityType<>("barakoa_die", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_die", 70));
     public static final AbilityType<EntityBarakoa, BarakoaHurtAbility> HURT_ABILITY = new AbilityType<>("barakoa_hurt", BarakoaHurtAbility::new);
-    public static final AbilityType<EntityBarakoa, BarakoaAttackAbility> ATTACK_ABILITY = new AbilityType<>("barakoa_attack", (type, entity) -> new BarakoaAttackAbility(type, entity,"attack_slash", MMSounds.ENTITY_BARAKOA_SWING.get(), null, 1, 3.0f, 1, 11, 10, true));
-    public static final AbilityType<LivingEntity, SimpleAnimationAbility> IDLE_ABILITY = new AbilityType<>("barakoa_idle", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_idle", 35));
-    public static final AbilityType<LivingEntity, SimpleAnimationAbility> ACTIVATE_ABILITY = new AbilityType<>("barakoa_activate", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_activate", 25));
-    public static final AbilityType<LivingEntity, SimpleAnimationAbility> DEACTIVATE_ABILITY = new AbilityType<>("barakoa_deactivate", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_deactivate", 26));
-    public static final AbilityType<LivingEntity, SimpleAnimationAbility> BLOCK_ABILITY = new AbilityType<>("barakoa_block", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_block", 10));
+    public static final AbilityType<EntityBarakoa, BarakoaAttackAbility> ATTACK_ABILITY = new AbilityType<>("barakoa_attack", (type, entity) -> new BarakoaAttackAbility(type, entity, new String[]{"attack_slash_left", "attack_slash_right"}, MMSounds.ENTITY_BARAKOA_SWING.get(), null, 1, 3.0f, 1, 11, 10, true));
+    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> ALERT_ABILITY = new AbilityType<>("barakoa_alert", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"alert", 17) {
+        @Override
+        public void tickUsing() {
+            super.tickUsing();
+            if (getUser().getTarget() != null) {
+                getUser().lookAt(getUser().getTarget(), 30F, 30F);
+                getUser().getLookControl().setLookAt(getUser().getTarget(), 30F, 30F);
+            }
+        }
+    });
+    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> IDLE_ABILITY = new AbilityType<>("barakoa_idle", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_idle", 35));
+    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> ACTIVATE_ABILITY = new AbilityType<>("barakoa_activate", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_activate", 25));
+    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> DEACTIVATE_ABILITY = new AbilityType<>("barakoa_deactivate", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_deactivate", 26));
+    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> BLOCK_ABILITY = new AbilityType<>("barakoa_block", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_block", 10));
 
-    public static final AbilityType<LivingEntity, SimpleAnimationAbility> TELEPORT_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_teleport", 27));
-    public static final AbilityType<LivingEntity, SimpleAnimationAbility> HEAL_ABILITY = new AbilityType<>("barakoa_heal", (type, entity) -> new SimpleAnimationAbility(type, entity,"barakoa_heal", 25));
+    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> TELEPORT_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 27));
+    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> HEAL_ABILITY = new AbilityType<>("barakoa_heal", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_heal", 25));
 
     private static final EntityDataAccessor<Boolean> DANCING = SynchedEntityData.defineId(EntityBarakoa.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> MASK = SynchedEntityData.defineId(EntityBarakoa.class, EntityDataSerializers.INT);
@@ -142,9 +154,10 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
 //        goalSelector.addGoal(0, new UseAbilityAI<>(this, ACTIVATE_ABILITY));
 //        goalSelector.addGoal(0, new UseAbilityAI<>(this, DEACTIVATE_ABILITY));
 //        goalSelector.addGoal(1, new UseAbilityAI<>(this, DIE_ABILITY)); // switch to die ai class
-//        goalSelector.addGoal(3, new UseAbilityAI<>(this, HURT_ABILITY)); // switch to hurt ai class
-//        goalSelector.addGoal(3, new EntityAIAvoidEntity<>(this, EntitySunstrike.class, EntitySunstrike::isStriking, 3, 0.7F));
+        goalSelector.addGoal(2, new UseAbilityAI<>(this, HURT_ABILITY, false));
+        goalSelector.addGoal(3, new EntityAIAvoidEntity<>(this, EntitySunstrike.class, EntitySunstrike::isStriking, 3, 0.7F));
         goalSelector.addGoal(2, new UseAbilityAI<>(this, ATTACK_ABILITY));
+        goalSelector.addGoal(2, new UseAbilityAI<>(this, ALERT_ABILITY));
 /*
         goalSelector.addGoal(2, new AnimationBlockAI<>(this, BLOCK_ANIMATION));
         goalSelector.addGoal(4, new SimpleAnimationAI<EntityBarakoa>(this, IDLE_ABILITY, false, true) {
@@ -296,11 +309,20 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
     protected <E extends IAnimatable> void loopingAnimations(AnimationEvent<E> event) {
         if (isAggressive()) {
             event.getController().transitionLengthTicks = 4;
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_aggressive", ILoopType.EDefaultLoopTypes.LOOP));
-        }
+            if (event.isMoving()) {
+                event.getController().setAnimation(new AnimationBuilder().addAnimation("walk_aggressive", ILoopType.EDefaultLoopTypes.LOOP));
+            }
+            else {
+                event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_aggressive", ILoopType.EDefaultLoopTypes.LOOP));
+            }        }
         else {
             event.getController().transitionLengthTicks = 4;
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.LOOP));
+            if (event.isMoving()) {
+                event.getController().setAnimation(new AnimationBuilder().addAnimation("walk_neutral", ILoopType.EDefaultLoopTypes.LOOP));
+            }
+            else {
+                event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_neutral", ILoopType.EDefaultLoopTypes.LOOP));
+            }
         }
     }
 
@@ -498,6 +520,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             playSound(MMSounds.ENTITY_BARAKOA_BATTLECRY.get(), 1.5f, 1.5f);
         }
         if (getTarget() != null && ticksWithoutTarget > 3) {
+            sendAbilityMessage(ALERT_ABILITY);
             cryDelay = Mth.nextInt(random, -15, 30);
         }
 
@@ -576,22 +599,22 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             footstepCounter++;
             float rotation = (float) Math.toRadians(yBodyRot + 180f);
             Vec3 offset = new Vec3(0, 0, footstepCounter % 2 == 0 ? 0.3 : -0.3).yRot(rotation);
-            AdvancedParticleBase.spawnParticle(level, ParticleHandler.STRIX_FOOTPRINT.get(), getX() + offset.x(), getY() + 0.01, getZ() + offset.z(), 0, 0, 0, false, rotation, Math.PI/2f, 0, 0, 1F, 1, 0.95, 0.1, 1, 1, 400, true, false, new ParticleComponent[]{
+            AdvancedParticleBase.spawnParticle(level, ParticleHandler.STRIX_FOOTPRINT.get(), getX() + offset.x(), getY() + 0.01, getZ() + offset.z(), 0, 0, 0, false, rotation, Math.PI/2f, 0, 0, 1F, 1, 0.95, 0.1, 1, 1, 200, true, false, new ParticleComponent[]{
                     new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.RED, new ParticleComponent.KeyTrack(
                             new float[]{0.995f, 0.05f},
-                            new float[]{0, 0.15f}
+                            new float[]{0, 0.3f}
                     ), false),
                     new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.GREEN, new ParticleComponent.KeyTrack(
                             new float[]{0.95f, 0.05f},
-                            new float[]{0, 0.15f}
+                            new float[]{0, 0.3f}
                     ), false),
                     new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.BLUE, new ParticleComponent.KeyTrack(
                             new float[]{0.1f, 0.05f},
-                            new float[]{0, 0.15f}
+                            new float[]{0, 0.3f}
                     ), false),
                     new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, new ParticleComponent.KeyTrack(
                             new float[]{1f, 0.8f},
-                            new float[]{0, 0.15f}
+                            new float[]{0, 0.3f}
                     ), false),
                     new ParticleComponent() {
                         @Override
@@ -881,7 +904,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
 
     @Override
     public AbilityType<?, ?>[] getAbilities() {
-        return new AbilityType[] { DIE_ABILITY, HURT_ABILITY, ATTACK_ABILITY, IDLE_ABILITY, ACTIVATE_ABILITY, DEACTIVATE_ABILITY, BLOCK_ABILITY, TELEPORT_ABILITY, HEAL_ABILITY };
+        return new AbilityType[] { DIE_ABILITY, HURT_ABILITY, ATTACK_ABILITY, ALERT_ABILITY, IDLE_ABILITY, ACTIVATE_ABILITY, DEACTIVATE_ABILITY, BLOCK_ABILITY, TELEPORT_ABILITY, HEAL_ABILITY };
     }
 
     protected static class CircleAttackGoal extends Goal {
@@ -1012,8 +1035,8 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
 
     private static class BarakoaAttackAbility extends MeleeAttackAbility<EntityBarakoa> {
 
-        public BarakoaAttackAbility(AbilityType<EntityBarakoa, ? extends BarakoaAttackAbility> abilityType, EntityBarakoa user, String animationName, SoundEvent attackSound, SoundEvent hitSound, float applyKnockbackMultiplier, float range, float damageMultiplier, int startup, int recovery, boolean hurtInterrupts) {
-            super(abilityType, user, animationName, attackSound, hitSound, applyKnockbackMultiplier, range, damageMultiplier, startup, recovery, hurtInterrupts);
+        public BarakoaAttackAbility(AbilityType<EntityBarakoa, ? extends BarakoaAttackAbility> abilityType, EntityBarakoa user, String[] animationNames, SoundEvent attackSound, SoundEvent hitSound, float applyKnockbackMultiplier, float range, float damageMultiplier, int startup, int recovery, boolean hurtInterrupts) {
+            super(abilityType, user, animationNames, attackSound, hitSound, applyKnockbackMultiplier, range, damageMultiplier, startup, recovery, hurtInterrupts);
         }
 
         @Override
@@ -1032,16 +1055,29 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         }
 
         @Override
+        public boolean damageInterrupts() {
+            return true;
+        }
+
+        @Override
         public void start() {
             super.start();
-//            if (getUser().isAggressive()) {
+            if (getUser().isAggressive()) {
                 if (getUser().random.nextBoolean()) {
                     playAnimation("hurt_right_aggressive", false);
                 }
                 else {
                     playAnimation("hurt_left_aggressive", false);
                 }
-//            }
+            }
+            else {
+                if (getUser().random.nextBoolean()) {
+                    playAnimation("hurt_right_neutral", false);
+                }
+                else {
+                    playAnimation("hurt_left_neutral", false);
+                }
+            }
         }
     }
 }
