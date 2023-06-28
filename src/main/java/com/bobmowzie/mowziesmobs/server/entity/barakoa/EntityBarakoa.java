@@ -8,7 +8,6 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleRibbon;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.RibbonComponent;
-import com.bobmowzie.mowziesmobs.client.sound.BossMusicPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
@@ -54,7 +53,6 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -71,7 +69,7 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import java.util.EnumSet;
 
 public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedAttackMob {
-    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> DIE_ABILITY = new AbilityType<>("barakoa_die", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_die", 70));
+    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> DIE_ABILITY = new AbilityType<>("barakoa_die", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"die", 70));
     public static final AbilityType<EntityBarakoa, BarakoaHurtAbility> HURT_ABILITY = new AbilityType<>("barakoa_hurt", BarakoaHurtAbility::new);
     public static final AbilityType<EntityBarakoa, BarakoaAttackAbility> ATTACK_ABILITY = new AbilityType<>("barakoa_attack", (type, entity) -> new BarakoaAttackAbility(type, entity, new String[]{"attack_slash_left", "attack_slash_right"}, MMSounds.ENTITY_BARAKOA_SWING.get(), null, 1, 3.0f, 1, 11, 10, true));
     public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> ALERT_ABILITY = new AbilityType<>("barakoa_alert", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"alert", 17) {
@@ -153,7 +151,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
 //        goalSelector.addGoal(0, new FloatGoal(this));
 //        goalSelector.addGoal(0, new UseAbilityAI<>(this, ACTIVATE_ABILITY));
 //        goalSelector.addGoal(0, new UseAbilityAI<>(this, DEACTIVATE_ABILITY));
-//        goalSelector.addGoal(1, new UseAbilityAI<>(this, DIE_ABILITY)); // switch to die ai class
+        goalSelector.addGoal(1, new UseAbilityAI<>(this, DIE_ABILITY));
         goalSelector.addGoal(2, new UseAbilityAI<>(this, HURT_ABILITY, false));
         goalSelector.addGoal(3, new EntityAIAvoidEntity<>(this, EntitySunstrike.class, EntitySunstrike::isStriking, 3, 0.7F));
         goalSelector.addGoal(2, new UseAbilityAI<>(this, ATTACK_ABILITY));
@@ -375,38 +373,6 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
                 .add(Attributes.MAX_HEALTH, 8);
     }
 
-    protected void updateAttackAI() {
-        if (!level.isClientSide && getTarget() != null && !getTarget().isAlive()) setTarget(null);
-
-        if (timeSinceAttack < 80) {
-            timeSinceAttack++;
-        }
-        if (getTarget() != null) {
-            if (targetDistance > 6.5) {
-                getNavigation().moveTo(getTarget(), 0.6);
-            } else {
-                if (!attacking) {
-//                    updateCirclingPosition();
-                }
-            }
-            if (random.nextInt(80) == 0 && timeSinceAttack == 80 && getSensing().hasLineOfSight(getTarget())) {
-                attacking = true;
-                if (getActiveAbility() == null && getWeapon() == 0) {
-                    getNavigation().moveTo(getTarget(), 0.5);
-                }
-            }
-            if (attacking && getActiveAbility() == null && getSensing().hasLineOfSight(getTarget())) {
-                if (targetDistance <= 2.5 && getWeapon() == 0) {
-                    attacking = false;
-                    timeSinceAttack = 0;
-//                    AbilityHandler.INSTANCE.sendAbilityMessage(this, ATTACK_ABILITY); TODO
-                }
-            }
-        } else {
-            attacking = false;
-        }
-    }
-
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType reason, SpawnGroupData livingData, CompoundTag compound) {
         if (canHoldVaryingWeapons()) {
@@ -481,7 +447,6 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             }
             return;
         }
-//        updateAttackAI();
         if (getActiveAbility() != null) {
             getNavigation().stop();
             yHeadRot = yBodyRot = getYRot();

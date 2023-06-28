@@ -65,11 +65,6 @@ public class EntityBarakoayaToPlayer extends EntityBarakoanToPlayer {
     }
 
     @Override
-    protected void updateAttackAI() {
-
-    }
-
-    @Override
     protected void sunBlockTarget() {
         LivingEntity target = getTarget();
         if (target != null && target == getLeader()) {

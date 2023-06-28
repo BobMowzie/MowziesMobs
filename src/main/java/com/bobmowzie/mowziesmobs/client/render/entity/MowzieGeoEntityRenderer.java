@@ -43,4 +43,9 @@ public abstract class MowzieGeoEntityRenderer<T extends LivingEntity & IAnimatab
     public MowzieAnimatedGeoModel<T> getMowzieAnimatedGeoModel() {
         return (MowzieAnimatedGeoModel<T>) super.getGeoModelProvider();
     }
+
+    @Override
+    protected float getDeathMaxRotation(T animatable) {
+        return 0;
+    }
 }

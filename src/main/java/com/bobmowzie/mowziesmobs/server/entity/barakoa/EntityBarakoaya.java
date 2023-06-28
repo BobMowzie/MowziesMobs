@@ -108,11 +108,6 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
     }
 
     @Override
-    protected void updateAttackAI() {
-
-    }
-
-    @Override
     public boolean canHeal(LivingEntity entity) {
         return entity instanceof EntityBarako;
     }

@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationCont
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
+import com.bobmowzie.mowziesmobs.server.ability.abilities.player.SimpleAnimationAbility;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.network.FriendlyByteBuf;
@@ -39,6 +40,8 @@ public abstract class MowzieGeckoEntity extends MowzieEntity implements IAnimata
 
     @Override
     protected int getDeathDuration() {
+        Ability deathAbility = getActiveAbility();
+        if (deathAbility instanceof SimpleAnimationAbility) return ((SimpleAnimationAbility) deathAbility).getDuration();
         return 20;
     }
 
