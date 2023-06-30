@@ -22,7 +22,7 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 public abstract class MowzieGeckoEntity extends MowzieEntity implements IAnimatable, IAnimationTickable {
 
     protected AnimationFactory factory = new AnimationFactory(this);
-    protected MowzieAnimationController<MowzieGeckoEntity> controller = new MowzieAnimationController<>(this, "controller", 5, EasingType.EaseInOutQuad, this::predicate, 0);
+    protected MowzieAnimationController<MowzieGeckoEntity> controller = new MowzieAnimationController<>(this, "controller", 5, this::predicate, 0);
 
     public MowzieGeckoEntity(EntityType<? extends MowzieEntity> type, Level world) {
         super(type, world);

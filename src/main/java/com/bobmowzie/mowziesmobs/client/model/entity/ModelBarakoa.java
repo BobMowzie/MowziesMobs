@@ -31,24 +31,25 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
     }
 
     @Override
-    public void setLivingAnimations(EntityBarakoa animatable, Integer instanceId, AnimationEvent animationEvent) {
-        super.setLivingAnimations(animatable, instanceId, animationEvent);
-    }
-
-    @Override
     public void codeAnimations(EntityBarakoa entity, Integer uniqueID, AnimationEvent<?> customPredicate) {
         MowzieGeoBone root = getMowzieBone("root");
         root.multiplyScale(0.83f, 0.83f, 0.83f);
 
-        MowzieGeoBone head = getMowzieBone("head");
-        MowzieGeoBone neck = getMowzieBone("neck");
-        EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
-        float headYaw = Mth.wrapDegrees(extraData.netHeadYaw);
-        float headPitch = Mth.wrapDegrees(extraData.headPitch);
-        head.addRotationX(headPitch * ((float) Math.PI / 180F) / 2f);
-        head.addRotationY(headYaw * ((float) Math.PI / 180F) / 2f);
-        neck.addRotationX(headPitch * ((float) Math.PI / 180F) / 2f);
-        neck.addRotationY(headYaw * ((float) Math.PI / 180F) / 2f);
+        MowzieGeoBone mask = getMowzieBone("mask");
+        MowzieGeoBone hips = getMowzieBone("hips");
+        mask.setScale(1.0f / (float) hips.getScale().x, 1.0f / (float) hips.getScale().y, 1.0f / (float) hips.getScale().z);
+
+        if (entity.isAlive()) {
+            MowzieGeoBone head = getMowzieBone("head");
+            MowzieGeoBone neck = getMowzieBone("neck");
+            EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
+            float headYaw = Mth.wrapDegrees(extraData.netHeadYaw);
+            float headPitch = Mth.wrapDegrees(extraData.headPitch);
+            head.addRotationX(headPitch * ((float) Math.PI / 180F) / 2f);
+            head.addRotationY(headYaw * ((float) Math.PI / 180F) / 2f);
+            neck.addRotationX(headPitch * ((float) Math.PI / 180F) / 2f);
+            neck.addRotationY(headYaw * ((float) Math.PI / 180F) / 2f);
+        }
 
         float animSpeed = 1.4f;
         float limbSwing = customPredicate.getLimbSwing();

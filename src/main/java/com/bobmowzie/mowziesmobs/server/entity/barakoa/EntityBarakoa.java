@@ -71,8 +71,8 @@ import java.util.EnumSet;
 public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedAttackMob {
     public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> DIE_ABILITY = new AbilityType<>("barakoa_die", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"die", 70));
     public static final AbilityType<EntityBarakoa, BarakoaHurtAbility> HURT_ABILITY = new AbilityType<>("barakoa_hurt", BarakoaHurtAbility::new);
-    public static final AbilityType<EntityBarakoa, BarakoaAttackAbility> ATTACK_ABILITY = new AbilityType<>("barakoa_attack", (type, entity) -> new BarakoaAttackAbility(type, entity, new String[]{"attack_slash_left", "attack_slash_right"}, MMSounds.ENTITY_BARAKOA_SWING.get(), null, 1, 3.0f, 1, 11, 10, true));
-    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> ALERT_ABILITY = new AbilityType<>("barakoa_alert", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"alert", 17) {
+    public static final AbilityType<EntityBarakoa, BarakoaAttackAbility> ATTACK_ABILITY = new AbilityType<>("barakoa_attack", (type, entity) -> new BarakoaAttackAbility(type, entity, new String[]{"attack_slash_left", "attack_slash_right"}, MMSounds.ENTITY_BARAKOA_SWING.get(), null, 1, 3.0f, 1, 13, 9, true));
+    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> ALERT_ABILITY = new AbilityType<>("barakoa_alert", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"alert", 15) {
         @Override
         public void tickUsing() {
             super.tickUsing();
@@ -102,7 +102,6 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
     private boolean circleDirection = true;
     protected int circleTick = 0;
     protected boolean attacking = false;
-    private int timeSinceAttack = 0;
     private int cryDelay = -1;
     private int danceTimer = 0;
     private int ticksWithoutTarget;
@@ -282,8 +281,11 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
 
     protected <E extends IAnimatable> PlayState predicateMask(AnimationEvent<E> event)
     {
-        event.getController().setAnimation(new AnimationBuilder().loop("mask_twitch"));
-        return PlayState.CONTINUE;
+        if (isAlive()) {
+            event.getController().setAnimation(new AnimationBuilder().loop("mask_twitch"));
+            return PlayState.CONTINUE;
+        }
+        return PlayState.STOP;
     }
 
     protected <E extends IAnimatable> PlayState predicateWalkRun(AnimationEvent<E> event)
@@ -412,7 +414,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         dancing.updatePrevTimer();
         super.tick();
 
-        if (level.isClientSide()) {
+        if (level.isClientSide() && deathTime < 20) {
             if (this.tickTimer() % 10 == 1) {
                 AdvancedParticleBase.spawnParticle(level, ParticleHandler.SUN.get(), getX(), getY(), getZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 10, true, false, new ParticleComponent[]{
                         new ParticleComponent.PinLocation(headPos),
