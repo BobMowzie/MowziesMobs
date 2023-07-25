@@ -176,38 +176,6 @@
 		"sounds": [ "minecraft:random/anvil_land" ],
 		"subtitle": "subtitles.mowziesmobs.wroughtnaut.axe_clang"
 	},
-	"barakoa.angry1": {
-		"sounds": [ "mowziesmobs:entity/barakoa/angry1" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.shout"
-	},
-	"barakoa.angry2": {
-		"sounds": [ "mowziesmobs:entity/barakoa/angry2" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.shout"
-	},
-	"barakoa.angry3": {
-		"sounds": [ "mowziesmobs:entity/barakoa/angry3" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.shout"
-	},
-	"barakoa.angry4": {
-		"sounds": [ "mowziesmobs:entity/barakoa/angry4" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.shout"
-	},
-	"barakoa.angry5": {
-		"sounds": [ "mowziesmobs:entity/barakoa/angry5" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.shout"
-	},
-	"barakoa.angry6": {
-		"sounds": [ "mowziesmobs:entity/barakoa/angry6" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.shout"
-	},
-	"barakoa.battlecry": {
-		"sounds": [ "mowziesmobs:entity/barakoa/battlecry" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.battlecry"
-	},
-	"barakoa.battlecry2": {
-		"sounds": [ "mowziesmobs:entity/barakoa/battlecry2" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.battlecry"
-	},
 	"barakoa.die": {
 		"sounds": [
 			"mowziesmobs:entity/barakoa/die1",
@@ -218,47 +186,62 @@
 	"barakoa.hurt": {
 		"sounds": [
 			"mowziesmobs:entity/barakoa/hurt1",
-			"mowziesmobs:entity/barakoa/hurt2",
-			"mowziesmobs:entity/barakoa/hurt3",
-			"mowziesmobs:entity/barakoa/hurt4"
+			"mowziesmobs:entity/barakoa/hurt2"
 		],
 		"subtitle": "subtitles.mowziesmobs.barakoa.hurt"
 	},
-	"barakoa.talk1": {
-		"sounds": [ "mowziesmobs:entity/barakoa/talk1" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.talk"
+	"barakoa.rattle": {
+		"sounds": [
+			"mowziesmobs:entity/barakoa/rattle1",
+			"mowziesmobs:entity/barakoa/rattle2",
+			"mowziesmobs:entity/barakoa/rattle3",
+			"mowziesmobs:entity/barakoa/rattle4"
+		],
+		"subtitle": "subtitles.mowziesmobs.barakoa.rattle"
 	},
-	"barakoa.talk2": {
-		"sounds": [ "mowziesmobs:entity/barakoa/talk2" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.talk"
+	"barakoa.idle1": {
+		"sounds": [ "mowziesmobs:entity/barakoa/idle1" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.idle"
 	},
-	"barakoa.talk3": {
-		"sounds": [ "mowziesmobs:entity/barakoa/talk3" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.talk"
+	"barakoa.idle2": {
+		"sounds": [ "mowziesmobs:entity/barakoa/idle2" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.idle"
 	},
-	"barakoa.talk4": {
-		"sounds": [ "mowziesmobs:entity/barakoa/talk4" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.talk"
+	"barakoa.idle3": {
+		"sounds": [ "mowziesmobs:entity/barakoa/idle3" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.idle"
 	},
-	"barakoa.talk5": {
-		"sounds": [ "mowziesmobs:entity/barakoa/talk5" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.talk"
+	"barakoa.idle4": {
+		"sounds": [ "mowziesmobs:entity/barakoa/idle4" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.idle"
 	},
-	"barakoa.talk6": {
-		"sounds": [ "mowziesmobs:entity/barakoa/talk6" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.talk"
+	"barakoa.idle5": {
+		"sounds": [ "mowziesmobs:entity/barakoa/idle5" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.idle"
 	},
-	"barakoa.talk7": {
-		"sounds": [ "mowziesmobs:entity/barakoa/talk7" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.talk"
+	"barakoa.idle6": {
+		"sounds": [ "mowziesmobs:entity/barakoa/idle6" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.idle"
 	},
-	"barakoa.talk8": {
-		"sounds": [ "mowziesmobs:entity/barakoa/talk8" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.talk"
+	"barakoa.idle7": {
+		"sounds": [ "mowziesmobs:entity/barakoa/idle7" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.idle"
 	},
-	"barakoa.talk9": {
-		"sounds": [ "mowziesmobs:entity/barakoa/talk9" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.talk"
+	"barakoa.idle8": {
+		"sounds": [ "mowziesmobs:entity/barakoa/idle8" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.idle"
+	},
+	"barakoa.attack1": {
+		"sounds": [ "mowziesmobs:entity/barakoa/attack1" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.attack"
+	},
+	"barakoa.attack2": {
+		"sounds": [ "mowziesmobs:entity/barakoa/attack2" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.attack"
+	},
+	"barakoa.attack3": {
+		"sounds": [ "mowziesmobs:entity/barakoa/attack3" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.attack"
 	},
 	"barakoa.blowdart": {
 		"sounds": [ "mowziesmobs:entity/barakoa/blowdart" ],
@@ -271,6 +254,10 @@
 	"barakoa.shout": {
 		"sounds": [ "mowziesmobs:entity/barakoa/shout" ],
 		"subtitle": "subtitles.mowziesmobs.barakoa.shout"
+	},
+	"barakoa.slash": {
+		"sounds": [ "mowziesmobs:entity/barakoa/slash" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.swing"
 	},
 	"barakoa.swing": {
 		"sounds": [ "mowziesmobs:entity/barakoa/swing" ],
