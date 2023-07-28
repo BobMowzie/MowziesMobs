@@ -178,8 +178,7 @@
 	},
 	"barakoa.die": {
 		"sounds": [
-			"mowziesmobs:entity/barakoa/die1",
-			"mowziesmobs:entity/barakoa/die2"
+			"mowziesmobs:entity/barakoa/death"
 		],
 		"subtitle": "subtitles.mowziesmobs.barakoa.die"
 	},
@@ -254,10 +253,6 @@
 	"barakoa.shout": {
 		"sounds": [ "mowziesmobs:entity/barakoa/shout" ],
 		"subtitle": "subtitles.mowziesmobs.barakoa.shout"
-	},
-	"barakoa.slash": {
-		"sounds": [ "mowziesmobs:entity/barakoa/slash" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.swing"
 	},
 	"barakoa.swing": {
 		"sounds": [ "mowziesmobs:entity/barakoa/swing" ],

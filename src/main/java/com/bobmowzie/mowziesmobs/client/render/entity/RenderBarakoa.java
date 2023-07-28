@@ -7,6 +7,7 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3d;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
@@ -44,6 +45,11 @@ public class RenderBarakoa extends MowzieGeoEntityRenderer<EntityBarakoa> {
         MowzieGeoBone head = getMowzieAnimatedGeoModel().getMowzieBone("head");
         Vector3d worldPos = head.getWorldPosition();
         animatable.headPos[0] = new Vec3(worldPos.x, worldPos.y, worldPos.z);
+
+        if (!Minecraft.getInstance().isPaused()) {
+            MowzieGeoBone mask = getMowzieAnimatedGeoModel().getMowzieBone("mask");
+            animatable.updateRattleSound(mask.getRotationZ());
+        }
     }
 
     @Override

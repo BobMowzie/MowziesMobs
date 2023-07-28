@@ -24,8 +24,6 @@ import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import com.google.common.base.Supplier;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.particles.ParticleTypes;
@@ -36,6 +34,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
@@ -61,22 +60,26 @@ import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import software.bernie.example.registry.SoundRegistry;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.Animation;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.builder.ILoopType;
 import software.bernie.geckolib3.core.easing.EasingType;
-import software.bernie.geckolib3.core.event.CustomInstructionKeyframeEvent;
-import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 
 import java.util.EnumSet;
 
 public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedAttackMob {
-    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> DIE_ABILITY = new AbilityType<>("barakoa_die", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"die", 70));
+    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> DIE_ABILITY = new AbilityType<>("barakoa_die", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"die", 70) {
+        @Override
+        public void tickUsing() {
+            super.tickUsing();
+            if (getTicksInUse() == 1) getUser().playSound(MMSounds.ENTITY_BARAKOA_HURT.get(), getUser().getSoundVolume(), getUser().getVoicePitch());
+            if (getTicksInUse() == 15) getUser().playSound(MMSounds.ENTITY_BARAKOA_RETRACT.get(), getUser().getSoundVolume(), 1);
+        }
+    });
     public static final AbilityType<EntityBarakoa, BarakoaHurtAbility> HURT_ABILITY = new AbilityType<>("barakoa_hurt", BarakoaHurtAbility::new);
     public static final AbilityType<EntityBarakoa, BarakoaAttackAbility> ATTACK_ABILITY = new AbilityType<>("barakoa_attack", (type, entity) -> new BarakoaAttackAbility(type, entity, new String[]{"attack_slash_left", "attack_slash_right"}, null, null, 1, 3.0f, 1, 13, 9, true));
     public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> ALERT_ABILITY = new AbilityType<>("barakoa_alert", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"alert", 15) {
@@ -128,8 +131,12 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
     private static final byte FOOTSTEP_ID = 69;
     private int footstepCounter = 0;
 
-    protected MowzieAnimationController<MowzieGeckoEntity> maskController = new MowzieAnimationController<>(this, "mask_controller", 0, this::predicateMask, this.random.nextDouble() * 150);
+    int maskTimingOffset = this.random.nextInt(0, 150);
+    protected MowzieAnimationController<MowzieGeckoEntity> maskController = new MowzieAnimationController<>(this, "mask_controller", 0, this::predicateMask, maskTimingOffset);
     protected MowzieAnimationController<MowzieGeckoEntity> walkRunController = new MowzieAnimationController<>(this, "walk_run_controller", 4, EasingType.EaseInOutQuad, this::predicateWalkRun, 0);
+
+    private float prevMaskRot = 0;
+    private boolean rattling = false;
 
     public EntityBarakoa(EntityType<? extends EntityBarakoa> type, Level world) {
         super(type, world);
@@ -283,19 +290,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
     public void registerControllers(AnimationData data) {
         super.registerControllers(data);
         data.addAnimationController(maskController);
-        maskController.registerSoundListener(this::soundListener);
-        maskController.registerCustomInstructionListener(this::instructionListener);
         data.addAnimationController(walkRunController);
-    }
-
-    private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
-//        System.out.println("test");
-//        playSound(MMSounds.ENTITY_BARAKOA_RATTLE.get(), 1f, random.nextFloat(0.9f, 1.1f));
-    }
-
-    private <ENTITY extends IAnimatable> void instructionListener(CustomInstructionKeyframeEvent<ENTITY> event) {
-        System.out.println("test");
-        playSound(MMSounds.ENTITY_BARAKOA_RATTLE.get(), 1f, random.nextFloat(0.9f, 1.1f));
     }
 
     protected <E extends IAnimatable> PlayState predicateMask(AnimationEvent<E> event)
@@ -368,7 +363,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         }
         int i = Mth.nextInt(random, 0, MMSounds.ENTITY_BARAKOA_IDLE.size());
         if (i < MMSounds.ENTITY_BARAKOA_IDLE.size()) {
-            playSound(MMSounds.ENTITY_BARAKOA_IDLE.get(i).get(), 1, 1);
+            return MMSounds.ENTITY_BARAKOA_IDLE.get(i).get();
 //                AbilityHandler.INSTANCE.sendAbilityMessage(this, IDLE_ABILITY); TODO
         }
         return null;
@@ -423,22 +418,24 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         dancing.updatePrevTimer();
         super.tick();
 
-        if (level.isClientSide() && deathTime < 20) {
-            if (this.tickTimer() % 10 == 1) {
-                AdvancedParticleBase.spawnParticle(level, ParticleHandler.SUN.get(), getX(), getY(), getZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 10, true, false, new ParticleComponent[]{
-                        new ParticleComponent.PinLocation(headPos),
-                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.oscillate(9, 11, 12), false)
-                });
-            }
-            if (headPos != null && headPos.length > 0 && headPos[0] != null) {
-                if (random.nextFloat() < 0.3F) {
-                    int amount = random.nextInt(2) + 1;
-                    while (amount-- > 0) {
-                        float theta = random.nextFloat() * MathUtils.TAU;
-                        float r = random.nextFloat() * 0.4F;
-                        float x = r * Mth.cos(theta);
-                        float z = r * Mth.sin(theta);
-                        level.addParticle(ParticleTypes.SMOKE, headPos[0].x() + x, headPos[0].y() + 0.1, headPos[0].z() + z, 0, 0, 0);
+        if (level.isClientSide()) {
+            if (deathTime < 20) {
+                if (this.tickTimer() % 10 == 1) {
+                    AdvancedParticleBase.spawnParticle(level, ParticleHandler.SUN.get(), getX(), getY(), getZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 10, true, false, new ParticleComponent[]{
+                            new ParticleComponent.PinLocation(headPos),
+                            new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.oscillate(9, 11, 12), false)
+                    });
+                }
+                if (headPos != null && headPos.length > 0 && headPos[0] != null) {
+                    if (random.nextFloat() < 0.3F) {
+                        int amount = random.nextInt(2) + 1;
+                        while (amount-- > 0) {
+                            float theta = random.nextFloat() * MathUtils.TAU;
+                            float r = random.nextFloat() * 0.4F;
+                            float x = r * Mth.cos(theta);
+                            float z = r * Mth.sin(theta);
+                            level.addParticle(ParticleTypes.SMOKE, headPos[0].x() + x, headPos[0].y() + 0.1, headPos[0].z() + z, 0, 0, 0);
+                        }
                     }
                 }
             }
@@ -561,6 +558,20 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         }
 
 //        if (getActiveAbility() == NO_ANIMATION) AbilityHandler.INSTANCE.sendAbilityMessage(this, TELEPORT_ANIMATION);
+    }
+
+    public void updateRattleSound(float maskRot) {
+        if (!rattling) {
+            if (Math.abs(maskRot - prevMaskRot) > 0.06) {
+                level.playLocalSound(getX(), getY(), getZ(), MMSounds.ENTITY_BARAKOA_RATTLE.get(), SoundSource.HOSTILE, 0.03f, getVoicePitch(), false);
+            }
+        }
+        else {
+            if (Math.abs(maskRot - prevMaskRot) < 0.00000001) {
+                rattling = false;
+            }
+        }
+        prevMaskRot = maskRot;
     }
 
     @Override
@@ -1022,7 +1033,6 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             if (getTicksInUse() == 1) {
                 int i = rand.nextInt(MMSounds.ENTITY_BARAKOA_ATTACK.size());
                 getUser().playSound(MMSounds.ENTITY_BARAKOA_ATTACK.get(i).get(), 1, rand.nextFloat(0.9f, 1.1f));
-                getUser().playSound(MMSounds.ENTITY_BARAKOA_SLASH.get(), 1, rand.nextFloat(0.9f, 1.1f));
             }
         }
     }
