@@ -258,10 +258,6 @@
 		"sounds": [ "mowziesmobs:entity/barakoa/alert" ],
 		"subtitle": "subtitles.mowziesmobs.barakoa.alert"
 	},
-	"barakoa.swing": {
-		"sounds": [ "mowziesmobs:entity/barakoa/swing" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.swing"
-	},
 	"barakoa.emerge": {
 		"sounds": [ "mowziesmobs:entity/barakoa/emerge" ],
 		"subtitle": "subtitles.mowziesmobs.barakoa.emerge"
