@@ -46,8 +46,8 @@ public class UseAbilityAI<T extends MowzieGeckoEntity> extends Goal {
     public void stop() {
         super.stop();
         Ability ability = entity.getActiveAbility();
-        if (ability != null) {
-            ability.interrupt();
+        if (ability != null && ability.getAbilityType() == abilityType) {
+            AbilityHandler.INSTANCE.sendInterruptAbilityMessage(entity, ability.getAbilityType());
         }
     }
 

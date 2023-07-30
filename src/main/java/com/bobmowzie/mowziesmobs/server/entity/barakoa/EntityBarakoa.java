@@ -8,6 +8,7 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleRibbon;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.RibbonComponent;
+import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
@@ -83,16 +84,37 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
     public static final AbilityType<EntityBarakoa, BarakoaHurtAbility> HURT_ABILITY = new AbilityType<>("barakoa_hurt", BarakoaHurtAbility::new);
     public static final AbilityType<EntityBarakoa, BarakoaAttackAbility> ATTACK_ABILITY = new AbilityType<>("barakoa_attack", (type, entity) -> new BarakoaAttackAbility(type, entity, new String[]{"attack_slash_left", "attack_slash_right"}, null, null, 1, 3.0f, 1, 13, 9, true));
     public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> ALERT_ABILITY = new AbilityType<>("barakoa_alert", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"alert", 15) {
+        int soundFrame;
+
+        @Override
+        public void start() {
+            super.start();
+            soundFrame = rand.nextInt(7);
+        }
+
         @Override
         public void tickUsing() {
             super.tickUsing();
+            if (soundFrame == getTicksInUse()) getUser().playSound(MMSounds.ENTITY_BARAKOA_ALERT.get(), getUser().getSoundVolume(), getUser().getVoicePitch());
             if (getUser().getTarget() != null) {
                 getUser().lookAt(getUser().getTarget(), 30F, 30F);
                 getUser().getLookControl().setLookAt(getUser().getTarget(), 30F, 30F);
             }
         }
+
+        @Override
+        public void end() {
+            super.end();
+            if (rand.nextFloat() < 0.2) getUser().sendAbilityMessage(ROAR_ABILITY);
+        }
     });
-    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> IDLE_ABILITY = new AbilityType<>("barakoa_idle", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_idle", 35));
+    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> ROAR_ABILITY = new AbilityType<>("barakoa_roar", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"roar", 35) {
+        @Override
+        public void tickUsing() {
+            super.tickUsing();
+            if (getTicksInUse() == 2) getUser().playSound(MMSounds.ENTITY_BARAKOA_ROAR.get(), getUser().getSoundVolume() + 0.5f, getUser().getVoicePitch());
+        }
+    });
     public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> ACTIVATE_ABILITY = new AbilityType<>("barakoa_activate", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_activate", 25));
     public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> DEACTIVATE_ABILITY = new AbilityType<>("barakoa_deactivate", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_deactivate", 26));
     public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> BLOCK_ABILITY = new AbilityType<>("barakoa_block", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_block", 10));
@@ -169,6 +191,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         goalSelector.addGoal(3, new EntityAIAvoidEntity<>(this, EntitySunstrike.class, EntitySunstrike::isStriking, 3, 0.7F));
         goalSelector.addGoal(2, new UseAbilityAI<>(this, ATTACK_ABILITY));
         goalSelector.addGoal(2, new UseAbilityAI<>(this, ALERT_ABILITY));
+        goalSelector.addGoal(2, new UseAbilityAI<>(this, ROAR_ABILITY));
 /*
         goalSelector.addGoal(2, new AnimationBlockAI<>(this, BLOCK_ANIMATION));
         goalSelector.addGoal(4, new SimpleAnimationAI<EntityBarakoa>(this, IDLE_ABILITY, false, true) {
@@ -364,7 +387,6 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         int i = Mth.nextInt(random, 0, MMSounds.ENTITY_BARAKOA_IDLE.size());
         if (i < MMSounds.ENTITY_BARAKOA_IDLE.size()) {
             return MMSounds.ENTITY_BARAKOA_IDLE.get(i).get();
-//                AbilityHandler.INSTANCE.sendAbilityMessage(this, IDLE_ABILITY); TODO
         }
         return null;
     }
@@ -414,8 +436,6 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
 
     @Override
     public void tick() {
-        doWalk.updatePrevTimer();
-        dancing.updatePrevTimer();
         super.tick();
 
         if (level.isClientSide()) {
@@ -465,12 +485,6 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             danceTimer++;
         }
 
-        if (getActiveAbility() == null || getActiveAbilityType() == IDLE_ABILITY) {
-            doWalk.increaseTimer();
-        } else {
-            doWalk.decreaseTimer();
-        }
-
         if (danceTimer != 0 && danceTimer != 30) {
             danceTimer++;
             dancing.increaseTimer();
@@ -496,13 +510,6 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             sendAbilityMessage(ALERT_ABILITY);
             cryDelay = Mth.nextInt(random, -15, 30);
         }
-
-        if (getActiveAbilityType() == ATTACK_ABILITY && getAnimationTick() == 5) {
-            playSound(MMSounds.ENTITY_BARAKOA_SHOUT.get(), 1, 1.1f);
-        }
-//        if (getActiveAbility() == PROJECTILE_ATTACK_ANIMATION && getAnimationTick() == 1) {
-//            playSound(MMSounds.ENTITY_BARAKOA_INHALE, 0.7f, 1.2f);
-//        }
 
         if (level.isClientSide && getActiveAbilityType() == HEAL_ABILITY && getAnimationTick() == 22 && staffPos != null && staffPos.length >= 1)
             staffPos[0] = position().add(0, getEyeHeight(), 0);
@@ -891,7 +898,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
 
     @Override
     public AbilityType<?, ?>[] getAbilities() {
-        return new AbilityType[] { DIE_ABILITY, HURT_ABILITY, ATTACK_ABILITY, ALERT_ABILITY, IDLE_ABILITY, ACTIVATE_ABILITY, DEACTIVATE_ABILITY, BLOCK_ABILITY, TELEPORT_ABILITY, HEAL_ABILITY };
+        return new AbilityType[] { DIE_ABILITY, HURT_ABILITY, ATTACK_ABILITY, ALERT_ABILITY, ROAR_ABILITY, ACTIVATE_ABILITY, DEACTIVATE_ABILITY, BLOCK_ABILITY, TELEPORT_ABILITY, HEAL_ABILITY };
     }
 
     protected static class CircleAttackGoal extends Goal {
@@ -991,6 +998,10 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
 
                             this.mob.getMoveControl().strafe(this.strafingFrontBackMul * strafeSpeed, this.strafingLeftRightMul * strafeSpeed * distScale);
                             this.mob.lookAt(target, 30.0F, 30.0F);
+
+                            if (mob.random.nextFloat() < 0.002) {
+                                mob.sendAbilityMessage(ROAR_ABILITY);
+                            }
                         } else {
                             mob.setStrafing(false);
                             this.mob.getMoveControl().strafe(0, 0);

@@ -250,9 +250,13 @@
 		"sounds": [ "mowziesmobs:entity/barakoa/inhale" ],
 		"subtitle": "subtitles.mowziesmobs.barakoa.inhale"
 	},
-	"barakoa.shout": {
-		"sounds": [ "mowziesmobs:entity/barakoa/shout" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.shout"
+	"barakoa.roar": {
+		"sounds": [ "mowziesmobs:entity/barakoa/roar" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.roar"
+	},
+	"barakoa.alert": {
+		"sounds": [ "mowziesmobs:entity/barakoa/alert" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.alert"
 	},
 	"barakoa.swing": {
 		"sounds": [ "mowziesmobs:entity/barakoa/swing" ],

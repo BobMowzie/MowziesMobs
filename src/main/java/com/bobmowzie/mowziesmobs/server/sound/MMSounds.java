@@ -58,7 +58,8 @@ public final class MMSounds {
     public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_HURT = create("barakoa.hurt");
     public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_RATTLE = create("barakoa.rattle");
     public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_DIE = create("barakoa.die");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_SHOUT = create("barakoa.shout");
+    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_ROAR = create("barakoa.roar");
+    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_ALERT = create("barakoa.alert");
     public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_IDLE_1 = create("barakoa.idle1");
     public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_IDLE_2 = create("barakoa.idle2");
     public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_IDLE_3 = create("barakoa.idle3");
