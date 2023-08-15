@@ -140,6 +140,10 @@ public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask, IAn
         });
     }
 
+    public MaskType getType() {
+        return type;
+    }
+
     @Nullable
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
@@ -160,13 +164,13 @@ public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask, IAn
     }
 
     public <P extends Item & IAnimatable> PlayState predicate(AnimationEvent<P> event) {
-        event.getController().setAnimation(new AnimationBuilder().addAnimation("empty", ILoopType.EDefaultLoopTypes.LOOP));
+        event.getController().setAnimation(new AnimationBuilder().addAnimation("default", ILoopType.EDefaultLoopTypes.LOOP));
         return PlayState.CONTINUE;
     }
 
     @Override
     public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController<>(this, controllerName, 3, this::predicate));
+        data.addAnimationController(new AnimationController<>(this, controllerName, 0, this::predicate));
     }
 
     @Override

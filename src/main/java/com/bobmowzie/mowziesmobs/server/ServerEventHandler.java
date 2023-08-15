@@ -625,7 +625,7 @@ public final class ServerEventHandler {
                     for (int i = 0; i < playerCapability.getPackSize(); i++) {
                         EntityBarakoanToPlayer barakoa = playerCapability.getTribePack().get(i);
                         LivingEntity living = (LivingEntity) event.getTarget();
-                        if (barakoa.getMask() != MaskType.FAITH) {
+                        if (barakoa.getMaskType() != MaskType.FAITH) {
                             if (!living.isInvulnerable()) barakoa.setTarget(living);
                         }
                     }

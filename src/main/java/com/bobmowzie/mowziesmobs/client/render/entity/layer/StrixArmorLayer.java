@@ -68,8 +68,8 @@ public class StrixArmorLayer extends GeoLayerRenderer<EntityBarakoa> {
                 if (armorTexture != null) {
                     VertexConsumer ivertexbuilder = ItemRenderer.getFoilBuffer(bufferIn, RenderType.entityCutoutNoCull(new ResourceLocation(armorTexture)), false, glintIn);
                     poseStack.mulPose(Quaternion.fromXYZ(0.0F, 0.0F, (float) Math.PI));
-                    poseStack.scale(0.8f, 0.8f, 0.8f);
-                    poseStack.translate(0, 0.1, 0.1);
+                    poseStack.scale(1.111f, 1.111f, 1.111f);
+                    poseStack.translate(0, 0.25, 0.15);
                     a.renderToBuffer(poseStack, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
                 }
             }

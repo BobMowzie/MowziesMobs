@@ -8,7 +8,6 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleRibbon;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.RibbonComponent;
-import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
@@ -25,8 +24,6 @@ import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -175,8 +172,6 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             myPos = new Vec3[]{new Vec3(0, 0, 0)};
             headPos = new Vec3[]{new Vec3(0, 0, 0)};
         }
-
-        equipItemIfPossible(ItemHandler.BARAKOA_MASK_FAITH.getDefaultInstance());
     }
 
     @Override
@@ -480,35 +475,8 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             yHeadRot = yBodyRot = getYRot();
         }
 
-        if (getDancing()) {
-            setDancing(false);
-            danceTimer++;
-        }
-
-        if (danceTimer != 0 && danceTimer != 30) {
-            danceTimer++;
-            dancing.increaseTimer();
-        } else {
-            danceTimer = 0;
-            dancing.decreaseTimer();
-        }
-        if (!level.isClientSide && getActiveAbility() == null && danceTimer == 0 && random.nextInt(800) == 0 && getTarget() != null) {
-            setDancing(true);
-            playSound(MMSounds.ENTITY_BARAKOA_BATTLECRY_2.get(), 1.2f, 1.5f);
-        }
-        if (getActiveAbility() != null) {
-            danceTimer = 0;
-        }
-
-        if (cryDelay > -1) {
-            cryDelay--;
-        }
-        if (cryDelay == 0) {
-            playSound(MMSounds.ENTITY_BARAKOA_BATTLECRY.get(), 1.5f, 1.5f);
-        }
         if (getTarget() != null && ticksWithoutTarget > 3) {
             sendAbilityMessage(ALERT_ABILITY);
-            cryDelay = Mth.nextInt(random, -15, 30);
         }
 
         if (level.isClientSide && getActiveAbilityType() == HEAL_ABILITY && getAnimationTick() == 22 && staffPos != null && staffPos.length >= 1)
@@ -614,7 +582,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
                         @Override
                         public void postUpdate(AdvancedParticleBase particle) {
                             super.postUpdate(particle);
-                            if (random.nextFloat() < 0.3F) {
+                            if (particle.getAge() < 80 && random.nextFloat() < 0.3F) {
                                 int amount = 1;
                                 while (amount-- > 0) {
                                     float theta = random.nextFloat() * MathUtils.TAU;
@@ -631,6 +599,31 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         else super.handleEntityEvent(id);
     }
 
+    public static ItemBarakoaMask getMaskFromType(MaskType maskType) {
+        ItemBarakoaMask mask = ItemHandler.BARAKOA_MASK_FURY;
+        switch (maskType) {
+            case BLISS:
+                mask = ItemHandler.BARAKOA_MASK_BLISS;
+                break;
+            case FEAR:
+                mask = ItemHandler.BARAKOA_MASK_FEAR;
+                break;
+            case FURY:
+                mask = ItemHandler.BARAKOA_MASK_FURY;
+                break;
+            case MISERY:
+                mask = ItemHandler.BARAKOA_MASK_MISERY;
+                break;
+            case RAGE:
+                mask = ItemHandler.BARAKOA_MASK_RAGE;
+                break;
+            case FAITH:
+                mask = ItemHandler.BARAKOA_MASK_FAITH;
+                break;
+        }
+        return mask;
+    }
+
     protected void onAnimationFinish(Ability ability) {
         if (ability.getAbilityType() == ACTIVATE_ABILITY) {
             setActive(true);
@@ -638,27 +631,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         }
         if (ability.getAbilityType() == DEACTIVATE_ABILITY) {
             discard();
-            ItemBarakoaMask mask = ItemHandler.BARAKOA_MASK_FURY;
-            switch (getMask()) {
-                case BLISS:
-                    mask = ItemHandler.BARAKOA_MASK_BLISS;
-                    break;
-                case FEAR:
-                    mask = ItemHandler.BARAKOA_MASK_FEAR;
-                    break;
-                case FURY:
-                    mask = ItemHandler.BARAKOA_MASK_FURY;
-                    break;
-                case MISERY:
-                    mask = ItemHandler.BARAKOA_MASK_MISERY;
-                    break;
-                case RAGE:
-                    mask = ItemHandler.BARAKOA_MASK_RAGE;
-                    break;
-                case FAITH:
-                    mask = ItemHandler.BARAKOA_MASK_FAITH;
-                    break;
-            }
+            ItemBarakoaMask mask = getMaskFromType(getMaskType());
             if (!level.isClientSide) {
                 ItemEntity itemEntity = spawnAtLocation(getDeactivatedMask(mask), 1.5f);
                 if (itemEntity != null) {
@@ -700,12 +673,13 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         getEntityData().set(DANCING, dancing);
     }
 
-    public MaskType getMask() {
+    public MaskType getMaskType() {
         return MaskType.from(getEntityData().get(MASK));
     }
 
     public void setMask(MaskType type) {
         getEntityData().set(MASK, type.ordinal());
+        equipItemIfPossible(getMaskFromType(type).getDefaultInstance());
     }
 
     public int getWeapon() {
@@ -737,7 +711,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
-        compound.putInt("mask", getMask().ordinal());
+        compound.putInt("mask", getMaskType().ordinal());
         compound.putInt("weapon", getWeapon());
     }
 
@@ -796,7 +770,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
             angleFlag = (entityRelativeAngle <= arc / 2.0 && entityRelativeAngle >= -arc / 2.0) || (entityRelativeAngle >= 360 - arc / 2.0 || entityRelativeAngle <= -arc + 90 / 2.0);
         }
-        if (angleFlag && getMask().canBlock && entity instanceof LivingEntity && (getActiveAbility() == null || getActiveAbilityType() == HURT_ABILITY || getActiveAbilityType() == BLOCK_ABILITY) && !source.isBypassArmor()) {
+        if (angleFlag && getMaskType().canBlock && entity instanceof LivingEntity && (getActiveAbility() == null || getActiveAbilityType() == HURT_ABILITY || getActiveAbilityType() == BLOCK_ABILITY) && !source.isBypassArmor()) {
             blockingEntity = (LivingEntity) entity;
             playSound(SoundEvents.SHIELD_BLOCK, 0.3F, 1.5F);
             AbilityHandler.INSTANCE.sendAbilityMessage(this, BLOCK_ABILITY);
@@ -807,7 +781,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
 
     @Override
     protected ResourceLocation getDefaultLootTable() {
-        switch (getMask()) {
+        switch (getMaskType()) {
             case BLISS:
                 return LootTableHandler.BARAKOA_BLISS;
             case FEAR:
