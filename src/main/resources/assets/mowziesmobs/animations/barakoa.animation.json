@@ -3622,7 +3622,7 @@
 						}
 					}
 				},
-				"rightPinkyClaw": {
+				"rightPinky": {
 					"scale": {
 						"0.56": {
 							"vector": [1, 1, 1]
@@ -5187,7 +5187,7 @@
 						}
 					}
 				},
-				"leftPinkyClaw": {
+				"leftPinky": {
 					"scale": {
 						"0.56": {
 							"vector": [1, 1, 1]
@@ -5424,7 +5424,7 @@
 						}
 					}
 				},
-				"rightPinkyClaw": {
+				"rightPinky": {
 					"rotation": {
 						"0.0": {
 							"vector": [0, 0, "Math.cos((query.anim_time - 0.4) * 90) * 4"]
@@ -5486,7 +5486,7 @@
 						}
 					}
 				},
-				"leftPinkyClaw": {
+				"leftPinky": {
 					"rotation": {
 						"0.0": {
 							"vector": [0, 0, "-(Math.cos((query.anim_time - 0.4) * 90) * 4)"]
@@ -6130,7 +6130,7 @@
 						}
 					}
 				},
-				"rightPinkyClaw": {
+				"rightPinky": {
 					"rotation": {
 						"0.0": {
 							"vector": [0, 0, "Math.cos((query.anim_time - 0.4) * 90) * 4"]
@@ -6221,7 +6221,7 @@
 						}
 					}
 				},
-				"leftPinkyClaw": {
+				"leftPinky": {
 					"rotation": {
 						"0.0": {
 							"vector": [0, 0, "-(Math.cos((query.anim_time - 0.4) * 90) * 4)"]
@@ -6463,7 +6463,7 @@
 						}
 					}
 				},
-				"rightPinkyClaw": {
+				"rightPinky": {
 					"rotation": {
 						"0.0": {
 							"vector": [0, 0, "Math.cos((query.anim_time - 0.4) * 90) * 4"]
@@ -6549,7 +6549,7 @@
 						}
 					}
 				},
-				"leftPinkyClaw": {
+				"leftPinky": {
 					"rotation": {
 						"0.0": {
 							"vector": [0, 0, "-(Math.cos((query.anim_time - 0.4) * 90) * 4)"]
@@ -6943,7 +6943,7 @@
 						}
 					}
 				},
-				"rightPinkyClaw": {
+				"rightPinky": {
 					"rotation": {
 						"0.0": {
 							"vector": [0, 0, 0],

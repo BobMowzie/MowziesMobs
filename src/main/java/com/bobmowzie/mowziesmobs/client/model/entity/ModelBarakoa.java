@@ -4,6 +4,8 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaya;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
@@ -32,8 +34,22 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
 
     @Override
     public void codeAnimations(EntityBarakoa entity, Integer uniqueID, AnimationEvent<?> customPredicate) {
+        boolean isBarakoana = entity instanceof EntityBarakoana;
+        boolean isElite = entity instanceof EntityBarakoaya || isBarakoana;
+        getMowzieBone("crestRight").isHidden = !isElite;
+        getMowzieBone("crestLeft").isHidden = !isElite;
+        getMowzieBone("crest1").isHidden = !isElite;
+        getMowzieBone("leftPinkyTalon").isHidden = !isBarakoana;
+        getMowzieBone("leftPinkyClaw").isHidden = isBarakoana;
+        getMowzieBone("rightPinkyTalon").isHidden = !isBarakoana;
+        getMowzieBone("rightPinkyClaw").isHidden = isBarakoana;
         MowzieGeoBone root = getMowzieBone("root");
-        root.multiplyScale(0.83f, 0.83f, 0.83f);
+        if (isElite) {
+            root.multiplyScale(0.9f, 0.9f, 0.9f);
+        }
+        else {
+            root.multiplyScale(0.83f, 0.83f, 0.83f);
+        }
 
         MowzieGeoBone mask = getMowzieBone("mask");
         MowzieGeoBone hips = getMowzieBone("hips");
