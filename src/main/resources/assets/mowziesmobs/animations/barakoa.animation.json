@@ -1264,6 +1264,60 @@
 				}
 			}
 		},
+		"emerge": {
+			"animation_length": 1.72,
+			"bones": {
+				"stomach": {
+					"rotation": {
+						"vector": [-2.53, 0.65, -4.96]
+					}
+				},
+				"head": {
+					"rotation": {
+						"vector": [5, 0, 0]
+					}
+				},
+				"hips": {
+					"rotation": {
+						"vector": [-39.5, -392.5, -4.5],
+						"easing": "easeInQuart"
+					},
+					"position": {
+						"vector": [0.1, -8.025, -0.5],
+						"easing": "easeInQuart"
+					},
+					"scale": {
+						"vector": [0.001, 0.001, 0.001]
+					}
+				},
+				"neck": {
+					"rotation": {
+						"vector": [-35.24, -4.56, 5.96]
+					}
+				},
+				"chest": {
+					"rotation": {
+						"vector": [-15.5, 0.19, 1.51]
+					},
+					"position": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"mask": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, "math.sin(query.anim_time * 3500 + 2000) * 5", 0]
+						},
+						"0.24": {
+							"vector": [0, 0, 0]
+						}
+					},
+					"scale": {
+						"vector": ["1/0.001", "1/0.001", "1/0.001"]
+					}
+				}
+			}
+		},
 		"hurt_left_aggressive": {
 			"animation_length": 0.92,
 			"bones": {
