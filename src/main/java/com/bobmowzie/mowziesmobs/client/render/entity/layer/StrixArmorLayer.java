@@ -33,7 +33,7 @@ import java.util.Optional;
 
 public class StrixArmorLayer extends GeoLayerRenderer<EntityBarakoa> {
     private final HumanoidModel defaultBipedModel;
-    private final String boneName = "mask";
+    private final String boneName = "maskTwitcher";
 
     protected Matrix4f dispatchedMat = new Matrix4f();
     protected Matrix4f renderEarlyMat = new Matrix4f();

@@ -276,7 +276,7 @@ public class PlayerCapability {
                     EntityBarakoanToPlayer barakoan = pack.get(i);
                     barakoan.index = i;
                     float distanceToPlayer = player.distanceTo(barakoan);
-                    if (barakoan.getTarget() == null && barakoan.getActiveAbility().getAbilityType() != EntityBarakoanToPlayer.DEACTIVATE_ABILITY) {
+                    if (barakoan.getTarget() == null && barakoan.getActiveAbility() == null) {
                         if (distanceToPlayer > 4)
                             barakoan.getNavigation().moveTo(player.getX() + tribePackRadius * Mth.cos(theta * i), player.getY(), player.getZ() + tribePackRadius * Mth.sin(theta * i), 0.45);
                         else

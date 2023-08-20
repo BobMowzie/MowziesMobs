@@ -47,7 +47,7 @@ public class RenderBarakoa extends MowzieGeoEntityRenderer<EntityBarakoa> {
         animatable.headPos[0] = new Vec3(worldPos.x, worldPos.y, worldPos.z);
 
         if (!Minecraft.getInstance().isPaused()) {
-            MowzieGeoBone mask = getMowzieAnimatedGeoModel().getMowzieBone("mask");
+            MowzieGeoBone mask = getMowzieAnimatedGeoModel().getMowzieBone("maskTwitcher");
             animatable.updateRattleSound(mask.getRotationZ());
         }
     }

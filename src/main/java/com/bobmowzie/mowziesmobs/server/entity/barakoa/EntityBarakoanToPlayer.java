@@ -70,7 +70,7 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<Player> {
             deactivate();
         }
         super.tick();
-        if (level.isClientSide && feetPos != null && feetPos.length > 0) {
+        if (level.isClientSide && feetPos != null && feetPos.length > 0 && active) {
             feetPos[0] = position().add(0, 0.05f, 0);
             if (tickCount % 10 == 0) AdvancedParticleBase.spawnParticle(level, ParticleHandler.RING2.get(), feetPos[0].x(), feetPos[0].y(), feetPos[0].z(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 1.5F, 1, 223 / 255f, 66 / 255f, 1, 1, 15, true, false, new ParticleComponent[]{
                     new ParticleComponent.PinLocation(feetPos),

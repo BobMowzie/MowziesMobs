@@ -45,7 +45,7 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
         getMowzieBone("rightPinkyClaw").isHidden = isBarakoana;
         MowzieGeoBone root = getMowzieBone("root");
         if (isElite) {
-            root.multiplyScale(0.9f, 0.9f, 0.9f);
+            root.multiplyScale(0.93f, 0.93f, 0.93f);
         }
         else {
             root.multiplyScale(0.83f, 0.83f, 0.83f);
@@ -55,7 +55,7 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
         MowzieGeoBone hips = getMowzieBone("hips");
         mask.setScale(1.0f / (float) hips.getScale().x, 1.0f / (float) hips.getScale().y, 1.0f / (float) hips.getScale().z);
 
-        if (entity.isAlive()) {
+        if (entity.isAlive() && entity.active) {
             MowzieGeoBone head = getMowzieBone("head");
             MowzieGeoBone neck = getMowzieBone("neck");
             EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);

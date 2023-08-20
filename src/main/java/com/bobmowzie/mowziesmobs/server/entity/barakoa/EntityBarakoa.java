@@ -63,6 +63,7 @@ import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.Animation;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.builder.ILoopType;
+import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.easing.EasingType;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
@@ -112,7 +113,14 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             if (getTicksInUse() == 2) getUser().playSound(MMSounds.ENTITY_BARAKOA_ROAR.get(), getUser().getSoundVolume() + 0.5f, getUser().getVoicePitch());
         }
     });
-    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> ACTIVATE_ABILITY = new AbilityType<>("barakoa_activate", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_activate", 25));
+    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> ACTIVATE_ABILITY = new AbilityType<>("barakoa_activate", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"emerge", 21) {
+        @Override
+        public void tickUsing() {
+            super.tickUsing();
+            if (getTicksInUse() == 5) getUser().playSound(MMSounds.ENTITY_BARAKOA_EMERGE.get(), 1, 1);
+            if (getTicksInUse() == 10) getUser().active = true;
+        }
+    });
     public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> DEACTIVATE_ABILITY = new AbilityType<>("barakoa_deactivate", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_deactivate", 26));
     public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> BLOCK_ABILITY = new AbilityType<>("barakoa_block", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_block", 10));
 
@@ -151,7 +159,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
     private int footstepCounter = 0;
 
     int maskTimingOffset = this.random.nextInt(0, 150);
-    protected MowzieAnimationController<MowzieGeckoEntity> maskController = new MowzieAnimationController<>(this, "mask_controller", 0, this::predicateMask, maskTimingOffset);
+    protected AnimationController<MowzieGeckoEntity> maskController = new MowzieAnimationController<>(this, "mask_controller", 0, this::predicateMask, maskTimingOffset);
     protected MowzieAnimationController<MowzieGeckoEntity> walkRunController = new MowzieAnimationController<>(this, "walk_run_controller", 4, EasingType.EaseInOutQuad, this::predicateWalkRun, 0);
 
     private float prevMaskRot = 0;
@@ -178,8 +186,8 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
     protected void registerGoals() {
         super.registerGoals();
         setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, -8);
-//        goalSelector.addGoal(0, new FloatGoal(this));
-//        goalSelector.addGoal(0, new UseAbilityAI<>(this, ACTIVATE_ABILITY));
+        goalSelector.addGoal(0, new FloatGoal(this));
+        goalSelector.addGoal(0, new UseAbilityAI<>(this, ACTIVATE_ABILITY));
 //        goalSelector.addGoal(0, new UseAbilityAI<>(this, DEACTIVATE_ABILITY));
         goalSelector.addGoal(1, new UseAbilityAI<>(this, DIE_ABILITY));
         goalSelector.addGoal(2, new UseAbilityAI<>(this, HURT_ABILITY, false));
@@ -313,8 +321,8 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
 
     protected <E extends IAnimatable> PlayState predicateMask(AnimationEvent<E> event)
     {
-        if (isAlive()) {
-            event.getController().setAnimation(new AnimationBuilder().loop("mask_twitch"));
+        if (isAlive() && active) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("mask_twitch", ILoopType.EDefaultLoopTypes.LOOP));
             return PlayState.CONTINUE;
         }
         return PlayState.STOP;
@@ -339,21 +347,30 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
 
     @Override
     protected <E extends IAnimatable> void loopingAnimations(AnimationEvent<E> event) {
-        if (isAggressive()) {
-            event.getController().transitionLengthTicks = 4;
-            if (event.isMoving()) {
-                event.getController().setAnimation(new AnimationBuilder().addAnimation("walk_aggressive", ILoopType.EDefaultLoopTypes.LOOP));
+        if (active) {
+            if (isAggressive()) {
+                event.getController().transitionLengthTicks = 4;
+                if (event.isMoving()) {
+                    event.getController().setAnimation(new AnimationBuilder().addAnimation("walk_aggressive", ILoopType.EDefaultLoopTypes.LOOP));
+                } else {
+                    event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_aggressive", ILoopType.EDefaultLoopTypes.LOOP));
+                }
+            } else {
+                event.getController().transitionLengthTicks = 4;
+                if (event.isMoving()) {
+                    event.getController().setAnimation(new AnimationBuilder().addAnimation("walk_neutral", ILoopType.EDefaultLoopTypes.LOOP));
+                } else {
+                    event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_neutral", ILoopType.EDefaultLoopTypes.LOOP));
+                }
             }
-            else {
-                event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_aggressive", ILoopType.EDefaultLoopTypes.LOOP));
-            }        }
+        }
         else {
-            event.getController().transitionLengthTicks = 4;
-            if (event.isMoving()) {
-                event.getController().setAnimation(new AnimationBuilder().addAnimation("walk_neutral", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().transitionLengthTicks = 0;
+            if (!isOnGround() && !isInLava() && !isInWater()) {
+                event.getController().setAnimation(new AnimationBuilder().addAnimation("tumble", ILoopType.EDefaultLoopTypes.LOOP));
             }
             else {
-                event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_neutral", ILoopType.EDefaultLoopTypes.LOOP));
+                event.getController().setAnimation(new AnimationBuilder().addAnimation("inactive", ILoopType.EDefaultLoopTypes.LOOP));
             }
         }
     }
@@ -434,7 +451,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         super.tick();
 
         if (level.isClientSide()) {
-            if (deathTime < 20) {
+            if (deathTime < 20 && active) {
                 if (this.tickTimer() % 10 == 1) {
                     AdvancedParticleBase.spawnParticle(level, ParticleHandler.SUN.get(), getX(), getY(), getZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 10, true, false, new ParticleComponent[]{
                             new ParticleComponent.PinLocation(headPos),
@@ -465,8 +482,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             setYRot(yRotO);
             yBodyRot = getYRot();
             if ((onGround || isInWater() || isInLava()) && getActiveAbility() == null) {
-                AbilityHandler.INSTANCE.sendAbilityMessage(this, ACTIVATE_ABILITY);
-                playSound(MMSounds.ENTITY_BARAKOA_EMERGE.get(), 1, 1);
+                sendAbilityMessage(ACTIVATE_ABILITY);
             }
             return;
         }
@@ -679,7 +695,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
 
     public void setMask(MaskType type) {
         getEntityData().set(MASK, type.ordinal());
-        equipItemIfPossible(getMaskFromType(type).getDefaultInstance());
+        setItemSlot(EquipmentSlot.HEAD, getMaskFromType(type).getDefaultInstance());
     }
 
     public int getWeapon() {
