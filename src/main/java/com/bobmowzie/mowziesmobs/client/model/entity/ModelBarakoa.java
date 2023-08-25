@@ -39,10 +39,10 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
         getMowzieBone("crestRight").isHidden = !isElite;
         getMowzieBone("crestLeft").isHidden = !isElite;
         getMowzieBone("crest1").isHidden = !isElite;
-        getMowzieBone("leftPinkyTalon").isHidden = !isBarakoana;
-        getMowzieBone("leftPinkyClaw").isHidden = isBarakoana;
-        getMowzieBone("rightPinkyTalon").isHidden = !isBarakoana;
-        getMowzieBone("rightPinkyClaw").isHidden = isBarakoana;
+        getMowzieBone("leftIndexTalon").isHidden = !isBarakoana;
+        getMowzieBone("leftIndexClaw").isHidden = isBarakoana;
+        getMowzieBone("rightIndexTalon").isHidden = !isBarakoana;
+        getMowzieBone("rightIndexClaw").isHidden = isBarakoana;
         MowzieGeoBone root = getMowzieBone("root");
         if (isElite) {
             root.multiplyScale(0.93f, 0.93f, 0.93f);
