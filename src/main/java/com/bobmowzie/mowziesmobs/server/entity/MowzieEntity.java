@@ -269,7 +269,7 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
 
     public boolean doHurtTarget(Entity entityIn, float damageMultiplier, float applyKnockbackMultiplier, boolean canDisableShield) { // Copied from mob class
         float f = (float)this.getAttribute(Attributes.ATTACK_DAMAGE).getValue() * damageMultiplier;
-        float f1 = (float)this.getAttribute(Attributes.ATTACK_KNOCKBACK).getValue() * applyKnockbackMultiplier;
+        float f1 = (float)this.getAttribute(Attributes.ATTACK_KNOCKBACK).getValue();
         if (entityIn instanceof LivingEntity) {
             f += EnchantmentHelper.getDamageBonus(this.getMainHandItem(), ((LivingEntity)entityIn).getMobType());
             f1 += (float)EnchantmentHelper.getKnockbackBonus(this);
@@ -282,6 +282,7 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
 
         boolean flag = entityIn.hurt(DamageSource.mobAttack(this), f);
         if (flag) {
+            entityIn.setDeltaMovement(entityIn.getDeltaMovement().multiply(applyKnockbackMultiplier, 1.0, applyKnockbackMultiplier));
             if (f1 > 0.0F && entityIn instanceof LivingEntity) {
                 ((LivingEntity)entityIn).knockback(f1 * 0.5F, Mth.sin(this.getYRot() * ((float)Math.PI / 180F)), -Mth.cos(this.getYRot() * ((float)Math.PI / 180F)));
                 this.setDeltaMovement(this.getDeltaMovement().multiply(0.6D, 1.0D, 0.6D));

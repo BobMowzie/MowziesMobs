@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaya;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
@@ -34,8 +35,8 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
 
     @Override
     public void codeAnimations(EntityBarakoa entity, Integer uniqueID, AnimationEvent<?> customPredicate) {
-        boolean isBarakoana = entity instanceof EntityBarakoana;
-        boolean isElite = entity instanceof EntityBarakoaya || isBarakoana;
+        boolean isBarakoana = entity.getMaskType() == MaskType.FURY;
+        boolean isElite = entity.getMaskType() == MaskType.FAITH || isBarakoana;
         getMowzieBone("crestRight").isHidden = !isElite;
         getMowzieBone("crestLeft").isHidden = !isElite;
         getMowzieBone("crest1").isHidden = !isElite;

@@ -77,7 +77,7 @@ public enum AbilityHandler {
         AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability(entity);
         if (abilityCapability != null) {
             Ability instance = abilityCapability.getAbilityMap().get(abilityType);
-            if (instance.canUse()) {
+            if (instance != null && instance.canUse()) {
                 abilityCapability.activateAbility(entity, abilityType);
                 MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new MessageUseAbility(entity.getId(), ArrayUtils.indexOf(abilityCapability.getAbilityTypesOnEntity(entity), abilityType)));
             }

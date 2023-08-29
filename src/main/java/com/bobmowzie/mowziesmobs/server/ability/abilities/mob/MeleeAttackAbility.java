@@ -9,14 +9,14 @@ import net.minecraft.world.entity.LivingEntity;
 
 public class MeleeAttackAbility<T extends MowzieGeckoEntity> extends Ability<T> {
     protected SoundEvent attackSound;
-    protected float applyKnockbackMultiplier = 1;
+    protected float knockBackMultiplier = 0;
     protected float range;
     protected float damageMultiplier;
     protected SoundEvent hitSound;
     protected boolean hurtInterrupts;
     protected String[] animationNames;
 
-    public MeleeAttackAbility(AbilityType<T, ? extends MeleeAttackAbility<T>> abilityType, T user, String[] animationNames, SoundEvent attackSound, SoundEvent hitSound, float applyKnockbackMultiplier, float range, float damageMultiplier, int startup, int recovery, boolean hurtInterrupts) {
+    public MeleeAttackAbility(AbilityType<T, ? extends MeleeAttackAbility<T>> abilityType, T user, String[] animationNames, SoundEvent attackSound, SoundEvent hitSound, float knockBackMultiplier, float range, float damageMultiplier, int startup, int recovery, boolean hurtInterrupts) {
         super(abilityType, user, new AbilitySection[] {
                 new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, startup),
                 new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
@@ -24,7 +24,7 @@ public class MeleeAttackAbility<T extends MowzieGeckoEntity> extends Ability<T> 
         }, 0);
         this.attackSound = attackSound;
         this.hitSound = hitSound;
-        this.applyKnockbackMultiplier = applyKnockbackMultiplier;
+        this.knockBackMultiplier = knockBackMultiplier;
         this.damageMultiplier = damageMultiplier;
         this.range = range;
         this.hurtInterrupts = hurtInterrupts;
@@ -56,8 +56,8 @@ public class MeleeAttackAbility<T extends MowzieGeckoEntity> extends Ability<T> 
         if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
             LivingEntity entityTarget = getUser().getTarget();
             if (entityTarget != null && getUser().targetDistance <= range) {
-                getUser().doHurtTarget(entityTarget, damageMultiplier, applyKnockbackMultiplier);
-                onAttack(entityTarget, damageMultiplier, applyKnockbackMultiplier);
+                getUser().doHurtTarget(entityTarget, damageMultiplier, knockBackMultiplier);
+                onAttack(entityTarget, damageMultiplier, knockBackMultiplier);
                 if (hitSound != null) {
                     getUser().playSound(hitSound, 1, 1);
                 }

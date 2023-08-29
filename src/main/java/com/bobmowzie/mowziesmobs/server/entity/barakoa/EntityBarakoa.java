@@ -12,6 +12,8 @@ import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
+import com.bobmowzie.mowziesmobs.server.ability.abilities.mob.BlockAbility;
+import com.bobmowzie.mowziesmobs.server.ability.abilities.mob.HurtAbility;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.mob.MeleeAttackAbility;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.player.SimpleAnimationAbility;
 import com.bobmowzie.mowziesmobs.server.ai.EntityAIAvoidEntity;
@@ -80,7 +82,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         }
     });
     public static final AbilityType<EntityBarakoa, BarakoaHurtAbility> HURT_ABILITY = new AbilityType<>("barakoa_hurt", BarakoaHurtAbility::new);
-    public static final AbilityType<EntityBarakoa, BarakoaAttackAbility> ATTACK_ABILITY = new AbilityType<>("barakoa_attack", (type, entity) -> new BarakoaAttackAbility(type, entity, new String[]{"attack_slash_left", "attack_slash_right"}, null, null, 1, 3.0f, 1, 13, 9, true));
+    public static final AbilityType<EntityBarakoa, BarakoaAttackAbility> ATTACK_ABILITY = new AbilityType<>("barakoa_attack", BarakoaAttackAbility::new);
     public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> ALERT_ABILITY = new AbilityType<>("barakoa_alert", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"alert", 15) {
         int soundFrame;
 
@@ -122,7 +124,8 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         }
     });
     public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> DEACTIVATE_ABILITY = new AbilityType<>("barakoa_deactivate", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_deactivate", 26));
-    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> BLOCK_ABILITY = new AbilityType<>("barakoa_block", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_block", 10));
+    public static final AbilityType<EntityBarakoa, BlockAbility<EntityBarakoa>> BLOCK_ABILITY = new AbilityType<>("barakoa_block", (type, entity) -> new BlockAbility<>(type, entity,"block", 10));
+    public static final AbilityType<EntityBarakoa, BarakoaBlockCounterAbility> BLOCK_COUNTER_ABILITY = new AbilityType<>("barakoa_block_counter", BarakoaBlockCounterAbility::new);
 
     public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> TELEPORT_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 27));
     public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> HEAL_ABILITY = new AbilityType<>("barakoa_heal", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_heal", 25));
@@ -143,6 +146,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
     private int danceTimer = 0;
     private int ticksWithoutTarget;
     public int timeUntilDeath = -1;
+    private int blockCount = 0;
 
     @OnlyIn(Dist.CLIENT)
     public Vec3[] staffPos;
@@ -195,9 +199,9 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         goalSelector.addGoal(2, new UseAbilityAI<>(this, ATTACK_ABILITY));
         goalSelector.addGoal(2, new UseAbilityAI<>(this, ALERT_ABILITY));
         goalSelector.addGoal(2, new UseAbilityAI<>(this, ROAR_ABILITY));
-/*
-        goalSelector.addGoal(2, new AnimationBlockAI<>(this, BLOCK_ANIMATION));
-        goalSelector.addGoal(4, new SimpleAnimationAI<EntityBarakoa>(this, IDLE_ABILITY, false, true) {
+        goalSelector.addGoal(2, new UseAbilityAI<>(this, BLOCK_ABILITY));
+        goalSelector.addGoal(2, new UseAbilityAI<>(this, BLOCK_COUNTER_ABILITY));
+/*        goalSelector.addGoal(4, new SimpleAnimationAI<EntityBarakoa>(this, IDLE_ABILITY, false, true) {
             private LivingEntity talkTarget;
             private final TargetingConditions pred = TargetingConditions.forNonCombat().range(8);
 
@@ -473,6 +477,8 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             }
         }
 
+        if (getActiveAbilityType() != BLOCK_ABILITY && blockCount > 0 && tickCount % 10 == 0) blockCount--;
+
         if (!level.isClientSide && active && !getActive()) {
             setActive(true);
         }
@@ -548,7 +554,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             hurt(DamageSource.indirectMagic(this, null), getHealth());
         }
 
-//        if (getActiveAbility() == NO_ANIMATION) AbilityHandler.INSTANCE.sendAbilityMessage(this, TELEPORT_ANIMATION);
+//        if (getActiveAbility() == null) AbilityHandler.INSTANCE.sendAbilityMessage(this, BLOCK_COUNTER_ABILITY);
     }
 
     public void updateRattleSound(float maskRot) {
@@ -788,8 +794,15 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         }
         if (angleFlag && getMaskType().canBlock && entity instanceof LivingEntity && (getActiveAbility() == null || getActiveAbilityType() == HURT_ABILITY || getActiveAbilityType() == BLOCK_ABILITY) && !source.isBypassArmor()) {
             blockingEntity = (LivingEntity) entity;
-            playSound(SoundEvents.SHIELD_BLOCK, 0.3F, 1.5F);
-            AbilityHandler.INSTANCE.sendAbilityMessage(this, BLOCK_ABILITY);
+            playSound(MMSounds.ENTITY_WROUGHT_UNDAMAGED.get(), 0.4F, 2);
+            if (blockingEntity == getTarget() && random.nextFloat() < Mth.clamp(blockCount / 5.0, 0.0, 1.0)) {
+                AbilityHandler.INSTANCE.sendAbilityMessage(this, BLOCK_COUNTER_ABILITY);
+                blockCount = 0;
+            }
+            else {
+                AbilityHandler.INSTANCE.sendAbilityMessage(this, BLOCK_ABILITY);
+                blockCount++;
+            }
             return false;
         }
         return super.hurt(source, damage);
@@ -888,7 +901,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
 
     @Override
     public AbilityType<?, ?>[] getAbilities() {
-        return new AbilityType[] { DIE_ABILITY, HURT_ABILITY, ATTACK_ABILITY, ALERT_ABILITY, ROAR_ABILITY, ACTIVATE_ABILITY, DEACTIVATE_ABILITY, BLOCK_ABILITY, TELEPORT_ABILITY, HEAL_ABILITY };
+        return new AbilityType[] { DIE_ABILITY, HURT_ABILITY, ATTACK_ABILITY, ALERT_ABILITY, ROAR_ABILITY, ACTIVATE_ABILITY, DEACTIVATE_ABILITY, BLOCK_ABILITY, BLOCK_COUNTER_ABILITY, TELEPORT_ABILITY, HEAL_ABILITY };
     }
 
     protected static class CircleAttackGoal extends Goal {
@@ -1023,8 +1036,8 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
 
     private static class BarakoaAttackAbility extends MeleeAttackAbility<EntityBarakoa> {
 
-        public BarakoaAttackAbility(AbilityType<EntityBarakoa, ? extends MeleeAttackAbility<EntityBarakoa>> abilityType, EntityBarakoa user, String[] animationNames, SoundEvent attackSound, SoundEvent hitSound, float applyKnockbackMultiplier, float range, float damageMultiplier, int startup, int recovery, boolean hurtInterrupts) {
-            super(abilityType, user, animationNames, attackSound, hitSound, applyKnockbackMultiplier, range, damageMultiplier, startup, recovery, hurtInterrupts);
+        public BarakoaAttackAbility(AbilityType<EntityBarakoa, ? extends MeleeAttackAbility<EntityBarakoa>> abilityType, EntityBarakoa user) {
+            super(abilityType, user, new String[]{"attack_slash_left", "attack_slash_right"}, null, null, 1, 3.0f, 1, 13, 9, true);
         }
 
         @Override
@@ -1038,17 +1051,48 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         }
     }
 
-    private static class BarakoaHurtAbility extends Ability<EntityBarakoa> {
+    private static class BarakoaBlockCounterAbility extends MeleeAttackAbility<EntityBarakoa> {
 
-        public BarakoaHurtAbility(AbilityType<EntityBarakoa, ? extends BarakoaHurtAbility> abilityType, EntityBarakoa user) {
-            super(abilityType, user, new AbilitySection[] {
-                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.ACTIVE, 12)
-            });
+        public BarakoaBlockCounterAbility(AbilityType<EntityBarakoa, BarakoaBlockCounterAbility> abilityType, EntityBarakoa user) {
+            super(abilityType, user, new String[]{"block_counter"}, null, null, 3, 2.2f, 1.2f, 7, 11, false);
         }
 
         @Override
-        public boolean damageInterrupts() {
-            return true;
+        public void start() {
+            super.start();
+            getUser().setInvulnerable(true);
+        }
+
+        @Override
+        public void end() {
+            super.end();
+            getUser().setInvulnerable(false);
+        }
+
+        @Override
+        public void tickUsing() {
+            super.tickUsing();
+            if (getTicksInUse() == 5) {
+                float distToTarget = 1.0f;
+                if (getUser().getTarget() != null) distToTarget = Mth.clamp(getUser().distanceTo(getUser().getTarget()) / 2.0f - 1.0f, 0.0f, 1.0f);
+                getUser().setDeltaMovement(getUser().getDeltaMovement().add(getUser().getForward().normalize().scale(1.6 * distToTarget)));
+            }
+            if (getTicksInUse() == 0) {
+                int i = rand.nextInt(MMSounds.ENTITY_BARAKOA_ATTACK.size());
+                getUser().playSound(MMSounds.ENTITY_BARAKOA_ATTACK.get(i).get(), 1, rand.nextFloat(0.9f, 1.1f));
+            }
+        }
+
+        @Override
+        public boolean canCancelActiveAbility() {
+            return super.canCancelActiveAbility() || getUser().getActiveAbility() instanceof BlockAbility<?> || getUser().getActiveAbility() instanceof HurtAbility<?>;
+        }
+    }
+
+    private static class BarakoaHurtAbility extends HurtAbility<EntityBarakoa> {
+
+        public BarakoaHurtAbility(AbilityType<EntityBarakoa, BarakoaHurtAbility> abilityType, EntityBarakoa user) {
+            super(abilityType, user, "", 12);
         }
 
         @Override
