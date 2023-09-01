@@ -795,7 +795,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         if (angleFlag && getMaskType().canBlock && entity instanceof LivingEntity && (getActiveAbility() == null || getActiveAbilityType() == HURT_ABILITY || getActiveAbilityType() == BLOCK_ABILITY) && !source.isBypassArmor()) {
             blockingEntity = (LivingEntity) entity;
             playSound(MMSounds.ENTITY_WROUGHT_UNDAMAGED.get(), 0.4F, 2);
-            if (blockingEntity == getTarget() && random.nextFloat() < Mth.clamp(blockCount / 5.0, 0.0, 1.0)) {
+            if (blockingEntity == getTarget() && random.nextFloat() < Mth.clamp(blockCount / 5.0, 0.0, 1.0) && distanceTo(blockingEntity) < 4) {
                 AbilityHandler.INSTANCE.sendAbilityMessage(this, BLOCK_COUNTER_ABILITY);
                 blockCount = 0;
             }
@@ -1078,8 +1078,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
                 getUser().setDeltaMovement(getUser().getDeltaMovement().add(getUser().getForward().normalize().scale(1.6 * distToTarget)));
             }
             if (getTicksInUse() == 0) {
-                int i = rand.nextInt(MMSounds.ENTITY_BARAKOA_ATTACK.size());
-                getUser().playSound(MMSounds.ENTITY_BARAKOA_ATTACK.get(i).get(), 1, rand.nextFloat(0.9f, 1.1f));
+                getUser().playSound(MMSounds.ENTITY_BARAKOA_ATTACK_BIG.get(), 1, rand.nextFloat(0.9f, 1.1f));
             }
         }
 

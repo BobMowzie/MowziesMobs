@@ -84,6 +84,7 @@ public final class MMSounds {
             ENTITY_BARAKOA_ATTACK_2::get,
             ENTITY_BARAKOA_ATTACK_3::get
     );
+    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_ATTACK_BIG = create("barakoa.attack_big");
     public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_HEAL_START_1 = create("barakoa.healstart1");
     public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_HEAL_START_2 = create("barakoa.healstart2");
     public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_HEAL_START_3 = create("barakoa.healstart3");

@@ -242,6 +242,10 @@
 		"sounds": [ "mowziesmobs:entity/barakoa/attack3" ],
 		"subtitle": "subtitles.mowziesmobs.barakoa.attack"
 	},
+	"barakoa.attack_big": {
+		"sounds": [ "mowziesmobs:entity/barakoa/attack_big" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.attack_big"
+	},
 	"barakoa.blowdart": {
 		"sounds": [ "mowziesmobs:entity/barakoa/blowdart" ],
 		"subtitle": "subtitles.mowziesmobs.barakoa.blowdart"
