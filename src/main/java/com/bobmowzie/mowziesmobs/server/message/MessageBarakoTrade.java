@@ -70,9 +70,9 @@ public class MessageBarakoTrade {
                     }
                     if (satisfied) {
                         player.addEffect(new MobEffectInstance(EffectHandler.SUNS_BLESSING, ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.effectDuration.get() * 60 * 20, 0, false, false));
-                        if (barako.getAnimation() != EntityBarako.BLESS_ANIMATION) {
-                            barako.setAnimationTick(0);
-                            AnimationHandler.INSTANCE.sendAnimationMessage(barako, EntityBarako.BLESS_ANIMATION);
+                        if (barako.getActiveAbilityType() != EntityBarako.BLESS_ABILITY) {
+//                            barako.setAnimationTick(0); TODO
+                            barako.sendAbilityMessage(EntityBarako.BLESS_ABILITY);
                             barako.playSound(MMSounds.ENTITY_BARAKO_BLESS.get(), 2, 1);
                         }
                     }

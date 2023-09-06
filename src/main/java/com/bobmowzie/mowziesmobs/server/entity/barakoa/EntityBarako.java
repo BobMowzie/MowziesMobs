@@ -8,15 +8,15 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleOrb;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent.PropertyControl.EnumParticleProperty;
+import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
+import com.bobmowzie.mowziesmobs.server.ability.abilities.mob.HurtAbility;
+import com.bobmowzie.mowziesmobs.server.ability.abilities.player.SimpleAnimationAbility;
 import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.ai.NearestAttackableTargetPredicateGoal;
 import com.bobmowzie.mowziesmobs.server.ai.animation.*;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
-import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
-import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import com.bobmowzie.mowziesmobs.server.entity.MowzieLLibraryEntity;
+import com.bobmowzie.mowziesmobs.server.entity.*;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySuperNova;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoTrade;
@@ -73,18 +73,18 @@ import net.minecraftforge.registries.ForgeRegistries;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class EntityBarako extends MowzieLLibraryEntity implements LeaderSunstrikeImmune, Enemy {
-    public static final Animation DIE_ANIMATION = Animation.create(130);
-    public static final Animation HURT_ANIMATION = Animation.create(13);
-    public static final Animation BELLY_ANIMATION = Animation.create(40);
-    public static final Animation TALK_ANIMATION = Animation.create(80);
-    public static final Animation SUNSTRIKE_ANIMATION = Animation.create(15);
-    public static final Animation ATTACK_ANIMATION = Animation.create(30);
-    public static final Animation SPAWN_ANIMATION = Animation.create(17);
-    public static final Animation SPAWN_SUNBLOCKERS_ANIMATION = Animation.create(17);
-    public static final Animation SOLAR_BEAM_ANIMATION = Animation.create(100);
-    public static final Animation BLESS_ANIMATION = Animation.create(60);
-    public static final Animation SUPERNOVA_ANIMATION = Animation.create(100);
+public class EntityBarako extends MowzieGeckoEntity implements LeaderSunstrikeImmune, Enemy {
+    public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> DIE_ABILITY = new AbilityType<>("barako_die", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barako_die", 70));
+    public static final AbilityType<EntityBarako, HurtAbility<EntityBarako>> HURT_ABILITY = new AbilityType<>("barako_hurt", (type, entity) -> new HurtAbility<>(type, entity,"barako_hurt", 13));
+    public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> BELLY_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 40));
+    public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> TALK_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 80));
+    public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> SUNSTRIKE_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 15));
+    public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> ATTACK_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 30));
+    public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> SPAWN_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 17));
+    public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> SPAWN_SUNBLOCKERS_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 17));
+    public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> SOLAR_BEAM_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 100));
+    public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> BLESS_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 60));
+    public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> SUPERNOVA_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 100));
     private static final int MAX_HEALTH = 150;
     private static final int SUNSTRIKE_PAUSE_MAX = 50;
     private static final int SUNSTRIKE_PAUSE_MIN = 30;
@@ -164,7 +164,7 @@ public class EntityBarako extends MowzieLLibraryEntity implements LeaderSunstrik
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, IronGolem.class, 0, false, false, null));
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, Zombie.class, 0, false, false, (e) -> !(e instanceof ZombifiedPiglin)));
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, AbstractSkeleton.class, 0, false, false, null));
-        this.goalSelector.addGoal(6, new SimpleAnimationAI<>(this, BELLY_ANIMATION, false, true));
+/*        this.goalSelector.addGoal(6, new SimpleAnimationAI<>(this, BELLY_ANIMATION, false, true));
         this.goalSelector.addGoal(6, new SimpleAnimationAI<EntityBarako>(this, TALK_ANIMATION, false, true) {
             @Override
             public void start() {
@@ -189,15 +189,15 @@ public class EntityBarako extends MowzieLLibraryEntity implements LeaderSunstrik
             @Override
             public void tick() {
                 super.tick();
-                if (entity.getAnimationTick() == 30) {
+                if (entity.getActiveAbility().getTicksInUse() == 30) {
                     playSound(MMSounds.ENTITY_SUPERNOVA_BLACKHOLE.get(), 2f, 1.2f);
                 }
-                if (entity.getAnimationTick() == 40) {
+                if (entity.getActiveAbility().getTicksInUse() == 40) {
                     playSound(MMSounds.ENTITY_BARAKO_SCREAM.get(), 1.5f, 1f);
                 }
 
                 if (!entity.level.isClientSide) {
-                    if (entity.getAnimationTick() == 44) {
+                    if (entity.getActiveAbility().getTicksInUse() == 44) {
                         Vec3 offset = new Vec3(1.1f, 0, 0);
                         offset = offset.yRot((float) Math.toRadians(-entity.getYRot() - 90));
                         EntitySuperNova superNova = new EntitySuperNova(EntityHandler.SUPER_NOVA.get(), entity.level, entity, entity.getX() + offset.x, entity.getY() + 0.05, entity.getZ() + offset.z);
@@ -218,7 +218,7 @@ public class EntityBarako extends MowzieLLibraryEntity implements LeaderSunstrik
         this.goalSelector.addGoal(2, new AnimationSpawnBarakoa(this, SPAWN_SUNBLOCKERS_ANIMATION, true));
         this.goalSelector.addGoal(2, new AnimationSolarBeam<>(this, SOLAR_BEAM_ANIMATION));
         this.goalSelector.addGoal(3, new AnimationTakeDamage<>(this));
-        this.goalSelector.addGoal(1, new AnimationDieAI<>(this));
+        this.goalSelector.addGoal(1, new AnimationDieAI<>(this));*/
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, EntityBarakoa.class, 8.0F));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
@@ -247,13 +247,13 @@ public class EntityBarako extends MowzieLLibraryEntity implements LeaderSunstrik
 
     @Override
     protected SoundEvent getAmbientSound() {
-        if (getAnimation() == NO_ANIMATION) {
+        if (getActiveAbility() == null) {
             if (getTarget() == null && !isNoAi()) {
                 int soundType = Mth.nextInt(random, 0, 9);
                 if (soundType < MMSounds.ENTITY_BARAKO_TALK.size()) {
                     this.playSound(MMSounds.ENTITY_BARAKO_TALK.get(soundType).get(), 2F, 1.0F);
                     this.setWhichDialogue(soundType + 1);
-                    AnimationHandler.INSTANCE.sendAnimationMessage(this, TALK_ANIMATION);
+                    sendAbilityMessage(TALK_ABILITY);
                 }
             } else {
                 int soundType = Mth.nextInt(random, 1, 10);
@@ -292,14 +292,14 @@ public class EntityBarako extends MowzieLLibraryEntity implements LeaderSunstrik
         if (tickCount == 1) {
             direction = getDirectionData();
         }
-        if (!(getAnimation() == ATTACK_ANIMATION && getAnimationTick() >= 12 && getAnimationTick() <= 14)) this.repelEntities(1.2f, 1.2f, 1.2f, 1.2f);
+        if (!(getActiveAbilityType() == ATTACK_ABILITY && getActiveAbility().getTicksInUse() >= 12 && getActiveAbility().getTicksInUse() <= 14)) this.repelEntities(1.2f, 1.2f, 1.2f, 1.2f);
         this.setYRot((direction - 1) * 90);
         this.yBodyRot = getYRot();
 //        this.posX = prevPosX;
 //        this.posZ = prevPosZ;
 
-        if (!level.isClientSide && getHealthLost() >= HEALTH_LOST_BETWEEN_SUNBLOCKERS && getAnimation() == NO_ANIMATION && !isNoAi() && getEntitiesNearby(EntityBarakoaya.class, 40).size() < 3) {
-            AnimationHandler.INSTANCE.sendAnimationMessage(this, SPAWN_SUNBLOCKERS_ANIMATION);
+        if (!level.isClientSide && getHealthLost() >= HEALTH_LOST_BETWEEN_SUNBLOCKERS && getActiveAbility() == null && !isNoAi() && getEntitiesNearby(EntityBarakoaya.class, 40).size() < 3) {
+            sendAbilityMessage(SPAWN_SUNBLOCKERS_ABILITY);
             setHealthLost(0);
         }
         if (getTarget() != null) {
@@ -316,19 +316,19 @@ public class EntityBarako extends MowzieLLibraryEntity implements LeaderSunstrik
             float entityRelativeAngle = Math.abs(entityHitAngle - entityAttackingAngle);
             Vec3 betweenEntitiesVec = position().subtract(target.position());
             boolean targetComingCloser = target.getDeltaMovement().dot(betweenEntitiesVec) > 0 && target.getDeltaMovement().lengthSqr() > 0.015;
-            if (getAnimation() == NO_ANIMATION && !isNoAi() && random.nextInt(80) == 0 && (targetDistance > 5.5 || hasEffect(EffectHandler.SUNBLOCK)) && timeUntilBarakoa <= 0 && getEntitiesNearby(EntityBarakoa.class, 50).size() < 4) {
-                AnimationHandler.INSTANCE.sendAnimationMessage(this, SPAWN_ANIMATION);
+            if (getActiveAbility() == null && !isNoAi() && random.nextInt(80) == 0 && (targetDistance > 5.5 || hasEffect(EffectHandler.SUNBLOCK)) && timeUntilBarakoa <= 0 && getEntitiesNearby(EntityBarakoa.class, 50).size() < 4) {
+                sendAbilityMessage(SPAWN_ABILITY);
                 timeUntilBarakoa = BARAKOA_PAUSE;
-            } else if (getAnimation() == NO_ANIMATION && !isNoAi() && getHealthRatio() <= 0.6 && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300) && getSensing().hasLineOfSight(target) && targetDistance < EntitySolarBeam.RADIUS_BARAKO) {
-                AnimationHandler.INSTANCE.sendAnimationMessage(this, SOLAR_BEAM_ANIMATION);
+            } else if (getActiveAbility() == null && !isNoAi() && getHealthRatio() <= 0.6 && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300) && getSensing().hasLineOfSight(target) && targetDistance < EntitySolarBeam.RADIUS_BARAKO) {
+                sendAbilityMessage(SOLAR_BEAM_ABILITY);
                 timeUntilLaser = LASER_PAUSE;
-            } else if (getAnimation() == NO_ANIMATION && !isNoAi() && getHealthRatio() <= 0.6 && !hasEffect(EffectHandler.SUNBLOCK) && timeUntilSupernova <= 0 && targetDistance <= 10.5) {
-                AnimationHandler.INSTANCE.sendAnimationMessage(this, SUPERNOVA_ANIMATION);
+            } else if (getActiveAbility() == null && !isNoAi() && getHealthRatio() <= 0.6 && !hasEffect(EffectHandler.SUNBLOCK) && timeUntilSupernova <= 0 && targetDistance <= 10.5) {
+                sendAbilityMessage(SUPERNOVA_ABILITY);
                 timeUntilSupernova = SUPERNOVA_PAUSE;
-            } else if (getAnimation() == NO_ANIMATION && !isNoAi() && ((targetDistance <= 6f && targetComingCloser) || targetDistance < 4.f)) {
-                AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_ANIMATION);
-            } else if (getAnimation() == NO_ANIMATION && !isNoAi() && timeUntilSunstrike <= 0) {
-                AnimationHandler.INSTANCE.sendAnimationMessage(this, SUNSTRIKE_ANIMATION);
+            } else if (getActiveAbility() == null && !isNoAi() && ((targetDistance <= 6f && targetComingCloser) || targetDistance < 4.f)) {
+                sendAbilityMessage(ATTACK_ABILITY);
+            } else if (getActiveAbility() == null && !isNoAi() && timeUntilSunstrike <= 0) {
+                sendAbilityMessage(SUNSTRIKE_ABILITY);
                 timeUntilSunstrike = getTimeUntilSunstrike();
             }
             if (hurtByTargetAI != null && !hurtByTargetAI.canContinueToUse()) {
@@ -356,30 +356,30 @@ public class EntityBarako extends MowzieLLibraryEntity implements LeaderSunstrik
             angryEyebrow.decreaseTimer();
         }
 
-        if (getAnimation() == NO_ANIMATION && !isNoAi() && getTarget() == null && random.nextInt(200) == 0) {
-            AnimationHandler.INSTANCE.sendAnimationMessage(this, BELLY_ANIMATION);
+        if (getActiveAbility() == null && !isNoAi() && getTarget() == null && random.nextInt(200) == 0) {
+            sendAbilityMessage(BELLY_ABILITY);
         }
 
-        if (getAnimation() == BELLY_ANIMATION && (getAnimationTick() == 9 || getAnimationTick() == 29)) {
+        if (getActiveAbilityType() == BELLY_ABILITY && (getActiveAbility().getTicksInUse() == 9 || getActiveAbility().getTicksInUse() == 29)) {
             this.playSound(MMSounds.ENTITY_BARAKO_BELLY.get(), 3f, 1f);
         }
 
-//        if (getAnimation() == TALK_ANIMATION && getAnimationTick() == 1) {
+//        if (getActiveAbilityType() == TALK_ABILITY && getActiveAbility().getTicksInUse() == 1) {
 //            whichDialogue = getWhichDialogue();
 //        }
 
-        if (getAnimation() == ATTACK_ANIMATION) {
+        if (getActiveAbilityType() == ATTACK_ABILITY) {
             yHeadRot = getYRot();
-//            if (getAnimationTick() == 1) {
+//            if (getActiveAbility().getTicksInUse() == 1) {
 //                this.playSound(MMSounds.ENTITY_BARAKO_BURST, 1.7f, 1.5f);
 //            }
-            if (getAnimationTick() == 10) {
+            if (getActiveAbility().getTicksInUse() == 10) {
                 if (level.isClientSide) {
                     spawnExplosionParticles(30);
                 }
                 this.playSound(MMSounds.ENTITY_BARAKO_ATTACK.get(), 1.7f, 0.9f);
             }
-            if (getAnimationTick() <= 6 && level.isClientSide) {
+            if (getActiveAbility().getTicksInUse() <= 6 && level.isClientSide) {
                 int particleCount = 8;
                 while (--particleCount != 0) {
                     double radius = 2f;
@@ -396,15 +396,15 @@ public class EntityBarako extends MowzieLLibraryEntity implements LeaderSunstrik
             }
         }
 
-        if (getAnimation() == BLESS_ANIMATION) {
+        if (getActiveAbilityType() == BLESS_ABILITY) {
             yHeadRot = getYRot();
 
-            if (getAnimationTick() == 1) {
+            if (getActiveAbility().getTicksInUse() == 1) {
                 blessingPlayer = getCustomer();
             }
             if (level.isClientSide && blessingPlayer != null) {
                 blessingPlayerPos[0] = blessingPlayer.position().add(new Vec3(0, blessingPlayer.getBbHeight() / 2f, 0));
-                if (getAnimationTick() > 5 && getAnimationTick() < 40) {
+                if (getActiveAbility().getTicksInUse() > 5 && getActiveAbility().getTicksInUse() < 40) {
                     int particleCount = 2;
                     while (--particleCount != 0) {
                         double radius = 0.7f;
@@ -425,7 +425,7 @@ public class EntityBarako extends MowzieLLibraryEntity implements LeaderSunstrik
                         });
                     }
                 }
-                if (getAnimationTick() % 15 == 0) {
+                if (getActiveAbility().getTicksInUse() % 15 == 0) {
                     AdvancedParticleBase.spawnParticle(level, ParticleHandler.RING2.get(), getX(), getY() + 0.8f, getZ(), 0, 0, 0, true, 0, 0, 0, 0, 3.5F, 1, 223/255f, 66/255f, 1, 1, 15, true, true, new ParticleComponent[]{
                             new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                             new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(5f, 35f), false)
@@ -434,11 +434,11 @@ public class EntityBarako extends MowzieLLibraryEntity implements LeaderSunstrik
             }
         }
 
-        if (getAnimation() == SUPERNOVA_ANIMATION) {
+        if (getActiveAbilityType() == SUPERNOVA_ABILITY) {
             if (level.isClientSide && betweenHandPos.length > 0) {
                 superNovaEffects();
             }
-            if (getAnimationTick() < 30) {
+            if (getActiveAbility().getTicksInUse() < 30) {
                 List<LivingEntity> entities = getEntityLivingBaseNearby(16, 16, 16, 16);
                 for (LivingEntity inRange : entities) {
                     if (inRange instanceof LeaderSunstrikeImmune) continue;
@@ -461,7 +461,7 @@ public class EntityBarako extends MowzieLLibraryEntity implements LeaderSunstrik
             }
         }
 
-        if (!level.isClientSide && getTarget() == null && getAnimation() != SOLAR_BEAM_ANIMATION && getAnimation() != SUPERNOVA_ANIMATION) {
+        if (!level.isClientSide && getTarget() == null && getActiveAbilityType() != SOLAR_BEAM_ABILITY && getActiveAbilityType() != SUPERNOVA_ABILITY) {
             timeUntilHeal--;
             if (ConfigHandler.COMMON.MOBS.BARAKO.healsOutOfBattle.get() && timeUntilHeal <= 0) heal(0.3f);
             if (getHealth() == getMaxHealth()) setHealthLost(0);
@@ -473,23 +473,23 @@ public class EntityBarako extends MowzieLLibraryEntity implements LeaderSunstrik
         if (timeUntilSunstrike > 0) {
             timeUntilSunstrike--;
         }
-        if (timeUntilLaser > 0 && getAnimation() != SUPERNOVA_ANIMATION) {
+        if (timeUntilLaser > 0 && getActiveAbilityType() != SUPERNOVA_ABILITY) {
             timeUntilLaser--;
         }
         if (timeUntilBarakoa > 0) {
             timeUntilBarakoa--;
         }
-        if (timeUntilSupernova > 0 && getAnimation() != SOLAR_BEAM_ANIMATION) {
+        if (timeUntilSupernova > 0 && getActiveAbilityType() != SOLAR_BEAM_ABILITY) {
             timeUntilSupernova--;
         }
 
-//        if (getAnimation() == NO_ANIMATION) {
-//            AnimationHandler.INSTANCE.sendAnimationMessage(this, SOLAR_BEAM_ANIMATION);
+//        if (getActiveAbility() == null) {
+//            sendAbilityMessage(SOLAR_BEAM_ABILITY);
 //        }
     }
 
     private void superNovaEffects() {
-        if (getAnimationTick() == 1) {
+        if (getActiveAbility().getTicksInUse() == 1) {
             superNovaKeyTrack1 = new ParticleComponent.KeyTrack(
                     new float[]{0, 25f, 32f, 0},
                     new float[]{0, 0.6f, 0.85f, 1}
@@ -501,7 +501,7 @@ public class EntityBarako extends MowzieLLibraryEntity implements LeaderSunstrik
                     new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, superNovaKeyTrack2, true)
             });
         }
-        if (getAnimationTick() == 33) {
+        if (getActiveAbility().getTicksInUse() == 33) {
             AdvancedParticleBase.spawnParticle(level, ParticleHandler.SUN_NOVA.get(), getX(), getY(), getZ(), 0, 0, 0, true, 0, 0, 0, 0, 20F, 1, 1, 1, 0, 1, 13, true, true, new ParticleComponent[]{
                     new ParticleComponent.PinLocation(betweenHandPos),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
@@ -515,7 +515,7 @@ public class EntityBarako extends MowzieLLibraryEntity implements LeaderSunstrik
                     new ParticleComponent.PropertyControl(EnumParticleProperty.PARTICLE_ANGLE, ParticleComponent.KeyTrack.startAndEnd(0f, -6f), false)
             });
         }
-        if (getAnimationTick() == 32) {
+        if (getActiveAbility().getTicksInUse() == 32) {
             AdvancedParticleBase.spawnParticle(level, ParticleHandler.FLARE.get(), getX(), getY(), getZ(), 0, 0, 0, true, 0, 0, 0, 0, 5F, 1,1,1, 0.7, 1, 3, true, true, new ParticleComponent[]{
                     new ParticleComponent.PinLocation(betweenHandPos),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.POS_Y, ParticleComponent.constant(-0.15f), true),
@@ -525,7 +525,7 @@ public class EntityBarako extends MowzieLLibraryEntity implements LeaderSunstrik
                     ), false)
             });
         }
-        if (getAnimationTick() > 30 && getAnimationTick() < 41) {
+        if (getActiveAbility().getTicksInUse() > 30 && getActiveAbility().getTicksInUse() < 41) {
             for (int i = 0; i < 6; i++) {
                 float phaseOffset = random.nextFloat();
                 double value = random.nextDouble() * 0.3 + 0.05;
@@ -538,7 +538,7 @@ public class EntityBarako extends MowzieLLibraryEntity implements LeaderSunstrik
                 });
             }
         }
-        if (getAnimationTick() > 1 && getAnimationTick() < 27) {
+        if (getActiveAbility().getTicksInUse() > 1 && getActiveAbility().getTicksInUse() < 27) {
             for (int i = 0; i < 6; i++) {
                 Vec3 particlePos = new Vec3(random.nextFloat() * 5, 0, 0);
                 particlePos = particlePos.yRot((float) (random.nextFloat() * 2 * Math.PI));
@@ -554,15 +554,15 @@ public class EntityBarako extends MowzieLLibraryEntity implements LeaderSunstrik
                 });
             }
         }
-        float timeFrac = Math.min((float)getAnimationTick() / 20f, 1f);
-        if (getAnimationTick() > 1 && getAnimationTick() < 25 && getAnimationTick() % (int)(4 * (1 - timeFrac) + 1) == 0) {
+        float timeFrac = Math.min((float)getActiveAbility().getTicksInUse() / 20f, 1f);
+        if (getActiveAbility().getTicksInUse() > 1 && getActiveAbility().getTicksInUse() < 25 && getActiveAbility().getTicksInUse() % (int)(4 * (1 - timeFrac) + 1) == 0) {
             AdvancedParticleBase.spawnParticle(level, ParticleHandler.RING_SPARKS.get(),  getX(), getY(), getZ(), 0, 0, 0, true, 0, 0, 0, random.nextFloat() * (float)Math.PI * 2, 5F, 1, 1, 1, 1, 1, 6 + random.nextFloat() * 3, true, true, new ParticleComponent[]{
                     new ParticleComponent.PinLocation(betweenHandPos),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(10f + 20f * timeFrac * timeFrac + 10f * random.nextFloat() * timeFrac, 0f), false),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0f, 0.7f), false)
             });
         }
-        if (getAnimationTick() == 14) {
+        if (getActiveAbility().getTicksInUse() == 14) {
             AdvancedParticleBase.spawnParticle(level, ParticleHandler.FLARE.get(),  getX(), getY(), getZ(), 0, 0, 0, true, 0, 0, 0, 0, 5F, 1, 1, 1, 1, 1, 18, true, true, new ParticleComponent[]{
                     new ParticleComponent.PinLocation(betweenHandPos),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.POS_Y, ParticleComponent.constant(-0.1f), true),
@@ -574,7 +574,7 @@ public class EntityBarako extends MowzieLLibraryEntity implements LeaderSunstrik
             });
         }
 
-        if (getAnimationTick() == 32) {
+        if (getActiveAbility().getTicksInUse() == 32) {
             AdvancedParticleBase.spawnParticle(level, ParticleHandler.BURST_IN.get(),  getX(), getY(), getZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 5F, 0, 0, 0, 1, 1, 10, true, true, new ParticleComponent[]{
                     new ParticleComponent.PinLocation(betweenHandPos),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(25f, 0f), false),
@@ -583,7 +583,7 @@ public class EntityBarako extends MowzieLLibraryEntity implements LeaderSunstrik
             });
         }
 
-        if (getAnimationTick() == 44) {
+        if (getActiveAbility().getTicksInUse() == 44) {
             float scale = 85f;
             AdvancedParticleBase.spawnParticle(level, ParticleHandler.RING_BIG.get(), betweenHandPos[0].x, betweenHandPos[0].y, betweenHandPos[0].z, 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 5F, 1,1,1, 1, 1, 40, true, true, new ParticleComponent[]{
                     new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
@@ -604,6 +604,16 @@ public class EntityBarako extends MowzieLLibraryEntity implements LeaderSunstrik
     }
 
     @Override
+    public AbilityType getHurtAbility() {
+        return HURT_ABILITY;
+    }
+
+    @Override
+    public AbilityType getDeathAbility() {
+        return DIE_ABILITY;
+    }
+
+    @Override
     public boolean hurt(DamageSource source, float damage) {
         if (hasEffect(EffectHandler.SUNBLOCK) && !source.isBypassInvul()) {
             if (source.getDirectEntity() != null) playSound(MMSounds.ENTITY_WROUGHT_UNDAMAGED.get(), 0.4F, 2);
@@ -617,16 +627,6 @@ public class EntityBarako extends MowzieLLibraryEntity implements LeaderSunstrik
             setHealthLost(getHealthLost() + diffHealth);
         }
         return superResult;
-    }
-
-    @Override
-    public Animation getDeathAnimation() {
-        return DIE_ANIMATION;
-    }
-
-    @Override
-    public Animation getHurtAnimation() {
-        return HURT_ANIMATION;
     }
 
     private boolean checkBlocksByFeet() {
@@ -843,8 +843,8 @@ public class EntityBarako extends MowzieLLibraryEntity implements LeaderSunstrik
     }
 
     @Override
-    public Animation[] getAnimations() {
-        return new Animation[]{DIE_ANIMATION, HURT_ANIMATION, BELLY_ANIMATION, TALK_ANIMATION, SUNSTRIKE_ANIMATION, ATTACK_ANIMATION, SPAWN_ANIMATION, SPAWN_SUNBLOCKERS_ANIMATION, SOLAR_BEAM_ANIMATION, BLESS_ANIMATION, SUPERNOVA_ANIMATION};
+    public AbilityType<?, ?>[] getAbilities() {
+        return new AbilityType[]{DIE_ABILITY, HURT_ABILITY, BELLY_ABILITY, TALK_ABILITY, SUNSTRIKE_ABILITY, ATTACK_ABILITY, SPAWN_ABILITY, SPAWN_SUNBLOCKERS_ABILITY, SOLAR_BEAM_ABILITY, BLESS_ABILITY, SUPERNOVA_ABILITY};
     }
 
     @Override

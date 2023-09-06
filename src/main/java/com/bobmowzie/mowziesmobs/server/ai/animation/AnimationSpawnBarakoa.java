@@ -8,14 +8,19 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.scores.PlayerTeam;
 
 import java.util.EnumSet;
 
-public class AnimationSpawnBarakoa extends SimpleAnimationAI<EntityBarako> {
-    private boolean spawnSunblockers;
+public class AnimationSpawnBarakoa extends Goal {
+    @Override
+    public boolean canUse() {
+        return false;
+    }
+    /*private boolean spawnSunblockers;
 
     public AnimationSpawnBarakoa(EntityBarako entity, Animation animation, boolean spawnSunblockers) {
         super(entity, animation);
@@ -34,8 +39,8 @@ public class AnimationSpawnBarakoa extends SimpleAnimationAI<EntityBarako> {
     public void stop() {
         super.stop();
         if (entity.barakoaSpawnCount < 3 && (entity.targetDistance > 6 || entity.getTarget() == null || spawnSunblockers)) {
-            if (spawnSunblockers) AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityBarako.SPAWN_SUNBLOCKERS_ANIMATION);
-            else AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityBarako.SPAWN_ANIMATION);
+            if (spawnSunblockers) entity.sendAbilityMessage(EntityBarako.SPAWN_SUNBLOCKERS_ABILITY);
+            else entity.sendAbilityMessage(EntityBarako.SPAWN_ABILITY);
         } else {
             entity.barakoaSpawnCount = 0;
         }
@@ -46,7 +51,7 @@ public class AnimationSpawnBarakoa extends SimpleAnimationAI<EntityBarako> {
         super.tick();
 //        if (entity.getAnimationTick() == 1) {
 //            entity.playSound(MMSounds.ENTITY_BARAKOA_INHALE, 1.2f, 0.5f);
-        if (entity.getAnimationTick() == 6) {
+        if (entity.getActiveAbility().getTicksInUse() == 6) {
             entity.playSound(MMSounds.ENTITY_BARAKO_BELLY.get(), 1.5f, 1);
             entity.playSound(MMSounds.ENTITY_BARAKOA_BLOWDART.get(), 1.5f, 0.5f);
             double angle = entity.yHeadRot;
@@ -79,5 +84,5 @@ public class AnimationSpawnBarakoa extends SimpleAnimationAI<EntityBarako> {
                 barakoa.setMisbehavedPlayerId(entity.getTarget().getUUID());
             }
         }
-    }
+    }*/
 }

@@ -2,26 +2,29 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBarako;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.bobmowzie.mowziesmobs.client.render.MowzieRenderUtils;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.SunblockLayer;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3d;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderBarako extends MobRenderer<EntityBarako, ModelBarako<EntityBarako>> {
+public class RenderBarako extends MowzieGeoEntityRenderer<EntityBarako> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/barako.png");
     private static final ResourceLocation TEXTURE_OLD = new ResourceLocation(MowziesMobs.MODID, "textures/entity/barako_old.png");
     private static final float BURST_RADIUS = 3.5f;
@@ -29,24 +32,20 @@ public class RenderBarako extends MobRenderer<EntityBarako, ModelBarako<EntityBa
     private static final int BURST_START_FRAME = 12;
 
     public RenderBarako(EntityRendererProvider.Context mgr) {
-        super(mgr, new ModelBarako<>(), 1.0F);
-        addLayer(new SunblockLayer<>(this));
-    }
-
-    @Override
-    protected float getFlipDegrees(EntityBarako entity) {
-        return 0;
+        super(mgr, new ModelBarako());
+//        addLayer(new SunblockLayer<>(this));
+        this.shadowRadius = 1.0f;
     }
 
     @Override
     public ResourceLocation getTextureLocation(EntityBarako entity) {
-        return ConfigHandler.CLIENT.oldBarakoaTextures.get() ? TEXTURE_OLD : TEXTURE;
+        return this.getGeoModelProvider().getTextureLocation(entity);
     }
 
     @Override
     public void render(EntityBarako barako, float entityYaw, float delta, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         if (!barako.isInvisible()) {
-            if (barako.getAnimation() == EntityBarako.ATTACK_ANIMATION && barako.getAnimationTick() > BURST_START_FRAME && barako.getAnimationTick() < BURST_START_FRAME + BURST_FRAME_COUNT - 1) {
+            if (barako.getActiveAbilityType() == EntityBarako.ATTACK_ABILITY && barako.getActiveAbility().getTicksInUse() > BURST_START_FRAME && barako.getActiveAbility().getTicksInUse() < BURST_START_FRAME + BURST_FRAME_COUNT - 1) {
                 matrixStackIn.pushPose();
                 Quaternion quat = this.entityRenderDispatcher.cameraOrientation();
                 matrixStackIn.mulPose(quat);
@@ -56,12 +55,16 @@ public class RenderBarako extends MobRenderer<EntityBarako, ModelBarako<EntityBa
                 PoseStack.Pose matrixstack$entry = matrixStackIn.last();
                 Matrix4f matrix4f = matrixstack$entry.pose();
                 Matrix3f matrix3f = matrixstack$entry.normal();
-                drawBurst(matrix4f, matrix3f, ivertexbuilder, barako.getAnimationTick() - BURST_START_FRAME + delta, packedLightIn);
+                drawBurst(matrix4f, matrix3f, ivertexbuilder, barako.getActiveAbility().getTicksInUse() - BURST_START_FRAME + delta, packedLightIn);
                 matrixStackIn.popPose();
             }
         }
         super.render(barako, entityYaw, delta, matrixStackIn, bufferIn, packedLightIn);
-        if (barako.getAnimation() == EntityBarako.SUPERNOVA_ANIMATION && barako.betweenHandPos != null && barako.betweenHandPos.length > 0) barako.betweenHandPos[0] = MowzieRenderUtils.getWorldPosFromModel(barako, entityYaw, getModel().betweenHands);
+        /*if (barako.getActiveAbilityType() == EntityBarako.SUPERNOVA_ABILITY && barako.betweenHandPos != null && barako.betweenHandPos.length > 0) {
+            MowzieGeoBone betweenHands = getMowzieAnimatedGeoModel().getMowzieBone("betweenHands");
+            Vector3d betweenHandPos = betweenHands.getWorldPosition();
+            barako.betweenHandPos[0] = new Vec3(betweenHandPos.x, betweenHandPos.y, betweenHandPos.z);
+        } TODO */
     }
 
     private void drawBurst(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer builder, float tick, int packedLightIn) {
