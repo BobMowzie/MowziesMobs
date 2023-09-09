@@ -34,6 +34,15 @@ public class ModelBarako extends MowzieAnimatedGeoModel<EntityBarako> {
 
     @Override
     public void codeAnimations(EntityBarako entity, Integer uniqueID, AnimationEvent<?> customPredicate) {
+        MowzieGeoBone rightThigh = getMowzieBone("rightThigh");
+        MowzieGeoBone leftThigh = getMowzieBone("leftThigh");
 
+        float liftLegs = entity.legsUp.getAnimationProgressSinSqrt(customPredicate.getPartialTick());
+        leftThigh.addRotationX(1f * liftLegs);
+        rightThigh.addRotationX(1f * liftLegs);
+        leftThigh.addRotationZ(-1.5f * liftLegs);
+        rightThigh.addRotationZ(1.5f * liftLegs);
+        leftThigh.addRotationY(0.5f * liftLegs);
+        rightThigh.addRotationY(-0.5f * liftLegs);
     }
 }
