@@ -8,16 +8,20 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleOrb;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent.PropertyControl.EnumParticleProperty;
+import com.bobmowzie.mowziesmobs.server.ability.Ability;
+import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.mob.HurtAbility;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.player.SimpleAnimationAbility;
 import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.ai.NearestAttackableTargetPredicateGoal;
+import com.bobmowzie.mowziesmobs.server.ai.UseAbilityAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.*;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.*;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySuperNova;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoTrade;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
@@ -78,7 +82,7 @@ public class EntityBarako extends MowzieGeckoEntity implements LeaderSunstrikeIm
     public static final AbilityType<EntityBarako, HurtAbility<EntityBarako>> HURT_ABILITY = new AbilityType<>("barako_hurt", (type, entity) -> new HurtAbility<>(type, entity,"barako_hurt", 13));
     public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> BELLY_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 40));
     public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> TALK_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 80));
-    public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> SUNSTRIKE_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 15));
+    public static final AbilityType<EntityBarako, SunstrikeAbility> SUNSTRIKE_ABILITY = new AbilityType<>("barako_sunstrike", SunstrikeAbility::new);
     public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> ATTACK_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 30));
     public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> SPAWN_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 17));
     public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> SPAWN_SUNBLOCKERS_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 17));
@@ -206,7 +210,6 @@ public class EntityBarako extends MowzieGeckoEntity implements LeaderSunstrikeIm
                 }
             }
         });
-        this.goalSelector.addGoal(2, new AnimationSunStrike<>(this, SUNSTRIKE_ANIMATION));
         this.goalSelector.addGoal(2, new AnimationRadiusAttack<EntityBarako>(this, ATTACK_ANIMATION, 4f, 1, 3f, 12, true){
             @Override
             public void start() {
@@ -219,6 +222,7 @@ public class EntityBarako extends MowzieGeckoEntity implements LeaderSunstrikeIm
         this.goalSelector.addGoal(2, new AnimationSolarBeam<>(this, SOLAR_BEAM_ANIMATION));
         this.goalSelector.addGoal(3, new AnimationTakeDamage<>(this));
         this.goalSelector.addGoal(1, new AnimationDieAI<>(this));*/
+        this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SUNSTRIKE_ABILITY));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, EntityBarakoa.class, 8.0F));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
@@ -981,5 +985,88 @@ public class EntityBarako extends MowzieGeckoEntity implements LeaderSunstrikeIm
     @Override
     public SoundEvent getBossMusic() {
         return MMSounds.MUSIC_BARAKO_THEME.get();
+    }
+
+    public static class SunstrikeAbility extends Ability<EntityBarako> {
+        private static int STARTUP_DURATION = 9;
+
+        protected LivingEntity entityTarget;
+        public double prevX;
+        public double prevZ;
+        private int newX;
+        private int newZ;
+        private int y;
+
+        public SunstrikeAbility(AbilityType abilityType, EntityBarako user) {
+            super(abilityType, user, new AbilitySection[] {
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, STARTUP_DURATION),
+                    new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 6)
+            });
+        }
+
+        @Override
+        public void start() {
+            super.start();
+            entityTarget = getUser().getTarget();
+            if (entityTarget != null) {
+                prevX = entityTarget.getX();
+                prevZ = entityTarget.getZ();
+            }
+        }
+
+        @Override
+        public void tickUsing() {
+            super.tickUsing();
+            if (!getUser().level.isClientSide()) {
+                if (entityTarget == null) {
+                    return;
+                }
+                if (getTicksInUse() <= 6) {
+                    getUser().getLookControl().setLookAt(entityTarget, 30, 30);
+                }
+                if (getTicksInUse() > 6) {
+                    getUser().getLookControl().setLookAt(newX, y, newZ, 20, 20);
+                }
+
+                if (getTicksInUse() == STARTUP_DURATION - 2) {
+                    double x = entityTarget.getX();
+                    y = Mth.floor(entityTarget.getY() - 1);
+                    double z = entityTarget.getZ();
+                    double vx = (x - prevX) / 9;
+                    double vz = (z - prevZ) / 9;
+                    int t = EntitySunstrike.STRIKE_EXPLOSION + 3;
+                    newX = Mth.floor(x + vx * t);
+                    newZ = Mth.floor(z + vz * t);
+                    double dx = newX - getUser().getX();
+                    double dz = newZ - getUser().getZ();
+                    double dist2ToBarako = dx * dx + dz * dz;
+                    if (dist2ToBarako < 3) {
+                        newX = Mth.floor(entityTarget.getX());
+                        newZ = Mth.floor(entityTarget.getZ());
+                    }
+                    for (int i = 0; i < 5; i++) {
+                        if (!getUser().level.canSeeSkyFromBelowWater(new BlockPos(newX, y, newZ))) {
+                            y++;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        @Override
+        protected void beginSection(AbilitySection section) {
+            super.beginSection(section);
+            if (!getUser().level.isClientSide()) {
+                if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
+                    getUser().playSound(MMSounds.ENTITY_BARAKO_ATTACK.get(), 1.4f, 1);
+                    EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE.get(), getUser().level, getUser(), newX, y, newZ);
+                    sunstrike.onSummon();
+                    getUser().level.addFreshEntity(sunstrike);
+                }
+            }
+        }
     }
 }
