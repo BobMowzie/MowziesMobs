@@ -38,6 +38,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -70,6 +71,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.scores.PlayerTeam;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -80,15 +82,15 @@ import java.util.*;
 public class EntityBarako extends MowzieGeckoEntity implements LeaderSunstrikeImmune, Enemy {
     public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> DIE_ABILITY = new AbilityType<>("barako_die", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barako_die", 70));
     public static final AbilityType<EntityBarako, HurtAbility<EntityBarako>> HURT_ABILITY = new AbilityType<>("barako_hurt", (type, entity) -> new HurtAbility<>(type, entity,"barako_hurt", 13));
-    public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> BELLY_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 40));
-    public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> TALK_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 80));
+    public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> BELLY_ABILITY = new AbilityType<>("barako_belly", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 40));
+    public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> TALK_ABILITY = new AbilityType<>("barako_talk", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 80));
     public static final AbilityType<EntityBarako, SunstrikeAbility> SUNSTRIKE_ABILITY = new AbilityType<>("barako_sunstrike", SunstrikeAbility::new);
-    public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> ATTACK_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 30));
-    public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> SPAWN_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 17));
-    public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> SPAWN_SUNBLOCKERS_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 17));
-    public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> SOLAR_BEAM_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 100));
-    public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> BLESS_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 60));
-    public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> SUPERNOVA_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 100));
+    public static final AbilityType<EntityBarako, FlareAbility> ATTACK_ABILITY = new AbilityType<>("barako_flare", FlareAbility::new);
+    public static final AbilityType<EntityBarako, SpawnFollowersAbility> SPAWN_ABILITY = new AbilityType<>("barako_spawn", (type, entity) -> new SpawnFollowersAbility(type, entity, false));
+    public static final AbilityType<EntityBarako, SpawnFollowersAbility> SPAWN_SUNBLOCKERS_ABILITY = new AbilityType<>("barako_spawn_healers", (type, entity) -> new SpawnFollowersAbility(type, entity, true));
+    public static final AbilityType<EntityBarako, SolarBeamAbility> SOLAR_BEAM_ABILITY = new AbilityType<>("barako_solar_beam", SolarBeamAbility::new);
+    public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> BLESS_ABILITY = new AbilityType<>("barako_bless", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 60));
+    public static final AbilityType<EntityBarako, SupernovaAbility> SUPERNOVA_ABILITY = new AbilityType<>("barako_supernova", SupernovaAbility::new);
     private static final int MAX_HEALTH = 150;
     private static final int SUNSTRIKE_PAUSE_MAX = 50;
     private static final int SUNSTRIKE_PAUSE_MIN = 30;
@@ -223,6 +225,11 @@ public class EntityBarako extends MowzieGeckoEntity implements LeaderSunstrikeIm
         this.goalSelector.addGoal(3, new AnimationTakeDamage<>(this));
         this.goalSelector.addGoal(1, new AnimationDieAI<>(this));*/
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SUNSTRIKE_ABILITY));
+        this.goalSelector.addGoal(2, new UseAbilityAI<>(this, ATTACK_ABILITY));
+        this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SOLAR_BEAM_ABILITY));
+        this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SUPERNOVA_ABILITY));
+        this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SPAWN_ABILITY));
+        this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SPAWN_SUNBLOCKERS_ABILITY));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, EntityBarakoa.class, 8.0F));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
@@ -1065,6 +1072,205 @@ public class EntityBarako extends MowzieGeckoEntity implements LeaderSunstrikeIm
                     EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE.get(), getUser().level, getUser(), newX, y, newZ);
                     sunstrike.onSummon();
                     getUser().level.addFreshEntity(sunstrike);
+                }
+            }
+        }
+    }
+
+    public static class SolarBeamAbility extends Ability<EntityBarako> {
+        protected LivingEntity entityTarget;
+        private EntitySolarBeam solarBeam;
+
+        public SolarBeamAbility(AbilityType abilityType, EntityBarako user) {
+            super(abilityType, user, new AbilitySection[] {
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 22),
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.ACTIVE, 68),
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 10)
+            });
+        }
+
+        @Override
+        public void start() {
+            super.start();
+            entityTarget = getUser().getTarget();
+        }
+
+        @Override
+        public void tickUsing() {
+            super.tickUsing();
+            float radius1 = 0.8f;
+            EntityBarako entity = getUser();
+            if (getTicksInUse() == 4 && !entity.level.isClientSide) {
+                solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM.get(), getUser().level, entity, entity.getX() + radius1 * Math.sin(-entity.getYRot() * Math.PI / 180), entity.getY() + 1.4, entity.getZ() + radius1 * Math.cos(-entity.getYRot() * Math.PI / 180), (float) ((entity.yHeadRot + 90) * Math.PI / 180), (float) (-entity.getXRot() * Math.PI / 180), 55);
+                entity.level.addFreshEntity(solarBeam);
+            }
+            if (getTicksInUse() >= 22) {
+                if (entityTarget != null) {
+                    entity.getLookControl().setLookAt(entityTarget.getX(), entityTarget.getY() + entityTarget.getBbHeight() / 2, entityTarget.getZ(), 2, 90);
+                }
+            }
+        }
+    }
+
+    public static class FlareAbility extends Ability<EntityBarako> {
+        protected LivingEntity entityTarget;
+        private EntitySolarBeam solarBeam;
+
+        public FlareAbility(AbilityType abilityType, EntityBarako user) {
+            super(abilityType, user, new AbilitySection[] {
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 12),
+                    new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 18)
+            });
+        }
+
+        @Override
+        public void start() {
+            super.start();
+            getUser().playSound(MMSounds.ENTITY_BARAKO_BURST.get(), 1.7f, 1.5f);
+        }
+
+        @Override
+        protected void beginSection(AbilitySection section) {
+            super.beginSection(section);
+            if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
+                EntityBarako entity = getUser();
+                float radius = 4f;
+                List<LivingEntity> hit = entity.getEntityLivingBaseNearby(radius, 2 * radius, radius, radius);
+                for (LivingEntity aHit : hit) {
+                    if (aHit instanceof LeaderSunstrikeImmune) {
+                        continue;
+                    }
+                    entity.doHurtTarget(aHit, 1f, 3f);
+                    if (!aHit.isInvulnerable()) {
+                        if (aHit instanceof Player && ((Player) aHit).getAbilities().invulnerable) continue;
+                        double knockback = 3;
+                        double angle = entity.getAngleBetweenEntities(entity, aHit);
+                        double x = knockback * Math.cos(Math.toRadians(angle - 90));
+                        double z = knockback * Math.sin(Math.toRadians(angle - 90));
+                        aHit.setDeltaMovement(x, 0.3, z);
+                        if (aHit instanceof ServerPlayer) {
+                            ((ServerPlayer) aHit).connection.send(new ClientboundSetEntityMotionPacket(aHit));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public static class SpawnFollowersAbility extends Ability<EntityBarako> {
+        private boolean spawnSunblockers;
+
+        public SpawnFollowersAbility(AbilityType abilityType, EntityBarako user, boolean spawnSunblockers) {
+            super(abilityType, user, new AbilitySection[] {
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 6),
+                    new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 11)
+            });
+            this.spawnSunblockers = spawnSunblockers;
+        }
+
+        @Override
+        public void start() {
+            super.start();
+            getUser().barakoaSpawnCount++;
+            getUser().playSound(MMSounds.ENTITY_BARAKOA_INHALE.get(), 1.2f, 0.5f);
+        }
+
+        @Override
+        public void end() {
+            super.end();
+            if (getUser().barakoaSpawnCount < 3 && (getUser().targetDistance > 6 || getUser().getTarget() == null || spawnSunblockers)) {
+                if (spawnSunblockers) getUser().sendAbilityMessage(EntityBarako.SPAWN_SUNBLOCKERS_ABILITY);
+                else getUser().sendAbilityMessage(EntityBarako.SPAWN_ABILITY);
+            } else {
+                getUser().barakoaSpawnCount = 0;
+            }
+        }
+
+        @Override
+        public void tickUsing() {
+            super.tickUsing();
+            if (getTicksInUse() == 1) getUser().playSound(MMSounds.ENTITY_BARAKOA_INHALE.get(), 1.2f, 0.5f);
+        }
+
+        @Override
+        protected void beginSection(AbilitySection section) {
+            super.beginSection(section);
+            EntityBarako entity = getUser();
+            if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
+                if (!getUser().level.isClientSide()) {
+                    entity.playSound(MMSounds.ENTITY_BARAKO_BELLY.get(), 1.5f, 1);
+                    entity.playSound(MMSounds.ENTITY_BARAKOA_BLOWDART.get(), 1.5f, 0.5f);
+                    double angle = entity.yHeadRot;
+                    if (angle < 0) {
+                        angle = angle + 360;
+                    }
+                    if (angle - entity.getYRot() > 70) {
+                        angle = 70 + entity.getYRot();
+                    } else if (angle - entity.getYRot() < -70) {
+                        angle = -70 + entity.getYRot();
+                    }
+                    EntityBarakoaVillager barakoa;
+                    if (spawnSunblockers) {
+                        barakoa = new EntityBarakoaya(EntityHandler.BARAKOAYA.get(), entity.level);
+                        ((EntityBarakoaya) barakoa).hasTriedOrSucceededTeleport = false;
+                    } else barakoa = new EntityBarakoaVillager(EntityHandler.BARAKOA_VILLAGER.get(), entity.level);
+                    barakoa.absMoveTo(entity.getX() + 2 * Math.sin(-angle * (Math.PI / 180)), entity.getY() + 1.5, entity.getZ() + 2 * Math.cos(-angle * (Math.PI / 180)), entity.yHeadRot, 0);
+                    barakoa.setActive(false);
+                    barakoa.active = false;
+                    barakoa.finalizeSpawn((ServerLevelAccessor) entity.getCommandSenderWorld(), entity.level.getCurrentDifficultyAt(barakoa.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
+                    barakoa.restrictTo(entity.getRestrictCenter(), 25);
+                    if (entity.getTeam() instanceof PlayerTeam) {
+                        barakoa.level.getScoreboard().addPlayerToTeam(barakoa.getScoreboardName(), (PlayerTeam) entity.getTeam());
+                    }
+                    entity.level.addFreshEntity(barakoa);
+                    barakoa.setDeltaMovement(0.7 * Math.sin(-angle * (Math.PI / 180)), 0.5, 0.7 * Math.cos(-angle * (Math.PI / 180)));
+                    barakoa.setTarget(entity.getTarget());
+                    if (entity.getTarget() instanceof Player) {
+                        barakoa.setMisbehavedPlayerId(entity.getTarget().getUUID());
+                    }
+                }
+            }
+        }
+    }
+
+    public static class SupernovaAbility extends Ability<EntityBarako> {
+
+        public SupernovaAbility(AbilityType abilityType, EntityBarako user) {
+            super(abilityType, user, new AbilitySection[]{
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 44),
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.ACTIVE, 40),
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 16)
+            });
+        }
+
+        @Override
+        public void start() {
+            super.start();
+            getUser().playSound(MMSounds.ENTITY_SUPERNOVA_START.get(), 3f, 1f);
+        }
+
+        @Override
+        public void tick() {
+            super.tick();
+            if (getTicksInUse() == 30) {
+                getUser().playSound(MMSounds.ENTITY_SUPERNOVA_BLACKHOLE.get(), 2f, 1.2f);
+            }
+            if (getTicksInUse() == 40) {
+                getUser().playSound(MMSounds.ENTITY_BARAKO_SCREAM.get(), 1.5f, 1f);
+            }
+        }
+
+        @Override
+        protected void beginSection(AbilitySection section) {
+            super.beginSection(section);
+            if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
+                if (!getUser().level.isClientSide) {
+                    Vec3 offset = new Vec3(1.1f, 0, 0);
+                    offset = offset.yRot((float) Math.toRadians(-getUser().getYRot() - 90));
+                    EntitySuperNova superNova = new EntitySuperNova(EntityHandler.SUPER_NOVA.get(), getUser().level, getUser(), getUser().getX() + offset.x, getUser().getY() + 0.05, getUser().getZ() + offset.z);
+                    getUser().level.addFreshEntity(superNova);
                 }
             }
         }
