@@ -24,4 +24,9 @@ public class BlockAbility<T extends MowzieGeckoEntity> extends SimpleAnimationAb
     public boolean canCancelActiveAbility() {
         return super.canCancelActiveAbility() || getUser().getActiveAbility() instanceof BlockAbility<?> || getUser().getActiveAbility() instanceof HurtAbility<?>;
     }
+
+    @Override
+    public boolean canCancelSelf() {
+        return true;
+    }
 }

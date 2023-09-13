@@ -10,9 +10,9 @@ import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.RibbonComponent;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
-import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.mob.BlockAbility;
+import com.bobmowzie.mowziesmobs.server.ability.abilities.mob.DieAbility;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.mob.HurtAbility;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.mob.MeleeAttackAbility;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.player.SimpleAnimationAbility;
@@ -33,7 +33,6 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
@@ -73,7 +72,7 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import java.util.EnumSet;
 
 public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedAttackMob {
-    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> DIE_ABILITY = new AbilityType<>("barakoa_die", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"die", 70) {
+    public static final AbilityType<EntityBarakoa, DieAbility<EntityBarakoa>> DIE_ABILITY = new AbilityType<>("barakoa_die", (type, entity) -> new DieAbility<>(type, entity,"die", 70) {
         @Override
         public void tickUsing() {
             super.tickUsing();
@@ -551,7 +550,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
 
         if (timeUntilDeath > 0) timeUntilDeath--;
         else if (timeUntilDeath == 0) {
-            hurt(DamageSource.indirectMagic(this, null), getHealth());
+            hurt(DamageSource.indirectMagic(this, null), getHealth() + 1);
         }
 
 //        if (getActiveAbility() == null) AbilityHandler.INSTANCE.sendAbilityMessage(this, BLOCK_COUNTER_ABILITY);

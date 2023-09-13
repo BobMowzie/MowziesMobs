@@ -131,8 +131,9 @@ public class Ability<T extends LivingEntity> {
      * @return Whether or not the ability can be used
      */
     public boolean canUse() {
-        boolean nonBackgroundCheck = runsInBackground() || abilityCapability.getActiveAbility() == null || canCancelActiveAbility();
-        return (!isUsing() || canCancelActiveAbility()) && cooldownTimer == 0 && nonBackgroundCheck;
+        boolean toReturn = (!isUsing() || canCancelSelf()) && cooldownTimer == 0;
+        if (!runsInBackground()) toReturn = toReturn && (abilityCapability.getActiveAbility() == null || canCancelActiveAbility() || abilityCapability.getActiveAbility().canBeCanceledByAbility(this));
+        return toReturn;
     }
 
     /**
@@ -145,6 +146,14 @@ public class Ability<T extends LivingEntity> {
     }
 
     public boolean canCancelActiveAbility() {
+        return false;
+    }
+
+    public boolean canCancelSelf() {
+        return false;
+    }
+
+    public boolean canBeCanceledByAbility(Ability ability) {
         return false;
     }
 
@@ -177,6 +186,7 @@ public class Ability<T extends LivingEntity> {
     }
 
     public void jumpToSection(int sectionIndex) {
+        endSection(getCurrentSection());
         currentSectionIndex = sectionIndex;
         ticksInSection = 0;
         if (currentSectionIndex >= getSectionTrack().length) {
@@ -185,6 +195,10 @@ public class Ability<T extends LivingEntity> {
         else {
             beginSection(getCurrentSection());
         }
+    }
+
+    protected void endSection(AbilitySection section) {
+
     }
 
     protected void beginSection(AbilitySection section) {

@@ -11,6 +11,7 @@ import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent.Property
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
+import com.bobmowzie.mowziesmobs.server.ability.abilities.mob.DieAbility;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.mob.HurtAbility;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.player.SimpleAnimationAbility;
 import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
@@ -80,7 +81,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class EntityBarako extends MowzieGeckoEntity implements LeaderSunstrikeImmune, Enemy {
-    public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> DIE_ABILITY = new AbilityType<>("barako_die", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barako_die", 70));
+    public static final AbilityType<EntityBarako, DieAbility<EntityBarako>> DIE_ABILITY = new AbilityType<>("barako_die", (type, entity) -> new DieAbility<>(type, entity,"death", 70));
     public static final AbilityType<EntityBarako, HurtAbility<EntityBarako>> HURT_ABILITY = new AbilityType<>("barako_hurt", (type, entity) -> new HurtAbility<>(type, entity,"barako_hurt", 13));
     public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> BELLY_ABILITY = new AbilityType<>("barako_belly", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 40));
     public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> TALK_ABILITY = new AbilityType<>("barako_talk", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 80));
@@ -1165,6 +1166,12 @@ public class EntityBarako extends MowzieGeckoEntity implements LeaderSunstrikeIm
             super(abilityType, user, new AbilitySection[] {
                     new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 6),
                     new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 11),
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 6),
+                    new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 11),
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 6),
+                    new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
                     new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 11)
             });
             this.spawnSunblockers = spawnSunblockers;
@@ -1175,29 +1182,16 @@ public class EntityBarako extends MowzieGeckoEntity implements LeaderSunstrikeIm
             super.start();
             getUser().barakoaSpawnCount++;
             getUser().playSound(MMSounds.ENTITY_BARAKOA_INHALE.get(), 1.2f, 0.5f);
-        }
-
-        @Override
-        public void end() {
-            super.end();
-            if (getUser().barakoaSpawnCount < 3 && (getUser().targetDistance > 6 || getUser().getTarget() == null || spawnSunblockers)) {
-                if (spawnSunblockers) getUser().sendAbilityMessage(EntityBarako.SPAWN_SUNBLOCKERS_ABILITY);
-                else getUser().sendAbilityMessage(EntityBarako.SPAWN_ABILITY);
-            } else {
-                getUser().barakoaSpawnCount = 0;
-            }
-        }
-
-        @Override
-        public void tickUsing() {
-            super.tickUsing();
-            if (getTicksInUse() == 1) getUser().playSound(MMSounds.ENTITY_BARAKOA_INHALE.get(), 1.2f, 0.5f);
+            playAnimation("spawn_strix", false);
         }
 
         @Override
         protected void beginSection(AbilitySection section) {
             super.beginSection(section);
             EntityBarako entity = getUser();
+            if (section.sectionType == AbilitySection.AbilitySectionType.STARTUP) {
+                getUser().playSound(MMSounds.ENTITY_BARAKOA_INHALE.get(), 1.2f, 0.5f);
+            }
             if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
                 if (!getUser().level.isClientSide()) {
                     entity.playSound(MMSounds.ENTITY_BARAKO_BELLY.get(), 1.5f, 1);
@@ -1230,6 +1224,16 @@ public class EntityBarako extends MowzieGeckoEntity implements LeaderSunstrikeIm
                     if (entity.getTarget() instanceof Player) {
                         barakoa.setMisbehavedPlayerId(entity.getTarget().getUUID());
                     }
+                }
+            }
+        }
+
+        @Override
+        protected void endSection(AbilitySection section) {
+            super.endSection(section);
+            if (section.sectionType == AbilitySection.AbilitySectionType.RECOVERY) {
+                if (getUser().targetDistance <= 6 && getUser().getTarget() != null && !spawnSunblockers) {
+                    interrupt();
                 }
             }
         }
