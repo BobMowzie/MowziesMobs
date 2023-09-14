@@ -44,6 +44,8 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
     @Override
     protected void registerGoals() {
         super.registerGoals();
+        this.goalSelector.addGoal(1, new TeleportToSafeSpotGoal(this));
+        this.goalSelector.addGoal(1, new AvoidProjectilesGoal(this, Projectile.class, target -> getActiveAbilityType() == HEAL_ABILITY, 5.0F, 0.8D, 0.6D));
         this.goalSelector.addGoal(4, new HealTargetGoal(this));
         this.goalSelector.addGoal(6, new AvoidEntityGoal<Player>(this, Player.class, 50.0F, 0.8D, 0.6D, target -> {
             if (target instanceof Player) {
@@ -62,10 +64,6 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
                 setMisbehavedPlayerId(null);
             }
         });
-        this.goalSelector.addGoal(1, new TeleportToSafeSpotGoal(this));
-        this.goalSelector.addGoal(1, new AvoidProjectilesGoal(this, Projectile.class, target -> {
-            return getActiveAbilityType() == HEAL_ABILITY;
-        }, 3.0F, 0.8D, 0.6D));
     }
 
     @Override
@@ -102,7 +100,7 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
     public void tick() {
         super.tick();
         if (active && teleportAttempts > 3 && (getTarget() == null || !getTarget().isAlive())) hasTriedOrSucceededTeleport = true;
-//        if (getActiveAbilityType() == HEAL_LOOP_ABILITY && !canHeal(getTarget())) AbilityHandler.INSTANCE.sendAbilityMessage(this, HEAL_STOP_ABILITY); TODO
+        if (getActiveAbilityType() == HEAL_ABILITY && !canHeal(getTarget())) AbilityHandler.INSTANCE.sendInterruptAbilityMessage(this, HEAL_ABILITY);
 
 //        if (getActiveAbilityType() == NO_ABILITY) AbilityHandler.INSTANCE.sendAbilityMessage(this, HEAL_START_ABILITY);
     }

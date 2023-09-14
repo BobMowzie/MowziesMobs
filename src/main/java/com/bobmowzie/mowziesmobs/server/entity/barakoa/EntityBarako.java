@@ -1115,7 +1115,6 @@ public class EntityBarako extends MowzieGeckoEntity implements LeaderSunstrikeIm
 
     public static class FlareAbility extends Ability<EntityBarako> {
         protected LivingEntity entityTarget;
-        private EntitySolarBeam solarBeam;
 
         public FlareAbility(AbilityType abilityType, EntityBarako user) {
             super(abilityType, user, new AbilitySection[] {

@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
@@ -10,6 +10,7 @@ import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.RibbonComponent;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
+import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.mob.BlockAbility;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.mob.DieAbility;
@@ -25,6 +26,7 @@ import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
+import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -39,6 +41,7 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -126,8 +129,8 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
     public static final AbilityType<EntityBarakoa, BlockAbility<EntityBarakoa>> BLOCK_ABILITY = new AbilityType<>("barakoa_block", (type, entity) -> new BlockAbility<>(type, entity,"block", 10));
     public static final AbilityType<EntityBarakoa, BarakoaBlockCounterAbility> BLOCK_COUNTER_ABILITY = new AbilityType<>("barakoa_block_counter", BarakoaBlockCounterAbility::new);
 
-    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> TELEPORT_ABILITY = new AbilityType<>("barakoa_teleport", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 27));
-    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> HEAL_ABILITY = new AbilityType<>("barakoa_heal", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_heal", 25));
+    public static final AbilityType<EntityBarakoa, BarakoaTeleportAbility> TELEPORT_ABILITY = new AbilityType<>("barakoa_teleport", BarakoaTeleportAbility::new);
+    public static final AbilityType<EntityBarakoa, BarakoaHealAbility> HEAL_ABILITY = new AbilityType<>("barakoa_heal", BarakoaHealAbility::new);
 
     private static final EntityDataAccessor<Boolean> DANCING = SynchedEntityData.defineId(EntityBarakoa.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> MASK = SynchedEntityData.defineId(EntityBarakoa.class, EntityDataSerializers.INT);
@@ -136,13 +139,9 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
     private static final EntityDataAccessor<Float> HEALPOSX = SynchedEntityData.defineId(EntityBarakoa.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> HEALPOSY = SynchedEntityData.defineId(EntityBarakoa.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> HEALPOSZ = SynchedEntityData.defineId(EntityBarakoa.class, EntityDataSerializers.FLOAT);
-    public ControlledAnimation doWalk = new ControlledAnimation(3);
-    public ControlledAnimation dancing = new ControlledAnimation(7);
     private boolean circleDirection = true;
     protected int circleTick = 0;
     protected boolean attacking = false;
-    private int cryDelay = -1;
-    private int danceTimer = 0;
     private int ticksWithoutTarget;
     public int timeUntilDeath = -1;
     private int blockCount = 0;
@@ -200,95 +199,14 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         goalSelector.addGoal(2, new UseAbilityAI<>(this, ROAR_ABILITY));
         goalSelector.addGoal(2, new UseAbilityAI<>(this, BLOCK_ABILITY));
         goalSelector.addGoal(2, new UseAbilityAI<>(this, BLOCK_COUNTER_ABILITY));
-/*        goalSelector.addGoal(4, new SimpleAnimationAI<EntityBarakoa>(this, IDLE_ABILITY, false, true) {
-            private LivingEntity talkTarget;
-            private final TargetingConditions pred = TargetingConditions.forNonCombat().range(8);
-
-            @Override
-            public void start() {
-                super.start();
-                LivingEntity player = this.entity.level.getNearestEntity(Player.class, pred, entity, entity.getX(), entity.getY() + entity.getEyeHeight(), entity.getZ(), this.entity.getBoundingBox().inflate(8.0D, 3.0D, 8.0D));
-                LivingEntity barakoa = this.entity.level.getNearestEntity(EntityBarakoa.class, pred, this.entity, entity.getX(), entity.getY() + entity.getEyeHeight(), entity.getZ(), this.entity.getBoundingBox().inflate(8.0D, 3.0D, 8.0D));
-                if (player == null) talkTarget = barakoa;
-                else if (barakoa == null) talkTarget = player;
-                else if (random.nextBoolean()) talkTarget = player;
-                else talkTarget = barakoa;
-            }
-
-            @Override
-            public void tick() {
-                super.tick();
-                if (talkTarget != null) this.entity.lookControl.setLookAt(this.talkTarget, (float)this.entity.getMaxHeadYRot(), (float)this.entity.getMaxHeadXRot());
-            }
-        });
-        goalSelector.addGoal(2, new SimpleAnimationAI<EntityBarakoa>(this, TELEPORT_ABILITY, true, false) {
-            private Vec3 teleportStart;
-
-            @Override
-            public void tick() {
-                super.tick();
-                if (getAnimationTick() == 2) playSound(MMSounds.ENTITY_BARAKOA_TELEPORT.get(entity.random.nextInt(3)).get(), 3f, 1);
-                if (getAnimationTick() == 16) playSound(MMSounds.ENTITY_BARAKOA_TELEPORT.get(entity.random.nextInt(3)).get(), 3f, 1.2f);
-                int startMoveFrame = 7;
-                int endMoveFrame = 14;
-                if (entity.getAnimationTick() == startMoveFrame) teleportStart = entity.position();
-                if (teleportStart != null && entity.teleportDestination != null && entity.getAnimationTick() > startMoveFrame && entity.getAnimationTick() < endMoveFrame) {
-                    float t = (getAnimationTick() - startMoveFrame) / (float) (endMoveFrame - startMoveFrame);
-                    t = (float) (0.5 - 0.5 * Math.cos(t * Math.PI));
-                    Vec3 newPos = teleportStart.add(entity.teleportDestination.subtract(teleportStart).scale(t));
-                    entity.teleportTo(newPos.x(), newPos.y(), newPos.z());
-                    entity.getNavigation().stop();
-                }
-                if (entity.teleportDestination != null && entity.getAnimationTick() == endMoveFrame) {
-                    entity.teleportTo(entity.teleportDestination.x(), entity.teleportDestination.y(), entity.teleportDestination.z());
-                    entity.setDeltaMovement(0, 0, 0);
-                    entity.getNavigation().stop();
-                }
-                if (entity.getTarget() != null) entity.getLookControl().setLookAt(entity.getTarget(), 30, 30);
-            }
-        });
-        goalSelector.addGoal(2, new SimpleAnimationAI<EntityBarakoa>(this, HEAL_START_ANIMATION, true, false) {
-            @Override
-            public void tick() {
-                super.tick();
-                EntityBarakoa sunblocker = entity;
-                if (sunblocker.getTarget() != null) {
-                    sunblocker.getLookControl().setLookAt(sunblocker.getTarget(), entity.getMaxHeadYRot(), entity.getMaxHeadXRot());
-                }
-                if (sunblocker.getAnimationTick() == 19) {
-                    playSound(MMSounds.ENTITY_BARAKOA_HEAL_START.get(entity.random.nextInt(3)).get(), 4, 1);
-                    MowziesMobs.PROXY.playSunblockSound(sunblocker);
-                }
-                if (sunblocker.getAnimationTick() >= 19) {
-                    EffectHandler.addOrCombineEffect(entity, MobEffects.GLOWING, 5, 0, false, false);
-                }
-                if (sunblocker.getAnimationTick() == 23)
-                    AbilityHandler.INSTANCE.sendAbilityMessage(entity, HEAL_LOOP_ANIMATION);
-            }
-        });
-        goalSelector.addGoal(2, new SimpleAnimationAI<EntityBarakoa>(this, HEAL_STOP_ANIMATION, false, false));
-        goalSelector.addGoal(2, new SimpleAnimationAI<EntityBarakoa>(this, HEAL_LOOP_ANIMATION, true, false) {
-            @Override
-            public void tick() {
-                super.tick();
-                EntityBarakoa sunblocker = entity;
-                EffectHandler.addOrCombineEffect(entity, MobEffects.GLOWING, 5, 0, false, false);
-                if (sunblocker.getTarget() != null) {
-                    sunblocker.getLookControl().setLookAt(sunblocker.getTarget(), entity.getMaxHeadYRot(), entity.getMaxHeadXRot());
-                }
-                else {
-                    AbilityHandler.INSTANCE.sendAbilityMessage(entity, HEAL_STOP_ANIMATION);
-                }
-                if (getAnimationTick() == 19)
-                    AbilityHandler.INSTANCE.sendAbilityMessage(entity, HEAL_LOOP_ANIMATION);
-            }
-        });*/
+        goalSelector.addGoal(2, new UseAbilityAI<>(this, TELEPORT_ABILITY));
+        goalSelector.addGoal(2, new UseAbilityAI<>(this, HEAL_ABILITY, false, false));
         goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.4));
         goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         goalSelector.addGoal(8, new LookAtPlayerGoal(this, EntityBarakoa.class, 8.0F));
         goalSelector.addGoal(8, new LookAtPlayerGoal(this, EntityBarako.class, 8.0F));
         goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-        goalSelector.addGoal(4, new CircleAttackGoal(this, 6.5F));
+        goalSelector.addGoal(5, new CircleAttackGoal(this, 6.5F));
         registerTargetGoals();
     }
 
@@ -498,48 +416,6 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
 
         if (getTarget() != null && ticksWithoutTarget > 3) {
             sendAbilityMessage(ALERT_ABILITY);
-        }
-
-        if (level.isClientSide && getActiveAbilityType() == HEAL_ABILITY && getAnimationTick() == 22 && staffPos != null && staffPos.length >= 1)
-            staffPos[0] = position().add(0, getEyeHeight(), 0);
-        if ((getActiveAbilityType() == HEAL_ABILITY && getAnimationTick() >= 23)) {
-            spawnHealParticles();
-            sunBlockTarget();
-        }
-
-        if (getActiveAbilityType() == TELEPORT_ABILITY) {
-            if (level.isClientSide) {
-                myPos[0] = position().add(0, 1.2f, 0);
-                if (getAnimationTick() == 5) {
-                    ParticleComponent.KeyTrack keyTrack1 = ParticleComponent.KeyTrack.oscillate(0, 2, 24);
-                    ParticleComponent.KeyTrack keyTrack2 = new ParticleComponent.KeyTrack(new float[]{0, 18, 18, 0}, new float[]{0, 0.2f, 0.8f, 1});
-                    AdvancedParticleBase.spawnParticle(level, ParticleHandler.SUN.get(), getX(), getY(), getZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 15, true, false, new ParticleComponent[]{
-                            new ParticleComponent.PinLocation(myPos),
-                            new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, keyTrack2, false),
-                            new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, keyTrack1, true),
-                            new RibbonComponent(ParticleHandler.RIBBON_FLAT.get(), 10, 0, 0, 0, 0.12F, 0.95, 0.9, 0.35, 0.75, true, true, new ParticleComponent[]{
-                                    new RibbonComponent.PropertyOverLength(RibbonComponent.PropertyOverLength.EnumRibbonProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(1, 0))
-                            }),
-                    });
-                }
-                myPos[0] = position().add(0, 1.2f, 0);
-                if (getAnimationTick() == 4 || getAnimationTick() == 18) {
-                    int num = 5;
-                    for (int i = 0; i < num * num; i++) {
-                        Vec3 v = new Vec3((0.3 + 0.15 * random.nextFloat()) * 0.8, 0, 0);
-                        float increment = (float)Math.PI * 2f / (float) num;
-//                        v = v.rotatePitch(increment * i);
-                        v = v.yRot(increment * random.nextFloat() + increment * (i / (float)num));
-                        v = v.zRot(increment * random.nextFloat() + increment * (i % num));
-                        AdvancedParticleBase.spawnParticle(level, ParticleHandler.PIXEL.get(), myPos[0].x(), myPos[0].y(), myPos[0].z(), v.x(), v.y(), v.z(), true, 0, 0, 0, 0, 4f, 0.98, 0.94, 0.39, 1, 0.8, 6 + random.nextFloat() * 4, true, false, new ParticleComponent[] {
-                                new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
-                                        new float[] {4f, 0},
-                                        new float[] {0.8f, 1}
-                                ), false)
-                        });
-                    }
-                }
-            }
         }
 
         if (getTarget() == null) {
@@ -856,44 +732,6 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         return false;
     }
 
-    public void spawnHealParticles() {
-        if (getTarget() != null) {
-            setHealPos(getTarget().position().add(new Vec3(0, getTarget().getBbHeight() / 2f, 0)));
-        }
-        if (level.isClientSide && barakoPos != null) {
-            barakoPos[0] = getHealPos();
-            if (staffPos != null && staffPos[0] != null) {
-                double dist = Math.max(barakoPos[0].distanceTo(staffPos[0]), 0.01);
-                double radius = 0.5f;
-                double yaw = random.nextFloat() * 2 * Math.PI;
-                double pitch = random.nextFloat() * 2 * Math.PI;
-                double ox = radius * Math.sin(yaw) * Math.sin(pitch);
-                double oy = radius * Math.cos(pitch);
-                double oz = radius * Math.cos(yaw) * Math.sin(pitch);
-                if (tickCount % 5 == 0) AdvancedParticleBase.spawnParticle(level, ParticleHandler.ARROW_HEAD.get(), staffPos[0].x(), staffPos[0].y(), staffPos[0].z(), 0, 0, 0, false, 0, 0, 0, 0, 3.5F, 0.95, 0.9, 0.35, 0.75, 1, Math.min(2 * dist, 60), true, false, new ParticleComponent[]{
-                        new ParticleComponent.Attractor(barakoPos, 0.5f, 0.2f, ParticleComponent.Attractor.EnumAttractorBehavior.LINEAR),
-                        new RibbonComponent(ParticleHandler.RIBBON_FLAT.get(), 10, 0, 0, 0, 0.12F, 0.95, 0.9, 0.35, 0.75, true, true, new ParticleComponent[]{
-                                new RibbonComponent.PropertyOverLength(RibbonComponent.PropertyOverLength.EnumRibbonProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(1, 0))
-                        }),
-                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.POS_X, new ParticleComponent.Oscillator(0, (float) ox, (float) (1 * dist), 2.5f), true),
-                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.POS_Y, new ParticleComponent.Oscillator(0, (float) oy, (float) (1 * dist), 2.5f), true),
-                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.POS_Z, new ParticleComponent.Oscillator(0, (float) oz, (float) (1 * dist), 2.5f), true),
-                        new ParticleComponent.FaceMotion(),
-                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, new ParticleComponent.KeyTrack(new float[]{0, 0, 1}, new float[]{0, 0.05f, 0.06f}), false),
-                });
-                if (tickCount % 5 == 0) AdvancedParticleBase.spawnParticle(level, ParticleHandler.RING2.get(), staffPos[0].x(), staffPos[0].y(), staffPos[0].z(), 0, 0, 0, true, 0, 0, 0, 0, 1.5F, 1, 223 / 255f, 66 / 255f, 1, 1, 15, true, false, new ParticleComponent[]{
-                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
-                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(1f, 10f), false)
-                });
-                int spawnFreq = 5;
-                if (tickCount % spawnFreq == 0) ParticleRibbon.spawnRibbon(level, ParticleHandler.RIBBON_SQUIGGLE.get(), (int)(0.5 * dist), staffPos[0].x(), staffPos[0].y(), staffPos[0].z(), 0, 0, 0, true, 0, 0, 0, 0.5F, 0.95, 0.9, 0.35, 0.75, 1, spawnFreq, true, new ParticleComponent[]{
-                        new RibbonComponent.BeamPinning(staffPos, barakoPos),
-                        new RibbonComponent.PanTexture(0, 1)
-                });
-            }
-        }
-    }
-
     protected void sunBlockTarget() {
 
     }
@@ -1110,6 +948,171 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
                 }
                 else {
                     playAnimation("hurt_left_neutral", false);
+                }
+            }
+        }
+    }
+
+    private static class BarakoaTeleportAbility extends Ability<EntityBarakoa> {
+        private Vec3 teleportStart;
+        private static int ACTIVE_DURATION = 7;
+
+        public BarakoaTeleportAbility(AbilityType<EntityBarakoa, ? extends Ability> abilityType, EntityBarakoa user) {
+            super(abilityType, user, new AbilitySection[]{
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 7),
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.ACTIVE, ACTIVE_DURATION),
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 13)
+            });
+        }
+
+        @Override
+        protected void beginSection(AbilitySection section) {
+            super.beginSection(section);
+            if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
+                teleportStart = getUser().position();
+            }
+        }
+
+        @Override
+        protected void endSection(AbilitySection section) {
+            super.endSection(section);
+            if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE && getUser().teleportDestination != null) {
+                getUser().teleportTo(getUser().teleportDestination.x(), getUser().teleportDestination.y(), getUser().teleportDestination.z());
+                getUser().setDeltaMovement(0, 0, 0);
+                getUser().getNavigation().stop();
+            }
+        }
+
+        @Override
+        public void tickUsing() {
+            super.tickUsing();
+            if (getTicksInUse() == 2) getUser().playSound(MMSounds.ENTITY_BARAKOA_TELEPORT.get(rand.nextInt(3)).get(), 3f, 1);
+            if (getTicksInUse() == 16) getUser().playSound(MMSounds.ENTITY_BARAKOA_TELEPORT.get(rand.nextInt(3)).get(), 3f, 1.2f);
+
+            if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
+                if (teleportStart != null && getUser().teleportDestination != null) {
+                    float t = getTicksInSection() / (float) (ACTIVE_DURATION);
+                    t = (float) (0.5 - 0.5 * Math.cos(t * Math.PI));
+                    Vec3 newPos = teleportStart.add(getUser().teleportDestination.subtract(teleportStart).scale(t));
+                    getUser().teleportTo(newPos.x(), newPos.y(), newPos.z());
+                    getUser().getNavigation().stop();
+                }
+            }
+
+            if (getUser().getTarget() != null) getUser().getLookControl().setLookAt(getUser().getTarget(), 30, 30);
+
+            if (getUser().level.isClientSide) {
+                getUser().myPos[0] = getUser().position().add(0, 1.2f, 0);
+                if (getTicksInUse() == 5) {
+                    ParticleComponent.KeyTrack keyTrack1 = ParticleComponent.KeyTrack.oscillate(0, 2, 24);
+                    ParticleComponent.KeyTrack keyTrack2 = new ParticleComponent.KeyTrack(new float[]{0, 18, 18, 0}, new float[]{0, 0.2f, 0.8f, 1});
+                    AdvancedParticleBase.spawnParticle(getUser().level, ParticleHandler.SUN.get(), getUser().getX(), getUser().getY(), getUser().getZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 15, true, false, new ParticleComponent[]{
+                            new ParticleComponent.PinLocation(getUser().myPos),
+                            new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, keyTrack2, false),
+                            new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, keyTrack1, true),
+                            new RibbonComponent(ParticleHandler.RIBBON_FLAT.get(), 10, 0, 0, 0, 0.12F, 0.95, 0.9, 0.35, 0.75, true, true, new ParticleComponent[]{
+                                    new RibbonComponent.PropertyOverLength(RibbonComponent.PropertyOverLength.EnumRibbonProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(1, 0))
+                            }),
+                    });
+                }
+                getUser().myPos[0] = getUser().position().add(0, 1.2f, 0);
+                if (getTicksInUse() == 4 || getTicksInUse() == 18) {
+                    int num = 5;
+                    for (int i = 0; i < num * num; i++) {
+                        Vec3 v = new Vec3((0.3 + 0.15 * rand.nextFloat()) * 0.8, 0, 0);
+                        float increment = (float)Math.PI * 2f / (float) num;
+//                        v = v.rotatePitch(increment * i);
+                        v = v.yRot(increment * rand.nextFloat() + increment * (i / (float)num));
+                        v = v.zRot(increment * rand.nextFloat() + increment * (i % num));
+                        AdvancedParticleBase.spawnParticle(getUser().level, ParticleHandler.PIXEL.get(), getUser().myPos[0].x(), getUser().myPos[0].y(), getUser().myPos[0].z(), v.x(), v.y(), v.z(), true, 0, 0, 0, 0, 4f, 0.98, 0.94, 0.39, 1, 0.8, 6 + rand.nextFloat() * 4, true, false, new ParticleComponent[] {
+                                new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
+                                        new float[] {4f, 0},
+                                        new float[] {0.8f, 1}
+                                ), false)
+                        });
+                    }
+                }
+            }
+        }
+
+        @Override
+        public boolean canCancelActiveAbility() {
+            return getUser().getActiveAbility() instanceof BarakoaHealAbility;
+        }
+    }
+
+    private static class BarakoaHealAbility extends Ability<EntityBarakoa> {
+
+        public BarakoaHealAbility(AbilityType<EntityBarakoa, ? extends Ability> abilityType, EntityBarakoa user) {
+            super(abilityType, user, new AbilitySection[]{
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 22),
+                    new AbilitySection.AbilitySectionInfinite(AbilitySection.AbilitySectionType.ACTIVE),
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 6)
+            });
+        }
+
+        @Override
+        public void tickUsing() {
+            super.tickUsing();
+            if (getUser().getTarget() != null) {
+                getUser().getLookControl().setLookAt(getUser().getTarget(), getUser().getMaxHeadYRot(), getUser().getMaxHeadXRot());
+            }
+            if (getUser().getAnimationTick() == 19) {
+                getUser().playSound(MMSounds.ENTITY_BARAKOA_HEAL_START.get(rand.nextInt(3)).get(), 4, 1);
+                MowziesMobs.PROXY.playSunblockSound(getUser());
+            }
+            if (getTicksInUse() >= 19) {
+                EffectHandler.addOrCombineEffect(getUser(), MobEffects.GLOWING, 5, 0, false, false);
+            }
+
+            if (getUser().level.isClientSide && getTicksInUse() == 22 && getUser().staffPos != null && getUser().staffPos.length >= 1)
+                getUser().staffPos[0] = getUser().position().add(0, getUser().getEyeHeight(), 0);
+
+            if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
+                spawnHealParticles();
+                getUser().sunBlockTarget();
+            }
+        }
+
+        @Override
+        protected boolean canContinueUsing() {
+            return super.canContinueUsing() && getUser().getTarget() != null;
+        }
+
+        public void spawnHealParticles() {
+            if (getUser().getTarget() != null) {
+                getUser().setHealPos(getUser().getTarget().position().add(new Vec3(0, getUser().getTarget().getBbHeight() / 2f, 0)));
+            }
+            if (getUser().level.isClientSide && getUser().barakoPos != null) {
+                getUser().barakoPos[0] = getUser().getHealPos();
+                if (getUser().staffPos != null && getUser().staffPos[0] != null) {
+                    double dist = Math.max(getUser().barakoPos[0].distanceTo(getUser().staffPos[0]), 0.01);
+                    double radius = 0.5f;
+                    double yaw = rand.nextFloat() * 2 * Math.PI;
+                    double pitch = rand.nextFloat() * 2 * Math.PI;
+                    double ox = radius * Math.sin(yaw) * Math.sin(pitch);
+                    double oy = radius * Math.cos(pitch);
+                    double oz = radius * Math.cos(yaw) * Math.sin(pitch);
+                    if (getTicksInUse() % 5 == 0) AdvancedParticleBase.spawnParticle(getUser().level, ParticleHandler.ARROW_HEAD.get(), getUser().staffPos[0].x(), getUser().staffPos[0].y(), getUser().staffPos[0].z(), 0, 0, 0, false, 0, 0, 0, 0, 3.5F, 0.95, 0.9, 0.35, 0.75, 1, Math.min(2 * dist, 60), true, false, new ParticleComponent[]{
+                            new ParticleComponent.Attractor(getUser().barakoPos, 0.5f, 0.2f, ParticleComponent.Attractor.EnumAttractorBehavior.LINEAR),
+                            new RibbonComponent(ParticleHandler.RIBBON_FLAT.get(), 10, 0, 0, 0, 0.12F, 0.95, 0.9, 0.35, 0.75, true, true, new ParticleComponent[]{
+                                    new RibbonComponent.PropertyOverLength(RibbonComponent.PropertyOverLength.EnumRibbonProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(1, 0))
+                            }),
+                            new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.POS_X, new ParticleComponent.Oscillator(0, (float) ox, (float) (1 * dist), 2.5f), true),
+                            new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.POS_Y, new ParticleComponent.Oscillator(0, (float) oy, (float) (1 * dist), 2.5f), true),
+                            new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.POS_Z, new ParticleComponent.Oscillator(0, (float) oz, (float) (1 * dist), 2.5f), true),
+                            new ParticleComponent.FaceMotion(),
+                            new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, new ParticleComponent.KeyTrack(new float[]{0, 0, 1}, new float[]{0, 0.05f, 0.06f}), false),
+                    });
+                    if (getTicksInUse() % 5 == 0) AdvancedParticleBase.spawnParticle(getUser().level, ParticleHandler.RING2.get(), getUser().staffPos[0].x(), getUser().staffPos[0].y(), getUser().staffPos[0].z(), 0, 0, 0, true, 0, 0, 0, 0, 1.5F, 1, 223 / 255f, 66 / 255f, 1, 1, 15, true, false, new ParticleComponent[]{
+                            new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
+                            new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(1f, 10f), false)
+                    });
+                    int spawnFreq = 5;
+                    if (getTicksInUse() % spawnFreq == 0) ParticleRibbon.spawnRibbon(getUser().level, ParticleHandler.RIBBON_SQUIGGLE.get(), (int)(0.5 * dist), getUser().staffPos[0].x(), getUser().staffPos[0].y(), getUser().staffPos[0].z(), 0, 0, 0, true, 0, 0, 0, 0.5F, 0.95, 0.9, 0.35, 0.75, 1, spawnFreq, true, new ParticleComponent[]{
+                            new RibbonComponent.BeamPinning(getUser().staffPos, getUser().barakoPos),
+                            new RibbonComponent.PanTexture(0, 1)
+                    });
                 }
             }
         }
