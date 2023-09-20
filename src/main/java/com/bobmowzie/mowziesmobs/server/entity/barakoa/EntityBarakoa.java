@@ -125,7 +125,22 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             if (getTicksInUse() == 10) getUser().active = true;
         }
     });
-    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> DEACTIVATE_ABILITY = new AbilityType<>("barakoa_deactivate", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_deactivate", 26));
+    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> DEACTIVATE_ABILITY = new AbilityType<>("barakoa_deactivate", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"retract", 11) {
+        @Override
+        public void end() {
+            super.end();
+            getUser().discard();
+            ItemBarakoaMask mask = getMaskFromType(getUser().getMaskType());
+            if (!getUser().level.isClientSide) {
+                ItemEntity itemEntity = getUser().spawnAtLocation(getUser().getDeactivatedMask(mask), 1.5f);
+                if (itemEntity != null) {
+                    ItemStack item = itemEntity.getItem();
+                    item.setDamageValue((int) Math.ceil((1.0f - getUser().getHealthRatio()) * item.getMaxDamage()));
+                    item.setHoverName(getUser().getCustomName());
+                }
+            }
+        }
+    });
     public static final AbilityType<EntityBarakoa, BlockAbility<EntityBarakoa>> BLOCK_ABILITY = new AbilityType<>("barakoa_block", (type, entity) -> new BlockAbility<>(type, entity,"block", 10));
     public static final AbilityType<EntityBarakoa, BarakoaBlockCounterAbility> BLOCK_COUNTER_ABILITY = new AbilityType<>("barakoa_block_counter", BarakoaBlockCounterAbility::new);
 
@@ -190,7 +205,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, -8);
         goalSelector.addGoal(0, new FloatGoal(this));
         goalSelector.addGoal(0, new UseAbilityAI<>(this, ACTIVATE_ABILITY));
-//        goalSelector.addGoal(0, new UseAbilityAI<>(this, DEACTIVATE_ABILITY));
+        goalSelector.addGoal(0, new UseAbilityAI<>(this, DEACTIVATE_ABILITY));
         goalSelector.addGoal(1, new UseAbilityAI<>(this, DIE_ABILITY));
         goalSelector.addGoal(2, new UseAbilityAI<>(this, HURT_ABILITY, false));
         goalSelector.addGoal(3, new EntityAIAvoidEntity<>(this, EntitySunstrike.class, EntitySunstrike::isStriking, 3, 0.7F));
@@ -519,25 +534,6 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
                 break;
         }
         return mask;
-    }
-
-    protected void onAnimationFinish(Ability ability) {
-        if (ability.getAbilityType() == ACTIVATE_ABILITY) {
-            setActive(true);
-            active = true;
-        }
-        if (ability.getAbilityType() == DEACTIVATE_ABILITY) {
-            discard();
-            ItemBarakoaMask mask = getMaskFromType(getMaskType());
-            if (!level.isClientSide) {
-                ItemEntity itemEntity = spawnAtLocation(getDeactivatedMask(mask), 1.5f);
-                if (itemEntity != null) {
-                    ItemStack item = itemEntity.getItem();
-                    item.setDamageValue((int) Math.ceil((1.0f - getHealthRatio()) * item.getMaxDamage()));
-                    item.setHoverName(this.getCustomName());
-                }
-            }
-        }
     }
 
     protected ItemStack getDeactivatedMask(ItemBarakoaMask mask) {
