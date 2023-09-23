@@ -102,7 +102,7 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
         if (active && teleportAttempts > 3 && (getTarget() == null || !getTarget().isAlive())) hasTriedOrSucceededTeleport = true;
         if (getActiveAbilityType() == HEAL_ABILITY && !canHeal(getTarget())) AbilityHandler.INSTANCE.sendInterruptAbilityMessage(this, HEAL_ABILITY);
 
-//        if (getActiveAbilityType() == NO_ABILITY) AbilityHandler.INSTANCE.sendAbilityMessage(this, HEAL_START_ABILITY);
+//        if (getActiveAbility() == null) AbilityHandler.INSTANCE.sendAbilityMessage(this, TELEPORT_ABILITY);
     }
 
     @Override

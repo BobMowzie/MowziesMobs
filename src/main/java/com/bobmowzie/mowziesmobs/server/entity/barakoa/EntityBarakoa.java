@@ -8,6 +8,7 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleRibbon;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.RibbonComponent;
+import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
@@ -387,7 +388,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         super.tick();
 
         if (level.isClientSide()) {
-            if (deathTime < 20 && active) {
+            if (deathTime < 20 && active && !(getActiveAbilityType() == TELEPORT_ABILITY && getActiveAbility().getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE)) {
                 if (this.tickTimer() % 10 == 1) {
                     AdvancedParticleBase.spawnParticle(level, ParticleHandler.SUN.get(), getX(), getY(), getZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 10, true, false, new ParticleComponent[]{
                             new ParticleComponent.PinLocation(headPos),
@@ -964,8 +965,15 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         @Override
         protected void beginSection(AbilitySection section) {
             super.beginSection(section);
+            if (section.sectionType == AbilitySection.AbilitySectionType.STARTUP) {
+                playAnimation("teleport_start", false);
+            }
             if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
                 teleportStart = getUser().position();
+                playAnimation("teleport_loop", true);
+            }
+            if (section.sectionType == AbilitySection.AbilitySectionType.RECOVERY) {
+                playAnimation("teleport_end", false);
             }
         }
 

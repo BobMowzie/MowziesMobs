@@ -54,7 +54,9 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
 
         MowzieGeoBone mask = getMowzieBone("mask");
         MowzieGeoBone hips = getMowzieBone("hips");
-        mask.setScale(1.0f / (float) hips.getScale().x, 1.0f / (float) hips.getScale().y, 1.0f / (float) hips.getScale().z);
+        if (entity.getActiveAbilityType() != EntityBarakoa.TELEPORT_ABILITY) {
+            mask.setScale(1.0f / (float) hips.getScale().x, 1.0f / (float) hips.getScale().y, 1.0f / (float) hips.getScale().z);
+        }
 
         if (entity.isAlive() && entity.active) {
             MowzieGeoBone head = getMowzieBone("head");

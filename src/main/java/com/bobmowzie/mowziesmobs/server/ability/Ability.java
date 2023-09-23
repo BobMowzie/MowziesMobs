@@ -65,6 +65,7 @@ public class Ability<T extends LivingEntity> {
         ticksInSection = 0;
         currentSectionIndex = 0;
         isUsing = true;
+        beginSection(getSectionTrack()[0]);
     }
 
     public void playAnimation(String animationName, boolean shouldLoop) {
