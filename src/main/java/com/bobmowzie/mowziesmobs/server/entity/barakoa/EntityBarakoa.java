@@ -177,7 +177,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
     private int footstepCounter = 0;
 
     int maskTimingOffset = this.random.nextInt(0, 150);
-    protected AnimationController<MowzieGeckoEntity> maskController = new MowzieAnimationController<>(this, "mask_controller", 0, this::predicateMask, maskTimingOffset);
+    protected AnimationController<MowzieGeckoEntity> maskController = new MowzieAnimationController<>(this, "mask_controller", 1, this::predicateMask, maskTimingOffset);
     protected MowzieAnimationController<MowzieGeckoEntity> walkRunController = new MowzieAnimationController<>(this, "walk_run_controller", 4, EasingType.EaseInOutQuad, this::predicateWalkRun, 0);
 
     private float prevMaskRot = 0;
@@ -258,7 +258,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
 
     protected <E extends IAnimatable> PlayState predicateMask(AnimationEvent<E> event)
     {
-        if (isAlive() && active) {
+        if (isAlive() && active && getActiveAbilityType() != HEAL_ABILITY) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("mask_twitch", ILoopType.EDefaultLoopTypes.LOOP));
             return PlayState.CONTINUE;
         }
@@ -1049,10 +1049,20 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
 
         public BarakoaHealAbility(AbilityType<EntityBarakoa, ? extends Ability> abilityType, EntityBarakoa user) {
             super(abilityType, user, new AbilitySection[]{
-                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 22),
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 15),
                     new AbilitySection.AbilitySectionInfinite(AbilitySection.AbilitySectionType.ACTIVE),
                     new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 6)
             });
+        }
+
+        @Override
+        protected void beginSection(AbilitySection section) {
+            if (section.sectionType == AbilitySection.AbilitySectionType.STARTUP) {
+                playAnimation("heal_start", false);
+            }
+            else if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
+                playAnimation("heal_loop", true);
+            }
         }
 
         @Override
@@ -1080,7 +1090,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
 
         @Override
         protected boolean canContinueUsing() {
-            return super.canContinueUsing() && getUser().getTarget() != null;
+            return super.canContinueUsing();// && getUser().getTarget() != null;
         }
 
         public void spawnHealParticles() {
@@ -1089,15 +1099,15 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             }
             if (getUser().level.isClientSide && getUser().barakoPos != null) {
                 getUser().barakoPos[0] = getUser().getHealPos();
-                if (getUser().staffPos != null && getUser().staffPos[0] != null) {
-                    double dist = Math.max(getUser().barakoPos[0].distanceTo(getUser().staffPos[0]), 0.01);
+                if (getUser().headPos != null && getUser().headPos[0] != null) {
+                    double dist = Math.max(getUser().barakoPos[0].distanceTo(getUser().headPos[0]), 0.01);
                     double radius = 0.5f;
                     double yaw = rand.nextFloat() * 2 * Math.PI;
                     double pitch = rand.nextFloat() * 2 * Math.PI;
                     double ox = radius * Math.sin(yaw) * Math.sin(pitch);
                     double oy = radius * Math.cos(pitch);
                     double oz = radius * Math.cos(yaw) * Math.sin(pitch);
-                    if (getTicksInUse() % 5 == 0) AdvancedParticleBase.spawnParticle(getUser().level, ParticleHandler.ARROW_HEAD.get(), getUser().staffPos[0].x(), getUser().staffPos[0].y(), getUser().staffPos[0].z(), 0, 0, 0, false, 0, 0, 0, 0, 3.5F, 0.95, 0.9, 0.35, 0.75, 1, Math.min(2 * dist, 60), true, false, new ParticleComponent[]{
+                    if (getTicksInUse() % 5 == 0) AdvancedParticleBase.spawnParticle(getUser().level, ParticleHandler.ARROW_HEAD.get(), getUser().headPos[0].x(), getUser().headPos[0].y(), getUser().headPos[0].z(), 0, 0, 0, false, 0, 0, 0, 0, 3.5F, 0.95, 0.9, 0.35, 0.75, 1, Math.min(2 * dist, 60), true, false, new ParticleComponent[]{
                             new ParticleComponent.Attractor(getUser().barakoPos, 0.5f, 0.2f, ParticleComponent.Attractor.EnumAttractorBehavior.LINEAR),
                             new RibbonComponent(ParticleHandler.RIBBON_FLAT.get(), 10, 0, 0, 0, 0.12F, 0.95, 0.9, 0.35, 0.75, true, true, new ParticleComponent[]{
                                     new RibbonComponent.PropertyOverLength(RibbonComponent.PropertyOverLength.EnumRibbonProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(1, 0))
@@ -1108,13 +1118,13 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
                             new ParticleComponent.FaceMotion(),
                             new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, new ParticleComponent.KeyTrack(new float[]{0, 0, 1}, new float[]{0, 0.05f, 0.06f}), false),
                     });
-                    if (getTicksInUse() % 5 == 0) AdvancedParticleBase.spawnParticle(getUser().level, ParticleHandler.RING2.get(), getUser().staffPos[0].x(), getUser().staffPos[0].y(), getUser().staffPos[0].z(), 0, 0, 0, true, 0, 0, 0, 0, 1.5F, 1, 223 / 255f, 66 / 255f, 1, 1, 15, true, false, new ParticleComponent[]{
+                    if (getTicksInUse() % 5 == 0) AdvancedParticleBase.spawnParticle(getUser().level, ParticleHandler.RING2.get(), getUser().headPos[0].x(), getUser().headPos[0].y(), getUser().headPos[0].z(), 0, 0, 0, true, 0, 0, 0, 0, 1.5F, 1, 223 / 255f, 66 / 255f, 1, 1, 15, true, false, new ParticleComponent[]{
                             new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                             new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(1f, 10f), false)
                     });
                     int spawnFreq = 5;
-                    if (getTicksInUse() % spawnFreq == 0) ParticleRibbon.spawnRibbon(getUser().level, ParticleHandler.RIBBON_SQUIGGLE.get(), (int)(0.5 * dist), getUser().staffPos[0].x(), getUser().staffPos[0].y(), getUser().staffPos[0].z(), 0, 0, 0, true, 0, 0, 0, 0.5F, 0.95, 0.9, 0.35, 0.75, 1, spawnFreq, true, new ParticleComponent[]{
-                            new RibbonComponent.BeamPinning(getUser().staffPos, getUser().barakoPos),
+                    if (getTicksInUse() % spawnFreq == 0) ParticleRibbon.spawnRibbon(getUser().level, ParticleHandler.RIBBON_SQUIGGLE.get(), (int)(0.5 * dist), getUser().headPos[0].x(), getUser().headPos[0].y(), getUser().headPos[0].z(), 0, 0, 0, true, 0, 0, 0, 0.5F, 0.95, 0.9, 0.35, 0.75, 1, spawnFreq, true, new ParticleComponent[]{
+                            new RibbonComponent.BeamPinning(getUser().headPos, getUser().barakoPos),
                             new RibbonComponent.PanTexture(0, 1)
                     });
                 }

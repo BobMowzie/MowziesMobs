@@ -33,7 +33,6 @@ import java.util.Optional;
 
 public class StrixArmorLayer extends GeoLayerRenderer<EntityBarakoa> {
     private final HumanoidModel defaultBipedModel;
-    private final String boneName = "maskTwitcher";
 
     protected Matrix4f dispatchedMat = new Matrix4f();
     protected Matrix4f renderEarlyMat = new Matrix4f();
@@ -48,9 +47,17 @@ public class StrixArmorLayer extends GeoLayerRenderer<EntityBarakoa> {
     public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, EntityBarakoa entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         this.entity = entityLivingBaseIn;
         GeoModel model = this.entityRenderer.getGeoModelProvider().getModel(this.entityRenderer.getGeoModelProvider().getModelLocation(entity));
+        String boneName = "maskTwitcher";
+        String handBoneName = "maskHand";
         Optional<GeoBone> bone = model.getBone(boneName);
-        if (bone.isPresent()) {
+        if (bone.isPresent() && !bone.get().isHidden()) {
             Matrix4f matrix4f = bone.get().getModelSpaceXform();
+            poseStack.mulPoseMatrix(matrix4f);
+            renderArmor(entityLivingBaseIn, bufferIn, poseStack, packedLightIn);
+        }
+        Optional<GeoBone> handBone = model.getBone(handBoneName);
+        if (handBone.isPresent() && !handBone.get().isHidden()) {
+            Matrix4f matrix4f = handBone.get().getModelSpaceXform();
             poseStack.mulPoseMatrix(matrix4f);
             renderArmor(entityLivingBaseIn, bufferIn, poseStack, packedLightIn);
         }

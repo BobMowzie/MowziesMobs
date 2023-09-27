@@ -70,6 +70,18 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
             neck.addRotationY(headYaw * ((float) Math.PI / 180F) / 2f);
         }
 
+        MowzieGeoBone maskHand = getMowzieBone("maskHand");
+        MowzieGeoBone maskTwitcher = getMowzieBone("maskTwitcher");
+        float maskPlaceSwitch = getControllerValue("maskPlacementSwitchController");
+        if (maskPlaceSwitch == 1.0) {
+            maskTwitcher.isHidden = true;
+            maskHand.isHidden = false;
+        }
+        else {
+            maskTwitcher.isHidden = false;
+            maskHand.isHidden = true;
+        }
+
         float animSpeed = 1.4f;
         float limbSwing = customPredicate.getLimbSwing();
         float limbSwingAmount = customPredicate.getLimbSwingAmount();
