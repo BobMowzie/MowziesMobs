@@ -13,6 +13,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
@@ -168,6 +169,10 @@ public class Ability<T extends LivingEntity> {
 
     public T getUser() {
         return user;
+    }
+
+    public Level getLevel() {
+        return user.getLevel();
     }
 
     public int getTicksInUse() {

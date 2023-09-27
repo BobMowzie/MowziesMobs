@@ -67,7 +67,7 @@ public class RenderBarakoa extends MowzieGeoEntityRenderer<EntityBarakoa> {
     @Override
     public boolean shouldRender(EntityBarakoa entity, Frustum p_114492_, double p_114493_, double p_114494_, double p_114495_) {
         boolean result = super.shouldRender(entity, p_114492_, p_114493_, p_114494_, p_114495_);
-        if (!result) entity.headPos[0] = null;
+        if (!result) entity.headPos[0] = entity.position().add(0, entity.getEyeHeight(), 0);
         return result;
     }
 }

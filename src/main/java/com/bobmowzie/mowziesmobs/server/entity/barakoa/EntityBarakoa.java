@@ -388,7 +388,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         super.tick();
 
         if (level.isClientSide()) {
-            if (deathTime < 20 && active && !(getActiveAbilityType() == TELEPORT_ABILITY && getActiveAbility().getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE)) {
+            if (deathTime < 20 && active && !(getActiveAbilityType() == TELEPORT_ABILITY && getActiveAbility().getCurrentSection().sectionType != AbilitySection.AbilitySectionType.RECOVERY)) {
                 if (this.tickTimer() % 10 == 1) {
                     AdvancedParticleBase.spawnParticle(level, ParticleHandler.SUN.get(), getX(), getY(), getZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 10, true, false, new ParticleComponent[]{
                             new ParticleComponent.PinLocation(headPos),
@@ -1049,9 +1049,9 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
 
         public BarakoaHealAbility(AbilityType<EntityBarakoa, ? extends Ability> abilityType, EntityBarakoa user) {
             super(abilityType, user, new AbilitySection[]{
-                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 15),
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP,  6),
                     new AbilitySection.AbilitySectionInfinite(AbilitySection.AbilitySectionType.ACTIVE),
-                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 6)
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 16)
             });
         }
 
@@ -1061,7 +1061,9 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
                 playAnimation("heal_start", false);
             }
             else if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
-                playAnimation("heal_loop", true);
+            }
+            else {
+                playAnimation("heal_end", false);
             }
         }
 
@@ -1070,27 +1072,31 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             super.tickUsing();
             if (getUser().getTarget() != null) {
                 getUser().getLookControl().setLookAt(getUser().getTarget(), getUser().getMaxHeadYRot(), getUser().getMaxHeadXRot());
+                getUser().lookAt(getUser().getTarget(), getUser().getMaxHeadYRot(), getUser().getMaxHeadXRot());
             }
-            if (getUser().getAnimationTick() == 19) {
+            if (getTicksInUse() == 6) {
                 getUser().playSound(MMSounds.ENTITY_BARAKOA_HEAL_START.get(rand.nextInt(3)).get(), 4, 1);
                 MowziesMobs.PROXY.playSunblockSound(getUser());
             }
-            if (getTicksInUse() >= 19) {
+
+            if (getTicksInUse() >= 6) {
                 EffectHandler.addOrCombineEffect(getUser(), MobEffects.GLOWING, 5, 0, false, false);
             }
 
-            if (getUser().level.isClientSide && getTicksInUse() == 22 && getUser().staffPos != null && getUser().staffPos.length >= 1)
-                getUser().staffPos[0] = getUser().position().add(0, getUser().getEyeHeight(), 0);
+            if (getUser().level.isClientSide && getTicksInUse() == 5 && getUser().headPos != null && getUser().headPos.length >= 1)
+                getUser().headPos[0] = getUser().position().add(0, getUser().getEyeHeight(), 0);
+
+            if (getTicksInUse() == 12) {
+                playAnimation("heal_loop", true);
+            }
 
             if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
                 spawnHealParticles();
                 getUser().sunBlockTarget();
+                if (!getLevel().isClientSide() && getUser().getTarget() == null) {
+                    AbilityHandler.INSTANCE.sendJumpToSectionMessage(getUser(), this.getAbilityType(), 2);
+                }
             }
-        }
-
-        @Override
-        protected boolean canContinueUsing() {
-            return super.canContinueUsing();// && getUser().getTarget() != null;
         }
 
         public void spawnHealParticles() {

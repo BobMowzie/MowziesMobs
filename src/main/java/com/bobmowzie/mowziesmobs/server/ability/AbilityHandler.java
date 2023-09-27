@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.server.ability.abilities.player.geomancy.*;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.message.MessageInterruptAbility;
+import com.bobmowzie.mowziesmobs.server.message.MessageJumpToAbilitySection;
 import com.bobmowzie.mowziesmobs.server.message.MessagePlayerUseAbility;
 import com.bobmowzie.mowziesmobs.server.message.MessageUseAbility;
 import net.minecraft.client.player.LocalPlayer;
@@ -105,6 +106,21 @@ public enum AbilityHandler {
         AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability(entity);
         if (abilityCapability != null) {
             MowziesMobs.NETWORK.sendToServer(new MessagePlayerUseAbility(ArrayUtils.indexOf(abilityCapability.getAbilityTypesOnEntity(entity), ability)));
+        }
+    }
+
+
+    public <T extends LivingEntity> void sendJumpToSectionMessage(T entity, AbilityType<?, ?> abilityType, int sectionIndex) {
+        if (entity.level.isClientSide) {
+            return;
+        }
+        AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability(entity);
+        if (abilityCapability != null) {
+            Ability instance = abilityCapability.getAbilityMap().get(abilityType);
+            if (instance.isUsing()) {
+                instance.jumpToSection(sectionIndex);
+                MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new MessageJumpToAbilitySection(entity.getId(), ArrayUtils.indexOf(abilityCapability.getAbilityTypesOnEntity(entity), abilityType), sectionIndex));
+            }
         }
     }
 }

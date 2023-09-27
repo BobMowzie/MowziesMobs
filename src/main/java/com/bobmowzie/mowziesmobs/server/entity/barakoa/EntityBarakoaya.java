@@ -102,7 +102,7 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
         if (active && teleportAttempts > 3 && (getTarget() == null || !getTarget().isAlive())) hasTriedOrSucceededTeleport = true;
 //        if (getActiveAbilityType() == HEAL_ABILITY && !canHeal(getTarget())) AbilityHandler.INSTANCE.sendInterruptAbilityMessage(this, HEAL_ABILITY);
 
-        if (getActiveAbility() == null) AbilityHandler.INSTANCE.sendAbilityMessage(this, HEAL_ABILITY);
+//        if (getActiveAbility() == null) AbilityHandler.INSTANCE.sendAbilityMessage(this, HEAL_ABILITY);
     }
 
     @Override
@@ -247,12 +247,6 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
         public void start() {
             super.start();
             AbilityHandler.INSTANCE.sendAbilityMessage(entity, EntityBarakoa.HEAL_ABILITY);
-        }
-
-        @Override
-        public void stop() {
-            super.stop();
-//            if (entity.getActiveAbilityType() == HEAL_LOOP_ABILITY || entity.getActiveAbilityType() == HEAL_START_ABILITY) AbilityHandler.INSTANCE.sendAbilityMessage(entity, EntityBarakoa.HEAL_STOP_ABILITY);
         }
     }
 
