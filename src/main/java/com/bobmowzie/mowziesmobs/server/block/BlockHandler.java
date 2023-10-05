@@ -20,6 +20,7 @@ public final class BlockHandler {
     public static final RegistryObject<Block> GONG_PART = REG.register("gong_part", () -> new GongBlock.GongPartBlock(BlockBehaviour.Properties.of(Material.METAL, MaterialColor.GOLD).requiresCorrectToolForDrops().strength(3.0F).sound(SoundType.ANVIL)));
     public static final RegistryObject<RakedSandBlock> RAKED_SAND = REG.register("raked_sand", () -> new RakedSandBlock(14406560, BlockBehaviour.Properties.of(Material.SAND, MaterialColor.SAND).strength(0.5F).sound(SoundType.SAND), Blocks.SAND.defaultBlockState()));
     public static final RegistryObject<RakedSandBlock> RED_RAKED_SAND = REG.register("red_raked_sand", () -> new RakedSandBlock(11098145, BlockBehaviour.Properties.of(Material.SAND, MaterialColor.COLOR_ORANGE).strength(0.5F).sound(SoundType.SAND), Blocks.RED_SAND.defaultBlockState()));
+    public static final RegistryObject<Block> CLAWED_LOG = REG.register("clawed_log", () -> new Block(Block.Properties.of(Material.WOOD, MaterialColor.DIRT).strength(2.0F).sound(SoundType.WOOD)));
     //public static final RegistryObject<BlockGrottol> GROTTOL = REG.register("grottol", () -> new BlockGrottol(Block.Properties.of(Material.STONE).noDrops()));
 
     public static void init() {
@@ -27,5 +28,6 @@ public final class BlockHandler {
         fireblock.setFlammable(THATCH.get(), 60, 20);
         fireblock.setFlammable(PAINTED_ACACIA.get(), 5, 20);
         fireblock.setFlammable(PAINTED_ACACIA_SLAB.get(), 5, 20);
+        fireblock.setFlammable(CLAWED_LOG.get(), 5, 5);
     }
 }

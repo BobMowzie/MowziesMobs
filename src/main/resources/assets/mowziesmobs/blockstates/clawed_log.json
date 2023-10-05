@@ -1,0 +1,8 @@
+{
+	"variants": {
+		"": [
+			{ "model": "mowziesmobs:block/clawed_log_1", "weight": 2 },
+			{ "model": "mowziesmobs:block/clawed_log_2", "weight": 1 }
+		]
+	}
+}

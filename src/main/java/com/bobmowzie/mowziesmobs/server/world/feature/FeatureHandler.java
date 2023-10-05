@@ -27,8 +27,6 @@ public class FeatureHandler {
     public static StructurePieceType BARAKOA_VILLAGE_PIECE;
     public static StructurePieceType BARAKOA_VILLAGE_HOUSE;
     public static StructurePieceType BARAKOA_VILLAGE_FIREPIT;
-    public static StructurePieceType BARAKOA_VILLAGE_STAKE;
-    public static StructurePieceType BARAKOA_VILLAGE_ALTAR;
 
     public static RegistryObject<StructureFeature<NoneFeatureConfiguration>> FROSTMAW = registerStructure("frostmaw_spawn", () -> (new FrostmawStructure(NoneFeatureConfiguration.CODEC)));
     public static StructurePieceType FROSTMAW_PIECE;
@@ -42,10 +40,8 @@ public class FeatureHandler {
     public static void registerStructurePieces() {
         WROUGHTNAUT_CHAMBER_PIECE = Registry.register(Registry.STRUCTURE_PIECE, new ResourceLocation(MowziesMobs.MODID, "wrought_chamber_template"), WroughtnautChamberPieces.Piece::new);
         BARAKOA_VILLAGE_PIECE = Registry.register(Registry.STRUCTURE_PIECE, new ResourceLocation(MowziesMobs.MODID, "barakoa_village_template"), BarakoaVillagePieces.Piece::new);
-        BARAKOA_VILLAGE_HOUSE = Registry.register(Registry.STRUCTURE_PIECE, new ResourceLocation(MowziesMobs.MODID, "barakoa_village_house"), BarakoaVillagePieces.HousePiece::new);
+        BARAKOA_VILLAGE_HOUSE = Registry.register(Registry.STRUCTURE_PIECE, new ResourceLocation(MowziesMobs.MODID, "barakoa_village_house"), BarakoaVillagePieces.PlatformPiece::new);
         BARAKOA_VILLAGE_FIREPIT = Registry.register(Registry.STRUCTURE_PIECE, new ResourceLocation(MowziesMobs.MODID, "barakoa_village_firepit"), BarakoaVillagePieces.FirepitPiece::new);
-        BARAKOA_VILLAGE_STAKE = Registry.register(Registry.STRUCTURE_PIECE, new ResourceLocation(MowziesMobs.MODID, "barakoa_village_stake"), BarakoaVillagePieces.StakePiece::new);
-        BARAKOA_VILLAGE_ALTAR = Registry.register(Registry.STRUCTURE_PIECE, new ResourceLocation(MowziesMobs.MODID, "barakoa_village_altar"), BarakoaVillagePieces.AltarPiece::new);
         FROSTMAW_PIECE = Registry.register(Registry.STRUCTURE_PIECE, new ResourceLocation(MowziesMobs.MODID, "frostmaw_template"), FrostmawPieces.FrostmawPiece::new);
     }
 }

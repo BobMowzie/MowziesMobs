@@ -43,17 +43,42 @@ import java.util.*;
 public class BarakoaVillagePieces {
     private static final Set<Block> BLOCKS_NEEDING_POSTPROCESSING = ImmutableSet.<Block>builder().add(Blocks.NETHER_BRICK_FENCE).add(Blocks.TORCH).add(Blocks.WALL_TORCH).add(Blocks.OAK_FENCE).add(Blocks.SPRUCE_FENCE).add(Blocks.DARK_OAK_FENCE).add(Blocks.ACACIA_FENCE).add(Blocks.BIRCH_FENCE).add(Blocks.JUNGLE_FENCE).add(Blocks.LADDER).add(Blocks.IRON_BARS).add(Blocks.SKELETON_SKULL).build();
 
-    public static final ResourceLocation HOUSE = new ResourceLocation(MowziesMobs.MODID, "barakoa_house");
-    public static final ResourceLocation ROOF = new ResourceLocation(MowziesMobs.MODID, "barakoa_house_roof");
-    public static final ResourceLocation HOUSE_SIDE = new ResourceLocation(MowziesMobs.MODID, "barakoa_house_side");
-    public static final ResourceLocation THRONE = new ResourceLocation(MowziesMobs.MODID, "barako_throne");
+    public static final ResourceLocation PLATFORM_1 = new ResourceLocation(MowziesMobs.MODID, "barakoa/barakoa_platform_1");
+    public static final ResourceLocation PLATFORM_2 = new ResourceLocation(MowziesMobs.MODID, "barakoa/barakoa_platform_2");
+    public static final ResourceLocation FIREPIT = new ResourceLocation(MowziesMobs.MODID, "barakoa/barakoa_firepit");
+    public static final ResourceLocation TREE_1 = new ResourceLocation(MowziesMobs.MODID, "barakoa/barakoa_tree_1");
+    public static final ResourceLocation TREE_2 = new ResourceLocation(MowziesMobs.MODID, "barakoa/barakoa_tree_2");
+    public static final ResourceLocation TREE_3 = new ResourceLocation(MowziesMobs.MODID, "barakoa/barakoa_tree_3");
+    public static final ResourceLocation[] TREES = new ResourceLocation[] {
+            TREE_1,
+            TREE_2,
+            TREE_3
+    };
+    public static final ResourceLocation SPIKE_1 = new ResourceLocation(MowziesMobs.MODID, "barakoa/barakoa_spike_1");
+    public static final ResourceLocation SPIKE_2 = new ResourceLocation(MowziesMobs.MODID, "barakoa/barakoa_spike_2");
+    public static final ResourceLocation SPIKE_3 = new ResourceLocation(MowziesMobs.MODID, "barakoa/barakoa_spike_3");
+    public static final ResourceLocation SPIKE_4 = new ResourceLocation(MowziesMobs.MODID, "barakoa/barakoa_spike_4");
+    public static final ResourceLocation[] SPIKES = new ResourceLocation[] {
+            SPIKE_1,
+            SPIKE_2,
+            SPIKE_3,
+            SPIKE_4
+    };
+    public static final ResourceLocation THRONE = new ResourceLocation(MowziesMobs.MODID, "barakoa/barako_throne");
 
-    private static final Map<ResourceLocation, BlockPos> OFFSET = ImmutableMap.of(
-        HOUSE, new BlockPos(-3, 1, -3),
-        ROOF, new BlockPos(-3, 5, -3),
-        HOUSE_SIDE, new BlockPos(2, 1, -2),
-        THRONE, new BlockPos(-3, 0, 0)
-    );
+    private static final Map<ResourceLocation, BlockPos> OFFSET = ImmutableMap.<ResourceLocation, BlockPos>builder()
+            .put(PLATFORM_1, new BlockPos(-3, 0, -3))
+            .put(PLATFORM_2, new BlockPos(-3, 0, -3))
+            .put(FIREPIT, new BlockPos(-3, 0, -3))
+            .put(TREE_1, new BlockPos(-3, 0, -3))
+            .put(TREE_2, new BlockPos(-3, 0, -3))
+            .put(TREE_3, new BlockPos(-3, 0, -3))
+            .put(SPIKE_1, new BlockPos(0, 0, 0))
+            .put(SPIKE_2, new BlockPos(0, 0, 0))
+            .put(SPIKE_3, new BlockPos(0, 0, 0))
+            .put(SPIKE_4, new BlockPos(0, 0, 0))
+            .put(THRONE, new BlockPos(-9, -1, 0))
+            .build();
 
     public static StructurePiece addPiece(ResourceLocation resourceLocation, StructureManager manager, BlockPos pos, Rotation rot, StructurePieceAccessor pieces, WorldgenRandom rand) {
         StructurePiece newPiece = new BarakoaVillagePieces.Piece(manager, resourceLocation, rot, pos);
@@ -69,8 +94,8 @@ public class BarakoaVillagePieces {
         return newPiece;
     }
 
-    public static StructurePiece addHouse(StructureManager manager, BlockPos pos, Rotation rot, StructurePiecesBuilder builder, WorldgenRandom rand) {
-        BarakoaVillagePieces.HousePiece newPiece = new BarakoaVillagePieces.HousePiece(manager, HOUSE, rot, pos);
+    public static StructurePiece addPlatform(StructureManager manager, BlockPos pos, Rotation rot, StructurePiecesBuilder builder, WorldgenRandom rand) {
+        PlatformPiece newPiece = new PlatformPiece(manager, rand.nextInt(2) == 0 ? PLATFORM_1 : PLATFORM_2, rot, pos);
         if (builder.findCollisionPiece(newPiece.getBoundingBox()) != null) return null;
         builder.addPiece(newPiece);
         newPiece.tableCorner = rand.nextInt(6);
@@ -92,10 +117,12 @@ public class BarakoaVillagePieces {
         public Piece(StructurePieceType pieceType, StructureManager manager, ResourceLocation resourceLocationIn, Rotation rotation, BlockPos pos) {
             super(pieceType, 0, manager, resourceLocationIn, resourceLocationIn.toString(), makeSettings(rotation, resourceLocationIn), makePosition(resourceLocationIn, pos, rotation));
             this.resourceLocation = resourceLocationIn;
+//            this.boundingBox = this.getBoundingBox().moved(0, 1, 0);
         }
 
         public Piece(StructurePieceType pieceType, StructurePieceSerializationContext context, CompoundTag tagCompound) {
             super(pieceType, tagCompound, context.structureManager(), (resourceLocation) -> makeSettings(Rotation.valueOf(tagCompound.getString("Rot")), resourceLocation));
+            this.boundingBox = this.getBoundingBox().moved(0, 1, 0);
         }
 
         public Piece(StructureManager manager, ResourceLocation resourceLocationIn, Rotation rotation, BlockPos pos) {
@@ -206,7 +233,7 @@ public class BarakoaVillagePieces {
         }
     }
 
-    public static class HousePiece extends Piece {
+    public static class PlatformPiece extends Piece {
         private int tableCorner;
         private int tableContent;
         private int bedCorner;
@@ -214,11 +241,11 @@ public class BarakoaVillagePieces {
         private int chestCorner;
         private int chestDirection;
 
-        public HousePiece(StructureManager manager, ResourceLocation resourceLocationIn, Rotation rotation, BlockPos pos) {
+        public PlatformPiece(StructureManager manager, ResourceLocation resourceLocationIn, Rotation rotation, BlockPos pos) {
             super(FeatureHandler.BARAKOA_VILLAGE_HOUSE, manager, resourceLocationIn, rotation, pos);
         }
 
-        public HousePiece(StructurePieceSerializationContext context, CompoundTag tagCompound) {
+        public PlatformPiece(StructurePieceSerializationContext context, CompoundTag tagCompound) {
             super(FeatureHandler.BARAKOA_VILLAGE_HOUSE, context, tagCompound);
             tableCorner = tagCompound.getInt("TableCorner");
             tableContent = tagCompound.getInt("TableContent");
@@ -360,39 +387,27 @@ public class BarakoaVillagePieces {
         }
     }
 
-    public static class FirepitPiece extends NonTemplatePiece {
+    public static class FirepitPiece extends Piece {
 
-        public FirepitPiece(Random random, int x, int z) {
-            super(FeatureHandler.BARAKOA_VILLAGE_FIREPIT, x, 64, z, 9, 3, 9, Direction.NORTH);
+        public FirepitPiece(StructureManager manager, Rotation rotation, BlockPos pos) {
+            super(FeatureHandler.BARAKOA_VILLAGE_FIREPIT, manager, FIREPIT, rotation, pos);
         }
 
         public FirepitPiece(StructurePieceSerializationContext context, CompoundTag tagCompound) {
-            super(FeatureHandler.BARAKOA_VILLAGE_FIREPIT, tagCompound);
+            super(FeatureHandler.BARAKOA_VILLAGE_FIREPIT, context, tagCompound);
+        }
+
+        public BlockPos findGround(LevelAccessor worldIn, int x, int z) {
+            int i = this.getWorldX(x, z);
+            int k = this.getWorldZ(x, z);
+            int j = worldIn.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, i, k);
+            return new BlockPos(i, j, k);
         }
 
         @Override
         public void postProcess(WorldGenLevel worldIn, StructureFeatureManager structureManager, ChunkGenerator chunkGenerator, Random randomIn, BoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+            super.postProcess(worldIn, structureManager, chunkGenerator, randomIn, p_230383_5_, p_230383_6_, p_230383_7_);
             BlockPos centerPos = findGround(worldIn, 4, 4);
-            worldIn.setBlock(centerPos, Blocks.CAMPFIRE.defaultBlockState(), 2);
-            fillAirLiquidBelowHeightmap(worldIn, Blocks.ACACIA_LOG.defaultBlockState(), 4, 4);
-            Vec2[] positions = new Vec2[] {
-                    new Vec2(0, 3),
-                    new Vec2(0, 5),
-                    new Vec2(8, 3),
-                    new Vec2(8, 5),
-                    new Vec2(3, 0),
-                    new Vec2(5, 0),
-                    new Vec2(3, 8),
-                    new Vec2(5, 8),
-                    new Vec2(1, 1),
-                    new Vec2(1, 7),
-                    new Vec2(7, 1),
-                    new Vec2(7, 7),
-            };
-            for (Vec2 pos : positions) {
-                worldIn.setBlock(findGround(worldIn, (int) pos.x, (int) pos.y), Blocks.ACACIA_LOG.defaultBlockState(), 2);
-                fillAirLiquidBelowHeightmap(worldIn, Blocks.ACACIA_LOG.defaultBlockState(), (int) pos.x, (int) pos.y);
-            }
 
             // Spawn Barakoa
             int numBarakoa = randomIn.nextInt(5) + 5;
@@ -415,115 +430,6 @@ public class BarakoaVillagePieces {
                     }
                 }
             }
-        }
-    }
-
-    public static class StakePiece extends NonTemplatePiece {
-        private final boolean skull;
-        private final int skullDir;
-
-        public StakePiece(Random random, int x, int y, int z) {
-            super(FeatureHandler.BARAKOA_VILLAGE_STAKE, x, y, z, 1, 3, 1, Direction.NORTH);
-            skull = random.nextBoolean();
-            skullDir = random.nextInt(16);
-        }
-
-        public StakePiece(StructurePieceSerializationContext context, CompoundTag tagCompound) {
-            super(FeatureHandler.BARAKOA_VILLAGE_STAKE, tagCompound);
-            skull = tagCompound.getBoolean("Skull");
-            skullDir = tagCompound.getInt("SkullDir");
-        }
-
-        /**
-         * (abstract) Helper method to read subclass data from NBT
-         */
-        @Override
-        protected void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag tagCompound) {
-            super.addAdditionalSaveData(context, tagCompound);
-            tagCompound.putBoolean("Skull", skull);
-            tagCompound.putInt("SkullDir", skullDir);
-        }
-
-        @Override
-        public void postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, BoundingBox mutableBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
-            placeBlock(worldIn, Blocks.OAK_FENCE.defaultBlockState(), 0, 1, 0, mutableBoundingBoxIn);
-            if (skull) {
-                placeBlock(worldIn, Blocks.SKELETON_SKULL.defaultBlockState().setValue(BlockStateProperties.ROTATION_16, skullDir), 0, 2, 0, mutableBoundingBoxIn);
-            }
-            else {
-                placeBlock(worldIn, Blocks.TORCH.defaultBlockState(), 0, 2, 0, mutableBoundingBoxIn);
-            }
-            fillAirLiquidBelowHeightmap(worldIn, Blocks.OAK_FENCE.defaultBlockState(), 0, 0);
-        }
-    }
-
-    public static class AltarPiece extends NonTemplatePiece {
-        public AltarPiece(int x, int y, int z, Direction direction) {
-            super(FeatureHandler.BARAKOA_VILLAGE_ALTAR, x - 2, y - 1, z - 2, 5, 4, 5, direction);
-        }
-
-        public AltarPiece(StructurePieceSerializationContext context, CompoundTag tagCompound) {
-            super(FeatureHandler.BARAKOA_VILLAGE_STAKE, tagCompound);
-        }
-
-        @Override
-        public void postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, BoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
-            Vec2[] thatchPositions = new Vec2[] {
-                    new Vec2(0, 1),
-                    new Vec2(0, 2),
-                    new Vec2(0, 3),
-                    new Vec2(1, 0),
-                    new Vec2(1, 1),
-                    new Vec2(1, 2),
-                    new Vec2(1, 3),
-                    new Vec2(1, 4),
-                    new Vec2(2, 0),
-                    new Vec2(2, 1),
-                    new Vec2(2, 2),
-                    new Vec2(2, 3),
-                    new Vec2(2, 4),
-                    new Vec2(3, 0),
-                    new Vec2(3, 1),
-                    new Vec2(3, 2),
-                    new Vec2(3, 3),
-                    new Vec2(3, 4),
-                    new Vec2(4, 1),
-                    new Vec2(4, 2),
-                    new Vec2(4, 3),
-            };
-            for (Vec2 pos : thatchPositions) {
-                BlockPos placePos = findGround(worldIn, (int) pos.x, (int) pos.y).below();
-                worldIn.setBlock(placePos, BlockHandler.THATCH.get().defaultBlockState(), 2);
-            }
-            Vec2[] groundSkullPositions = new Vec2[] {
-                    new Vec2(0, 1),
-                    new Vec2(0, 3),
-                    new Vec2(2, 4),
-                    new Vec2(3, 3),
-                    new Vec2(4, 2),
-            };
-            for (Vec2 pos : groundSkullPositions) {
-                setBlockState(worldIn, findGround(worldIn, (int) pos.x, (int) pos.y), Blocks.SKELETON_SKULL.defaultBlockState().setValue(BlockStateProperties.ROTATION_16, randomIn.nextInt(16)));
-            }
-            Vec2[] fenceSkullPositions = new Vec2[] {
-                    new Vec2(0, 2),
-                    new Vec2(1, 4),
-                    new Vec2(3, 4),
-                    new Vec2(4, 1),
-                    new Vec2(4, 3),
-            };
-            for (Vec2 pos : fenceSkullPositions) {
-                BlockPos groundPos = findGround(worldIn, (int) pos.x, (int) pos.y);
-                setBlockState(worldIn, groundPos, Blocks.OAK_FENCE.defaultBlockState());
-                setBlockState(worldIn, groundPos.above(), Blocks.SKELETON_SKULL.defaultBlockState().setValue(BlockStateProperties.ROTATION_16, randomIn.nextInt(16)));
-            }
-        }
-
-        public BlockPos findGround(LevelAccessor worldIn, int x, int z) {
-            int i = this.getWorldX(x, z);
-            int k = this.getWorldZ(x, z);
-            int j = worldIn.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, i, k);
-            return new BlockPos(i, j, k);
         }
     }
 }

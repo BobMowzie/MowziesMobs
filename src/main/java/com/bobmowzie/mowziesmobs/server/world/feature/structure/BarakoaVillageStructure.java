@@ -1,11 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.tag.TagHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.ConfiguredFeatureHandler;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -16,8 +16,6 @@ import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
-
-import java.util.Arrays;
 
 // Edited from Telepathic Grunt's base code
 
@@ -43,7 +41,8 @@ public class BarakoaVillageStructure extends MowzieStructure<NoneFeatureConfigur
         if (oceanFloorY < surfaceY) return;
 
         //Firepit
-        builder.addPiece(new BarakoaVillagePieces.FirepitPiece(random, x - 4, z - 4));
+        BlockPos firepitPos = posToSurface(generator, centerPos, heightLimitView);
+        builder.addPiece(new BarakoaVillagePieces.FirepitPiece(pieceGenerator.structureManager(), Rotation.values()[random.nextInt(Rotation.values().length)], firepitPos));
 
         //Throne
         BlockPos offset = new BlockPos(0, 0, 9);
@@ -64,25 +63,6 @@ public class BarakoaVillageStructure extends MowzieStructure<NoneFeatureConfigur
             }
         }
 
-        //Altar
-        int numAltars = random.nextInt(3) + 2;
-        for (int i = 1; i <= numAltars; i++) {
-            int distance;
-            int angle;
-            for (int j = 1; j <= 10; j++) {
-                distance = random.nextInt(15) + 5;
-                angle = random.nextInt(360);
-                BlockPos altarPos = new BlockPos(centerPos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.getZ() + distance * Math.cos(Math.toRadians(angle)));
-                altarPos = posToSurface(generator, altarPos, heightLimitView);
-                StructurePiece altar = new BarakoaVillagePieces.AltarPiece(altarPos.getX(), altarPos.getY(), altarPos.getZ(), Direction.NORTH);
-                if (builder.findCollisionPiece(altar.getBoundingBox()) != null) {
-                    continue;
-                }
-                builder.addPiece(altar);
-                break;
-            }
-        }
-
         //Stakes
         int numStakes = random.nextInt(12) + 5;
         for (int i = 1; i <= numStakes; i++) {
@@ -93,34 +73,19 @@ public class BarakoaVillageStructure extends MowzieStructure<NoneFeatureConfigur
                 angle = random.nextInt(360);
                 BlockPos stakePos = new BlockPos(centerPos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.getZ() + distance * Math.cos(Math.toRadians(angle)));
                 stakePos = posToSurface(generator, stakePos, heightLimitView);
-                StructurePiece stake = new BarakoaVillagePieces.StakePiece(random, stakePos.getX(), stakePos.getY(), stakePos.getZ());
-                if (builder.findCollisionPiece(stake.getBoundingBox()) != null) {
-                    continue;
+                ResourceLocation whichSpike = BarakoaVillagePieces.SPIKES[random.nextInt(BarakoaVillagePieces.SPIKES.length)];
+                StructurePiece piece = BarakoaVillagePieces.addPiece(whichSpike, pieceGenerator.structureManager(), stakePos, Rotation.values()[random.nextInt(Rotation.values().length)], builder, pieceGenerator.random());
+                if (piece != null) {
+                    break;
                 }
-                builder.addPiece(stake);
-                break;
             }
         }
     }
 
     private static boolean startHouse(ChunkGenerator generator, StructureManager templateManagerIn, StructurePiecesBuilder builder, BlockPos housePos, WorldgenRandom random) {
         Rotation rotation = Rotation.values()[random.nextInt(Rotation.values().length)];
-        StructurePiece newHouse = BarakoaVillagePieces.addHouse(templateManagerIn, housePos, rotation, builder, random);
-        if (newHouse != null) {
-            Rotation roofRotation = Rotation.values()[random.nextInt(Rotation.values().length)];
-            StructurePiece roof = BarakoaVillagePieces.addPiece(BarakoaVillagePieces.ROOF, templateManagerIn, housePos, roofRotation, builder, random);
-
-            int sideHouseDir = random.nextInt(6) + 1;
-            if (sideHouseDir <= 2) {
-                Rotation sideHouseRotation = sideHouseDir == 1 ? rotation.getRotated(Rotation.CLOCKWISE_90) : rotation.getRotated(Rotation.COUNTERCLOCKWISE_90);
-                if (BarakoaVillagePieces.addPieceCheckBounds(BarakoaVillagePieces.HOUSE_SIDE, templateManagerIn, housePos, sideHouseRotation, builder, random, Arrays.asList(newHouse, roof)) == null) {
-                    sideHouseRotation = sideHouseRotation.getRotated(Rotation.CLOCKWISE_180);
-                    BarakoaVillagePieces.addPieceCheckBounds(BarakoaVillagePieces.HOUSE_SIDE, templateManagerIn, housePos, sideHouseRotation, builder, random, Arrays.asList(newHouse, roof));
-                }
-            }
-            return true;
-        }
-        return false;
+        StructurePiece newHouse = BarakoaVillagePieces.addPlatform(templateManagerIn, housePos, rotation, builder, random);
+        return newHouse != null;
     }
 
     private static BlockPos posToSurface(ChunkGenerator generator, BlockPos pos, LevelHeightAccessor heightAccessor) {
