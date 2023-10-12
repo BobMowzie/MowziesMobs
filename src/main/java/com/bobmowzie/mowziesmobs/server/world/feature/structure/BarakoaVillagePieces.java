@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaVillager;
@@ -12,8 +11,10 @@ import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.MobSpawnType;
@@ -35,9 +36,10 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilde
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockIgnoreProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.phys.Vec2;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public class BarakoaVillagePieces {
@@ -45,6 +47,10 @@ public class BarakoaVillagePieces {
 
     public static final ResourceLocation PLATFORM_1 = new ResourceLocation(MowziesMobs.MODID, "barakoa/barakoa_platform_1");
     public static final ResourceLocation PLATFORM_2 = new ResourceLocation(MowziesMobs.MODID, "barakoa/barakoa_platform_2");
+    public static final ResourceLocation[] PLATFORMS = new ResourceLocation[] {
+            PLATFORM_1,
+            PLATFORM_2
+    };
     public static final ResourceLocation FIREPIT = new ResourceLocation(MowziesMobs.MODID, "barakoa/barakoa_firepit");
     public static final ResourceLocation TREE_1 = new ResourceLocation(MowziesMobs.MODID, "barakoa/barakoa_tree_1");
     public static final ResourceLocation TREE_2 = new ResourceLocation(MowziesMobs.MODID, "barakoa/barakoa_tree_2");
@@ -67,17 +73,31 @@ public class BarakoaVillagePieces {
     public static final ResourceLocation THRONE = new ResourceLocation(MowziesMobs.MODID, "barakoa/barako_throne");
 
     private static final Map<ResourceLocation, BlockPos> OFFSET = ImmutableMap.<ResourceLocation, BlockPos>builder()
-            .put(PLATFORM_1, new BlockPos(-3, 0, -3))
-            .put(PLATFORM_2, new BlockPos(-3, 0, -3))
-            .put(FIREPIT, new BlockPos(-3, 0, -3))
-            .put(TREE_1, new BlockPos(-3, 0, -3))
+            .put(PLATFORM_1, new BlockPos(-5, 0, -5))
+            .put(PLATFORM_2, new BlockPos(-5, 0, -5))
+            .put(FIREPIT, new BlockPos(-3, -1, -3))
+            .put(TREE_1, new BlockPos(-5, 0, -3))
             .put(TREE_2, new BlockPos(-3, 0, -3))
             .put(TREE_3, new BlockPos(-3, 0, -3))
-            .put(SPIKE_1, new BlockPos(0, 0, 0))
+            .put(SPIKE_1, new BlockPos(-1, 0, 0))
             .put(SPIKE_2, new BlockPos(0, 0, 0))
             .put(SPIKE_3, new BlockPos(0, 0, 0))
             .put(SPIKE_4, new BlockPos(0, 0, 0))
             .put(THRONE, new BlockPos(-9, -1, 0))
+            .build();
+
+    private static final Map<ResourceLocation, Pair<BlockPos, BlockPos>> BOUNDS_OFFSET = ImmutableMap.<ResourceLocation, Pair<BlockPos, BlockPos>>builder()
+            .put(PLATFORM_1, new Pair<>(new BlockPos(1, 0, 0), new BlockPos(-3, 0, -3)))
+            .put(PLATFORM_2, new Pair<>(new BlockPos(0, 0, 0), new BlockPos(0, 0, -3)))
+            .put(FIREPIT, new Pair<>(new BlockPos(0, 0, 0), new BlockPos(0, 0, 0)))
+            .put(TREE_1, new Pair<>(new BlockPos(1, 0, 1), new BlockPos(-3, 0, -3)))
+            .put(TREE_2, new Pair<>(new BlockPos(2, 0, 1), new BlockPos(-1, 0, -3)))
+            .put(TREE_3, new Pair<>(new BlockPos(2, 0, 2), new BlockPos(-2, 0, -2)))
+            .put(SPIKE_1, new Pair<>(new BlockPos(0, 0, 0), new BlockPos(0, 0, 0)))
+            .put(SPIKE_2, new Pair<>(new BlockPos(0, 0, 0), new BlockPos(0, 0, 0)))
+            .put(SPIKE_3, new Pair<>(new BlockPos(0, 0, 0), new BlockPos(0, 0, 0)))
+            .put(SPIKE_4, new Pair<>(new BlockPos(0, 0, 0), new BlockPos(0, 0, 0)))
+            .put(THRONE, new Pair<>(new BlockPos(4, 0, 1), new BlockPos(-4, 0, -3)))
             .build();
 
     public static StructurePiece addPiece(ResourceLocation resourceLocation, StructureManager manager, BlockPos pos, Rotation rot, StructurePieceAccessor pieces, WorldgenRandom rand) {
@@ -88,22 +108,23 @@ public class BarakoaVillagePieces {
 
     public static StructurePiece addPieceCheckBounds(ResourceLocation resourceLocation, StructureManager manager, BlockPos pos, Rotation rot, StructurePieceAccessor pieces, WorldgenRandom rand, List<StructurePiece> ignore) {
         BarakoaVillagePieces.Piece newPiece = new BarakoaVillagePieces.Piece(manager, resourceLocation, rot, pos);
-        StructurePiece collisionPiece = pieces.findCollisionPiece(newPiece.getBoundingBox());
+        StructurePiece collisionPiece = pieces.findCollisionPiece(newPiece.getCollisionBoundingBox());
         if (!ignore.contains(collisionPiece)) return null;
         pieces.addPiece(newPiece);
         return newPiece;
     }
 
     public static StructurePiece addPlatform(StructureManager manager, BlockPos pos, Rotation rot, StructurePiecesBuilder builder, WorldgenRandom rand) {
-        PlatformPiece newPiece = new PlatformPiece(manager, rand.nextInt(2) == 0 ? PLATFORM_1 : PLATFORM_2, rot, pos);
-        if (builder.findCollisionPiece(newPiece.getBoundingBox()) != null) return null;
+        int whichTree = rand.nextInt(PLATFORMS.length + TREES.length);
+        Piece newPiece;
+        if (whichTree >= PLATFORMS.length) {
+            newPiece = new Piece(manager, TREES[whichTree - PLATFORMS.length], rot, pos);
+        }
+        else {
+            newPiece = new Piece(manager, PLATFORMS[whichTree], rot, pos);
+        }
+        if (findCollisionPiece(builder.pieces, newPiece.getCollisionBoundingBox()) != null) return null;
         builder.addPiece(newPiece);
-        newPiece.tableCorner = rand.nextInt(6);
-        newPiece.tableContent = rand.nextInt(4);
-        newPiece.bedCorner = rand.nextInt(6);
-        newPiece.bedDirection = rand.nextInt(2);
-        newPiece.chestCorner = rand.nextInt(6);
-        newPiece.chestDirection = rand.nextInt(2);
         return newPiece;
     }
 
@@ -111,18 +132,34 @@ public class BarakoaVillagePieces {
        return addPieceCheckBounds(resourceLocation, manager, pos, rot, pieces, rand, Collections.emptyList());
     }
 
+    @Nullable
+    public static StructurePiece findCollisionPiece(List<StructurePiece> pieces, BoundingBox bounds) {
+        for(StructurePiece structurePiece : pieces) {
+            if (structurePiece instanceof Piece && ((Piece)structurePiece).getCollisionBoundingBox().intersects(bounds)) {
+                return structurePiece;
+            }
+            else if (structurePiece.getBoundingBox().intersects(bounds)) {
+
+            }
+        }
+        return null;
+    }
+
     public static class Piece extends TemplateStructurePiece {
         protected ResourceLocation resourceLocation;
+        public BoundingBox collisionBoundingBox;
 
         public Piece(StructurePieceType pieceType, StructureManager manager, ResourceLocation resourceLocationIn, Rotation rotation, BlockPos pos) {
             super(pieceType, 0, manager, resourceLocationIn, resourceLocationIn.toString(), makeSettings(rotation, resourceLocationIn), makePosition(resourceLocationIn, pos, rotation));
             this.resourceLocation = resourceLocationIn;
-//            this.boundingBox = this.getBoundingBox().moved(0, 1, 0);
+            this.collisionBoundingBox = makeCollisionBoundingBox();
+            if (resourceLocation == THRONE || resourceLocation == FIREPIT) boundingBox = getBoundingBox().moved(0, 1, 0);
         }
 
         public Piece(StructurePieceType pieceType, StructurePieceSerializationContext context, CompoundTag tagCompound) {
             super(pieceType, tagCompound, context.structureManager(), (resourceLocation) -> makeSettings(Rotation.valueOf(tagCompound.getString("Rot")), resourceLocation));
-            this.boundingBox = this.getBoundingBox().moved(0, 1, 0);
+            this.collisionBoundingBox = makeCollisionBoundingBox();
+            if (resourceLocation == THRONE || resourceLocation == FIREPIT) boundingBox = getBoundingBox().moved(0, 1, 0);
         }
 
         public Piece(StructureManager manager, ResourceLocation resourceLocationIn, Rotation rotation, BlockPos pos) {
@@ -141,6 +178,26 @@ public class BarakoaVillagePieces {
             return pos.offset(BarakoaVillagePieces.OFFSET.get(resourceLocation).rotate(rotation));
         }
 
+        public BoundingBox makeCollisionBoundingBox() {
+            StructureTemplate structuretemplate = this.template;
+            BlockPos boundsMinOffset, boundsMaxOffset;
+            boundsMinOffset = boundsMaxOffset = new BlockPos(0, 0, 0);
+            Pair<BlockPos, BlockPos> boundsOffset = BOUNDS_OFFSET.get(resourceLocation);
+            if (boundsOffset != null) {
+                boundsMinOffset = boundsOffset.getFirst();
+                boundsMaxOffset = boundsOffset.getSecond();
+            }
+
+            Vec3i sizeVec = structuretemplate.getSize().offset(-1, -1, -1);
+            BlockPos blockpos = StructureTemplate.transform(BlockPos.ZERO.offset(boundsMinOffset), placeSettings.getMirror(), placeSettings.getRotation(), placeSettings.getRotationPivot());
+            BlockPos blockpos1 = StructureTemplate.transform(BlockPos.ZERO.offset(sizeVec).offset(boundsMaxOffset), placeSettings.getMirror(), placeSettings.getRotation(), placeSettings.getRotationPivot());
+            return BoundingBox.fromCorners(blockpos, blockpos1).move(templatePosition);
+        }
+
+        public BoundingBox getCollisionBoundingBox() {
+            return collisionBoundingBox;
+        }
+
         /**
          * (abstract) Helper method to read subclass data from NBT
          */
@@ -148,6 +205,11 @@ public class BarakoaVillagePieces {
         protected void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag tagCompound) {
             super.addAdditionalSaveData(context, tagCompound);
             tagCompound.putString("Rot", this.placeSettings.getRotation().name());
+        }
+
+        @Override
+        public void postProcess(WorldGenLevel p_192682_, StructureFeatureManager p_192683_, ChunkGenerator p_192684_, Random p_192685_, BoundingBox p_192686_, ChunkPos p_192687_, BlockPos p_192688_) {
+            super.postProcess(p_192682_, p_192683_, p_192684_, p_192685_, p_192686_, p_192687_, p_192688_);
         }
 
         /*

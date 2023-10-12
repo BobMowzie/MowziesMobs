@@ -51,10 +51,10 @@ public class BarakoaVillageStructure extends MowzieStructure<NoneFeatureConfigur
         BarakoaVillagePieces.addPiece(BarakoaVillagePieces.THRONE, pieceGenerator.structureManager(), thronePos, rotation, builder, pieceGenerator.random());
 
         //Houses
-        int numHouses = random.nextInt(4) + 3;
+        int numHouses = random.nextInt(4) + 4;
         for (int i = 1; i <= numHouses; i++) {
             for (int j = 0; j < 30; j++) {
-                float distance = random.nextInt(8) + 10;
+                float distance = random.nextInt(14) + 10;
                 int angle = random.nextInt(360);
                 BlockPos housePos = new BlockPos(centerPos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.getZ() + distance * Math.cos(Math.toRadians(angle)));
                 housePos = posToSurface(generator, housePos, heightLimitView);
