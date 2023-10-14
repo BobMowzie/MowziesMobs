@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaVillager;
@@ -75,15 +76,15 @@ public class BarakoaVillagePieces {
     private static final Map<ResourceLocation, BlockPos> OFFSET = ImmutableMap.<ResourceLocation, BlockPos>builder()
             .put(PLATFORM_1, new BlockPos(-5, 0, -5))
             .put(PLATFORM_2, new BlockPos(-5, 0, -5))
-            .put(FIREPIT, new BlockPos(-3, -1, -3))
-            .put(TREE_1, new BlockPos(-5, 0, -3))
-            .put(TREE_2, new BlockPos(-3, 0, -3))
-            .put(TREE_3, new BlockPos(-3, 0, -3))
-            .put(SPIKE_1, new BlockPos(-1, 0, 0))
-            .put(SPIKE_2, new BlockPos(0, 0, 0))
-            .put(SPIKE_3, new BlockPos(0, 0, 0))
-            .put(SPIKE_4, new BlockPos(0, 0, 0))
-            .put(THRONE, new BlockPos(-9, -1, 0))
+            .put(FIREPIT, new BlockPos(-3, 0, -3))
+            .put(TREE_1, new BlockPos(-5, 1, -3))
+            .put(TREE_2, new BlockPos(-3, 1, -3))
+            .put(TREE_3, new BlockPos(-3, 1, -3))
+            .put(SPIKE_1, new BlockPos(-1, 1, 0))
+            .put(SPIKE_2, new BlockPos(0, 1, 0))
+            .put(SPIKE_3, new BlockPos(0, 1, 0))
+            .put(SPIKE_4, new BlockPos(0, 1, 0))
+            .put(THRONE, new BlockPos(-9, 0, 0))
             .build();
 
     private static final Map<ResourceLocation, Pair<BlockPos, BlockPos>> BOUNDS_OFFSET = ImmutableMap.<ResourceLocation, Pair<BlockPos, BlockPos>>builder()
@@ -109,20 +110,14 @@ public class BarakoaVillagePieces {
     public static StructurePiece addPieceCheckBounds(ResourceLocation resourceLocation, StructureManager manager, BlockPos pos, Rotation rot, StructurePieceAccessor pieces, WorldgenRandom rand, List<StructurePiece> ignore) {
         BarakoaVillagePieces.Piece newPiece = new BarakoaVillagePieces.Piece(manager, resourceLocation, rot, pos);
         StructurePiece collisionPiece = pieces.findCollisionPiece(newPiece.getCollisionBoundingBox());
-        if (!ignore.contains(collisionPiece)) return null;
+        if (collisionPiece != null && !ignore.contains(collisionPiece)) return null;
         pieces.addPiece(newPiece);
         return newPiece;
     }
 
     public static StructurePiece addPlatform(StructureManager manager, BlockPos pos, Rotation rot, StructurePiecesBuilder builder, WorldgenRandom rand) {
-        int whichTree = rand.nextInt(PLATFORMS.length + TREES.length);
-        Piece newPiece;
-        if (whichTree >= PLATFORMS.length) {
-            newPiece = new Piece(manager, TREES[whichTree - PLATFORMS.length], rot, pos);
-        }
-        else {
-            newPiece = new Piece(manager, PLATFORMS[whichTree], rot, pos);
-        }
+        int whichPlatform = rand.nextInt(PLATFORMS.length);
+        Piece newPiece = new Piece(manager, PLATFORMS[whichPlatform], rot, pos);
         if (findCollisionPiece(builder.pieces, newPiece.getCollisionBoundingBox()) != null) return null;
         builder.addPiece(newPiece);
         return newPiece;
@@ -139,7 +134,7 @@ public class BarakoaVillagePieces {
                 return structurePiece;
             }
             else if (structurePiece.getBoundingBox().intersects(bounds)) {
-
+                return structurePiece;
             }
         }
         return null;
@@ -229,9 +224,14 @@ public class BarakoaVillagePieces {
                 worldIn.setBlock(pos, Blocks.OAK_FENCE.defaultBlockState(), 3);
                 fillAirLiquidDown(worldIn, Blocks.OAK_FENCE.defaultBlockState(), pos.below());
             }
+            else if (function.equals("trunk")) {
+                fillAirLiquidDownTrunk(worldIn, pos, rand);
+            }
             else if (function.equals("leg")) {
-                worldIn.setBlock(pos, Blocks.ACACIA_LOG.defaultBlockState(), 3);
-                fillAirLiquidDown(worldIn, Blocks.ACACIA_LOG.defaultBlockState(), pos.below());
+                fillAirLiquidDown(worldIn, Blocks.STRIPPED_SPRUCE_LOG.defaultBlockState(), pos);
+            }
+            else if (function.equals("base")) {
+                fillAirLiquidDownBase(worldIn, pos, rand);
             }
             else if (function.equals("stairs")) {
                 Direction stairDirection = Direction.EAST;
@@ -252,7 +252,7 @@ public class BarakoaVillagePieces {
                     }
                 }
             }
-            else if (function.equals("barako")) {
+            else if (function.equals("umvuthi")) {
                 setBlockState(worldIn, pos, Blocks.AIR.defaultBlockState());
                 EntityBarako barako = new EntityBarako(EntityHandler.BARAKO.get(), worldIn.getLevel());
                 barako.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
@@ -265,6 +265,54 @@ public class BarakoaVillagePieces {
                 firePitPos = worldIn.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, firePitPos);
                 barako.restrictTo(firePitPos, -1);
                 worldIn.addFreshEntity(barako);
+            }
+            else if ("chest".equals(function)) {
+                Direction facing = Direction.NORTH;
+                facing = rotation.rotate(facing);
+                createChest(worldIn, sbb, rand, pos, LootTableHandler.BARAKOA_VILLAGE_HOUSE, Blocks.CHEST.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, facing));
+            }
+            else if ("skull".equals(function)) {
+                BlockPos groundPos = getGroundPos(worldIn, pos);
+                setBlockState(worldIn, groundPos.above(), Blocks.SKELETON_SKULL.defaultBlockState().setValue(BlockStateProperties.ROTATION_16, rand.nextInt(16)));
+            }
+            else if ("chest_under".equals(function)) {
+                if (rand.nextFloat() < 0.5) worldIn.removeBlock(pos, false);
+                else {
+                    BlockPos groundPos = getGroundPos(worldIn, pos);
+                    Direction facing = rand.nextFloat() < 0.5 ? Direction.NORTH : Direction.EAST;
+                    facing = rotation.rotate(facing);
+                    createChest(worldIn, sbb, rand, groundPos.above(), LootTableHandler.BARAKOA_VILLAGE_HOUSE, Blocks.CHEST.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, facing));
+                }
+            }
+            else if ("mask".equals(function)) {
+                worldIn.removeBlock(pos, false);
+                ItemFrame itemFrame = new ItemFrame(worldIn.getLevel(), pos, rotation.rotate(Direction.NORTH));
+                int i = rand.nextInt(MaskType.values().length);
+                MaskType type = MaskType.values()[i];
+                ItemBarakoaMask mask = ItemHandler.BARAKOA_MASK_FURY;
+                switch (type) {
+                    case BLISS:
+                        mask = ItemHandler.BARAKOA_MASK_BLISS;
+                        break;
+                    case FEAR:
+                        mask = ItemHandler.BARAKOA_MASK_FEAR;
+                        break;
+                    case FURY:
+                        mask = ItemHandler.BARAKOA_MASK_FURY;
+                        break;
+                    case MISERY:
+                        mask = ItemHandler.BARAKOA_MASK_MISERY;
+                        break;
+                    case RAGE:
+                        mask = ItemHandler.BARAKOA_MASK_RAGE;
+                        break;
+                    case FAITH:
+                        mask = ItemHandler.BARAKOA_MASK_FAITH;
+                        break;
+                }
+                ItemStack stack = new ItemStack(mask);
+                itemFrame.setItem(stack, false);
+                worldIn.addFreshEntity(itemFrame);
             }
             else {
                 worldIn.removeBlock(pos, false);
@@ -283,6 +331,13 @@ public class BarakoaVillagePieces {
             }
         }
 
+        public BlockPos getGroundPos(LevelAccessor worldIn, BlockPos startPos) {
+            while(!Block.canSupportRigidBlock(worldIn, startPos) && startPos.getY() > worldIn.getMinBuildHeight()) {
+                startPos = startPos.below();
+            }
+            return startPos;
+        }
+
         public void fillAirLiquidDown(LevelAccessor worldIn, BlockState state, BlockPos startPos) {
             int i = startPos.getX();
             int j = startPos.getY();
@@ -290,6 +345,28 @@ public class BarakoaVillagePieces {
             while(!Block.canSupportRigidBlock(worldIn, new BlockPos(i, j, k)) && j > 1) {
                 BlockPos pos = new BlockPos(i, j, k);
                 setBlockState(worldIn, pos, state);
+                --j;
+            }
+        }
+
+        public void fillAirLiquidDownTrunk(LevelAccessor worldIn, BlockPos startPos, Random rand) {
+            int i = startPos.getX();
+            int j = startPos.getY();
+            int k = startPos.getZ();
+            while(!Block.canSupportRigidBlock(worldIn, new BlockPos(i, j, k)) && j > 1) {
+                BlockPos pos = new BlockPos(i, j, k);
+                setBlockState(worldIn, pos, rand.nextFloat() < 0.2 ? BlockHandler.CLAWED_LOG.get().defaultBlockState() : Blocks.STRIPPED_JUNGLE_WOOD.defaultBlockState());
+                --j;
+            }
+        }
+
+        public void fillAirLiquidDownBase(LevelAccessor worldIn, BlockPos startPos, Random rand) {
+            int i = startPos.getX();
+            int j = startPos.getY();
+            int k = startPos.getZ();
+            while(!Block.canSupportRigidBlock(worldIn, new BlockPos(i, j, k)) && j > 1) {
+                BlockPos pos = new BlockPos(i, j, k);
+                setBlockState(worldIn, pos, rand.nextFloat() < 0.5 ? Blocks.STRIPPED_SPRUCE_LOG.defaultBlockState() : Blocks.LIGHT_GRAY_TERRACOTTA.defaultBlockState());
                 --j;
             }
         }
@@ -340,13 +417,11 @@ public class BarakoaVillagePieces {
                     setBlockState(worldIn, pos, Blocks.ACACIA_SLAB.defaultBlockState().setValue(SlabBlock.TYPE, SlabType.TOP));
                     if (tableContent <= 1) {
                         setBlockState(worldIn, pos.above(), Blocks.TORCH.defaultBlockState());
-                    }
-                    else if (tableContent == 2) {
+                    } else if (tableContent == 2) {
                         int skullRot = cornerRotation.rotate(rotation.rotate(2, 16), 16);
                         setBlockState(worldIn, pos.above(), Blocks.SKELETON_SKULL.defaultBlockState().setValue(BlockStateProperties.ROTATION_16, skullRot));
                     }
-                }
-                else if (whichCorner == bedCorner) {
+                } else if (whichCorner == bedCorner) {
                     setBlockState(worldIn, pos, Blocks.YELLOW_CARPET.defaultBlockState());
                     BlockPos offset = new BlockPos(1, 0, 0);
                     if (bedDirection == 1) offset = new BlockPos(0, 0, -1);
@@ -354,44 +429,6 @@ public class BarakoaVillagePieces {
                     offset = offset.rotate(cornerRotation);
                     setBlockState(worldIn, pos.offset(offset), Blocks.YELLOW_CARPET.defaultBlockState());
                 }
-                else if (whichCorner == chestCorner) {
-                    Direction facing = Direction.NORTH;
-                    if (chestDirection == 1) facing = Direction.EAST;
-                    facing = rotation.rotate(facing);
-                    facing = cornerRotation.rotate(facing);
-                    createChest(worldIn, sbb, rand, pos, LootTableHandler.BARAKOA_VILLAGE_HOUSE, Blocks.CHEST.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, facing));
-                }
-                else worldIn.removeBlock(pos, false);
-            }
-            else if ("mask".equals(function)) {
-                worldIn.removeBlock(pos, false);
-                ItemFrame itemFrame = new ItemFrame(worldIn.getLevel(), pos, rotation.rotate(Direction.EAST));
-                int i = rand.nextInt(MaskType.values().length);
-                MaskType type = MaskType.values()[i];
-                ItemBarakoaMask mask = ItemHandler.BARAKOA_MASK_FURY;
-                switch (type) {
-                    case BLISS:
-                        mask = ItemHandler.BARAKOA_MASK_BLISS;
-                        break;
-                    case FEAR:
-                        mask = ItemHandler.BARAKOA_MASK_FEAR;
-                        break;
-                    case FURY:
-                        mask = ItemHandler.BARAKOA_MASK_FURY;
-                        break;
-                    case MISERY:
-                        mask = ItemHandler.BARAKOA_MASK_MISERY;
-                        break;
-                    case RAGE:
-                        mask = ItemHandler.BARAKOA_MASK_RAGE;
-                        break;
-                    case FAITH:
-                        mask = ItemHandler.BARAKOA_MASK_FAITH;
-                        break;
-                }
-                ItemStack stack = new ItemStack(mask);
-                itemFrame.setItem(stack, false);
-                worldIn.addFreshEntity(itemFrame);
             }
             else {
                 super.handleDataMarker(function, pos, worldIn, rand, sbb);

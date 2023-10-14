@@ -8,12 +8,12 @@ import java.util.EnumMap;
 import java.util.Locale;
 
 public enum MaskType {
-    FURY(MobEffects.DAMAGE_BOOST, 0.7F, 2F, true),
+    FURY(MobEffects.DAMAGE_BOOST, 0.9F, 2F, true),
     FEAR(MobEffects.MOVEMENT_SPEED),
     RAGE(MobEffects.DIG_SPEED),
     BLISS(MobEffects.JUMP),
     MISERY(MobEffects.DAMAGE_RESISTANCE),
-    FAITH(MobEffects.HEALTH_BOOST, 0.7F, 2F, false);
+    FAITH(MobEffects.HEALTH_BOOST, 0.9F, 2F, false);
 
     public static final int COUNT = MaskType.values().length;
 
@@ -28,7 +28,7 @@ public enum MaskType {
     public final String name;
 
     MaskType(MobEffect potion) {
-        this(potion, 0.6F, 1.7F, false);
+        this(potion, 0.8F, 1.8F, false);
     }
 
     MaskType(MobEffect potion, float entityWidth, float entityHeight, boolean canBlock) {

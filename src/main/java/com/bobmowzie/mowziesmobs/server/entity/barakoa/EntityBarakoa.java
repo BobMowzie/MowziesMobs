@@ -649,6 +649,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             return false;
         }
         Entity entity = source.getEntity();
+        if (source == DamageSource.HOT_FLOOR) return false;
         boolean angleFlag = true;
         if (entity != null) {
             int arc = 220;
