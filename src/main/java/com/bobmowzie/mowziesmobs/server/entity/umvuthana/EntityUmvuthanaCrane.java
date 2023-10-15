@@ -1,11 +1,10 @@
-package com.bobmowzie.mowziesmobs.server.entity.barakoa;
+package com.bobmowzie.mowziesmobs.server.entity.umvuthana;
 
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ai.AvoidProjectilesGoal;
 import com.bobmowzie.mowziesmobs.server.ai.NearestAttackableTargetPredicateGoal;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
-import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
@@ -31,11 +30,11 @@ import net.minecraft.world.phys.Vec3;
 import java.util.EnumSet;
 import java.util.List;
 
-public class EntityBarakoaya extends EntityBarakoaVillager {
+public class EntityUmvuthanaCrane extends EntityUmvuthanaMinion {
     public boolean hasTriedOrSucceededTeleport = true;
     private int teleportAttempts = 0;
 
-    public EntityBarakoaya(EntityType<? extends EntityBarakoaVillager> type, Level world) {
+    public EntityUmvuthanaCrane(EntityType<? extends EntityUmvuthanaMinion> type, Level world) {
         super(type, world);
         setWeapon(3);
         setMask(MaskType.FAITH);
@@ -51,7 +50,7 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
             if (target instanceof Player) {
                 if (this.level.getDifficulty() == Difficulty.PEACEFUL) return false;
                 if (getTarget() == target) return true;
-                if (getTarget() instanceof EntityBarako) return false;
+                if (getTarget() instanceof EntityUmvuthi) return false;
                 if (getActiveAbilityType() != null) return false;
                 ItemStack headArmorStack = ((Player) target).getInventory().armor.get(3);
                 return !(headArmorStack.getItem() instanceof BarakoaMask) || target == getMisbehavedPlayer();
@@ -69,7 +68,7 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
     @Override
     protected void registerTargetGoals() {
         super.registerTargetGoals();
-        this.targetSelector.addGoal(2, new NearestAttackableTargetPredicateGoal<EntityBarako>(this, EntityBarako.class, 0, false, false, TargetingConditions.forNonCombat().range(getAttributeValue(Attributes.FOLLOW_RANGE) * 2).selector(target -> {
+        this.targetSelector.addGoal(2, new NearestAttackableTargetPredicateGoal<EntityUmvuthi>(this, EntityUmvuthi.class, 0, false, false, TargetingConditions.forNonCombat().range(getAttributeValue(Attributes.FOLLOW_RANGE) * 2).selector(target -> {
             if (!active) return false;
             if (target instanceof Mob) {
                 return ((Mob) target).getTarget() != null || target.getHealth() < target.getMaxHealth();
@@ -85,7 +84,7 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
                 boolean targetHasTarget = false;
                 if (livingentity instanceof Mob) targetHasTarget = ((Mob)livingentity).getTarget() != null;
                 boolean canHeal = true;
-                if (this.mob instanceof EntityBarakoa) canHeal = ((EntityBarakoa)this.mob).canHeal(livingentity);
+                if (this.mob instanceof EntityUmvuthana) canHeal = ((EntityUmvuthana)this.mob).canHeal(livingentity);
                 return super.canContinueToUse() && (livingentity.getHealth() < livingentity.getMaxHealth() || targetHasTarget) && canHeal;
             }
 
@@ -107,13 +106,13 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
 
     @Override
     public boolean canHeal(LivingEntity entity) {
-        return entity instanceof EntityBarako;
+        return entity instanceof EntityUmvuthi;
     }
 
     @Override
     public void die(DamageSource cause) {
         // If healing Barako, set the attack target of any mob targeting the Barakoaya to Barako
-        if (this.getTarget() instanceof EntityBarako) {
+        if (this.getTarget() instanceof EntityUmvuthi) {
             List<Mob> targetingMobs = level.getEntitiesOfClass(Mob.class, getBoundingBox().inflate(30), (e) -> e.getTarget() == this);
             if (cause.getEntity() instanceof Mob) {
                 Mob damagingMob = (Mob) cause.getEntity();
@@ -129,9 +128,9 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
     }
 
     public class TeleportToSafeSpotGoal extends Goal {
-        private final EntityBarakoaya entity;
+        private final EntityUmvuthanaCrane entity;
 
-        public TeleportToSafeSpotGoal(EntityBarakoaya entityIn) {
+        public TeleportToSafeSpotGoal(EntityUmvuthanaCrane entityIn) {
             this.entity = entityIn;
             this.setFlags(EnumSet.of(Goal.Flag.MOVE));
         }
@@ -185,10 +184,10 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
                 Vec3 newPos = new Vec3(i1, j1, k1);
                 Vec3 offset = newPos.subtract(entity.position());
                 AABB newBB = entity.getBoundingBox().move(offset);
-                if (testBlock(blockpos, newBB) && entity.level.getEntitiesOfClass(EntityBarako.class, newBB.inflate(7)).isEmpty()) {
+                if (testBlock(blockpos, newBB) && entity.level.getEntitiesOfClass(EntityUmvuthi.class, newBB.inflate(7)).isEmpty()) {
                     entity.teleportDestination = newPos.add(0, 0, 0);
                     if (entity.teleportAttempts >= 3) foundPosition = true;
-                    if (entity.level.getEntitiesOfClass(EntityBarakoaya.class, newBB.inflate(5)).isEmpty()) {
+                    if (entity.level.getEntitiesOfClass(EntityUmvuthanaCrane.class, newBB.inflate(5)).isEmpty()) {
                         if (entity.teleportAttempts >= 2) foundPosition = true;
                         if (!entity.level.hasNearbyAlivePlayer(i1, j1, k1, 5) && !entity.level.containsAnyLiquid(newBB)) {
                             if (entity.teleportAttempts >= 1) foundPosition = true;
@@ -225,9 +224,9 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
     }
 
     public static class HealTargetGoal extends Goal {
-        private final EntityBarakoa entity;
+        private final EntityUmvuthana entity;
 
-        public HealTargetGoal(EntityBarakoa entityIn) {
+        public HealTargetGoal(EntityUmvuthana entityIn) {
             this.entity = entityIn;
             this.setFlags(EnumSet.of(Goal.Flag.MOVE, Flag.LOOK));
         }
@@ -246,7 +245,7 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
         @Override
         public void start() {
             super.start();
-            AbilityHandler.INSTANCE.sendAbilityMessage(entity, EntityBarakoa.HEAL_ABILITY);
+            AbilityHandler.INSTANCE.sendAbilityMessage(entity, EntityUmvuthana.HEAL_ABILITY);
         }
     }
 

@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.server.entity.barakoa;
+package com.bobmowzie.mowziesmobs.server.entity.umvuthana;
 
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import net.minecraft.nbt.CompoundTag;
@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarakoa {
+public abstract class EntityUmvuthanaFollower<L extends LivingEntity> extends EntityUmvuthana {
     protected static final Optional<UUID> ABSENT_LEADER = Optional.empty();
 
-    private static final EntityDataAccessor<Optional<UUID>> LEADER = SynchedEntityData.defineId(EntityBarakoan.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<UUID>> LEADER = SynchedEntityData.defineId(EntityUmvuthanaFollower.class, EntityDataSerializers.OPTIONAL_UUID);
 
     private final Class<L> leaderClass;
 
@@ -30,11 +30,11 @@ public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarak
 
     public boolean shouldSetDead;
 
-    public EntityBarakoan(EntityType<? extends EntityBarakoan> type, Level world, Class<L> leaderClass) {
+    public EntityUmvuthanaFollower(EntityType<? extends EntityUmvuthanaFollower> type, Level world, Class<L> leaderClass) {
         this(type, world, leaderClass, null);
     }
 
-    public EntityBarakoan(EntityType<? extends EntityBarakoan> type, Level world, Class<L> leaderClass, L leader) {
+    public EntityUmvuthanaFollower(EntityType<? extends EntityUmvuthanaFollower> type, Level world, Class<L> leaderClass, L leader) {
         super(type, world);
         this.leaderClass = leaderClass;
         if (leader != null) {

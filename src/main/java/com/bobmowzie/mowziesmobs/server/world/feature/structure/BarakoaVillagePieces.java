@@ -3,9 +3,9 @@ package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaVillager;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthanaMinion;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.MaskType;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
@@ -254,7 +254,7 @@ public class BarakoaVillagePieces {
             }
             else if (function.equals("umvuthi")) {
                 setBlockState(worldIn, pos, Blocks.AIR.defaultBlockState());
-                EntityBarako barako = new EntityBarako(EntityHandler.BARAKO.get(), worldIn.getLevel());
+                EntityUmvuthi barako = new EntityUmvuthi(EntityHandler.BARAKO.get(), worldIn.getLevel());
                 barako.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
                 int i = rotation.rotate(3, 4);
                 barako.setDirection(i);
@@ -549,7 +549,7 @@ public class BarakoaVillagePieces {
             for (int i = 1; i <= numBarakoa; i++) {
                 int distance;
                 int angle;
-                EntityBarakoaVillager barakoa = new EntityBarakoaVillager(EntityHandler.BARAKOA_VILLAGER.get(), worldIn.getLevel());
+                EntityUmvuthanaMinion barakoa = new EntityUmvuthanaMinion(EntityHandler.BARAKOA_VILLAGER.get(), worldIn.getLevel());
                 for (int j = 1; j <= 20; j++) {
                     distance = randomIn.nextInt(10) + 2;
                     angle = randomIn.nextInt(360);
