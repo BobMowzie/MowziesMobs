@@ -77,12 +77,12 @@ public class BarakoaVillageStructure extends MowzieStructure<NoneFeatureConfigur
         }
 
         //Stakes
-        int numStakes = random.nextInt(12) + 5;
+        int numStakes = random.nextInt(10) + 7;
         for (int i = 1; i <= numStakes; i++) {
             int distance;
             int angle;
             for (int j = 1; j <= 10; j++) {
-                distance = random.nextInt(15) + 5;
+                distance = random.nextInt(15) + 8;
                 angle = random.nextInt(360);
                 BlockPos stakePos = new BlockPos(centerPos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.getZ() + distance * Math.cos(Math.toRadians(angle)));
                 stakePos = posToSurface(generator, stakePos, heightLimitView);

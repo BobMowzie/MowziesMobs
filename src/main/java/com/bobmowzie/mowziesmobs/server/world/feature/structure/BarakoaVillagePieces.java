@@ -44,7 +44,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class BarakoaVillagePieces {
-    private static final Set<Block> BLOCKS_NEEDING_POSTPROCESSING = ImmutableSet.<Block>builder().add(Blocks.NETHER_BRICK_FENCE).add(Blocks.TORCH).add(Blocks.WALL_TORCH).add(Blocks.OAK_FENCE).add(Blocks.SPRUCE_FENCE).add(Blocks.DARK_OAK_FENCE).add(Blocks.ACACIA_FENCE).add(Blocks.BIRCH_FENCE).add(Blocks.JUNGLE_FENCE).add(Blocks.LADDER).add(Blocks.IRON_BARS).add(Blocks.SKELETON_SKULL).build();
+    private static final Set<Block> BLOCKS_NEEDING_POSTPROCESSING = ImmutableSet.<Block>builder().add(Blocks.NETHER_BRICK_FENCE).add(Blocks.TORCH).add(Blocks.WALL_TORCH).add(Blocks.OAK_FENCE).add(Blocks.SPRUCE_FENCE).add(Blocks.DARK_OAK_FENCE).add(Blocks.ACACIA_FENCE).add(Blocks.BIRCH_FENCE).add(Blocks.JUNGLE_FENCE).add(Blocks.LADDER).add(Blocks.SKELETON_SKULL).build();
 
     public static final ResourceLocation PLATFORM_1 = new ResourceLocation(MowziesMobs.MODID, "barakoa/barakoa_platform_1");
     public static final ResourceLocation PLATFORM_2 = new ResourceLocation(MowziesMobs.MODID, "barakoa/barakoa_platform_2");
@@ -275,6 +275,22 @@ public class BarakoaVillagePieces {
                 BlockPos groundPos = getGroundPos(worldIn, pos);
                 setBlockState(worldIn, groundPos.above(), Blocks.SKELETON_SKULL.defaultBlockState().setValue(BlockStateProperties.ROTATION_16, rand.nextInt(16)));
             }
+            else if ("campfire".equals(function)) {
+                BlockPos groundPos = getGroundPos(worldIn, pos);
+                setBlockState(worldIn, groundPos.above(), Blocks.CAMPFIRE.defaultBlockState());
+            }
+            else if (function.length() > 5 && "spike".equals(function.substring(0, 5))) {
+                String[] split = function.split("_");
+                int logCount = 2;
+                int fenceCount = 1;
+                int barCount = 1;
+                int skullCount = 0;
+                if (split.length > 1) logCount = Integer.parseInt(split[1]);
+                if (split.length > 2) fenceCount = Integer.parseInt(split[2]);
+                if (split.length > 3) barCount = Integer.parseInt(split[3]);
+                if (split.length > 4) skullCount = Integer.parseInt(split[4]);
+                genSpike(worldIn, pos, rand, logCount, fenceCount, barCount, skullCount);
+            }
             else if ("chest_under".equals(function)) {
                 if (rand.nextFloat() < 0.5) worldIn.removeBlock(pos, false);
                 else {
@@ -368,6 +384,26 @@ public class BarakoaVillagePieces {
                 BlockPos pos = new BlockPos(i, j, k);
                 setBlockState(worldIn, pos, rand.nextFloat() < 0.5 ? Blocks.STRIPPED_SPRUCE_LOG.defaultBlockState() : Blocks.LIGHT_GRAY_TERRACOTTA.defaultBlockState());
                 --j;
+            }
+        }
+
+        public void genSpike(LevelAccessor worldIn, BlockPos startPos, Random rand, int numLogs, int numFence, int numBars, int numSkulls) {
+            int groundPos = worldIn.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, startPos.getX(), startPos.getZ());
+            BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(startPos.getX(), groundPos - 1, startPos.getZ());
+            for (int i = 0; i < numLogs; i++) {
+                setBlockState(worldIn, pos, Blocks.STRIPPED_SPRUCE_LOG.defaultBlockState());
+                pos.move(Direction.UP);
+            }
+            for (int i = 0; i < numFence; i++) {
+                setBlockState(worldIn, pos, Blocks.SPRUCE_FENCE.defaultBlockState());
+                pos.move(Direction.UP);
+            }
+            for (int i = 0; i < numBars; i++) {
+                setBlockState(worldIn, pos, Blocks.IRON_BARS.defaultBlockState());
+                pos.move(Direction.UP);
+            }
+            if (rand.nextFloat() < 0.1 && numSkulls > 0) {
+                setBlockState(worldIn, pos, Blocks.SKELETON_SKULL.defaultBlockState().setValue(BlockStateProperties.ROTATION_16, rand.nextInt(16)));
             }
         }
     }
