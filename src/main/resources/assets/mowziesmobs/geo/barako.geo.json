@@ -292,6 +292,15 @@
 					]
 				},
 				{
+					"name": "leftFinger",
+					"parent": "leftHand",
+					"pivot": [7.40545, -2.22399, -6.64707],
+					"rotation": [112.5, 0, 0],
+					"cubes": [
+						{"origin": [4.90545, -2.22399, -11.64707], "size": [5, 0, 5], "uv": [118, 34]}
+					]
+				},
+				{
 					"name": "leftRing",
 					"parent": "leftLowerArm",
 					"pivot": [7.25, -0.75, -1],
@@ -335,6 +344,15 @@
 					"rotation": [54.24607, 72.25242, -27.92838],
 					"cubes": [
 						{"origin": [-9.90545, -4.86496, -8.5], "size": [6, 6, 7], "pivot": [0.09455, 3.63504, 0], "rotation": [25, 0, 0], "uv": [94, 18]}
+					]
+				},
+				{
+					"name": "rightFinger",
+					"parent": "rightHand",
+					"pivot": [-7.40545, -2.22399, -6.64707],
+					"rotation": [112.5, 0, 0],
+					"cubes": [
+						{"origin": [-9.90545, -2.22399, -11.64707], "size": [5, 0, 5], "uv": [118, 34], "mirror": true}
 					]
 				},
 				{
