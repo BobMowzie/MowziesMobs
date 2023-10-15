@@ -1151,7 +1151,7 @@
 						},
 						"2.8333": {
 							"vector": [0, 360, 0],
-							"easing": "easeInSine"
+							"easing": "easeInExpo"
 						},
 						"3.5": {
 							"vector": [-410, 360, 25],
@@ -1183,7 +1183,7 @@
 						},
 						"2.8333": {
 							"vector": ["Math.sin((query.anim_time - 0.0) * 3800) * 2", 52, "Math.cos((query.anim_time - 0.0) * 3800) * 2"],
-							"easing": "easeInSine"
+							"easing": "easeInExpo"
 						},
 						"2.875": {
 							"vector": [1.64, 52, -1.15],
@@ -1226,7 +1226,7 @@
 						},
 						"2.8333": {
 							"vector": [0.001, 0.001, 0.001],
-							"easing": "easeInSine"
+							"easing": "easeInExpo"
 						}
 					}
 				},
