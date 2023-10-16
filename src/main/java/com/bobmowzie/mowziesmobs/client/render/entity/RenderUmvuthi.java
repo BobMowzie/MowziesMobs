@@ -17,14 +17,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderBarako extends MowzieGeoEntityRenderer<EntityUmvuthi> {
+public class RenderUmvuthi extends MowzieGeoEntityRenderer<EntityUmvuthi> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/barako.png");
     private static final ResourceLocation TEXTURE_OLD = new ResourceLocation(MowziesMobs.MODID, "textures/entity/barako_old.png");
     private static final float BURST_RADIUS = 3.5f;
     private static final int BURST_FRAME_COUNT = 10;
     private static final int BURST_START_FRAME = 12;
 
-    public RenderBarako(EntityRendererProvider.Context mgr) {
+    public RenderUmvuthi(EntityRendererProvider.Context mgr) {
         super(mgr, new ModelBarako());
 //        addLayer(new SunblockLayer<>(this));
         this.shadowRadius = 1.0f;

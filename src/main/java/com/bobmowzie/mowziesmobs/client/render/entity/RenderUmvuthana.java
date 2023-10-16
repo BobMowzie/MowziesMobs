@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBarakoa;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
-import com.bobmowzie.mowziesmobs.client.render.entity.layer.StrixArmorLayer;
+import com.bobmowzie.mowziesmobs.client.render.entity.layer.UmvuthanaArmorLayer;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthana;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -22,12 +22,12 @@ import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderBarakoa extends MowzieGeoEntityRenderer<EntityUmvuthana> {
+public class RenderUmvuthana extends MowzieGeoEntityRenderer<EntityUmvuthana> {
     public EntityUmvuthana animatable;
 
-    public RenderBarakoa(EntityRendererProvider.Context renderManager) {
+    public RenderUmvuthana(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ModelBarakoa());
-        this.addLayer(new StrixArmorLayer(this, renderManager));
+        this.addLayer(new UmvuthanaArmorLayer(this, renderManager));
         this.shadowRadius = 0.6f;
     }
 

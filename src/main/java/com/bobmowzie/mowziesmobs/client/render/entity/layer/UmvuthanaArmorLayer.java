@@ -26,14 +26,14 @@ import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 
 import java.util.Optional;
 
-public class StrixArmorLayer extends GeoLayerRenderer<EntityUmvuthana> {
+public class UmvuthanaArmorLayer extends GeoLayerRenderer<EntityUmvuthana> {
     private final HumanoidModel defaultBipedModel;
 
     protected Matrix4f dispatchedMat = new Matrix4f();
     protected Matrix4f renderEarlyMat = new Matrix4f();
     private MowzieGeckoEntity entity;
 
-    public StrixArmorLayer(IGeoRenderer<EntityUmvuthana> entityRendererIn, EntityRendererProvider.Context context) {
+    public UmvuthanaArmorLayer(IGeoRenderer<EntityUmvuthana> entityRendererIn, EntityRendererProvider.Context context) {
         super(entityRendererIn);
         defaultBipedModel = new HumanoidModel(context.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR));
     }
