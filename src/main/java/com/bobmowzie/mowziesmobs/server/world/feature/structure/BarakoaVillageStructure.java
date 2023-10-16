@@ -58,6 +58,8 @@ public class BarakoaVillageStructure extends MowzieStructure<NoneFeatureConfigur
                 int angle = random.nextInt(360);
                 BlockPos housePos = new BlockPos(centerPos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.getZ() + distance * Math.cos(Math.toRadians(angle)));
                 housePos = posToSurface(generator, housePos, heightLimitView);
+                int houseOceanFloorY = generator.getBaseHeight(housePos.getX(), housePos.getZ(), Heightmap.Types.OCEAN_FLOOR_WG, heightLimitView);
+                if (houseOceanFloorY < housePos.getY()) continue;
                 if (startHouse(generator, pieceGenerator.structureManager(), builder, housePos, pieceGenerator.random())) break;
             }
         }
@@ -70,6 +72,8 @@ public class BarakoaVillageStructure extends MowzieStructure<NoneFeatureConfigur
                 int angle = random.nextInt(360);
                 BlockPos treePos = new BlockPos(centerPos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.getZ() + distance * Math.cos(Math.toRadians(angle)));
                 treePos = posToSurface(generator, treePos, heightLimitView);
+                int treeOceanFloorY = generator.getBaseHeight(treePos.getX(), treePos.getZ(), Heightmap.Types.OCEAN_FLOOR_WG, heightLimitView);
+                if (treeOceanFloorY < treePos.getY()) continue;
                 int whichTree = random.nextInt(BarakoaVillagePieces.TREES.length);
                 StructurePiece tree = BarakoaVillagePieces.addPieceCheckBounds(BarakoaVillagePieces.TREES[whichTree], pieceGenerator.structureManager(), treePos, Rotation.values()[random.nextInt(Rotation.values().length)], builder, pieceGenerator.random());
                 if (tree != null) break;
@@ -86,6 +90,8 @@ public class BarakoaVillageStructure extends MowzieStructure<NoneFeatureConfigur
                 angle = random.nextInt(360);
                 BlockPos stakePos = new BlockPos(centerPos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.getZ() + distance * Math.cos(Math.toRadians(angle)));
                 stakePos = posToSurface(generator, stakePos, heightLimitView);
+                int stakeOceanFloorY = generator.getBaseHeight(stakePos.getX(), stakePos.getZ(), Heightmap.Types.OCEAN_FLOOR_WG, heightLimitView);
+                if (stakeOceanFloorY < stakePos.getY()) continue;
                 ResourceLocation whichSpike = BarakoaVillagePieces.SPIKES[random.nextInt(BarakoaVillagePieces.SPIKES.length)];
                 StructurePiece piece = BarakoaVillagePieces.addPieceCheckBounds(whichSpike, pieceGenerator.structureManager(), stakePos, Rotation.values()[random.nextInt(Rotation.values().length)], builder, pieceGenerator.random());
                 if (piece != null) {
