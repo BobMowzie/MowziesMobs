@@ -22,8 +22,9 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityUmvuthana> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(EntityUmvuthana object) {
-        return new ResourceLocation(MowziesMobs.MODID, "textures/entity/barakoa.png");
+    public ResourceLocation getTextureLocation(EntityUmvuthana entity) {
+        boolean isElite = entity.getMaskType() == MaskType.FAITH || entity.getMaskType() == MaskType.FURY;;
+        return new ResourceLocation(MowziesMobs.MODID, isElite ? "textures/entity/umvuthana_elite.png" : "textures/entity/umvuthana.png");
     }
 
     @Override
