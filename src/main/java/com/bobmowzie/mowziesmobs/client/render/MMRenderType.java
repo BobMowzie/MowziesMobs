@@ -33,6 +33,7 @@ public abstract class MMRenderType extends RenderType {
         return create("solar_flare", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, false, rendertype$state);
     }
 
+
     public static ParticleRenderType PARTICLE_SHEET_TRANSLUCENT_NO_DEPTH = new ParticleRenderType() {
         public void begin(BufferBuilder p_217600_1_, TextureManager p_217600_2_) {
             RenderSystem.depthMask(false);
