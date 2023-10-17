@@ -12,7 +12,7 @@ import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.damage.DamageUtil;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
@@ -120,7 +120,7 @@ public class EntitySolarBeam extends Entity {
             if (getHasPlayer()) {
                 this.updateWithPlayer();
             }
-            else if (caster instanceof EntityUmvuthi) {
+            else if (caster instanceof EntityBarako) {
                 this.updateWithBarako();
             }
         }
@@ -187,12 +187,12 @@ public class EntitySolarBeam extends Entity {
             }
             if (!level.isClientSide) {
                 for (LivingEntity target : hit) {
-                    if (caster instanceof EntityUmvuthi && target instanceof LeaderSunstrikeImmune) {
+                    if (caster instanceof EntityBarako && target instanceof LeaderSunstrikeImmune) {
                         continue;
                     }
                     float damageFire = 1f;
                     float damageMob = 1.5f;
-                    if (caster instanceof EntityUmvuthi) {
+                    if (caster instanceof EntityBarako) {
                         damageFire *= ConfigHandler.COMMON.MOBS.BARAKO.combatConfig.attackMultiplier.get();
                         damageMob *= ConfigHandler.COMMON.MOBS.BARAKO.combatConfig.attackMultiplier.get();
                     }
@@ -313,7 +313,7 @@ public class EntitySolarBeam extends Entity {
     }
 
     private void calculateEndPos() {
-        double radius = caster instanceof EntityUmvuthi ? RADIUS_BARAKO : RADIUS_PLAYER;
+        double radius = caster instanceof EntityBarako ? RADIUS_BARAKO : RADIUS_PLAYER;
         if (level.isClientSide()) {
             endPosX = getX() + radius * Math.cos(renderYaw) * Math.cos(renderPitch);
             endPosZ = getZ() + radius * Math.sin(renderYaw) * Math.cos(renderPitch);

@@ -5,7 +5,7 @@ import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleOrb;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -196,7 +196,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         double radiusSq = radius * radius;
         for (Entity entity : entities) {
             if (entity instanceof LivingEntity && getDistanceSqXZToEntity(entity) < radiusSq) {
-                if (caster instanceof EntityUmvuthi && (entity instanceof LeaderSunstrikeImmune)) {
+                if (caster instanceof EntityBarako && (entity instanceof LeaderSunstrikeImmune)) {
                     continue;
                 }
                 if (caster instanceof Player && entity == caster) {
@@ -204,7 +204,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                 }
                 float damageFire = 2f;
                 float damageMob = 2f;
-                if (caster instanceof EntityUmvuthi) {
+                if (caster instanceof EntityBarako) {
                     damageFire *= ConfigHandler.COMMON.MOBS.BARAKO.combatConfig.attackMultiplier.get();
                     damageMob *= ConfigHandler.COMMON.MOBS.BARAKO.combatConfig.attackMultiplier.get();
                 }

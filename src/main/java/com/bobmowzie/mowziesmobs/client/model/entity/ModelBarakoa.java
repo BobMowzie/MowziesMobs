@@ -3,37 +3,38 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthana;
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.MaskType;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaya;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
-public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityUmvuthana> {
+public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityBarakoa> {
     public ModelBarakoa() {
         super();
     }
 
     @Override
-    public ResourceLocation getModelLocation(EntityUmvuthana object) {
+    public ResourceLocation getModelLocation(EntityBarakoa object) {
         return new ResourceLocation(MowziesMobs.MODID, "geo/barakoa.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureLocation(EntityUmvuthana entity) {
-        boolean isElite = entity.getMaskType() == MaskType.FAITH || entity.getMaskType() == MaskType.FURY;;
-        return new ResourceLocation(MowziesMobs.MODID, isElite ? "textures/entity/umvuthana_elite.png" : "textures/entity/umvuthana.png");
+    public ResourceLocation getTextureLocation(EntityBarakoa object) {
+        return new ResourceLocation(MowziesMobs.MODID, "textures/entity/barakoa.png");
     }
 
     @Override
-    public ResourceLocation getAnimationFileLocation(EntityUmvuthana object) {
+    public ResourceLocation getAnimationFileLocation(EntityBarakoa object) {
         return new ResourceLocation(MowziesMobs.MODID, "animations/barakoa.animation.json");
     }
 
     @Override
-    public void codeAnimations(EntityUmvuthana entity, Integer uniqueID, AnimationEvent<?> customPredicate) {
+    public void codeAnimations(EntityBarakoa entity, Integer uniqueID, AnimationEvent<?> customPredicate) {
         boolean isBarakoana = entity.getMaskType() == MaskType.FURY;
         boolean isElite = entity.getMaskType() == MaskType.FAITH || isBarakoana;
         getMowzieBone("crestRight").isHidden = !isElite;
@@ -53,7 +54,7 @@ public class ModelBarakoa extends MowzieAnimatedGeoModel<EntityUmvuthana> {
 
         MowzieGeoBone mask = getMowzieBone("mask");
         MowzieGeoBone hips = getMowzieBone("hips");
-        if (entity.getActiveAbilityType() != EntityUmvuthana.TELEPORT_ABILITY) {
+        if (entity.getActiveAbilityType() != EntityBarakoa.TELEPORT_ABILITY) {
             mask.setScale(1.0f / (float) hips.getScale().x, 1.0f / (float) hips.getScale().y, 1.0f / (float) hips.getScale().z);
         }
 

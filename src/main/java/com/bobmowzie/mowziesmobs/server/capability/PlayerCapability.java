@@ -7,7 +7,7 @@ import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.PlayerAbility;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthanaFollowerToPlayer;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
 import com.bobmowzie.mowziesmobs.server.item.ItemEarthTalisman;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseDown;
@@ -84,9 +84,9 @@ public class PlayerCapability {
 
         void setTribeCircleTick(int tribeCircleTick);
 
-        List<EntityUmvuthanaFollowerToPlayer> getTribePack();
+        List<EntityBarakoanToPlayer> getTribePack();
 
-        void setTribePack(List<EntityUmvuthanaFollowerToPlayer> tribePack);
+        void setTribePack(List<EntityBarakoanToPlayer> tribePack);
 
         int getTribePackRadius();
 
@@ -96,9 +96,9 @@ public class PlayerCapability {
 
         Vec3 getPrevMotion();
 
-        void removePackMember(EntityUmvuthanaFollowerToPlayer tribePlayer);
+        void removePackMember(EntityBarakoanToPlayer tribePlayer);
 
-        void addPackMember(EntityUmvuthanaFollowerToPlayer tribePlayer);
+        void addPackMember(EntityBarakoanToPlayer tribePlayer);
 
         void setUsingSolarBeam(boolean b);
 
@@ -124,7 +124,7 @@ public class PlayerCapability {
         private float prevCooledAttackStrength;
 
         public int tribeCircleTick;
-        public List<EntityUmvuthanaFollowerToPlayer> tribePack = new ArrayList<>();
+        public List<EntityBarakoanToPlayer> tribePack = new ArrayList<>();
         public int tribePackRadius = 3;
 
         @OnlyIn(Dist.CLIENT)
@@ -194,11 +194,11 @@ public class PlayerCapability {
             this.tribeCircleTick = tribeCircleTick;
         }
 
-        public List<EntityUmvuthanaFollowerToPlayer> getTribePack() {
+        public List<EntityBarakoanToPlayer> getTribePack() {
             return tribePack;
         }
 
-        public void setTribePack(List<EntityUmvuthanaFollowerToPlayer> tribePack) {
+        public void setTribePack(List<EntityBarakoanToPlayer> tribePack) {
             this.tribePack = tribePack;
         }
 
@@ -270,10 +270,10 @@ public class PlayerCapability {
                 if (player.getOffhandItem().getItem() instanceof ItemEarthTalisman)
                     player.addEffect(new MobEffectInstance(EffectHandler.GEOMANCY, 20, 0, false, false));
 
-                List<EntityUmvuthanaFollowerToPlayer> pack = tribePack;
+                List<EntityBarakoanToPlayer> pack = tribePack;
                 float theta = (2 * (float) Math.PI / pack.size());
                 for (int i = 0; i < pack.size(); i++) {
-                    EntityUmvuthanaFollowerToPlayer barakoan = pack.get(i);
+                    EntityBarakoanToPlayer barakoan = pack.get(i);
                     barakoan.index = i;
                     float distanceToPlayer = player.distanceTo(barakoan);
                     if (barakoan.getTarget() == null && barakoan.getActiveAbility() == null) {
@@ -419,7 +419,7 @@ public class PlayerCapability {
             }
         }
 
-        private void tryTeleportBarakoan(Player player, EntityUmvuthanaFollowerToPlayer barakoan) {
+        private void tryTeleportBarakoan(Player player, EntityBarakoanToPlayer barakoan) {
             int x = Mth.floor(player.getX()) - 2;
             int z = Mth.floor(player.getZ()) - 2;
             int y = Mth.floor(player.getBoundingBox().minY);
@@ -447,11 +447,11 @@ public class PlayerCapability {
             return tribePack.size();
         }
 
-        public void removePackMember(EntityUmvuthanaFollowerToPlayer tribePlayer) {
+        public void removePackMember(EntityBarakoanToPlayer tribePlayer) {
             tribePack.remove(tribePlayer);
         }
 
-        public void addPackMember(EntityUmvuthanaFollowerToPlayer tribePlayer) {
+        public void addPackMember(EntityBarakoanToPlayer tribePlayer) {
             tribePack.add(tribePlayer);
         }
 

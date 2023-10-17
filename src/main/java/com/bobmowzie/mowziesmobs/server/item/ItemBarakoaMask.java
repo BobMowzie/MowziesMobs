@@ -1,16 +1,24 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.LayerHandler;
+import com.bobmowzie.mowziesmobs.client.model.armor.BarakoaMaskModel;
+import com.bobmowzie.mowziesmobs.client.render.item.RenderBarakoaMask;
+import com.bobmowzie.mowziesmobs.client.render.item.RenderSculptorStaff;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthanaFollowerToPlayer;
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthanaCraneToPlayer;
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.MaskType;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoayaToPlayer;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -35,6 +43,7 @@ import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.item.GeoArmorItem;
 import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
 import software.bernie.geckolib3.util.GeckoLibUtil;
 
@@ -87,9 +96,9 @@ public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask, IAn
             if (angle < 0) {
                 angle = angle + 360;
             }
-            EntityUmvuthanaFollowerToPlayer barakoa;
-            if (mask == MaskType.FAITH) barakoa = new EntityUmvuthanaCraneToPlayer(EntityHandler.BARAKOAYA_TO_PLAYER.get(), player.level, player);
-            else barakoa = new EntityUmvuthanaFollowerToPlayer(EntityHandler.BARAKOAN_TO_PLAYER.get(), player.level, player);
+            EntityBarakoanToPlayer barakoa;
+            if (mask == MaskType.FAITH) barakoa = new EntityBarakoayaToPlayer(EntityHandler.BARAKOAYA_TO_PLAYER.get(), player.level, player);
+            else barakoa = new EntityBarakoanToPlayer(EntityHandler.BARAKOAN_TO_PLAYER.get(), player.level, player);
 //            property.addPackMember(barakoa);
             if (!player.level.isClientSide) {
                 if (mask != MaskType.FAITH) {

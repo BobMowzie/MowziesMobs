@@ -1,15 +1,15 @@
 package com.bobmowzie.mowziesmobs.server.ai;
 
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthanaMinion;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaVillager;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.EnumSet;
 
 public final class EntityAIBarakoayaTrade extends Goal {
-    private final EntityUmvuthanaMinion barakoaya;
+    private final EntityBarakoaVillager barakoaya;
 
-    public EntityAIBarakoayaTrade(EntityUmvuthanaMinion barakoaya) {
+    public EntityAIBarakoayaTrade(EntityBarakoaVillager barakoaya) {
         this.barakoaya = barakoaya;
         setFlags(EnumSet.of(Flag.MOVE, Flag.JUMP, Flag.TARGET));
     }

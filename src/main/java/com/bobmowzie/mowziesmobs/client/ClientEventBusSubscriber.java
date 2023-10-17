@@ -6,20 +6,25 @@ import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.client.gui.GuiSculptorTrade;
 import com.bobmowzie.mowziesmobs.client.render.block.GongRenderer;
 import com.bobmowzie.mowziesmobs.client.render.entity.*;
+import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.block.entity.BlockEntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.MaskType;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderBase;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderProjectile;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerHandler;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ForgeModelBakery;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.registries.RegistryObject;
 
 @Mod.EventBusSubscriber(modid = MowziesMobs.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientEventBusSubscriber {
@@ -29,13 +34,13 @@ public class ClientEventBusSubscriber {
         EntityRenderers.register(EntityHandler.BABY_FOLIAATH.get(), RenderFoliaathBaby::new);
         EntityRenderers.register(EntityHandler.FOLIAATH.get(), RenderFoliaath::new);
         EntityRenderers.register(EntityHandler.WROUGHTNAUT.get(), RenderWroughtnaut::new);
-        EntityRenderers.register(EntityHandler.BARAKO.get(), RenderUmvuthi::new);
-        EntityRenderers.register(EntityHandler.BARAKOANA.get(), RenderUmvuthana::new);
-        EntityRenderers.register(EntityHandler.BARAKOAN_TO_BARAKOANA.get(), RenderUmvuthana::new);
-        EntityRenderers.register(EntityHandler.BARAKOA_VILLAGER.get(), RenderUmvuthana::new);
-        EntityRenderers.register(EntityHandler.BARAKOAN_TO_PLAYER.get(), RenderUmvuthana::new);
-        EntityRenderers.register(EntityHandler.BARAKOAYA_TO_PLAYER.get(), RenderUmvuthana::new);
-        EntityRenderers.register(EntityHandler.BARAKOAYA.get(), RenderUmvuthana::new);
+        EntityRenderers.register(EntityHandler.BARAKO.get(), RenderBarako::new);
+        EntityRenderers.register(EntityHandler.BARAKOANA.get(), RenderBarakoa::new);
+        EntityRenderers.register(EntityHandler.BARAKOAN_TO_BARAKOANA.get(), RenderBarakoa::new);
+        EntityRenderers.register(EntityHandler.BARAKOA_VILLAGER.get(), RenderBarakoa::new);
+        EntityRenderers.register(EntityHandler.BARAKOAN_TO_PLAYER.get(), RenderBarakoa::new);
+        EntityRenderers.register(EntityHandler.BARAKOAYA_TO_PLAYER.get(), RenderBarakoa::new);
+        EntityRenderers.register(EntityHandler.BARAKOAYA.get(), RenderBarakoa::new);
         EntityRenderers.register(EntityHandler.FROSTMAW.get(), RenderFrostmaw::new);
         EntityRenderers.register(EntityHandler.GROTTOL.get(), RenderGrottol::new);
         EntityRenderers.register(EntityHandler.LANTERN.get(), RenderLantern::new);

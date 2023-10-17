@@ -1,24 +1,24 @@
 package com.bobmowzie.mowziesmobs.server.inventory;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 
 public final class ContainerBarakoTrade extends ContainerTradeBase {
-    private final EntityUmvuthi barako;
+    private final EntityBarako barako;
     private final InventoryBarako inventoryBarako;
 
     public ContainerBarakoTrade(int id, Inventory playerInventory) {
-        this(id, (EntityUmvuthi) MowziesMobs.PROXY.getReferencedMob(), playerInventory);
+        this(id, (EntityBarako) MowziesMobs.PROXY.getReferencedMob(), playerInventory);
     }
 
-    public ContainerBarakoTrade(int id, EntityUmvuthi barako, Inventory playerInv) {
+    public ContainerBarakoTrade(int id, EntityBarako barako, Inventory playerInv) {
         this(id, barako, new InventoryBarako(barako), playerInv);
     }
 
-    public ContainerBarakoTrade(int id, EntityUmvuthi barako, InventoryBarako inventory, Inventory playerInv) {
+    public ContainerBarakoTrade(int id, EntityBarako barako, InventoryBarako inventory, Inventory playerInv) {
         super(ContainerHandler.CONTAINER_BARAKO_TRADE, id, barako, inventory, playerInv);
         this.barako = barako;
         this.inventoryBarako = inventory;
@@ -26,7 +26,7 @@ public final class ContainerBarakoTrade extends ContainerTradeBase {
 
     @Override
     protected void addCustomSlots(Inventory playerInv) {
-        EntityUmvuthi barako = (EntityUmvuthi) getTradingMob();
+        EntityBarako barako = (EntityBarako) getTradingMob();
         InventoryBarako inventoryBarako = (InventoryBarako) this.inventory;
         if (barako != null && !barako.hasTradedWith(playerInv.player)) addSlot(new Slot(inventoryBarako, 0, 69, 54));
     }
@@ -37,7 +37,7 @@ public final class ContainerBarakoTrade extends ContainerTradeBase {
         if (barako != null) barako.setCustomer(null);
     }
 
-    public EntityUmvuthi getBarako() {
+    public EntityBarako getBarako() {
         return barako;
     }
 

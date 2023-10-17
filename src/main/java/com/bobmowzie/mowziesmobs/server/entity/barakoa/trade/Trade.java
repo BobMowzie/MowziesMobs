@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.server.entity.umvuthana.trade;
+package com.bobmowzie.mowziesmobs.server.entity.barakoa.trade;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;

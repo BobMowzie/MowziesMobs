@@ -1,10 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.message;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoTrade;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -48,10 +49,10 @@ public class MessageBarakoTrade {
             context.enqueueWork(() -> {
                 if (player != null) {
                     Entity entity = player.level.getEntity(message.entityID);
-                    if (!(entity instanceof EntityUmvuthi)) {
+                    if (!(entity instanceof EntityBarako)) {
                         return;
                     }
-                    EntityUmvuthi barako = (EntityUmvuthi) entity;
+                    EntityBarako barako = (EntityBarako) entity;
                     if (barako.getCustomer() != player) {
                         return;
                     }
@@ -69,9 +70,9 @@ public class MessageBarakoTrade {
                     }
                     if (satisfied) {
                         player.addEffect(new MobEffectInstance(EffectHandler.SUNS_BLESSING, ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.effectDuration.get() * 60 * 20, 0, false, false));
-                        if (barako.getActiveAbilityType() != EntityUmvuthi.BLESS_ABILITY) {
+                        if (barako.getActiveAbilityType() != EntityBarako.BLESS_ABILITY) {
 //                            barako.setAnimationTick(0); TODO
-                            barako.sendAbilityMessage(EntityUmvuthi.BLESS_ABILITY);
+                            barako.sendAbilityMessage(EntityBarako.BLESS_ABILITY);
                             barako.playSound(MMSounds.ENTITY_BARAKO_BLESS.get(), 2, 1);
                         }
                     }

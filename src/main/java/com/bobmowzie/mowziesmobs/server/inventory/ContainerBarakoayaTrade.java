@@ -1,8 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.inventory;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthanaMinion;
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.trade.Trade;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaVillager;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -10,18 +10,18 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public final class ContainerBarakoayaTrade extends ContainerTradeBase {
-    private final EntityUmvuthanaMinion barakoaVillager;
+    private final EntityBarakoaVillager barakoaVillager;
     private final InventoryBarakoaya inventoryBarakoaya;
 
     public ContainerBarakoayaTrade(int id, Inventory playerInventory) {
-        this(id, (EntityUmvuthanaMinion) MowziesMobs.PROXY.getReferencedMob(), playerInventory);
+        this(id, (EntityBarakoaVillager) MowziesMobs.PROXY.getReferencedMob(), playerInventory);
     }
 
-    public ContainerBarakoayaTrade(int id, EntityUmvuthanaMinion barakoaya, Inventory playerInv) {
+    public ContainerBarakoayaTrade(int id, EntityBarakoaVillager barakoaya, Inventory playerInv) {
         this(id, barakoaya, new InventoryBarakoaya(barakoaya), playerInv);
     }
 
-    public ContainerBarakoayaTrade(int id, EntityUmvuthanaMinion barakoaVillager, InventoryBarakoaya inventory, Inventory playerInv) {
+    public ContainerBarakoayaTrade(int id, EntityBarakoaVillager barakoaVillager, InventoryBarakoaya inventory, Inventory playerInv) {
         super(ContainerHandler.CONTAINER_BARAKOAYA_TRADE, id, barakoaVillager, inventory, playerInv);
         this.inventoryBarakoaya = inventory;
         this.barakoaVillager = barakoaVillager;
@@ -45,7 +45,7 @@ public final class ContainerBarakoayaTrade extends ContainerTradeBase {
         if (barakoaVillager != null) barakoaVillager.setCustomer(null);
     }
 
-    public EntityUmvuthanaMinion getBarakoaVillager() {
+    public EntityBarakoaVillager getBarakoaVillager() {
         return barakoaVillager;
     }
 

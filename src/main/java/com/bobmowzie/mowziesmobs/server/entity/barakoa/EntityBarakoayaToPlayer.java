@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.server.entity.umvuthana;
+package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
 import com.bobmowzie.mowziesmobs.server.ai.NearestAttackableTargetPredicateGoal;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
@@ -14,13 +14,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 
-public class EntityUmvuthanaCraneToPlayer extends EntityUmvuthanaFollowerToPlayer {
+public class EntityBarakoayaToPlayer extends EntityBarakoanToPlayer {
 
-    public EntityUmvuthanaCraneToPlayer(EntityType<? extends EntityUmvuthanaCraneToPlayer> type, Level world) {
+    public EntityBarakoayaToPlayer(EntityType<? extends EntityBarakoayaToPlayer> type, Level world) {
         this(type, world, null);
     }
 
-    public EntityUmvuthanaCraneToPlayer(EntityType<? extends EntityUmvuthanaCraneToPlayer> type, Level world, Player leader) {
+    public EntityBarakoayaToPlayer(EntityType<? extends EntityBarakoayaToPlayer> type, Level world, Player leader) {
         super(type, world, leader);
         setMask(MaskType.FAITH);
         setWeapon(3);
@@ -29,7 +29,7 @@ public class EntityUmvuthanaCraneToPlayer extends EntityUmvuthanaFollowerToPlaye
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(4, new EntityUmvuthanaCrane.HealTargetGoal(this));
+        this.goalSelector.addGoal(4, new EntityBarakoaya.HealTargetGoal(this));
     }
 
     @Override
@@ -46,7 +46,7 @@ public class EntityUmvuthanaCraneToPlayer extends EntityUmvuthanaFollowerToPlaye
                 if (livingentity == null) {
                     livingentity = this.targetMob;
                 }
-                return super.canContinueToUse() && this.mob instanceof EntityUmvuthanaCraneToPlayer && ((EntityUmvuthanaCraneToPlayer)this.mob).healAICheckTarget(livingentity);
+                return super.canContinueToUse() && this.mob instanceof EntityBarakoayaToPlayer && ((EntityBarakoayaToPlayer)this.mob).healAICheckTarget(livingentity);
             }
         });
     }
@@ -54,7 +54,7 @@ public class EntityUmvuthanaCraneToPlayer extends EntityUmvuthanaFollowerToPlaye
     private boolean healAICheckTarget(LivingEntity livingentity) {
         if (livingentity != getLeader()) return false;
         boolean targetHasTarget = livingentity.getLastHurtMob() != null && (livingentity.tickCount - livingentity.getLastHurtMobTimestamp() < 120 || livingentity.distanceToSqr(livingentity.getLastHurtMob()) < 256);
-        if (livingentity.getLastHurtMob() instanceof EntityUmvuthanaFollowerToPlayer) targetHasTarget = false;
+        if (livingentity.getLastHurtMob() instanceof EntityBarakoanToPlayer) targetHasTarget = false;
         boolean canHeal = this.canHeal(livingentity);
         boolean survivalMode = !livingentity.isSpectator() && !((Player)livingentity).isCreative();
         return (livingentity.getHealth() < livingentity.getMaxHealth() || targetHasTarget) && canHeal && survivalMode;

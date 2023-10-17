@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.server.entity.umvuthana;
+package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
@@ -18,6 +18,7 @@ import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.ai.NearestAttackableTargetPredicateGoal;
 import com.bobmowzie.mowziesmobs.server.ai.UseAbilityAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.*;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.*;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
@@ -29,6 +30,8 @@ import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import com.ilexiconn.llibrary.server.animation.Animation;
+import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -77,18 +80,18 @@ import net.minecraftforge.registries.ForgeRegistries;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeImmune, Enemy {
-    public static final AbilityType<EntityUmvuthi, DieAbility<EntityUmvuthi>> DIE_ABILITY = new AbilityType<>("barako_die", (type, entity) -> new DieAbility<>(type, entity,"death", 70));
-    public static final AbilityType<EntityUmvuthi, HurtAbility<EntityUmvuthi>> HURT_ABILITY = new AbilityType<>("barako_hurt", (type, entity) -> new HurtAbility<>(type, entity,"barako_hurt", 13));
-    public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> BELLY_ABILITY = new AbilityType<>("barako_belly", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 40));
-    public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> TALK_ABILITY = new AbilityType<>("barako_talk", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 80));
-    public static final AbilityType<EntityUmvuthi, SunstrikeAbility> SUNSTRIKE_ABILITY = new AbilityType<>("barako_sunstrike", SunstrikeAbility::new);
-    public static final AbilityType<EntityUmvuthi, FlareAbility> ATTACK_ABILITY = new AbilityType<>("barako_flare", FlareAbility::new);
-    public static final AbilityType<EntityUmvuthi, SpawnFollowersAbility> SPAWN_ABILITY = new AbilityType<>("barako_spawn", (type, entity) -> new SpawnFollowersAbility(type, entity, false));
-    public static final AbilityType<EntityUmvuthi, SpawnFollowersAbility> SPAWN_SUNBLOCKERS_ABILITY = new AbilityType<>("barako_spawn_healers", (type, entity) -> new SpawnFollowersAbility(type, entity, true));
-    public static final AbilityType<EntityUmvuthi, SolarBeamAbility> SOLAR_BEAM_ABILITY = new AbilityType<>("barako_solar_beam", SolarBeamAbility::new);
-    public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> BLESS_ABILITY = new AbilityType<>("barako_bless", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 60));
-    public static final AbilityType<EntityUmvuthi, SupernovaAbility> SUPERNOVA_ABILITY = new AbilityType<>("barako_supernova", SupernovaAbility::new);
+public class EntityBarako extends MowzieGeckoEntity implements LeaderSunstrikeImmune, Enemy {
+    public static final AbilityType<EntityBarako, DieAbility<EntityBarako>> DIE_ABILITY = new AbilityType<>("barako_die", (type, entity) -> new DieAbility<>(type, entity,"death", 70));
+    public static final AbilityType<EntityBarako, HurtAbility<EntityBarako>> HURT_ABILITY = new AbilityType<>("barako_hurt", (type, entity) -> new HurtAbility<>(type, entity,"barako_hurt", 13));
+    public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> BELLY_ABILITY = new AbilityType<>("barako_belly", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 40));
+    public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> TALK_ABILITY = new AbilityType<>("barako_talk", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 80));
+    public static final AbilityType<EntityBarako, SunstrikeAbility> SUNSTRIKE_ABILITY = new AbilityType<>("barako_sunstrike", SunstrikeAbility::new);
+    public static final AbilityType<EntityBarako, FlareAbility> ATTACK_ABILITY = new AbilityType<>("barako_flare", FlareAbility::new);
+    public static final AbilityType<EntityBarako, SpawnFollowersAbility> SPAWN_ABILITY = new AbilityType<>("barako_spawn", (type, entity) -> new SpawnFollowersAbility(type, entity, false));
+    public static final AbilityType<EntityBarako, SpawnFollowersAbility> SPAWN_SUNBLOCKERS_ABILITY = new AbilityType<>("barako_spawn_healers", (type, entity) -> new SpawnFollowersAbility(type, entity, true));
+    public static final AbilityType<EntityBarako, SolarBeamAbility> SOLAR_BEAM_ABILITY = new AbilityType<>("barako_solar_beam", SolarBeamAbility::new);
+    public static final AbilityType<EntityBarako, SimpleAnimationAbility<EntityBarako>> BLESS_ABILITY = new AbilityType<>("barako_bless", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"barakoa_teleport", 60));
+    public static final AbilityType<EntityBarako, SupernovaAbility> SUPERNOVA_ABILITY = new AbilityType<>("barako_supernova", SupernovaAbility::new);
     private static final int MAX_HEALTH = 150;
     private static final int SUNSTRIKE_PAUSE_MAX = 50;
     private static final int SUNSTRIKE_PAUSE_MIN = 30;
@@ -97,14 +100,14 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
     private static final int BARAKOA_PAUSE = 200;
     private static final int HEAL_PAUSE = 75;
     private static final int HEALTH_LOST_BETWEEN_SUNBLOCKERS = 45;
-    private static final EntityDataAccessor<Integer> DIRECTION = SynchedEntityData.defineId(EntityUmvuthi.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Integer> DIALOGUE = SynchedEntityData.defineId(EntityUmvuthi.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Boolean> ANGRY = SynchedEntityData.defineId(EntityUmvuthi.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<ItemStack> DESIRES = SynchedEntityData.defineId(EntityUmvuthi.class, EntityDataSerializers.ITEM_STACK);
-    private static final EntityDataAccessor<CompoundTag> TRADED_PLAYERS = SynchedEntityData.defineId(EntityUmvuthi.class, EntityDataSerializers.COMPOUND_TAG);
-    private static final EntityDataAccessor<Float> HEALTH_LOST = SynchedEntityData.defineId(EntityUmvuthi.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Optional<UUID>> MISBEHAVED_PLAYER = SynchedEntityData.defineId(EntityUmvuthi.class, EntityDataSerializers.OPTIONAL_UUID);
-    private static final EntityDataAccessor<Boolean> IS_TRADING = SynchedEntityData.defineId(EntityUmvuthi.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> DIRECTION = SynchedEntityData.defineId(EntityBarako.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> DIALOGUE = SynchedEntityData.defineId(EntityBarako.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> ANGRY = SynchedEntityData.defineId(EntityBarako.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<ItemStack> DESIRES = SynchedEntityData.defineId(EntityBarako.class, EntityDataSerializers.ITEM_STACK);
+    private static final EntityDataAccessor<CompoundTag> TRADED_PLAYERS = SynchedEntityData.defineId(EntityBarako.class, EntityDataSerializers.COMPOUND_TAG);
+    private static final EntityDataAccessor<Float> HEALTH_LOST = SynchedEntityData.defineId(EntityBarako.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Optional<UUID>> MISBEHAVED_PLAYER = SynchedEntityData.defineId(EntityBarako.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Boolean> IS_TRADING = SynchedEntityData.defineId(EntityBarako.class, EntityDataSerializers.BOOLEAN);
     public ControlledAnimation legsUp = new ControlledAnimation(15);
     public ControlledAnimation angryEyebrow = new ControlledAnimation(5);
     private Player customer;
@@ -133,7 +136,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
     );
     private static ParticleComponent.KeyTrack superNovaKeyTrack2 = ParticleComponent.KeyTrack.oscillate(0, 1, 30);
 
-    public EntityUmvuthi(EntityType<? extends EntityUmvuthi> type, Level world) {
+    public EntityBarako(EntityType<? extends EntityBarako> type, Level world) {
         super(type, world);
         if (getDirectionData() == 0) {
             this.setDirection(random.nextInt(4) + 1);
@@ -229,7 +232,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SPAWN_ABILITY));
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SPAWN_SUNBLOCKERS_ABILITY));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, EntityUmvuthana.class, 8.0F));
+        this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, EntityBarakoa.class, 8.0F));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
     }
 
@@ -307,7 +310,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
 //        this.posX = prevPosX;
 //        this.posZ = prevPosZ;
 
-        if (!level.isClientSide && getHealthLost() >= HEALTH_LOST_BETWEEN_SUNBLOCKERS && getActiveAbility() == null && !isNoAi() && getEntitiesNearby(EntityUmvuthanaCrane.class, 40).size() < 3) {
+        if (!level.isClientSide && getHealthLost() >= HEALTH_LOST_BETWEEN_SUNBLOCKERS && getActiveAbility() == null && !isNoAi() && getEntitiesNearby(EntityBarakoaya.class, 40).size() < 3) {
             sendAbilityMessage(SPAWN_SUNBLOCKERS_ABILITY);
             setHealthLost(0);
         }
@@ -325,7 +328,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             float entityRelativeAngle = Math.abs(entityHitAngle - entityAttackingAngle);
             Vec3 betweenEntitiesVec = position().subtract(target.position());
             boolean targetComingCloser = target.getDeltaMovement().dot(betweenEntitiesVec) > 0 && target.getDeltaMovement().lengthSqr() > 0.015;
-            if (getActiveAbility() == null && !isNoAi() && random.nextInt(80) == 0 && (targetDistance > 5.5 || hasEffect(EffectHandler.SUNBLOCK)) && timeUntilBarakoa <= 0 && getEntitiesNearby(EntityUmvuthana.class, 50).size() < 4) {
+            if (getActiveAbility() == null && !isNoAi() && random.nextInt(80) == 0 && (targetDistance > 5.5 || hasEffect(EffectHandler.SUNBLOCK)) && timeUntilBarakoa <= 0 && getEntitiesNearby(EntityBarakoa.class, 50).size() < 4) {
                 sendAbilityMessage(SPAWN_ABILITY);
                 timeUntilBarakoa = BARAKOA_PAUSE;
             } else if (getActiveAbility() == null && !isNoAi() && getHealthRatio() <= 0.6 && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300) && getSensing().hasLineOfSight(target) && targetDistance < EntitySolarBeam.RADIUS_BARAKO) {
@@ -859,10 +862,10 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
     @Override
     public void die(DamageSource cause) {
         super.die(cause);
-        List<EntityUmvuthana> barakoa = getEntitiesNearby(EntityUmvuthana.class, 30, 20, 30, 30);
-        for (EntityUmvuthana entityBarakoa : barakoa) {
+        List<EntityBarakoa> barakoa = getEntitiesNearby(EntityBarakoa.class, 30, 20, 30, 30);
+        for (EntityBarakoa entityBarakoa : barakoa) {
             if (entityBarakoa.isBarakoDevoted()) {
-                if (entityBarakoa instanceof EntityUmvuthanaCrane) ((EntityUmvuthanaCrane)entityBarakoa).hasTriedOrSucceededTeleport = true;
+                if (entityBarakoa instanceof EntityBarakoaya) ((EntityBarakoaya)entityBarakoa).hasTriedOrSucceededTeleport = true;
                 entityBarakoa.timeUntilDeath = random.nextInt(20);
             }
         }
@@ -894,12 +897,12 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             playerEntity.openMenu(new MenuProvider() {
                 @Override
                 public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player) {
-                    return new ContainerBarakoTrade(id, EntityUmvuthi.this, playerInventory);
+                    return new ContainerBarakoTrade(id, EntityBarako.this, playerInventory);
                 }
 
                 @Override
                 public Component getDisplayName() {
-                    return EntityUmvuthi.this.getDisplayName();
+                    return EntityBarako.this.getDisplayName();
                 }
             });
         }
@@ -992,7 +995,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         return MMSounds.MUSIC_BARAKO_THEME.get();
     }
 
-    public static class SunstrikeAbility extends Ability<EntityUmvuthi> {
+    public static class SunstrikeAbility extends Ability<EntityBarako> {
         private static int STARTUP_DURATION = 9;
 
         protected LivingEntity entityTarget;
@@ -1002,7 +1005,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         private int newZ;
         private int y;
 
-        public SunstrikeAbility(AbilityType abilityType, EntityUmvuthi user) {
+        public SunstrikeAbility(AbilityType abilityType, EntityBarako user) {
             super(abilityType, user, new AbilitySection[] {
                     new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, STARTUP_DURATION),
                     new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
@@ -1075,11 +1078,11 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         }
     }
 
-    public static class SolarBeamAbility extends Ability<EntityUmvuthi> {
+    public static class SolarBeamAbility extends Ability<EntityBarako> {
         protected LivingEntity entityTarget;
         private EntitySolarBeam solarBeam;
 
-        public SolarBeamAbility(AbilityType abilityType, EntityUmvuthi user) {
+        public SolarBeamAbility(AbilityType abilityType, EntityBarako user) {
             super(abilityType, user, new AbilitySection[] {
                     new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 22),
                     new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.ACTIVE, 68),
@@ -1097,7 +1100,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         public void tickUsing() {
             super.tickUsing();
             float radius1 = 0.8f;
-            EntityUmvuthi entity = getUser();
+            EntityBarako entity = getUser();
             if (getTicksInUse() == 4 && !entity.level.isClientSide) {
                 solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM.get(), getUser().level, entity, entity.getX() + radius1 * Math.sin(-entity.getYRot() * Math.PI / 180), entity.getY() + 1.4, entity.getZ() + radius1 * Math.cos(-entity.getYRot() * Math.PI / 180), (float) ((entity.yHeadRot + 90) * Math.PI / 180), (float) (-entity.getXRot() * Math.PI / 180), 55);
                 entity.level.addFreshEntity(solarBeam);
@@ -1110,10 +1113,10 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         }
     }
 
-    public static class FlareAbility extends Ability<EntityUmvuthi> {
+    public static class FlareAbility extends Ability<EntityBarako> {
         protected LivingEntity entityTarget;
 
-        public FlareAbility(AbilityType abilityType, EntityUmvuthi user) {
+        public FlareAbility(AbilityType abilityType, EntityBarako user) {
             super(abilityType, user, new AbilitySection[] {
                     new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 12),
                     new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
@@ -1131,7 +1134,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         protected void beginSection(AbilitySection section) {
             super.beginSection(section);
             if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
-                EntityUmvuthi entity = getUser();
+                EntityBarako entity = getUser();
                 float radius = 4f;
                 List<LivingEntity> hit = entity.getEntityLivingBaseNearby(radius, 2 * radius, radius, radius);
                 for (LivingEntity aHit : hit) {
@@ -1155,10 +1158,10 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         }
     }
 
-    public static class SpawnFollowersAbility extends Ability<EntityUmvuthi> {
+    public static class SpawnFollowersAbility extends Ability<EntityBarako> {
         private boolean spawnSunblockers;
 
-        public SpawnFollowersAbility(AbilityType abilityType, EntityUmvuthi user, boolean spawnSunblockers) {
+        public SpawnFollowersAbility(AbilityType abilityType, EntityBarako user, boolean spawnSunblockers) {
             super(abilityType, user, new AbilitySection[] {
                     new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 6),
                     new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
@@ -1184,7 +1187,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         @Override
         protected void beginSection(AbilitySection section) {
             super.beginSection(section);
-            EntityUmvuthi entity = getUser();
+            EntityBarako entity = getUser();
             if (section.sectionType == AbilitySection.AbilitySectionType.STARTUP) {
                 getUser().playSound(MMSounds.ENTITY_BARAKOA_INHALE.get(), 1.2f, 0.5f);
             }
@@ -1201,11 +1204,11 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
                     } else if (angle - entity.getYRot() < -70) {
                         angle = -70 + entity.getYRot();
                     }
-                    EntityUmvuthanaMinion barakoa;
+                    EntityBarakoaVillager barakoa;
                     if (spawnSunblockers) {
-                        barakoa = new EntityUmvuthanaCrane(EntityHandler.BARAKOAYA.get(), entity.level);
-                        ((EntityUmvuthanaCrane) barakoa).hasTriedOrSucceededTeleport = false;
-                    } else barakoa = new EntityUmvuthanaMinion(EntityHandler.BARAKOA_VILLAGER.get(), entity.level);
+                        barakoa = new EntityBarakoaya(EntityHandler.BARAKOAYA.get(), entity.level);
+                        ((EntityBarakoaya) barakoa).hasTriedOrSucceededTeleport = false;
+                    } else barakoa = new EntityBarakoaVillager(EntityHandler.BARAKOA_VILLAGER.get(), entity.level);
                     barakoa.absMoveTo(entity.getX() + 2 * Math.sin(-angle * (Math.PI / 180)), entity.getY() + 1.5, entity.getZ() + 2 * Math.cos(-angle * (Math.PI / 180)), entity.yHeadRot, 0);
                     barakoa.setActive(false);
                     barakoa.active = false;
@@ -1235,9 +1238,9 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         }
     }
 
-    public static class SupernovaAbility extends Ability<EntityUmvuthi> {
+    public static class SupernovaAbility extends Ability<EntityBarako> {
 
-        public SupernovaAbility(AbilityType abilityType, EntityUmvuthi user) {
+        public SupernovaAbility(AbilityType abilityType, EntityBarako user) {
             super(abilityType, user, new AbilitySection[]{
                     new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 44),
                     new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.ACTIVE, 40),
