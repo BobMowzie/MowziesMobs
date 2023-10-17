@@ -50,31 +50,50 @@ public class BarakoaVillageStructure extends MowzieStructure<NoneFeatureConfigur
         BlockPos thronePos = posToSurface(generator, centerPos.offset(offset), heightLimitView);
         BarakoaVillagePieces.addPiece(BarakoaVillagePieces.THRONE, pieceGenerator.structureManager(), thronePos, rotation, builder, pieceGenerator.random());
 
-        //Houses
-        int numHouses = random.nextInt(4) + 3;
+        //Platforms
+        int numHouses = random.nextInt(2) + 2;
         for (int i = 1; i <= numHouses; i++) {
             for (int j = 0; j < 30; j++) {
-                float distance = random.nextInt(8) + 10;
+                float distance = random.nextInt(8) + 13;
                 int angle = random.nextInt(360);
                 BlockPos housePos = new BlockPos(centerPos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.getZ() + distance * Math.cos(Math.toRadians(angle)));
                 housePos = posToSurface(generator, housePos, heightLimitView);
-                housePos = housePos.relative(Direction.UP, random.nextInt(2));
+                int houseOceanFloorY = generator.getBaseHeight(housePos.getX(), housePos.getZ(), Heightmap.Types.OCEAN_FLOOR_WG, heightLimitView);
+                if (houseOceanFloorY < housePos.getY()) continue;
                 if (startHouse(generator, pieceGenerator.structureManager(), builder, housePos, pieceGenerator.random())) break;
             }
         }
 
+        //Trees
+        int numTrees = random.nextInt(3) + 2;
+        for (int i = 1; i <= numTrees; i++) {
+            for (int j = 0; j < 30; j++) {
+                float distance = random.nextInt(14) + 13;
+                int angle = random.nextInt(360);
+                BlockPos treePos = new BlockPos(centerPos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.getZ() + distance * Math.cos(Math.toRadians(angle)));
+                treePos = posToSurface(generator, treePos, heightLimitView);
+                int treeOceanFloorY = generator.getBaseHeight(treePos.getX(), treePos.getZ(), Heightmap.Types.OCEAN_FLOOR_WG, heightLimitView);
+                if (treeOceanFloorY < treePos.getY()) continue;
+                int whichTree = random.nextInt(BarakoaVillagePieces.TREES.length);
+                StructurePiece tree = BarakoaVillagePieces.addPieceCheckBounds(BarakoaVillagePieces.TREES[whichTree], pieceGenerator.structureManager(), treePos, Rotation.values()[random.nextInt(Rotation.values().length)], builder, pieceGenerator.random());
+                if (tree != null) break;
+            }
+        }
+
         //Stakes
-        int numStakes = random.nextInt(12) + 5;
+        int numStakes = random.nextInt(10) + 7;
         for (int i = 1; i <= numStakes; i++) {
             int distance;
             int angle;
             for (int j = 1; j <= 10; j++) {
-                distance = random.nextInt(15) + 5;
+                distance = random.nextInt(15) + 8;
                 angle = random.nextInt(360);
                 BlockPos stakePos = new BlockPos(centerPos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.getZ() + distance * Math.cos(Math.toRadians(angle)));
                 stakePos = posToSurface(generator, stakePos, heightLimitView);
+                int stakeOceanFloorY = generator.getBaseHeight(stakePos.getX(), stakePos.getZ(), Heightmap.Types.OCEAN_FLOOR_WG, heightLimitView);
+                if (stakeOceanFloorY < stakePos.getY()) continue;
                 ResourceLocation whichSpike = BarakoaVillagePieces.SPIKES[random.nextInt(BarakoaVillagePieces.SPIKES.length)];
-                StructurePiece piece = BarakoaVillagePieces.addPiece(whichSpike, pieceGenerator.structureManager(), stakePos, Rotation.values()[random.nextInt(Rotation.values().length)], builder, pieceGenerator.random());
+                StructurePiece piece = BarakoaVillagePieces.addPieceCheckBounds(whichSpike, pieceGenerator.structureManager(), stakePos, Rotation.values()[random.nextInt(Rotation.values().length)], builder, pieceGenerator.random());
                 if (piece != null) {
                     break;
                 }

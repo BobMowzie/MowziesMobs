@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.server.entity.barakoa;
+package com.bobmowzie.mowziesmobs.server.entity.umvuthana;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
@@ -7,8 +7,8 @@ import com.bobmowzie.mowziesmobs.server.ai.EntityAIBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.server.ai.EntityAIBarakoayaTradeLook;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.TradeStore;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.trade.Trade;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.trade.TradeStore;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
@@ -41,7 +41,7 @@ import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.UUID;
 
-public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstrikeImmune, Enemy {
+public class EntityUmvuthanaMinion extends EntityUmvuthana implements LeaderSunstrikeImmune, Enemy {
     private static final TradeStore DEFAULT = new TradeStore.Builder()
         .addTrade(Items.GOLD_INGOT, 2, ItemHandler.BLOWGUN, 1, 6)
         .addTrade(Items.COCOA_BEANS, 10, ItemHandler.DART, 8, 6)
@@ -59,10 +59,10 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
         .addTrade(Items.IRON_HELMET, 1, Items.GOLD_INGOT, 4, 2)
         .build();
 
-    private static final EntityDataAccessor<Optional<Trade>> TRADE = SynchedEntityData.defineId(EntityBarakoaVillager.class, ServerProxy.OPTIONAL_TRADE);
+    private static final EntityDataAccessor<Optional<Trade>> TRADE = SynchedEntityData.defineId(EntityUmvuthanaMinion.class, ServerProxy.OPTIONAL_TRADE);
     //    private static final DataParameter<Integer> NUM_SALES = EntityDataManager.createKey(EntityBarakoaya.class, DataSerializers.VARINT);
-    private static final EntityDataAccessor<Optional<UUID>> MISBEHAVED_PLAYER = SynchedEntityData.defineId(EntityBarakoaVillager.class, EntityDataSerializers.OPTIONAL_UUID);
-    private static final EntityDataAccessor<Boolean> IS_TRADING = SynchedEntityData.defineId(EntityBarakoaVillager.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Optional<UUID>> MISBEHAVED_PLAYER = SynchedEntityData.defineId(EntityUmvuthanaMinion.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Boolean> IS_TRADING = SynchedEntityData.defineId(EntityUmvuthanaMinion.class, EntityDataSerializers.BOOLEAN);
 
     //TODO: Sale limits. After X sales, go out of stock and change trade.
 
@@ -79,7 +79,7 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
 
     private Player customer;
 
-    public EntityBarakoaVillager(EntityType<? extends EntityBarakoaVillager> type, Level world) {
+    public EntityUmvuthanaMinion(EntityType<? extends EntityUmvuthanaMinion> type, Level world) {
         super(type, world);
         setWeapon(0);
 //        setNumSales(MAX_SALES);
@@ -186,12 +186,12 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
             playerEntity.openMenu(new MenuProvider() {
                 @Override
                 public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player) {
-                    return new ContainerBarakoayaTrade(id, EntityBarakoaVillager.this, playerInventory);
+                    return new ContainerBarakoayaTrade(id, EntityUmvuthanaMinion.this, playerInventory);
                 }
 
                 @Override
                 public Component getDisplayName() {
-                    return EntityBarakoaVillager.this.getDisplayName();
+                    return EntityUmvuthanaMinion.this.getDisplayName();
                 }
             });
         }

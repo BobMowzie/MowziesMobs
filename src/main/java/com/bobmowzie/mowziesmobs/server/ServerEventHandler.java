@@ -13,7 +13,7 @@ import com.bobmowzie.mowziesmobs.server.capability.*;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieGeckoEntity;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.*;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.*;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
@@ -95,12 +95,12 @@ public final class ServerEventHandler {
         Entity entity = event.getEntity();
         if (entity instanceof Zombie && !(entity instanceof ZombifiedPiglin)) {
             ((PathfinderMob) entity).targetSelector.addGoal(2, new NearestAttackableTargetGoal<>((PathfinderMob) entity, EntityFoliaath.class, 0, true, false, null));
-            ((PathfinderMob) entity).targetSelector.addGoal(3, new NearestAttackableTargetGoal<>((PathfinderMob) entity, EntityBarakoa.class, 0, true, false, null));
-            ((PathfinderMob) entity).targetSelector.addGoal(2, new NearestAttackableTargetGoal<>((PathfinderMob) entity, EntityBarako.class, 0, true, false, null));
+            ((PathfinderMob) entity).targetSelector.addGoal(3, new NearestAttackableTargetGoal<>((PathfinderMob) entity, EntityUmvuthana.class, 0, true, false, null));
+            ((PathfinderMob) entity).targetSelector.addGoal(2, new NearestAttackableTargetGoal<>((PathfinderMob) entity, EntityUmvuthi.class, 0, true, false, null));
         }
         if (entity instanceof AbstractSkeleton) {
-            ((PathfinderMob) entity).targetSelector.addGoal(3, new NearestAttackableTargetGoal<>((PathfinderMob) entity, EntityBarakoa.class, 0, true, false, null));
-            ((PathfinderMob) entity).targetSelector.addGoal(2, new NearestAttackableTargetGoal<>((PathfinderMob) entity, EntityBarako.class, 0, true, false, null));
+            ((PathfinderMob) entity).targetSelector.addGoal(3, new NearestAttackableTargetGoal<>((PathfinderMob) entity, EntityUmvuthana.class, 0, true, false, null));
+            ((PathfinderMob) entity).targetSelector.addGoal(2, new NearestAttackableTargetGoal<>((PathfinderMob) entity, EntityUmvuthi.class, 0, true, false, null));
         }
 
         if (entity instanceof Parrot) {
@@ -108,14 +108,14 @@ public final class ServerEventHandler {
         }
         if (entity instanceof Animal) {
             ((PathfinderMob) entity).goalSelector.addGoal(3, new AvoidEntityIfNotTamedGoal<>((PathfinderMob) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
-            ((PathfinderMob) entity).goalSelector.addGoal(3, new AvoidEntityIfNotTamedGoal<>((PathfinderMob) entity, EntityBarakoa.class, 6.0F, 1.0D, 1.2D));
-            ((PathfinderMob) entity).goalSelector.addGoal(3, new AvoidEntityIfNotTamedGoal<>((PathfinderMob) entity, EntityBarako.class, 6.0F, 1.0D, 1.2D));
+            ((PathfinderMob) entity).goalSelector.addGoal(3, new AvoidEntityIfNotTamedGoal<>((PathfinderMob) entity, EntityUmvuthana.class, 6.0F, 1.0D, 1.2D));
+            ((PathfinderMob) entity).goalSelector.addGoal(3, new AvoidEntityIfNotTamedGoal<>((PathfinderMob) entity, EntityUmvuthi.class, 6.0F, 1.0D, 1.2D));
             ((PathfinderMob) entity).goalSelector.addGoal(3, new AvoidEntityIfNotTamedGoal<>((PathfinderMob) entity, EntityNaga.class, 10.0F, 1.0D, 1.2D));
             ((PathfinderMob) entity).goalSelector.addGoal(3, new AvoidEntityIfNotTamedGoal<>((PathfinderMob) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
         }
         if (entity instanceof AbstractVillager) {
-            ((PathfinderMob) entity).goalSelector.addGoal(3, new AvoidEntityGoal<>((PathfinderMob) entity, EntityBarakoa.class, 6.0F, 1.0D, 1.2D));
-            ((PathfinderMob) entity).goalSelector.addGoal(3, new AvoidEntityGoal<>((PathfinderMob) entity, EntityBarako.class, 6.0F, 1.0D, 1.2D));
+            ((PathfinderMob) entity).goalSelector.addGoal(3, new AvoidEntityGoal<>((PathfinderMob) entity, EntityUmvuthana.class, 6.0F, 1.0D, 1.2D));
+            ((PathfinderMob) entity).goalSelector.addGoal(3, new AvoidEntityGoal<>((PathfinderMob) entity, EntityUmvuthi.class, 6.0F, 1.0D, 1.2D));
             ((PathfinderMob) entity).goalSelector.addGoal(3, new AvoidEntityGoal<>((PathfinderMob) entity, EntityNaga.class, 10.0F, 1.0D, 1.2D));
             ((PathfinderMob) entity).goalSelector.addGoal(3, new AvoidEntityGoal<>((PathfinderMob) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
         }
@@ -138,10 +138,10 @@ public final class ServerEventHandler {
                 }
             }
 
-            if (entity instanceof Mob && !(entity instanceof EntityBarakoaya)) {
+            if (entity instanceof Mob && !(entity instanceof EntityUmvuthanaCrane)) {
                 Mob mob = (Mob) entity;
-                if (mob.getTarget() instanceof EntityBarako && mob.getTarget().hasEffect(EffectHandler.SUNBLOCK)) {
-                    EntityBarakoaya sunblocker = mob.level.getNearestEntity(EntityBarakoaya.class, TargetingConditions.DEFAULT, mob, mob.getX(), mob.getY() + mob.getEyeHeight(), mob.getZ(), mob.getBoundingBox().inflate(40.0D, 15.0D, 40.0D));
+                if (mob.getTarget() instanceof EntityUmvuthi && mob.getTarget().hasEffect(EffectHandler.SUNBLOCK)) {
+                    EntityUmvuthanaCrane sunblocker = mob.level.getNearestEntity(EntityUmvuthanaCrane.class, TargetingConditions.DEFAULT, mob, mob.getX(), mob.getY() + mob.getEyeHeight(), mob.getZ(), mob.getBoundingBox().inflate(40.0D, 15.0D, 40.0D));
                     mob.setTarget(sunblocker);
                 }
             }
@@ -620,10 +620,10 @@ public final class ServerEventHandler {
                 }
 
                 if (!(event.getTarget() instanceof LivingEntity)) return;
-                if (event.getTarget() instanceof EntityBarakoanToPlayer) return;
+                if (event.getTarget() instanceof EntityUmvuthanaFollowerToPlayer) return;
                 if (!event.getPlayer().level.isClientSide()) {
                     for (int i = 0; i < playerCapability.getPackSize(); i++) {
-                        EntityBarakoanToPlayer barakoa = playerCapability.getTribePack().get(i);
+                        EntityUmvuthanaFollowerToPlayer barakoa = playerCapability.getTribePack().get(i);
                         LivingEntity living = (LivingEntity) event.getTarget();
                         if (barakoa.getMaskType() != MaskType.FAITH) {
                             if (!living.isInvulnerable()) barakoa.setTarget(living);
@@ -711,21 +711,21 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onRideEntity(EntityMountEvent event) {
-        if (event.getEntityMounting() instanceof EntityBarako || event.getEntityMounting() instanceof EntityFrostmaw || event.getEntityMounting() instanceof EntityWroughtnaut)
+        if (event.getEntityMounting() instanceof EntityUmvuthi || event.getEntityMounting() instanceof EntityFrostmaw || event.getEntityMounting() instanceof EntityWroughtnaut)
             event.setCanceled(true);
     }
 
     private void aggroBarakoa(Player player) {
-        List<EntityBarako> barakos = getEntitiesNearby(player, EntityBarako.class, 50);
-        for (EntityBarako barako : barakos) {
+        List<EntityUmvuthi> barakos = getEntitiesNearby(player, EntityUmvuthi.class, 50);
+        for (EntityUmvuthi barako : barakos) {
             if (barako.getTarget() == null || !(barako.getTarget() instanceof Player)) {
                 if (!player.isCreative() && !player.isSpectator() && player.blockPosition().distSqr(barako.getRestrictCenter()) < 900) {
                     if (barako.canAttack(player)) barako.setMisbehavedPlayerId(player.getUUID());
                 }
             }
         }
-        List<EntityBarakoaVillager> barakoas = getEntitiesNearby(player, EntityBarakoaVillager.class, 50);
-        for (EntityBarakoaVillager barakoa : barakoas) {
+        List<EntityUmvuthanaMinion> barakoas = getEntitiesNearby(player, EntityUmvuthanaMinion.class, 50);
+        for (EntityUmvuthanaMinion barakoa : barakoas) {
             if (barakoa.getTarget() == null || !(barakoa.getTarget() instanceof Player)) {
                 if (player.blockPosition().distSqr(barakoa.getRestrictCenter()) < 900) {
                     if (barakoa.canAttack(player)) barakoa.setMisbehavedPlayerId(player.getUUID());

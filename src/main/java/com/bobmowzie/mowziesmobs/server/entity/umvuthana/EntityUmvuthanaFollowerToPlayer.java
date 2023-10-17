@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.server.entity.barakoa;
+package com.bobmowzie.mowziesmobs.server.entity.umvuthana;
 
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
@@ -10,7 +10,6 @@ import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -35,16 +34,16 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class EntityBarakoanToPlayer extends EntityBarakoan<Player> {
-    private static final EntityDataAccessor<ItemStack> MASK_STORED = SynchedEntityData.defineId(EntityBarakoanToPlayer.class, EntityDataSerializers.ITEM_STACK);
+public class EntityUmvuthanaFollowerToPlayer extends EntityUmvuthanaFollower<Player> {
+    private static final EntityDataAccessor<ItemStack> MASK_STORED = SynchedEntityData.defineId(EntityUmvuthanaFollowerToPlayer.class, EntityDataSerializers.ITEM_STACK);
     @OnlyIn(Dist.CLIENT)
     public Vec3[] feetPos;
 
-    public EntityBarakoanToPlayer(EntityType<? extends EntityBarakoanToPlayer> type, Level world) {
+    public EntityUmvuthanaFollowerToPlayer(EntityType<? extends EntityUmvuthanaFollowerToPlayer> type, Level world) {
         this(type, world, null);
     }
 
-    public EntityBarakoanToPlayer(EntityType<? extends EntityBarakoanToPlayer> type, Level world, Player leader) {
+    public EntityUmvuthanaFollowerToPlayer(EntityType<? extends EntityUmvuthanaFollowerToPlayer> type, Level world, Player leader) {
         super(type, world, Player.class, leader);
         xpReward = 0;
         if (world.isClientSide) {

@@ -3,37 +3,32 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
-import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
-public class ModelBarako extends MowzieAnimatedGeoModel<EntityBarako> {
+public class ModelBarako extends MowzieAnimatedGeoModel<EntityUmvuthi> {
     public ModelBarako() {
         super();
     }
 
     @Override
-    public ResourceLocation getModelLocation(EntityBarako object) {
+    public ResourceLocation getModelLocation(EntityUmvuthi object) {
         return new ResourceLocation(MowziesMobs.MODID, "geo/barako.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureLocation(EntityBarako object) {
+    public ResourceLocation getTextureLocation(EntityUmvuthi object) {
         return new ResourceLocation(MowziesMobs.MODID, "textures/entity/barako.png");
     }
 
     @Override
-    public ResourceLocation getAnimationFileLocation(EntityBarako object) {
+    public ResourceLocation getAnimationFileLocation(EntityUmvuthi object) {
         return new ResourceLocation(MowziesMobs.MODID, "animations/barako.animation.json");
     }
 
     @Override
-    public void codeAnimations(EntityBarako entity, Integer uniqueID, AnimationEvent<?> customPredicate) {
+    public void codeAnimations(EntityUmvuthi entity, Integer uniqueID, AnimationEvent<?> customPredicate) {
         MowzieGeoBone rightThigh = getMowzieBone("rightThigh");
         MowzieGeoBone leftThigh = getMowzieBone("leftThigh");
 

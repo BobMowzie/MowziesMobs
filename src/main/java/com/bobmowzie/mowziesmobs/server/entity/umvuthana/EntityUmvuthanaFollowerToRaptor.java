@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.server.entity.barakoa;
+package com.bobmowzie.mowziesmobs.server.entity.umvuthana;
 
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
@@ -10,13 +10,13 @@ import net.minecraft.world.level.Level;
 import java.util.Optional;
 import java.util.UUID;
 
-public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> implements LeaderSunstrikeImmune, Enemy {
-    public EntityBarakoanToBarakoana(EntityType<? extends EntityBarakoanToBarakoana> type, Level world) {
+public class EntityUmvuthanaFollowerToRaptor extends EntityUmvuthanaFollower<EntityUmvuthanaRaptor> implements LeaderSunstrikeImmune, Enemy {
+    public EntityUmvuthanaFollowerToRaptor(EntityType<? extends EntityUmvuthanaFollowerToRaptor> type, Level world) {
         this(type, world, null);
     }
 
-    public EntityBarakoanToBarakoana(EntityType<? extends EntityBarakoanToBarakoana> type, Level world, EntityBarakoana leader) {
-        super(type, world, EntityBarakoana.class, leader);
+    public EntityUmvuthanaFollowerToRaptor(EntityType<? extends EntityUmvuthanaFollowerToRaptor> type, Level world, EntityUmvuthanaRaptor leader) {
+        super(type, world, EntityUmvuthanaRaptor.class, leader);
     }
 
     @Override

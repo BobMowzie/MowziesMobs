@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.server.entity.barakoa;
+package com.bobmowzie.mowziesmobs.server.entity.umvuthana;
 
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
@@ -25,12 +25,12 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImmune, Enemy {
-    private final List<EntityBarakoanToBarakoana> pack = new ArrayList<>();
+public class EntityUmvuthanaRaptor extends EntityUmvuthana implements LeaderSunstrikeImmune, Enemy {
+    private final List<EntityUmvuthanaFollowerToRaptor> pack = new ArrayList<>();
 
     private final int packRadius = 3;
 
-    public EntityBarakoana(EntityType<? extends EntityBarakoana> type, Level world) {
+    public EntityUmvuthanaRaptor(EntityType<? extends EntityUmvuthanaRaptor> type, Level world) {
         super(type, world);
         this.setMask(MaskType.FURY);
         this.xpReward = 8;
@@ -68,7 +68,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
         if (!level.isClientSide && pack != null) {
             float theta = (2 * (float) Math.PI / pack.size());
             for (int i = 0; i < pack.size(); i++) {
-                EntityBarakoanToBarakoana hunter = pack.get(i);
+                EntityUmvuthanaFollowerToRaptor hunter = pack.get(i);
                 if (hunter.getTarget() == null) {
                     hunter.getNavigation().moveTo(getX() + packRadius * Mth.cos(theta * i), getY(), getZ() + packRadius * Mth.sin(theta * i), 0.45);
                     if (distanceTo(hunter) > 20 && onGround) {
@@ -87,9 +87,9 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     @Override
     public void remove(RemovalReason reason) {
         if (tickCount == 0) {
-            pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
+            pack.forEach(EntityUmvuthanaFollowerToRaptor::setShouldSetDead);
         }
-        pack.forEach(EntityBarakoanToBarakoana::removeLeader);
+        pack.forEach(EntityUmvuthanaFollowerToRaptor::removeLeader);
         super.remove(reason);
     }
 
@@ -103,12 +103,12 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
         }
     }
 
-    public void removePackMember(EntityBarakoanToBarakoana tribeHunter) {
+    public void removePackMember(EntityUmvuthanaFollowerToRaptor tribeHunter) {
         pack.remove(tribeHunter);
         sortPackMembers();
     }
 
-    public void addPackMember(EntityBarakoanToBarakoana tribeHunter) {
+    public void addPackMember(EntityUmvuthanaFollowerToRaptor tribeHunter) {
         pack.add(tribeHunter);
         sortPackMembers();
     }
@@ -122,7 +122,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
             double x = getX() + packRadius * Math.cos(targetTheta);
             double z = getZ() + packRadius * Math.sin(targetTheta);
             for (int n = 0; n < pack.size(); n++) {
-                EntityBarakoanToBarakoana tribeHunter = pack.get(n);
+                EntityUmvuthanaFollowerToRaptor tribeHunter = pack.get(n);
                 double diffSq = (x - tribeHunter.getX()) * (x - tribeHunter.getX()) + (z - tribeHunter.getZ()) * (z - tribeHunter.getZ());
                 if (diffSq < smallestDiffSq) {
                     smallestDiffSq = diffSq;
@@ -146,7 +146,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
         int size = random.nextInt(2) + 3;
         float theta = (2 * (float) Math.PI / size);
         for (int i = 0; i <= size; i++) {
-            EntityBarakoanToBarakoana tribeHunter = new EntityBarakoanToBarakoana(EntityHandler.BARAKOAN_TO_BARAKOANA.get(), this.level, this);
+            EntityUmvuthanaFollowerToRaptor tribeHunter = new EntityUmvuthanaFollowerToRaptor(EntityHandler.BARAKOAN_TO_BARAKOANA.get(), this.level, this);
             tribeHunter.setPos(getX() + 0.1 * Mth.cos(theta * i), getY(), getZ() + 0.1 * Mth.sin(theta * i));
             int weapon = random.nextInt(3) == 0 ? 1 : 0;
             tribeHunter.setWeapon(weapon);
@@ -158,7 +158,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     @Override
     public void die(DamageSource source) {
         super.die(source);
-        pack.forEach(EntityBarakoanToBarakoana::removeLeader);
+        pack.forEach(EntityUmvuthanaFollowerToRaptor::removeLeader);
     }
 
     @Override
@@ -170,7 +170,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     public boolean checkSpawnRules(LevelAccessor world, MobSpawnType reason) {
         List<LivingEntity> nearby = getEntityLivingBaseNearby(30, 10, 30, 30);
         for (LivingEntity nearbyEntity : nearby) {
-            if (nearbyEntity instanceof EntityBarakoana || nearbyEntity instanceof Villager || nearbyEntity instanceof EntityBarako || nearbyEntity instanceof Animal) {
+            if (nearbyEntity instanceof EntityUmvuthanaRaptor || nearbyEntity instanceof Villager || nearbyEntity instanceof EntityUmvuthi || nearbyEntity instanceof Animal) {
                 return false;
             }
         }
@@ -200,12 +200,12 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
             if (entity != null) {
                 double d0 = entity.distanceToSqr(this);
                 if (d0 > 16384.0D && this.removeWhenFarAway(d0) && pack != null) {
-                    pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
+                    pack.forEach(EntityUmvuthanaFollowerToRaptor::setShouldSetDead);
                     this.discard() ;
                 }
 
                 if (this.noActionTime > 600 && this.random.nextInt(800) == 0 && d0 > 1024.0D && this.removeWhenFarAway(d0) && pack != null) {
-                    pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
+                    pack.forEach(EntityUmvuthanaFollowerToRaptor::setShouldSetDead);
                     this.discard() ;
                 } else if (d0 < 1024.0D) {
                     this.noActionTime = 0;
@@ -226,7 +226,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
                 noActionTime = 0;
                 entity = null;
             } else if (result == net.minecraftforge.eventbus.api.Event.Result.ALLOW) {
-                if (pack != null) pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
+                if (pack != null) pack.forEach(EntityUmvuthanaFollowerToRaptor::setShouldSetDead);
                 this.discard();
                 entity = null;
             }
@@ -235,14 +235,14 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
                 int i = this.getType().getCategory().getDespawnDistance();
                 int j = i * i;
                 if (d0 > (double)j && this.removeWhenFarAway(d0)) {
-                    if (pack != null) pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
+                    if (pack != null) pack.forEach(EntityUmvuthanaFollowerToRaptor::setShouldSetDead);
                     this.discard();
                 }
 
                 int k = this.getType().getCategory().getNoDespawnDistance();
                 int l = k * k;
                 if (this.noActionTime > 600 && this.random.nextInt(800) == 0 && d0 > (double)l && this.removeWhenFarAway(d0)) {
-                    if (pack != null) pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
+                    if (pack != null) pack.forEach(EntityUmvuthanaFollowerToRaptor::setShouldSetDead);
                     this.discard();
                 } else if (d0 < (double)l) {
                     this.noActionTime = 0;

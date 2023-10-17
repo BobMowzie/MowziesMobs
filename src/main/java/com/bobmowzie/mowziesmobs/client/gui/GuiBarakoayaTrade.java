@@ -1,11 +1,9 @@
 package com.bobmowzie.mowziesmobs.client.gui;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaVillager;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthanaMinion;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.trade.Trade;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoayaTrade;
-import com.bobmowzie.mowziesmobs.server.inventory.InventoryBarakoaya;
-import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -23,7 +21,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public final class GuiBarakoayaTrade extends AbstractContainerScreen<ContainerBarakoayaTrade> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/gui/container/barakoa.png");
 
-    private final EntityBarakoaVillager barakoaya;
+    private final EntityUmvuthanaMinion barakoaya;
 
     public GuiBarakoayaTrade(ContainerBarakoayaTrade screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);

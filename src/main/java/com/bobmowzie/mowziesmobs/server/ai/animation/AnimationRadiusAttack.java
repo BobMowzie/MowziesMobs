@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.server.ai.animation;
 
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
@@ -36,7 +36,7 @@ public class AnimationRadiusAttack<T extends MowzieEntity & IAnimatedEntity> ext
         if (entity.getAnimationTick() == damageFrame) {
             List<LivingEntity> hit = entity.getEntityLivingBaseNearby(radius, 2 * radius, radius, radius);
             for (LivingEntity aHit : hit) {
-                if (entity instanceof EntityBarako && aHit instanceof LeaderSunstrikeImmune) {
+                if (entity instanceof EntityUmvuthi && aHit instanceof LeaderSunstrikeImmune) {
                     continue;
                 }
                 entity.doHurtTarget(aHit, damageMultiplier, applyKnockbackMultiplier);

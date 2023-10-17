@@ -2,50 +2,43 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBarako;
-import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
-import com.bobmowzie.mowziesmobs.client.render.MowzieRenderUtils;
-import com.bobmowzie.mowziesmobs.client.render.entity.layer.SunblockLayer;
-import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3d;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderBarako extends MowzieGeoEntityRenderer<EntityBarako> {
+public class RenderUmvuthi extends MowzieGeoEntityRenderer<EntityUmvuthi> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/barako.png");
     private static final ResourceLocation TEXTURE_OLD = new ResourceLocation(MowziesMobs.MODID, "textures/entity/barako_old.png");
     private static final float BURST_RADIUS = 3.5f;
     private static final int BURST_FRAME_COUNT = 10;
     private static final int BURST_START_FRAME = 12;
 
-    public RenderBarako(EntityRendererProvider.Context mgr) {
+    public RenderUmvuthi(EntityRendererProvider.Context mgr) {
         super(mgr, new ModelBarako());
 //        addLayer(new SunblockLayer<>(this));
         this.shadowRadius = 1.0f;
     }
 
     @Override
-    public ResourceLocation getTextureLocation(EntityBarako entity) {
+    public ResourceLocation getTextureLocation(EntityUmvuthi entity) {
         return this.getGeoModelProvider().getTextureLocation(entity);
     }
 
     @Override
-    public void render(EntityBarako barako, float entityYaw, float delta, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
+    public void render(EntityUmvuthi barako, float entityYaw, float delta, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         if (!barako.isInvisible()) {
-            if (barako.getActiveAbilityType() == EntityBarako.ATTACK_ABILITY && barako.getActiveAbility().getTicksInUse() > BURST_START_FRAME && barako.getActiveAbility().getTicksInUse() < BURST_START_FRAME + BURST_FRAME_COUNT - 1) {
+            if (barako.getActiveAbilityType() == EntityUmvuthi.ATTACK_ABILITY && barako.getActiveAbility().getTicksInUse() > BURST_START_FRAME && barako.getActiveAbility().getTicksInUse() < BURST_START_FRAME + BURST_FRAME_COUNT - 1) {
                 matrixStackIn.pushPose();
                 Quaternion quat = this.entityRenderDispatcher.cameraOrientation();
                 matrixStackIn.mulPose(quat);
