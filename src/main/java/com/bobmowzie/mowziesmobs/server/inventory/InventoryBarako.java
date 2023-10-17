@@ -1,12 +1,12 @@
 package com.bobmowzie.mowziesmobs.server.inventory;
 
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
 import net.minecraft.world.entity.player.Player;
 
 public final class InventoryBarako extends InventoryOneInput {
-    private final EntityBarako barako;
+    private final EntityUmvuthi barako;
 
-    public InventoryBarako(EntityBarako barako) {
+    public InventoryBarako(EntityUmvuthi barako) {
         super(barako);
         this.barako = barako;
     }

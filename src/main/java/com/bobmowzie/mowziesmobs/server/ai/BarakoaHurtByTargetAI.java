@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.ai;
 
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthana;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
@@ -25,9 +25,9 @@ public class BarakoaHurtByTargetAI extends HurtByTargetGoal
     {
         double d0 = this.getFollowDistance();
         AABB aabb = AABB.unitCubeFromLowerCorner(this.mob.position()).inflate(d0, 10.0D, d0);
-        List<? extends PathfinderMob> listBarakoa = this.mob.level.getEntitiesOfClass(EntityBarakoa.class, aabb, EntitySelector.NO_SPECTATORS.and(e ->
-                ((EntityBarakoa)e).isBarakoDevoted()));
-        List<? extends PathfinderMob> listBarako = this.mob.level.getEntitiesOfClass(EntityBarako.class, aabb, EntitySelector.NO_SPECTATORS);
+        List<? extends PathfinderMob> listBarakoa = this.mob.level.getEntitiesOfClass(EntityUmvuthana.class, aabb, EntitySelector.NO_SPECTATORS.and(e ->
+                ((EntityUmvuthana)e).isBarakoDevoted()));
+        List<? extends PathfinderMob> listBarako = this.mob.level.getEntitiesOfClass(EntityUmvuthi.class, aabb, EntitySelector.NO_SPECTATORS);
         List<PathfinderMob> list = new ArrayList<>();
         list.addAll(listBarakoa);
         list.addAll(listBarako);

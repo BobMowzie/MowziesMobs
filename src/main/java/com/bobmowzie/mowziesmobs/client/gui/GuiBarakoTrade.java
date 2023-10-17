@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.gui;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoTrade;
 import com.bobmowzie.mowziesmobs.server.inventory.InventoryBarako;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
@@ -28,7 +28,7 @@ public final class GuiBarakoTrade extends AbstractContainerScreen<ContainerBarak
     private static final ResourceLocation TEXTURE_TRADE = new ResourceLocation(MowziesMobs.MODID, "textures/gui/container/barako_trade.png");
     private static final ResourceLocation TEXTURE_REPLENISH = new ResourceLocation(MowziesMobs.MODID, "textures/gui/container/barako_replenish.png");
 
-    private final EntityBarako barako;
+    private final EntityUmvuthi barako;
     private final Player player;
 
     private final InventoryBarako inventory;

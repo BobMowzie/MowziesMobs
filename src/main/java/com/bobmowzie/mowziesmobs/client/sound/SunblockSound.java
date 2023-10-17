@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.sound;
 
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthana;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.client.model.tools.ControlledAnimation;
@@ -42,8 +42,8 @@ public class SunblockSound extends AbstractTickableSoundInstance {
             y = (float) entity.getY();
             z = (float) entity.getZ();
             boolean barakoaHealing = false;
-            if (entity instanceof EntityBarakoa) {
-                EntityBarakoa barakoa = (EntityBarakoa) entity;
+            if (entity instanceof EntityUmvuthana) {
+                EntityUmvuthana barakoa = (EntityUmvuthana) entity;
 //                barakoaHealing = barakoa.getAnimation() == EntityBarakoa.HEAL_LOOP_ANIMATION || barakoa.getAnimation() == EntityBarakoa.HEAL_START_ANIMATION; TODO
             }
             boolean hasSunblock = entity.hasEffect(EffectHandler.SUNBLOCK);

@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.server.entity.barakoa;
+package com.bobmowzie.mowziesmobs.server.entity.umvuthana;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
@@ -8,7 +8,6 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleRibbon;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.RibbonComponent;
-import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
@@ -75,8 +74,8 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 
 import java.util.EnumSet;
 
-public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedAttackMob {
-    public static final AbilityType<EntityBarakoa, DieAbility<EntityBarakoa>> DIE_ABILITY = new AbilityType<>("barakoa_die", (type, entity) -> new DieAbility<>(type, entity,"die", 70) {
+public abstract class EntityUmvuthana extends MowzieGeckoEntity implements RangedAttackMob {
+    public static final AbilityType<EntityUmvuthana, DieAbility<EntityUmvuthana>> DIE_ABILITY = new AbilityType<>("barakoa_die", (type, entity) -> new DieAbility<>(type, entity,"die", 70) {
         @Override
         public void tickUsing() {
             super.tickUsing();
@@ -84,9 +83,9 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             if (getTicksInUse() == 15) getUser().playSound(MMSounds.ENTITY_BARAKOA_RETRACT.get(), getUser().getSoundVolume(), 1);
         }
     });
-    public static final AbilityType<EntityBarakoa, BarakoaHurtAbility> HURT_ABILITY = new AbilityType<>("barakoa_hurt", BarakoaHurtAbility::new);
-    public static final AbilityType<EntityBarakoa, BarakoaAttackAbility> ATTACK_ABILITY = new AbilityType<>("barakoa_attack", BarakoaAttackAbility::new);
-    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> ALERT_ABILITY = new AbilityType<>("barakoa_alert", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"alert", 15) {
+    public static final AbilityType<EntityUmvuthana, BarakoaHurtAbility> HURT_ABILITY = new AbilityType<>("barakoa_hurt", BarakoaHurtAbility::new);
+    public static final AbilityType<EntityUmvuthana, BarakoaAttackAbility> ATTACK_ABILITY = new AbilityType<>("barakoa_attack", BarakoaAttackAbility::new);
+    public static final AbilityType<EntityUmvuthana, SimpleAnimationAbility<EntityUmvuthana>> ALERT_ABILITY = new AbilityType<>("barakoa_alert", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"alert", 15) {
         int soundFrame;
 
         @Override
@@ -111,14 +110,14 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             if (rand.nextFloat() < 0.2) getUser().sendAbilityMessage(ROAR_ABILITY);
         }
     });
-    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> ROAR_ABILITY = new AbilityType<>("barakoa_roar", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"roar", 35) {
+    public static final AbilityType<EntityUmvuthana, SimpleAnimationAbility<EntityUmvuthana>> ROAR_ABILITY = new AbilityType<>("barakoa_roar", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"roar", 35) {
         @Override
         public void tickUsing() {
             super.tickUsing();
             if (getTicksInUse() == 2) getUser().playSound(MMSounds.ENTITY_BARAKOA_ROAR.get(), getUser().getSoundVolume() + 0.5f, getUser().getVoicePitch());
         }
     });
-    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> ACTIVATE_ABILITY = new AbilityType<>("barakoa_activate", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"emerge", 21) {
+    public static final AbilityType<EntityUmvuthana, SimpleAnimationAbility<EntityUmvuthana>> ACTIVATE_ABILITY = new AbilityType<>("barakoa_activate", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"emerge", 21) {
         @Override
         public void tickUsing() {
             super.tickUsing();
@@ -126,7 +125,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             if (getTicksInUse() == 10) getUser().active = true;
         }
     });
-    public static final AbilityType<EntityBarakoa, SimpleAnimationAbility<EntityBarakoa>> DEACTIVATE_ABILITY = new AbilityType<>("barakoa_deactivate", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"retract", 11) {
+    public static final AbilityType<EntityUmvuthana, SimpleAnimationAbility<EntityUmvuthana>> DEACTIVATE_ABILITY = new AbilityType<>("barakoa_deactivate", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"retract", 11) {
         @Override
         public void end() {
             super.end();
@@ -142,19 +141,19 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             }
         }
     });
-    public static final AbilityType<EntityBarakoa, BlockAbility<EntityBarakoa>> BLOCK_ABILITY = new AbilityType<>("barakoa_block", (type, entity) -> new BlockAbility<>(type, entity,"block", 10));
-    public static final AbilityType<EntityBarakoa, BarakoaBlockCounterAbility> BLOCK_COUNTER_ABILITY = new AbilityType<>("barakoa_block_counter", BarakoaBlockCounterAbility::new);
+    public static final AbilityType<EntityUmvuthana, BlockAbility<EntityUmvuthana>> BLOCK_ABILITY = new AbilityType<>("barakoa_block", (type, entity) -> new BlockAbility<>(type, entity,"block", 10));
+    public static final AbilityType<EntityUmvuthana, BarakoaBlockCounterAbility> BLOCK_COUNTER_ABILITY = new AbilityType<>("barakoa_block_counter", BarakoaBlockCounterAbility::new);
 
-    public static final AbilityType<EntityBarakoa, BarakoaTeleportAbility> TELEPORT_ABILITY = new AbilityType<>("barakoa_teleport", BarakoaTeleportAbility::new);
-    public static final AbilityType<EntityBarakoa, BarakoaHealAbility> HEAL_ABILITY = new AbilityType<>("barakoa_heal", BarakoaHealAbility::new);
+    public static final AbilityType<EntityUmvuthana, BarakoaTeleportAbility> TELEPORT_ABILITY = new AbilityType<>("barakoa_teleport", BarakoaTeleportAbility::new);
+    public static final AbilityType<EntityUmvuthana, BarakoaHealAbility> HEAL_ABILITY = new AbilityType<>("barakoa_heal", BarakoaHealAbility::new);
 
-    private static final EntityDataAccessor<Boolean> DANCING = SynchedEntityData.defineId(EntityBarakoa.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Integer> MASK = SynchedEntityData.defineId(EntityBarakoa.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Integer> WEAPON = SynchedEntityData.defineId(EntityBarakoa.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Boolean> ACTIVE = SynchedEntityData.defineId(EntityBarakoa.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Float> HEALPOSX = SynchedEntityData.defineId(EntityBarakoa.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> HEALPOSY = SynchedEntityData.defineId(EntityBarakoa.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> HEALPOSZ = SynchedEntityData.defineId(EntityBarakoa.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Boolean> DANCING = SynchedEntityData.defineId(EntityUmvuthana.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> MASK = SynchedEntityData.defineId(EntityUmvuthana.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> WEAPON = SynchedEntityData.defineId(EntityUmvuthana.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> ACTIVE = SynchedEntityData.defineId(EntityUmvuthana.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Float> HEALPOSX = SynchedEntityData.defineId(EntityUmvuthana.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> HEALPOSY = SynchedEntityData.defineId(EntityUmvuthana.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> HEALPOSZ = SynchedEntityData.defineId(EntityUmvuthana.class, EntityDataSerializers.FLOAT);
     private boolean circleDirection = true;
     protected int circleTick = 0;
     protected boolean attacking = false;
@@ -183,7 +182,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
     private float prevMaskRot = 0;
     private boolean rattling = false;
 
-    public EntityBarakoa(EntityType<? extends EntityBarakoa> type, Level world) {
+    public EntityUmvuthana(EntityType<? extends EntityUmvuthana> type, Level world) {
         super(type, world);
         setMask(MaskType.from(Mth.nextInt(random, 1, 4)));
         maxUpStep = 1;
@@ -219,8 +218,8 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         goalSelector.addGoal(2, new UseAbilityAI<>(this, HEAL_ABILITY, false, false));
         goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.4));
         goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        goalSelector.addGoal(8, new LookAtPlayerGoal(this, EntityBarakoa.class, 8.0F));
-        goalSelector.addGoal(8, new LookAtPlayerGoal(this, EntityBarako.class, 8.0F));
+        goalSelector.addGoal(8, new LookAtPlayerGoal(this, EntityUmvuthana.class, 8.0F));
+        goalSelector.addGoal(8, new LookAtPlayerGoal(this, EntityUmvuthi.class, 8.0F));
         goalSelector.addGoal(8, new RandomLookAroundGoal(this));
         goalSelector.addGoal(5, new CircleAttackGoal(this, 6.5F));
         registerTargetGoals();
@@ -355,7 +354,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         if (canHoldVaryingWeapons()) {
             setWeapon(random.nextInt(3) == 0 ? 1 : 0);
         }
-        if (reason == MobSpawnType.COMMAND && !(this instanceof EntityBarakoana) && !(this instanceof EntityBarakoaya) && !(this instanceof EntityBarakoayaToPlayer)) setMask(MaskType.from(Mth.nextInt(random, 1, 4)));
+        if (reason == MobSpawnType.COMMAND && !(this instanceof EntityUmvuthanaRaptor) && !(this instanceof EntityUmvuthanaCrane) && !(this instanceof EntityUmvuthanaCraneToPlayer)) setMask(MaskType.from(Mth.nextInt(random, 1, 4)));
         return super.finalizeSpawn(world, difficulty, reason, livingData, compound);
     }
 
@@ -649,6 +648,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
             return false;
         }
         Entity entity = source.getEntity();
+        if (source == DamageSource.HOT_FLOOR) return false;
         boolean angleFlag = true;
         if (entity != null) {
             int arc = 220;
@@ -739,7 +739,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
     }
 
     protected static class CircleAttackGoal extends Goal {
-        private final EntityBarakoa mob;
+        private final EntityUmvuthana mob;
         private final float attackRadius;
         private int strafingLeftRightMul;
         private int strafingFrontBackMul;
@@ -748,7 +748,7 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         protected boolean attacking = false;
         private int timeSinceAttack = 0;
 
-        public CircleAttackGoal(EntityBarakoa mob, float attackRadius) {
+        public CircleAttackGoal(EntityUmvuthana mob, float attackRadius) {
             this.mob = mob;
             this.attackRadius = attackRadius;
             this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
@@ -868,9 +868,9 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         }
     }
 
-    private static class BarakoaAttackAbility extends MeleeAttackAbility<EntityBarakoa> {
+    private static class BarakoaAttackAbility extends MeleeAttackAbility<EntityUmvuthana> {
 
-        public BarakoaAttackAbility(AbilityType<EntityBarakoa, ? extends MeleeAttackAbility<EntityBarakoa>> abilityType, EntityBarakoa user) {
+        public BarakoaAttackAbility(AbilityType<EntityUmvuthana, ? extends MeleeAttackAbility<EntityUmvuthana>> abilityType, EntityUmvuthana user) {
             super(abilityType, user, new String[]{"attack_slash_left", "attack_slash_right"}, null, null, 1, 3.0f, 1, 13, 9, true);
         }
 
@@ -885,9 +885,9 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         }
     }
 
-    private static class BarakoaBlockCounterAbility extends MeleeAttackAbility<EntityBarakoa> {
+    private static class BarakoaBlockCounterAbility extends MeleeAttackAbility<EntityUmvuthana> {
 
-        public BarakoaBlockCounterAbility(AbilityType<EntityBarakoa, BarakoaBlockCounterAbility> abilityType, EntityBarakoa user) {
+        public BarakoaBlockCounterAbility(AbilityType<EntityUmvuthana, BarakoaBlockCounterAbility> abilityType, EntityUmvuthana user) {
             super(abilityType, user, new String[]{"block_counter"}, null, null, 3, 2.2f, 1.2f, 7, 11, false);
         }
 
@@ -922,9 +922,9 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         }
     }
 
-    private static class BarakoaHurtAbility extends HurtAbility<EntityBarakoa> {
+    private static class BarakoaHurtAbility extends HurtAbility<EntityUmvuthana> {
 
-        public BarakoaHurtAbility(AbilityType<EntityBarakoa, BarakoaHurtAbility> abilityType, EntityBarakoa user) {
+        public BarakoaHurtAbility(AbilityType<EntityUmvuthana, BarakoaHurtAbility> abilityType, EntityUmvuthana user) {
             super(abilityType, user, "", 12);
         }
 
@@ -950,11 +950,11 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         }
     }
 
-    private static class BarakoaTeleportAbility extends Ability<EntityBarakoa> {
+    private static class BarakoaTeleportAbility extends Ability<EntityUmvuthana> {
         private Vec3 teleportStart;
         private static int ACTIVE_DURATION = 7;
 
-        public BarakoaTeleportAbility(AbilityType<EntityBarakoa, ? extends Ability> abilityType, EntityBarakoa user) {
+        public BarakoaTeleportAbility(AbilityType<EntityUmvuthana, ? extends Ability> abilityType, EntityUmvuthana user) {
             super(abilityType, user, new AbilitySection[]{
                     new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 7),
                     new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.ACTIVE, ACTIVE_DURATION),
@@ -1045,9 +1045,9 @@ public abstract class EntityBarakoa extends MowzieGeckoEntity implements RangedA
         }
     }
 
-    private static class BarakoaHealAbility extends Ability<EntityBarakoa> {
+    private static class BarakoaHealAbility extends Ability<EntityUmvuthana> {
 
-        public BarakoaHealAbility(AbilityType<EntityBarakoa, ? extends Ability> abilityType, EntityBarakoa user) {
+        public BarakoaHealAbility(AbilityType<EntityUmvuthana, ? extends Ability> abilityType, EntityUmvuthana user) {
             super(abilityType, user, new AbilitySection[]{
                     new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP,  6),
                     new AbilitySection.AbilitySectionInfinite(AbilitySection.AbilitySectionType.ACTIVE),
