@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBarako;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoItemlayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.UmvuthiSunLayer;
@@ -12,10 +13,12 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3d;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -37,7 +40,7 @@ public class RenderUmvuthi extends MowzieGeoEntityRenderer<EntityUmvuthi> {
     private static final int BURST_FRAME_COUNT = 10;
     private static final int BURST_START_FRAME = 12;
     private MultiBufferSource source;
-
+    private EntityUmvuthi entity;
 
 
     public RenderUmvuthi(EntityRendererProvider.Context mgr) {
@@ -56,6 +59,7 @@ public class RenderUmvuthi extends MowzieGeoEntityRenderer<EntityUmvuthi> {
     @Override
     public void render(EntityUmvuthi barako, float entityYaw, float delta, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         source = bufferIn;
+        this.entity = barako;
         if (!barako.isInvisible()) {
             if (barako.getActiveAbilityType() == EntityUmvuthi.ATTACK_ABILITY && barako.getActiveAbility().getTicksInUse() > BURST_START_FRAME && barako.getActiveAbility().getTicksInUse() < BURST_START_FRAME + BURST_FRAME_COUNT - 1) {
                 matrixStackIn.pushPose();
@@ -90,7 +94,19 @@ public class RenderUmvuthi extends MowzieGeoEntityRenderer<EntityUmvuthi> {
 
     }
 
-
+//    @Override
+//    public void renderRecursively(GeoBone bone, PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+//        super.renderRecursively(bone, poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+//        if (bone.getName().equals("sun")){
+//            Vector3d pos = bone.getWorldPosition();
+//            Vec3 vec = new Vec3(pos.x,pos.y,pos.z);
+//            if(this.entity!=null){
+//                if(this.entity.level.isClientSide && this.entity.getRandom().nextFloat() < 0.5f){
+//                    this.entity.level.addParticle(ParticleTypes.FLAME, vec.x, vec.y, vec.z, 0d, 0d, 0d );
+//                }
+//            }
+//        }
+//    }
 
     private void drawBurst(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer builder, float tick, int packedLightIn) {
         int dissapateFrame = 6;

@@ -123,10 +123,7 @@
 				{
 					"name": "sun",
 					"parent": "head",
-					"pivot": [0, 51, -4.5],
-					"cubes": [
-						{"origin": [-3.5, 47.5, -8], "size": [7, 7, 7], "uv": [88, 82]}
-					]
+					"pivot": [0, 51, -4.5]
 				},
 				{
 					"name": "sun_render",

@@ -12,12 +12,15 @@ import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import org.lwjgl.system.CallbackI;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
 import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
@@ -176,14 +179,14 @@ public class UmvuthiSunLayer  extends GeoLayerRenderer<EntityUmvuthi> {
 
 
         if(bone.getName().equals("sun") && !bone.isHidden()){
-            VertexConsumer ivertexbuilder = buffer.getBuffer(MMRenderType.getSolarFlare( new ResourceLocation(MowziesMobs.MODID, "textures/effects/super_nova_8.png")));
+            VertexConsumer ivertexbuilder = buffer.getBuffer(RenderType.entityTranslucent(new ResourceLocation(MowziesMobs.MODID, "textures/effects/sun_effect.png"),true));
             PoseStack.Pose matrixstack$entry = poseStack.last();
-            poseStack.scale(0.22f,0.22f,0.22f);
+            poseStack.translate(0.02d,0d,-0.0d);
+            poseStack.scale(0.06f,0.06f,0.06f);
             Matrix4f matrix4f = matrixstack$entry.pose();
             Matrix3f matrix3f = matrixstack$entry.normal();
             drawSun(matrix4f, matrix3f, ivertexbuilder, packedLight);
         }
-
         if (bone.isTrackingXform()) {
             Matrix4f poseState = poseStack.last().pose().copy();
             Matrix4f localMatrix = RenderUtils.invertAndMultiplyMatrices(poseState, this.dispatchedMat);
@@ -216,22 +219,29 @@ public class UmvuthiSunLayer  extends GeoLayerRenderer<EntityUmvuthi> {
     }
 
     private void drawSun(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer builder, int packedLightIn) {
-        for(int i = 0; i < 5; i++) {
+        float scale = 0.9f;
+        for(int i = 0; i < 4; i++) {
             for (Vec3 vec : POS) {
-                vec = vec.multiply(1.2f + (i * 0.4f),1.2f + (i * 0.4f),1.2f + (i * 0.4f));
-                float opacity = i < 3 ? 1.0f: 0.2f;
-                float uv = i < 3 ? 0.2f : 0.5f;
-                builder.vertex(matrix4f, (float) vec.x + (0.5f * i), (float) vec.y+ (0.5f * i), (float) vec.z + (0.5f * i))
-                        .color((float)1f, (float)1f, (float)1f, 0.5f)
-                        .uv(uv, uv)
-                        .overlayCoords(OverlayTexture.RED_OVERLAY_V)
+                vec = vec.multiply(1f + (scale * i), 1f + (scale * i), 1f + (scale * i));
+                builder.vertex(matrix4f, (float) ((float) vec.x + (scale * i)), (float) ((float) vec.y+ (scale * i)), (float) ((float) vec.z+ (scale * i)))
+                        .color( 1f, 1f, .5f, 0.2f)
+                        .uv(0.0f, 0.5f)
+                        .overlayCoords(OverlayTexture.NO_OVERLAY)
                         .uv2(15728880)
-                        .normal(matrix3f, 0.0F, 1.0F, 0.0F)
+                        .normal(matrix3f, 1f, 1f, 1f)
                         .endVertex();
             }
         }
-
-
+        for (Vec3 vec : POS) {
+            builder.vertex(matrix4f, (float) ((float) vec.x * 1.2f), (float) ((float) vec.y * 1.2f), (float) ((float) vec.z * 1.2f))
+                    .color(1f, 1f, 1f, 1f)
+                    .uv(0.0f, 0.5f)
+                    .overlayCoords(OverlayTexture.NO_OVERLAY)
+                    .uv2(15728880)
+                    .normal(matrix3f, 1f, 1f, 1f)
+                    .endVertex();
+        }
+//.normal(matrix3f, (float) normal.x, (float) normal.y, (float) normal.z)
     }
 
 }
