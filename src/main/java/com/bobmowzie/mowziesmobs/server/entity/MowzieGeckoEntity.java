@@ -6,6 +6,8 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.player.SimpleAnimationAbility;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
+import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.damagesource.DamageSource;
@@ -70,7 +72,11 @@ public abstract class MowzieGeckoEntity extends MowzieEntity implements IAnimata
 
     protected <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
         AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability();
+        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(this, CapabilityHandler.FROZEN_CAPABILITY);
         if (abilityCapability == null) {
+            return PlayState.STOP;
+        }
+        if (frozenCapability != null && frozenCapability.getFrozen()) {
             return PlayState.STOP;
         }
 

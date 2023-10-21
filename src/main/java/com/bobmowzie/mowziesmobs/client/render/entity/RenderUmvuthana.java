@@ -2,6 +2,8 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBarakoa;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
+import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoSunblockLayer;
+import com.bobmowzie.mowziesmobs.client.render.entity.layer.SunblockLayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.UmvuthanaArmorLayer;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthana;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -27,6 +29,8 @@ public class RenderUmvuthana extends MowzieGeoEntityRenderer<EntityUmvuthana> {
 
     public RenderUmvuthana(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ModelBarakoa());
+        this.addLayer(new FrozenRenderHandler.GeckoLayerFrozen<>(this, renderManager));
+        this.addLayer(new GeckoSunblockLayer<>(this, renderManager));
         this.addLayer(new UmvuthanaArmorLayer(this, renderManager));
         this.shadowRadius = 0.6f;
     }

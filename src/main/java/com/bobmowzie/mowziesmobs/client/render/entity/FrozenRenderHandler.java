@@ -14,6 +14,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
@@ -27,6 +28,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
+import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 
 /**
  * Created by BobMowzie on 6/28/2017.
@@ -53,6 +57,25 @@ public enum FrozenRenderHandler {
                 float transparency = 1;
                 VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(FROZEN_TEXTURE));
                 model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, transparency);
+            }
+        }
+    }
+
+    public static class GeckoLayerFrozen<T extends LivingEntity & IAnimatable> extends GeoLayerRenderer<T> {
+
+        public GeckoLayerFrozen(IGeoRenderer<T> entityRendererIn, EntityRendererProvider.Context context) {
+            super(entityRendererIn);
+        }
+
+        @Override
+        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, T living, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(living, CapabilityHandler.FROZEN_CAPABILITY);
+            if (frozenCapability != null && frozenCapability.getFrozen()) {
+                RenderType renderType = RenderType.entityTranslucent(FROZEN_TEXTURE);
+
+                getRenderer().render(getEntityModel().getModel(getEntityModel().getModelLocation(living)),
+                        living, partialTicks, renderType, matrixStackIn, bufferIn, bufferIn.getBuffer(renderType),
+                        packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
             }
         }
     }

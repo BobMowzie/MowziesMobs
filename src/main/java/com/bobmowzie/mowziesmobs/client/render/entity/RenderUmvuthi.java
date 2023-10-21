@@ -5,6 +5,8 @@ import com.bobmowzie.mowziesmobs.client.model.entity.ModelBarako;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoItemlayer;
+import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoSunblockLayer;
+import com.bobmowzie.mowziesmobs.client.render.entity.layer.SunblockLayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.UmvuthiSunLayer;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
@@ -45,7 +47,8 @@ public class RenderUmvuthi extends MowzieGeoEntityRenderer<EntityUmvuthi> {
 
     public RenderUmvuthi(EntityRendererProvider.Context mgr) {
         super(mgr, new ModelBarako());
-//        addLayer(new SunblockLayer<>(this));
+        this.addLayer(new FrozenRenderHandler.GeckoLayerFrozen<>(this, mgr));
+        this.addLayer(new GeckoSunblockLayer(this, mgr));
         this.addLayer(new UmvuthiSunLayer(this,"sun_render"));
 
         this.shadowRadius = 1.0f;

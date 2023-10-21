@@ -5,6 +5,7 @@ import com.bobmowzie.mowziesmobs.client.render.entity.FrozenRenderHandler;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.SunblockLayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.client.render.item.RenderBarakoaMask;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -52,7 +53,9 @@ public class ClientLayerRegistry {
             try{
                 renderer = event.getRenderer(entityType);
             }catch (Exception e){
-                MowziesMobs.LOGGER.warn("Could not apply layer to " + entityType.getRegistryName() + ", has custom renderer that is not LivingEntityRenderer.");
+                if (!entityType.getBaseClass().isAssignableFrom(MowzieEntity.class)) {
+                    MowziesMobs.LOGGER.warn("Could not apply layer to " + entityType.getRegistryName() + ", has custom renderer that is not LivingEntityRenderer.");
+                }
             }
             if(renderer != null){
                 renderer.addLayer(new FrozenRenderHandler.LayerFrozen(renderer));

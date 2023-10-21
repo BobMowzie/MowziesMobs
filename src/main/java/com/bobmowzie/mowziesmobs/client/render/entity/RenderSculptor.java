@@ -3,6 +3,8 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelSculptor;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoItemlayer;
+import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoSunblockLayer;
+import com.bobmowzie.mowziesmobs.client.render.entity.layer.SunblockLayer;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -25,6 +27,8 @@ public class RenderSculptor extends MowzieGeoEntityRenderer<EntitySculptor> {
 
     public RenderSculptor(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ModelSculptor());
+        this.addLayer(new FrozenRenderHandler.GeckoLayerFrozen<>(this, renderManager));
+        this.addLayer(new GeckoSunblockLayer<>(this, renderManager));
         this.addLayer(new GeckoItemlayer<>(this,"backItem", new ItemStack(ItemHandler.SCULPTOR_STAFF, 1)));
         this.addLayer(new GeckoItemlayer<>(this,"itemHandLeft", new ItemStack(ItemHandler.SCULPTOR_STAFF, 1)));
         this.addLayer(new GeckoItemlayer<>(this,"itemHandRight", new ItemStack(ItemHandler.SCULPTOR_STAFF, 1)));
