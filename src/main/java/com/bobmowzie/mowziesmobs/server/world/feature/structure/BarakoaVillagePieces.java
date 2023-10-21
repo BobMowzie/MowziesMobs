@@ -52,7 +52,14 @@ public class BarakoaVillagePieces {
             PLATFORM_1,
             PLATFORM_2
     };
+    public static final ResourceLocation PLATFORM_EXTEND = new ResourceLocation(MowziesMobs.MODID, "barakoa/umvuthana_platform_extend");
     public static final ResourceLocation FIREPIT = new ResourceLocation(MowziesMobs.MODID, "barakoa/barakoa_firepit");
+    public static final ResourceLocation FIREPIT_SMALL_1 = new ResourceLocation(MowziesMobs.MODID, "barakoa/umvuthana_firepit_small_1");
+    public static final ResourceLocation FIREPIT_SMALL_2 = new ResourceLocation(MowziesMobs.MODID, "barakoa/umvuthana_firepit_small_2");
+    public static final ResourceLocation[] FIREPIT_SMALL = new ResourceLocation[] {
+            FIREPIT_SMALL_1,
+            FIREPIT_SMALL_2
+    };
     public static final ResourceLocation TREE_1 = new ResourceLocation(MowziesMobs.MODID, "barakoa/barakoa_tree_1");
     public static final ResourceLocation TREE_2 = new ResourceLocation(MowziesMobs.MODID, "barakoa/barakoa_tree_2");
     public static final ResourceLocation TREE_3 = new ResourceLocation(MowziesMobs.MODID, "barakoa/barakoa_tree_3");
@@ -75,8 +82,11 @@ public class BarakoaVillagePieces {
 
     private static final Map<ResourceLocation, BlockPos> OFFSET = ImmutableMap.<ResourceLocation, BlockPos>builder()
             .put(PLATFORM_1, new BlockPos(-5, 0, -5))
-            .put(PLATFORM_2, new BlockPos(-5, 0, -5))
+            .put(PLATFORM_2, new BlockPos(0, 0, -5))
+            .put(PLATFORM_EXTEND, new BlockPos(8, 1, -2))
             .put(FIREPIT, new BlockPos(-3, -2, -3))
+            .put(FIREPIT_SMALL_1, new BlockPos(-1, 0, -1))
+            .put(FIREPIT_SMALL_2, new BlockPos(-1, 0, -1))
             .put(TREE_1, new BlockPos(-5, 1, -3))
             .put(TREE_2, new BlockPos(-3, 1, -3))
             .put(TREE_3, new BlockPos(-3, 1, -3))
@@ -90,7 +100,10 @@ public class BarakoaVillagePieces {
     private static final Map<ResourceLocation, Pair<BlockPos, BlockPos>> BOUNDS_OFFSET = ImmutableMap.<ResourceLocation, Pair<BlockPos, BlockPos>>builder()
             .put(PLATFORM_1, new Pair<>(new BlockPos(1, 0, 0), new BlockPos(-3, 0, -3)))
             .put(PLATFORM_2, new Pair<>(new BlockPos(0, 0, 0), new BlockPos(0, 0, -3)))
+            .put(PLATFORM_EXTEND, new Pair<>(new BlockPos(0, 0, 0), new BlockPos(0, 0, 0)))
             .put(FIREPIT, new Pair<>(new BlockPos(0, 0, 0), new BlockPos(0, 0, 0)))
+            .put(FIREPIT_SMALL_1, new Pair<>(new BlockPos(0, 0, 0), new BlockPos(0, 0, 0)))
+            .put(FIREPIT_SMALL_2, new Pair<>(new BlockPos(0, 0, 0), new BlockPos(0, 0, 0)))
             .put(TREE_1, new Pair<>(new BlockPos(1, 0, 1), new BlockPos(-3, 0, -3)))
             .put(TREE_2, new Pair<>(new BlockPos(2, 0, 1), new BlockPos(-1, 0, -3)))
             .put(TREE_3, new Pair<>(new BlockPos(2, 0, 2), new BlockPos(-2, 0, -2)))
@@ -120,6 +133,11 @@ public class BarakoaVillagePieces {
         Piece newPiece = new Piece(manager, PLATFORMS[whichPlatform], rot, pos);
         if (findCollisionPiece(builder.pieces, newPiece.getCollisionBoundingBox()) != null) return null;
         builder.addPiece(newPiece);
+        if (whichPlatform == 1) {
+            Piece extension = new Piece(manager, PLATFORM_EXTEND, rot, pos);
+            if (findCollisionPiece(builder.pieces, extension.getCollisionBoundingBox(), newPiece) != null) return newPiece;
+            builder.addPiece(extension);
+        }
         return newPiece;
     }
 
@@ -128,8 +146,9 @@ public class BarakoaVillagePieces {
     }
 
     @Nullable
-    public static StructurePiece findCollisionPiece(List<StructurePiece> pieces, BoundingBox bounds) {
+    public static StructurePiece findCollisionPiece(List<StructurePiece> pieces, BoundingBox bounds, StructurePiece ignore) {
         for(StructurePiece structurePiece : pieces) {
+            if (structurePiece == ignore) continue;
             if (structurePiece instanceof Piece && ((Piece)structurePiece).getCollisionBoundingBox().intersects(bounds)) {
                 return structurePiece;
             }
@@ -138,6 +157,11 @@ public class BarakoaVillagePieces {
             }
         }
         return null;
+    }
+
+    @Nullable
+    public static StructurePiece findCollisionPiece(List<StructurePiece> pieces, BoundingBox bounds) {
+        return findCollisionPiece(pieces, bounds, null);
     }
 
     public static class Piece extends TemplateStructurePiece {
