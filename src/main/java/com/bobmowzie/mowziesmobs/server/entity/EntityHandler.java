@@ -30,22 +30,22 @@ public class EntityHandler {
     public static final RegistryObject<EntityType<EntityFoliaath>> FOLIAATH = REG.register("foliaath", () -> EntityType.Builder.of(EntityFoliaath::new, MobCategory.MONSTER).sized(0.5f, 2.5f).build(new ResourceLocation(MowziesMobs.MODID, "foliaath").toString()));
     public static final RegistryObject<EntityType<EntityBabyFoliaath>> BABY_FOLIAATH = REG.register("baby_foliaath", () -> EntityType.Builder.of(EntityBabyFoliaath::new, MobCategory.MONSTER).sized(0.4f, 0.4f).build(new ResourceLocation(MowziesMobs.MODID, "baby_foliaath").toString()));
     public static final RegistryObject<EntityType<EntityWroughtnaut>> WROUGHTNAUT = REG.register("ferrous_wroughtnaut", () -> EntityType.Builder.of(EntityWroughtnaut::new, MobCategory.MONSTER).sized(2.5f, 3.5f).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "ferrous_wroughtnaut").toString()));
-    private static EntityType.Builder<EntityUmvuthanaFollowerToRaptor> barakoanToBarakoanaBuilder() {
+    private static EntityType.Builder<EntityUmvuthanaFollowerToRaptor> umvuthanaFollowerToRaptorBuilder() {
         return EntityType.Builder.of(EntityUmvuthanaFollowerToRaptor::new, MobCategory.MONSTER);
     }
-    public static final RegistryObject<EntityType<EntityUmvuthanaFollowerToRaptor>> BARAKOAN_TO_BARAKOANA = REG.register("barakoan_barakoana", () -> barakoanToBarakoanaBuilder().sized(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "barakoan_barakoana").toString()));
-    private static EntityType.Builder<EntityUmvuthanaFollowerToPlayer> barakoanToPlayerBuilder() {
+    public static final RegistryObject<EntityType<EntityUmvuthanaFollowerToRaptor>> UMVUTHANA_FOLLOWER_TO_RAPTOR = REG.register("umvuthana_follower_raptor", () -> umvuthanaFollowerToRaptorBuilder().sized(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "umvuthana_follower_raptor").toString()));
+    private static EntityType.Builder<EntityUmvuthanaFollowerToPlayer> umvuthanaFollowerToPlayerBuilder() {
         return EntityType.Builder.of(EntityUmvuthanaFollowerToPlayer::new, MobCategory.MONSTER);
     }
-    public static final RegistryObject<EntityType<EntityUmvuthanaFollowerToPlayer>> BARAKOAN_TO_PLAYER = REG.register("barakoan_player", () -> barakoanToPlayerBuilder().sized(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "barakoan_player").toString()));
-    private static EntityType.Builder<EntityUmvuthanaCraneToPlayer> barakoayaToPlayerBuilder() {
+    public static final RegistryObject<EntityType<EntityUmvuthanaFollowerToPlayer>> UMVUTHANA_FOLLOWER_TO_PLAYER = REG.register("umvuthana_follower_player", () -> umvuthanaFollowerToPlayerBuilder().sized(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "umvuthana_follower_player").toString()));
+    private static EntityType.Builder<EntityUmvuthanaCraneToPlayer> umvuthanaCraneToPlayerBuilder() {
         return EntityType.Builder.of(EntityUmvuthanaCraneToPlayer::new, MobCategory.MONSTER);
     }
-    public static final RegistryObject<EntityType<EntityUmvuthanaCraneToPlayer>> BARAKOAYA_TO_PLAYER = REG.register("barakoa_sunblocker_player", () -> barakoayaToPlayerBuilder().sized(MaskType.FAITH.entityWidth, MaskType.FAITH.entityHeight).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "barakoa_sunblocker_player").toString()));
-    public static final RegistryObject<EntityType<EntityUmvuthanaMinion>> BARAKOA_VILLAGER = REG.register("barakoaya", () -> EntityType.Builder.of(EntityUmvuthanaMinion::new, MobCategory.MONSTER).sized(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "barakoaya").toString()));
-    public static final RegistryObject<EntityType<EntityUmvuthanaRaptor>> BARAKOANA = REG.register("barakoana", () -> EntityType.Builder.of(EntityUmvuthanaRaptor::new, MobCategory.MONSTER).sized(MaskType.FURY.entityWidth, MaskType.FURY.entityHeight).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "barakoana").toString()));
-    public static final RegistryObject<EntityType<EntityUmvuthanaCrane>> BARAKOAYA = REG.register("barakoa_sunblocker", () -> EntityType.Builder.of(EntityUmvuthanaCrane::new, MobCategory.MONSTER).sized(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "barakoa_sunblocker").toString()));
-    public static final RegistryObject<EntityType<EntityUmvuthi>> BARAKO = REG.register("barako", () -> EntityType.Builder.of(EntityUmvuthi::new, MobCategory.MONSTER).sized(1.5f, 2.4f).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "barako").toString()));
+    public static final RegistryObject<EntityType<EntityUmvuthanaCraneToPlayer>> UMVUTHANA_CRANE_TO_PLAYER = REG.register("umvuthana_crane_player", () -> umvuthanaCraneToPlayerBuilder().sized(MaskType.FAITH.entityWidth, MaskType.FAITH.entityHeight).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "umvuthana_crane_player").toString()));
+    public static final RegistryObject<EntityType<EntityUmvuthanaMinion>> UMVUTHANA_MINION = REG.register("umvuthana", () -> EntityType.Builder.of(EntityUmvuthanaMinion::new, MobCategory.MONSTER).sized(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "umvuthana").toString()));
+    public static final RegistryObject<EntityType<EntityUmvuthanaRaptor>> UMVUTHANA_RAPTOR = REG.register("umvuthana_raptor", () -> EntityType.Builder.of(EntityUmvuthanaRaptor::new, MobCategory.MONSTER).sized(MaskType.FURY.entityWidth, MaskType.FURY.entityHeight).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "umvuthana_raptor").toString()));
+    public static final RegistryObject<EntityType<EntityUmvuthanaCrane>> UMVUTHANA_CRANE = REG.register("umvuthana_crane", () -> EntityType.Builder.of(EntityUmvuthanaCrane::new, MobCategory.MONSTER).sized(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "umvuthana_crane").toString()));
+    public static final RegistryObject<EntityType<EntityUmvuthi>> UMVUTHI = REG.register("umvuthi", () -> EntityType.Builder.of(EntityUmvuthi::new, MobCategory.MONSTER).sized(1.5f, 2.4f).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "umvuthi").toString()));
     public static final RegistryObject<EntityType<EntityFrostmaw>> FROSTMAW = REG.register("frostmaw", () -> EntityType.Builder.of(EntityFrostmaw::new, MobCategory.MONSTER).sized(4f, 4f).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "frostmaw").toString()));
     public static final RegistryObject<EntityType<EntityGrottol>> GROTTOL = REG.register("grottol", () -> EntityType.Builder.of(EntityGrottol::new, MobCategory.MONSTER).sized(0.9F, 1.2F).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "grottol").toString()));
     public static final RegistryObject<EntityType<EntityLantern>> LANTERN = REG.register("lantern", () -> EntityType.Builder.of(EntityLantern::new, MobCategory.AMBIENT).sized(1.0f, 1.0f).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "lantern").toString()));
@@ -135,13 +135,13 @@ public class EntityHandler {
         event.put(EntityHandler.FOLIAATH.get(), EntityFoliaath.createAttributes().build());
         event.put(EntityHandler.BABY_FOLIAATH.get(), EntityBabyFoliaath.createAttributes().build());
         event.put(EntityHandler.WROUGHTNAUT.get(), EntityWroughtnaut.createAttributes().build());
-        event.put(EntityHandler.BARAKOANA.get(), EntityUmvuthanaRaptor.createAttributes().build());
-        event.put(EntityHandler.BARAKOA_VILLAGER.get(), EntityUmvuthana.createAttributes().build());
-        event.put(EntityHandler.BARAKOAN_TO_PLAYER.get(), EntityUmvuthanaFollowerToPlayer.createAttributes().build());
-        event.put(EntityHandler.BARAKOAYA_TO_PLAYER.get(), EntityUmvuthanaFollowerToPlayer.createAttributes().build());
-        event.put(EntityHandler.BARAKOAN_TO_BARAKOANA.get(), EntityUmvuthana.createAttributes().build());
-        event.put(EntityHandler.BARAKOAYA.get(), EntityUmvuthana.createAttributes().build());
-        event.put(EntityHandler.BARAKO.get(), EntityUmvuthi.createAttributes().build());
+        event.put(EntityHandler.UMVUTHANA_RAPTOR.get(), EntityUmvuthanaRaptor.createAttributes().build());
+        event.put(EntityHandler.UMVUTHANA_MINION.get(), EntityUmvuthana.createAttributes().build());
+        event.put(EntityHandler.UMVUTHANA_FOLLOWER_TO_PLAYER.get(), EntityUmvuthanaFollowerToPlayer.createAttributes().build());
+        event.put(EntityHandler.UMVUTHANA_CRANE_TO_PLAYER.get(), EntityUmvuthanaFollowerToPlayer.createAttributes().build());
+        event.put(EntityHandler.UMVUTHANA_FOLLOWER_TO_RAPTOR.get(), EntityUmvuthana.createAttributes().build());
+        event.put(EntityHandler.UMVUTHANA_CRANE.get(), EntityUmvuthana.createAttributes().build());
+        event.put(EntityHandler.UMVUTHI.get(), EntityUmvuthi.createAttributes().build());
         event.put(EntityHandler.FROSTMAW.get(), EntityFrostmaw.createAttributes().build());
         event.put(EntityHandler.NAGA.get(), EntityNaga.createAttributes().build());
         event.put(EntityHandler.LANTERN.get(), EntityLantern.createAttributes().build());

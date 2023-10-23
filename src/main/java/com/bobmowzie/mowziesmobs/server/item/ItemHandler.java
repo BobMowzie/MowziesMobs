@@ -33,13 +33,13 @@ public final class ItemHandler {
     public static final ItemMobRemover MOB_REMOVER = null;
     public static final ItemWroughtAxe WROUGHT_AXE = null;
     public static final ItemWroughtHelm WROUGHT_HELMET = null;
-    public static final ItemBarakoaMask BARAKOA_MASK_FURY = null;
-    public static final ItemBarakoaMask BARAKOA_MASK_FEAR = null;
-    public static final ItemBarakoaMask BARAKOA_MASK_RAGE = null;
-    public static final ItemBarakoaMask BARAKOA_MASK_BLISS = null;
-    public static final ItemBarakoaMask BARAKOA_MASK_MISERY = null;
-    public static final ItemBarakoaMask BARAKOA_MASK_FAITH = null;
-    public static final ItemBarakoMask BARAKO_MASK = null;
+    public static final ItemUmvuthanaMask UMVUTHANA_MASK_FURY = null;
+    public static final ItemUmvuthanaMask UMVUTHANA_MASK_FEAR = null;
+    public static final ItemUmvuthanaMask UMVUTHANA_MASK_RAGE = null;
+    public static final ItemUmvuthanaMask UMVUTHANA_MASK_BLISS = null;
+    public static final ItemUmvuthanaMask UMVUTHANA_MASK_MISERY = null;
+    public static final ItemUmvuthanaMask UMVUTHANA_MASK_FAITH = null;
+    public static final ItemSolVisage BARAKO_MASK = null;
     public static final ItemDart DART = null;
     public static final ItemSpear SPEAR = null;
     public static final ItemSunblockStaff SUNBLOCK_STAFF = null;
@@ -58,18 +58,15 @@ public final class ItemHandler {
 
     public static final ForgeSpawnEggItem FOLIAATH_SPAWN_EGG = null;
     public static final ForgeSpawnEggItem WROUGHTNAUT_SPAWN_EGG = null;
-    public static final ForgeSpawnEggItem BARAKOA_SPAWN_EGG = null;
-    public static final ForgeSpawnEggItem BARAKOANA_SPAWN_EGG = null;
-    public static final ForgeSpawnEggItem BARAKOA_SUNBLOCKER_SPAWN_EGG = null;
-    public static final ForgeSpawnEggItem BARAKO_SPAWN_EGG = null;
+    public static final ForgeSpawnEggItem UMVUTHANA_SPAWN_EGG = null;
+    public static final ForgeSpawnEggItem UMVUTHANA_RAPTOR_SPAWN_EGG = null;
+    public static final ForgeSpawnEggItem UMVUTHANA_CRANE_SPAWN_EGG = null;
+    public static final ForgeSpawnEggItem UMVUTHI_SPAWN_EGG = null;
     public static final ForgeSpawnEggItem FROSTMAW_SPAWN_EGG = null;
     public static final ForgeSpawnEggItem GROTTOL_SPAWN_EGG = null;
     public static final ForgeSpawnEggItem LANTERN_SPAWN_EGG = null;
     public static final ForgeSpawnEggItem NAGA_SPAWN_EGG = null;
 //    public static final ForgeSpawnEggItem SCULPTOR_SPAWN_EGG = null;
-
-    private static final int BARAKOA_GREEN_COLOR = 0x748C47;
-    private static final int BARAKOA_PINK_COLOR = 0xBA6656;
 
     public static Style TOOLTIP_STYLE = Style.EMPTY.withColor(TextColor.fromLegacyFormat(ChatFormatting.GRAY));
 
@@ -80,13 +77,13 @@ public final class ItemHandler {
             new ItemMobRemover(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("mob_remover"),
             new ItemWroughtAxe(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).rarity(Rarity.UNCOMMON)).setRegistryName("wrought_axe"),
             new ItemWroughtHelm(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).rarity(Rarity.UNCOMMON)).setRegistryName("wrought_helmet"),
-            new ItemBarakoaMask(MaskType.FURY, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoa_mask_fury"),
-            new ItemBarakoaMask(MaskType.FEAR, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoa_mask_fear"),
-            new ItemBarakoaMask(MaskType.RAGE, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoa_mask_rage"),
-            new ItemBarakoaMask(MaskType.BLISS, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoa_mask_bliss"),
-            new ItemBarakoaMask(MaskType.MISERY, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoa_mask_misery"),
-            new ItemBarakoaMask(MaskType.FAITH, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoa_mask_faith"),
-            new ItemBarakoMask(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).rarity(Rarity.RARE)).setRegistryName("barako_mask"),
+            new ItemUmvuthanaMask(MaskType.FURY, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("umvuthana_mask_fury"),
+            new ItemUmvuthanaMask(MaskType.FEAR, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("umvuthana_mask_fear"),
+            new ItemUmvuthanaMask(MaskType.RAGE, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("umvuthana_mask_rage"),
+            new ItemUmvuthanaMask(MaskType.BLISS, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("umvuthana_mask_bliss"),
+            new ItemUmvuthanaMask(MaskType.MISERY, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("umvuthana_mask_misery"),
+            new ItemUmvuthanaMask(MaskType.FAITH, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("umvuthana_mask_faith"),
+            new ItemSolVisage(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).rarity(Rarity.RARE)).setRegistryName("barako_mask"),
             new ItemDart(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("dart"),
             new ItemSpear(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1)).setRegistryName("spear"),
             new ItemSunblockStaff(new Item.Properties().stacksTo(1)).setRegistryName("sunblock_staff"),
@@ -106,10 +103,10 @@ public final class ItemHandler {
     
             new ForgeSpawnEggItem(EntityHandler.FOLIAATH, 0x47CC3B, 0xC03BCC, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("foliaath_spawn_egg"),
             new ForgeSpawnEggItem(EntityHandler.WROUGHTNAUT, 0x8C8C8C, 0xFFFFFF, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("wroughtnaut_spawn_egg"),
-            new ForgeSpawnEggItem(EntityHandler.BARAKOA_VILLAGER, BARAKOA_GREEN_COLOR, 0xdbdbdb, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoa_spawn_egg"),
-            new ForgeSpawnEggItem(EntityHandler.BARAKOANA, BARAKOA_GREEN_COLOR, 0xFAFA78, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoana_spawn_egg"),
-            new ForgeSpawnEggItem(EntityHandler.BARAKOAYA, BARAKOA_GREEN_COLOR, 0xff8271, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoa_sunblocker_spawn_egg"),
-            new ForgeSpawnEggItem(EntityHandler.BARAKO, BARAKOA_GREEN_COLOR, 0xFFFF2F, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barako_spawn_egg"),
+            new ForgeSpawnEggItem(EntityHandler.UMVUTHANA_MINION, 0xba5f1e, 0x3a2f2f, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("umvuthana_spawn_egg"),
+            new ForgeSpawnEggItem(EntityHandler.UMVUTHANA_RAPTOR, 0xba5f1e, 0xf6f2f1, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("umvuthana_raptor_spawn_egg"),
+            new ForgeSpawnEggItem(EntityHandler.UMVUTHANA_CRANE, 0xba5f1e, 0xfddc76, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("umvuthana_crane_spawn_egg"),
+            new ForgeSpawnEggItem(EntityHandler.UMVUTHI, 0xf6f2f1, 0xba5f1e, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("umvuthi_spawn_egg"),
             new ForgeSpawnEggItem(EntityHandler.FROSTMAW, 0xf7faff, 0xafcdff, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("frostmaw_spawn_egg"),
             new ForgeSpawnEggItem(EntityHandler.GROTTOL, 0x777777, 0xbce0ff, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("grottol_spawn_egg"),
             new ForgeSpawnEggItem(EntityHandler.LANTERN, 0x6dea00, 0x235a10, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("lantern_spawn_egg"),
@@ -128,22 +125,16 @@ public final class ItemHandler {
     public static void initializeAttributes() {
         WROUGHT_AXE.getAttributesFromConfig();
         WROUGHT_HELMET.getAttributesFromConfig();
-        BARAKOA_MASK_FURY.getAttributesFromConfig();
-        BARAKOA_MASK_FEAR.getAttributesFromConfig();
-        BARAKOA_MASK_RAGE.getAttributesFromConfig();
-        BARAKOA_MASK_BLISS.getAttributesFromConfig();
-        BARAKOA_MASK_MISERY.getAttributesFromConfig();
-        BARAKOA_MASK_FAITH.getAttributesFromConfig();
+        UMVUTHANA_MASK_FURY.getAttributesFromConfig();
+        UMVUTHANA_MASK_FEAR.getAttributesFromConfig();
+        UMVUTHANA_MASK_RAGE.getAttributesFromConfig();
+        UMVUTHANA_MASK_BLISS.getAttributesFromConfig();
+        UMVUTHANA_MASK_MISERY.getAttributesFromConfig();
+        UMVUTHANA_MASK_FAITH.getAttributesFromConfig();
         BARAKO_MASK.getAttributesFromConfig();
         SPEAR.getAttributesFromConfig();
         NAGA_FANG_DAGGER.getAttributesFromConfig();
         EARTHBORE_GAUNTLET.getAttributesFromConfig();
-
-        int barakoaColor = ConfigHandler.CLIENT.oldBarakoaTextures.get() ? BARAKOA_PINK_COLOR : BARAKOA_GREEN_COLOR;
-        BARAKO_SPAWN_EGG.backgroundColor = barakoaColor;
-        BARAKOA_SPAWN_EGG.backgroundColor = barakoaColor;
-        BARAKOANA_SPAWN_EGG.backgroundColor = barakoaColor;
-        BARAKOA_SUNBLOCKER_SPAWN_EGG.backgroundColor = barakoaColor;
     }
 
     public static void initializeDispenserBehaviors() {

@@ -19,7 +19,7 @@ import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
-import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
+import com.bobmowzie.mowziesmobs.server.item.ItemUmvuthanaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemNagaFangDagger;
 import com.bobmowzie.mowziesmobs.server.item.ItemSpear;
@@ -132,8 +132,8 @@ public final class ServerEventHandler {
 
             if (!entity.level.isClientSide) {
                 Item headItemStack = entity.getItemBySlot(EquipmentSlot.HEAD).getItem();
-                if (headItemStack instanceof ItemBarakoaMask) {
-                    ItemBarakoaMask mask = (ItemBarakoaMask) headItemStack;
+                if (headItemStack instanceof ItemUmvuthanaMask) {
+                    ItemUmvuthanaMask mask = (ItemUmvuthanaMask) headItemStack;
                     EffectHandler.addOrCombineEffect(entity, mask.getPotion(), 50, 0, true, false);
                 }
             }
@@ -320,7 +320,7 @@ public final class ServerEventHandler {
                         block.getBlock() == Blocks.DISPENSER ||
                         block.getBlock() == Blocks.CACTUS
                 ) {
-                    aggroBarakoa((Player) entity);
+                    aggroUmvuthana((Player) entity);
                 }
             }
         }
@@ -342,7 +342,7 @@ public final class ServerEventHandler {
             }
 
             if (event.getEmptyBucket().getItem() == Items.LAVA_BUCKET) {
-                aggroBarakoa(event.getPlayer());
+                aggroUmvuthana(event.getPlayer());
             }
 
             if (event.getEmptyBucket().getItem() == Items.WATER_BUCKET) {
@@ -374,7 +374,7 @@ public final class ServerEventHandler {
             block.getBlock() == Blocks.SKELETON_SKULL ||
             block.getBlock() == Blocks.TORCH
         ) {
-            aggroBarakoa(event.getPlayer());
+            aggroUmvuthana(event.getPlayer());
         }
     }
 
@@ -457,7 +457,7 @@ public final class ServerEventHandler {
 
         Player player = event.getPlayer();
         if (player.level.getBlockState(event.getPos()).getBlock() instanceof ChestBlock) {
-            aggroBarakoa(player);
+            aggroUmvuthana(player);
         }
 
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
@@ -468,7 +468,7 @@ public final class ServerEventHandler {
                     item.getItem() == Items.FLINT_AND_STEEL ||
                     item.getItem() == Items.TNT_MINECART
             ) {
-                aggroBarakoa(player);
+                aggroUmvuthana(player);
             }
 
             if (event.getSide() == LogicalSide.CLIENT && player.getInventory().getSelected().isEmpty() && player.hasEffect(EffectHandler.SUNS_BLESSING)) {
@@ -611,12 +611,12 @@ public final class ServerEventHandler {
 
                 if (event.getTarget() instanceof ItemFrame) {
                     ItemFrame itemFrame = (ItemFrame) event.getTarget();
-                    if (itemFrame.getItem().getItem() instanceof ItemBarakoaMask) {
-                        aggroBarakoa(event.getPlayer());
+                    if (itemFrame.getItem().getItem() instanceof ItemUmvuthanaMask) {
+                        aggroUmvuthana(event.getPlayer());
                     }
                 }
                 if (event.getTarget() instanceof LeaderSunstrikeImmune) {
-                    aggroBarakoa(event.getPlayer());
+                    aggroUmvuthana(event.getPlayer());
                 }
 
                 if (!(event.getTarget() instanceof LivingEntity)) return;
@@ -715,7 +715,7 @@ public final class ServerEventHandler {
             event.setCanceled(true);
     }
 
-    private void aggroBarakoa(Player player) {
+    private void aggroUmvuthana(Player player) {
         List<EntityUmvuthi> barakos = getEntitiesNearby(player, EntityUmvuthi.class, 50);
         for (EntityUmvuthi barako : barakos) {
             if (barako.getTarget() == null || !(barako.getTarget() instanceof Player)) {

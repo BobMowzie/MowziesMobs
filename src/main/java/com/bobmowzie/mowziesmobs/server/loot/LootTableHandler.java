@@ -17,14 +17,14 @@ public class LootTableHandler {
     public static final ResourceLocation FOLIAATH = register("entities/foliaath");
     public static final ResourceLocation GROTTOL = register("entities/grottol");
     public static final ResourceLocation FROSTMAW = register("entities/frostmaw");
-    public static final ResourceLocation BARAKOA_FURY = register("entities/barakoa_fury");
-    public static final ResourceLocation BARAKOA_MISERY = register("entities/barakoa_misery");
-    public static final ResourceLocation BARAKOA_BLISS = register("entities/barakoa_bliss");
-    public static final ResourceLocation BARAKOA_RAGE = register("entities/barakoa_rage");
-    public static final ResourceLocation BARAKOA_FEAR = register("entities/barakoa_fear");
-    public static final ResourceLocation BARAKOA_FAITH = register("entities/barakoa_faith");
-    public static final ResourceLocation BARAKO = register("entities/barako");
-    public static final ResourceLocation BARAKOA_VILLAGE_HOUSE = register("chests/barakoa_village_house");
+    public static final ResourceLocation UMVUTHANA_FURY = register("entities/umvuthana_fury");
+    public static final ResourceLocation UMVUTHANA_MISERY = register("entities/umvuthana_misery");
+    public static final ResourceLocation UMVUTHANA_BLISS = register("entities/umvuthana_bliss");
+    public static final ResourceLocation UMVUTHANA_RAGE = register("entities/umvuthana_rage");
+    public static final ResourceLocation UMVUTHANA_FEAR = register("entities/umvuthana_fear");
+    public static final ResourceLocation UMVUTHANA_FAITH = register("entities/umvuthana_faith");
+    public static final ResourceLocation UMVUTHI = register("entities/umvuthi");
+    public static final ResourceLocation UMVUTHANA_GROVE_CHEST = register("chests/umvuthana_grove_chest");
 
     public static LootItemFunctionType CHECK_FROSTMAW_CRYSTAL;
     public static LootItemFunctionType GROTTOL_DEATH_TYPE;

@@ -24,7 +24,7 @@ import java.util.List;
 
 public class ItemSpear extends MowzieToolItem {
     public ItemSpear(Item.Properties properties) {
-        super(-2 + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.BARAKOA_SPEAR.toolConfig.attackDamage.get().floatValue(), -4f + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.BARAKOA_SPEAR.toolConfig.attackSpeed.get().floatValue(), Tiers.STONE, BlockTags.MINEABLE_WITH_HOE, properties);
+        super(-2 + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SPEAR.toolConfig.attackDamage.get().floatValue(), -4f + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SPEAR.toolConfig.attackSpeed.get().floatValue(), Tiers.STONE, BlockTags.MINEABLE_WITH_HOE, properties);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class ItemSpear extends MowzieToolItem {
 
     @Override
     public ConfigHandler.ToolConfig getConfig() {
-        return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.BARAKOA_SPEAR.toolConfig;
+        return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SPEAR.toolConfig;
     }
 
     public static class SpearHitResult {

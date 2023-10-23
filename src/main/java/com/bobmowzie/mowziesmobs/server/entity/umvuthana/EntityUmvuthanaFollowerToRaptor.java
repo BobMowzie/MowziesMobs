@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.umvuthana;
 
-import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
+import com.bobmowzie.mowziesmobs.server.ai.UmvuthanaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EntityType;
@@ -22,7 +22,7 @@ public class EntityUmvuthanaFollowerToRaptor extends EntityUmvuthanaFollower<Ent
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(3, new BarakoaHurtByTargetAI(this));
+        this.goalSelector.addGoal(3, new UmvuthanaHurtByTargetAI(this));
     }
 
     @Override

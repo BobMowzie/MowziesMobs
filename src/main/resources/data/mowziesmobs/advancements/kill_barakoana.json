@@ -1,22 +1,22 @@
 {
   "display": {
     "icon": {
-      "item": "mowziesmobs:barakoa_mask_fury"
+      "item": "mowziesmobs:umvuthana_mask_fury"
     },
     "title": {
-      "translate": "advancements.mowziesmobs.kill_barakoana.title"
+      "translate": "advancements.mowziesmobs.kill_umvuthana_raptor.title"
     },
     "description": {
-      "translate": "advancements.mowziesmobs.kill_barakoana.description"
+      "translate": "advancements.mowziesmobs.kill_umvuthana_raptor.description"
     }
   },
   "parent": "mowziesmobs:root",
   "criteria": {
-    "barakoana": {
+    "umvuthana_raptor": {
       "trigger": "minecraft:player_killed_entity",
       "conditions": {
         "entity": {
-          "type": "mowziesmobs:barakoana"
+          "type": "mowziesmobs:umvuthana_raptor"
         }
       }
     }

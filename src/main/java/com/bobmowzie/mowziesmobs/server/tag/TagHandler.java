@@ -10,8 +10,8 @@ import net.minecraft.world.level.biome.Biome;
 
 public class TagHandler {
     public static final TagKey<Item> CAN_HIT_GROTTOL = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "can_hit_grottol"));
-    public static final TagKey<EntityType<?>> BARAKOA = TagKey.create(Registry.ENTITY_TYPE_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "barakoa"));
-    public static final TagKey<EntityType<?>> BARAKOA_BARAKO_ALIGNED = TagKey.create(Registry.ENTITY_TYPE_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "barakoa_barako_aligned"));
+    public static final TagKey<EntityType<?>> UMVUTHANA = TagKey.create(Registry.ENTITY_TYPE_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "umvuthana"));
+    public static final TagKey<EntityType<?>> UMVUTHANA_UMVUTHI_ALIGNED = TagKey.create(Registry.ENTITY_TYPE_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "umvuthana_umvuthi_aligned"));
 
 
     public static final TagKey<Biome> HAS_MOWZIE_STRUCTURE = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "has_structure/has_mowzie_structure"));

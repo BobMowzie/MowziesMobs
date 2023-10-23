@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.umvuthana;
 
-import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
+import com.bobmowzie.mowziesmobs.server.ai.UmvuthanaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
@@ -39,7 +39,7 @@ public class EntityUmvuthanaRaptor extends EntityUmvuthana implements LeaderSuns
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(3, new BarakoaHurtByTargetAI(this));
+        this.goalSelector.addGoal(3, new UmvuthanaHurtByTargetAI(this));
     }
 
     @Override
@@ -146,7 +146,7 @@ public class EntityUmvuthanaRaptor extends EntityUmvuthana implements LeaderSuns
         int size = random.nextInt(2) + 3;
         float theta = (2 * (float) Math.PI / size);
         for (int i = 0; i <= size; i++) {
-            EntityUmvuthanaFollowerToRaptor tribeHunter = new EntityUmvuthanaFollowerToRaptor(EntityHandler.BARAKOAN_TO_BARAKOANA.get(), this.level, this);
+            EntityUmvuthanaFollowerToRaptor tribeHunter = new EntityUmvuthanaFollowerToRaptor(EntityHandler.UMVUTHANA_FOLLOWER_TO_RAPTOR.get(), this.level, this);
             tribeHunter.setPos(getX() + 0.1 * Mth.cos(theta * i), getY(), getZ() + 0.1 * Mth.sin(theta * i));
             int weapon = random.nextInt(3) == 0 ? 1 : 0;
             tribeHunter.setWeapon(weapon);
@@ -163,7 +163,7 @@ public class EntityUmvuthanaRaptor extends EntityUmvuthana implements LeaderSuns
 
     @Override
     protected ConfigHandler.SpawnConfig getSpawnConfig() {
-        return ConfigHandler.COMMON.MOBS.BARAKOA.spawnConfig;
+        return ConfigHandler.COMMON.MOBS.UMVUTHANA.spawnConfig;
     }
 
     @Override

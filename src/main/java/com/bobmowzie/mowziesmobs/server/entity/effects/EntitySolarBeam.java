@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class EntitySolarBeam extends Entity {
-    public static final double RADIUS_BARAKO = 30;
+    public static final double RADIUS_UMVUTHI = 30;
     public static final double RADIUS_PLAYER = 20;
     public LivingEntity caster;
     public double endPosX, endPosY, endPosZ;
@@ -121,7 +121,7 @@ public class EntitySolarBeam extends Entity {
                 this.updateWithPlayer();
             }
             else if (caster instanceof EntityUmvuthi) {
-                this.updateWithBarako();
+                this.updateWithUmvuthi();
             }
         }
         if (caster != null) {
@@ -193,8 +193,8 @@ public class EntitySolarBeam extends Entity {
                     float damageFire = 1f;
                     float damageMob = 1.5f;
                     if (caster instanceof EntityUmvuthi) {
-                        damageFire *= ConfigHandler.COMMON.MOBS.BARAKO.combatConfig.attackMultiplier.get();
-                        damageMob *= ConfigHandler.COMMON.MOBS.BARAKO.combatConfig.attackMultiplier.get();
+                        damageFire *= ConfigHandler.COMMON.MOBS.UMVUTHI.combatConfig.attackMultiplier.get();
+                        damageMob *= ConfigHandler.COMMON.MOBS.UMVUTHI.combatConfig.attackMultiplier.get();
                     }
                     if (caster instanceof Player) {
                         damageFire *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier.get();
@@ -313,7 +313,7 @@ public class EntitySolarBeam extends Entity {
     }
 
     private void calculateEndPos() {
-        double radius = caster instanceof EntityUmvuthi ? RADIUS_BARAKO : RADIUS_PLAYER;
+        double radius = caster instanceof EntityUmvuthi ? RADIUS_UMVUTHI : RADIUS_PLAYER;
         if (level.isClientSide()) {
             endPosX = getX() + radius * Math.cos(renderYaw) * Math.cos(renderPitch);
             endPosZ = getZ() + radius * Math.sin(renderYaw) * Math.cos(renderPitch);
@@ -384,7 +384,7 @@ public class EntitySolarBeam extends Entity {
         this.setPos(caster.getX() + vecOffset.x(), caster.getY() + 1.2f + vecOffset.y(), caster.getZ() + vecOffset.z());
     }
 
-    private void updateWithBarako() {
+    private void updateWithUmvuthi() {
         this.setYaw((float) ((caster.yHeadRot + 90) * Math.PI / 180.0d));
         this.setPitch((float) (-caster.getXRot() * Math.PI / 180.0d));
         Vec3 vecOffset1 = new Vec3(0, 0, 0.6).yRot((float) Math.toRadians(-caster.getYRot()));

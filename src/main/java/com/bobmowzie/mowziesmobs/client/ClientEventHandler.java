@@ -247,7 +247,7 @@ public enum ClientEventHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onBossBar(RenderGameOverlayEvent.BossInfo event){
-        if(event.getBossEvent().getName().toString().contains("entity.mowziesmobs.barako")){
+        if(event.getBossEvent().getName().toString().contains("entity.mowziesmobs.umvuthi")){
             PoseStack stack = event.getMatrixStack();
             event.setCanceled(true);
             int y = event.getY();

@@ -176,207 +176,207 @@
 		"sounds": [ "minecraft:random/anvil_land" ],
 		"subtitle": "subtitles.mowziesmobs.wroughtnaut.axe_clang"
 	},
-	"barakoa.die": {
+	"umvuthana.die": {
 		"sounds": [
-			"mowziesmobs:entity/barakoa/death"
+			"mowziesmobs:entity/umvuthana/death"
 		],
-		"subtitle": "subtitles.mowziesmobs.barakoa.die"
+		"subtitle": "subtitles.mowziesmobs.umvuthana.die"
 	},
-	"barakoa.hurt": {
+	"umvuthana.hurt": {
 		"sounds": [
-			"mowziesmobs:entity/barakoa/hurt1",
-			"mowziesmobs:entity/barakoa/hurt2"
+			"mowziesmobs:entity/umvuthana/hurt1",
+			"mowziesmobs:entity/umvuthana/hurt2"
 		],
-		"subtitle": "subtitles.mowziesmobs.barakoa.hurt"
+		"subtitle": "subtitles.mowziesmobs.umvuthana.hurt"
 	},
-	"barakoa.rattle": {
+	"umvuthana.rattle": {
 		"sounds": [
-			"mowziesmobs:entity/barakoa/rattle1",
-			"mowziesmobs:entity/barakoa/rattle2",
-			"mowziesmobs:entity/barakoa/rattle3",
-			"mowziesmobs:entity/barakoa/rattle4"
+			"mowziesmobs:entity/umvuthana/rattle1",
+			"mowziesmobs:entity/umvuthana/rattle2",
+			"mowziesmobs:entity/umvuthana/rattle3",
+			"mowziesmobs:entity/umvuthana/rattle4"
 		],
-		"subtitle": "subtitles.mowziesmobs.barakoa.rattle"
+		"subtitle": "subtitles.mowziesmobs.umvuthana.rattle"
 	},
-	"barakoa.idle1": {
-		"sounds": [ "mowziesmobs:entity/barakoa/idle1" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.idle"
+	"umvuthana.idle1": {
+		"sounds": [ "mowziesmobs:entity/umvuthana/idle1" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthana.idle"
 	},
-	"barakoa.idle2": {
-		"sounds": [ "mowziesmobs:entity/barakoa/idle2" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.idle"
+	"umvuthana.idle2": {
+		"sounds": [ "mowziesmobs:entity/umvuthana/idle2" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthana.idle"
 	},
-	"barakoa.idle3": {
-		"sounds": [ "mowziesmobs:entity/barakoa/idle3" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.idle"
+	"umvuthana.idle3": {
+		"sounds": [ "mowziesmobs:entity/umvuthana/idle3" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthana.idle"
 	},
-	"barakoa.idle4": {
-		"sounds": [ "mowziesmobs:entity/barakoa/idle4" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.idle"
+	"umvuthana.idle4": {
+		"sounds": [ "mowziesmobs:entity/umvuthana/idle4" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthana.idle"
 	},
-	"barakoa.idle5": {
-		"sounds": [ "mowziesmobs:entity/barakoa/idle5" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.idle"
+	"umvuthana.idle5": {
+		"sounds": [ "mowziesmobs:entity/umvuthana/idle5" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthana.idle"
 	},
-	"barakoa.idle6": {
-		"sounds": [ "mowziesmobs:entity/barakoa/idle6" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.idle"
+	"umvuthana.idle6": {
+		"sounds": [ "mowziesmobs:entity/umvuthana/idle6" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthana.idle"
 	},
-	"barakoa.idle7": {
-		"sounds": [ "mowziesmobs:entity/barakoa/idle7" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.idle"
+	"umvuthana.idle7": {
+		"sounds": [ "mowziesmobs:entity/umvuthana/idle7" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthana.idle"
 	},
-	"barakoa.idle8": {
-		"sounds": [ "mowziesmobs:entity/barakoa/idle8" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.idle"
+	"umvuthana.idle8": {
+		"sounds": [ "mowziesmobs:entity/umvuthana/idle8" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthana.idle"
 	},
-	"barakoa.attack1": {
-		"sounds": [ "mowziesmobs:entity/barakoa/attack1" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.attack"
+	"umvuthana.attack1": {
+		"sounds": [ "mowziesmobs:entity/umvuthana/attack1" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthana.attack"
 	},
-	"barakoa.attack2": {
-		"sounds": [ "mowziesmobs:entity/barakoa/attack2" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.attack"
+	"umvuthana.attack2": {
+		"sounds": [ "mowziesmobs:entity/umvuthana/attack2" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthana.attack"
 	},
-	"barakoa.attack3": {
-		"sounds": [ "mowziesmobs:entity/barakoa/attack3" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.attack"
+	"umvuthana.attack3": {
+		"sounds": [ "mowziesmobs:entity/umvuthana/attack3" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthana.attack"
 	},
-	"barakoa.attack_big": {
-		"sounds": [ "mowziesmobs:entity/barakoa/attack_big" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.attack_big"
+	"umvuthana.attack_big": {
+		"sounds": [ "mowziesmobs:entity/umvuthana/attack_big" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthana.attack_big"
 	},
-	"barakoa.blowdart": {
-		"sounds": [ "mowziesmobs:entity/barakoa/blowdart" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.blowdart"
+	"umvuthana.blowdart": {
+		"sounds": [ "mowziesmobs:entity/umvuthana/blowdart" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthana.blowdart"
 	},
-	"barakoa.inhale": {
-		"sounds": [ "mowziesmobs:entity/barakoa/inhale" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.inhale"
+	"umvuthana.inhale": {
+		"sounds": [ "mowziesmobs:entity/umvuthana/inhale" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthana.inhale"
 	},
-	"barakoa.roar": {
-		"sounds": [ "mowziesmobs:entity/barakoa/roar" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.roar"
+	"umvuthana.roar": {
+		"sounds": [ "mowziesmobs:entity/umvuthana/roar" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthana.roar"
 	},
-	"barakoa.alert": {
-		"sounds": [ "mowziesmobs:entity/barakoa/alert" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.alert"
+	"umvuthana.alert": {
+		"sounds": [ "mowziesmobs:entity/umvuthana/alert" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthana.alert"
 	},
-	"barakoa.emerge": {
-		"sounds": [ "mowziesmobs:entity/barakoa/emerge" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.emerge"
+	"umvuthana.emerge": {
+		"sounds": [ "mowziesmobs:entity/umvuthana/emerge" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthana.emerge"
 	},
-	"barakoa.retract": {
-		"sounds": [ "mowziesmobs:entity/barakoa/retract" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.retract"
+	"umvuthana.retract": {
+		"sounds": [ "mowziesmobs:entity/umvuthana/retract" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthana.retract"
 	},
-	"barakoa.healstart1": {
-		"sounds": [ "mowziesmobs:entity/barakoa/heal_cast1" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.heal"
+	"umvuthana.healstart1": {
+		"sounds": [ "mowziesmobs:entity/umvuthana/heal_cast1" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthana.heal"
 	},
-	"barakoa.healstart2": {
-		"sounds": [ "mowziesmobs:entity/barakoa/heal_cast2" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.heal"
+	"umvuthana.healstart2": {
+		"sounds": [ "mowziesmobs:entity/umvuthana/heal_cast2" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthana.heal"
 	},
-	"barakoa.healstart3": {
-		"sounds": [ "mowziesmobs:entity/barakoa/heal_cast3" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.heal"
+	"umvuthana.healstart3": {
+		"sounds": [ "mowziesmobs:entity/umvuthana/heal_cast3" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthana.heal"
 	},
-	"barakoa.healloop": {
-		"sounds": [ "mowziesmobs:entity/barakoa/heal_loop" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.heal"
+	"umvuthana.healloop": {
+		"sounds": [ "mowziesmobs:entity/umvuthana/heal_loop" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthana.heal"
 	},
-	"barakoa.teleport1": {
-		"sounds": [ "mowziesmobs:entity/barakoa/teleport_1" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.teleport"
+	"umvuthana.teleport1": {
+		"sounds": [ "mowziesmobs:entity/umvuthana/teleport_1" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthana.teleport"
 	},
-	"barakoa.teleport2": {
-		"sounds": [ "mowziesmobs:entity/barakoa/teleport_2" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.teleport"
+	"umvuthana.teleport2": {
+		"sounds": [ "mowziesmobs:entity/umvuthana/teleport_2" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthana.teleport"
 	},
-	"barakoa.teleport3": {
-		"sounds": [ "mowziesmobs:entity/barakoa/teleport_3" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.teleport"
+	"umvuthana.teleport3": {
+		"sounds": [ "mowziesmobs:entity/umvuthana/teleport_3" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthana.teleport"
 	},
-	"barako.belly": {
-		"sounds": [ "mowziesmobs:entity/barako/belly" ],
-		"subtitle": "subtitles.mowziesmobs.barako.belly"
+	"umvuthi.belly": {
+		"sounds": [ "mowziesmobs:entity/umvuthi/belly" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthi.belly"
 	},
-	"barako.angry1": {
-		"sounds": [ "mowziesmobs:entity/barako/angry1" ],
-		"subtitle": "subtitles.mowziesmobs.barako.shout"
+	"umvuthi.angry1": {
+		"sounds": [ "mowziesmobs:entity/umvuthi/angry1" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthi.shout"
 	},
-	"barako.angry2": {
-		"sounds": [ "mowziesmobs:entity/barako/angry2" ],
-		"subtitle": "subtitles.mowziesmobs.barako.shout"
+	"umvuthi.angry2": {
+		"sounds": [ "mowziesmobs:entity/umvuthi/angry2" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthi.shout"
 	},
-	"barako.angry3": {
-		"sounds": [ "mowziesmobs:entity/barako/angry3" ],
-		"subtitle": "subtitles.mowziesmobs.barako.shout"
+	"umvuthi.angry3": {
+		"sounds": [ "mowziesmobs:entity/umvuthi/angry3" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthi.shout"
 	},
-	"barako.angry4": {
-		"sounds": [ "mowziesmobs:entity/barako/angry4" ],
-		"subtitle": "subtitles.mowziesmobs.barako.shout"
+	"umvuthi.angry4": {
+		"sounds": [ "mowziesmobs:entity/umvuthi/angry4" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthi.shout"
 	},
-	"barako.angry5": {
-		"sounds": [ "mowziesmobs:entity/barako/angry5" ],
-		"subtitle": "subtitles.mowziesmobs.barako.shout"
+	"umvuthi.angry5": {
+		"sounds": [ "mowziesmobs:entity/umvuthi/angry5" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthi.shout"
 	},
-	"barako.angry6": {
-		"sounds": [ "mowziesmobs:entity/barako/angry6" ],
-		"subtitle": "subtitles.mowziesmobs.barako.shout"
+	"umvuthi.angry6": {
+		"sounds": [ "mowziesmobs:entity/umvuthi/angry6" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthi.shout"
 	},
-	"barako.talk1": {
-		"sounds": [ "mowziesmobs:entity/barako/talk1" ],
-		"subtitle": "subtitles.mowziesmobs.barako.talk"
+	"umvuthi.talk1": {
+		"sounds": [ "mowziesmobs:entity/umvuthi/talk1" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthi.talk"
 	},
-	"barako.talk2": {
-		"sounds": [ "mowziesmobs:entity/barako/talk2" ],
-		"subtitle": "subtitles.mowziesmobs.barako.talk"
+	"umvuthi.talk2": {
+		"sounds": [ "mowziesmobs:entity/umvuthi/talk2" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthi.talk"
 	},
-	"barako.talk3": {
-		"sounds": [ "mowziesmobs:entity/barako/talk3" ],
-		"subtitle": "subtitles.mowziesmobs.barako.talk"
+	"umvuthi.talk3": {
+		"sounds": [ "mowziesmobs:entity/umvuthi/talk3" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthi.talk"
 	},
-	"barako.talk4": {
-		"sounds": [ "mowziesmobs:entity/barako/talk4" ],
-		"subtitle": "subtitles.mowziesmobs.barako.talk"
+	"umvuthi.talk4": {
+		"sounds": [ "mowziesmobs:entity/umvuthi/talk4" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthi.talk"
 	},
-	"barako.talk5": {
-		"sounds": [ "mowziesmobs:entity/barako/talk5" ],
-		"subtitle": "subtitles.mowziesmobs.barako.talk"
+	"umvuthi.talk5": {
+		"sounds": [ "mowziesmobs:entity/umvuthi/talk5" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthi.talk"
 	},
-	"barako.talk6": {
-		"sounds": [ "mowziesmobs:entity/barako/talk6" ],
-		"subtitle": "subtitles.mowziesmobs.barako.talk"
+	"umvuthi.talk6": {
+		"sounds": [ "mowziesmobs:entity/umvuthi/talk6" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthi.talk"
 	},
-	"barako.die": {
-		"sounds": [ "mowziesmobs:entity/barako/die" ],
-		"subtitle": "subtitles.mowziesmobs.barako.die"
+	"umvuthi.die": {
+		"sounds": [ "mowziesmobs:entity/umvuthi/die" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthi.die"
 	},
-	"barako.hurt": {
+	"umvuthi.hurt": {
 		"sounds": [
-			"mowziesmobs:entity/barako/hurt1",
-			"mowziesmobs:entity/barako/hurt2",
-			"mowziesmobs:entity/barako/hurt3"
+			"mowziesmobs:entity/umvuthi/hurt1",
+			"mowziesmobs:entity/umvuthi/hurt2",
+			"mowziesmobs:entity/umvuthi/hurt3"
 		],
-		"subtitle": "subtitles.mowziesmobs.barako.hurt"
+		"subtitle": "subtitles.mowziesmobs.umvuthi.hurt"
 	},
-	"barako.attack": {
+	"umvuthi.attack": {
 		"sounds": [
-			"mowziesmobs:entity/barako/attack1",
-			"mowziesmobs:entity/barako/attack2",
-			"mowziesmobs:entity/barako/attack3"
+			"mowziesmobs:entity/umvuthi/attack1",
+			"mowziesmobs:entity/umvuthi/attack2",
+			"mowziesmobs:entity/umvuthi/attack3"
 		],
-		"subtitle": "subtitles.mowziesmobs.barako.attack"
+		"subtitle": "subtitles.mowziesmobs.umvuthi.attack"
 	},
-	"barako.burst": {
-		"sounds": [ "mowziesmobs:entity/barako/burst" ],
-		"subtitle": "subtitles.mowziesmobs.barako.burst"
+	"umvuthi.burst": {
+		"sounds": [ "mowziesmobs:entity/umvuthi/burst" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthi.burst"
 	},
-	"barako.bless": {
-		"sounds": [ "mowziesmobs:entity/barako/bless" ],
-		"subtitle": "subtitles.mowziesmobs.barako.bless"
+	"umvuthi.bless": {
+		"sounds": [ "mowziesmobs:entity/umvuthi/bless" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthi.bless"
 	},
 	"sunstrike": {
 		"sounds": [ "mowziesmobs:random/sunstrike" ],
@@ -386,21 +386,21 @@
 		"sounds": [ "mowziesmobs:laser/laser" ],
 		"subtitle": "subtitles.mowziesmobs.laser"
 	},
-	"barako.scream": {
-		"sounds": [ "mowziesmobs:entity/barako/scream" ],
-		"subtitle": "subtitles.mowziesmobs.barako.scream"
+	"umvuthi.scream": {
+		"sounds": [ "mowziesmobs:entity/umvuthi/scream" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthi.scream"
 	},
 	"supernova.start": {
-		"sounds": [ "mowziesmobs:entity/barako/supernova_start" ],
-		"subtitle": "subtitles.mowziesmobs.barako.supernova_start"
+		"sounds": [ "mowziesmobs:entity/umvuthi/supernova_start" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthi.supernova_start"
 	},
 	"supernova.blackhole": {
-		"sounds": [ "mowziesmobs:entity/barako/black_hole" ],
-		"subtitle": "subtitles.mowziesmobs.barako.black_hole"
+		"sounds": [ "mowziesmobs:entity/umvuthi/black_hole" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthi.black_hole"
 	},
 	"supernova.end": {
-		"sounds": [ "mowziesmobs:entity/barako/supernova_end" ],
-		"subtitle": "subtitles.mowziesmobs.barako.supernova_end"
+		"sounds": [ "mowziesmobs:entity/umvuthi/supernova_end" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthi.supernova_end"
 	},
 	"geomancy.smallcrash": {
 		"sounds": [ "mowziesmobs:effects/geomancy/small_rock_crash" ],
@@ -686,16 +686,16 @@
 		"subtitle": "subtitles.mowziesmobs.petiole",
 		"stream": true
 	},
-	"music.barako_theme": {
+	"music.umvuthi_theme": {
 		"category": "music",
 		"sounds": [
 			{
-				"name": "mowziesmobs:music/barako",
+				"name": "mowziesmobs:music/umvuthi",
 				"stream": true,
 				"volume": 0.5
 			}
 		],
-		"subtitle": "subtitles.mowziesmobs.barako_theme"
+		"subtitle": "subtitles.mowziesmobs.umvuthi_theme"
 	},
 	"music.ferrous_wroughtnaut_theme": {
 		"category": "music",

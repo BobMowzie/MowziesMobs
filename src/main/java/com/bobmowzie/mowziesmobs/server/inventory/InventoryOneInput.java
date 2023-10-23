@@ -17,7 +17,7 @@ public abstract class InventoryOneInput implements Container {
         this.tradingEntity = tradingEntity;
     }
 
-    public void addListener(InventoryBarako.ChangeListener listener) {
+    public void addListener(InventoryUmvuthi.ChangeListener listener) {
         if (listeners == null) {
             listeners = new ArrayList<>();
         }

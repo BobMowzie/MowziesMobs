@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.server.entity.umvuthana;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ai.AvoidProjectilesGoal;
 import com.bobmowzie.mowziesmobs.server.ai.NearestAttackableTargetPredicateGoal;
-import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
+import com.bobmowzie.mowziesmobs.server.item.UmvuthanaMask;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -53,7 +53,7 @@ public class EntityUmvuthanaCrane extends EntityUmvuthanaMinion {
                 if (getTarget() instanceof EntityUmvuthi) return false;
                 if (getActiveAbilityType() != null) return false;
                 ItemStack headArmorStack = ((Player) target).getInventory().armor.get(3);
-                return !(headArmorStack.getItem() instanceof BarakoaMask) || target == getMisbehavedPlayer();
+                return !(headArmorStack.getItem() instanceof UmvuthanaMask) || target == getMisbehavedPlayer();
             }
             return true;
         }){
@@ -111,7 +111,7 @@ public class EntityUmvuthanaCrane extends EntityUmvuthanaMinion {
 
     @Override
     public void die(DamageSource cause) {
-        // If healing Barako, set the attack target of any mob targeting the Barakoaya to Barako
+        // If healing Umvuthi, set the attack target of any mob targeting the crane to Umvuthi
         if (this.getTarget() instanceof EntityUmvuthi) {
             List<Mob> targetingMobs = level.getEntitiesOfClass(Mob.class, getBoundingBox().inflate(30), (e) -> e.getTarget() == this);
             if (cause.getEntity() instanceof Mob) {

@@ -29,17 +29,17 @@ import java.util.Set;
 public class ConfiguredFeatureHandler {
 
     public static Holder<ConfiguredStructureFeature<?, ?>> CONFIGURED_WROUGHT_CHAMBER;
-    public static Holder<ConfiguredStructureFeature<?, ?>> CONFIGURED_BARAKOA_VILLAGE;
+    public static Holder<ConfiguredStructureFeature<?, ?>> CONFIGURED_UMVUTHANA_GROVE;
     public static Holder<ConfiguredStructureFeature<?, ?>> CONFIGURED_FROSTMAW;
     public static Holder<ConfiguredStructureFeature<?, ?>> CONFIGURED_MONASTERY;
 
     public static Holder<StructureSet> WROUGHT_CHAMBERS;
-    public static Holder<StructureSet> BARAKOA_VILLAGES;
+    public static Holder<StructureSet> UMVUTHANA_GROVES;
     public static Holder<StructureSet> FROSTMAWS;
     public static Holder<StructureSet> MONASTERIES;
 
     public static final Set<ResourceLocation> FERROUS_WROUGHTNAUT_BIOMES = new HashSet<>();
-    public static final Set<ResourceLocation> BARAKO_BIOMES = new HashSet<>();
+    public static final Set<ResourceLocation> UMVUTHI_BIOMES = new HashSet<>();
     public static final Set<ResourceLocation> FROSTMAW_BIOMES = new HashSet<>();
     public static final Set<ResourceLocation> SCULPTOR_BIOMES = new HashSet<>();
 
@@ -65,12 +65,12 @@ public class ConfiguredFeatureHandler {
 
     public static void registerConfiguredFeatures() {
         CONFIGURED_WROUGHT_CHAMBER = register(createFeatureKey("wrought_chamber"), FeatureHandler.WROUGHTNAUT_CHAMBER.get().configured(NoneFeatureConfiguration.INSTANCE, TagHandler.HAS_MOWZIE_STRUCTURE));
-        CONFIGURED_BARAKOA_VILLAGE = register(createFeatureKey("barakoa_village"), FeatureHandler.BARAKOA_VILLAGE.get().configured(NoneFeatureConfiguration.INSTANCE, TagHandler.HAS_MOWZIE_STRUCTURE));
+        CONFIGURED_UMVUTHANA_GROVE = register(createFeatureKey("umvuthana_grove"), FeatureHandler.UMVUTHANA_GROVE.get().configured(NoneFeatureConfiguration.INSTANCE, TagHandler.HAS_MOWZIE_STRUCTURE));
         CONFIGURED_FROSTMAW = register(createFeatureKey("frostmaw_spawn"), FeatureHandler.FROSTMAW.get().configured(NoneFeatureConfiguration.INSTANCE, TagHandler.HAS_MOWZIE_STRUCTURE, true));
         CONFIGURED_MONASTERY = register(createFeatureKey("monastery"), FeatureHandler.MONASTERY.get().configured(new JigsawConfiguration(PlainVillagePools.START, 0), TagHandler.HAS_MOWZIE_STRUCTURE));
 
         WROUGHT_CHAMBERS = register(createSetKey("wrought_chambers"), CONFIGURED_WROUGHT_CHAMBER, new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.TRIANGULAR, 23217347));
-        BARAKOA_VILLAGES= register(createSetKey("barakoa_villages"), CONFIGURED_BARAKOA_VILLAGE, new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.TRIANGULAR, 23311138));
+        UMVUTHANA_GROVES = register(createSetKey("umvuthana_groves"), CONFIGURED_UMVUTHANA_GROVE, new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.TRIANGULAR, 23311138));
         FROSTMAWS = register(createSetKey("frostmaw_spawns"), CONFIGURED_FROSTMAW, new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.TRIANGULAR, 23317578));
         MONASTERIES = register(createSetKey("monasteries"), CONFIGURED_MONASTERY, new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.TRIANGULAR, 25327374));
     }
@@ -84,9 +84,9 @@ public class ConfiguredFeatureHandler {
 //            System.out.println("Added Ferrous Wroughtnaut biome: " + biomeName.toString());
             FERROUS_WROUGHTNAUT_BIOMES.add(biomeName);
         }
-        if (ConfigHandler.COMMON.MOBS.BARAKO.generationConfig.generationDistance.get() >= 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.BARAKO.generationConfig.biomeConfig, biomeKey)) {
+        if (ConfigHandler.COMMON.MOBS.UMVUTHI.generationConfig.generationDistance.get() >= 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.UMVUTHI.generationConfig.biomeConfig, biomeKey)) {
 //            System.out.println("Added Barako biome: " + biomeName.toString());
-            BARAKO_BIOMES.add(biomeName);
+            UMVUTHI_BIOMES.add(biomeName);
         }
         if (ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig.generationDistance.get() >= 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig.biomeConfig, biomeKey)) {
 //            System.out.println("Added frostmaw biome: " + biomeName.toString());

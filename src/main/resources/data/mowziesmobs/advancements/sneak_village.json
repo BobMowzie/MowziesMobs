@@ -1,20 +1,20 @@
 {
   "display": {
     "icon": {
-      "item": "mowziesmobs:barakoa_mask_fear"
+      "item": "mowziesmobs:umvuthana_mask_fear"
     },
     "title": {
-      "translate": "advancements.mowziesmobs.sneak_village.title"
+      "translate": "advancements.mowziesmobs.sneak_grove.title"
     },
     "description": {
-      "translate": "advancements.mowziesmobs.sneak_village.description"
+      "translate": "advancements.mowziesmobs.sneak_grove.description"
     },
     "hidden": true
   },
-  "parent": "mowziesmobs:kill_barako",
+  "parent": "mowziesmobs:kill_umvuthi",
   "criteria": {
     "steal_crystal": {
-      "trigger": "mowziesmobs:sneak_village"
+      "trigger": "mowziesmobs:sneak_grove"
     }
   }
 }

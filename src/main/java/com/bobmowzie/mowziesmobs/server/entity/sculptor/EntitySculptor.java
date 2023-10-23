@@ -110,8 +110,8 @@ public class EntitySculptor extends MowzieGeckoEntity {
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        Item tradeItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(ConfigHandler.COMMON.MOBS.BARAKO.whichItem.get()));
-        getEntityData().define(DESIRES, new ItemStack(tradeItem, ConfigHandler.COMMON.MOBS.BARAKO.howMany.get()));
+        Item tradeItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(ConfigHandler.COMMON.MOBS.UMVUTHI.whichItem.get()));
+        getEntityData().define(DESIRES, new ItemStack(tradeItem, ConfigHandler.COMMON.MOBS.UMVUTHI.howMany.get()));
         getEntityData().define(IS_TRADING, false);
         getEntityData().define(TESTING_PLAYER, Optional.empty());
     }

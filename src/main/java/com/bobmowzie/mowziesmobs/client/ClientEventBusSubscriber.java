@@ -1,8 +1,8 @@
 package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoTrade;
-import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoayaTrade;
+import com.bobmowzie.mowziesmobs.client.gui.GuiUmvuthiTrade;
+import com.bobmowzie.mowziesmobs.client.gui.GuiUmvuthanaTrade;
 import com.bobmowzie.mowziesmobs.client.gui.GuiSculptorTrade;
 import com.bobmowzie.mowziesmobs.client.render.block.GongRenderer;
 import com.bobmowzie.mowziesmobs.client.render.entity.*;
@@ -29,13 +29,13 @@ public class ClientEventBusSubscriber {
         EntityRenderers.register(EntityHandler.BABY_FOLIAATH.get(), RenderFoliaathBaby::new);
         EntityRenderers.register(EntityHandler.FOLIAATH.get(), RenderFoliaath::new);
         EntityRenderers.register(EntityHandler.WROUGHTNAUT.get(), RenderWroughtnaut::new);
-        EntityRenderers.register(EntityHandler.BARAKO.get(), RenderUmvuthi::new);
-        EntityRenderers.register(EntityHandler.BARAKOANA.get(), RenderUmvuthana::new);
-        EntityRenderers.register(EntityHandler.BARAKOAN_TO_BARAKOANA.get(), RenderUmvuthana::new);
-        EntityRenderers.register(EntityHandler.BARAKOA_VILLAGER.get(), RenderUmvuthana::new);
-        EntityRenderers.register(EntityHandler.BARAKOAN_TO_PLAYER.get(), RenderUmvuthana::new);
-        EntityRenderers.register(EntityHandler.BARAKOAYA_TO_PLAYER.get(), RenderUmvuthana::new);
-        EntityRenderers.register(EntityHandler.BARAKOAYA.get(), RenderUmvuthana::new);
+        EntityRenderers.register(EntityHandler.UMVUTHI.get(), RenderUmvuthi::new);
+        EntityRenderers.register(EntityHandler.UMVUTHANA_RAPTOR.get(), RenderUmvuthana::new);
+        EntityRenderers.register(EntityHandler.UMVUTHANA_FOLLOWER_TO_RAPTOR.get(), RenderUmvuthana::new);
+        EntityRenderers.register(EntityHandler.UMVUTHANA_MINION.get(), RenderUmvuthana::new);
+        EntityRenderers.register(EntityHandler.UMVUTHANA_FOLLOWER_TO_PLAYER.get(), RenderUmvuthana::new);
+        EntityRenderers.register(EntityHandler.UMVUTHANA_CRANE_TO_PLAYER.get(), RenderUmvuthana::new);
+        EntityRenderers.register(EntityHandler.UMVUTHANA_CRANE.get(), RenderUmvuthana::new);
         EntityRenderers.register(EntityHandler.FROSTMAW.get(), RenderFrostmaw::new);
         EntityRenderers.register(EntityHandler.GROTTOL.get(), RenderGrottol::new);
         EntityRenderers.register(EntityHandler.LANTERN.get(), RenderLantern::new);
@@ -64,8 +64,8 @@ public class ClientEventBusSubscriber {
         BlockEntityRenderers.register(BlockEntityHandler.GONG_BLOCK_ENTITY.get(), GongRenderer::new);
         EntityRenderers.register(EntityHandler.ROCK_SLING.get(), RenderRockSling::new);
 
-        MenuScreens.register(ContainerHandler.CONTAINER_BARAKOAYA_TRADE, GuiBarakoayaTrade::new);
-        MenuScreens.register(ContainerHandler.CONTAINER_BARAKO_TRADE, GuiBarakoTrade::new);
+        MenuScreens.register(ContainerHandler.CONTAINER_UMVUTHANA_TRADE, GuiUmvuthanaTrade::new);
+        MenuScreens.register(ContainerHandler.CONTAINER_UMVUTHI_TRADE, GuiUmvuthiTrade::new);
         MenuScreens.register(ContainerHandler.CONTAINER_SCULPTOR_TRADE, GuiSculptorTrade::new);
     }
 
@@ -75,7 +75,7 @@ public class ClientEventBusSubscriber {
             ForgeModelBakery.addSpecialModel(new ModelResourceLocation(MowziesMobs.MODID + ":" + item + "_in_hand", "inventory"));
         }
         for (MaskType type : MaskType.values()) {
-            ForgeModelBakery.addSpecialModel(new ModelResourceLocation(MowziesMobs.MODID + ":barakoa_mask_" + type.name + "_frame", "inventory"));
+            ForgeModelBakery.addSpecialModel(new ModelResourceLocation(MowziesMobs.MODID + ":umvuthana_mask_" + type.name + "_frame", "inventory"));
         }
     }
 }

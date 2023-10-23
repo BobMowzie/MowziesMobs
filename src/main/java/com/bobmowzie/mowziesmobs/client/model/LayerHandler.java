@@ -16,14 +16,14 @@ import net.minecraftforge.fml.common.Mod;
 public class LayerHandler {
     public static final ModelLayerLocation WROUGHT_HELM_LAYER = register("wrought_helm", "main");
     public static final ModelLayerLocation SOL_VISAGE_LAYER = register("sol_visage", "main");
-    public static final ModelLayerLocation BARAKOA_MASK_LAYER = register("barakoa_mask", "main");
+    public static final ModelLayerLocation UMVUTHANA_MASK_LAYER = register("umvuthana_mask", "main");
     public static final ModelLayerLocation GONG_LAYER = register("gong", "main");
 
     @SubscribeEvent
     public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(WROUGHT_HELM_LAYER, WroughtHelmModel::createArmorLayer);
         event.registerLayerDefinition(SOL_VISAGE_LAYER, SolVisageModel::createArmorLayer);
-        event.registerLayerDefinition(BARAKOA_MASK_LAYER, BarakoaMaskModel::createArmorLayer);
+        event.registerLayerDefinition(UMVUTHANA_MASK_LAYER, BarakoaMaskModel::createArmorLayer);
         event.registerLayerDefinition(GONG_LAYER, GongRenderer::createBodyLayer);
     }
 

@@ -48,99 +48,99 @@ public final class MMSounds {
     public static final RegistryObject<SoundEvent> ENTITY_WROUGHT_AXE_LAND = create("wroughtnaut.axe_land");
     public static final RegistryObject<SoundEvent> ENTITY_WROUGHT_AXE_HIT = create("wroughtnaut.axe_hit");
 
-    // Barakoa
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_INHALE = create("barakoa.inhale");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_BLOWDART = create("barakoa.blowdart");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_EMERGE = create("barakoa.emerge");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_RETRACT = create("barakoa.retract");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_HURT = create("barakoa.hurt");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_RATTLE = create("barakoa.rattle");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_DIE = create("barakoa.die");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_ROAR = create("barakoa.roar");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_ALERT = create("barakoa.alert");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_IDLE_1 = create("barakoa.idle1");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_IDLE_2 = create("barakoa.idle2");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_IDLE_3 = create("barakoa.idle3");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_IDLE_4 = create("barakoa.idle4");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_IDLE_5 = create("barakoa.idle5");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_IDLE_6 = create("barakoa.idle6");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_IDLE_7 = create("barakoa.idle7");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_IDLE_8 = create("barakoa.idle8");
-    public static final ImmutableList<Supplier<SoundEvent>> ENTITY_BARAKOA_IDLE = ImmutableList.of(
-            ENTITY_BARAKOA_IDLE_1::get,
-            ENTITY_BARAKOA_IDLE_2::get,
-            ENTITY_BARAKOA_IDLE_3::get,
-            ENTITY_BARAKOA_IDLE_4::get,
-            ENTITY_BARAKOA_IDLE_5::get,
-            ENTITY_BARAKOA_IDLE_6::get,
-            ENTITY_BARAKOA_IDLE_7::get,
-            ENTITY_BARAKOA_IDLE_8::get
+    // Umvuthana
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_INHALE = create("umvuthana.inhale");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_BLOWDART = create("umvuthana.blowdart");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_EMERGE = create("umvuthana.emerge");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_RETRACT = create("umvuthana.retract");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_HURT = create("umvuthana.hurt");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_RATTLE = create("umvuthana.rattle");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_DIE = create("umvuthana.die");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_ROAR = create("umvuthana.roar");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_ALERT = create("umvuthana.alert");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_IDLE_1 = create("umvuthana.idle1");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_IDLE_2 = create("umvuthana.idle2");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_IDLE_3 = create("umvuthana.idle3");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_IDLE_4 = create("umvuthana.idle4");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_IDLE_5 = create("umvuthana.idle5");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_IDLE_6 = create("umvuthana.idle6");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_IDLE_7 = create("umvuthana.idle7");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_IDLE_8 = create("umvuthana.idle8");
+    public static final ImmutableList<Supplier<SoundEvent>> ENTITY_UMVUTHANA_IDLE = ImmutableList.of(
+            ENTITY_UMVUTHANA_IDLE_1::get,
+            ENTITY_UMVUTHANA_IDLE_2::get,
+            ENTITY_UMVUTHANA_IDLE_3::get,
+            ENTITY_UMVUTHANA_IDLE_4::get,
+            ENTITY_UMVUTHANA_IDLE_5::get,
+            ENTITY_UMVUTHANA_IDLE_6::get,
+            ENTITY_UMVUTHANA_IDLE_7::get,
+            ENTITY_UMVUTHANA_IDLE_8::get
     );
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_ATTACK_1 = create("barakoa.attack1");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_ATTACK_2 = create("barakoa.attack2");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_ATTACK_3 = create("barakoa.attack3");
-    public static final ImmutableList<Supplier<SoundEvent>> ENTITY_BARAKOA_ATTACK = ImmutableList.of(
-            ENTITY_BARAKOA_ATTACK_1::get,
-            ENTITY_BARAKOA_ATTACK_2::get,
-            ENTITY_BARAKOA_ATTACK_3::get
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_ATTACK_1 = create("umvuthana.attack1");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_ATTACK_2 = create("umvuthana.attack2");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_ATTACK_3 = create("umvuthana.attack3");
+    public static final ImmutableList<Supplier<SoundEvent>> ENTITY_UMVUTHANA_ATTACK = ImmutableList.of(
+            ENTITY_UMVUTHANA_ATTACK_1::get,
+            ENTITY_UMVUTHANA_ATTACK_2::get,
+            ENTITY_UMVUTHANA_ATTACK_3::get
     );
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_ATTACK_BIG = create("barakoa.attack_big");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_HEAL_START_1 = create("barakoa.healstart1");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_HEAL_START_2 = create("barakoa.healstart2");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_HEAL_START_3 = create("barakoa.healstart3");
-    public static final ImmutableList<Supplier<SoundEvent>> ENTITY_BARAKOA_HEAL_START = ImmutableList.of(
-            ENTITY_BARAKOA_HEAL_START_1::get,
-            ENTITY_BARAKOA_HEAL_START_2::get,
-            ENTITY_BARAKOA_HEAL_START_3::get
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_ATTACK_BIG = create("umvuthana.attack_big");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_HEAL_START_1 = create("umvuthana.healstart1");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_HEAL_START_2 = create("umvuthana.healstart2");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_HEAL_START_3 = create("umvuthana.healstart3");
+    public static final ImmutableList<Supplier<SoundEvent>> ENTITY_UMVUTHANA_HEAL_START = ImmutableList.of(
+            ENTITY_UMVUTHANA_HEAL_START_1::get,
+            ENTITY_UMVUTHANA_HEAL_START_2::get,
+            ENTITY_UMVUTHANA_HEAL_START_3::get
     );
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_TELEPORT_1 = create("barakoa.teleport1");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_TELEPORT_2 = create("barakoa.teleport2");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_TELEPORT_3 = create("barakoa.teleport3");
-    public static final ImmutableList<Supplier<SoundEvent>> ENTITY_BARAKOA_TELEPORT = ImmutableList.of(
-            ENTITY_BARAKOA_TELEPORT_1::get,
-            ENTITY_BARAKOA_TELEPORT_2::get,
-            ENTITY_BARAKOA_TELEPORT_3::get
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_TELEPORT_1 = create("umvuthana.teleport1");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_TELEPORT_2 = create("umvuthana.teleport2");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_TELEPORT_3 = create("umvuthana.teleport3");
+    public static final ImmutableList<Supplier<SoundEvent>> ENTITY_UMVUTHANA_TELEPORT = ImmutableList.of(
+            ENTITY_UMVUTHANA_TELEPORT_1::get,
+            ENTITY_UMVUTHANA_TELEPORT_2::get,
+            ENTITY_UMVUTHANA_TELEPORT_3::get
     );
 
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_HEAL_LOOP = create("barakoa.healloop");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHANA_HEAL_LOOP = create("umvuthana.healloop");
 
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKO_BELLY = create("barako.belly");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKO_BURST = create("barako.burst");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKO_SCREAM = create("barako.scream");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_BELLY = create("umvuthi.belly");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_BURST = create("umvuthi.burst");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_SCREAM = create("umvuthi.scream");
     public static final RegistryObject<SoundEvent> ENTITY_SUPERNOVA_START = create("supernova.start");
     public static final RegistryObject<SoundEvent> ENTITY_SUPERNOVA_BLACKHOLE = create("supernova.blackhole");
     public static final RegistryObject<SoundEvent> ENTITY_SUPERNOVA_END = create("supernova.end");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKO_ATTACK = create("barako.attack");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKO_HURT = create("barako.hurt");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKO_DIE = create("barako.die");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKO_BLESS = create("barako.bless");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKO_TALK_1 = create("barako.talk1");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKO_TALK_2 = create("barako.talk2");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKO_TALK_3 = create("barako.talk3");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKO_TALK_4 = create("barako.talk4");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKO_TALK_5 = create("barako.talk5");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKO_TALK_6 = create("barako.talk6");
-    public static final ImmutableList<Supplier<SoundEvent>> ENTITY_BARAKO_TALK = ImmutableList.of(
-            ENTITY_BARAKO_TALK_1::get,
-            ENTITY_BARAKO_TALK_2::get,
-            ENTITY_BARAKO_TALK_3::get,
-            ENTITY_BARAKO_TALK_4::get,
-            ENTITY_BARAKO_TALK_5::get,
-            ENTITY_BARAKO_TALK_6::get
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_ATTACK = create("umvuthi.attack");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_HURT = create("umvuthi.hurt");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_DIE = create("umvuthi.die");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_BLESS = create("umvuthi.bless");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_TALK_1 = create("umvuthi.talk1");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_TALK_2 = create("umvuthi.talk2");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_TALK_3 = create("umvuthi.talk3");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_TALK_4 = create("umvuthi.talk4");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_TALK_5 = create("umvuthi.talk5");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_TALK_6 = create("umvuthi.talk6");
+    public static final ImmutableList<Supplier<SoundEvent>> ENTITY_UMVUTHI_TALK = ImmutableList.of(
+            ENTITY_UMVUTHI_TALK_1::get,
+            ENTITY_UMVUTHI_TALK_2::get,
+            ENTITY_UMVUTHI_TALK_3::get,
+            ENTITY_UMVUTHI_TALK_4::get,
+            ENTITY_UMVUTHI_TALK_5::get,
+            ENTITY_UMVUTHI_TALK_6::get
     );
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKO_ANGRY_1 = create("barako.angry1");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKO_ANGRY_2 = create("barako.angry2");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKO_ANGRY_3 = create("barako.angry3");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKO_ANGRY_4 = create("barako.angry4");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKO_ANGRY_5 = create("barako.angry5");
-    public static final RegistryObject<SoundEvent> ENTITY_BARAKO_ANGRY_6 = create("barako.angry6");
-    public static final ImmutableList<Supplier<SoundEvent>> ENTITY_BARAKO_ANGRY = ImmutableList.of(
-            ENTITY_BARAKO_ANGRY_1::get,
-            ENTITY_BARAKO_ANGRY_2::get,
-            ENTITY_BARAKO_ANGRY_3::get,
-            ENTITY_BARAKO_ANGRY_4::get,
-            ENTITY_BARAKO_ANGRY_5::get,
-            ENTITY_BARAKO_ANGRY_6::get
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_ANGRY_1 = create("umvuthi.angry1");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_ANGRY_2 = create("umvuthi.angry2");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_ANGRY_3 = create("umvuthi.angry3");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_ANGRY_4 = create("umvuthi.angry4");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_ANGRY_5 = create("umvuthi.angry5");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_ANGRY_6 = create("umvuthi.angry6");
+    public static final ImmutableList<Supplier<SoundEvent>> ENTITY_UMVUTHI_ANGRY = ImmutableList.of(
+            ENTITY_UMVUTHI_ANGRY_1::get,
+            ENTITY_UMVUTHI_ANGRY_2::get,
+            ENTITY_UMVUTHI_ANGRY_3::get,
+            ENTITY_UMVUTHI_ANGRY_4::get,
+            ENTITY_UMVUTHI_ANGRY_5::get,
+            ENTITY_UMVUTHI_ANGRY_6::get
     );
 
     // Foliaath
@@ -274,7 +274,7 @@ public final class MMSounds {
     // Music
     public static final RegistryObject<SoundEvent> MUSIC_BLACK_PINK = create("music.black_pink");
     public static final RegistryObject<SoundEvent> MUSIC_PETIOLE = create("music.petiole");
-    public static final RegistryObject<SoundEvent> MUSIC_BARAKO_THEME = create("music.barako_theme");
+    public static final RegistryObject<SoundEvent> MUSIC_UMVUTHI_THEME = create("music.umvuthi_theme");
     public static final RegistryObject<SoundEvent> MUSIC_FERROUS_WROUGHTNAUT_THEME = create("music.ferrous_wroughtnaut_theme");
     public static final RegistryObject<SoundEvent> MUSIC_FROSTMAW_THEME = create("music.frostmaw_theme");
 

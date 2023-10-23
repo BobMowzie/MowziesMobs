@@ -23,10 +23,9 @@ public class FeatureHandler {
     public static RegistryObject<StructureFeature<NoneFeatureConfiguration>> WROUGHTNAUT_CHAMBER = registerStructure("wrought_chamber", () -> (new WroughtnautChamberStructure(NoneFeatureConfiguration.CODEC)));
     public static StructurePieceType WROUGHTNAUT_CHAMBER_PIECE;
 
-    public static RegistryObject<StructureFeature<NoneFeatureConfiguration>> BARAKOA_VILLAGE = registerStructure("barakoa_village", () -> (new BarakoaVillageStructure(NoneFeatureConfiguration.CODEC)));
-    public static StructurePieceType BARAKOA_VILLAGE_PIECE;
-    public static StructurePieceType BARAKOA_VILLAGE_HOUSE;
-    public static StructurePieceType BARAKOA_VILLAGE_FIREPIT;
+    public static RegistryObject<StructureFeature<NoneFeatureConfiguration>> UMVUTHANA_GROVE = registerStructure("umvuthana_grove", () -> (new UmvuthanaGroveStructure(NoneFeatureConfiguration.CODEC)));
+    public static StructurePieceType UMVUTHANA_GROVE_PIECE;
+    public static StructurePieceType UMVUTHANA_FIREPIT;
 
     public static RegistryObject<StructureFeature<NoneFeatureConfiguration>> FROSTMAW = registerStructure("frostmaw_spawn", () -> (new FrostmawStructure(NoneFeatureConfiguration.CODEC)));
     public static StructurePieceType FROSTMAW_PIECE;
@@ -39,9 +38,8 @@ public class FeatureHandler {
 
     public static void registerStructurePieces() {
         WROUGHTNAUT_CHAMBER_PIECE = Registry.register(Registry.STRUCTURE_PIECE, new ResourceLocation(MowziesMobs.MODID, "wrought_chamber_template"), WroughtnautChamberPieces.Piece::new);
-        BARAKOA_VILLAGE_PIECE = Registry.register(Registry.STRUCTURE_PIECE, new ResourceLocation(MowziesMobs.MODID, "barakoa_village_template"), BarakoaVillagePieces.Piece::new);
-        BARAKOA_VILLAGE_HOUSE = Registry.register(Registry.STRUCTURE_PIECE, new ResourceLocation(MowziesMobs.MODID, "barakoa_village_house"), BarakoaVillagePieces.PlatformPiece::new);
-        BARAKOA_VILLAGE_FIREPIT = Registry.register(Registry.STRUCTURE_PIECE, new ResourceLocation(MowziesMobs.MODID, "barakoa_village_firepit"), BarakoaVillagePieces.FirepitPiece::new);
+        UMVUTHANA_GROVE_PIECE = Registry.register(Registry.STRUCTURE_PIECE, new ResourceLocation(MowziesMobs.MODID, "umvuthana_grove_template"), UmvuthanaGrovePieces.Piece::new);
+        UMVUTHANA_FIREPIT = Registry.register(Registry.STRUCTURE_PIECE, new ResourceLocation(MowziesMobs.MODID, "umvuthana_firepit"), UmvuthanaGrovePieces.FirepitPiece::new);
         FROSTMAW_PIECE = Registry.register(Registry.STRUCTURE_PIECE, new ResourceLocation(MowziesMobs.MODID, "frostmaw_template"), FrostmawPieces.FrostmawPiece::new);
     }
 }

@@ -4,9 +4,9 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.render.entity.FrozenRenderHandler;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.SunblockLayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
-import com.bobmowzie.mowziesmobs.client.render.item.RenderBarakoaMask;
+import com.bobmowzie.mowziesmobs.client.render.item.RenderUmvuthanaMask;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
+import com.bobmowzie.mowziesmobs.server.item.ItemUmvuthanaMask;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.world.entity.EntityType;
@@ -17,8 +17,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
-import software.bernie.example.client.renderer.armor.GeckoArmorRenderer;
-import software.bernie.example.item.GeckoArmorItem;
 import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
 
 import java.util.List;
@@ -42,7 +40,7 @@ public class ClientLayerRegistry {
             event.getSkin(skinType).addLayer(new SunblockLayer(event.getSkin(skinType)));
         }
 
-        GeoArmorRenderer.registerArmorRenderer(ItemBarakoaMask.class, () -> new RenderBarakoaMask());
+        GeoArmorRenderer.registerArmorRenderer(ItemUmvuthanaMask.class, () -> new RenderUmvuthanaMask());
 
         GeckoPlayer.GeckoPlayerThirdPerson.initRenderer();
     }

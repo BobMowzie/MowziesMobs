@@ -18,7 +18,7 @@ public class SunblockSound extends AbstractTickableSoundInstance {
     boolean active = true;
 
     public SunblockSound(LivingEntity entity) {
-        super(MMSounds.ENTITY_BARAKOA_HEAL_LOOP.get(), SoundSource.NEUTRAL);
+        super(MMSounds.ENTITY_UMVUTHANA_HEAL_LOOP.get(), SoundSource.NEUTRAL);
         this.entity = entity;
         volume = 4F;
         pitch = 1f;
@@ -41,13 +41,13 @@ public class SunblockSound extends AbstractTickableSoundInstance {
             x = (float) entity.getX();
             y = (float) entity.getY();
             z = (float) entity.getZ();
-            boolean barakoaHealing = false;
+            boolean umvuthanaHealing = false;
             if (entity instanceof EntityUmvuthana) {
-                EntityUmvuthana barakoa = (EntityUmvuthana) entity;
-//                barakoaHealing = barakoa.getAnimation() == EntityBarakoa.HEAL_LOOP_ANIMATION || barakoa.getAnimation() == EntityBarakoa.HEAL_START_ANIMATION; TODO
+                EntityUmvuthana umvuthana = (EntityUmvuthana) entity;
+//                umvuthanaHealing = umvuthana.getAnimation() == EntityBarakoa.HEAL_LOOP_ANIMATION || umvuthana.getAnimation() == EntityBarakoa.HEAL_START_ANIMATION; TODO
             }
             boolean hasSunblock = entity.hasEffect(EffectHandler.SUNBLOCK);
-            active = barakoaHealing || hasSunblock;
+            active = umvuthanaHealing || hasSunblock;
             if (!entity.isAlive()) {
                 active = false;
             }

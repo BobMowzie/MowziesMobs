@@ -1,6 +1,6 @@
 {
-	"parent": "mowziesmobs:item/barakoa_mask_frame",
+	"parent": "mowziesmobs:item/umvuthana_mask_frame",
 	"textures": {
-		"layer0": "mowziesmobs:item/barakoa_mask_fury"
+		"layer0": "mowziesmobs:item/umvuthana_mask_fury"
 	}
 }

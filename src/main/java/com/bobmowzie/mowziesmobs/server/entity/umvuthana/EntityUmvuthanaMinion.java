@@ -2,15 +2,15 @@ package com.bobmowzie.mowziesmobs.server.entity.umvuthana;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
-import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
-import com.bobmowzie.mowziesmobs.server.ai.EntityAIBarakoayaTrade;
-import com.bobmowzie.mowziesmobs.server.ai.EntityAIBarakoayaTradeLook;
+import com.bobmowzie.mowziesmobs.server.ai.UmvuthanaHurtByTargetAI;
+import com.bobmowzie.mowziesmobs.server.ai.EntityAIUmvuthanaTrade;
+import com.bobmowzie.mowziesmobs.server.ai.EntityAIUmvuthanaTradeLook;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.trade.Trade;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.trade.TradeStore;
-import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoayaTrade;
-import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
+import com.bobmowzie.mowziesmobs.server.inventory.ContainerUmvuthanaTrade;
+import com.bobmowzie.mowziesmobs.server.item.UmvuthanaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -88,19 +88,19 @@ public class EntityUmvuthanaMinion extends EntityUmvuthana implements LeaderSuns
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        goalSelector.addGoal(1, new EntityAIBarakoayaTrade(this));
-        goalSelector.addGoal(1, new EntityAIBarakoayaTradeLook(this));
+        goalSelector.addGoal(1, new EntityAIUmvuthanaTrade(this));
+        goalSelector.addGoal(1, new EntityAIUmvuthanaTradeLook(this));
         this.goalSelector.addGoal(7, new MoveTowardsRestrictionGoal(this, 0.4));
     }
 
     @Override
     protected void registerTargetGoals() {
-        targetSelector.addGoal(3, new BarakoaHurtByTargetAI(this));
+        targetSelector.addGoal(3, new UmvuthanaHurtByTargetAI(this));
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<Player>(this, Player.class, 0, true, true, target -> {
             if (target instanceof Player) {
                 if (this.level.getDifficulty() == Difficulty.PEACEFUL) return false;
                 ItemStack headArmorStack = ((Player) target).getInventory().armor.get(3);
-                return !(headArmorStack.getItem() instanceof BarakoaMask) || target == getMisbehavedPlayer();
+                return !(headArmorStack.getItem() instanceof UmvuthanaMask) || target == getMisbehavedPlayer();
             }
             return true;
         }){
@@ -186,7 +186,7 @@ public class EntityUmvuthanaMinion extends EntityUmvuthana implements LeaderSuns
             playerEntity.openMenu(new MenuProvider() {
                 @Override
                 public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player) {
-                    return new ContainerBarakoayaTrade(id, EntityUmvuthanaMinion.this, playerInventory);
+                    return new ContainerUmvuthanaTrade(id, EntityUmvuthanaMinion.this, playerInventory);
                 }
 
                 @Override
@@ -211,7 +211,7 @@ public class EntityUmvuthanaMinion extends EntityUmvuthana implements LeaderSuns
             return false;
         }
         ItemStack headStack = player.getInventory().armor.get(3);
-        return headStack.getItem() instanceof BarakoaMask && isOfferingTrade();
+        return headStack.getItem() instanceof UmvuthanaMask && isOfferingTrade();
     }
 
     @Nullable

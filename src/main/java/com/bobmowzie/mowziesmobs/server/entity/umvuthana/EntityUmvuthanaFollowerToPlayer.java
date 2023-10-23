@@ -7,7 +7,7 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
+import com.bobmowzie.mowziesmobs.server.item.ItemUmvuthanaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.core.BlockPos;
@@ -54,7 +54,7 @@ public class EntityUmvuthanaFollowerToPlayer extends EntityUmvuthanaFollower<Pla
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        getEntityData().define(MASK_STORED, new ItemStack(ItemHandler.BARAKOA_MASK_FURY, 1));
+        getEntityData().define(MASK_STORED, new ItemStack(ItemHandler.UMVUTHANA_MASK_FURY, 1));
     }
 
     @Override
@@ -90,7 +90,7 @@ public class EntityUmvuthanaFollowerToPlayer extends EntityUmvuthanaFollower<Pla
     private void deactivate() {
         if (getActive() && getActiveAbilityType() != DEACTIVATE_ABILITY) {
             AbilityHandler.INSTANCE.sendAbilityMessage(this, DEACTIVATE_ABILITY);
-            playSound(MMSounds.ENTITY_BARAKOA_RETRACT.get(), 1, 1);
+            playSound(MMSounds.ENTITY_UMVUTHANA_RETRACT.get(), 1, 1);
         }
     }
 
@@ -132,7 +132,7 @@ public class EntityUmvuthanaFollowerToPlayer extends EntityUmvuthanaFollower<Pla
     }
 
     @Override
-    public boolean isBarakoDevoted() {
+    public boolean isUmvuthiDevoted() {
         return false;
     }
 
@@ -168,7 +168,7 @@ public class EntityUmvuthanaFollowerToPlayer extends EntityUmvuthanaFollower<Pla
     }
 
     @Override
-    protected ItemStack getDeactivatedMask(ItemBarakoaMask mask) {
+    protected ItemStack getDeactivatedMask(ItemUmvuthanaMask mask) {
         return getStoredMask();
     }
 

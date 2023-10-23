@@ -253,17 +253,17 @@ public final class ConfigHandler {
         public final CombatConfig combatConfig;
     }
 
-    public static class Barakoa {
-        Barakoa(final ForgeConfigSpec.Builder builder) {
-            builder.push("barakoa");
-            builder.comment("Controls spawning for Barakoana hunting groups", "Group size controls how many elites spawn, not followers", "See Barako config for village controls");
+    public static class Umvuthana {
+        Umvuthana(final ForgeConfigSpec.Builder builder) {
+            builder.push("umvuthana");
+            builder.comment("Controls spawning for Umvuthana hunting groups", "Group size controls how many raptors spawn, not followers", "See Umvuthi config for village controls");
             spawnConfig = new SpawnConfig(builder,
                     5, 1, 1, 1,
                     new BiomeConfig(builder, Collections.singletonList("SAVANNA"), new ArrayList<>(), new ArrayList<>()),
                     Collections.emptyList(),
                     Arrays.asList("minecraft:valid_spawn", "minecraft:sand"),
                     -65, 60, false, false, false,
-                    Arrays.asList("minecraft:villages", "minecraft:pillager_outposts", "mowziesmobs:barakoa_villages")
+                    Arrays.asList("minecraft:villages", "minecraft:pillager_outposts", "mowziesmobs:umvuthana_groves")
             );
             combatConfig = new CombatConfig(builder,1, 1);
             builder.pop();
@@ -360,26 +360,26 @@ public final class ConfigHandler {
         public final BooleanValue healsOutOfBattle;
     }
 
-    public static class Barako {
-        Barako(final ForgeConfigSpec.Builder builder) {
-            builder.push("barako");
-            builder.comment("Generation controls for Barakoa villages");
+    public static class Umvuthi {
+        Umvuthi(final ForgeConfigSpec.Builder builder) {
+            builder.push("umvuthi");
+            builder.comment("Generation controls for Umvuthana Groves");
             generationConfig = new GenerationConfig(builder, 25, 8,
                     new BiomeConfig(builder, Collections.singletonList("SAVANNA"), new ArrayList<>(), new ArrayList<>()),
                     50, 100,
                     Arrays.asList("minecraft:villages", "minecraft:pillager_outposts")
             );
             combatConfig = new CombatConfig(builder, 1, 1);
-            this.hasBossBar = builder.comment("Disable/enable Barako's boss health bar")
+            this.hasBossBar = builder.comment("Disable/enable Umvuthi's boss health bar")
                     .translation(LANG_PREFIX + "has_boss_bar")
                     .define("has_boss_bar", true);
-            this.healsOutOfBattle = builder.comment("Disable/enable Barako healing while not in combat")
+            this.healsOutOfBattle = builder.comment("Disable/enable Umvuthi healing while not in combat")
                     .translation(LANG_PREFIX + "heals_out_of_battle")
                     .define("heals_out_of_battle", true);
-            this.whichItem = builder.comment("Which item Barako desires in exchange for the Sun's Blessing")
+            this.whichItem = builder.comment("Which item Umvuthi desires in exchange for the Sun's Blessing")
                     .translation(LANG_PREFIX + "trade_which_item")
                     .define("trade_which_item", "minecraft:gold_block", ITEM_NAME_PREDICATE);
-            this.howMany = builder.comment("How many of the item Barako desires in exchange for the Sun's Blessing")
+            this.howMany = builder.comment("How many of the item Umvuthi desires in exchange for the Sun's Blessing")
                     .translation(LANG_PREFIX + "trade_how_many")
                     .defineInRange("trade_how_many", 7, 0, 64);
             builder.pop();
@@ -626,12 +626,12 @@ public final class ConfigHandler {
         Mobs(final ForgeConfigSpec.Builder builder) {
             builder.push("mobs");
             FROSTMAW = new Frostmaw(builder);
-            BARAKO = new Barako(builder);
+            UMVUTHI = new Umvuthi(builder);
             FERROUS_WROUGHTNAUT = new FerrousWroughtnaut(builder);
             SCULPTOR = new Sculptor(builder);
             GROTTOL = new Grottol(builder);
             LANTERN = new Lantern(builder);
-            BARAKOA = new Barakoa(builder);
+            UMVUTHANA = new Umvuthana(builder);
             NAGA = new Naga(builder);
             FOLIAATH = new Foliaath(builder);
             builder.pop();
@@ -639,7 +639,7 @@ public final class ConfigHandler {
 
         public final Frostmaw FROSTMAW;
 
-        public final Barako BARAKO;
+        public final Umvuthi UMVUTHI;
 
         public final FerrousWroughtnaut FERROUS_WROUGHTNAUT;
 
@@ -649,7 +649,7 @@ public final class ConfigHandler {
 
         public final Lantern LANTERN;
 
-        public final Barakoa BARAKOA;
+        public final Umvuthana UMVUTHANA;
 
         public final Naga NAGA;
 
@@ -666,8 +666,8 @@ public final class ConfigHandler {
             AXE_OF_A_THOUSAND_METALS = new AxeOfAThousandMetals(builder);
             SOL_VISAGE = new SolVisage(builder);
             ICE_CRYSTAL = new IceCrystal(builder);
-            BARAKOA_MASK = new BarakoaMask(builder);
-            BARAKOA_SPEAR = new BarakoaSpear(builder);
+            UMVUTHANA_MASK = new BarakoaMask(builder);
+            SPEAR = new BarakoaSpear(builder);
             NAGA_FANG_DAGGER = new NagaFangDagger(builder);
             BLOW_GUN = new Blowgun(builder);
             EARTHBORE_GAUNTLET = new EarthboreGauntlet(builder);
@@ -686,9 +686,9 @@ public final class ConfigHandler {
 
         public final IceCrystal ICE_CRYSTAL;
 
-        public final BarakoaMask BARAKOA_MASK;
+        public final BarakoaMask UMVUTHANA_MASK;
 
-        public final BarakoaSpear BARAKOA_SPEAR;
+        public final BarakoaSpear SPEAR;
 
         public final NagaFangDagger NAGA_FANG_DAGGER;
 

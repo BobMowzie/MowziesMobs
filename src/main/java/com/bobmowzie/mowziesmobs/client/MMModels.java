@@ -85,8 +85,8 @@ public class MMModels {
         }
 
         for (MaskType type : MaskType.values()) {
-            ResourceLocation maskModelInventory = new ModelResourceLocation("mowziesmobs:barakoa_mask_" + type.name, "inventory");
-            ResourceLocation maskModelFrame = new ModelResourceLocation("mowziesmobs:barakoa_mask_" + type.name + "_frame", "inventory");
+            ResourceLocation maskModelInventory = new ModelResourceLocation("mowziesmobs:umvuthana_mask_" + type.name, "inventory");
+            ResourceLocation maskModelFrame = new ModelResourceLocation("mowziesmobs:umvuthana_mask_" + type.name + "_frame", "inventory");
 
             BakedModel maskBakedModelDefault = map.get(maskModelInventory);
             BakedModel maskBakedModelFrame = map.get(maskModelFrame);

@@ -1,12 +1,12 @@
 {
   "replace": false,
   "values": [
-    "mowziesmobs:barako",
-    "mowziesmobs:barakoa_sunblocker",
-    "mowziesmobs:barakoan_barakoana",
-    "mowziesmobs:barakoan_player",
-    "mowziesmobs:barakoa_sunblocker_player",
-    "mowziesmobs:barakoana",
-    "mowziesmobs:barakoaya"
+    "mowziesmobs:umvuthi",
+    "mowziesmobs:umvuthana_sunblocker",
+    "mowziesmobs:umvuthana_follower_raptor",
+    "mowziesmobs:umvuthana_follower_player",
+    "mowziesmobs:umvuthana_crane_player",
+    "mowziesmobs:umvuthana_raptor",
+    "mowziesmobs:umvuthana_crane"
   ]
 }

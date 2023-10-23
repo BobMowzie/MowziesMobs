@@ -22,8 +22,8 @@ import com.bobmowzie.mowziesmobs.server.ai.UseAbilityAI;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.*;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
-import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
-import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
+import com.bobmowzie.mowziesmobs.server.item.UmvuthanaMask;
+import com.bobmowzie.mowziesmobs.server.item.ItemUmvuthanaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
@@ -75,17 +75,17 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import java.util.EnumSet;
 
 public abstract class EntityUmvuthana extends MowzieGeckoEntity implements RangedAttackMob {
-    public static final AbilityType<EntityUmvuthana, DieAbility<EntityUmvuthana>> DIE_ABILITY = new AbilityType<>("barakoa_die", (type, entity) -> new DieAbility<>(type, entity,"die", 70) {
+    public static final AbilityType<EntityUmvuthana, DieAbility<EntityUmvuthana>> DIE_ABILITY = new AbilityType<>("umvuthana_die", (type, entity) -> new DieAbility<>(type, entity,"die", 70) {
         @Override
         public void tickUsing() {
             super.tickUsing();
-            if (getTicksInUse() == 1) getUser().playSound(MMSounds.ENTITY_BARAKOA_HURT.get(), getUser().getSoundVolume(), getUser().getVoicePitch());
-            if (getTicksInUse() == 15) getUser().playSound(MMSounds.ENTITY_BARAKOA_RETRACT.get(), getUser().getSoundVolume(), 1);
+            if (getTicksInUse() == 1) getUser().playSound(MMSounds.ENTITY_UMVUTHANA_HURT.get(), getUser().getSoundVolume(), getUser().getVoicePitch());
+            if (getTicksInUse() == 15) getUser().playSound(MMSounds.ENTITY_UMVUTHANA_RETRACT.get(), getUser().getSoundVolume(), 1);
         }
     });
-    public static final AbilityType<EntityUmvuthana, BarakoaHurtAbility> HURT_ABILITY = new AbilityType<>("barakoa_hurt", BarakoaHurtAbility::new);
-    public static final AbilityType<EntityUmvuthana, BarakoaAttackAbility> ATTACK_ABILITY = new AbilityType<>("barakoa_attack", BarakoaAttackAbility::new);
-    public static final AbilityType<EntityUmvuthana, SimpleAnimationAbility<EntityUmvuthana>> ALERT_ABILITY = new AbilityType<>("barakoa_alert", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"alert", 15) {
+    public static final AbilityType<EntityUmvuthana, UmvuthanaHurtAbility> HURT_ABILITY = new AbilityType<>("umvuthana_hurt", UmvuthanaHurtAbility::new);
+    public static final AbilityType<EntityUmvuthana, UmvuthanaAttackAbility> ATTACK_ABILITY = new AbilityType<>("umvuthana_attack", UmvuthanaAttackAbility::new);
+    public static final AbilityType<EntityUmvuthana, SimpleAnimationAbility<EntityUmvuthana>> ALERT_ABILITY = new AbilityType<>("umvuthana_alert", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"alert", 15) {
         int soundFrame;
 
         @Override
@@ -97,7 +97,7 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
         @Override
         public void tickUsing() {
             super.tickUsing();
-            if (soundFrame == getTicksInUse()) getUser().playSound(MMSounds.ENTITY_BARAKOA_ALERT.get(), getUser().getSoundVolume(), getUser().getVoicePitch());
+            if (soundFrame == getTicksInUse()) getUser().playSound(MMSounds.ENTITY_UMVUTHANA_ALERT.get(), getUser().getSoundVolume(), getUser().getVoicePitch());
             if (getUser().getTarget() != null) {
                 getUser().lookAt(getUser().getTarget(), 30F, 30F);
                 getUser().getLookControl().setLookAt(getUser().getTarget(), 30F, 30F);
@@ -110,27 +110,27 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
             if (rand.nextFloat() < 0.2) getUser().sendAbilityMessage(ROAR_ABILITY);
         }
     });
-    public static final AbilityType<EntityUmvuthana, SimpleAnimationAbility<EntityUmvuthana>> ROAR_ABILITY = new AbilityType<>("barakoa_roar", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"roar", 35) {
+    public static final AbilityType<EntityUmvuthana, SimpleAnimationAbility<EntityUmvuthana>> ROAR_ABILITY = new AbilityType<>("umvuthana_roar", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"roar", 35) {
         @Override
         public void tickUsing() {
             super.tickUsing();
-            if (getTicksInUse() == 2) getUser().playSound(MMSounds.ENTITY_BARAKOA_ROAR.get(), getUser().getSoundVolume() + 0.5f, getUser().getVoicePitch());
+            if (getTicksInUse() == 2) getUser().playSound(MMSounds.ENTITY_UMVUTHANA_ROAR.get(), getUser().getSoundVolume() + 0.5f, getUser().getVoicePitch());
         }
     });
-    public static final AbilityType<EntityUmvuthana, SimpleAnimationAbility<EntityUmvuthana>> ACTIVATE_ABILITY = new AbilityType<>("barakoa_activate", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"emerge", 21) {
+    public static final AbilityType<EntityUmvuthana, SimpleAnimationAbility<EntityUmvuthana>> ACTIVATE_ABILITY = new AbilityType<>("umvuthana_activate", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"emerge", 21) {
         @Override
         public void tickUsing() {
             super.tickUsing();
-            if (getTicksInUse() == 5) getUser().playSound(MMSounds.ENTITY_BARAKOA_EMERGE.get(), 1, 1);
+            if (getTicksInUse() == 5) getUser().playSound(MMSounds.ENTITY_UMVUTHANA_EMERGE.get(), 1, 1);
             if (getTicksInUse() == 10) getUser().active = true;
         }
     });
-    public static final AbilityType<EntityUmvuthana, SimpleAnimationAbility<EntityUmvuthana>> DEACTIVATE_ABILITY = new AbilityType<>("barakoa_deactivate", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"retract", 11) {
+    public static final AbilityType<EntityUmvuthana, SimpleAnimationAbility<EntityUmvuthana>> DEACTIVATE_ABILITY = new AbilityType<>("umvuthana_deactivate", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"retract", 11) {
         @Override
         public void end() {
             super.end();
             getUser().discard();
-            ItemBarakoaMask mask = getMaskFromType(getUser().getMaskType());
+            ItemUmvuthanaMask mask = getMaskFromType(getUser().getMaskType());
             if (!getUser().level.isClientSide) {
                 ItemEntity itemEntity = getUser().spawnAtLocation(getUser().getDeactivatedMask(mask), 1.5f);
                 if (itemEntity != null) {
@@ -141,11 +141,11 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
             }
         }
     });
-    public static final AbilityType<EntityUmvuthana, BlockAbility<EntityUmvuthana>> BLOCK_ABILITY = new AbilityType<>("barakoa_block", (type, entity) -> new BlockAbility<>(type, entity,"block", 10));
-    public static final AbilityType<EntityUmvuthana, BarakoaBlockCounterAbility> BLOCK_COUNTER_ABILITY = new AbilityType<>("barakoa_block_counter", BarakoaBlockCounterAbility::new);
+    public static final AbilityType<EntityUmvuthana, BlockAbility<EntityUmvuthana>> BLOCK_ABILITY = new AbilityType<>("umvuthana_block", (type, entity) -> new BlockAbility<>(type, entity,"block", 10));
+    public static final AbilityType<EntityUmvuthana, UmvuthanaBlockCounterAbility> BLOCK_COUNTER_ABILITY = new AbilityType<>("umvuthana_block_counter", UmvuthanaBlockCounterAbility::new);
 
-    public static final AbilityType<EntityUmvuthana, BarakoaTeleportAbility> TELEPORT_ABILITY = new AbilityType<>("barakoa_teleport", BarakoaTeleportAbility::new);
-    public static final AbilityType<EntityUmvuthana, BarakoaHealAbility> HEAL_ABILITY = new AbilityType<>("barakoa_heal", BarakoaHealAbility::new);
+    public static final AbilityType<EntityUmvuthana, UmvuthanaTeleportAbility> TELEPORT_ABILITY = new AbilityType<>("umvuthana_teleport", UmvuthanaTeleportAbility::new);
+    public static final AbilityType<EntityUmvuthana, UmvuthanaHealAbility> HEAL_ABILITY = new AbilityType<>("umvuthana_heal", UmvuthanaHealAbility::new);
 
     private static final EntityDataAccessor<Boolean> DANCING = SynchedEntityData.defineId(EntityUmvuthana.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> MASK = SynchedEntityData.defineId(EntityUmvuthana.class, EntityDataSerializers.INT);
@@ -242,7 +242,7 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
             if (target instanceof Player) {
                 if (this.level.getDifficulty() == Difficulty.PEACEFUL) return false;
                 ItemStack headArmorStack = ((Player) target).getInventory().armor.get(3);
-                return !(headArmorStack.getItem() instanceof BarakoaMask);
+                return !(headArmorStack.getItem() instanceof UmvuthanaMask);
             }
             return true;
         }));
@@ -332,16 +332,16 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
         if (getActiveAbilityType() == DEACTIVATE_ABILITY) {
             return null;
         }
-        int i = Mth.nextInt(random, 0, MMSounds.ENTITY_BARAKOA_IDLE.size());
-        if (i < MMSounds.ENTITY_BARAKOA_IDLE.size()) {
-            return MMSounds.ENTITY_BARAKOA_IDLE.get(i).get();
+        int i = Mth.nextInt(random, 0, MMSounds.ENTITY_UMVUTHANA_IDLE.size());
+        if (i < MMSounds.ENTITY_UMVUTHANA_IDLE.size()) {
+            return MMSounds.ENTITY_UMVUTHANA_IDLE.get(i).get();
         }
         return null;
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return active ? MMSounds.ENTITY_BARAKOA_HURT.get() : null;
+        return active ? MMSounds.ENTITY_UMVUTHANA_HURT.get() : null;
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -450,7 +450,7 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
     public void updateRattleSound(float maskRot) {
         if (!rattling) {
             if (Math.abs(maskRot - prevMaskRot) > 0.06) {
-                level.playLocalSound(getX(), getY(), getZ(), MMSounds.ENTITY_BARAKOA_RATTLE.get(), SoundSource.HOSTILE, 0.03f, getVoicePitch(), false);
+                level.playLocalSound(getX(), getY(), getZ(), MMSounds.ENTITY_UMVUTHANA_RATTLE.get(), SoundSource.HOSTILE, 0.03f, getVoicePitch(), false);
             }
         }
         else {
@@ -511,38 +511,38 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
         else super.handleEntityEvent(id);
     }
 
-    public static ItemBarakoaMask getMaskFromType(MaskType maskType) {
-        ItemBarakoaMask mask = ItemHandler.BARAKOA_MASK_FURY;
+    public static ItemUmvuthanaMask getMaskFromType(MaskType maskType) {
+        ItemUmvuthanaMask mask = ItemHandler.UMVUTHANA_MASK_FURY;
         switch (maskType) {
             case BLISS:
-                mask = ItemHandler.BARAKOA_MASK_BLISS;
+                mask = ItemHandler.UMVUTHANA_MASK_BLISS;
                 break;
             case FEAR:
-                mask = ItemHandler.BARAKOA_MASK_FEAR;
+                mask = ItemHandler.UMVUTHANA_MASK_FEAR;
                 break;
             case FURY:
-                mask = ItemHandler.BARAKOA_MASK_FURY;
+                mask = ItemHandler.UMVUTHANA_MASK_FURY;
                 break;
             case MISERY:
-                mask = ItemHandler.BARAKOA_MASK_MISERY;
+                mask = ItemHandler.UMVUTHANA_MASK_MISERY;
                 break;
             case RAGE:
-                mask = ItemHandler.BARAKOA_MASK_RAGE;
+                mask = ItemHandler.UMVUTHANA_MASK_RAGE;
                 break;
             case FAITH:
-                mask = ItemHandler.BARAKOA_MASK_FAITH;
+                mask = ItemHandler.UMVUTHANA_MASK_FAITH;
                 break;
         }
         return mask;
     }
 
-    protected ItemStack getDeactivatedMask(ItemBarakoaMask mask) {
+    protected ItemStack getDeactivatedMask(ItemUmvuthanaMask mask) {
         return new ItemStack(mask);
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        this.playSound(MMSounds.ENTITY_BARAKOA_DIE.get(), 1f, 0.95f + random.nextFloat() * 0.1f);
+        this.playSound(MMSounds.ENTITY_UMVUTHANA_DIE.get(), 1f, 0.95f + random.nextFloat() * 0.1f);
         return null;
     }
 
@@ -636,7 +636,7 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
             dart.setKnockback(j);
         }
 
-        dart.setBaseDamage(dart.getBaseDamage() * ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig.attackMultiplier.get());
+        dart.setBaseDamage(dart.getBaseDamage() * ConfigHandler.COMMON.MOBS.UMVUTHANA.combatConfig.attackMultiplier.get());
 
         this.level.addFreshEntity(dart);
         attacking = false;
@@ -684,19 +684,19 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
     protected ResourceLocation getDefaultLootTable() {
         switch (getMaskType()) {
             case BLISS:
-                return LootTableHandler.BARAKOA_BLISS;
+                return LootTableHandler.UMVUTHANA_BLISS;
             case FEAR:
-                return LootTableHandler.BARAKOA_FEAR;
+                return LootTableHandler.UMVUTHANA_FEAR;
             case FURY:
-                return LootTableHandler.BARAKOA_FURY;
+                return LootTableHandler.UMVUTHANA_FURY;
             case MISERY:
-                return LootTableHandler.BARAKOA_MISERY;
+                return LootTableHandler.UMVUTHANA_MISERY;
             case RAGE:
-                return LootTableHandler.BARAKOA_RAGE;
+                return LootTableHandler.UMVUTHANA_RAGE;
             case FAITH:
-                return LootTableHandler.BARAKOA_FAITH;
+                return LootTableHandler.UMVUTHANA_FAITH;
         }
-        return LootTableHandler.BARAKOA_FURY;
+        return LootTableHandler.UMVUTHANA_FURY;
     }
 
     @Override
@@ -714,10 +714,10 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
 
     @Override
     protected ConfigHandler.CombatConfig getCombatConfig() {
-        return ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig;
+        return ConfigHandler.COMMON.MOBS.UMVUTHANA.combatConfig;
     }
 
-    public boolean isBarakoDevoted() {
+    public boolean isUmvuthiDevoted() {
         return true;
     }
 
@@ -868,9 +868,9 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
         }
     }
 
-    private static class BarakoaAttackAbility extends MeleeAttackAbility<EntityUmvuthana> {
+    private static class UmvuthanaAttackAbility extends MeleeAttackAbility<EntityUmvuthana> {
 
-        public BarakoaAttackAbility(AbilityType<EntityUmvuthana, ? extends MeleeAttackAbility<EntityUmvuthana>> abilityType, EntityUmvuthana user) {
+        public UmvuthanaAttackAbility(AbilityType<EntityUmvuthana, ? extends MeleeAttackAbility<EntityUmvuthana>> abilityType, EntityUmvuthana user) {
             super(abilityType, user, new String[]{"attack_slash_left", "attack_slash_right"}, null, null, 1, 3.0f, 1, 13, 9, true);
         }
 
@@ -879,15 +879,15 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
             super.tickUsing();
             if (getTicksInUse() == 5) getUser().setDeltaMovement(getUser().getDeltaMovement().add(getUser().getForward().normalize().scale(0.5)));
             if (getTicksInUse() == 1) {
-                int i = rand.nextInt(MMSounds.ENTITY_BARAKOA_ATTACK.size());
-                getUser().playSound(MMSounds.ENTITY_BARAKOA_ATTACK.get(i).get(), 1, rand.nextFloat(0.9f, 1.1f));
+                int i = rand.nextInt(MMSounds.ENTITY_UMVUTHANA_ATTACK.size());
+                getUser().playSound(MMSounds.ENTITY_UMVUTHANA_ATTACK.get(i).get(), 1, rand.nextFloat(0.9f, 1.1f));
             }
         }
     }
 
-    private static class BarakoaBlockCounterAbility extends MeleeAttackAbility<EntityUmvuthana> {
+    private static class UmvuthanaBlockCounterAbility extends MeleeAttackAbility<EntityUmvuthana> {
 
-        public BarakoaBlockCounterAbility(AbilityType<EntityUmvuthana, BarakoaBlockCounterAbility> abilityType, EntityUmvuthana user) {
+        public UmvuthanaBlockCounterAbility(AbilityType<EntityUmvuthana, UmvuthanaBlockCounterAbility> abilityType, EntityUmvuthana user) {
             super(abilityType, user, new String[]{"block_counter"}, null, null, 3, 2.2f, 1.2f, 7, 11, false);
         }
 
@@ -912,7 +912,7 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
                 getUser().setDeltaMovement(getUser().getDeltaMovement().add(getUser().getForward().normalize().scale(1.6 * distToTarget)));
             }
             if (getTicksInUse() == 0) {
-                getUser().playSound(MMSounds.ENTITY_BARAKOA_ATTACK_BIG.get(), 1, rand.nextFloat(0.9f, 1.1f));
+                getUser().playSound(MMSounds.ENTITY_UMVUTHANA_ATTACK_BIG.get(), 1, rand.nextFloat(0.9f, 1.1f));
             }
         }
 
@@ -922,9 +922,9 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
         }
     }
 
-    private static class BarakoaHurtAbility extends HurtAbility<EntityUmvuthana> {
+    private static class UmvuthanaHurtAbility extends HurtAbility<EntityUmvuthana> {
 
-        public BarakoaHurtAbility(AbilityType<EntityUmvuthana, BarakoaHurtAbility> abilityType, EntityUmvuthana user) {
+        public UmvuthanaHurtAbility(AbilityType<EntityUmvuthana, UmvuthanaHurtAbility> abilityType, EntityUmvuthana user) {
             super(abilityType, user, "", 12);
         }
 
@@ -950,11 +950,11 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
         }
     }
 
-    private static class BarakoaTeleportAbility extends Ability<EntityUmvuthana> {
+    private static class UmvuthanaTeleportAbility extends Ability<EntityUmvuthana> {
         private Vec3 teleportStart;
         private static int ACTIVE_DURATION = 7;
 
-        public BarakoaTeleportAbility(AbilityType<EntityUmvuthana, ? extends Ability> abilityType, EntityUmvuthana user) {
+        public UmvuthanaTeleportAbility(AbilityType<EntityUmvuthana, ? extends Ability> abilityType, EntityUmvuthana user) {
             super(abilityType, user, new AbilitySection[]{
                     new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 7),
                     new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.ACTIVE, ACTIVE_DURATION),
@@ -990,8 +990,8 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
         @Override
         public void tickUsing() {
             super.tickUsing();
-            if (getTicksInUse() == 2) getUser().playSound(MMSounds.ENTITY_BARAKOA_TELEPORT.get(rand.nextInt(3)).get(), 3f, 1);
-            if (getTicksInUse() == 16) getUser().playSound(MMSounds.ENTITY_BARAKOA_TELEPORT.get(rand.nextInt(3)).get(), 3f, 1.2f);
+            if (getTicksInUse() == 2) getUser().playSound(MMSounds.ENTITY_UMVUTHANA_TELEPORT.get(rand.nextInt(3)).get(), 3f, 1);
+            if (getTicksInUse() == 16) getUser().playSound(MMSounds.ENTITY_UMVUTHANA_TELEPORT.get(rand.nextInt(3)).get(), 3f, 1.2f);
 
             if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
                 if (teleportStart != null && getUser().teleportDestination != null) {
@@ -1041,13 +1041,13 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
 
         @Override
         public boolean canCancelActiveAbility() {
-            return getUser().getActiveAbility() instanceof BarakoaHealAbility;
+            return getUser().getActiveAbility() instanceof UmvuthanaHealAbility;
         }
     }
 
-    private static class BarakoaHealAbility extends Ability<EntityUmvuthana> {
+    private static class UmvuthanaHealAbility extends Ability<EntityUmvuthana> {
 
-        public BarakoaHealAbility(AbilityType<EntityUmvuthana, ? extends Ability> abilityType, EntityUmvuthana user) {
+        public UmvuthanaHealAbility(AbilityType<EntityUmvuthana, ? extends Ability> abilityType, EntityUmvuthana user) {
             super(abilityType, user, new AbilitySection[]{
                     new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP,  6),
                     new AbilitySection.AbilitySectionInfinite(AbilitySection.AbilitySectionType.ACTIVE),
@@ -1075,7 +1075,7 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
                 getUser().lookAt(getUser().getTarget(), getUser().getMaxHeadYRot(), getUser().getMaxHeadXRot());
             }
             if (getTicksInUse() == 6) {
-                getUser().playSound(MMSounds.ENTITY_BARAKOA_HEAL_START.get(rand.nextInt(3)).get(), 4, 1);
+                getUser().playSound(MMSounds.ENTITY_UMVUTHANA_HEAL_START.get(rand.nextInt(3)).get(), 4, 1);
                 MowziesMobs.PROXY.playSunblockSound(getUser());
             }
 

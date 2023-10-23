@@ -79,7 +79,7 @@ public class ItemBlowgun extends BowItem {
                         worldIn.addFreshEntity(abstractarrowentity);
                     }
 
-                    worldIn.playSound((Player)null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), MMSounds.ENTITY_BARAKOA_BLOWDART.get(), SoundSource.PLAYERS, 1.0F, 1.0F / (playerentity.getRandom().nextFloat() * 0.4F + 1.2F) + f * 0.5F); //CHANGED FROM PARENT CLASS
+                    worldIn.playSound((Player)null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), MMSounds.ENTITY_UMVUTHANA_BLOWDART.get(), SoundSource.PLAYERS, 1.0F, 1.0F / (playerentity.getRandom().nextFloat() * 0.4F + 1.2F) + f * 0.5F); //CHANGED FROM PARENT CLASS
                     if (!flag1 && !playerentity.getAbilities().instabuild) {
                         itemstack.shrink(1);
                         if (itemstack.isEmpty()) {
