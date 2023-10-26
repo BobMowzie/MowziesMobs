@@ -1,0 +1,6 @@
+{
+	"parent": "mowziesmobs:item/umvuthana_mask",
+	"textures": {
+		"layer0": "mowziesmobs:item/umvuthana_mask_fury_icon"
+	}
+}

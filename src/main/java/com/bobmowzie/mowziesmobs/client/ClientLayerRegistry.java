@@ -4,7 +4,7 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.render.entity.FrozenRenderHandler;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.SunblockLayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
-import com.bobmowzie.mowziesmobs.client.render.item.RenderUmvuthanaMask;
+import com.bobmowzie.mowziesmobs.client.render.item.RenderUmvuthanaMaskArmor;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.item.ItemUmvuthanaMask;
 import com.google.common.collect.ImmutableList;
@@ -40,7 +40,7 @@ public class ClientLayerRegistry {
             event.getSkin(skinType).addLayer(new SunblockLayer(event.getSkin(skinType)));
         }
 
-        GeoArmorRenderer.registerArmorRenderer(ItemUmvuthanaMask.class, () -> new RenderUmvuthanaMask());
+        GeoArmorRenderer.registerArmorRenderer(ItemUmvuthanaMask.class, () -> new RenderUmvuthanaMaskArmor());
 
         GeckoPlayer.GeckoPlayerThirdPerson.initRenderer();
     }

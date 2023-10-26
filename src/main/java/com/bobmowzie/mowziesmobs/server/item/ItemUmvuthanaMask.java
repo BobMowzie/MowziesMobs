@@ -1,6 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.render.item.RenderUmvuthanaMaskArmor;
+import com.bobmowzie.mowziesmobs.client.render.item.RenderUmvuthanaMaskItem;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
@@ -11,6 +13,7 @@ import com.bobmowzie.mowziesmobs.server.entity.umvuthana.MaskType;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -128,6 +131,13 @@ public class ItemUmvuthanaMask extends MowzieArmorItem implements UmvuthanaMask,
                         .applyEntityStats(_default).setCurrentItem(entityLiving, itemStack, armorSlot)
                         .applySlot(armorSlot);
             }
+
+            private final BlockEntityWithoutLevelRenderer renderer = new RenderUmvuthanaMaskItem();
+
+            @Override
+            public BlockEntityWithoutLevelRenderer getItemStackRenderer() {
+                return renderer;
+            }
         });
     }
 
@@ -139,7 +149,7 @@ public class ItemUmvuthanaMask extends MowzieArmorItem implements UmvuthanaMask,
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
         String s = ChatFormatting.stripFormatting(stack.getHoverName().getString());
-        return new ResourceLocation(MowziesMobs.MODID, "textures/item/mask_" + this.type.name + ".png").toString();
+        return new ResourceLocation(MowziesMobs.MODID, "textures/item/umvuthana_mask_" + this.type.name + ".png").toString();
     }
 
     @Override

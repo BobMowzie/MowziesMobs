@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.client.model.armor.masks;
+package com.bobmowzie.mowziesmobs.client.model.armor;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.item.ItemUmvuthanaMask;
@@ -14,7 +14,7 @@ public class UmvuthanaMaskModel extends AnimatedGeoModel<ItemUmvuthanaMask> {
 
     @Override
     public ResourceLocation getTextureLocation(ItemUmvuthanaMask object) {
-        return new ResourceLocation(MowziesMobs.MODID, "geo/mask_" + object.getType().name + ".geo.json");
+        return new ResourceLocation(MowziesMobs.MODID, "textures/item/umvuthana_mask_" + object.getType().name + ".png");
     }
 
     @Override

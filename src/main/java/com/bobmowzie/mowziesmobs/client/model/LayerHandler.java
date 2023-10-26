@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.model;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.armor.BarakoaMaskModel;
 import com.bobmowzie.mowziesmobs.client.model.armor.SolVisageModel;
 import com.bobmowzie.mowziesmobs.client.model.armor.WroughtHelmModel;
 import com.bobmowzie.mowziesmobs.client.render.block.GongRenderer;
@@ -23,7 +22,6 @@ public class LayerHandler {
     public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(WROUGHT_HELM_LAYER, WroughtHelmModel::createArmorLayer);
         event.registerLayerDefinition(SOL_VISAGE_LAYER, SolVisageModel::createArmorLayer);
-        event.registerLayerDefinition(UMVUTHANA_MASK_LAYER, BarakoaMaskModel::createArmorLayer);
         event.registerLayerDefinition(GONG_LAYER, GongRenderer::createBodyLayer);
     }
 
