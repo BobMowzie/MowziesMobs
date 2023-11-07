@@ -27,11 +27,9 @@ import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 import software.bernie.geckolib3.util.RenderUtils;
 
-public class UmvuthiSunLayer  extends GeoLayerRenderer<EntityUmvuthi> {
+public class UmvuthiSunLayer extends GeoLayerRenderer<EntityUmvuthi> {
     protected Matrix4f dispatchedMat = new Matrix4f();
     protected Matrix4f renderEarlyMat = new Matrix4f();
-    private MowzieGeckoEntity entity;
-    private String boneName;
     private final Vec3 v1 = new Vec3(-2,1,-1);
     private final Vec3 v2 = new Vec3(0,1,-1);
     private final Vec3 v3 = new Vec3(-1,0,1);
@@ -147,20 +145,18 @@ public class UmvuthiSunLayer  extends GeoLayerRenderer<EntityUmvuthi> {
             v6,
     };
 
-    public UmvuthiSunLayer(IGeoRenderer<EntityUmvuthi> entityRendererIn, String boneName) {
+    public UmvuthiSunLayer(IGeoRenderer<EntityUmvuthi> entityRendererIn) {
         super(entityRendererIn);
-        this.boneName = boneName;
     }
 
     @Override
     public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityUmvuthi entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        this.entity = entity;
-        GeoModel model = this.entityRenderer.getGeoModelProvider().getModel(this.entityRenderer.getGeoModelProvider().getModelLocation(entity));
-        renderRecursively(entity, model.topLevelBones.get(0), matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY);
+        GeoModel model = this.entityRenderer.getGeoModelProvider().getModel(this.entityRenderer.getGeoModelProvider().getModelLocation(entityLivingBaseIn));
+        renderRecursively(entityLivingBaseIn, model.topLevelBones.get(0), matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, partialTicks);
     }
 
-    public void renderRecursively(MowzieGeckoEntity entity, GeoBone bone, PoseStack poseStack, MultiBufferSource buffer, int packedLight,
-                                  int packedOverlay) {
+    public void renderRecursively(MowzieGeckoEntity entityLivingBaseIn, GeoBone bone, PoseStack poseStack, MultiBufferSource buffer, int packedLight,
+                                  int packedOverlay, float partialTicks) {
         poseStack.pushPose();
         RenderUtils.translateMatrixToBone(poseStack, bone);
         RenderUtils.translateToPivotPoint(poseStack, bone);
@@ -178,26 +174,26 @@ public class UmvuthiSunLayer  extends GeoLayerRenderer<EntityUmvuthi> {
         RenderUtils.scaleMatrixForBone(poseStack, bone);
 
 
-        if(bone.getName().equals("sun") && !bone.isHidden()){
+        if(bone.getName().equals("sun_render") && !bone.isHidden()){
             VertexConsumer ivertexbuilder = buffer.getBuffer(RenderType.entityTranslucent(new ResourceLocation(MowziesMobs.MODID, "textures/effects/sun_effect.png"),true));
             PoseStack.Pose matrixstack$entry = poseStack.last();
             poseStack.translate(0.02d,0d,-0.0d);
             poseStack.scale(0.06f,0.06f,0.06f);
             Matrix4f matrix4f = matrixstack$entry.pose();
             Matrix3f matrix3f = matrixstack$entry.normal();
-            drawSun(matrix4f, matrix3f, ivertexbuilder, packedLight);
+            drawSun(matrix4f, matrix3f, ivertexbuilder, packedLight, entityLivingBaseIn.tickCount + partialTicks);
         }
         if (bone.isTrackingXform()) {
             Matrix4f poseState = poseStack.last().pose().copy();
             Matrix4f localMatrix = RenderUtils.invertAndMultiplyMatrices(poseState, this.dispatchedMat);
 
             bone.setModelSpaceXform(RenderUtils.invertAndMultiplyMatrices(poseState, this.renderEarlyMat));
-            localMatrix.translate(new Vector3f(getRenderOffset(this.entity, 1)));
+            localMatrix.translate(new Vector3f(getRenderOffset(entityLivingBaseIn, 1)));
             bone.setLocalSpaceXform(localMatrix);
 
             Matrix4f worldState = localMatrix.copy();
 
-            worldState.translate(new Vector3f(this.entity.position()));
+            worldState.translate(new Vector3f(entityLivingBaseIn.position()));
             bone.setWorldSpaceXform(worldState);
         }
 
@@ -205,7 +201,7 @@ public class UmvuthiSunLayer  extends GeoLayerRenderer<EntityUmvuthi> {
 
         if (!bone.isHidden) {
             for (GeoBone childBone : bone.childBones) {
-                renderRecursively(entity,childBone, poseStack, buffer, packedLight, packedOverlay);
+                renderRecursively(entityLivingBaseIn, childBone, poseStack, buffer, packedLight, packedOverlay, partialTicks);
             }
         }
 
@@ -218,8 +214,8 @@ public class UmvuthiSunLayer  extends GeoLayerRenderer<EntityUmvuthi> {
         return Vec3.ZERO;
     }
 
-    private void drawSun(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer builder, int packedLightIn) {
-        float scale = 0.9f;
+    private void drawSun(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer builder, int packedLightIn, float time) {
+        float scale = 0.9f + (float) Math.sin(time * 4) * 0.07f;
         for(int i = 0; i < 4; i++) {
             for (Vec3 vec : POS) {
                 vec = vec.multiply(1f + (scale * i), 1f + (scale * i), 1f + (scale * i));

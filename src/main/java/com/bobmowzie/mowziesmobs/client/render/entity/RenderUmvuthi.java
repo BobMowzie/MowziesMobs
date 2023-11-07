@@ -34,7 +34,7 @@ public class RenderUmvuthi extends MowzieGeoEntityRenderer<EntityUmvuthi> {
         super(mgr, new ModelUmvuthi());
         this.addLayer(new FrozenRenderHandler.GeckoLayerFrozen<>(this, mgr));
         this.addLayer(new GeckoSunblockLayer(this, mgr));
-        this.addLayer(new UmvuthiSunLayer(this,"sun_render"));
+        this.addLayer(new UmvuthiSunLayer(this));
 
         this.shadowRadius = 1.0f;
     }
