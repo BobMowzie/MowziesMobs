@@ -5,7 +5,9 @@ import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoMo
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 public class ModelUmvuthi extends MowzieAnimatedGeoModel<EntityUmvuthi> {
     public ModelUmvuthi() {
@@ -29,6 +31,22 @@ public class ModelUmvuthi extends MowzieAnimatedGeoModel<EntityUmvuthi> {
 
     @Override
     public void codeAnimations(EntityUmvuthi entity, Integer uniqueID, AnimationEvent<?> customPredicate) {
+
+        if (entity.isAlive()) {
+            MowzieGeoBone neck1 = getMowzieBone("neck");
+            MowzieGeoBone neck2 = getMowzieBone("neck2");
+            MowzieGeoBone headJoint = getMowzieBone("headJoint");
+            MowzieGeoBone head = getMowzieBone("head");
+            MowzieGeoBone[] lookPieces = new MowzieGeoBone[] { neck1, neck2, headJoint, head };
+            EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
+            float headYaw = Mth.wrapDegrees(extraData.netHeadYaw);
+            float headPitch = Mth.wrapDegrees(extraData.headPitch);
+            for (MowzieGeoBone bone : lookPieces) {
+                bone.addRotationX(headPitch * ((float) Math.PI / 180F) / (float) lookPieces.length);
+                bone.addRotationY(headYaw * ((float) Math.PI / 180F) / (float) lookPieces.length);
+            }
+        }
+
         MowzieGeoBone rightThigh = getMowzieBone("rightThigh");
         MowzieGeoBone leftThigh = getMowzieBone("leftThigh");
 

@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.entity.umvuthana;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleOrb;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
@@ -73,6 +74,13 @@ import net.minecraft.world.scores.PlayerTeam;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
+import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType;
+import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.manager.AnimationData;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -89,6 +97,9 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
     public static final AbilityType<EntityUmvuthi, SolarBeamAbility> SOLAR_BEAM_ABILITY = new AbilityType<>("umvuthi_solar_beam", SolarBeamAbility::new);
     public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> BLESS_ABILITY = new AbilityType<>("umvuthi_bless", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"umvuthia_teleport", 60));
     public static final AbilityType<EntityUmvuthi, SupernovaAbility> SUPERNOVA_ABILITY = new AbilityType<>("umvuthi_supernova", SupernovaAbility::new);
+
+    protected AnimationController<MowzieGeckoEntity> maskController = new MowzieAnimationController<>(this, "mask_controller", 1, this::predicateMask, 0.0);
+
     private static final int MAX_HEALTH = 150;
     private static final int SUNSTRIKE_PAUSE_MAX = 50;
     private static final int SUNSTRIKE_PAUSE_MIN = 30;
@@ -235,7 +246,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
 
     @Override
     protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
-        return 1.4f;
+        return super.getStandingEyeHeight(poseIn, sizeIn);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -243,6 +254,21 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
                 .add(Attributes.MAX_HEALTH, MAX_HEALTH)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1)
                 .add(Attributes.FOLLOW_RANGE, 40);
+    }
+
+    @Override
+    public void registerControllers(AnimationData data) {
+        super.registerControllers(data);
+        data.addAnimationController(maskController);
+    }
+
+    protected <E extends IAnimatable> PlayState predicateMask(AnimationEvent<E> event)
+    {
+        if (isAlive() && active) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("mask_twitch", ILoopType.EDefaultLoopTypes.LOOP));
+            return PlayState.CONTINUE;
+        }
+        return PlayState.STOP;
     }
 
     protected boolean isMovementNoisy() {
