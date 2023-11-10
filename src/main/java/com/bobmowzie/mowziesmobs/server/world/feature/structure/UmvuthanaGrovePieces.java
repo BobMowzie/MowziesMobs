@@ -77,7 +77,7 @@ public class UmvuthanaGrovePieces {
             SPIKE_3,
             SPIKE_4
     };
-    public static final ResourceLocation THRONE = new ResourceLocation(MowziesMobs.MODID, "umvuthana/barako_throne");
+    public static final ResourceLocation THRONE = new ResourceLocation(MowziesMobs.MODID, "umvuthana/umvuthi_throne");
 
     private static final Map<ResourceLocation, BlockPos> OFFSET = ImmutableMap.<ResourceLocation, BlockPos>builder()
             .put(PLATFORM_1, new BlockPos(-5, 0, -5))
