@@ -6790,7 +6790,7 @@
 		},
 		"mask_twitch": {
 			"loop": true,
-			"animation_length": 8.12,
+			"animation_length": 8.56,
 			"bones": {
 				"maskTwitcher": {
 					"rotation": {
