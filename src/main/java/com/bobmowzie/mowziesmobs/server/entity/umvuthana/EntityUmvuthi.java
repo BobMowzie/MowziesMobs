@@ -95,7 +95,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
     public static final AbilityType<EntityUmvuthi, SpawnFollowersAbility> SPAWN_ABILITY = new AbilityType<>("umvuthi_spawn", (type, entity) -> new SpawnFollowersAbility(type, entity, false));
     public static final AbilityType<EntityUmvuthi, SpawnFollowersAbility> SPAWN_SUNBLOCKERS_ABILITY = new AbilityType<>("umvuthi_spawn_healers", (type, entity) -> new SpawnFollowersAbility(type, entity, true));
     public static final AbilityType<EntityUmvuthi, SolarBeamAbility> SOLAR_BEAM_ABILITY = new AbilityType<>("umvuthi_solar_beam", SolarBeamAbility::new);
-    public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> BLESS_ABILITY = new AbilityType<>("umvuthi_bless", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"umvuthia_teleport", 60));
+    public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> BLESS_ABILITY = new AbilityType<>("umvuthi_bless", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"bless", 60));
     public static final AbilityType<EntityUmvuthi, SupernovaAbility> SUPERNOVA_ABILITY = new AbilityType<>("umvuthi_supernova", SupernovaAbility::new);
 
     protected AnimationController<MowzieGeckoEntity> maskController = new MowzieAnimationController<>(this, "mask_controller", 1, this::predicateMask, 0.0);
@@ -264,7 +264,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
 
     protected <E extends IAnimatable> PlayState predicateMask(AnimationEvent<E> event)
     {
-        if (isAlive() && active) {
+        if (isAlive()) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("mask_twitch", ILoopType.EDefaultLoopTypes.LOOP));
             return PlayState.CONTINUE;
         }
@@ -1044,6 +1044,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
                 prevX = entityTarget.getX();
                 prevZ = entityTarget.getZ();
             }
+            playAnimation("sun_strike", false);
         }
 
         @Override
@@ -1117,6 +1118,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         public void start() {
             super.start();
             entityTarget = getUser().getTarget();
+            playAnimation("solar_beam", false);
         }
 
         @Override
@@ -1151,6 +1153,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         public void start() {
             super.start();
             getUser().playSound(MMSounds.ENTITY_UMVUTHI_BURST.get(), 1.7f, 1.5f);
+            playAnimation("belly_yell", false);
         }
 
         @Override
