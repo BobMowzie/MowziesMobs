@@ -99,6 +99,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
     public static final AbilityType<EntityUmvuthi, SupernovaAbility> SUPERNOVA_ABILITY = new AbilityType<>("umvuthi_supernova", SupernovaAbility::new);
 
     protected AnimationController<MowzieGeckoEntity> maskController = new MowzieAnimationController<>(this, "mask_controller", 1, this::predicateMask, 0.0);
+    protected AnimationController<MowzieGeckoEntity> blinkController = new MowzieAnimationController<>(this, "blink_controller", 1, this::predicateBlink, 0.0);
 
     private static final int MAX_HEALTH = 150;
     private static final int SUNSTRIKE_PAUSE_MAX = 50;
@@ -260,12 +261,22 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
     public void registerControllers(AnimationData data) {
         super.registerControllers(data);
         data.addAnimationController(maskController);
+        data.addAnimationController(blinkController);
     }
 
     protected <E extends IAnimatable> PlayState predicateMask(AnimationEvent<E> event)
     {
         if (isAlive()) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("mask_twitch", ILoopType.EDefaultLoopTypes.LOOP));
+            return PlayState.CONTINUE;
+        }
+        return PlayState.STOP;
+    }
+
+    protected <E extends IAnimatable> PlayState predicateBlink(AnimationEvent<E> event)
+    {
+        if (isAlive()) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("blink", ILoopType.EDefaultLoopTypes.LOOP));
             return PlayState.CONTINUE;
         }
         return PlayState.STOP;
@@ -288,7 +299,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
                 if (soundType < MMSounds.ENTITY_UMVUTHI_TALK.size()) {
                     this.playSound(MMSounds.ENTITY_UMVUTHI_TALK.get(soundType).get(), 2F, 1.0F);
                     this.setWhichDialogue(soundType + 1);
-                    sendAbilityMessage(TALK_ABILITY);
+//                    sendAbilityMessage(TALK_ABILITY);
                 }
             } else {
                 int soundType = Mth.nextInt(random, 1, 10);
@@ -391,9 +402,9 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             angryEyebrow.decreaseTimer();
         }
 
-        if (getActiveAbility() == null && !isNoAi() && getTarget() == null && random.nextInt(200) == 0) {
-            sendAbilityMessage(BELLY_ABILITY);
-        }
+//        if (getActiveAbility() == null && !isNoAi() && getTarget() == null && random.nextInt(200) == 0) {
+//            sendAbilityMessage(BELLY_ABILITY);
+//        }
 
         if (getActiveAbilityType() == BELLY_ABILITY && (getActiveAbility().getTicksInUse() == 9 || getActiveAbility().getTicksInUse() == 29)) {
             this.playSound(MMSounds.ENTITY_UMVUTHI_BELLY.get(), 3f, 1f);
