@@ -85,58 +85,64 @@ public class MMModels {
         }
 
         for (MaskType type : MaskType.values()) {
-            ResourceLocation maskModelInventory = new ModelResourceLocation("mowziesmobs:umvuthana_mask_" + type.name, "inventory");
-            ResourceLocation maskModelFrame = new ModelResourceLocation("mowziesmobs:umvuthana_mask_" + type.name + "_frame", "inventory");
-
-            BakedModel maskBakedModelDefault = map.get(maskModelInventory);
-            BakedModel maskBakedModelFrame = map.get(maskModelFrame);
-            BakedModel maskModelWrapper = new BakedModel() {
-                @Override
-                public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand) {
-                    return maskBakedModelDefault.getQuads(state, side, rand);
-                }
-
-                @Override
-                public boolean useAmbientOcclusion() {
-                    return maskBakedModelDefault.useAmbientOcclusion();
-                }
-
-                @Override
-                public boolean isGui3d() {
-                    return maskBakedModelDefault.isGui3d();
-                }
-
-                @Override
-                public boolean usesBlockLight() {
-                    return false;
-                }
-
-                @Override
-                public boolean isCustomRenderer() {
-                    return maskBakedModelDefault.isCustomRenderer();
-                }
-
-                @Override
-                public TextureAtlasSprite getParticleIcon() {
-                    return maskBakedModelDefault.getParticleIcon();
-                }
-
-                @Override
-                public ItemOverrides getOverrides() {
-                    return maskBakedModelDefault.getOverrides();
-                }
-
-                @Override
-                public BakedModel handlePerspective(ItemTransforms.TransformType cameraTransformType, PoseStack mat) {
-                    BakedModel modelToUse = maskBakedModelDefault;
-                    if (cameraTransformType == ItemTransforms.TransformType.FIXED) {
-                        modelToUse = maskBakedModelFrame;
-                    }
-                    return ForgeHooksClient.handlePerspective(modelToUse, cameraTransformType, mat);
-                }
-            };
-
-            map.put(maskModelInventory, maskModelWrapper);
+            ModelResourceLocation maskModelInventory = new ModelResourceLocation("mowziesmobs:umvuthana_mask_" + type.name, "inventory");
+            ModelResourceLocation maskModelFrame = new ModelResourceLocation("mowziesmobs:umvuthana_mask_" + type.name + "_frame", "inventory");
+            bakeMask(map, maskModelInventory, maskModelFrame);
         }
+        ModelResourceLocation maskModelInventory = new ModelResourceLocation("mowziesmobs:sol_visage", "inventory");
+        ModelResourceLocation maskModelFrame = new ModelResourceLocation("mowziesmobs:sol_visage_frame", "inventory");
+        bakeMask(map, maskModelInventory, maskModelFrame);
+    }
+
+    private static void bakeMask(Map<ResourceLocation, BakedModel> map, ModelResourceLocation maskModelInventory, ModelResourceLocation maskModelFrame) {
+        BakedModel maskBakedModelDefault = map.get(maskModelInventory);
+        BakedModel maskBakedModelFrame = map.get(maskModelFrame);
+        BakedModel maskModelWrapper = new BakedModel() {
+            @Override
+            public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand) {
+                return maskBakedModelDefault.getQuads(state, side, rand);
+            }
+
+            @Override
+            public boolean useAmbientOcclusion() {
+                return maskBakedModelDefault.useAmbientOcclusion();
+            }
+
+            @Override
+            public boolean isGui3d() {
+                return maskBakedModelDefault.isGui3d();
+            }
+
+            @Override
+            public boolean usesBlockLight() {
+                return false;
+            }
+
+            @Override
+            public boolean isCustomRenderer() {
+                return maskBakedModelDefault.isCustomRenderer();
+            }
+
+            @Override
+            public TextureAtlasSprite getParticleIcon() {
+                return maskBakedModelDefault.getParticleIcon();
+            }
+
+            @Override
+            public ItemOverrides getOverrides() {
+                return maskBakedModelDefault.getOverrides();
+            }
+
+            @Override
+            public BakedModel handlePerspective(ItemTransforms.TransformType cameraTransformType, PoseStack mat) {
+                BakedModel modelToUse = maskBakedModelDefault;
+                if (cameraTransformType == ItemTransforms.TransformType.FIXED) {
+                    modelToUse = maskBakedModelFrame;
+                }
+                return ForgeHooksClient.handlePerspective(modelToUse, cameraTransformType, mat);
+            }
+        };
+
+        map.put(maskModelInventory, maskModelWrapper);
     }
 }

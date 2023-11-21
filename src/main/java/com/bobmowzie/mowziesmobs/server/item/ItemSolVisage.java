@@ -3,11 +3,13 @@ package com.bobmowzie.mowziesmobs.server.item;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.LayerHandler;
 import com.bobmowzie.mowziesmobs.client.model.armor.SolVisageModel;
+import com.bobmowzie.mowziesmobs.client.render.item.RenderSolVisageItem;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -19,6 +21,16 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.IItemRenderProperties;
+import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType;
+import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.manager.AnimationData;
+import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -27,8 +39,11 @@ import java.util.function.Consumer;
 /**
  * Created by BobMowzie on 8/15/2016.
  */
-public class ItemSolVisage extends MowzieArmorItem implements UmvuthanaMask {
+public class ItemSolVisage extends MowzieArmorItem implements UmvuthanaMask, IAnimatable {
     private static final SolVisageMaterial SOL_VISAGE_MATERIAL = new SolVisageMaterial();
+
+    public String controllerName = "controller";
+    public AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
     public ItemSolVisage(Item.Properties properties) {
         super(SOL_VISAGE_MATERIAL, EquipmentSlot.HEAD, properties);
@@ -73,7 +88,7 @@ public class ItemSolVisage extends MowzieArmorItem implements UmvuthanaMask {
     @Nullable
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-        return new ResourceLocation(MowziesMobs.MODID, "textures/item/barako_mask.png").toString();
+        return new ResourceLocation(MowziesMobs.MODID, "textures/entity/umvuthi_2.png").toString();
     }
 
     @Override
@@ -87,6 +102,21 @@ public class ItemSolVisage extends MowzieArmorItem implements UmvuthanaMask {
     @Override
     public ConfigHandler.ArmorConfig getConfig() {
         return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.armorConfig;
+    }
+
+    public <P extends Item & IAnimatable> PlayState predicate(AnimationEvent<P> event) {
+        event.getController().setAnimation(new AnimationBuilder().addAnimation("default", ILoopType.EDefaultLoopTypes.LOOP));
+        return PlayState.CONTINUE;
+    }
+
+    @Override
+    public void registerControllers(AnimationData data) {
+        data.addAnimationController(new AnimationController<>(this, controllerName, 0, this::predicate));
+    }
+
+    @Override
+    public AnimationFactory getFactory() {
+        return this.factory;
     }
 
     private static class SolVisageMaterial implements ArmorMaterial {
@@ -134,21 +164,22 @@ public class ItemSolVisage extends MowzieArmorItem implements UmvuthanaMask {
 
     @Override
     public void initializeClient(Consumer<IItemRenderProperties> consumer) {
-        consumer.accept(ItemSolVisage.ArmorRender.INSTANCE);
-    }
-
-    private static final class ArmorRender implements IItemRenderProperties {
-        private static final ItemSolVisage.ArmorRender INSTANCE = new ItemSolVisage.ArmorRender();
-        private static HumanoidModel<?> MODEL;
-
-        @Override
-        public HumanoidModel<?> getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel<?> _default) {
-            if (MODEL == null) {
-                EntityModelSet models = Minecraft.getInstance().getEntityModels();
-                ModelPart root = models.bakeLayer(LayerHandler.SOL_VISAGE_LAYER);
-                MODEL = new SolVisageModel<>(root);
+        super.initializeClient(consumer);
+        consumer.accept(new IItemRenderProperties() {
+            @Override
+            public HumanoidModel<?> getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel<?> _default) {
+                if (armorSlot != EquipmentSlot.HEAD) return null;
+                return (HumanoidModel<?>) GeoArmorRenderer.getRenderer(ItemSolVisage.this.getClass(), entityLiving)
+                        .applyEntityStats(_default).setCurrentItem(entityLiving, itemStack, armorSlot)
+                        .applySlot(armorSlot);
             }
-            return MODEL;
-        }
+
+            private final BlockEntityWithoutLevelRenderer renderer = new RenderSolVisageItem();
+
+            @Override
+            public BlockEntityWithoutLevelRenderer getItemStackRenderer() {
+                return renderer;
+            }
+        });
     }
 }

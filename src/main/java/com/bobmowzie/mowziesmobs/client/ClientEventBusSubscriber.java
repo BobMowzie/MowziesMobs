@@ -77,5 +77,6 @@ public class ClientEventBusSubscriber {
         for (MaskType type : MaskType.values()) {
             ForgeModelBakery.addSpecialModel(new ModelResourceLocation(MowziesMobs.MODID + ":umvuthana_mask_" + type.name + "_frame", "inventory"));
         }
+        ForgeModelBakery.addSpecialModel(new ModelResourceLocation(MowziesMobs.MODID + ":sol_visage_frame", "inventory"));
     }
 }

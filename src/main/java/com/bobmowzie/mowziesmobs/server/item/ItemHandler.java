@@ -39,7 +39,7 @@ public final class ItemHandler {
     public static final ItemUmvuthanaMask UMVUTHANA_MASK_BLISS = null;
     public static final ItemUmvuthanaMask UMVUTHANA_MASK_MISERY = null;
     public static final ItemUmvuthanaMask UMVUTHANA_MASK_FAITH = null;
-    public static final ItemSolVisage BARAKO_MASK = null;
+    public static final ItemSolVisage SOL_VISAGE = null;
     public static final ItemDart DART = null;
     public static final ItemSpear SPEAR = null;
     public static final ItemSunblockStaff SUNBLOCK_STAFF = null;
@@ -83,7 +83,7 @@ public final class ItemHandler {
             new ItemUmvuthanaMask(MaskType.BLISS, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("umvuthana_mask_bliss"),
             new ItemUmvuthanaMask(MaskType.MISERY, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("umvuthana_mask_misery"),
             new ItemUmvuthanaMask(MaskType.FAITH, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("umvuthana_mask_faith"),
-            new ItemSolVisage(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).rarity(Rarity.RARE)).setRegistryName("barako_mask"),
+            new ItemSolVisage(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).rarity(Rarity.RARE)).setRegistryName("sol_visage"),
             new ItemDart(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("dart"),
             new ItemSpear(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1)).setRegistryName("spear"),
             new ItemSunblockStaff(new Item.Properties().stacksTo(1)).setRegistryName("sunblock_staff"),
@@ -131,7 +131,7 @@ public final class ItemHandler {
         UMVUTHANA_MASK_BLISS.getAttributesFromConfig();
         UMVUTHANA_MASK_MISERY.getAttributesFromConfig();
         UMVUTHANA_MASK_FAITH.getAttributesFromConfig();
-        BARAKO_MASK.getAttributesFromConfig();
+        SOL_VISAGE.getAttributesFromConfig();
         SPEAR.getAttributesFromConfig();
         NAGA_FANG_DAGGER.getAttributesFromConfig();
         EARTHBORE_GAUNTLET.getAttributesFromConfig();
