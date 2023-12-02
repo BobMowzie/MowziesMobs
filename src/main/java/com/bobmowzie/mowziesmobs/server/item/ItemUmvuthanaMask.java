@@ -7,6 +7,7 @@ import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthana;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthanaFollowerToPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthanaCraneToPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.MaskType;
@@ -165,7 +166,13 @@ public class ItemUmvuthanaMask extends MowzieArmorItem implements UmvuthanaMask,
     }
 
     public <P extends Item & IAnimatable> PlayState predicate(AnimationEvent<P> event) {
-        event.getController().setAnimation(new AnimationBuilder().addAnimation("default", ILoopType.EDefaultLoopTypes.LOOP));
+        LivingEntity livingEntity = event.getExtraDataOfType(LivingEntity.class).get(0);
+        if (livingEntity instanceof EntityUmvuthana) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("umvuthana", ILoopType.EDefaultLoopTypes.LOOP));
+        }
+        else {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("player", ILoopType.EDefaultLoopTypes.LOOP));
+        }
         return PlayState.CONTINUE;
     }
 
