@@ -16,6 +16,7 @@ import com.bobmowzie.mowziesmobs.server.ability.abilities.mob.DieAbility;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.mob.HurtAbility;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.player.SimpleAnimationAbility;
 import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
+import com.bobmowzie.mowziesmobs.server.ai.LookAtTargetGoal;
 import com.bobmowzie.mowziesmobs.server.ai.UmvuthanaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.ai.NearestAttackableTargetPredicateGoal;
 import com.bobmowzie.mowziesmobs.server.ai.UseAbilityAI;
@@ -51,7 +52,9 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.LookAtTradingPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
@@ -234,12 +237,15 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         this.goalSelector.addGoal(2, new AnimationSolarBeam<>(this, SOLAR_BEAM_ANIMATION));
         this.goalSelector.addGoal(3, new AnimationTakeDamage<>(this));
         this.goalSelector.addGoal(1, new AnimationDieAI<>(this));*/
+
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SUNSTRIKE_ABILITY));
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, ATTACK_ABILITY));
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SOLAR_BEAM_ABILITY));
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SUPERNOVA_ABILITY));
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SPAWN_ABILITY));
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SPAWN_SUNBLOCKERS_ABILITY));
+
+        this.goalSelector.addGoal(5, new LookAtTargetGoal(this,24.0F));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, EntityUmvuthana.class, 8.0F));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
@@ -362,6 +368,8 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             float entityRelativeAngle = Math.abs(entityHitAngle - entityAttackingAngle);
             Vec3 betweenEntitiesVec = position().subtract(target.position());
             boolean targetComingCloser = target.getDeltaMovement().dot(betweenEntitiesVec) > 0 && target.getDeltaMovement().lengthSqr() > 0.015;
+
+            // Attacks
             if (getActiveAbility() == null && !isNoAi() && random.nextInt(80) == 0 && (targetDistance > 5.5 || hasEffect(EffectHandler.SUNBLOCK)) && timeUntilUmvuthana <= 0 && getEntitiesNearby(EntityUmvuthana.class, 50).size() < 4) {
                 sendAbilityMessage(SPAWN_ABILITY);
                 timeUntilUmvuthana = UMVUTHANA_PAUSE;
@@ -377,6 +385,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
                 sendAbilityMessage(SUNSTRIKE_ABILITY);
                 timeUntilSunstrike = getTimeUntilSunstrike();
             }
+
             if (hurtByTargetAI != null && !hurtByTargetAI.canContinueToUse()) {
                 hurtByTargetAI.stop();
             }
@@ -1065,12 +1074,6 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
                 if (entityTarget == null) {
                     return;
                 }
-                if (getTicksInUse() <= 6) {
-                    getUser().getLookControl().setLookAt(entityTarget, 30, 30);
-                }
-                if (getTicksInUse() > 6) {
-                    getUser().getLookControl().setLookAt(newX, y, newZ, 20, 20);
-                }
 
                 if (getTicksInUse() == STARTUP_DURATION - 2) {
                     double x = entityTarget.getX();
@@ -1095,6 +1098,14 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
                             break;
                         }
                     }
+                }
+
+                if (getTicksInUse() <= STARTUP_DURATION - 2) {
+                    getUser().getLookControl().setLookAt(entityTarget, 30, 30);
+                }
+                if (getTicksInUse() > STARTUP_DURATION - 2) {
+                    System.out.println(newX);
+                    getUser().getLookControl().setLookAt(newX, y, newZ, 30, 30);
                 }
             }
         }

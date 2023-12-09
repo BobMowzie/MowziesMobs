@@ -152,7 +152,7 @@ public class UmvuthiSunLayer extends GeoLayerRenderer<EntityUmvuthi> {
     @Override
     public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityUmvuthi entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         GeoModel model = this.entityRenderer.getGeoModelProvider().getModel(this.entityRenderer.getGeoModelProvider().getModelLocation(entityLivingBaseIn));
-        renderRecursively(entityLivingBaseIn, model.topLevelBones.get(0), matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, partialTicks);
+        renderRecursively(entityLivingBaseIn, model.topLevelBones.get(2), matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, partialTicks);
     }
 
     public void renderRecursively(MowzieGeckoEntity entityLivingBaseIn, GeoBone bone, PoseStack poseStack, MultiBufferSource buffer, int packedLight,

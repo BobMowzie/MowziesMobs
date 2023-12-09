@@ -26,7 +26,7 @@ public class ModelUmvuthi extends MowzieAnimatedGeoModel<EntityUmvuthi> {
 
     @Override
     public ResourceLocation getTextureLocation(EntityUmvuthi object) {
-        return new ResourceLocation(MowziesMobs.MODID, "textures/entity/umvuthi_2.png");
+        return new ResourceLocation(MowziesMobs.MODID, "textures/entity/umvuthi_3.png");
     }
 
     @Override
