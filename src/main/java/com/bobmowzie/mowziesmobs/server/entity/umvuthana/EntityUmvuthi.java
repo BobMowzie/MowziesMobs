@@ -285,6 +285,11 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         return PlayState.STOP;
     }
 
+    @Override
+    protected <E extends IAnimatable> void loopingAnimations(AnimationEvent<E> event) {
+//        super.loopingAnimations(event);
+    }
+
     protected boolean isMovementNoisy() {
         return false;
     }

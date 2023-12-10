@@ -208,11 +208,6 @@
 						"vector": ["Math.sin((query.anim_time - 0.6) * 45) * 2", 0, 0]
 					}
 				},
-				"bellyFeathersLeft3": {
-					"rotation": {
-						"vector": ["Math.sin((query.anim_time - 0.9) * 45) * 2", 0, 0]
-					}
-				},
 				"bellyFeathersFront2": {
 					"rotation": {
 						"vector": ["Math.sin((query.anim_time - 1.2) * 45) * 2", 0, 0]

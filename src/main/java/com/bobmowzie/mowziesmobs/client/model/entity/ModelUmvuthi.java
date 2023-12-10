@@ -51,6 +51,48 @@ public class ModelUmvuthi extends MowzieAnimatedGeoModel<EntityUmvuthi> {
                 bone.addRotationX(headPitch * ((float) Math.PI / 180F) / (float) lookPieces.length);
                 bone.addRotationY(headYaw * ((float) Math.PI / 180F) / (float) lookPieces.length);
             }
+
+            MowzieGeoBone featherRaiseController = getMowzieBone("featherRaiseController");
+            MowzieGeoBone rightFoot = getMowzieBone("rightFoot");
+            MowzieGeoBone rightAnkle = getMowzieBone("rightAnkle");
+            MowzieGeoBone rightCalf = getMowzieBone("rightCalf");
+            MowzieGeoBone rightThigh = getMowzieBone("rightThigh");
+            MowzieGeoBone leftFoot = getMowzieBone("leftFoot");
+            MowzieGeoBone leftAnkle = getMowzieBone("leftAnkle");
+            MowzieGeoBone leftCalf = getMowzieBone("leftCalf");
+            MowzieGeoBone leftThigh = getMowzieBone("leftThigh");
+            MowzieGeoBone rightHand = getMowzieBone("rightHand");
+            MowzieGeoBone rightLowerArm = getMowzieBone("rightLowerArm");
+            MowzieGeoBone rightArmJoint = getMowzieBone("rightArmJoint");
+            MowzieGeoBone leftHand = getMowzieBone("leftHand");
+            MowzieGeoBone leftLowerArm = getMowzieBone("leftLowerArm");
+            MowzieGeoBone leftArmJoint = getMowzieBone("leftArmJoint");
+            MowzieGeoBone chest = getMowzieBone("chest");
+            MowzieGeoBone body = getMowzieBone("body");
+            float idleSpeed = 0.08f;
+            featherRaiseController.addPositionX((float) (Math.sin((frame - 1.2) * idleSpeed) * 0.035));
+            body.addRotationX((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.035));
+            chest.addPositionY((float) (-0.7 + Math.sin((frame - 0.0) * idleSpeed) * 0.014));
+            chest.addRotationX((float) (Math.sin((frame - 0.0) * idleSpeed) * -0.017));
+            neck1.addRotationX((float) (Math.cos((frame - 0.3) * idleSpeed) * -0.052));
+            neck2.addRotationX((float) (Math.cos((frame - 0.5) * idleSpeed) * -0.052));
+            headJoint.addRotationX((float) (Math.cos((frame - 0.6) * idleSpeed) * 0.1));
+            leftArmJoint.addRotationX((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.052));
+            leftLowerArm.addRotationY((float) (Math.cos((frame - 0.0) * idleSpeed) * 0.035));
+            leftHand.addRotationY((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.087));
+            rightArmJoint.addRotationX((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.052));
+            rightLowerArm.addRotationY((float) (Math.cos((frame - 0.0) * idleSpeed) * 0.035));
+            rightHand.addRotationY((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.087));
+            leftThigh.addRotationY((float) (Math.cos((frame - 0.0) * idleSpeed) * 0.052));
+            leftThigh.addRotationZ((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.052));
+            leftCalf.addRotationX((float) (Math.sin((frame - 0.2) * idleSpeed) * 0.087));
+            leftAnkle.addRotationX((float) (Math.cos((frame - 0.2) * idleSpeed) * -0.087));
+            leftFoot.addRotationX((float) (Math.cos((frame - 0.4) * idleSpeed) * -0.14));
+            rightThigh.addRotationY((float) (Math.cos((frame - 0.0) * idleSpeed) * -0.052));
+            rightThigh.addRotationZ((float) (Math.sin((frame - 0.0) * idleSpeed) * -0.052));
+            rightCalf.addRotationX((float) (Math.sin((frame - 0.2) * idleSpeed) * 0.087));
+            rightAnkle.addRotationX((float) (Math.cos((frame - 0.2) * idleSpeed) * -0.087));
+            rightFoot.addRotationX((float) (Math.cos((frame - 0.4) * idleSpeed) * -0.14));
         }
 
         MowzieGeoBone rightThigh = getMowzieBone("rightThigh");
@@ -77,6 +119,7 @@ public class ModelUmvuthi extends MowzieAnimatedGeoModel<EntityUmvuthi> {
         tail.addPositionZ(jiggleScale * 4);
 
         float featherShakeControl = getControllerValue("featherShakeController");
+        float featherRaiseControl = getControllerValue("featherRaiseController");
         List<Triple<MowzieGeoBone, Direction.Axis, Boolean>> feathers = new ArrayList<>();
         feathers.add(Triple.of(getMowzieBone("neckFeathersFront1"), Direction.Axis.X, false));
         feathers.add(Triple.of(getMowzieBone("neckFeathersFront2"), Direction.Axis.X, false));
@@ -126,7 +169,7 @@ public class ModelUmvuthi extends MowzieAnimatedGeoModel<EntityUmvuthi> {
 
         for (Triple<MowzieGeoBone, Direction.Axis, Boolean> feather : feathers) {
             MowzieGeoBone bone = feather.getLeft();
-            float oscillation = (float) (featherShakeControl * 0.13 * Math.cos(1.4 * frame + bone.getPivotY() * -0.15 + bone.getPivotZ() * -0.1));
+            float oscillation = (float) (featherShakeControl * 0.13 * Math.cos(1.4 * frame + bone.getPivotY() * -0.15 + bone.getPivotZ() * -0.1)) + featherRaiseControl;
             if (feather.getRight()) oscillation *= -1;
             Direction.Axis axis = feather.getMiddle();
             if (axis == Direction.Axis.X) {

@@ -860,10 +860,17 @@
 				},
 				{
 					"name": "featherShakeController",
+					"parent": "body",
+					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "featherRaiseController",
+					"parent": "body",
 					"pivot": [0, 0, 0]
 				},
 				{
 					"name": "bellyBounceController",
+					"parent": "body",
 					"pivot": [0, 0, 0]
 				}
 			]
