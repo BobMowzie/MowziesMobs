@@ -542,7 +542,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         }
 
 //        if (getActiveAbility() == null) {
-//            sendAbilityMessage(BELLY_ABILITY);
+//            sendAbilityMessage(SUNSTRIKE_ABILITY);
 //        }
     }
 
@@ -1055,7 +1055,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             super(abilityType, user, new AbilitySection[] {
                     new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, STARTUP_DURATION),
                     new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
-                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 6)
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 12)
             });
         }
 
@@ -1103,12 +1103,12 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
                     }
                 }
 
-//                if (getTicksInUse() < STARTUP_DURATION - 2) {
+                if (getTicksInUse() < STARTUP_DURATION - 2) {
                     getUser().getLookControl().setLookAt(entityTarget, 30, 30);
-//                }
-//                if (getTicksInUse() >= STARTUP_DURATION - 2) {
-//                    getUser().getLookControl().setLookAt(newX, y + entityTarget.getEyeHeight(), newZ, 50, 50);
-//                }
+                }
+                if (getTicksInUse() >= STARTUP_DURATION - 2) {
+                    getUser().getLookControl().setLookAt(newX, y + entityTarget.getEyeHeight(), newZ, 50, 50);
+                }
             }
         }
 

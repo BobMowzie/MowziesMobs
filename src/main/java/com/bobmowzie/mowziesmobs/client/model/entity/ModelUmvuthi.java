@@ -38,6 +38,17 @@ public class ModelUmvuthi extends MowzieAnimatedGeoModel<EntityUmvuthi> {
     public void codeAnimations(EntityUmvuthi entity, Integer uniqueID, AnimationEvent<?> customPredicate) {
         float frame = entity.frame + customPredicate.getPartialTick();
 
+        MowzieGeoBone rightThigh = getMowzieBone("rightThigh");
+        MowzieGeoBone leftThigh = getMowzieBone("leftThigh");
+
+        float liftLegs = entity.legsUp.getAnimationProgressSinSqrt(customPredicate.getPartialTick());
+        leftThigh.addRotationX(1f * liftLegs);
+        rightThigh.addRotationX(1f * liftLegs);
+        leftThigh.addRotationZ(1.5f * liftLegs);
+        rightThigh.addRotationZ(-1.5f * liftLegs);
+        leftThigh.addRotationY(-0.5f * liftLegs);
+        rightThigh.addRotationY(0.5f * liftLegs);
+
         if (entity.isAlive()) {
             MowzieGeoBone neck1 = getMowzieBone("neck");
             MowzieGeoBone neck2 = getMowzieBone("neck2");
@@ -58,11 +69,9 @@ public class ModelUmvuthi extends MowzieAnimatedGeoModel<EntityUmvuthi> {
             MowzieGeoBone rightFoot = getMowzieBone("rightFoot");
             MowzieGeoBone rightAnkle = getMowzieBone("rightAnkle");
             MowzieGeoBone rightCalf = getMowzieBone("rightCalf");
-            MowzieGeoBone rightThigh = getMowzieBone("rightThigh");
             MowzieGeoBone leftFoot = getMowzieBone("leftFoot");
             MowzieGeoBone leftAnkle = getMowzieBone("leftAnkle");
             MowzieGeoBone leftCalf = getMowzieBone("leftCalf");
-            MowzieGeoBone leftThigh = getMowzieBone("leftThigh");
             MowzieGeoBone rightHand = getMowzieBone("rightHand");
             MowzieGeoBone rightLowerArm = getMowzieBone("rightLowerArm");
             MowzieGeoBone rightArmJoint = getMowzieBone("rightArmJoint");
@@ -80,37 +89,28 @@ public class ModelUmvuthi extends MowzieAnimatedGeoModel<EntityUmvuthi> {
             neck2.addRotationX((float) (Math.cos((frame - 0.5) * idleSpeed) * -0.052));
             headJoint.addRotationX((float) (Math.cos((frame - 0.6) * idleSpeed) * 0.1));
             leftArmJoint.addRotationX((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.052));
-            leftLowerArm.addRotationY((float) (Math.cos((frame - 0.0) * idleSpeed) * 0.035));
-            leftHand.addRotationY((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.087));
+            leftLowerArm.addRotationY((float) (-Math.cos((frame - 0.0) * idleSpeed) * 0.035));
+            leftHand.addRotationY((float) (-Math.sin((frame - 0.0) * idleSpeed) * 0.087));
             rightArmJoint.addRotationX((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.052));
             rightLowerArm.addRotationY((float) (Math.cos((frame - 0.0) * idleSpeed) * 0.035));
             rightHand.addRotationY((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.087));
-            leftThigh.addRotationY((float) (Math.cos((frame - 0.0) * idleSpeed) * 0.052));
-            leftThigh.addRotationZ((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.052));
-            leftCalf.addRotationX((float) (Math.sin((frame - 0.2) * idleSpeed) * 0.087));
-            leftAnkle.addRotationX((float) (Math.cos((frame - 0.2) * idleSpeed) * -0.087));
+            leftThigh.addRotationY((float) (Math.cos((frame - 0.0) * idleSpeed) * -0.052) * (1.0f - liftLegs));
+            leftThigh.addRotationZ((float) (Math.sin((frame - 0.0) * idleSpeed) * -0.052) * (1.0f - liftLegs));
+            leftCalf.addRotationX((float) (Math.sin((frame - 0.2) * idleSpeed) * 0.087) * (1.0f - liftLegs));
+            leftAnkle.addRotationX((float) (Math.cos((frame - 0.2) * idleSpeed) * -0.087) * (1.0f - liftLegs));
             leftFoot.addRotationX((float) (Math.cos((frame - 0.4) * idleSpeed) * -0.14));
-            rightThigh.addRotationY((float) (Math.cos((frame - 0.0) * idleSpeed) * -0.052));
-            rightThigh.addRotationZ((float) (Math.sin((frame - 0.0) * idleSpeed) * -0.052));
-            rightCalf.addRotationX((float) (Math.sin((frame - 0.2) * idleSpeed) * 0.087));
-            rightAnkle.addRotationX((float) (Math.cos((frame - 0.2) * idleSpeed) * -0.087));
+            rightThigh.addRotationY((float) (Math.cos((frame - 0.0) * idleSpeed) * 0.052) * (1.0f - liftLegs));
+            rightThigh.addRotationZ((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.052) * (1.0f - liftLegs));
+            rightCalf.addRotationX((float) (Math.sin((frame - 0.2) * idleSpeed) * 0.087) * (1.0f - liftLegs));
+            rightAnkle.addRotationX((float) (Math.cos((frame - 0.2) * idleSpeed) * -0.087) * (1.0f - liftLegs));
             rightFoot.addRotationX((float) (Math.cos((frame - 0.4) * idleSpeed) * -0.14));
+            leftThigh.addRotationY((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.035) * liftLegs);
+            rightThigh.addRotationY((float) (-Math.sin((frame - 0.0) * idleSpeed) * 0.035) * liftLegs);
 
             float armAimControl = getControllerValue("armAimController");
             leftArmJoint.addRotationX(headPitch * ((float) Math.PI / 180F) * armAimControl);
             leftArmJoint.addRotationY(headYaw * ((float) Math.PI / 180F) * armAimControl);
         }
-
-        MowzieGeoBone rightThigh = getMowzieBone("rightThigh");
-        MowzieGeoBone leftThigh = getMowzieBone("leftThigh");
-
-        float liftLegs = entity.legsUp.getAnimationProgressSinSqrt(customPredicate.getPartialTick());
-        leftThigh.addRotationX(1f * liftLegs);
-        rightThigh.addRotationX(1f * liftLegs);
-        leftThigh.addRotationZ(-1.5f * liftLegs);
-        rightThigh.addRotationZ(1.5f * liftLegs);
-        leftThigh.addRotationY(0.5f * liftLegs);
-        rightThigh.addRotationY(-0.5f * liftLegs);
 
         float bellyBounceControl = getControllerValue("bellyBounceController");
         float jiggleSpeed = 2.5f;
