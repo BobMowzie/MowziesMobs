@@ -47,6 +47,8 @@ public class ModelUmvuthi extends MowzieAnimatedGeoModel<EntityUmvuthi> {
             EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
             float headYaw = Mth.wrapDegrees(extraData.netHeadYaw);
             float headPitch = Mth.wrapDegrees(extraData.headPitch);
+            float maxYaw = 140f;
+            headYaw = Mth.clamp(headYaw, -maxYaw, maxYaw);
             for (MowzieGeoBone bone : lookPieces) {
                 bone.addRotationX(headPitch * ((float) Math.PI / 180F) / (float) lookPieces.length);
                 bone.addRotationY(headYaw * ((float) Math.PI / 180F) / (float) lookPieces.length);
@@ -70,7 +72,7 @@ public class ModelUmvuthi extends MowzieAnimatedGeoModel<EntityUmvuthi> {
             MowzieGeoBone chest = getMowzieBone("chest");
             MowzieGeoBone body = getMowzieBone("body");
             float idleSpeed = 0.08f;
-            featherRaiseController.addPositionX((float) (Math.sin((frame - 1.2) * idleSpeed) * 0.035));
+            featherRaiseController.addPositionX((float) (Math.sin((frame - 1.2) * idleSpeed) * 0.1));
             body.addRotationX((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.035));
             chest.addPositionY((float) (-0.7 + Math.sin((frame - 0.0) * idleSpeed) * 0.014));
             chest.addRotationX((float) (Math.sin((frame - 0.0) * idleSpeed) * -0.017));
@@ -93,6 +95,10 @@ public class ModelUmvuthi extends MowzieAnimatedGeoModel<EntityUmvuthi> {
             rightCalf.addRotationX((float) (Math.sin((frame - 0.2) * idleSpeed) * 0.087));
             rightAnkle.addRotationX((float) (Math.cos((frame - 0.2) * idleSpeed) * -0.087));
             rightFoot.addRotationX((float) (Math.cos((frame - 0.4) * idleSpeed) * -0.14));
+
+            float armAimControl = getControllerValue("armAimController");
+            leftArmJoint.addRotationX(headPitch * ((float) Math.PI / 180F) * armAimControl);
+            leftArmJoint.addRotationY(headYaw * ((float) Math.PI / 180F) * armAimControl);
         }
 
         MowzieGeoBone rightThigh = getMowzieBone("rightThigh");
@@ -182,7 +188,6 @@ public class ModelUmvuthi extends MowzieAnimatedGeoModel<EntityUmvuthi> {
                 bone.addRotationZ(oscillation);
             }
         }
-
 
     }
 }

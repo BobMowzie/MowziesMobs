@@ -287,7 +287,8 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
 
     @Override
     protected <E extends IAnimatable> void loopingAnimations(AnimationEvent<E> event) {
-//        super.loopingAnimations(event);
+        event.getController().transitionLengthTicks = 4;
+        super.loopingAnimations(event);
     }
 
     protected boolean isMovementNoisy() {
@@ -540,9 +541,9 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             timeUntilSupernova--;
         }
 
-//        if (getActiveAbility() == null) {
-//            sendAbilityMessage(SOLAR_BEAM_ABILITY);
-//        }
+        if (getActiveAbility() == null) {
+            sendAbilityMessage(BELLY_ABILITY);
+        }
     }
 
     private void superNovaEffects() {
@@ -1081,8 +1082,8 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
                     double x = entityTarget.getX();
                     y = Mth.floor(entityTarget.getY() - 1);
                     double z = entityTarget.getZ();
-                    double vx = (x - prevX) / 9;
-                    double vz = (z - prevZ) / 9;
+                    double vx = (x - prevX) / STARTUP_DURATION;
+                    double vz = (z - prevZ) / STARTUP_DURATION;
                     int t = EntitySunstrike.STRIKE_EXPLOSION + 3;
                     newX = Mth.floor(x + vx * t);
                     newZ = Mth.floor(z + vz * t);
@@ -1102,12 +1103,12 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
                     }
                 }
 
-                if (getTicksInUse() <= STARTUP_DURATION - 2) {
+//                if (getTicksInUse() < STARTUP_DURATION - 2) {
                     getUser().getLookControl().setLookAt(entityTarget, 30, 30);
-                }
-                if (getTicksInUse() > STARTUP_DURATION - 2) {
-                    getUser().getLookControl().setLookAt(newX, y + entityTarget.getEyeHeight(), newZ, 30, 30);
-                }
+//                }
+//                if (getTicksInUse() >= STARTUP_DURATION - 2) {
+//                    getUser().getLookControl().setLookAt(newX, y + entityTarget.getEyeHeight(), newZ, 50, 50);
+//                }
             }
         }
 
