@@ -541,9 +541,9 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             timeUntilSupernova--;
         }
 
-        if (getActiveAbility() == null) {
-            sendAbilityMessage(BELLY_ABILITY);
-        }
+//        if (getActiveAbility() == null) {
+//            sendAbilityMessage(BELLY_ABILITY);
+//        }
     }
 
     private void superNovaEffects() {
