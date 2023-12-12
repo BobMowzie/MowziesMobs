@@ -90,9 +90,9 @@ public class RenderUmvuthi extends MowzieGeoEntityRenderer<EntityUmvuthi> {
     }
 
     @Override
-    public boolean shouldRender(EntityUmvuthi p_114491_, Frustum p_114492_, double p_114493_, double p_114494_, double p_114495_) {
-        boolean result = super.shouldRender(entity, p_114492_, p_114493_, p_114494_, p_114495_);
-        if (!result) entity.headPos[0] = entity.position().add(0, entity.getEyeHeight(), 0);
+    public boolean shouldRender(EntityUmvuthi umvuthi, Frustum frustum, double p_114493_, double p_114494_, double p_114495_) {
+        boolean result = super.shouldRender(umvuthi, frustum, p_114493_, p_114494_, p_114495_);
+        if (!result) umvuthi.headPos[0] = umvuthi.position().add(0, umvuthi.getEyeHeight(), 0);
         return result;
     }
 

@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthana;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -188,6 +189,10 @@ public class ModelUmvuthi extends MowzieAnimatedGeoModel<EntityUmvuthi> {
                 bone.addRotationZ(oscillation);
             }
         }
+
+        MowzieGeoBone mask = getMowzieBone("mask");
+        MowzieGeoBone body = getMowzieBone("body");
+        mask.setScale(1.0f / (float) body.getScale().x, 1.0f / (float) body.getScale().y, 1.0f / (float) body.getScale().z);
 
     }
 }

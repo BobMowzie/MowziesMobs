@@ -87,7 +87,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeImmune, Enemy {
-    public static final AbilityType<EntityUmvuthi, DieAbility<EntityUmvuthi>> DIE_ABILITY = new AbilityType<>("umvuthi_die", (type, entity) -> new DieAbility<>(type, entity,"death", 70));
+    public static final AbilityType<EntityUmvuthi, DieAbility<EntityUmvuthi>> DIE_ABILITY = new AbilityType<>("umvuthi_die", (type, entity) -> new DieAbility<>(type, entity,"death", 130));
     public static final AbilityType<EntityUmvuthi, HurtAbility<EntityUmvuthi>> HURT_ABILITY = new AbilityType<>("umvuthi_hurt", (type, entity) -> new HurtAbility<>(type, entity,"umvuthi_hurt", 13));
     public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> BELLY_ABILITY = new AbilityType<>("umvuthi_belly", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"belly_drum", 40));
     public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> TALK_ABILITY = new AbilityType<>("umvuthi_talk", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"umvuthia_teleport", 80));
@@ -186,60 +186,8 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, IronGolem.class, 0, false, false, null));
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, Zombie.class, 0, false, false, (e) -> !(e instanceof ZombifiedPiglin)));
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, AbstractSkeleton.class, 0, false, false, null));
-/*        this.goalSelector.addGoal(6, new SimpleAnimationAI<>(this, BELLY_ANIMATION, false, true));
-        this.goalSelector.addGoal(6, new SimpleAnimationAI<EntityUmvuthi>(this, TALK_ANIMATION, false, true) {
-            @Override
-            public void start() {
-                super.start();
-//                whichDialogue = getWhichDialogue();
-            }
-        });
-        this.goalSelector.addGoal(2, new SimpleAnimationAI<EntityUmvuthi>(this, BLESS_ANIMATION, false) {
-            @Override
-            public void start() {
-                super.start();
-                blessingPlayer = getCustomer();
-            }
-        });
-        this.goalSelector.addGoal(2, new SimpleAnimationAI<EntityUmvuthi>(this, SUPERNOVA_ANIMATION, false) {
-            @Override
-            public void start() {
-                super.start();
-                playSound(MMSounds.ENTITY_SUPERNOVA_START.get(), 3f, 1f);
-            }
-
-            @Override
-            public void tick() {
-                super.tick();
-                if (entity.getActiveAbility().getTicksInUse() == 30) {
-                    playSound(MMSounds.ENTITY_SUPERNOVA_BLACKHOLE.get(), 2f, 1.2f);
-                }
-                if (entity.getActiveAbility().getTicksInUse() == 40) {
-                    playSound(MMSounds.ENTITY_UMVUTHI_SCREAM.get(), 1.5f, 1f);
-                }
-
-                if (!entity.level.isClientSide) {
-                    if (entity.getActiveAbility().getTicksInUse() == 44) {
-                        Vec3 offset = new Vec3(1.1f, 0, 0);
-                        offset = offset.yRot((float) Math.toRadians(-entity.getYRot() - 90));
-                        EntitySuperNova superNova = new EntitySuperNova(EntityHandler.SUPER_NOVA.get(), entity.level, entity, entity.getX() + offset.x, entity.getY() + 0.05, entity.getZ() + offset.z);
-                        level.addFreshEntity(superNova);
-                    }
-                }
-            }
-        });
-        this.goalSelector.addGoal(2, new AnimationRadiusAttack<EntityUmvuthi>(this, ATTACK_ANIMATION, 4f, 1, 3f, 12, true){
-            @Override
-            public void start() {
-                super.start();
-                playSound(MMSounds.ENTITY_UMVUTHI_BURST.get(), 1.7f, 1.5f);
-            }
-        });
-        this.goalSelector.addGoal(2, new AnimationSpawnUmvuthana(this, SPAWN_ANIMATION, false));
-        this.goalSelector.addGoal(2, new AnimationSpawnUmvuthana(this, SPAWN_SUNBLOCKERS_ANIMATION, true));
-        this.goalSelector.addGoal(2, new AnimationSolarBeam<>(this, SOLAR_BEAM_ANIMATION));
-        this.goalSelector.addGoal(3, new AnimationTakeDamage<>(this));
-        this.goalSelector.addGoal(1, new AnimationDieAI<>(this));*/
+        this.goalSelector.addGoal(1, new UseAbilityAI<>(this, DIE_ABILITY));
+        this.goalSelector.addGoal(2, new UseAbilityAI<>(this, HURT_ABILITY, false));
         this.goalSelector.addGoal(6, new UseAbilityAI<>(this, BELLY_ABILITY, false, true));
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SUNSTRIKE_ABILITY));
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, ATTACK_ABILITY));
@@ -247,6 +195,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SUPERNOVA_ABILITY));
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SPAWN_ABILITY));
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SPAWN_SUNBLOCKERS_ABILITY));
+        this.goalSelector.addGoal(2, new UseAbilityAI<>(this, BLESS_ABILITY));
         this.goalSelector.addGoal(5, new LookAtTargetGoal(this,24.0F));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, EntityUmvuthana.class, 8.0F));

@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity.layer;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
+import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieGeckoEntity;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthana;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
@@ -154,32 +155,34 @@ public class UmvuthiSunLayer extends GeoLayerRenderer<EntityUmvuthi> {
 
     @Override
     public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, EntityUmvuthi entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        poseStack.pushPose();
-        GeoModel model = this.entityRenderer.getGeoModelProvider().getModel(this.entityRenderer.getGeoModelProvider().getModelLocation(entityLivingBaseIn));
-        String boneName = "sun_render";
-        Optional<GeoBone> bone = model.getBone(boneName);
-        if (bone.isPresent() && !bone.get().isHidden()) {
-            Matrix4f boneMatrix = bone.get().getModelSpaceXform();
-            poseStack.mulPoseMatrix(boneMatrix);
-            poseStack.translate(0.06d,0d,-0.0d);
-            poseStack.scale(0.06f,0.06f,0.06f);
-            VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(new ResourceLocation(MowziesMobs.MODID, "textures/effects/sun_effect.png"),true));
-            PoseStack.Pose matrixstack$entry = poseStack.last();
-            Matrix4f matrix4f = matrixstack$entry.pose();
-            Matrix3f matrix3f = matrixstack$entry.normal();
-            drawSun(matrix4f, matrix3f, ivertexbuilder, packedLightIn, entityLivingBaseIn.tickCount + partialTicks);
+        if (entityLivingBaseIn.deathTime < 55) {
+            poseStack.pushPose();
+            GeoModel model = this.entityRenderer.getGeoModelProvider().getModel(this.entityRenderer.getGeoModelProvider().getModelLocation(entityLivingBaseIn));
+            String boneName = "sun_render";
+            Optional<GeoBone> bone = model.getBone(boneName);
+            if (bone.isPresent() && !bone.get().isHidden()) {
+                Matrix4f boneMatrix = bone.get().getModelSpaceXform();
+                poseStack.mulPoseMatrix(boneMatrix);
+                poseStack.translate(0.06d, 0d, -0.0d);
+                poseStack.scale(0.06f, 0.06f, 0.06f);
+                VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(new ResourceLocation(MowziesMobs.MODID, "textures/effects/sun_effect.png"), true));
+                PoseStack.Pose matrixstack$entry = poseStack.last();
+                Matrix4f matrix4f = matrixstack$entry.pose();
+                Matrix3f matrix3f = matrixstack$entry.normal();
+                drawSun(matrix4f, matrix3f, ivertexbuilder, packedLightIn, entityLivingBaseIn.tickCount + partialTicks);
 
-            Vector4f vec = new Vector4f(0, 0, 0, 1);
-            vec.transform(matrix4f);
-            PoseStack newPoseStack = new PoseStack();
-            newPoseStack.translate(vec.x(), vec.y(), vec.z());
-            VertexConsumer ivertexbuilderGlow = bufferIn.getBuffer(RenderType.entityTranslucent(new ResourceLocation(MowziesMobs.MODID, "textures/particle/glow.png")));
-            PoseStack.Pose matrixstack$entryGlow = newPoseStack.last();
-            Matrix4f matrix4fGlow = matrixstack$entryGlow.pose();
-            Matrix3f matrix3fGlow = matrixstack$entryGlow.normal();
-            drawGlow(matrix4fGlow, matrix3fGlow, ivertexbuilderGlow, packedLightIn, entityLivingBaseIn.tickCount + partialTicks);
+                Vector4f vec = new Vector4f(0, 0, 0, 1);
+                vec.transform(matrix4f);
+                PoseStack newPoseStack = new PoseStack();
+                newPoseStack.translate(vec.x(), vec.y(), vec.z());
+                VertexConsumer ivertexbuilderGlow = bufferIn.getBuffer(RenderType.entityTranslucent(new ResourceLocation(MowziesMobs.MODID, "textures/particle/glow.png")));
+                PoseStack.Pose matrixstack$entryGlow = newPoseStack.last();
+                Matrix4f matrix4fGlow = matrixstack$entryGlow.pose();
+                Matrix3f matrix3fGlow = matrixstack$entryGlow.normal();
+                drawGlow(matrix4fGlow, matrix3fGlow, ivertexbuilderGlow, packedLightIn, entityLivingBaseIn.tickCount + partialTicks);
+            }
+            poseStack.popPose();
         }
-        poseStack.popPose();
     }
 
     private void drawSun(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer builder, int packedLightIn, float time) {

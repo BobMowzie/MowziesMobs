@@ -646,7 +646,7 @@
 			}
 		},
 		"death": {
-			"animation_length": 5,
+			"animation_length": 7.5,
 			"bones": {
 				"body": {
 					"rotation": {
@@ -1468,6 +1468,16 @@
 						"2.5417": {
 							"vector": [20, 0, 0],
 							"easing": "easeInOutQuad"
+						}
+					}
+				},
+				"mask": {
+					"scale": {
+						"2.8333": {
+							"vector": [1, 1, 1]
+						},
+						"2.875": {
+							"vector": [1000, 1000, 1000]
 						}
 					}
 				}
