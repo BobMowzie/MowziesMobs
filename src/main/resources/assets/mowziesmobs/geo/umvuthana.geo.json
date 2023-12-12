@@ -546,14 +546,17 @@
 				},
 				{
 					"name": "locomotionAnimController",
+					"parent": "root",
 					"pivot": [0, 0, 0]
 				},
 				{
 					"name": "walkRunSwitchController",
+					"parent": "root",
 					"pivot": [0, 0, 0]
 				},
 				{
 					"name": "maskPlacementSwitchController",
+					"parent": "root",
 					"pivot": [0, 0, 0]
 				}
 			]

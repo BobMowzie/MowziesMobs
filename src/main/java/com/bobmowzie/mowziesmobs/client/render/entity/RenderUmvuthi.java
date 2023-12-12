@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelUmvuthi;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoSunblockLayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.UmvuthiSunLayer;
@@ -11,10 +12,13 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3d;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -64,11 +68,11 @@ public class RenderUmvuthi extends MowzieGeoEntityRenderer<EntityUmvuthi> {
             }
 
         }
-//        /*if (barako.getActiveAbilityType() == EntityBarako.SUPERNOVA_ABILITY && barako.betweenHandPos != null && barako.betweenHandPos.length > 0) {
+//        if (barako.getActiveAbilityType() == EntityBarako.SUPERNOVA_ABILITY && barako.betweenHandPos != null && barako.betweenHandPos.length > 0) {
 //            MowzieGeoBone betweenHands = getMowzieAnimatedGeoModel().getMowzieBone("betweenHands");
 //            Vector3d betweenHandPos = betweenHands.getWorldPosition();
-//            barako.betweenHandPos[0] = new Vec3(betweenHandPos.x, betweenHan  dPos.y, betweenHandPos.z);
-//        } TODO */
+//            animatable.betweenHandPos[0] = new Vec3(betweenHandPos.x, betweenHandPos.y, betweenHandPos.z);
+//        }
 
 //        matrixStackIn.pushPose();
 //        VertexConsumer ivertexbuilder = bufferIn.getBuffer(MMRenderType.getSolarFlare( new ResourceLocation(MowziesMobs.MODID, "textures/effects/super_nova_8.png")));
@@ -80,9 +84,19 @@ public class RenderUmvuthi extends MowzieGeoEntityRenderer<EntityUmvuthi> {
 //        matrixStackIn.popPose();
         super.render(umvuthi, entityYaw, delta, matrixStackIn, bufferIn, packedLightIn);
 
+        MowzieGeoBone head = getMowzieAnimatedGeoModel().getMowzieBone("sun_render");
+        Vector3d worldPos = head.getWorldPosition();
+        umvuthi.headPos[0] = new Vec3(worldPos.x, worldPos.y, worldPos.z);
     }
 
-//    @Override
+    @Override
+    public boolean shouldRender(EntityUmvuthi p_114491_, Frustum p_114492_, double p_114493_, double p_114494_, double p_114495_) {
+        boolean result = super.shouldRender(entity, p_114492_, p_114493_, p_114494_, p_114495_);
+        if (!result) entity.headPos[0] = entity.position().add(0, entity.getEyeHeight(), 0);
+        return result;
+    }
+
+    //    @Override
 //    public void renderRecursively(GeoBone bone, PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 //        super.renderRecursively(bone, poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 //        if (bone.getName().equals("sun")){

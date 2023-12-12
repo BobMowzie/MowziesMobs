@@ -88,19 +88,19 @@
 					"pivot": [0, 47.67063, -12.69333]
 				},
 				{
-					"name": "mask4",
+					"name": "mask",
 					"parent": "maskTwitcher",
 					"pivot": [0, 48.67063, -11.94333]
 				},
 				{
-					"name": "maskJaw4",
-					"parent": "mask4",
+					"name": "maskJaw",
+					"parent": "mask",
 					"pivot": [0, 49.75118, -6.98651],
 					"rotation": [12.5, 0, 0]
 				},
 				{
 					"name": "beak2",
-					"parent": "maskJaw4",
+					"parent": "maskJaw",
 					"pivot": [0, 47.3238, -16.70999],
 					"rotation": [-35, 0, 0],
 					"cubes": [
@@ -109,8 +109,8 @@
 					]
 				},
 				{
-					"name": "maskHead4",
-					"parent": "mask4",
+					"name": "maskHead",
+					"parent": "mask",
 					"pivot": [0, 49.75118, -6.98651],
 					"rotation": [12.5, 0, 0],
 					"cubes": [
@@ -118,8 +118,8 @@
 					]
 				},
 				{
-					"name": "side",
-					"parent": "maskHead4",
+					"name": "leftSide",
+					"parent": "maskHead",
 					"pivot": [3.50803, 50.16127, -13.50219],
 					"rotation": [0, -5, 0],
 					"cubes": [
@@ -127,8 +127,8 @@
 					]
 				},
 				{
-					"name": "cheek",
-					"parent": "side",
+					"name": "leftCheek",
+					"parent": "leftSide",
 					"pivot": [3.50803, 50.16127, -13.50219],
 					"rotation": [42.5, -15, -12],
 					"cubes": [
@@ -138,22 +138,22 @@
 					]
 				},
 				{
-					"name": "eyelidJoint",
-					"parent": "cheek",
+					"name": "leftEyelidJoint",
+					"parent": "leftCheek",
 					"pivot": [7.54915, 50.10091, -13.43438],
 					"rotation": [-51, 0, 0]
 				},
 				{
-					"name": "eyelid",
-					"parent": "eyelidJoint",
+					"name": "leftEyelid",
+					"parent": "leftEyelidJoint",
 					"pivot": [3.04915, 51.10091, -12.93438],
 					"cubes": [
 						{"origin": [1.54915, 50.10091, -14.43438], "size": [3, 2, 3], "uv": [0, 193], "mirror": true}
 					]
 				},
 				{
-					"name": "side2",
-					"parent": "maskHead4",
+					"name": "rightSide",
+					"parent": "maskHead",
 					"pivot": [-3.50803, 50.16127, -13.50219],
 					"rotation": [0, 5, 0],
 					"cubes": [
@@ -161,8 +161,8 @@
 					]
 				},
 				{
-					"name": "cheek2",
-					"parent": "side2",
+					"name": "rightCheek",
+					"parent": "rightSide",
 					"pivot": [-3.50803, 50.16127, -13.50219],
 					"rotation": [42.5, 15, 12],
 					"cubes": [
@@ -172,22 +172,22 @@
 					]
 				},
 				{
-					"name": "eyelidJoint2",
-					"parent": "cheek2",
+					"name": "rightEyelidJoint",
+					"parent": "rightCheek",
 					"pivot": [-7.54915, 50.10091, -13.43438],
 					"rotation": [-51, 0, 0]
 				},
 				{
-					"name": "eyelid2",
-					"parent": "eyelidJoint2",
+					"name": "rightEyelid",
+					"parent": "rightEyelidJoint",
 					"pivot": [-3.04915, 51.10091, -12.93438],
 					"cubes": [
 						{"origin": [-4.54915, 50.10091, -14.43438], "size": [3, 2, 3], "uv": [0, 193]}
 					]
 				},
 				{
-					"name": "bone",
-					"parent": "maskHead4",
+					"name": "maskCenter",
+					"parent": "maskHead",
 					"pivot": [0, 52.16539, -12.95651],
 					"rotation": [-12.5, 0, 0],
 					"cubes": [
@@ -196,7 +196,7 @@
 				},
 				{
 					"name": "beak",
-					"parent": "maskHead4",
+					"parent": "maskHead",
 					"pivot": [0, 47.33937, -16.73499],
 					"rotation": [-35, 0, 0],
 					"cubes": [

@@ -388,12 +388,6 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
 
         if (level.isClientSide()) {
             if (deathTime < 20 && active && !(getActiveAbilityType() == TELEPORT_ABILITY && getActiveAbility().getCurrentSection().sectionType != AbilitySection.AbilitySectionType.RECOVERY)) {
-                if (this.tickTimer() % 10 == 1) {
-                    AdvancedParticleBase.spawnParticle(level, ParticleHandler.SUN.get(), getX(), getY(), getZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 10, true, false, new ParticleComponent[]{
-                            new ParticleComponent.PinLocation(headPos),
-                            new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.oscillate(9, 11, 12), false)
-                    });
-                }
                 if (headPos != null && headPos.length > 0 && headPos[0] != null) {
                     if (random.nextFloat() < 0.3F) {
                         int amount = random.nextInt(2) + 1;

@@ -136,6 +136,8 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
     @OnlyIn(Dist.CLIENT)
     public Vec3[] betweenHandPos;
     @OnlyIn(Dist.CLIENT)
+    public Vec3[] headPos;
+    @OnlyIn(Dist.CLIENT)
     public Vec3[] blessingPlayerPos;
 
     private static final TargetingConditions GIVE_ACHIEVEMENT_PRED = TargetingConditions.forCombat().ignoreInvisibilityTesting();
@@ -154,9 +156,12 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         xpReward = 45;
 
         if (world.isClientSide) {
+            headPos = new Vec3[]{new Vec3(0, 0, 0)};
             betweenHandPos = new Vec3[]{new Vec3(0, 0, 0)};
             blessingPlayerPos = new Vec3[]{new Vec3(0, 0, 0)};
         }
+
+        active = true;
     }
 
     @Override
@@ -352,6 +357,23 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         this.yBodyRot = getYRot();
 //        this.posX = prevPosX;
 //        this.posZ = prevPosZ;
+
+        if (level.isClientSide()) {
+            if (deathTime < 20 && active) {
+                if (headPos != null && headPos.length > 0 && headPos[0] != null) {
+                    if (random.nextFloat() < 0.3F) {
+                        int amount = random.nextInt(2) + 1;
+                        while (amount-- > 0) {
+                            float theta = random.nextFloat() * MathUtils.TAU;
+                            float r = random.nextFloat() * 0.4F;
+                            float x = r * Mth.cos(theta);
+                            float z = r * Mth.sin(theta);
+                            level.addParticle(ParticleTypes.SMOKE, headPos[0].x() + x, headPos[0].y() + 0.1, headPos[0].z() + z, 0, 0, 0);
+                        }
+                    }
+                }
+            }
+        }
 
         if (!level.isClientSide && getHealthLost() >= HEALTH_LOST_BETWEEN_SUNBLOCKERS && getActiveAbility() == null && !isNoAi() && getEntitiesNearby(EntityUmvuthanaCrane.class, 40).size() < 3) {
             sendAbilityMessage(SPAWN_SUNBLOCKERS_ABILITY);

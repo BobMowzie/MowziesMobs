@@ -28,9 +28,6 @@ import java.util.Optional;
 
 public class UmvuthanaArmorLayer extends GeoLayerRenderer<EntityUmvuthana> {
     private final HumanoidModel defaultBipedModel;
-
-    protected Matrix4f dispatchedMat = new Matrix4f();
-    protected Matrix4f renderEarlyMat = new Matrix4f();
     private MowzieGeckoEntity entity;
 
     public UmvuthanaArmorLayer(IGeoRenderer<EntityUmvuthana> entityRendererIn, EntityRendererProvider.Context context) {
@@ -40,6 +37,7 @@ public class UmvuthanaArmorLayer extends GeoLayerRenderer<EntityUmvuthana> {
 
     @Override
     public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, EntityUmvuthana entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        poseStack.pushPose();
         this.entity = entityLivingBaseIn;
         GeoModel model = this.entityRenderer.getGeoModelProvider().getModel(this.entityRenderer.getGeoModelProvider().getModelLocation(entity));
         String boneName = "maskTwitcher";
@@ -56,6 +54,7 @@ public class UmvuthanaArmorLayer extends GeoLayerRenderer<EntityUmvuthana> {
             poseStack.mulPoseMatrix(matrix4f);
             renderArmor(entityLivingBaseIn, bufferIn, poseStack, packedLightIn);
         }
+        poseStack.popPose();
     }
 
     private void renderArmor(LivingEntity entityLivingBaseIn, MultiBufferSource bufferIn, PoseStack poseStack, int packedLightIn) {

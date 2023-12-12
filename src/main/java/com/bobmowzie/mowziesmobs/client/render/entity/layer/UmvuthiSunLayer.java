@@ -10,6 +10,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
+import com.mojang.math.Vector4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -26,6 +27,8 @@ import software.bernie.geckolib3.geo.render.built.GeoModel;
 import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 import software.bernie.geckolib3.util.RenderUtils;
+
+import java.util.Optional;
 
 public class UmvuthiSunLayer extends GeoLayerRenderer<EntityUmvuthi> {
     protected Matrix4f dispatchedMat = new Matrix4f();
@@ -150,68 +153,33 @@ public class UmvuthiSunLayer extends GeoLayerRenderer<EntityUmvuthi> {
     }
 
     @Override
-    public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityUmvuthi entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        GeoModel model = this.entityRenderer.getGeoModelProvider().getModel(this.entityRenderer.getGeoModelProvider().getModelLocation(entityLivingBaseIn));
-        renderRecursively(entityLivingBaseIn, model.topLevelBones.get(0), matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, partialTicks);
-    }
-
-    public void renderRecursively(MowzieGeckoEntity entityLivingBaseIn, GeoBone bone, PoseStack poseStack, MultiBufferSource buffer, int packedLight,
-                                  int packedOverlay, float partialTicks) {
+    public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, EntityUmvuthi entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         poseStack.pushPose();
-        RenderUtils.translateMatrixToBone(poseStack, bone);
-        RenderUtils.translateToPivotPoint(poseStack, bone);
-
-        boolean rotOverride = bone.rotMat != null;
-
-        if (rotOverride) {
-            poseStack.last().pose().multiply(bone.rotMat);
-            poseStack.last().normal().mul(new Matrix3f(bone.rotMat));
-        }
-        else {
-            RenderUtils.rotateMatrixAroundBone(poseStack, bone);
-        }
-
-        RenderUtils.scaleMatrixForBone(poseStack, bone);
-
-
-        if(bone.getName().equals("sun_render") && !bone.isHidden()){
-            VertexConsumer ivertexbuilder = buffer.getBuffer(RenderType.entityTranslucent(new ResourceLocation(MowziesMobs.MODID, "textures/effects/sun_effect.png"),true));
-            PoseStack.Pose matrixstack$entry = poseStack.last();
-            poseStack.translate(0.02d,0d,-0.0d);
+        GeoModel model = this.entityRenderer.getGeoModelProvider().getModel(this.entityRenderer.getGeoModelProvider().getModelLocation(entityLivingBaseIn));
+        String boneName = "sun_render";
+        Optional<GeoBone> bone = model.getBone(boneName);
+        if (bone.isPresent() && !bone.get().isHidden()) {
+            Matrix4f boneMatrix = bone.get().getModelSpaceXform();
+            poseStack.mulPoseMatrix(boneMatrix);
+            poseStack.translate(0.06d,0d,-0.0d);
             poseStack.scale(0.06f,0.06f,0.06f);
+            VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(new ResourceLocation(MowziesMobs.MODID, "textures/effects/sun_effect.png"),true));
+            PoseStack.Pose matrixstack$entry = poseStack.last();
             Matrix4f matrix4f = matrixstack$entry.pose();
             Matrix3f matrix3f = matrixstack$entry.normal();
-            drawSun(matrix4f, matrix3f, ivertexbuilder, packedLight, entityLivingBaseIn.tickCount + partialTicks);
+            drawSun(matrix4f, matrix3f, ivertexbuilder, packedLightIn, entityLivingBaseIn.tickCount + partialTicks);
+
+            Vector4f vec = new Vector4f(0, 0, 0, 1);
+            vec.transform(matrix4f);
+            PoseStack newPoseStack = new PoseStack();
+            newPoseStack.translate(vec.x(), vec.y(), vec.z());
+            VertexConsumer ivertexbuilderGlow = bufferIn.getBuffer(RenderType.entityTranslucent(new ResourceLocation(MowziesMobs.MODID, "textures/particle/glow.png")));
+            PoseStack.Pose matrixstack$entryGlow = newPoseStack.last();
+            Matrix4f matrix4fGlow = matrixstack$entryGlow.pose();
+            Matrix3f matrix3fGlow = matrixstack$entryGlow.normal();
+            drawGlow(matrix4fGlow, matrix3fGlow, ivertexbuilderGlow, packedLightIn, entityLivingBaseIn.tickCount + partialTicks);
         }
-        if (bone.isTrackingXform()) {
-            Matrix4f poseState = poseStack.last().pose().copy();
-            Matrix4f localMatrix = RenderUtils.invertAndMultiplyMatrices(poseState, this.dispatchedMat);
-
-            bone.setModelSpaceXform(RenderUtils.invertAndMultiplyMatrices(poseState, this.renderEarlyMat));
-            localMatrix.translate(new Vector3f(getRenderOffset(entityLivingBaseIn, 1)));
-            bone.setLocalSpaceXform(localMatrix);
-
-            Matrix4f worldState = localMatrix.copy();
-
-            worldState.translate(new Vector3f(entityLivingBaseIn.position()));
-            bone.setWorldSpaceXform(worldState);
-        }
-
-        RenderUtils.translateAwayFromPivotPoint(poseStack, bone);
-
-        if (!bone.isHidden) {
-            for (GeoBone childBone : bone.childBones) {
-                renderRecursively(entityLivingBaseIn, childBone, poseStack, buffer, packedLight, packedOverlay, partialTicks);
-            }
-        }
-
-
-
         poseStack.popPose();
-    }
-
-    public Vec3 getRenderOffset(MowzieGeckoEntity p_114483_, float p_114484_) {
-        return Vec3.ZERO;
     }
 
     private void drawSun(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer builder, int packedLightIn, float time) {
@@ -220,7 +188,7 @@ public class UmvuthiSunLayer extends GeoLayerRenderer<EntityUmvuthi> {
             for (Vec3 vec : POS) {
                 vec = vec.multiply(1f + (scale * i), 1f + (scale * i), 1f + (scale * i));
                 builder.vertex(matrix4f, (float) ((float) vec.x + (scale * i)), (float) ((float) vec.y+ (scale * i)), (float) ((float) vec.z+ (scale * i)))
-                        .color( 1f, 1f, .5f, 0.2f)
+                        .color( 1f, 1f, .4f, 0.2f)
                         .uv(0.0f, 0.5f)
                         .overlayCoords(OverlayTexture.NO_OVERLAY)
                         .uv2(15728880)
@@ -237,7 +205,20 @@ public class UmvuthiSunLayer extends GeoLayerRenderer<EntityUmvuthi> {
                     .normal(matrix3f, 1f, 1f, 1f)
                     .endVertex();
         }
-//.normal(matrix3f, (float) normal.x, (float) normal.y, (float) normal.z)
     }
+
+    private void drawGlow(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer builder, int packedLightIn, float time) {
+        float glowRadius = 1.1f + (float) Math.sin(time * 4) * 0.03f;
+        float glowAlpha = 0.3f + (float) Math.sin(time * 0.1) * 0.15f;
+        this.drawVertex(matrix4f, matrix3f, builder, glowRadius, -glowRadius, 0, 1, 0, glowAlpha, packedLightIn);
+        this.drawVertex(matrix4f, matrix3f, builder, glowRadius, glowRadius, 0, 1, 1, glowAlpha, packedLightIn);
+        this.drawVertex(matrix4f, matrix3f, builder, -glowRadius, glowRadius, 0, 0, 1, glowAlpha, packedLightIn);
+        this.drawVertex(matrix4f, matrix3f, builder, -glowRadius, -glowRadius, 0, 0, 0, glowAlpha, packedLightIn);
+    }
+
+    public void drawVertex(Matrix4f matrix, Matrix3f normals, VertexConsumer vertexBuilder, float offsetX, float offsetY, float offsetZ, float textureX, float textureY, float alpha, int packedLightIn) {
+        vertexBuilder.vertex(matrix, offsetX, offsetY, offsetZ).color(1f, 1f, 0.3f, alpha).uv(textureX, textureY).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(normals, 1.0F, 1.0F, 1.0F).endVertex();
+    }
+
 
 }

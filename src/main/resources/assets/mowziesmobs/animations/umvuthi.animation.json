@@ -5389,9 +5389,9 @@
 		},
 		"mask_twitch": {
 			"loop": true,
-			"animation_length": 8.56,
+			"animation_length": 8.12,
 			"bones": {
-				"mask_twitcher": {
+				"maskTwitcher": {
 					"rotation": {
 						"1.16": {
 							"vector": [0, 0, 0]
@@ -5455,72 +5455,6 @@
 							"vector": [0, 0, 0],
 							"easing": "easeInElastic",
 							"easingArgs": [2]
-						}
-					}
-				}
-			}
-		},
-		"blink": {
-			"loop": true,
-			"animation_length": 3.6,
-			"bones": {
-				"eyelidJoint": {
-					"rotation": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.12": {
-							"vector": [50, 0, 0],
-							"easing": "easeInOutQuad"
-						},
-						"0.24": {
-							"vector": [0, 0, 0],
-							"easing": "easeInOutQuad"
-						}
-					}
-				},
-				"eyelid": {
-					"position": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.12": {
-							"vector": [0, 0, -1],
-							"easing": "easeInOutQuad"
-						},
-						"0.24": {
-							"vector": [0, 0, 0],
-							"easing": "easeInOutQuad"
-						}
-					}
-				},
-				"eyelidJoint2": {
-					"rotation": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.12": {
-							"vector": [50, 0, 0],
-							"easing": "easeInOutQuad"
-						},
-						"0.24": {
-							"vector": [0, 0, 0],
-							"easing": "easeInOutQuad"
-						}
-					}
-				},
-				"eyelid2": {
-					"position": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.12": {
-							"vector": [0, 0, -1],
-							"easing": "easeInOutQuad"
-						},
-						"0.24": {
-							"vector": [0, 0, 0],
-							"easing": "easeInOutQuad"
 						}
 					}
 				}
@@ -5985,6 +5919,72 @@
 						"2.0": {
 							"vector": [0, 0, 0],
 							"easing": "easeOutSine"
+						}
+					}
+				}
+			}
+		},
+		"blink": {
+			"loop": true,
+			"animation_length": 3.6,
+			"bones": {
+				"leftEyelidJoint": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.12": {
+							"vector": [50, 0, 0],
+							"easing": "easeInOutQuad"
+						},
+						"0.24": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					}
+				},
+				"leftEyelid": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.12": {
+							"vector": [0, 0, -1],
+							"easing": "easeInOutQuad"
+						},
+						"0.24": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					}
+				},
+				"rightEyelidJoint": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.12": {
+							"vector": [50, 0, 0],
+							"easing": "easeInOutQuad"
+						},
+						"0.24": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					}
+				},
+				"rightEyelid": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.12": {
+							"vector": [0, 0, -1],
+							"easing": "easeInOutQuad"
+						},
+						"0.24": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
 						}
 					}
 				}
