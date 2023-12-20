@@ -256,23 +256,23 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
 
     @Override
     protected SoundEvent getAmbientSound() {
-        if (getActiveAbility() == null) {
-            if (getTarget() == null && !isNoAi()) {
-                int soundType = Mth.nextInt(random, 0, 9);
-                if (soundType < MMSounds.ENTITY_UMVUTHI_TALK.size()) {
-                    this.playSound(MMSounds.ENTITY_UMVUTHI_TALK.get(soundType).get(), 2F, 1.0F);
-                    this.setWhichDialogue(soundType + 1);
-//                    sendAbilityMessage(TALK_ABILITY);
-                }
-            } else {
-                int soundType = Mth.nextInt(random, 1, 10);
-                if (soundType < 7) {
-                    this.playSound(MMSounds.ENTITY_UMVUTHI_ANGRY.get(soundType - 1).get(), 2F, 1.0F);
-//                    setWhichDialogue(soundType);
-//                    AnimationHandler.INSTANCE.sendAnimationMessage(this, 3);
-                }
-            }
-        }
+//        if (getActiveAbility() == null) {
+//            if (getTarget() == null && !isNoAi()) {
+//                int soundType = Mth.nextInt(random, 0, 9);
+//                if (soundType < MMSounds.ENTITY_UMVUTHI_TALK.size()) {
+//                    this.playSound(MMSounds.ENTITY_UMVUTHI_TALK.get(soundType).get(), 2F, 1.0F);
+//                    this.setWhichDialogue(soundType + 1);
+////                    sendAbilityMessage(TALK_ABILITY);
+//                }
+//            } else {
+//                int soundType = Mth.nextInt(random, 1, 10);
+//                if (soundType < 7) {
+//                    this.playSound(MMSounds.ENTITY_UMVUTHI_ANGRY.get(soundType - 1).get(), 2F, 1.0F);
+////                    setWhichDialogue(soundType);
+////                    AnimationHandler.INSTANCE.sendAnimationMessage(this, 3);
+//                }
+//            }
+//        }
         return null;
     }
 
