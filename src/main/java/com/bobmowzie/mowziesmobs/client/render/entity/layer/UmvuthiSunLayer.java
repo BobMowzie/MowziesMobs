@@ -170,16 +170,6 @@ public class UmvuthiSunLayer extends GeoLayerRenderer<EntityUmvuthi> {
                 Matrix4f matrix4f = matrixstack$entry.pose();
                 Matrix3f matrix3f = matrixstack$entry.normal();
                 drawSun(matrix4f, matrix3f, ivertexbuilder, packedLightIn, entityLivingBaseIn.tickCount + partialTicks);
-
-                Vector4f vec = new Vector4f(0, 0, 0, 1);
-                vec.transform(matrix4f);
-                PoseStack newPoseStack = new PoseStack();
-                newPoseStack.translate(vec.x(), vec.y(), vec.z());
-                VertexConsumer ivertexbuilderGlow = bufferIn.getBuffer(RenderType.entityTranslucent(new ResourceLocation(MowziesMobs.MODID, "textures/particle/glow.png")));
-                PoseStack.Pose matrixstack$entryGlow = newPoseStack.last();
-                Matrix4f matrix4fGlow = matrixstack$entryGlow.pose();
-                Matrix3f matrix3fGlow = matrixstack$entryGlow.normal();
-                drawGlow(matrix4fGlow, matrix3fGlow, ivertexbuilderGlow, packedLightIn, entityLivingBaseIn.tickCount + partialTicks);
             }
             poseStack.popPose();
         }
@@ -208,15 +198,6 @@ public class UmvuthiSunLayer extends GeoLayerRenderer<EntityUmvuthi> {
                     .normal(matrix3f, 1f, 1f, 1f)
                     .endVertex();
         }
-    }
-
-    private void drawGlow(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer builder, int packedLightIn, float time) {
-        float glowRadius = 1.1f + (float) Math.sin(time * 4) * 0.03f;
-        float glowAlpha = 0.3f + (float) Math.sin(time * 0.1) * 0.15f;
-        this.drawVertex(matrix4f, matrix3f, builder, glowRadius, -glowRadius, 0, 1, 0, glowAlpha, packedLightIn);
-        this.drawVertex(matrix4f, matrix3f, builder, glowRadius, glowRadius, 0, 1, 1, glowAlpha, packedLightIn);
-        this.drawVertex(matrix4f, matrix3f, builder, -glowRadius, glowRadius, 0, 0, 1, glowAlpha, packedLightIn);
-        this.drawVertex(matrix4f, matrix3f, builder, -glowRadius, -glowRadius, 0, 0, 0, glowAlpha, packedLightIn);
     }
 
     public void drawVertex(Matrix4f matrix, Matrix3f normals, VertexConsumer vertexBuilder, float offsetX, float offsetY, float offsetZ, float textureX, float textureY, float alpha, int packedLightIn) {

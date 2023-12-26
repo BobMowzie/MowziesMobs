@@ -47,7 +47,7 @@ public class UmvuthanaSunLayer extends GeoLayerRenderer<EntityUmvuthana> {
                 vec.transform(matrix4f);
                 PoseStack newPoseStack = new PoseStack();
                 newPoseStack.translate(vec.x(), vec.y(), vec.z());
-                VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(new ResourceLocation(MowziesMobs.MODID, "textures/particle/sun.png"),true));
+                VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(new ResourceLocation(MowziesMobs.MODID, "textures/particle/sun_no_glow.png"),true));
                 PoseStack.Pose matrixstack$entry2 = newPoseStack.last();
                 Matrix4f matrix4f2 = matrixstack$entry2.pose();
                 Matrix3f matrix3f = matrixstack$entry2.normal();
