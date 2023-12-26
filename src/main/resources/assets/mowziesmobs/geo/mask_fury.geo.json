@@ -4,11 +4,11 @@
 		{
 			"description": {
 				"identifier": "geometry.unknown",
-				"texture_width": 128,
-				"texture_height": 128,
-				"visible_bounds_width": 3,
-				"visible_bounds_height": 4.5,
-				"visible_bounds_offset": [0, 1.75, 0]
+				"texture_width": 32,
+				"texture_height": 32,
+				"visible_bounds_width": 4,
+				"visible_bounds_height": 5.5,
+				"visible_bounds_offset": [0, 2.25, 0]
 			},
 			"bones": [
 				{
@@ -19,6 +19,35 @@
 					"name": "armorHead",
 					"parent": "bipedHead",
 					"pivot": [0, 24, 0]
+				},
+				{
+					"name": "mask",
+					"parent": "armorHead",
+					"pivot": [0, 28, -4],
+					"cubes": [
+						{"origin": [-7, 22.5, -5.5], "size": [11, 8, 2], "pivot": [-3, 26.5, -5], "rotation": [-20, 20, -45], "uv": [0, 0]},
+						{"origin": [-7, 30.5, -5.5], "size": [11, 5, 0], "pivot": [-3, 26.5, -5], "rotation": [-20, 20, -45], "uv": [0, 10]},
+						{"origin": [-5, 24.5, -7.5], "size": [5, 5, 2], "pivot": [-3, 26.5, -5], "rotation": [-20, 20, -45], "uv": [12, 15]},
+						{"origin": [-3, 26.5, -7.5], "size": [1, 1, 4], "pivot": [-3, 26.5, -5], "rotation": [-20, 20, -45], "uv": [22, 10]},
+						{"origin": [2, 26.5, -7.5], "size": [1, 1, 4], "pivot": [3, 26.5, -5], "rotation": [-20, -20, 45], "uv": [22, 10], "mirror": true},
+						{"origin": [-11, 21.75, -6.5], "size": [9, 2, 0], "pivot": [-3, 26.5, -5], "rotation": [-20, 20, -45], "uv": [0, 30]},
+						{"origin": [-4, 30.5, -5.5], "size": [11, 5, 0], "pivot": [3, 26.5, -5], "rotation": [-20, -20, 45], "uv": [0, 10], "mirror": true},
+						{"origin": [0, 24.5, -7.5], "size": [5, 5, 2], "pivot": [3, 26.5, -5], "rotation": [-20, -20, 45], "uv": [12, 15], "mirror": true},
+						{"origin": [2, 21.75, -6.5], "size": [9, 2, 0], "pivot": [3, 26.5, -5], "rotation": [-20, -20, 45], "uv": [0, 30], "mirror": true},
+						{"origin": [-4, 22.5, -5.5], "size": [11, 8, 2], "pivot": [3, 26.5, -5], "rotation": [-20, -20, 45], "uv": [0, 0], "mirror": true}
+					]
+				},
+				{
+					"name": "bone2",
+					"parent": "mask",
+					"pivot": [0, 29.57365, -7.28455],
+					"rotation": [-14.89503, 44.29713, -10.49429],
+					"cubes": [
+						{"origin": [-1.5, 23.57365, -8.78455], "size": [3, 12, 3], "uv": [0, 15]},
+						{"origin": [-1.5, 35.57365, -8.78455], "size": [3, 4, 1], "uv": [24, 26]},
+						{"origin": [0.5, 35.57365, -8.78455], "size": [1, 4, 3], "uv": [24, 19]},
+						{"origin": [-1.5, 18.57365, -8.78455], "size": [3, 5, 3], "uv": [12, 22]}
+					]
 				},
 				{
 					"name": "armorBody",

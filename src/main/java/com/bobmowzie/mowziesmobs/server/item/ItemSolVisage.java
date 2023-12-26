@@ -88,7 +88,7 @@ public class ItemSolVisage extends MowzieArmorItem implements UmvuthanaMask, IAn
     @Nullable
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-        return new ResourceLocation(MowziesMobs.MODID, "textures/entity/umvuthi_2.png").toString();
+        return new ResourceLocation(MowziesMobs.MODID, "textures/entity/umvuthi.png").toString();
     }
 
     @Override

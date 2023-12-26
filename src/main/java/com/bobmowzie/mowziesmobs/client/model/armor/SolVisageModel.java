@@ -15,7 +15,7 @@ public class SolVisageModel extends AnimatedGeoModel<ItemSolVisage> {
 
 	@Override
 	public ResourceLocation getTextureLocation(ItemSolVisage object) {
-		return new ResourceLocation(MowziesMobs.MODID, "textures/entity/umvuthi_2.png");
+		return new ResourceLocation(MowziesMobs.MODID, "textures/entity/umvuthi.png");
 	}
 
 	@Override
