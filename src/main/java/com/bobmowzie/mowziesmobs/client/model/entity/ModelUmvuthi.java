@@ -53,9 +53,8 @@ public class ModelUmvuthi extends MowzieAnimatedGeoModel<EntityUmvuthi> {
         if (entity.isAlive()) {
             MowzieGeoBone neck1 = getMowzieBone("neck");
             MowzieGeoBone neck2 = getMowzieBone("neck2");
-            MowzieGeoBone headJoint = getMowzieBone("headJoint");
             MowzieGeoBone head = getMowzieBone("head");
-            MowzieGeoBone[] lookPieces = new MowzieGeoBone[] { neck1, neck2, headJoint, head };
+            MowzieGeoBone[] lookPieces = new MowzieGeoBone[] { neck1, neck2, head };
             EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
             float headYaw = Mth.wrapDegrees(extraData.netHeadYaw);
             float headPitch = Mth.wrapDegrees(extraData.headPitch);
@@ -81,6 +80,7 @@ public class ModelUmvuthi extends MowzieAnimatedGeoModel<EntityUmvuthi> {
             MowzieGeoBone leftArmJoint = getMowzieBone("leftArmJoint");
             MowzieGeoBone chest = getMowzieBone("chest");
             MowzieGeoBone body = getMowzieBone("body");
+            MowzieGeoBone headJoint = getMowzieBone("headJoint");
             float idleSpeed = 0.08f;
             featherRaiseController.addPositionX((float) (Math.sin((frame - 1.2) * idleSpeed) * 0.1));
             body.addRotationX((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.035));

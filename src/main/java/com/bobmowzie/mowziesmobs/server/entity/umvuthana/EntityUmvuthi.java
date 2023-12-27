@@ -223,7 +223,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
 
     protected <E extends IAnimatable> PlayState predicateMask(AnimationEvent<E> event)
     {
-        if (isAlive()) {
+        if (isAlive() && getActiveAbilityType() != SOLAR_BEAM_ABILITY) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("mask_twitch", ILoopType.EDefaultLoopTypes.LOOP));
             return PlayState.CONTINUE;
         }
@@ -232,7 +232,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
 
     protected <E extends IAnimatable> PlayState predicateBlink(AnimationEvent<E> event)
     {
-        if (isAlive()) {
+        if (isAlive() && getActiveAbilityType() != SOLAR_BEAM_ABILITY) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("blink", ILoopType.EDefaultLoopTypes.LOOP));
             return PlayState.CONTINUE;
         }
@@ -519,7 +519,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         }
 
 //        if (getActiveAbility() == null) {
-//            sendAbilityMessage(SUNSTRIKE_ABILITY);
+//            sendAbilityMessage(SOLAR_BEAM_ABILITY);
 //        }
     }
 

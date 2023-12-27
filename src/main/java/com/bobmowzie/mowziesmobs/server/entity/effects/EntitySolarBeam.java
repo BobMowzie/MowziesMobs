@@ -164,8 +164,20 @@ public class EntitySolarBeam extends Entity {
                             }
                         }
                     }
+                    attractorPos[0] = new Vec3(rootX, rootY, rootZ);
                 }
-                attractorPos[0] = new Vec3(rootX, rootY, rootZ);
+                else if (caster instanceof EntityUmvuthi) {
+                    EntityUmvuthi umvuthi = (EntityUmvuthi)caster;
+                    if (umvuthi.headPos != null && umvuthi.headPos[0] != null) {
+                        attractorPos[0] = ((EntityUmvuthi) caster).headPos[0];
+                        rootX = attractorPos[0].x();
+                        rootY = attractorPos[0].y();
+                        rootZ = attractorPos[0].z();
+                    }
+                }
+                else {
+                    attractorPos[0] = new Vec3(rootX, rootY, rootZ);
+                }
                 AdvancedParticleBase.spawnParticle(level, ParticleHandler.ORB2.get(), rootX + ox, rootY + oy, rootZ + oz, 0, 0, 0, true, 0, 0, 0, 0, 5F, 1, 1, 1, 1, 1, 7, true, false, new ParticleComponent[]{
                         new ParticleComponent.Attractor(attractorPos, 1.7f, 0.0f, ParticleComponent.Attractor.EnumAttractorBehavior.EXPONENTIAL),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, new ParticleComponent.KeyTrack(
@@ -389,7 +401,7 @@ public class EntitySolarBeam extends Entity {
         this.setPitch((float) (-caster.getXRot() * Math.PI / 180.0d));
         Vec3 vecOffset1 = new Vec3(0, 0, 0.6).yRot((float) Math.toRadians(-caster.getYRot()));
         Vec3 vecOffset2 = new Vec3(1.2, 0, 0).yRot(-getYaw()).xRot(getPitch());
-        this.setPos(caster.getX() + vecOffset1.x() + vecOffset2.x(), caster.getY() + 1.4f + vecOffset1.y() + vecOffset2.y(), caster.getZ() + vecOffset1.z() + vecOffset2.z());
+        this.setPos(caster.getX() + vecOffset1.x() + vecOffset2.x(), caster.getY() + 1.5f + vecOffset1.y() + vecOffset2.y(), caster.getZ() + vecOffset1.z() + vecOffset2.z());
     }
 
     @Override
