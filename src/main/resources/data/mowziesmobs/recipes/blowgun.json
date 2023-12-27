@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " B ",
+    "SBS",
+    " B "
+  ],
+  "key": {
+    "S":
+    {
+      "item": "minecraft:string"
+    },
+    "B":
+    {
+      "item": "minecraft:bamboo"
+    }
+  },
+  "result": {
+    "item": "mowziesmobs:blowgun"
+  }
+}

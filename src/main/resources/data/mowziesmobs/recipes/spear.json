@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " F ",
+    "ES ",
+    " S "
+  ],
+  "key": {
+    "S":
+    {
+      "item": "minecraft:stick"
+    },
+    "F":
+    {
+      "item": "minecraft:flint"
+    },
+    "E":
+    {
+      "item": "minecraft:feather"
+    }
+  },
+  "result": {
+    "item": "mowziesmobs:spear"
+  }
+}

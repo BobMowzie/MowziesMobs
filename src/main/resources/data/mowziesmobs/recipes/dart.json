@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " F ",
+    " S ",
+    " E "
+  ],
+  "key": {
+    "S":
+    {
+      "item": "minecraft:stick"
+    },
+    "F":
+    {
+      "item": "mowziesmobs:naga_fang"
+    },
+    "E":
+    {
+      "item": "minecraft:feather"
+    }
+  },
+  "result": {
+    "item": "mowziesmobs:dart",
+    "count": 8
+  }
+}
