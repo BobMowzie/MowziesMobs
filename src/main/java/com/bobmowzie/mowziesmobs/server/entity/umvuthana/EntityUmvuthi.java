@@ -245,10 +245,6 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         super.loopingAnimations(event);
     }
 
-    protected boolean isMovementNoisy() {
-        return false;
-    }
-
     @Override
     public boolean requiresCustomPersistence() {
         return true;
@@ -256,23 +252,9 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
 
     @Override
     protected SoundEvent getAmbientSound() {
-//        if (getActiveAbility() == null) {
-//            if (getTarget() == null && !isNoAi()) {
-//                int soundType = Mth.nextInt(random, 0, 9);
-//                if (soundType < MMSounds.ENTITY_UMVUTHI_TALK.size()) {
-//                    this.playSound(MMSounds.ENTITY_UMVUTHI_TALK.get(soundType).get(), 2F, 1.0F);
-//                    this.setWhichDialogue(soundType + 1);
-////                    sendAbilityMessage(TALK_ABILITY);
-//                }
-//            } else {
-//                int soundType = Mth.nextInt(random, 1, 10);
-//                if (soundType < 7) {
-//                    this.playSound(MMSounds.ENTITY_UMVUTHI_ANGRY.get(soundType - 1).get(), 2F, 1.0F);
-////                    setWhichDialogue(soundType);
-////                    AnimationHandler.INSTANCE.sendAnimationMessage(this, 3);
-//                }
-//            }
-//        }
+        if (getActiveAbility() == null) {
+            return MMSounds.ENTITY_UMVUTHI_IDLE.get();
+        }
         return null;
     }
 
@@ -1288,7 +1270,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
                 getUser().playSound(MMSounds.ENTITY_SUPERNOVA_BLACKHOLE.get(), 2f, 1.2f);
             }
             if (getTicksInUse() == 40) {
-                getUser().playSound(MMSounds.ENTITY_UMVUTHI_SCREAM.get(), 1.5f, 1f);
+                getUser().playSound(MMSounds.ENTITY_UMVUTHI_ROAR.get(), 1.5f, 1f);
             }
         }
 

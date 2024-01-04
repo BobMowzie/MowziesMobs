@@ -106,7 +106,7 @@ public final class MMSounds {
 
     public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_BELLY = create("umvuthi.belly");
     public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_BURST = create("umvuthi.burst");
-    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_SCREAM = create("umvuthi.scream");
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_ROAR = create("umvuthi.roar");
     public static final RegistryObject<SoundEvent> ENTITY_SUPERNOVA_START = create("supernova.start");
     public static final RegistryObject<SoundEvent> ENTITY_SUPERNOVA_BLACKHOLE = create("supernova.blackhole");
     public static final RegistryObject<SoundEvent> ENTITY_SUPERNOVA_END = create("supernova.end");
@@ -114,34 +114,7 @@ public final class MMSounds {
     public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_HURT = create("umvuthi.hurt");
     public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_DIE = create("umvuthi.die");
     public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_BLESS = create("umvuthi.bless");
-    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_TALK_1 = create("umvuthi.talk1");
-    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_TALK_2 = create("umvuthi.talk2");
-    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_TALK_3 = create("umvuthi.talk3");
-    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_TALK_4 = create("umvuthi.talk4");
-    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_TALK_5 = create("umvuthi.talk5");
-    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_TALK_6 = create("umvuthi.talk6");
-    public static final ImmutableList<Supplier<SoundEvent>> ENTITY_UMVUTHI_TALK = ImmutableList.of(
-            ENTITY_UMVUTHI_TALK_1::get,
-            ENTITY_UMVUTHI_TALK_2::get,
-            ENTITY_UMVUTHI_TALK_3::get,
-            ENTITY_UMVUTHI_TALK_4::get,
-            ENTITY_UMVUTHI_TALK_5::get,
-            ENTITY_UMVUTHI_TALK_6::get
-    );
-    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_ANGRY_1 = create("umvuthi.angry1");
-    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_ANGRY_2 = create("umvuthi.angry2");
-    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_ANGRY_3 = create("umvuthi.angry3");
-    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_ANGRY_4 = create("umvuthi.angry4");
-    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_ANGRY_5 = create("umvuthi.angry5");
-    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_ANGRY_6 = create("umvuthi.angry6");
-    public static final ImmutableList<Supplier<SoundEvent>> ENTITY_UMVUTHI_ANGRY = ImmutableList.of(
-            ENTITY_UMVUTHI_ANGRY_1::get,
-            ENTITY_UMVUTHI_ANGRY_2::get,
-            ENTITY_UMVUTHI_ANGRY_3::get,
-            ENTITY_UMVUTHI_ANGRY_4::get,
-            ENTITY_UMVUTHI_ANGRY_5::get,
-            ENTITY_UMVUTHI_ANGRY_6::get
-    );
+    public static final RegistryObject<SoundEvent> ENTITY_UMVUTHI_IDLE = create("umvuthi.idle");
 
     // Foliaath
     public static final RegistryObject<SoundEvent> ENTITY_FOLIAATH_GRUNT = create("foliaath.grunt");

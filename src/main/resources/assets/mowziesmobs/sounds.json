@@ -302,53 +302,15 @@
 		"sounds": [ "mowziesmobs:entity/umvuthi/belly" ],
 		"subtitle": "subtitles.mowziesmobs.umvuthi.belly"
 	},
-	"umvuthi.angry1": {
-		"sounds": [ "mowziesmobs:entity/umvuthi/angry1" ],
-		"subtitle": "subtitles.mowziesmobs.umvuthi.shout"
-	},
-	"umvuthi.angry2": {
-		"sounds": [ "mowziesmobs:entity/umvuthi/angry2" ],
-		"subtitle": "subtitles.mowziesmobs.umvuthi.shout"
-	},
-	"umvuthi.angry3": {
-		"sounds": [ "mowziesmobs:entity/umvuthi/angry3" ],
-		"subtitle": "subtitles.mowziesmobs.umvuthi.shout"
-	},
-	"umvuthi.angry4": {
-		"sounds": [ "mowziesmobs:entity/umvuthi/angry4" ],
-		"subtitle": "subtitles.mowziesmobs.umvuthi.shout"
-	},
-	"umvuthi.angry5": {
-		"sounds": [ "mowziesmobs:entity/umvuthi/angry5" ],
-		"subtitle": "subtitles.mowziesmobs.umvuthi.shout"
-	},
-	"umvuthi.angry6": {
-		"sounds": [ "mowziesmobs:entity/umvuthi/angry6" ],
-		"subtitle": "subtitles.mowziesmobs.umvuthi.shout"
-	},
-	"umvuthi.talk1": {
-		"sounds": [ "mowziesmobs:entity/umvuthi/talk1" ],
-		"subtitle": "subtitles.mowziesmobs.umvuthi.talk"
-	},
-	"umvuthi.talk2": {
-		"sounds": [ "mowziesmobs:entity/umvuthi/talk2" ],
-		"subtitle": "subtitles.mowziesmobs.umvuthi.talk"
-	},
-	"umvuthi.talk3": {
-		"sounds": [ "mowziesmobs:entity/umvuthi/talk3" ],
-		"subtitle": "subtitles.mowziesmobs.umvuthi.talk"
-	},
-	"umvuthi.talk4": {
-		"sounds": [ "mowziesmobs:entity/umvuthi/talk4" ],
-		"subtitle": "subtitles.mowziesmobs.umvuthi.talk"
-	},
-	"umvuthi.talk5": {
-		"sounds": [ "mowziesmobs:entity/umvuthi/talk5" ],
-		"subtitle": "subtitles.mowziesmobs.umvuthi.talk"
-	},
-	"umvuthi.talk6": {
-		"sounds": [ "mowziesmobs:entity/umvuthi/talk6" ],
-		"subtitle": "subtitles.mowziesmobs.umvuthi.talk"
+	"umvuthi.idle": {
+		"sounds": [
+			"mowziesmobs:entity/umvuthi/idle1",
+			"mowziesmobs:entity/umvuthi/idle2",
+			"mowziesmobs:entity/umvuthi/idle3",
+			"mowziesmobs:entity/umvuthi/idle4",
+			"mowziesmobs:entity/umvuthi/idle5"
+		],
+		"subtitle": "subtitles.mowziesmobs.umvuthi.idle"
 	},
 	"umvuthi.die": {
 		"sounds": [ "mowziesmobs:entity/umvuthi/die" ],
@@ -366,7 +328,8 @@
 		"sounds": [
 			"mowziesmobs:entity/umvuthi/attack1",
 			"mowziesmobs:entity/umvuthi/attack2",
-			"mowziesmobs:entity/umvuthi/attack3"
+			"mowziesmobs:entity/umvuthi/attack3",
+			"mowziesmobs:entity/umvuthi/attack4"
 		],
 		"subtitle": "subtitles.mowziesmobs.umvuthi.attack"
 	},
@@ -386,9 +349,9 @@
 		"sounds": [ "mowziesmobs:laser/laser" ],
 		"subtitle": "subtitles.mowziesmobs.laser"
 	},
-	"umvuthi.scream": {
-		"sounds": [ "mowziesmobs:entity/umvuthi/scream" ],
-		"subtitle": "subtitles.mowziesmobs.umvuthi.scream"
+	"umvuthi.roar": {
+		"sounds": [ "mowziesmobs:entity/umvuthi/roar" ],
+		"subtitle": "subtitles.mowziesmobs.umvuthi.roar"
 	},
 	"supernova.start": {
 		"sounds": [ "mowziesmobs:entity/umvuthi/supernova_start" ],
