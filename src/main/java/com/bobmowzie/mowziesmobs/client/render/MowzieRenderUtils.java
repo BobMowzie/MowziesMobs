@@ -125,4 +125,23 @@ public class MowzieRenderUtils {
         stack.last().pose().multiply(part.getWorldXform());
         stack.last().normal().mul(part.getWorldNormal());
     }
+
+    public static Matrix4f invertAndMultiplyMatrices(Matrix4f baseMatrix, Matrix4f inputMatrix) {
+        inputMatrix = inputMatrix.copy();
+
+        invertFixed(inputMatrix);
+        inputMatrix.multiply(baseMatrix);
+
+        return inputMatrix;
+    }
+
+    public static boolean invertFixed(Matrix4f mat) {
+        float f = mat.adjugateAndDet();
+        if (Math.abs(f) > 1.0E-6F) {
+            mat.multiply(1.0f / f);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

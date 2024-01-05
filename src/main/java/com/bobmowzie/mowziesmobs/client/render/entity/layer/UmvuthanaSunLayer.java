@@ -43,14 +43,18 @@ public class UmvuthanaSunLayer extends GeoLayerRenderer<EntityUmvuthana> {
                 poseStack.mulPoseMatrix(boneMatrix);
                 PoseStack.Pose matrixstack$entry = poseStack.last();
                 Matrix4f matrix4f = matrixstack$entry.pose();
-                Vector4f vec = new Vector4f(0, 0, 0, 1);
-                vec.transform(matrix4f);
+                Vector4f vecTranslation = new Vector4f(0, 0, 0, 1);
+                vecTranslation.transform(matrix4f);
                 PoseStack newPoseStack = new PoseStack();
-                newPoseStack.translate(vec.x(), vec.y(), vec.z());
+                newPoseStack.translate(vecTranslation.x(), vecTranslation.y(), vecTranslation.z());
+                Vector4f vecScale = new Vector4f(1, 0, 0, 1);
+                vecScale.transform(matrix4f);
+                float scale = (float) new Vec3(vecScale.x() - vecTranslation.x(), vecScale.y() - vecTranslation.y(), vecScale.z() - vecTranslation.z()).length();
+                newPoseStack.scale(scale, scale, scale);
                 VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(new ResourceLocation(MowziesMobs.MODID, "textures/particle/sun_no_glow.png"),true));
                 PoseStack.Pose matrixstack$entry2 = newPoseStack.last();
                 Matrix4f matrix4f2 = matrixstack$entry2.pose();
-                Matrix3f matrix3f = matrixstack$entry2.normal();
+                Matrix3f matrix3f = matrixstack$entry.normal();
                 drawSun(matrix4f2, matrix3f, ivertexbuilder, packedLightIn, entityLivingBaseIn.tickCount + partialTicks);
             }
             poseStack.popPose();
@@ -58,7 +62,7 @@ public class UmvuthanaSunLayer extends GeoLayerRenderer<EntityUmvuthana> {
     }
 
     private void drawSun(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer builder, int packedLightIn, float time) {
-        float sunRadius = 1 + (float) Math.sin(time * 4) * 0.07f;
+        float sunRadius = 1.2f + (float) Math.sin(time * 4) * 0.085f;
         this.drawVertex(matrix4f, matrix3f, builder, -sunRadius, -sunRadius, 0, 0, 0, 1, packedLightIn);
         this.drawVertex(matrix4f, matrix3f, builder, -sunRadius, sunRadius, 0, 0, 1, 1, packedLightIn);
         this.drawVertex(matrix4f, matrix3f, builder, sunRadius, sunRadius, 0, 1, 1, 1, packedLightIn);

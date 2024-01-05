@@ -44,6 +44,7 @@ public class RenderUmvuthana extends MowzieGeoEntityRenderer<EntityUmvuthana> {
         super.render(model, animatable, partialTick, type, poseStack, bufferSource, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         MowzieGeoBone head = getMowzieAnimatedGeoModel().getMowzieBone("head");
         Vector3d worldPos = head.getWorldPosition();
+        if (animatable.headPos != null && animatable.headPos.length > 0)
         animatable.headPos[0] = new Vec3(worldPos.x, worldPos.y, worldPos.z);
 
         if (!Minecraft.getInstance().isPaused()) {

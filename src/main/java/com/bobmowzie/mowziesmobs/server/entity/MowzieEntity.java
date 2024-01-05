@@ -81,6 +81,8 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
 
     private static final EntityDataAccessor<Boolean> STRAFING = SynchedEntityData.defineId(MowzieEntity.class, EntityDataSerializers.BOOLEAN);
 
+    public boolean renderingInGUI = false;
+
     public MowzieEntity(EntityType<? extends MowzieEntity> type, Level world) {
         super(type, world);
         if (world.isClientSide) {

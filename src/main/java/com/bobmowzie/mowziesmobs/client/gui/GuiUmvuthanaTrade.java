@@ -46,13 +46,15 @@ public final class GuiUmvuthanaTrade extends AbstractContainerScreen<ContainerUm
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0,TEXTURE);
         blit(matrixStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
-        InventoryScreen.renderEntityInInventory(leftPos + 33, topPos + 61, 22, leftPos + 33 - x, topPos + 21 - y, umvuthana);
+        umvuthana.renderingInGUI = true;
+        InventoryScreen.renderEntityInInventory(leftPos + 33, topPos + 64, 20, leftPos + 33 - x, topPos + 21 - y, umvuthana);
+        umvuthana.renderingInGUI = false;
     }
 
     @Override
     protected void renderLabels(PoseStack matrixStack, int x, int y) {
-        String title = this.title.getContents();
-        font.draw(matrixStack, title, imageWidth / 2f - font.width(title) / 2f, 6, 0x404040);
+        String title = this.title.getString();
+        font.draw(matrixStack, title, imageWidth / 2f - font.width(title) / 2f + 26, 6, 0x404040);
         font.draw(matrixStack, I18n.get("container.inventory"), 8, imageHeight - 96 + 2, 0x404040);
     }
 

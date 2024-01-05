@@ -82,7 +82,9 @@ public final class GuiUmvuthiTrade extends AbstractContainerScreen<ContainerUmvu
         RenderSystem.setShaderTexture(0,hasTraded ? TEXTURE_REPLENISH : TEXTURE_TRADE);
         //minecraft.getTextureManager().bindForSetup(hasTraded ? TEXTURE_REPLENISH : TEXTURE_TRADE);
         blit(matrixStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
-        InventoryScreen.renderEntityInInventory(leftPos + 33, topPos + 56, 14, 0, 0, umvuthi);
+        umvuthi.renderingInGUI = true;
+        InventoryScreen.renderEntityInInventory(leftPos + 33, topPos + 57, 10, leftPos + 33 - x, topPos + 21 - y, umvuthi);
+        umvuthi.renderingInGUI = false;
     }
 
     @Override
