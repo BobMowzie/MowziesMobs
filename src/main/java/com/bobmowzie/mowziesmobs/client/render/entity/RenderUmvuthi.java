@@ -86,7 +86,7 @@ public class RenderUmvuthi extends MowzieGeoEntityRenderer<EntityUmvuthi> {
 
         MowzieGeoBone head = getMowzieAnimatedGeoModel().getMowzieBone("sun_render");
         Vector3d worldPos = head.getWorldPosition();
-        umvuthi.headPos[0] = new Vec3(worldPos.x, worldPos.y, worldPos.z);
+        //umvuthi.headPos[0] = new Vec3(worldPos.x, worldPos.y, worldPos.z);
     }
 
     @Override
