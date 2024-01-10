@@ -98,7 +98,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
     });
     public static final AbilityType<EntityUmvuthi, HurtAbility<EntityUmvuthi>> HURT_ABILITY = new AbilityType<>("umvuthi_hurt", (type, entity) -> new HurtAbility<>(type, entity,"hurt", 13));
     public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> BELLY_ABILITY = new AbilityType<>("umvuthi_belly", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"belly_drum", 40));
-    public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> TALK_ABILITY = new AbilityType<>("umvuthi_talk", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"umvuthia_teleport", 80));
+    public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> TALK_ABILITY = new AbilityType<>("umvuthi_talk", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"talk", 23));
     public static final AbilityType<EntityUmvuthi, SunstrikeAbility> SUNSTRIKE_ABILITY = new AbilityType<>("umvuthi_sunstrike", SunstrikeAbility::new);
     public static final AbilityType<EntityUmvuthi, FlareAbility> ATTACK_ABILITY = new AbilityType<>("umvuthi_flare", FlareAbility::new);
     public static final AbilityType<EntityUmvuthi, SpawnFollowersAbility> SPAWN_ABILITY = new AbilityType<>("umvuthi_spawn", (type, entity) -> new SpawnFollowersAbility(type, entity, false));
@@ -204,6 +204,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SPAWN_ABILITY));
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SPAWN_SUNBLOCKERS_ABILITY));
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, BLESS_ABILITY));
+        this.goalSelector.addGoal(2, new UseAbilityAI<>(this, TALK_ABILITY, false, true));
         this.goalSelector.addGoal(5, new LookAtTargetGoal(this,24.0F));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, EntityUmvuthana.class, 8.0F));
@@ -261,6 +262,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
     @Override
     protected SoundEvent getAmbientSound() {
         if (getActiveAbility() == null) {
+            sendAbilityMessage(TALK_ABILITY);
             return MMSounds.ENTITY_UMVUTHI_IDLE.get();
         }
         return null;
@@ -1143,7 +1145,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         public void start() {
             super.start();
             getUser().playSound(MMSounds.ENTITY_UMVUTHI_BURST.get(), 1.7f, 1.5f);
-            playAnimation("belly_yell", false);
+            playAnimation("flare", false);
         }
 
         @Override
