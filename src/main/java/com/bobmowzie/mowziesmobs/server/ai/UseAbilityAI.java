@@ -12,23 +12,16 @@ public class UseAbilityAI<T extends MowzieGeckoEntity> extends Goal {
 
     protected final T entity;
 
-    protected final boolean hurtInterruptsAnimation;
-
     protected AbilityType abilityType;
 
     public UseAbilityAI(T entity, AbilityType ability) {
-        this(entity, ability, true, false);
+        this(entity, ability, true);
     }
 
     public UseAbilityAI(T entity, AbilityType ability, boolean interruptsAI) {
-        this(entity, ability, interruptsAI, false);
-    }
-
-    public UseAbilityAI(T entity, AbilityType ability, boolean interruptsAI, boolean hurtInterruptsAnimation) {
         this.entity = entity;
         this.abilityType = ability;
         if (interruptsAI) this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
-        this.hurtInterruptsAnimation = hurtInterruptsAnimation;
     }
 
     @Override

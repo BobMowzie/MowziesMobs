@@ -85,7 +85,7 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
     });
     public static final AbilityType<EntityUmvuthana, UmvuthanaHurtAbility> HURT_ABILITY = new AbilityType<>("umvuthana_hurt", UmvuthanaHurtAbility::new);
     public static final AbilityType<EntityUmvuthana, UmvuthanaAttackAbility> ATTACK_ABILITY = new AbilityType<>("umvuthana_attack", UmvuthanaAttackAbility::new);
-    public static final AbilityType<EntityUmvuthana, SimpleAnimationAbility<EntityUmvuthana>> ALERT_ABILITY = new AbilityType<>("umvuthana_alert", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"alert", 15) {
+    public static final AbilityType<EntityUmvuthana, SimpleAnimationAbility<EntityUmvuthana>> ALERT_ABILITY = new AbilityType<>("umvuthana_alert", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"alert", 15, true) {
         int soundFrame;
 
         @Override
@@ -110,7 +110,7 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
             if (rand.nextFloat() < 0.2) getUser().sendAbilityMessage(ROAR_ABILITY);
         }
     });
-    public static final AbilityType<EntityUmvuthana, SimpleAnimationAbility<EntityUmvuthana>> ROAR_ABILITY = new AbilityType<>("umvuthana_roar", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"roar", 35) {
+    public static final AbilityType<EntityUmvuthana, SimpleAnimationAbility<EntityUmvuthana>> ROAR_ABILITY = new AbilityType<>("umvuthana_roar", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"roar", 35, true) {
         @Override
         public void tickUsing() {
             super.tickUsing();
@@ -215,7 +215,7 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
         goalSelector.addGoal(2, new UseAbilityAI<>(this, BLOCK_ABILITY));
         goalSelector.addGoal(2, new UseAbilityAI<>(this, BLOCK_COUNTER_ABILITY));
         goalSelector.addGoal(2, new UseAbilityAI<>(this, TELEPORT_ABILITY));
-        goalSelector.addGoal(2, new UseAbilityAI<>(this, HEAL_ABILITY, false, false));
+        goalSelector.addGoal(2, new UseAbilityAI<>(this, HEAL_ABILITY, false));
         goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.4));
         goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         goalSelector.addGoal(8, new LookAtPlayerGoal(this, EntityUmvuthana.class, 8.0F));
@@ -1135,6 +1135,11 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
                     });
                 }
             }
+        }
+
+        @Override
+        public boolean damageInterrupts() {
+            return true;
         }
     }
 }

@@ -98,8 +98,8 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         }
     });
     public static final AbilityType<EntityUmvuthi, HurtAbility<EntityUmvuthi>> HURT_ABILITY = new AbilityType<>("umvuthi_hurt", (type, entity) -> new HurtAbility<>(type, entity,"hurt", 13));
-    public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> BELLY_ABILITY = new AbilityType<>("umvuthi_belly", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"belly_drum", 40));
-    public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> TALK_ABILITY = new AbilityType<>("umvuthi_talk", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"talk", 23));
+    public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> BELLY_ABILITY = new AbilityType<>("umvuthi_belly", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"belly_drum", 40, true));
+    public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> TALK_ABILITY = new AbilityType<>("umvuthi_talk", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"talk", 23, true));
     public static final AbilityType<EntityUmvuthi, SunstrikeAbility> SUNSTRIKE_ABILITY = new AbilityType<>("umvuthi_sunstrike", SunstrikeAbility::new);
     public static final AbilityType<EntityUmvuthi, FlareAbility> ATTACK_ABILITY = new AbilityType<>("umvuthi_flare", FlareAbility::new);
     public static final AbilityType<EntityUmvuthi, SpawnFollowersAbility> SPAWN_ABILITY = new AbilityType<>("umvuthi_spawn", (type, entity) -> new SpawnFollowersAbility(type, entity, false));
@@ -200,7 +200,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, AbstractSkeleton.class, 0, false, false, null));
         this.goalSelector.addGoal(1, new UseAbilityAI<>(this, DIE_ABILITY));
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, HURT_ABILITY, false));
-        this.goalSelector.addGoal(6, new UseAbilityAI<>(this, BELLY_ABILITY, false, true));
+        this.goalSelector.addGoal(6, new UseAbilityAI<>(this, BELLY_ABILITY, false));
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SUNSTRIKE_ABILITY));
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, ATTACK_ABILITY));
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SOLAR_BEAM_ABILITY));
@@ -208,7 +208,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SPAWN_ABILITY));
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SPAWN_SUNBLOCKERS_ABILITY));
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, BLESS_ABILITY));
-        this.goalSelector.addGoal(2, new UseAbilityAI<>(this, TALK_ABILITY, false, true));
+        this.goalSelector.addGoal(2, new UseAbilityAI<>(this, TALK_ABILITY, false));
         this.goalSelector.addGoal(5, new LookAtTargetGoal(this,24.0F));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, EntityUmvuthana.class, 8.0F));
