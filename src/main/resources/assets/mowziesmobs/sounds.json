@@ -635,6 +635,10 @@
 		"sounds": [ "mowziesmobs:entity/misc/ground_hit2" ],
 		"subtitle": "subtitles.mowziesmobs.ground_hit"
 	},
+	"misc.metal_impact": {
+		"sounds": [ "mowziesmobs:entity/misc/metal_impact" ],
+		"subtitle": "subtitles.mowziesmobs.metal_impact"
+	},
 	"music.black_pink": {
 		"sounds": [
 			"mowziesmobs:music/black_pink"

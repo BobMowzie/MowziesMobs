@@ -155,7 +155,7 @@ public class UmvuthiSunLayer extends GeoLayerRenderer<EntityUmvuthi> {
 
     @Override
     public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, EntityUmvuthi entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (entityLivingBaseIn.deathTime < 55) {
+        if (entityLivingBaseIn.deathTime < 85) {
             poseStack.pushPose();
             GeoModel model = this.entityRenderer.getGeoModelProvider().getModel(this.entityRenderer.getGeoModelProvider().getModelLocation(entityLivingBaseIn));
             String boneName = "sun_render";

@@ -31,6 +31,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
@@ -90,7 +91,12 @@ public class ClientProxy extends ServerProxy {
         if (sunblockSounds.size() < 10) {
             SunblockSound sunblockSound = new SunblockSound(entity);
             sunblockSounds.add(sunblockSound);
-            Minecraft.getInstance().getSoundManager().play(sunblockSound);
+            try {
+                Minecraft.getInstance().getSoundManager().play(sunblockSound);
+            }
+            catch (ConcurrentModificationException ignored) {
+
+            }
         }
     }
 

@@ -243,6 +243,7 @@ public final class MMSounds {
 
     public static final RegistryObject<SoundEvent> MISC_GROUNDHIT_1 = create("misc.groundhit1");
     public static final RegistryObject<SoundEvent> MISC_GROUNDHIT_2 = create("misc.groundhit2");
+    public static final RegistryObject<SoundEvent> MISC_METAL_IMPACT = create("misc.metal_impact");
 
     // Music
     public static final RegistryObject<SoundEvent> MUSIC_BLACK_PINK = create("music.black_pink");

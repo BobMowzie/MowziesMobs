@@ -87,7 +87,15 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeImmune, Enemy {
-    public static final AbilityType<EntityUmvuthi, DieAbility<EntityUmvuthi>> DIE_ABILITY = new AbilityType<>("umvuthi_die", (type, entity) -> new DieAbility<>(type, entity,"death", 130));
+    public static final AbilityType<EntityUmvuthi, DieAbility<EntityUmvuthi>> DIE_ABILITY = new AbilityType<>("umvuthi_die", (type, entity) -> new DieAbility<>(type, entity,"death", 115) {
+        @Override
+        public void tickUsing() {
+            super.tickUsing();
+            if (getTicksInUse() == 1) getUser().playSound(MMSounds.ENTITY_UMVUTHI_HURT.get(), getUser().getSoundVolume(), getUser().getVoicePitch());
+            if (getTicksInUse() == 14) getUser().playSound(MMSounds.ENTITY_UMVUTHI_DIE.get(), getUser().getSoundVolume(), 1);
+            if (getTicksInUse() == 80) getUser().playSound(MMSounds.MISC_METAL_IMPACT.get(), getUser().getSoundVolume(), 1);
+        }
+    });
     public static final AbilityType<EntityUmvuthi, HurtAbility<EntityUmvuthi>> HURT_ABILITY = new AbilityType<>("umvuthi_hurt", (type, entity) -> new HurtAbility<>(type, entity,"hurt", 13));
     public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> BELLY_ABILITY = new AbilityType<>("umvuthi_belly", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"belly_drum", 40));
     public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> TALK_ABILITY = new AbilityType<>("umvuthi_talk", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"umvuthia_teleport", 80));
@@ -265,7 +273,6 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
 
     @Override
     protected SoundEvent getDeathSound() {
-        this.playSound(MMSounds.ENTITY_UMVUTHI_DIE.get(), 2f, 1);
         return null;
     }
 

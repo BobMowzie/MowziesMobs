@@ -50,7 +50,7 @@ public class ModelUmvuthi extends MowzieAnimatedGeoModel<EntityUmvuthi> {
         leftThigh.addRotationY(-0.5f * liftLegs);
         rightThigh.addRotationY(0.5f * liftLegs);
 
-        if (entity.isAlive()) {
+        if (entity.isAlive() && entity.active) {
             MowzieGeoBone neck1 = getMowzieBone("neck");
             MowzieGeoBone neck2 = getMowzieBone("neck2");
             MowzieGeoBone head = getMowzieBone("head");
