@@ -46,6 +46,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.OldUsersConverter;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
@@ -155,6 +156,9 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             new float[]{0, 0.5f, 0.9f, 1}
     );
     private static ParticleComponent.KeyTrack superNovaKeyTrack2 = ParticleComponent.KeyTrack.oscillate(0, 1, 30);
+
+    private float prevMaskRot = 0;
+    private boolean rattling = false;
 
     public EntityUmvuthi(EntityType<? extends EntityUmvuthi> type, Level world) {
         super(type, world);
@@ -266,6 +270,20 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             return MMSounds.ENTITY_UMVUTHI_IDLE.get();
         }
         return null;
+    }
+
+    public void updateRattleSound(float maskRot) {
+        if (!rattling) {
+            if (Math.abs(maskRot - prevMaskRot) > 0.06) {
+                level.playLocalSound(getX(), getY(), getZ(), MMSounds.ENTITY_UMVUTHANA_RATTLE.get(), SoundSource.HOSTILE, 0.04f, getVoicePitch() * 0.75f, false);
+            }
+        }
+        else {
+            if (Math.abs(maskRot - prevMaskRot) < 0.00000001) {
+                rattling = false;
+            }
+        }
+        prevMaskRot = maskRot;
     }
 
     @Override

@@ -13,6 +13,7 @@ import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3d;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -66,8 +67,8 @@ public class RenderUmvuthi extends MowzieGeoEntityRenderer<EntityUmvuthi> {
                 drawBurst(matrix4f, matrix3f, ivertexbuilder, umvuthi.getActiveAbility().getTicksInUse() - BURST_START_FRAME + delta, packedLightIn);
                 matrixStackIn.popPose();
             }
-
         }
+
 //        if (barako.getActiveAbilityType() == EntityBarako.SUPERNOVA_ABILITY && barako.betweenHandPos != null && barako.betweenHandPos.length > 0) {
 //            MowzieGeoBone betweenHands = getMowzieAnimatedGeoModel().getMowzieBone("betweenHands");
 //            Vector3d betweenHandPos = betweenHands.getWorldPosition();
@@ -88,6 +89,11 @@ public class RenderUmvuthi extends MowzieGeoEntityRenderer<EntityUmvuthi> {
         Vector3d worldPos = head.getWorldPosition();
         if (umvuthi.headPos != null && umvuthi.headPos.length > 0)
         umvuthi.headPos[0] = new Vec3(worldPos.x, worldPos.y, worldPos.z);
+
+        if (!Minecraft.getInstance().isPaused()) {
+            MowzieGeoBone mask = getMowzieAnimatedGeoModel().getMowzieBone("maskTwitcher");
+            animatable.updateRattleSound(mask.getRotationZ());
+        }
     }
 
     @Override
