@@ -732,10 +732,7 @@
 				{
 					"name": "leftThighJoint",
 					"parent": "body",
-					"pivot": [11.5, 6, -2],
-					"cubes": [
-						{"origin": [10.26327, -5.23259, -2.80485], "size": [2, 15, 2], "uv": [154, 83], "mirror": true}
-					]
+					"pivot": [11.5, 6, -2]
 				},
 				{
 					"name": "leftThigh",
