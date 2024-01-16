@@ -20,6 +20,6 @@ public class SolVisageModel extends AnimatedGeoModel<ItemSolVisage> {
 
 	@Override
 	public ResourceLocation getAnimationFileLocation(ItemSolVisage animatable) {
-		return new ResourceLocation(MowziesMobs.MODID, "animations/umvuthana_mask.animation.json");
+		return new ResourceLocation(MowziesMobs.MODID, "animations/sol_visage.animation.json");
 	}
 }

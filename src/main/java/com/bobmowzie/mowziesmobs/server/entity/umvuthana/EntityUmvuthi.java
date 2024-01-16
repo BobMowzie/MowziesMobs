@@ -122,7 +122,12 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
     public static final AbilityType<EntityUmvuthi, SpawnFollowersAbility> SPAWN_ABILITY = new AbilityType<>("umvuthi_spawn", (type, entity) -> new SpawnFollowersAbility(type, entity, false));
     public static final AbilityType<EntityUmvuthi, SpawnFollowersAbility> SPAWN_SUNBLOCKERS_ABILITY = new AbilityType<>("umvuthi_spawn_healers", (type, entity) -> new SpawnFollowersAbility(type, entity, true));
     public static final AbilityType<EntityUmvuthi, SolarBeamAbility> SOLAR_BEAM_ABILITY = new AbilityType<>("umvuthi_solar_beam", SolarBeamAbility::new);
-    public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> BLESS_ABILITY = new AbilityType<>("umvuthi_bless", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"bless", 60));
+    public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> BLESS_ABILITY = new AbilityType<>("umvuthi_bless", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"bless", 84) {
+        @Override
+        public boolean canCancelActiveAbility() {
+            return getUser().getActiveAbilityType() == ROAR_ABILITY || getUser().getActiveAbilityType() == TALK_ABILITY || getUser().getActiveAbilityType() == BELLY_ABILITY;
+        }
+    });
     public static final AbilityType<EntityUmvuthi, SupernovaAbility> SUPERNOVA_ABILITY = new AbilityType<>("umvuthi_supernova", SupernovaAbility::new);
 
     protected AnimationController<MowzieGeckoEntity> maskController = new MowzieAnimationController<>(this, "mask_controller", 1, this::predicateMask, 0.0);
@@ -134,7 +139,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
     private static final int LASER_PAUSE = 230;
     private static final int SUPERNOVA_PAUSE = 230;
     private static final int UMVUTHANA_PAUSE = 200;
-    private static final int ROAR_PAUSE = 200;
+    private static final int ROAR_PAUSE = 300;
     private static final int HEAL_PAUSE = 75;
     private static final int HEALTH_LOST_BETWEEN_SUNBLOCKERS = 45;
     private static final EntityDataAccessor<Integer> DIRECTION = SynchedEntityData.defineId(EntityUmvuthi.class, EntityDataSerializers.INT);
@@ -424,7 +429,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             sendAbilityMessage(BELLY_ABILITY);
         }
 
-        if (getActiveAbility() == null && !isNoAi() && getTarget() == null && timeUntilRoar <= 0 && random.nextInt(100) == 0) {
+        if (getActiveAbility() == null && !isNoAi() && getTarget() == null && timeUntilRoar <= 0 && random.nextInt(300) == 0) {
             sendAbilityMessage(ROAR_ABILITY);
             timeUntilRoar = ROAR_PAUSE;
         }

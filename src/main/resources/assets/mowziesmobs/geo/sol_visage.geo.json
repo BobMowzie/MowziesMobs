@@ -23,7 +23,7 @@
 				{
 					"name": "mask",
 					"parent": "armorHead",
-					"pivot": [0, 48.67063, -11.94333]
+					"pivot": [0, 28, -4]
 				},
 				{
 					"name": "maskJaw",
