@@ -32,11 +32,11 @@ public class RenderSuperNova extends EntityRenderer<EntitySuperNova> {
             new ResourceLocation(MowziesMobs.MODID, "textures/effects/super_nova_15.png"),
             new ResourceLocation(MowziesMobs.MODID, "textures/effects/super_nova_16.png")
     };
-    public ModelSuperNova model;
+    public ModelSuperNova<EntitySuperNova> model;
 
     public RenderSuperNova(EntityRendererProvider.Context mgr) {
         super(mgr);
-        model = new ModelSuperNova();
+        model = new ModelSuperNova<>();
     }
 
     @Override

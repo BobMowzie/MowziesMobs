@@ -76,6 +76,11 @@ public abstract class EntityMagicEffect extends Entity implements ILinkedEntity 
     @Override
     public void tick() {
         super.tick();
+    }
+
+    @Override
+    public void onAddedToWorld() {
+        super.onAddedToWorld();
         if (!level.isClientSide() && getCasterID().isPresent() && caster == null) {
             Entity casterEntity = ((ServerLevel)this.level).getEntity(getCasterID().get());
             if (casterEntity instanceof LivingEntity) {

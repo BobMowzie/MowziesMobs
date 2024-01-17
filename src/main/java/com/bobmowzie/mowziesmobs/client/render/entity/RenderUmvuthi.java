@@ -69,11 +69,11 @@ public class RenderUmvuthi extends MowzieGeoEntityRenderer<EntityUmvuthi> {
             }
         }
 
-//        if (barako.getActiveAbilityType() == EntityBarako.SUPERNOVA_ABILITY && barako.betweenHandPos != null && barako.betweenHandPos.length > 0) {
-//            MowzieGeoBone betweenHands = getMowzieAnimatedGeoModel().getMowzieBone("betweenHands");
-//            Vector3d betweenHandPos = betweenHands.getWorldPosition();
-//            animatable.betweenHandPos[0] = new Vec3(betweenHandPos.x, betweenHandPos.y, betweenHandPos.z);
-//        }
+        if (umvuthi.getActiveAbilityType() == EntityUmvuthi.SUPERNOVA_ABILITY && umvuthi.betweenHandPos != null && umvuthi.betweenHandPos.length > 0) {
+            MowzieGeoBone betweenHands = getMowzieAnimatedGeoModel().getMowzieBone("sun_render");
+            Vector3d betweenHandPos = betweenHands.getWorldPosition();
+            animatable.betweenHandPos[0] = new Vec3(betweenHandPos.x, betweenHandPos.y, betweenHandPos.z);
+        }
 
 //        matrixStackIn.pushPose();
 //        VertexConsumer ivertexbuilder = bufferIn.getBuffer(MMRenderType.getSolarFlare( new ResourceLocation(MowziesMobs.MODID, "textures/effects/super_nova_8.png")));

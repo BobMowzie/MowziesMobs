@@ -35,7 +35,7 @@ public class EntitySuperNova extends EntityMagicEffect {
     @Override
     public void tick() {
         super.tick();
-        if (caster == null || !caster.isAlive()) this.discard() ;
+        if (caster == null || caster.isRemoved() || !caster.isAlive()) this.discard();
 
         if (tickCount == 1) {
             EntityCameraShake.cameraShake(level, position(), 30, 0.05f, 10, 30);
