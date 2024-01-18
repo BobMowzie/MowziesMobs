@@ -256,7 +256,7 @@ public final class ConfigHandler {
     public static class Umvuthana {
         Umvuthana(final ForgeConfigSpec.Builder builder) {
             builder.push("umvuthana");
-            builder.comment("Controls spawning for Umvuthana hunting groups", "Group size controls how many raptors spawn, not followers", "See Umvuthi config for village controls");
+            builder.comment("Controls spawning for Umvuthana hunting groups", "Group size controls how many raptors spawn, not followers", "See Umvuthi config for grove structure controls");
             spawnConfig = new SpawnConfig(builder,
                     5, 1, 1, 1,
                     new BiomeConfig(builder, Collections.singletonList("SAVANNA"), new ArrayList<>(), new ArrayList<>()),

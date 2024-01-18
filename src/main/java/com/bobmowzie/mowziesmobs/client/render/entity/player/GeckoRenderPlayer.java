@@ -74,6 +74,8 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
         this.addLayer(new SpinAttackEffectLayer<>(this, context.getModelSet()));
         this.addLayer(new BeeStingerLayer<>(this));
         this.addLayer(new FrozenRenderHandler.LayerFrozen<>(this));
+        this.addLayer(new SolarFlareLayer(this));
+
 
         this.modelProvider = modelProvider;
         this.modelProvider.setUseSmallArms(slim);

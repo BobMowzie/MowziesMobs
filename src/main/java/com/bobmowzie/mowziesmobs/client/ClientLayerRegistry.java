@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.render.entity.FrozenRenderHandler;
+import com.bobmowzie.mowziesmobs.client.render.entity.layer.SolarFlareLayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.SunblockLayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.client.render.item.RenderSolVisageArmor;

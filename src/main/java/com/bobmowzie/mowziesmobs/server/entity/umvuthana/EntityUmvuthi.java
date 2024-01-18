@@ -118,7 +118,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         }
     });
     public static final AbilityType<EntityUmvuthi, SunstrikeAbility> SUNSTRIKE_ABILITY = new AbilityType<>("umvuthi_sunstrike", SunstrikeAbility::new);
-    public static final AbilityType<EntityUmvuthi, FlareAbility> ATTACK_ABILITY = new AbilityType<>("umvuthi_flare", FlareAbility::new);
+    public static final AbilityType<EntityUmvuthi, SolarFlareAbility> SOLAR_FLARE_ABILITY = new AbilityType<>("umvuthi_flare", SolarFlareAbility::new);
     public static final AbilityType<EntityUmvuthi, SpawnFollowersAbility> SPAWN_ABILITY = new AbilityType<>("umvuthi_spawn", (type, entity) -> new SpawnFollowersAbility(type, entity, false));
     public static final AbilityType<EntityUmvuthi, SpawnFollowersAbility> SPAWN_SUNBLOCKERS_ABILITY = new AbilityType<>("umvuthi_spawn_healers", (type, entity) -> new SpawnFollowersAbility(type, entity, true));
     public static final AbilityType<EntityUmvuthi, SolarBeamAbility> SOLAR_BEAM_ABILITY = new AbilityType<>("umvuthi_solar_beam", SolarBeamAbility::new);
@@ -226,7 +226,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, HURT_ABILITY, false));
         this.goalSelector.addGoal(6, new UseAbilityAI<>(this, BELLY_ABILITY, false));
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SUNSTRIKE_ABILITY));
-        this.goalSelector.addGoal(2, new UseAbilityAI<>(this, ATTACK_ABILITY));
+        this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SOLAR_FLARE_ABILITY));
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SOLAR_BEAM_ABILITY));
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SUPERNOVA_ABILITY));
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, SPAWN_ABILITY));
@@ -335,7 +335,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         if (tickCount == 1) {
             direction = getDirectionData();
         }
-        if (!(getActiveAbilityType() == ATTACK_ABILITY && getActiveAbility().getTicksInUse() >= 12 && getActiveAbility().getTicksInUse() <= 14)) this.repelEntities(1.2f, 1.2f, 1.2f, 1.2f);
+        if (!(getActiveAbilityType() == SOLAR_FLARE_ABILITY && getActiveAbility().getTicksInUse() >= 12 && getActiveAbility().getTicksInUse() <= 14)) this.repelEntities(1.2f, 1.2f, 1.2f, 1.2f);
         this.setYRot((direction - 1) * 90);
         this.yBodyRot = getYRot();
 //        this.posX = prevPosX;
@@ -394,7 +394,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
                 sendAbilityMessage(SUPERNOVA_ABILITY);
                 timeUntilSupernova = SUPERNOVA_PAUSE;
             } else if (getActiveAbility() == null && !isNoAi() && ((targetDistance <= 6f && targetComingCloser) || targetDistance < 4.f)) {
-                sendAbilityMessage(ATTACK_ABILITY);
+                sendAbilityMessage(SOLAR_FLARE_ABILITY);
             } else if (getActiveAbility() == null && !isNoAi() && timeUntilSunstrike <= 0) {
                 sendAbilityMessage(SUNSTRIKE_ABILITY);
                 timeUntilSunstrike = getTimeUntilSunstrike();
@@ -438,7 +438,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
 //            whichDialogue = getWhichDialogue();
 //        }
 
-        if (getActiveAbilityType() == ATTACK_ABILITY) {
+        if (getActiveAbilityType() == SOLAR_FLARE_ABILITY) {
             yHeadRot = getYRot();
 //            if (getActiveAbility().getTicksInUse() == 1) {
 //                this.playSound(MMSounds.ENTITY_UMVUTHI_BURST, 1.7f, 1.5f);
@@ -917,7 +917,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
 
     @Override
     public AbilityType<?, ?>[] getAbilities() {
-        return new AbilityType[]{DIE_ABILITY, HURT_ABILITY, BELLY_ABILITY, TALK_ABILITY, SUNSTRIKE_ABILITY, ATTACK_ABILITY, SPAWN_ABILITY, SPAWN_SUNBLOCKERS_ABILITY, SOLAR_BEAM_ABILITY, BLESS_ABILITY, SUPERNOVA_ABILITY, ROAR_ABILITY};
+        return new AbilityType[]{DIE_ABILITY, HURT_ABILITY, BELLY_ABILITY, TALK_ABILITY, SUNSTRIKE_ABILITY, SOLAR_FLARE_ABILITY, SPAWN_ABILITY, SPAWN_SUNBLOCKERS_ABILITY, SOLAR_BEAM_ABILITY, BLESS_ABILITY, SUPERNOVA_ABILITY, ROAR_ABILITY};
     }
 
     @Override
@@ -1177,15 +1177,16 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         }
     }
 
-    public static class FlareAbility extends Ability<EntityUmvuthi> {
+    public static class SolarFlareAbility extends Ability<EntityUmvuthi> {
         protected LivingEntity entityTarget;
+        public static AbilitySection[] SECTION_TRACK = new AbilitySection[] {
+                new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 12),
+                new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
+                new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 18)
+        };
 
-        public FlareAbility(AbilityType abilityType, EntityUmvuthi user) {
-            super(abilityType, user, new AbilitySection[] {
-                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 12),
-                    new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
-                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 18)
-            });
+        public SolarFlareAbility(AbilityType abilityType, EntityUmvuthi user) {
+            super(abilityType, user, SECTION_TRACK);
         }
 
         @Override

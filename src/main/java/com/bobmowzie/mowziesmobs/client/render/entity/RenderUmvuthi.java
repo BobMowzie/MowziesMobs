@@ -28,9 +28,9 @@ public class RenderUmvuthi extends MowzieGeoEntityRenderer<EntityUmvuthi> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/umvuthi.png");
     public static final ResourceLocation SUN = new ResourceLocation(MowziesMobs.MODID, "textures/effects/sun_effect.png");
 
-    private static final float BURST_RADIUS = 3.5f;
-    private static final int BURST_FRAME_COUNT = 10;
-    private static final int BURST_START_FRAME = 12;
+    public static final float BURST_RADIUS = 3.5f;
+    public static final int BURST_FRAME_COUNT = 10;
+    public static final int BURST_START_FRAME = 12;
     private MultiBufferSource source;
     private EntityUmvuthi entity;
 
@@ -54,7 +54,7 @@ public class RenderUmvuthi extends MowzieGeoEntityRenderer<EntityUmvuthi> {
         source = bufferIn;
         this.entity = umvuthi;
         if (!umvuthi.isInvisible()) {
-            if (umvuthi.getActiveAbilityType() == EntityUmvuthi.ATTACK_ABILITY && umvuthi.getActiveAbility().getTicksInUse() > BURST_START_FRAME && umvuthi.getActiveAbility().getTicksInUse() < BURST_START_FRAME + BURST_FRAME_COUNT - 1) {
+            if (umvuthi.getActiveAbilityType() == EntityUmvuthi.SOLAR_FLARE_ABILITY && umvuthi.getActiveAbility().getTicksInUse() > BURST_START_FRAME && umvuthi.getActiveAbility().getTicksInUse() < BURST_START_FRAME + BURST_FRAME_COUNT - 1) {
                 matrixStackIn.pushPose();
                 Quaternion quat = this.entityRenderDispatcher.cameraOrientation();
                 matrixStackIn.mulPose(quat);
@@ -117,7 +117,7 @@ public class RenderUmvuthi extends MowzieGeoEntityRenderer<EntityUmvuthi> {
 //        }
 //    }
 
-    private void drawBurst(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer builder, float tick, int packedLightIn) {
+    public static void drawBurst(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer builder, float tick, int packedLightIn) {
         int dissapateFrame = 6;
         float firstSpeed = 2f;
         float secondSpeed = 1f;
@@ -131,13 +131,13 @@ public class RenderUmvuthi extends MowzieGeoEntityRenderer<EntityUmvuthi> {
         float maxV = minV + 0.5f;
         float offset = 0.219f * (frame % 2);
         float opacity = (tick < 8) ? 0.8f : 0.4f;
-        this.drawVertex(matrix4f, matrix3f, builder, -BURST_RADIUS + offset, -BURST_RADIUS + offset, 0, minU, minV, opacity, packedLightIn);
-        this.drawVertex(matrix4f, matrix3f, builder, -BURST_RADIUS + offset, BURST_RADIUS + offset, 0, minU, maxV, opacity, packedLightIn);
-        this.drawVertex(matrix4f, matrix3f, builder, BURST_RADIUS + offset, BURST_RADIUS + offset, 0, maxU, maxV, opacity, packedLightIn);
-        this.drawVertex(matrix4f, matrix3f, builder, BURST_RADIUS + offset, -BURST_RADIUS + offset, 0, maxU, minV, opacity, packedLightIn);
+        drawVertex(matrix4f, matrix3f, builder, -BURST_RADIUS + offset, -BURST_RADIUS + offset, 0, minU, minV, opacity, packedLightIn);
+        drawVertex(matrix4f, matrix3f, builder, -BURST_RADIUS + offset, BURST_RADIUS + offset, 0, minU, maxV, opacity, packedLightIn);
+        drawVertex(matrix4f, matrix3f, builder, BURST_RADIUS + offset, BURST_RADIUS + offset, 0, maxU, maxV, opacity, packedLightIn);
+        drawVertex(matrix4f, matrix3f, builder, BURST_RADIUS + offset, -BURST_RADIUS + offset, 0, maxU, minV, opacity, packedLightIn);
     }
 
-    public void drawVertex(Matrix4f matrix, Matrix3f normals, VertexConsumer vertexBuilder, float offsetX, float offsetY, float offsetZ, float textureX, float textureY, float alpha, int packedLightIn) {
+    public static void drawVertex(Matrix4f matrix, Matrix3f normals, VertexConsumer vertexBuilder, float offsetX, float offsetY, float offsetZ, float textureX, float textureY, float alpha, int packedLightIn) {
         vertexBuilder.vertex(matrix, offsetX, offsetY, offsetZ).color(1, 1, 1, 1 * alpha).uv(textureX, textureY).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLightIn).normal(normals, 0.0F, 1.0F, 0.0F).endVertex();
     }
 }
