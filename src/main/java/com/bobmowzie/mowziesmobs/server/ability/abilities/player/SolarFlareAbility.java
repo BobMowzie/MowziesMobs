@@ -119,12 +119,12 @@ public class SolarFlareAbility extends PlayerAbility {
     @Override
     public void onLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event) {
         super.onLeftClickEmpty(event);
-        AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getPlayer(), AbilityHandler.SOLAR_FLARE_ABILITY);
+        if (event.getPlayer().isCrouching()) AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getPlayer(), AbilityHandler.SOLAR_FLARE_ABILITY);
     }
 
     @Override
     public void onLeftClickEntity(AttackEntityEvent event) {
         super.onLeftClickEntity(event);
-        AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getPlayer(), AbilityHandler.SOLAR_FLARE_ABILITY);
+        if (event.getPlayer().isCrouching()) AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getPlayer(), AbilityHandler.SOLAR_FLARE_ABILITY);
     }
 }
