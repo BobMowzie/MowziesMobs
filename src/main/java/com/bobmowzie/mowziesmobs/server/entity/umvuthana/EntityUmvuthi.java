@@ -336,7 +336,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
 //        this.posZ = prevPosZ;
 
         if (level.isClientSide()) {
-            if (deathTime < 20 && active) {
+            if (deathTime < 20 && active && getActiveAbilityType() != SUPERNOVA_ABILITY) {
                 if (headPos != null && headPos.length > 0 && headPos[0] != null) {
                     if (this.tickTimer() % 10 == 1) {
                         AdvancedParticleBase.spawnParticle(level, ParticleHandler.GLOW.get(), getX(), getY(), getZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 0.3, 0.4, 1, 9, true, false, new ParticleComponent[]{
@@ -1189,7 +1189,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
                 getUser().playSound(MMSounds.ENTITY_SUPERNOVA_BLACKHOLE.get(), 2f, 1.2f);
             }
 
-            if (getActiveAbility().getTicksInUse() < 30) {
+            if (getTicksInUse() < 30) {
                 List<LivingEntity> entities = getUser().getEntityLivingBaseNearby(16, 16, 16, 16);
                 for (LivingEntity inRange : entities) {
                     if (inRange instanceof LeaderSunstrikeImmune) continue;
