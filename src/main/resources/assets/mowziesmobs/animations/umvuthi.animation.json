@@ -1,8 +1,8 @@
 {
 	"format_version": "1.8.0",
 	"animations": {
-		"super_nova": {
-			"loop": true,
+		"supernova": {
+			"loop": false,
 			"animation_length": 4.66667,
 			"bones": {
 				"body": {

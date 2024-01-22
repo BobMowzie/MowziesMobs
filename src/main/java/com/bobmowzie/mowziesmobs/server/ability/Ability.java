@@ -153,6 +153,12 @@ public class Ability<T extends LivingEntity> {
         return false;
     }
 
+    public Ability getActiveAbility() {
+        AbilityCapability.IAbilityCapability capability = getAbilityCapability();
+        if (capability == null) return null;
+        return getAbilityCapability().getActiveAbility();
+    }
+
     public boolean canCancelSelf() {
         return false;
     }

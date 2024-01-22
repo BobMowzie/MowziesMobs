@@ -24,6 +24,7 @@ public enum AbilityHandler {
     public static final AbilityType<Player, SunstrikeAbility> SUNSTRIKE_ABILITY = new AbilityType<>("sunstrike", SunstrikeAbility::new);
     public static final AbilityType<Player, SolarBeamAbility> SOLAR_BEAM_ABILITY = new AbilityType<>("solar_beam", SolarBeamAbility::new);
     public static final AbilityType<Player, SolarFlareAbility> SOLAR_FLARE_ABILITY = new AbilityType<>("solar_flare", SolarFlareAbility::new);
+    public static final AbilityType<Player, SupernovaAbility> SUPERNOVA_ABILITY = new AbilityType<>("supernova", SupernovaAbility::new);
     public static final AbilityType<Player, WroughtAxeSwingAbility> WROUGHT_AXE_SWING_ABILITY = new AbilityType<>("wrought_axe_swing", WroughtAxeSwingAbility::new);
     public static final AbilityType<Player, WroughtAxeSlamAbility> WROUGHT_AXE_SLAM_ABILITY = new AbilityType<>("wrought_axe_slam", WroughtAxeSlamAbility::new);
     public static final AbilityType<Player, IceBreathAbility> ICE_BREATH_ABILITY = new AbilityType<>("ice_breath", IceBreathAbility::new);
@@ -46,6 +47,7 @@ public enum AbilityHandler {
             SUNSTRIKE_ABILITY,
             SOLAR_BEAM_ABILITY,
             SOLAR_FLARE_ABILITY,
+            SUPERNOVA_ABILITY,
             WROUGHT_AXE_SWING_ABILITY,
             WROUGHT_AXE_SLAM_ABILITY,
             ICE_BREATH_ABILITY,

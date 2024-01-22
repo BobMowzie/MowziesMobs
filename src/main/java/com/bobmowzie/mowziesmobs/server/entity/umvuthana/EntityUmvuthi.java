@@ -175,12 +175,6 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
 
     private static final TargetingConditions GIVE_ACHIEVEMENT_PRED = TargetingConditions.forCombat().ignoreInvisibilityTesting();
 
-    private static ParticleComponent.KeyTrack superNovaKeyTrack1 = new ParticleComponent.KeyTrack(
-            new float[]{0, 20f, 20f, 0},
-            new float[]{0, 0.5f, 0.9f, 1}
-    );
-    private static ParticleComponent.KeyTrack superNovaKeyTrack2 = ParticleComponent.KeyTrack.oscillate(0, 1, 30);
-
     private float prevMaskRot = 0;
     private boolean rattling = false;
 
@@ -261,7 +255,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
 
     protected <E extends IAnimatable> PlayState predicateMask(AnimationEvent<E> event)
     {
-        if (isAlive() && getActiveAbilityType() != SOLAR_BEAM_ABILITY) {
+        if (isAlive() && getActiveAbilityType() != SOLAR_BEAM_ABILITY && getActiveAbilityType() != SUPERNOVA_ABILITY) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("mask_twitch", ILoopType.EDefaultLoopTypes.LOOP));
             return PlayState.CONTINUE;
         }
@@ -504,24 +498,6 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             }
         }
 
-        if (getActiveAbilityType() == SUPERNOVA_ABILITY) {
-            if (level.isClientSide && betweenHandPos.length > 0) {
-                superNovaEffects();
-            }
-            if (getActiveAbility().getTicksInUse() < 30) {
-                List<LivingEntity> entities = getEntityLivingBaseNearby(16, 16, 16, 16);
-                for (LivingEntity inRange : entities) {
-                    if (inRange instanceof LeaderSunstrikeImmune) continue;
-                    if (inRange instanceof Player && ((Player)inRange).getAbilities().invulnerable) continue;
-                    Vec3 diff = inRange.position().subtract(position().add(0, 3, 0));
-                    diff = diff.normalize().scale(0.03);
-                    inRange.setDeltaMovement(inRange.getDeltaMovement().subtract(diff));
-
-                    if (inRange.getY() < getY() + 3) inRange.setDeltaMovement(inRange.getDeltaMovement().add(0, 0.075, 0));
-                }
-            }
-        }
-
         if (tickCount % 40 == 0) {
             for (Player player : getPlayersNearby(15, 15, 15, 15)) {
                 ItemStack headArmorStack = player.getInventory().armor.get(3);
@@ -559,121 +535,6 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
 //        if (getActiveAbility() == null) {
 //            sendAbilityMessage(SUPERNOVA_ABILITY);
 //        }
-    }
-
-    private void superNovaEffects() {
-        if (getActiveAbility().getTicksInUse() == 1) {
-            superNovaKeyTrack1 = new ParticleComponent.KeyTrack(
-                    new float[]{0, 25f, 32f, 0},
-                    new float[]{0, 0.6f, 0.85f, 1}
-            );
-            superNovaKeyTrack2 = ParticleComponent.KeyTrack.oscillate(0, 7, 24);
-            AdvancedParticleBase.spawnParticle(level, ParticleHandler.SUN.get(), getX(), getY(), getZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 33, true, true, new ParticleComponent[]{
-                    new ParticleComponent.PinLocation(betweenHandPos),
-                    new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, superNovaKeyTrack1, false),
-                    new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, superNovaKeyTrack2, true)
-            });
-        }
-        if (getActiveAbility().getTicksInUse() == 33) {
-            AdvancedParticleBase.spawnParticle(level, ParticleHandler.SUN_NOVA.get(), getX(), getY(), getZ(), 0, 0, 0, true, 0, 0, 0, 0, 20F, 1, 1, 1, 0, 1, 13, true, true, new ParticleComponent[]{
-                    new ParticleComponent.PinLocation(betweenHandPos),
-                    new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
-                            new float[]{11f, 7f, 5.5f, 1f, 30},
-                            new float[]{0, 0.15f, 0.8f, 0.89f, 1}
-                    ), false),
-                    new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, new ParticleComponent.KeyTrack(
-                            new float[]{0f, 1f, 1f, 0f},
-                            new float[]{0, 0.15f, 0.89f, 1}
-                    ), false),
-                    new ParticleComponent.PropertyControl(EnumParticleProperty.PARTICLE_ANGLE, ParticleComponent.KeyTrack.startAndEnd(0f, -6f), false)
-            });
-        }
-        if (getActiveAbility().getTicksInUse() == 32) {
-            AdvancedParticleBase.spawnParticle(level, ParticleHandler.FLARE.get(), getX(), getY(), getZ(), 0, 0, 0, true, 0, 0, 0, 0, 5F, 1,1,1, 0.7, 1, 3, true, true, new ParticleComponent[]{
-                    new ParticleComponent.PinLocation(betweenHandPos),
-                    new ParticleComponent.PropertyControl(EnumParticleProperty.POS_Y, ParticleComponent.constant(-0.15f), true),
-                    new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
-                            new float[]{0f, 22f, 0f},
-                            new float[]{0, 0.2f, 1}
-                    ), false)
-            });
-        }
-        if (getActiveAbility().getTicksInUse() > 30 && getActiveAbility().getTicksInUse() < 41) {
-            for (int i = 0; i < 6; i++) {
-                float phaseOffset = random.nextFloat();
-                double value = random.nextDouble() * 0.3 + 0.05;
-                AdvancedParticleBase.spawnParticle(level, ParticleHandler.PIXEL.get(), betweenHandPos[0].x, betweenHandPos[0].y, betweenHandPos[0].z, 0, 0, 0, true, 0, 0, 0, 0, 5F, value, value, value, 1, 1, 6, false, true, new ParticleComponent[]{
-                        new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
-                                new float[]{0f, 3f},
-                                new float[]{0, 0.2f}
-                        ), false),
-                        new ParticleComponent.Orbit(betweenHandPos, ParticleComponent.KeyTrack.startAndEnd(0 + phaseOffset, -0.4f + phaseOffset), ParticleComponent.KeyTrack.startAndEnd(0.5f + random.nextFloat(), 0), ParticleComponent.constant(0), ParticleComponent.constant(0), ParticleComponent.constant(0), true),
-                });
-            }
-        }
-        if (getActiveAbility().getTicksInUse() > 1 && getActiveAbility().getTicksInUse() < 27) {
-            for (int i = 0; i < 6; i++) {
-                Vec3 particlePos = new Vec3(random.nextFloat() * 5, 0, 0);
-                particlePos = particlePos.yRot((float) (random.nextFloat() * 2 * Math.PI));
-                particlePos = particlePos.xRot((float) (random.nextFloat() * 2 * Math.PI));
-                particlePos = particlePos.add(betweenHandPos[0]);
-                double value = random.nextDouble() * 0.5 + 0.1;
-                AdvancedParticleBase.spawnParticle(level, ParticleHandler.PIXEL.get(), particlePos.x, particlePos.y, particlePos.z, 0, 0, 0, true, 0, 0, 0, 0, 5F, value, value, value, 1, 1, 7, false, true, new ParticleComponent[]{
-                        new ParticleComponent.Attractor(betweenHandPos, 1.1f, 1f, ParticleComponent.Attractor.EnumAttractorBehavior.EXPONENTIAL),
-                        new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
-                                new float[]{0f, 3.5f},
-                                new float[]{0, 0.2f}
-                        ), false)
-                });
-            }
-        }
-        float timeFrac = Math.min((float)getActiveAbility().getTicksInUse() / 20f, 1f);
-        if (getActiveAbility().getTicksInUse() > 1 && getActiveAbility().getTicksInUse() < 25 && getActiveAbility().getTicksInUse() % (int)(4 * (1 - timeFrac) + 1) == 0) {
-            AdvancedParticleBase.spawnParticle(level, ParticleHandler.RING_SPARKS.get(),  getX(), getY(), getZ(), 0, 0, 0, true, 0, 0, 0, random.nextFloat() * (float)Math.PI * 2, 5F, 1, 1, 1, 1, 1, 6 + random.nextFloat() * 3, true, true, new ParticleComponent[]{
-                    new ParticleComponent.PinLocation(betweenHandPos),
-                    new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(10f + 20f * timeFrac * timeFrac + 10f * random.nextFloat() * timeFrac, 0f), false),
-                    new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0f, 0.7f), false)
-            });
-        }
-        if (getActiveAbility().getTicksInUse() == 14) {
-            AdvancedParticleBase.spawnParticle(level, ParticleHandler.FLARE.get(),  getX(), getY(), getZ(), 0, 0, 0, true, 0, 0, 0, 0, 5F, 1, 1, 1, 1, 1, 18, true, true, new ParticleComponent[]{
-                    new ParticleComponent.PinLocation(betweenHandPos),
-                    new ParticleComponent.PropertyControl(EnumParticleProperty.POS_Y, ParticleComponent.constant(-0.1f), true),
-                    new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
-                            new float[]{0f, 35f, 0f},
-                            new float[]{0, 0.8f, 1}
-                    ), false),
-                    new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.Oscillator(-5, 5, 42, 0), true)
-            });
-        }
-
-        if (getActiveAbility().getTicksInUse() == 32) {
-            AdvancedParticleBase.spawnParticle(level, ParticleHandler.BURST_IN.get(),  getX(), getY(), getZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 5F, 0, 0, 0, 1, 1, 10, true, true, new ParticleComponent[]{
-                    new ParticleComponent.PinLocation(betweenHandPos),
-                    new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(25f, 0f), false),
-                    new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0f, 1f), false),
-                    new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.Oscillator(-2, 2, 42, 0), true),
-            });
-        }
-
-        if (getActiveAbility().getTicksInUse() == 44) {
-            float scale = 85f;
-            AdvancedParticleBase.spawnParticle(level, ParticleHandler.RING_BIG.get(), betweenHandPos[0].x, betweenHandPos[0].y, betweenHandPos[0].z, 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 5F, 1,1,1, 1, 1, 40, true, true, new ParticleComponent[]{
-                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
-                            new float[]{0.0f * scale, 0.59f * scale, 0.87f * scale, 0.974f * scale, 0.998f * scale, 1f * scale},
-                            new float[]{0, 0.2f, 0.4f, 0.6f, 0.8f, 1f}
-                    ), false),
-                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
-            });
-            scale = 120f;
-            AdvancedParticleBase.spawnParticle(level, ParticleHandler.GLOW.get(), betweenHandPos[0].x, betweenHandPos[0].y, betweenHandPos[0].z, 0, 0, 0, true, 0, 0, 0, 0, 5F, 0.95, 0.9,0.35, 1, 1, 40, true, true, new ParticleComponent[]{
-                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
-                            new float[]{0.0f * scale, 0.59f * scale, 0.87f * scale, 0.974f * scale, 0.998f * scale, 1f * scale},
-                            new float[]{0, 0.2f, 0.4f, 0.6f, 0.8f, 1f}
-                    ), false),
-                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
-            });
-        }
     }
 
     @Override
@@ -1178,7 +1039,6 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
     }
 
     public static class SolarFlareAbility extends Ability<EntityUmvuthi> {
-        protected LivingEntity entityTarget;
         public static AbilitySection[] SECTION_TRACK = new AbilitySection[] {
                 new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 12),
                 new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
@@ -1305,29 +1165,49 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
     }
 
     public static class SupernovaAbility extends Ability<EntityUmvuthi> {
+        public static AbilitySection[] SECTION_TRACK = new AbilitySection[]{
+                new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 44),
+                new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.ACTIVE, 40),
+                new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 16)
+        };
 
         public SupernovaAbility(AbilityType abilityType, EntityUmvuthi user) {
-            super(abilityType, user, new AbilitySection[]{
-                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 44),
-                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.ACTIVE, 40),
-                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 16)
-            });
+            super(abilityType, user, SECTION_TRACK);
         }
 
         @Override
         public void start() {
             super.start();
             getUser().playSound(MMSounds.ENTITY_SUPERNOVA_START.get(), 3f, 1f);
+            playAnimation("supernova", false);
         }
 
         @Override
-        public void tick() {
-            super.tick();
+        public void tickUsing() {
+            super.tickUsing();
             if (getTicksInUse() == 30) {
                 getUser().playSound(MMSounds.ENTITY_SUPERNOVA_BLACKHOLE.get(), 2f, 1.2f);
             }
+
+            if (getActiveAbility().getTicksInUse() < 30) {
+                List<LivingEntity> entities = getUser().getEntityLivingBaseNearby(16, 16, 16, 16);
+                for (LivingEntity inRange : entities) {
+                    if (inRange instanceof LeaderSunstrikeImmune) continue;
+                    if (inRange instanceof Player && ((Player)inRange).getAbilities().invulnerable) continue;
+                    Vec3 diff = inRange.position().subtract(getUser().position().add(0, 3, 0));
+                    diff = diff.normalize().scale(0.03);
+                    inRange.setDeltaMovement(inRange.getDeltaMovement().subtract(diff));
+
+                    if (inRange.getY() < getUser().getY() + 3) inRange.setDeltaMovement(inRange.getDeltaMovement().add(0, 0.075, 0));
+                }
+            }
+
             if (getTicksInUse() == 40) {
                 getUser().playSound(MMSounds.ENTITY_UMVUTHI_ROAR.get(), 1.5f, 1f);
+            }
+
+            if (getLevel().isClientSide) {
+                superNovaEffects(this, getUser().headPos, getLevel());
             }
         }
 
@@ -1341,6 +1221,127 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
                     EntitySuperNova superNova = new EntitySuperNova(EntityHandler.SUPER_NOVA.get(), getUser().level, getUser(), getUser().getX() + offset.x, getUser().getY() + 0.05, getUser().getZ() + offset.z);
                     getUser().level.addFreshEntity(superNova);
                 }
+            }
+        }
+
+        private static final ParticleComponent.KeyTrack superNovaKeyTrack1 = new ParticleComponent.KeyTrack(
+                new float[]{0, 25f, 32f, 0},
+                new float[]{0, 0.6f, 0.85f, 1}
+        );
+        private static final ParticleComponent.KeyTrack superNovaKeyTrack2 = ParticleComponent.KeyTrack.oscillate(0, 7, 24);
+
+        public static void superNovaEffects(Ability activeAbility, Vec3[] pinLocation, Level level) {
+            if (pinLocation == null || pinLocation.length > 1) return;
+            int ticksInUse = activeAbility.getTicksInUse();
+            LivingEntity user = activeAbility.getUser();
+            Random random = user.getRandom();
+
+            if (ticksInUse == 1) {
+                AdvancedParticleBase.spawnParticle(level, ParticleHandler.SUN.get(), user.getX(), user.getY(), user.getZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 33, true, true, new ParticleComponent[]{
+                        new ParticleComponent.PinLocation(pinLocation),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, superNovaKeyTrack1, false),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, superNovaKeyTrack2, true)
+                });
+            }
+            if (ticksInUse == 33) {
+                AdvancedParticleBase.spawnParticle(level, ParticleHandler.SUN_NOVA.get(), user.getX(), user.getY(), user.getZ(), 0, 0, 0, true, 0, 0, 0, 0, 20F, 1, 1, 1, 0, 1, 13, true, true, new ParticleComponent[]{
+                        new ParticleComponent.PinLocation(pinLocation),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
+                                new float[]{11f, 7f, 5.5f, 1f, 30},
+                                new float[]{0, 0.15f, 0.8f, 0.89f, 1}
+                        ), false),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, new ParticleComponent.KeyTrack(
+                                new float[]{0f, 1f, 1f, 0f},
+                                new float[]{0, 0.15f, 0.89f, 1}
+                        ), false),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.PARTICLE_ANGLE, ParticleComponent.KeyTrack.startAndEnd(0f, -6f), false)
+                });
+            }
+            if (ticksInUse == 32) {
+                AdvancedParticleBase.spawnParticle(level, ParticleHandler.FLARE.get(), user.getX(), user.getY(), user.getZ(), 0, 0, 0, true, 0, 0, 0, 0, 5F, 1,1,1, 0.7, 1, 3, true, true, new ParticleComponent[]{
+                        new ParticleComponent.PinLocation(pinLocation),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.POS_Y, ParticleComponent.constant(-0.15f), true),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
+                                new float[]{0f, 22f, 0f},
+                                new float[]{0, 0.2f, 1}
+                        ), false)
+                });
+            }
+            if (ticksInUse > 30 && ticksInUse < 41) {
+                for (int i = 0; i < 6; i++) {
+                    float phaseOffset = random.nextFloat();
+                    double value = random.nextDouble() * 0.3 + 0.05;
+                    AdvancedParticleBase.spawnParticle(level, ParticleHandler.PIXEL.get(), pinLocation[0].x, pinLocation[0].y, pinLocation[0].z, 0, 0, 0, true, 0, 0, 0, 0, 5F, value, value, value, 1, 1, 6, false, true, new ParticleComponent[]{
+                            new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
+                                    new float[]{0f, 3f},
+                                    new float[]{0, 0.2f}
+                            ), false),
+                            new ParticleComponent.Orbit(pinLocation, ParticleComponent.KeyTrack.startAndEnd(0 + phaseOffset, -0.4f + phaseOffset), ParticleComponent.KeyTrack.startAndEnd(0.5f + random.nextFloat(), 0), ParticleComponent.constant(0), ParticleComponent.constant(0), ParticleComponent.constant(0), true),
+                    });
+                }
+            }
+            if (ticksInUse > 1 && ticksInUse < 27) {
+                for (int i = 0; i < 6; i++) {
+                    Vec3 particlePos = new Vec3(random.nextFloat() * 5, 0, 0);
+                    particlePos = particlePos.yRot((float) (random.nextFloat() * 2 * Math.PI));
+                    particlePos = particlePos.xRot((float) (random.nextFloat() * 2 * Math.PI));
+                    particlePos = particlePos.add(pinLocation[0]);
+                    double value = random.nextDouble() * 0.5 + 0.1;
+                    AdvancedParticleBase.spawnParticle(level, ParticleHandler.PIXEL.get(), particlePos.x, particlePos.y, particlePos.z, 0, 0, 0, true, 0, 0, 0, 0, 5F, value, value, value, 1, 1, 7, false, true, new ParticleComponent[]{
+                            new ParticleComponent.Attractor(pinLocation, 1.1f, 1f, ParticleComponent.Attractor.EnumAttractorBehavior.EXPONENTIAL),
+                            new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
+                                    new float[]{0f, 3.5f},
+                                    new float[]{0, 0.2f}
+                            ), false)
+                    });
+                }
+            }
+            float timeFrac = Math.min((float)ticksInUse / 20f, 1f);
+            if (ticksInUse > 1 && ticksInUse < 25 && ticksInUse % (int)(4 * (1 - timeFrac) + 1) == 0) {
+                AdvancedParticleBase.spawnParticle(level, ParticleHandler.RING_SPARKS.get(),  user.getX(), user.getY(), user.getZ(), 0, 0, 0, true, 0, 0, 0, random.nextFloat() * (float)Math.PI * 2, 5F, 1, 1, 1, 1, 1, 6 + random.nextFloat() * 3, true, true, new ParticleComponent[]{
+                        new ParticleComponent.PinLocation(pinLocation),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(10f + 20f * timeFrac * timeFrac + 10f * random.nextFloat() * timeFrac, 0f), false),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0f, 0.7f), false)
+                });
+            }
+            if (ticksInUse == 14) {
+                AdvancedParticleBase.spawnParticle(level, ParticleHandler.FLARE.get(), user.getX(), user.getY(), user.getZ(), 0, 0, 0, true, 0, 0, 0, 0, 5F, 1, 1, 1, 1, 1, 18, true, true, new ParticleComponent[]{
+                        new ParticleComponent.PinLocation(pinLocation),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.POS_Y, ParticleComponent.constant(-0.1f), true),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
+                                new float[]{0f, 35f, 0f},
+                                new float[]{0, 0.8f, 1}
+                        ), false),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.Oscillator(-5, 5, 42, 0), true)
+                });
+            }
+
+            if (ticksInUse == 32) {
+                AdvancedParticleBase.spawnParticle(level, ParticleHandler.BURST_IN.get(), user.getX(), user.getY(), user.getZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 5F, 0, 0, 0, 1, 1, 10, true, true, new ParticleComponent[]{
+                        new ParticleComponent.PinLocation(pinLocation),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(25f, 0f), false),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0f, 1f), false),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.Oscillator(-2, 2, 42, 0), true),
+                });
+            }
+
+            if (ticksInUse == 44) {
+                float scale = 85f;
+                AdvancedParticleBase.spawnParticle(level, ParticleHandler.RING_BIG.get(), pinLocation[0].x, pinLocation[0].y, pinLocation[0].z, 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 5F, 1,1,1, 1, 1, 40, true, true, new ParticleComponent[]{
+                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
+                                new float[]{0.0f * scale, 0.59f * scale, 0.87f * scale, 0.974f * scale, 0.998f * scale, scale},
+                                new float[]{0, 0.2f, 0.4f, 0.6f, 0.8f, 1f}
+                        ), false),
+                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
+                });
+                scale = 120f;
+                AdvancedParticleBase.spawnParticle(level, ParticleHandler.GLOW.get(), pinLocation[0].x, pinLocation[0].y, pinLocation[0].z, 0, 0, 0, true, 0, 0, 0, 0, 5F, 0.95, 0.9,0.35, 1, 1, 40, true, true, new ParticleComponent[]{
+                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
+                                new float[]{0.0f * scale, 0.59f * scale, 0.87f * scale, 0.974f * scale, 0.998f * scale, scale},
+                                new float[]{0, 0.2f, 0.4f, 0.6f, 0.8f, 1f}
+                        ), false),
+                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
+                });
             }
         }
     }
