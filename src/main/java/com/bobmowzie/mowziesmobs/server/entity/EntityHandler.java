@@ -50,7 +50,7 @@ public class EntityHandler {
     public static final RegistryObject<EntityType<EntityGrottol>> GROTTOL = REG.register("grottol", () -> EntityType.Builder.of(EntityGrottol::new, MobCategory.MONSTER).sized(0.9F, 1.2F).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "grottol").toString()));
     public static final RegistryObject<EntityType<EntityLantern>> LANTERN = REG.register("lantern", () -> EntityType.Builder.of(EntityLantern::new, MobCategory.AMBIENT).sized(1.0f, 1.0f).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "lantern").toString()));
     public static final RegistryObject<EntityType<EntityNaga>> NAGA = REG.register("naga", () -> EntityType.Builder.of(EntityNaga::new, MobCategory.MONSTER).sized(3.0f, 1.0f).setTrackingRange(128).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "naga").toString()));
-    public static final RegistryObject<EntityType<EntitySculptor>> SCULPTOR = REG.register("sculptor", () -> EntityType.Builder.of(EntitySculptor::new, MobCategory.MISC).sized(1.0f, 2.0f).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "sculptor").toString()));
+//    public static final RegistryObject<EntityType<EntitySculptor>> SCULPTOR = REG.register("sculptor", () -> EntityType.Builder.of(EntitySculptor::new, MobCategory.MISC).sized(1.0f, 2.0f).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "sculptor").toString()));
 
     private static EntityType.Builder<EntitySunstrike> sunstrikeBuilder() {
         return EntityType.Builder.of(EntitySunstrike::new, MobCategory.MISC);
@@ -146,6 +146,6 @@ public class EntityHandler {
         event.put(EntityHandler.NAGA.get(), EntityNaga.createAttributes().build());
         event.put(EntityHandler.LANTERN.get(), EntityLantern.createAttributes().build());
         event.put(EntityHandler.GROTTOL.get(), EntityGrottol.createAttributes().build());
-        event.put(EntityHandler.SCULPTOR.get(), EntitySculptor.createAttributes().build());
+//        event.put(EntityHandler.SCULPTOR.get(), EntitySculptor.createAttributes().build());
     }
 }

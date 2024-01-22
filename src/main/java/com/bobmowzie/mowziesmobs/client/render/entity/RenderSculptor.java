@@ -29,9 +29,9 @@ public class RenderSculptor extends MowzieGeoEntityRenderer<EntitySculptor> {
         super(renderManager, new ModelSculptor());
         this.addLayer(new FrozenRenderHandler.GeckoLayerFrozen<>(this, renderManager));
         this.addLayer(new GeckoSunblockLayer<>(this, renderManager));
-        this.addLayer(new GeckoItemlayer<>(this,"backItem", new ItemStack(ItemHandler.SCULPTOR_STAFF, 1)));
-        this.addLayer(new GeckoItemlayer<>(this,"itemHandLeft", new ItemStack(ItemHandler.SCULPTOR_STAFF, 1)));
-        this.addLayer(new GeckoItemlayer<>(this,"itemHandRight", new ItemStack(ItemHandler.SCULPTOR_STAFF, 1)));
+//        this.addLayer(new GeckoItemlayer<>(this,"backItem", new ItemStack(ItemHandler.SCULPTOR_STAFF, 1)));
+//        this.addLayer(new GeckoItemlayer<>(this,"itemHandLeft", new ItemStack(ItemHandler.SCULPTOR_STAFF, 1)));
+//        this.addLayer(new GeckoItemlayer<>(this,"itemHandRight", new ItemStack(ItemHandler.SCULPTOR_STAFF, 1)));
         this.shadowRadius = 0.7f;
 
     }

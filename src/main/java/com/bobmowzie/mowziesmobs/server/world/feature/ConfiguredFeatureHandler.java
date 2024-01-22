@@ -67,12 +67,12 @@ public class ConfiguredFeatureHandler {
         CONFIGURED_WROUGHT_CHAMBER = register(createFeatureKey("wrought_chamber"), FeatureHandler.WROUGHTNAUT_CHAMBER.get().configured(NoneFeatureConfiguration.INSTANCE, TagHandler.HAS_MOWZIE_STRUCTURE));
         CONFIGURED_UMVUTHANA_GROVE = register(createFeatureKey("umvuthana_grove"), FeatureHandler.UMVUTHANA_GROVE.get().configured(NoneFeatureConfiguration.INSTANCE, TagHandler.HAS_MOWZIE_STRUCTURE));
         CONFIGURED_FROSTMAW = register(createFeatureKey("frostmaw_spawn"), FeatureHandler.FROSTMAW.get().configured(NoneFeatureConfiguration.INSTANCE, TagHandler.HAS_MOWZIE_STRUCTURE, true));
-        CONFIGURED_MONASTERY = register(createFeatureKey("monastery"), FeatureHandler.MONASTERY.get().configured(new JigsawConfiguration(PlainVillagePools.START, 0), TagHandler.HAS_MOWZIE_STRUCTURE));
+//        CONFIGURED_MONASTERY = register(createFeatureKey("monastery"), FeatureHandler.MONASTERY.get().configured(new JigsawConfiguration(PlainVillagePools.START, 0), TagHandler.HAS_MOWZIE_STRUCTURE));
 
         WROUGHT_CHAMBERS = register(createSetKey("wrought_chambers"), CONFIGURED_WROUGHT_CHAMBER, new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.TRIANGULAR, 23217347));
         UMVUTHANA_GROVES = register(createSetKey("umvuthana_groves"), CONFIGURED_UMVUTHANA_GROVE, new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.TRIANGULAR, 23311138));
         FROSTMAWS = register(createSetKey("frostmaw_spawns"), CONFIGURED_FROSTMAW, new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.TRIANGULAR, 23317578));
-        MONASTERIES = register(createSetKey("monasteries"), CONFIGURED_MONASTERY, new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.TRIANGULAR, 25327374));
+//        MONASTERIES = register(createSetKey("monasteries"), CONFIGURED_MONASTERY, new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.TRIANGULAR, 25327374));
     }
 
     public static void onBiomeLoading(BiomeLoadingEvent event) {
@@ -92,9 +92,9 @@ public class ConfiguredFeatureHandler {
 //            System.out.println("Added frostmaw biome: " + biomeName.toString());
             FROSTMAW_BIOMES.add(biomeName);
         }
-        if (ConfigHandler.COMMON.MOBS.SCULPTOR.generationConfig.generationDistance.get() >= 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.SCULPTOR.generationConfig.biomeConfig, biomeKey)) {
+        /*if (ConfigHandler.COMMON.MOBS.SCULPTOR.generationConfig.generationDistance.get() >= 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.SCULPTOR.generationConfig.biomeConfig, biomeKey)) {
 //            System.out.println("Added frostmaw biome: " + biomeName.toString());
             SCULPTOR_BIOMES.add(biomeName);
-        }
+        }*/
     }
 }

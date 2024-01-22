@@ -52,13 +52,13 @@ public enum AbilityHandler {
             WROUGHT_AXE_SLAM_ABILITY,
             ICE_BREATH_ABILITY,
             SPAWN_BOULDER_ABILITY,
-            SPAWN_PILLAR_ABILITY,
+//            SPAWN_PILLAR_ABILITY,
             TUNNELING_ABILITY,
             HIT_BOULDER_ABILITY,
             BACKSTAB_ABILITY,
-            BOULDER_ROLL_ABILITY,
-            ROCK_SLING,
-            GROUND_SLAM_ABILITY
+//            BOULDER_ROLL_ABILITY,
+//            ROCK_SLING,
+//            GROUND_SLAM_ABILITY
     };
 
     @Nullable

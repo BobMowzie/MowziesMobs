@@ -70,10 +70,11 @@ public class MonasteryStructure extends MowzieStructure<JigsawConfiguration> {
 
     // Hooked up in StructureTutorialMain. You can move this elsewhere or change it up.
     public static void setupStructureSpawns(final StructureSpawnListGatherEvent event) {
-        if(event.getStructure() == FeatureHandler.MONASTERY.get()) {
-            event.addEntitySpawns(MobCategory.MONSTER, STRUCTURE_MONSTERS.get());
-            event.addEntitySpawns(MobCategory.CREATURE, STRUCTURE_CREATURES.get());
-        }
+        // TODO
+//        if(event.getStructure() == FeatureHandler.MONASTERY.get()) {
+//            event.addEntitySpawns(MobCategory.MONSTER, STRUCTURE_MONSTERS.get());
+//            event.addEntitySpawns(MobCategory.CREATURE, STRUCTURE_CREATURES.get());
+//        }
     }
 
     public static Optional<PieceGenerator<JigsawConfiguration>> createPiecesGenerator(Predicate<PieceGeneratorSupplier.Context<JigsawConfiguration>> canGeneratePredicate, PieceGeneratorSupplier.Context<JigsawConfiguration> context) {

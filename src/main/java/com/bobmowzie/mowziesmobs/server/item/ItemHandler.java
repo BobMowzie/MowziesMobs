@@ -42,7 +42,6 @@ public final class ItemHandler {
     public static final ItemSolVisage SOL_VISAGE = null;
     public static final ItemDart DART = null;
     public static final ItemSpear SPEAR = null;
-    public static final ItemSunblockStaff SUNBLOCK_STAFF = null;
     public static final ItemBlowgun BLOWGUN = null;
     public static final ItemGrantSunsBlessing GRANT_SUNS_BLESSING = null;
     public static final ItemIceCrystal ICE_CRYSTAL = null;
@@ -52,7 +51,7 @@ public final class ItemHandler {
     public static final ItemNagaFang NAGA_FANG = null;
     public static final ItemNagaFangDagger NAGA_FANG_DAGGER = null;
     public static final ItemEarthboreGauntlet EARTHBORE_GAUNTLET = null;
-    public static final ItemSculptorStaff SCULPTOR_STAFF = null;
+//    public static final ItemSculptorStaff SCULPTOR_STAFF = null;
     public static final Item LOGO = null;
     public static final RecordItem PETIOLE_MUSIC_DISC = null;
 
@@ -86,7 +85,6 @@ public final class ItemHandler {
             new ItemSolVisage(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).rarity(Rarity.RARE)).setRegistryName("sol_visage"),
             new ItemDart(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("dart"),
             new ItemSpear(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1)).setRegistryName("spear"),
-            new ItemSunblockStaff(new Item.Properties().stacksTo(1)).setRegistryName("sunblock_staff"),
             new ItemBlowgun(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1).durability(300)).setRegistryName("blowgun"),
             new ItemGrantSunsBlessing(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1).rarity(Rarity.EPIC)).setRegistryName("grant_suns_blessing"),
             new ItemIceCrystal(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).defaultDurability(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.durability.get()).rarity(Rarity.RARE)).setRegistryName("ice_crystal"),
@@ -96,8 +94,8 @@ public final class ItemHandler {
             new ItemNagaFang(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("naga_fang"),
             new ItemNagaFangDagger(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("naga_fang_dagger"),
             new ItemEarthboreGauntlet(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).defaultDurability(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.durability.get()).rarity(Rarity.RARE)).setRegistryName("earthbore_gauntlet"),
-            new ItemSculptorStaff(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).defaultDurability(1000).rarity(Rarity.RARE)).setRegistryName("sculptor_staff"),
-            new ItemSandRake(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).defaultDurability(64)).setRegistryName("sand_rake"),
+//            new ItemSculptorStaff(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).defaultDurability(1000).rarity(Rarity.RARE)).setRegistryName("sculptor_staff"),
+//            new ItemSandRake(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).defaultDurability(64)).setRegistryName("sand_rake"),
             new Item(new Item.Properties()).setRegistryName("logo"),
             new RecordItem(14, MMSounds.MUSIC_PETIOLE, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1).rarity(Rarity.RARE)).setRegistryName("music_disc_petiole"),
     
@@ -111,13 +109,13 @@ public final class ItemHandler {
             new ForgeSpawnEggItem(EntityHandler.GROTTOL, 0x777777, 0xbce0ff, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("grottol_spawn_egg"),
             new ForgeSpawnEggItem(EntityHandler.LANTERN, 0x6dea00, 0x235a10, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("lantern_spawn_egg"),
             new ForgeSpawnEggItem(EntityHandler.NAGA, 0x154850, 0x8dd759, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("naga_spawn_egg"),
-            new ForgeSpawnEggItem(EntityHandler.SCULPTOR, 0xc4a137, 0xfff5e7, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("sculptor_spawn_egg"),
+//            new ForgeSpawnEggItem(EntityHandler.SCULPTOR, 0xc4a137, 0xfff5e7, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("sculptor_spawn_egg"),
 
             new BlockItem(BlockHandler.PAINTED_ACACIA.get(), new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.PAINTED_ACACIA.get().getRegistryName()),
             new BlockItem(BlockHandler.PAINTED_ACACIA_SLAB.get(), new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.PAINTED_ACACIA_SLAB.get().getRegistryName()),
             new BlockItem(BlockHandler.THATCH.get(), new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.THATCH.get().getRegistryName()),
-            new BlockItem(BlockHandler.GONG.get(), new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.GONG.get().getRegistryName()),
-            new BlockItem(BlockHandler.RAKED_SAND.get(), new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.RAKED_SAND.get().getRegistryName()),
+//            new BlockItem(BlockHandler.GONG.get(), new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.GONG.get().getRegistryName()),
+//            new BlockItem(BlockHandler.RAKED_SAND.get(), new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.RAKED_SAND.get().getRegistryName()),
             new BlockItem(BlockHandler.CLAWED_LOG.get(), new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.CLAWED_LOG.get().getRegistryName())
         );
     }
