@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.server.ability.abilities.player;
+package com.bobmowzie.mowziesmobs.server.ability.abilities.player.heliomancy;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleOrb;
@@ -17,6 +17,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -34,6 +35,12 @@ public class SolarFlareAbility extends PlayerAbility {
         super.start();
         getUser().playSound(MMSounds.ENTITY_UMVUTHI_BURST.get(), 1.7f, 1.5f);
         playAnimation("solar_flare", false);
+        if (getLevel().isClientSide) {
+            heldItemMainHandVisualOverride = ItemStack.EMPTY;
+            heldItemOffHandVisualOverride = ItemStack.EMPTY;
+            firstPersonOffHandDisplay = HandDisplay.FORCE_RENDER;
+            firstPersonMainHandDisplay = HandDisplay.FORCE_RENDER;
+        }
     }
 
     @Override

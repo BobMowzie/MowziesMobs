@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.server.ability.abilities.player;
+package com.bobmowzie.mowziesmobs.server.ability.abilities.player.heliomancy;
 
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;

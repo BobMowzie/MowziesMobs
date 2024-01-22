@@ -1231,7 +1231,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         private static final ParticleComponent.KeyTrack superNovaKeyTrack2 = ParticleComponent.KeyTrack.oscillate(0, 7, 24);
 
         public static void superNovaEffects(Ability activeAbility, Vec3[] pinLocation, Level level) {
-            if (pinLocation == null || pinLocation.length > 1) return;
+            if (pinLocation == null || pinLocation.length == 0 || pinLocation[0] == null) return;
             int ticksInUse = activeAbility.getTicksInUse();
             LivingEntity user = activeAbility.getUser();
             Random random = user.getRandom();
