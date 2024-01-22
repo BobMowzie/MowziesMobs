@@ -54,6 +54,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
     private Matrix4f worldRenderMat;
 
     public Vec3 betweenHandsPos;
+    public Vec3 particleEmitterRoot;
 
     public GeckoRenderPlayer(EntityRendererProvider.Context context, boolean slim, ModelGeckoPlayerThirdPerson modelProvider) {
         super(context, slim);
@@ -97,6 +98,10 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
 
     public GeckoRenderPlayer getModelProvider(Class<? extends GeckoPlayer> animatable) {
         return modelsToLoad.get(animatable);
+    }
+
+    public ModelGeckoPlayerThirdPerson getGeckoModel() {
+        return modelProvider;
     }
 
     public HashMap<Class<? extends GeckoPlayer>, GeckoRenderPlayer> getModelsToLoad() {
@@ -229,6 +234,12 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
             Vec3 rightHeldItemPos3 = new Vec3(rightHeldItemPos.x(), rightHeldItemPos.y(), rightHeldItemPos.z());
 
             betweenHandsPos = rightHeldItemPos3.add(leftHeldItemPos3.subtract(rightHeldItemPos3).scale(0.5));
+
+            MowzieGeoBone particleEmitterRootBone = modelProvider.getMowzieBone("ParticleEmitterRoot");
+            Vector4f emitterRootPos = new Vector4f(0, 0, 0, 1);
+            emitterRootPos.transform(particleEmitterRootBone.getWorldSpaceXform());
+            emitterRootPos.transform(toWorldSpace.last().pose());
+            particleEmitterRoot = new Vec3(emitterRootPos.x(), emitterRootPos.y(), emitterRootPos.z());
         }
         Minecraft minecraft = Minecraft.getInstance();
         boolean flag = this.isBodyVisible(entityIn);
@@ -385,7 +396,8 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
                     mowzieBone.name.equals("LeftArm") ||
                     mowzieBone.name.equals("RightArm") ||
                     mowzieBone.name.equals("RightLeg") ||
-                    mowzieBone.name.equals("LeftLeg")
+                    mowzieBone.name.equals("LeftLeg") ||
+                    mowzieBone.name.equals("ParticleEmitterRoot")
             ) {
                 matrixStack.pushPose();
                 if (!mowzieBone.name.equals("LeftHeldItem") && !mowzieBone.name.equals("RightHeldItem")) {

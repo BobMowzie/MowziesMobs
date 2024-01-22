@@ -12,6 +12,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
+import com.mojang.math.Vector4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
@@ -23,6 +24,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -47,6 +49,8 @@ public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements IGeo
     private ModelGeckoPlayerFirstPerson modelProvider;
 
     boolean mirror;
+
+    public Vec3 particleEmitterRoot;
 
     public GeckoFirstPersonRenderer(Minecraft mcIn, ModelGeckoPlayerFirstPerson modelProvider) {
         super(mcIn);
@@ -111,31 +115,42 @@ public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements IGeo
                 offHandEquipProgress = Mth.clamp((ability.getTicksInSection() + partialTicks - ((AbilitySection.AbilitySectionDuration)ability.getCurrentSection()).duration + 5) / 5f, 0f, 1f);
         }
 
-        if (handDisplay != PlayerAbility.HandDisplay.DONT_RENDER && modelProvider.isInitialized()) {
-            int sideMult = handside == HumanoidArm.RIGHT ? -1 : 1;
-            if (mirror) handside = handside.getOpposite();
-            String sideName = handside == HumanoidArm.RIGHT ? "Right" : "Left";
-            String boneName = sideName + "Arm";
-            MowzieGeoBone bone = this.modelProvider.getMowzieBone(boneName);
+        if (modelProvider.isInitialized()) {
+            if (handDisplay != PlayerAbility.HandDisplay.DONT_RENDER) {
+                int sideMult = handside == HumanoidArm.RIGHT ? -1 : 1;
+                if (mirror) handside = handside.getOpposite();
+                String sideName = handside == HumanoidArm.RIGHT ? "Right" : "Left";
+                String boneName = sideName + "Arm";
+                MowzieGeoBone bone = this.modelProvider.getMowzieBone(boneName);
 
-            PoseStack newMatrixStack = new PoseStack();
+                PoseStack newMatrixStack = new PoseStack();
 
-            float fixedPitchController = 1f - this.modelProvider.getControllerValueInverted("FixedPitchController" + sideName);
-            newMatrixStack.mulPose(new Quaternion(Vector3f.XP, pitch * fixedPitchController, true));
+                float fixedPitchController = 1f - this.modelProvider.getControllerValueInverted("FixedPitchController" + sideName);
+                newMatrixStack.mulPose(new Quaternion(Vector3f.XP, pitch * fixedPitchController, true));
 
-            newMatrixStack.last().normal().mul(bone.getWorldSpaceNormal());
-            newMatrixStack.last().pose().multiply(bone.getWorldSpaceXform());
-            newMatrixStack.translate(sideMult * 0.547, 0.7655, 0.625);
+                newMatrixStack.last().normal().mul(bone.getWorldSpaceNormal());
+                newMatrixStack.last().pose().multiply(bone.getWorldSpaceXform());
+                newMatrixStack.translate(sideMult * 0.547, 0.7655, 0.625);
 
-            if (mirror) handside = handside.getOpposite();
+                if (mirror) handside = handside.getOpposite();
 
-            if (stack.isEmpty() && !flag && handDisplay == PlayerAbility.HandDisplay.FORCE_RENDER && !player.isInvisible()) {
-                newMatrixStack.translate(0, -1 * offHandEquipProgress, 0);
-                super.renderPlayerArm(newMatrixStack, bufferIn, combinedLightIn, 0.0f, 0.0f, handside);
+                if (stack.isEmpty() && !flag && handDisplay == PlayerAbility.HandDisplay.FORCE_RENDER && !player.isInvisible()) {
+                    newMatrixStack.translate(0, -1 * offHandEquipProgress, 0);
+                    super.renderPlayerArm(newMatrixStack, bufferIn, combinedLightIn, 0.0f, 0.0f, handside);
+                } else {
+                    super.renderArmWithItem(player, partialTicks, pitch, handIn, 0.0f, stack, 0.0f, newMatrixStack, bufferIn, combinedLightIn);
+                }
             }
-            else {
-                super.renderArmWithItem(player, partialTicks, pitch, handIn, 0.0f, stack, 0.0f, newMatrixStack, bufferIn, combinedLightIn);
-            }
+
+            PoseStack toWorldSpace = new PoseStack();
+            toWorldSpace.translate(player.getX(), player.getY() + player.getEyeHeight(), player.getZ());
+            toWorldSpace.mulPose(new Quaternion(0,-player.getYRot() + 180, 0, true));
+            toWorldSpace.mulPose(new Quaternion(-player.getXRot(),0, 0, true));
+            MowzieGeoBone particleEmitterRootBone = modelProvider.getMowzieBone("ParticleEmitterRoot");
+            Vector4f emitterRootPos = new Vector4f(0, 0, 0, 1);
+            emitterRootPos.transform(particleEmitterRootBone.getWorldSpaceXform());
+            emitterRootPos.transform(toWorldSpace.last().pose());
+            particleEmitterRoot = new Vec3(emitterRootPos.x(), emitterRootPos.y(), emitterRootPos.z());
         }
     }
 
@@ -175,7 +190,7 @@ public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements IGeo
         // Record xform matrices for relevant bones
         if (bone instanceof MowzieGeoBone) {
             MowzieGeoBone mowzieBone = (MowzieGeoBone)bone;
-            if (mowzieBone.name.equals("LeftArm") || mowzieBone.name.equals("RightArm")) {
+            if (mowzieBone.name.equals("LeftArm") || mowzieBone.name.equals("RightArm") || mowzieBone.name.equals("ParticleEmitterRoot")) {
                 matrixStack.pushPose();
                 PoseStack.Pose entry = matrixStack.last();
                 mowzieBone.setWorldSpaceNormal(entry.normal().copy());

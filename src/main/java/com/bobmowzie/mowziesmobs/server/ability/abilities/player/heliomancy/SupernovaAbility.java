@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.ability.abilities.player.heliomancy;
 
+import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoFirstPersonRenderer;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoRenderPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.*;
@@ -8,10 +9,13 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySuperNova;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import net.minecraft.client.CameraType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -19,11 +23,11 @@ import java.util.List;
 public class SupernovaAbility extends PlayerAbility {
     private boolean leftClickDown;
     private boolean rightClickDown;
-    private Vec3[] betweenHandsPos;
+    private Vec3[] particleEmitter;
 
     public SupernovaAbility(AbilityType<Player, SupernovaAbility> abilityType, Player user) {
         super(abilityType, user, EntityUmvuthi.SupernovaAbility.SECTION_TRACK);
-        betweenHandsPos = new Vec3[1];
+        particleEmitter = new Vec3[1];
     }
 
     @Override
@@ -35,6 +39,13 @@ public class SupernovaAbility extends PlayerAbility {
         MobEffectInstance sunsBlessingInstance = getUser().getEffect(EffectHandler.SUNS_BLESSING);
         if (sunsBlessingInstance != null) {
             getUser().removeEffect(EffectHandler.SUNS_BLESSING);
+        }
+
+        if (getLevel().isClientSide) {
+            heldItemMainHandVisualOverride = ItemStack.EMPTY;
+            heldItemOffHandVisualOverride = ItemStack.EMPTY;
+            firstPersonOffHandDisplay = HandDisplay.FORCE_RENDER;
+            firstPersonMainHandDisplay = HandDisplay.FORCE_RENDER;
         }
     }
 
@@ -68,15 +79,30 @@ public class SupernovaAbility extends PlayerAbility {
             }
         }
 
+        // Particle effects
         if (getLevel().isClientSide) {
-            GeckoPlayer geckoPlayer = GeckoPlayer.getGeckoPlayer(getUser(), GeckoPlayer.Perspective.THIRD_PERSON);
-            if (geckoPlayer != null) {
-                GeckoRenderPlayer renderPlayer = (GeckoRenderPlayer) geckoPlayer.getPlayerRenderer();
-                if (renderPlayer.betweenHandsPos != null) {
-                    betweenHandsPos[0] = getUser().position().add(renderPlayer.betweenHandsPos);
+            // First person
+            if (getUser() == Minecraft.getInstance().player && Minecraft.getInstance().options.getCameraType() == CameraType.FIRST_PERSON) {
+                GeckoPlayer geckoPlayer = GeckoPlayer.getGeckoPlayer(getUser(), GeckoPlayer.Perspective.FIRST_PERSON);
+                if (geckoPlayer != null) {
+                    GeckoFirstPersonRenderer renderPlayer = (GeckoFirstPersonRenderer) geckoPlayer.getPlayerRenderer();
+                    if (renderPlayer.particleEmitterRoot != null) {
+                        particleEmitter[0] = renderPlayer.particleEmitterRoot;
+                    }
                 }
             }
-            EntityUmvuthi.SupernovaAbility.superNovaEffects(this, betweenHandsPos, getLevel());
+            // Third person
+            else {
+                GeckoPlayer geckoPlayer = GeckoPlayer.getGeckoPlayer(getUser(), GeckoPlayer.Perspective.THIRD_PERSON);
+                if (geckoPlayer != null) {
+                    GeckoRenderPlayer renderPlayer = (GeckoRenderPlayer) geckoPlayer.getPlayerRenderer();
+                    if (renderPlayer.particleEmitterRoot != null) {
+                        particleEmitter[0] = getUser().position().add(renderPlayer.particleEmitterRoot).add(0, getUser().getBbHeight() / 2f + 0.3f, 0);
+                    }
+                }
+            }
+            // Do the effects with whichever emitter location
+            EntityUmvuthi.SupernovaAbility.superNovaEffects(this, particleEmitter, getLevel());
         }
     }
 
@@ -118,7 +144,7 @@ public class SupernovaAbility extends PlayerAbility {
     @Override
     public void tick() {
         super.tick();
-        if (getUser().isCrouching() && rightClickDown && leftClickDown) {
+        if (getUser().isShiftKeyDown() && rightClickDown && leftClickDown) {
             AbilityHandler.INSTANCE.sendAbilityMessage(getUser(), AbilityHandler.SUPERNOVA_ABILITY);
         }
     }
