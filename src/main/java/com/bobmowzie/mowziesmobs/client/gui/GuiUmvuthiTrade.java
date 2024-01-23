@@ -135,17 +135,17 @@ public final class GuiUmvuthiTrade extends AbstractContainerScreen<ContainerUmvu
 
     private void updateButton() {
         if (hasTraded) {
-            grantButton.setMessage(new TranslatableComponent(I18n.get("entity.mowziesmobs.barako.replenish.button.text")));
+            grantButton.setMessage(new TranslatableComponent(I18n.get("entity.mowziesmobs.umvuthi.replenish.button.text")));
             grantButton.setWidth(108);
             grantButton.x = leftPos + 63;
         }
         else {
-            grantButton.setMessage(new TranslatableComponent(I18n.get("entity.mowziesmobs.barako.trade.button.text")));
+            grantButton.setMessage(new TranslatableComponent(I18n.get("entity.mowziesmobs.umvuthi.trade.button.text")));
         }
     }
 
     private Style getHoverText() {
-        TranslatableComponent text = new TranslatableComponent(I18n.get(hasTraded ? "entity.mowziesmobs.barako.replenish.button.hover" : "entity.mowziesmobs.barako.trade.button.hover"));
+        TranslatableComponent text = new TranslatableComponent(I18n.get(hasTraded ? "entity.mowziesmobs.umvuthi.replenish.button.hover" : "entity.mowziesmobs.umvuthi.trade.button.hover"));
         return text.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, text));
     }
 }
