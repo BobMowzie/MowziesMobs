@@ -9,6 +9,7 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleOrb;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent.PropertyControl.EnumParticleProperty;
+import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
@@ -255,7 +256,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
 
     protected <E extends IAnimatable> PlayState predicateMask(AnimationEvent<E> event)
     {
-        if (isAlive() && getActiveAbilityType() != SOLAR_BEAM_ABILITY && getActiveAbilityType() != SUPERNOVA_ABILITY) {
+        if (isAlive() && getActiveAbilityType() != SOLAR_BEAM_ABILITY && getActiveAbilityType() != SUPERNOVA_ABILITY && getActiveAbilityType() != SPAWN_ABILITY && getActiveAbilityType() != SPAWN_SUNBLOCKERS_ABILITY) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("mask_twitch", ILoopType.EDefaultLoopTypes.LOOP));
             return PlayState.CONTINUE;
         }
@@ -533,7 +534,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         }
 
 //        if (getActiveAbility() == null) {
-//            sendAbilityMessage(SUPERNOVA_ABILITY);
+//            sendAbilityMessage(SPAWN_ABILITY);
 //        }
     }
 
@@ -1116,6 +1117,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             EntityUmvuthi entity = getUser();
             if (section.sectionType == AbilitySection.AbilitySectionType.STARTUP) {
                 getUser().playSound(MMSounds.ENTITY_UMVUTHANA_INHALE.get(), 1.2f, 0.5f);
+                playAnimation("spawn_strix", false);
             }
             if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
                 if (!getUser().level.isClientSide()) {
@@ -1135,7 +1137,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
                         umvuthana = new EntityUmvuthanaCrane(EntityHandler.UMVUTHANA_CRANE.get(), entity.level);
                         ((EntityUmvuthanaCrane) umvuthana).hasTriedOrSucceededTeleport = false;
                     } else umvuthana = new EntityUmvuthanaMinion(EntityHandler.UMVUTHANA_MINION.get(), entity.level);
-                    umvuthana.absMoveTo(entity.getX() + 2 * Math.sin(-angle * (Math.PI / 180)), entity.getY() + 1.5, entity.getZ() + 2 * Math.cos(-angle * (Math.PI / 180)), entity.yHeadRot, 0);
+                    umvuthana.absMoveTo(entity.getX() + 2 * Math.sin(-angle * (Math.PI / 180)), entity.getY() + 2.5, entity.getZ() + 2 * Math.cos(-angle * (Math.PI / 180)), entity.yHeadRot, 0);
                     umvuthana.setActive(false);
                     umvuthana.active = false;
                     umvuthana.finalizeSpawn((ServerLevelAccessor) entity.getCommandSenderWorld(), entity.level.getCurrentDifficultyAt(umvuthana.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
