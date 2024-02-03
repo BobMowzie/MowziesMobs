@@ -23,6 +23,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.BossHealthOverlay;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -263,18 +264,18 @@ public enum ClientEventHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onBossBar(RenderGameOverlayEvent.BossInfo event){
-        if(event.getBossEvent().getName().toString().contains("entity.mowziesmobs.umvuthi")){
+        if (event.getBossEvent().getName().toString().contains("entity.mowziesmobs.umvuthi")) {
             PoseStack stack = event.getMatrixStack();
             event.setCanceled(true);
             int y = event.getY();
             int i = Minecraft.getInstance().getWindow().getGuiScaledWidth();
             int j = y - 12;
-            int k = i /2 - 91;
+            int k = i / 2 - 91;
             Minecraft.getInstance().getProfiler().push("coolerBossBarBase");
 
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            RenderSystem.setShaderTexture(0,BOSS_BAR_LOCATION);
-            drawBar(stack, event.getX() + 2, y , event.getBossEvent());
+            RenderSystem.setShaderTexture(0, BOSS_BAR_LOCATION);
+            drawBar(stack, event.getX() + 2, y, event.getBossEvent());
             Component component = event.getBossEvent().getName().copy().withStyle(ChatFormatting.GOLD);
             Minecraft.getInstance().getProfiler().pop();
 
@@ -285,7 +286,7 @@ public enum ClientEventHandler {
 
             Minecraft.getInstance().getProfiler().push("coolerBossBar");
             RenderSystem.setShaderTexture(0,BOSS_BAR_OVERLAY_LOCATION);
-            Minecraft.getInstance().gui.blit(stack, event.getX() - 12, y - 5, 0,0,196, 16, 196, 16);
+            Gui.blit(stack, event.getX() - 12, y - 5, 0,0,196, 16, 196, 16);
             Minecraft.getInstance().getProfiler().pop();
         }
     }

@@ -19,10 +19,12 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.lwjgl.system.CallbackI;
+import org.lwjgl.system.MathUtil;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
 import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
@@ -155,7 +157,7 @@ public class UmvuthiSunLayer extends GeoLayerRenderer<EntityUmvuthi> {
 
     @Override
     public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, EntityUmvuthi entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (entityLivingBaseIn.deathTime < 85 && entityLivingBaseIn.getActiveAbilityType() != EntityUmvuthi.SUPERNOVA_ABILITY) {
+        if (entityLivingBaseIn.shouldRenderSun()) {
             poseStack.pushPose();
             GeoModel model = this.entityRenderer.getGeoModelProvider().getModel(this.entityRenderer.getGeoModelProvider().getModelLocation(entityLivingBaseIn));
             String boneName = "sun_render";
@@ -169,14 +171,22 @@ public class UmvuthiSunLayer extends GeoLayerRenderer<EntityUmvuthi> {
                 PoseStack.Pose matrixstack$entry = poseStack.last();
                 Matrix4f matrix4f = matrixstack$entry.pose();
                 Matrix3f matrix3f = matrixstack$entry.normal();
-                drawSun(matrix4f, matrix3f, ivertexbuilder, packedLightIn, entityLivingBaseIn.tickCount + partialTicks);
+
+                // Blend the sun back to full size after supernova
+                float scaleMult = 1f;
+                if (entityLivingBaseIn.getActiveAbilityType() == EntityUmvuthi.SUPERNOVA_ABILITY && entityLivingBaseIn.getActiveAbility().getTicksInUse() > 90) {
+                    scaleMult = (entityLivingBaseIn.getActiveAbility().getTicksInUse() + partialTicks - 90f) / 10f;
+                    scaleMult = Mth.clamp(scaleMult, 0f, 1f);
+                }
+
+                drawSun(matrix4f, matrix3f, ivertexbuilder, entityLivingBaseIn.tickCount + partialTicks, scaleMult);
             }
             poseStack.popPose();
         }
     }
 
-    private void drawSun(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer builder, int packedLightIn, float time) {
-        float scale = 0.9f + (float) Math.sin(time * 4) * 0.07f;
+    private void drawSun(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer builder, float time, float scaleMultiplier) {
+        float scale = (0.9f + (float) Math.sin(time * 4) * 0.07f) * scaleMultiplier;
         for(int i = 0; i < 4; i++) {
             for (Vec3 vec : POS) {
                 vec = vec.multiply(1f + (scale * i), 1f + (scale * i), 1f + (scale * i));
@@ -190,7 +200,7 @@ public class UmvuthiSunLayer extends GeoLayerRenderer<EntityUmvuthi> {
             }
         }
         for (Vec3 vec : POS) {
-            builder.vertex(matrix4f, (float) ((float) vec.x * 1.2f), (float) ((float) vec.y * 1.2f), (float) ((float) vec.z * 1.2f))
+            builder.vertex(matrix4f, (float) ((float) vec.x * 1.2f * scaleMultiplier), (float) ((float) vec.y * 1.2f * scaleMultiplier), (float) ((float) vec.z * 1.2f * scaleMultiplier))
                     .color(1f, 1f, 1f, 1f)
                     .uv(0.0f, 0.5f)
                     .overlayCoords(OverlayTexture.NO_OVERLAY)

@@ -964,6 +964,15 @@
 					"name": "armAimController",
 					"parent": "body",
 					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "superNovaCenterRotator",
+					"pivot": [0, 48.59546, -3.76703]
+				},
+				{
+					"name": "superNovaCenter",
+					"parent": "superNovaCenterRotator",
+					"pivot": [0, 48.59546, -3.76703]
 				}
 			]
 		}

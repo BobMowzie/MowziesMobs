@@ -32,6 +32,7 @@ import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -321,6 +322,10 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         return false;
     }
 
+    public boolean shouldRenderSun() {
+        return deathTime < 85 && !(getActiveAbilityType() == EntityUmvuthi.SUPERNOVA_ABILITY && getActiveAbility().getTicksInUse() > 5 && getActiveAbility().getTicksInUse() <= 90);
+    }
+
     @Override
     public void tick() {
         legsUp.updatePrevTimer();
@@ -337,7 +342,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
 //        this.posZ = prevPosZ;
 
         if (level.isClientSide()) {
-            if (deathTime < 20 && active && getActiveAbilityType() != SUPERNOVA_ABILITY) {
+            if (shouldRenderSun()) {
                 if (headPos != null && headPos.length > 0 && headPos[0] != null) {
                     if (this.tickTimer() % 10 == 1) {
                         AdvancedParticleBase.spawnParticle(level, ParticleHandler.GLOW.get(), getX(), getY(), getZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 0.3, 0.4, 1, 9, true, false, new ParticleComponent[]{
@@ -533,9 +538,9 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             timeUntilRoar--;
         }
 
-//        if (getActiveAbility() == null) {
-//            sendAbilityMessage(SPAWN_ABILITY);
-//        }
+        if (getActiveAbility() == null && tickCount % 60 == 0) {
+            sendAbilityMessage(SUPERNOVA_ABILITY);
+        }
     }
 
     @Override
@@ -1205,11 +1210,11 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             }
 
             if (getTicksInUse() == 40) {
-                getUser().playSound(MMSounds.ENTITY_UMVUTHI_ROAR.get(), 1.5f, 1f);
+                getUser().playSound(MMSounds.ENTITY_UMVUTHI_ROAR.get(), 3f, 1f);
             }
 
             if (getLevel().isClientSide) {
-                superNovaEffects(this, getUser().headPos, getLevel());
+                superNovaEffects(this, getUser().betweenHandPos, getLevel());
             }
         }
 
@@ -1233,6 +1238,17 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         private static final ParticleComponent.KeyTrack superNovaKeyTrack2 = ParticleComponent.KeyTrack.oscillate(0, 7, 24);
 
         public static void superNovaEffects(Ability activeAbility, Vec3[] pinLocation, Level level) {
+            // Darken sky
+            Player clientPlayer = Minecraft.getInstance().player;
+            if (clientPlayer == null) return;
+            double distToCaster = activeAbility.getUser().position().distanceToSqr(clientPlayer.position());
+            if (distToCaster < 1600) {
+                Minecraft.getInstance().gameRenderer.darkenWorldAmount += 0.06f;
+                if (Minecraft.getInstance().gameRenderer.darkenWorldAmount > 1.0f)
+                    Minecraft.getInstance().gameRenderer.darkenWorldAmount = 1.0f;
+            }
+
+            // Particle effects
             if (pinLocation == null || pinLocation.length == 0 || pinLocation[0] == null) return;
             int ticksInUse = activeAbility.getTicksInUse();
             LivingEntity user = activeAbility.getUser();

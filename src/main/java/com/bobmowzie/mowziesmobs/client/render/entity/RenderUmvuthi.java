@@ -69,12 +69,6 @@ public class RenderUmvuthi extends MowzieGeoEntityRenderer<EntityUmvuthi> {
             }
         }
 
-        if (umvuthi.getActiveAbilityType() == EntityUmvuthi.SUPERNOVA_ABILITY && umvuthi.betweenHandPos != null && umvuthi.betweenHandPos.length > 0) {
-            MowzieGeoBone betweenHands = getMowzieAnimatedGeoModel().getMowzieBone("sun_render");
-            Vector3d betweenHandPos = betweenHands.getWorldPosition();
-            animatable.betweenHandPos[0] = new Vec3(betweenHandPos.x, betweenHandPos.y, betweenHandPos.z);
-        }
-
 //        matrixStackIn.pushPose();
 //        VertexConsumer ivertexbuilder = bufferIn.getBuffer(MMRenderType.getSolarFlare( new ResourceLocation(MowziesMobs.MODID, "textures/effects/super_nova_8.png")));
 //        PoseStack.Pose matrixstack$entry = matrixStackIn.last();
@@ -85,10 +79,27 @@ public class RenderUmvuthi extends MowzieGeoEntityRenderer<EntityUmvuthi> {
 //        matrixStackIn.popPose();
         super.render(umvuthi, entityYaw, delta, matrixStackIn, bufferIn, packedLightIn);
 
-        MowzieGeoBone head = getMowzieAnimatedGeoModel().getMowzieBone("sun_render");
-        Vector3d worldPos = head.getWorldPosition();
+        MowzieGeoBone sunRender = getMowzieAnimatedGeoModel().getMowzieBone("sun_render");
+        Vector3d sunRenderPos = sunRender.getWorldPosition();
         if (umvuthi.headPos != null && umvuthi.headPos.length > 0)
-        umvuthi.headPos[0] = new Vec3(worldPos.x, worldPos.y, worldPos.z);
+        umvuthi.headPos[0] = new Vec3(sunRenderPos.x, sunRenderPos.y, sunRenderPos.z);
+
+        if (umvuthi.getActiveAbilityType() == EntityUmvuthi.SUPERNOVA_ABILITY && umvuthi.betweenHandPos != null && umvuthi.betweenHandPos.length > 0) {
+            Vector3d novaRenderPos = getMowzieAnimatedGeoModel().getMowzieBone("superNovaCenter").getWorldPosition();
+            // Blend between sun position and animated supernova position
+            float blendStart = 4;
+            float blendDuration = 4;
+            int ticksInUse = umvuthi.getActiveAbility().getTicksInUse();
+            if (ticksInUse <= blendDuration + blendStart) {
+                Vec3 sunRenderPosVec3 = new Vec3(sunRenderPos.x, sunRenderPos.y, sunRenderPos.z);
+                Vec3 novaRenderPosVec3 = new Vec3(novaRenderPos.x, novaRenderPos.y, novaRenderPos.z);
+                float alpha = (umvuthi.getActiveAbility().getTicksInUse() + delta - blendStart) / (blendDuration);
+                alpha = Math.max(0, alpha);
+                Vec3 newPos = novaRenderPosVec3.add(sunRenderPosVec3.subtract(novaRenderPosVec3).scale(1.0 - alpha));
+                novaRenderPos.set(newPos.x, newPos.y, newPos.z);
+            }
+            animatable.betweenHandPos[0] = new Vec3(novaRenderPos.x, novaRenderPos.y, novaRenderPos.z);
+        }
 
         if (!Minecraft.getInstance().isPaused()) {
             MowzieGeoBone mask = getMowzieAnimatedGeoModel().getMowzieBone("maskTwitcher");
