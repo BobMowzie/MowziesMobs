@@ -269,7 +269,7 @@ public enum ClientEventHandler {
             event.setCanceled(true);
             int y = event.getY();
             int i = Minecraft.getInstance().getWindow().getGuiScaledWidth();
-            int j = y - 12;
+            int j = y - 10;
             int k = i / 2 - 91;
             Minecraft.getInstance().getProfiler().push("coolerBossBarBase");
 
@@ -286,7 +286,7 @@ public enum ClientEventHandler {
 
             Minecraft.getInstance().getProfiler().push("coolerBossBar");
             RenderSystem.setShaderTexture(0,BOSS_BAR_OVERLAY_LOCATION);
-            Gui.blit(stack, event.getX() - 12, y - 5, 0,0,196, 16, 196, 16);
+            Gui.blit(stack, event.getX() - 12, y - 5, 0,0,256, 16, 256, 16);
             Minecraft.getInstance().getProfiler().pop();
         }
     }

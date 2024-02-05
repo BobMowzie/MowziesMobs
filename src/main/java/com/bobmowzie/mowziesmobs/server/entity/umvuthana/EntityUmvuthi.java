@@ -538,9 +538,9 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             timeUntilRoar--;
         }
 
-        if (getActiveAbility() == null && tickCount % 60 == 0) {
-            sendAbilityMessage(SUPERNOVA_ABILITY);
-        }
+//        if (getActiveAbility() == null && tickCount % 60 == 0) {
+//            sendAbilityMessage(SUPERNOVA_ABILITY);
+//        }
     }
 
     @Override
@@ -1242,7 +1242,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             Player clientPlayer = Minecraft.getInstance().player;
             if (clientPlayer == null) return;
             double distToCaster = activeAbility.getUser().position().distanceToSqr(clientPlayer.position());
-            if (distToCaster < 1600) {
+            if (distToCaster < 1000) {
                 Minecraft.getInstance().gameRenderer.darkenWorldAmount += 0.06f;
                 if (Minecraft.getInstance().gameRenderer.darkenWorldAmount > 1.0f)
                     Minecraft.getInstance().gameRenderer.darkenWorldAmount = 1.0f;
