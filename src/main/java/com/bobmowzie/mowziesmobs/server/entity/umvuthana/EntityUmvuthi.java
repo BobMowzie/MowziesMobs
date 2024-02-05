@@ -9,7 +9,6 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleOrb;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent.PropertyControl.EnumParticleProperty;
-import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
@@ -858,7 +857,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
     }
 
     @Override
-    protected boolean hasBossBar() {
+    public boolean hasBossBar() {
         return ConfigHandler.COMMON.MOBS.UMVUTHI.hasBossBar.get();
     }
 
@@ -921,6 +920,11 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
     @Override
     public SoundEvent getBossMusic() {
         return MMSounds.MUSIC_UMVUTHI_THEME.get();
+    }
+
+    @Override
+    public boolean resetHealthOnPlayerRespawn() {
+        return ConfigHandler.COMMON.MOBS.UMVUTHI.resetHealthWhenRespawn.get();
     }
 
     public static class SunstrikeAbility extends Ability<EntityUmvuthi> {

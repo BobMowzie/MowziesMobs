@@ -349,6 +349,9 @@ public final class ConfigHandler {
             this.healsOutOfBattle = builder.comment("Disable/enable Ferrous Wroughtnaut healing while not active")
                     .translation(LANG_PREFIX + "heals_out_of_battle")
                     .define("heals_out_of_battle", true);
+            this.resetHealthWhenRespawn = builder.comment("Disable/enable Ferrous Wroughtnaut resetting health when a player respawns nearby. (Prevents respawn cheese!)")
+                    .translation(LANG_PREFIX + "reset_health_when_respawn")
+                    .define("reset_health_when_respawn", true);
             builder.pop();
         }
 
@@ -358,6 +361,8 @@ public final class ConfigHandler {
         public final BooleanValue hasBossBar;
 
         public final BooleanValue healsOutOfBattle;
+
+        public final BooleanValue resetHealthWhenRespawn;
     }
 
     public static class Umvuthi {
@@ -382,6 +387,9 @@ public final class ConfigHandler {
             this.howMany = builder.comment("How many of the item Umvuthi desires in exchange for the Sun's Blessing")
                     .translation(LANG_PREFIX + "trade_how_many")
                     .defineInRange("trade_how_many", 7, 0, 64);
+            this.resetHealthWhenRespawn = builder.comment("Disable/enable Umvuthi resetting health when a player respawns nearby. (Prevents respawn cheese!)")
+                    .translation(LANG_PREFIX + "reset_health_when_respawn")
+                    .define("reset_health_when_respawn", true);
             builder.pop();
         }
 
@@ -396,6 +404,8 @@ public final class ConfigHandler {
         public final ConfigValue<? extends String> whichItem;
 
         public final IntValue howMany;
+
+        public final BooleanValue resetHealthWhenRespawn;
     }
 
     public static class Frostmaw {
@@ -416,6 +426,9 @@ public final class ConfigHandler {
             this.stealableIceCrystal = builder.comment("Allow players to steal frostmaws' ice crystals (only using specific means!)")
                     .translation(LANG_PREFIX + "stealable_ice_crystal")
                     .define("stealable_ice_crystal", true);
+            this.resetHealthWhenRespawn = builder.comment("Disable/enable frostmaws resetting health when a player respawns nearby. (Prevents respawn cheese!)")
+                    .translation(LANG_PREFIX + "reset_health_when_respawn")
+                    .define("reset_health_when_respawn", true);
             builder.pop();
         }
 
@@ -428,6 +441,8 @@ public final class ConfigHandler {
         public final BooleanValue hasBossBar;
 
         public final BooleanValue healsOutOfBattle;
+
+        public final BooleanValue resetHealthWhenRespawn;
     }
 
     public static class Sculptor {

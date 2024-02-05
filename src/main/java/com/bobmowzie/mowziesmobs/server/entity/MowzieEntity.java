@@ -448,7 +448,11 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
         this.bossInfo.setName(this.getDisplayName());
     }
 
-    protected boolean hasBossBar() {
+    public boolean hasBossBar() {
+        return false;
+    }
+
+    public boolean resetHealthOnPlayerRespawn() {
         return false;
     }
 

@@ -29,7 +29,6 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.Difficulty;
@@ -861,7 +860,7 @@ public class EntityFrostmaw extends MowzieLLibraryEntity implements Enemy {
     }
 
     @Override
-    protected boolean hasBossBar() {
+    public boolean hasBossBar() {
         return ConfigHandler.COMMON.MOBS.FROSTMAW.hasBossBar.get();
     }
 
@@ -894,5 +893,10 @@ public class EntityFrostmaw extends MowzieLLibraryEntity implements Enemy {
     @Override
     protected boolean canPlayMusic() {
         return super.canPlayMusic() && (active || getAnimation() == ACTIVATE_ANIMATION);
+    }
+
+    @Override
+    public boolean resetHealthOnPlayerRespawn() {
+        return ConfigHandler.COMMON.MOBS.FROSTMAW.resetHealthWhenRespawn.get();
     }
 }

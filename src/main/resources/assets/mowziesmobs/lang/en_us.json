@@ -170,6 +170,7 @@
   "config.mowziesmobs.foliaath.tooltip": "",
   "config.mowziesmobs.has_boss_bar": "Display Boss Bar",
   "config.mowziesmobs.heals_out_of_battle": "Heal While Not In Battle",
+  "config.mowziesmobs.reset_health_when_respawn": "Reset Health When Players Respawn Nearby",
   "config.mowziesmobs.ferrous_wroughtnaut": "Ferrous Wroughtnaut",
   "config.mowziesmobs.ferrous_wroughtnaut.tooltip": "",
   "config.mowziesmobs.umvuthana": "Umvuthana",

@@ -610,7 +610,7 @@ public class EntityWroughtnaut extends MowzieLLibraryEntity implements Enemy {
     }
 
     @Override
-    protected boolean hasBossBar() {
+    public boolean hasBossBar() {
         return ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.hasBossBar.get();
     }
 
@@ -627,5 +627,10 @@ public class EntityWroughtnaut extends MowzieLLibraryEntity implements Enemy {
     @Override
     protected boolean canPlayMusic() {
         return super.canPlayMusic() && (active || getAnimation() == ACTIVATE_ANIMATION);
+    }
+
+    @Override
+    public boolean resetHealthOnPlayerRespawn() {
+        return ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.resetHealthWhenRespawn.get();
     }
 }
