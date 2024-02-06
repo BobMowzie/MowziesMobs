@@ -95,7 +95,7 @@ public enum ClientEventHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void renderLivingEvent(RenderLivingEvent.Pre<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>> event) {
         if (event.getEntity() instanceof Player) {
-            if (!ConfigHandler.CLIENT.customPlayerAnims.get() || ModList.get().isLoaded("moreplayermodels")) return;
+            if (!ConfigHandler.CLIENT.customPlayerAnims.get() || ModList.get().isLoaded("moreplayermodels") || ModList.get().isLoaded("mna")) return;
             Player player = (Player) event.getEntity();
             if (player == null) return;
             float delta = event.getPartialTick();
