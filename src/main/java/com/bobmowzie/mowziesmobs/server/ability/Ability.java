@@ -7,6 +7,8 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilitySection.AbilitySectionDur
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection.AbilitySectionInstant;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieGeckoEntity;
+import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
+import com.bobmowzie.mowziesmobs.server.potion.PotionTypeHandler;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -135,6 +137,7 @@ public class Ability<T extends LivingEntity> {
      * @return Whether or not the ability can be used
      */
     public boolean canUse() {
+        if (getUser().hasEffect(EffectHandler.FROZEN)) return false;
         boolean toReturn = (!isUsing() || canCancelSelf()) && cooldownTimer == 0;
         if (!runsInBackground()) toReturn = toReturn && (abilityCapability.getActiveAbility() == null || canCancelActiveAbility() || abilityCapability.getActiveAbility().canBeCanceledByAbility(this));
         return toReturn;
@@ -168,7 +171,7 @@ public class Ability<T extends LivingEntity> {
     }
 
     protected boolean canContinueUsing() {
-        return true;
+        return !getUser().hasEffect(EffectHandler.FROZEN);
     }
 
     public boolean isUsing() {
