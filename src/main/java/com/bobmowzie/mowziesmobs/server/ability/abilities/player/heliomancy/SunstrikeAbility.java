@@ -17,7 +17,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class SunstrikeAbility extends PlayerAbility {
     private static final double REACH = 15;
-    private final static int SUNSTRIKE_RECOVERY = 20;
+    private final static int SUNSTRIKE_RECOVERY = 15;
 
     protected BlockHitResult rayTrace;
 
