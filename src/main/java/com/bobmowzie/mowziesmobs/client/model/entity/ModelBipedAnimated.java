@@ -21,22 +21,34 @@ public class ModelBipedAnimated<T extends LivingEntity> extends HumanoidModel<T>
         if (bipedModel.body instanceof ModelPartMatrix) {
             ((ModelPartMatrix) bipedModel.body).setWorldXform(geckoModel.bipedBody().getWorldSpaceXform());
             ((ModelPartMatrix) bipedModel.body).setWorldNormal(geckoModel.bipedBody().getWorldSpaceNormal());
+        }
 
+        if (bipedModel.head instanceof ModelPartMatrix) {
             ((ModelPartMatrix) bipedModel.head).setWorldXform(geckoModel.bipedHead().getWorldSpaceXform());
             ((ModelPartMatrix) bipedModel.head).setWorldNormal(geckoModel.bipedHead().getWorldSpaceNormal());
+        }
 
+        if (bipedModel.hat instanceof ModelPartMatrix) {
             ((ModelPartMatrix) bipedModel.hat).setWorldXform(geckoModel.bipedHead().getWorldSpaceXform());
             ((ModelPartMatrix) bipedModel.hat).setWorldNormal(geckoModel.bipedHead().getWorldSpaceNormal());
+        }
 
+        if (bipedModel.leftLeg instanceof ModelPartMatrix) {
             ((ModelPartMatrix) bipedModel.leftLeg).setWorldXform(geckoModel.bipedLeftLeg().getWorldSpaceXform());
             ((ModelPartMatrix) bipedModel.leftLeg).setWorldNormal(geckoModel.bipedLeftLeg().getWorldSpaceNormal());
+        }
 
+        if (bipedModel.rightLeg instanceof ModelPartMatrix) {
             ((ModelPartMatrix) bipedModel.rightLeg).setWorldXform(geckoModel.bipedRightLeg().getWorldSpaceXform());
             ((ModelPartMatrix) bipedModel.rightLeg).setWorldNormal(geckoModel.bipedRightLeg().getWorldSpaceNormal());
+        }
 
+        if (bipedModel.rightArm instanceof ModelPartMatrix) {
             ((ModelPartMatrix) bipedModel.rightArm).setWorldXform(geckoModel.bipedRightArm().getWorldSpaceXform());
             ((ModelPartMatrix) bipedModel.rightArm).setWorldNormal(geckoModel.bipedRightArm().getWorldSpaceNormal());
+        }
 
+        if (bipedModel.leftArm instanceof ModelPartMatrix) {
             ((ModelPartMatrix) bipedModel.leftArm).setWorldXform(geckoModel.bipedLeftArm().getWorldSpaceXform());
             ((ModelPartMatrix) bipedModel.leftArm).setWorldNormal(geckoModel.bipedLeftArm().getWorldSpaceNormal());
         }
