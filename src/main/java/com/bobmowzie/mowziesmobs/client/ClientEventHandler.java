@@ -47,6 +47,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.ModList;
 import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
 
 @OnlyIn(Dist.CLIENT)
@@ -94,7 +95,7 @@ public enum ClientEventHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void renderLivingEvent(RenderLivingEvent.Pre<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>> event) {
         if (event.getEntity() instanceof Player) {
-            if (!ConfigHandler.CLIENT.customPlayerAnims.get()) return;
+            if (!ConfigHandler.CLIENT.customPlayerAnims.get() || ModList.get().isLoaded("moreplayermodels")) return;
             Player player = (Player) event.getEntity();
             if (player == null) return;
             float delta = event.getPartialTick();
