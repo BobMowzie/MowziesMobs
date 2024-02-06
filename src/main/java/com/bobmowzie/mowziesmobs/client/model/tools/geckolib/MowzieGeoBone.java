@@ -6,6 +6,8 @@ import software.bernie.geckolib3.geo.render.built.GeoBone;
 
 public class MowzieGeoBone extends GeoBone {
 
+    protected boolean forceMatrixTransform = false;
+
     public MowzieGeoBone() {
         super();
     }
@@ -117,5 +119,13 @@ public class MowzieGeoBone extends GeoBone {
         setRotationX(getRotationX() + source.getRotationX() - source.getInitialSnapshot().rotationValueX);
         setRotationY(getRotationY() + source.getRotationY() - source.getInitialSnapshot().rotationValueY);
         setRotationZ(getRotationZ() + source.getRotationZ() - source.getInitialSnapshot().rotationValueZ);
+    }
+
+    public void setForceMatrixTransform(boolean forceMatrixTransform) {
+        this.forceMatrixTransform = forceMatrixTransform;
+    }
+
+    public boolean isForceMatrixTransform() {
+        return forceMatrixTransform;
     }
 }
