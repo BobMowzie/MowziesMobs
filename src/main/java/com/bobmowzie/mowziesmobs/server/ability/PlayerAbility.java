@@ -78,6 +78,16 @@ public class PlayerAbility extends Ability<Player> {
         }
     }
 
+    @Override
+    public boolean canUse() {
+        return super.canUse() && !getUser().isSpectator();
+    }
+
+    @Override
+    protected boolean canContinueUsing() {
+        return super.canContinueUsing() && !getUser().isSpectator();
+    }
+
     public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e, GeckoPlayer.Perspective perspective) {
         AnimationBuilder whichAnimation;
         if (perspective == GeckoPlayer.Perspective.FIRST_PERSON) {
