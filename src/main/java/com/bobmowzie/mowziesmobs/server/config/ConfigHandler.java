@@ -718,15 +718,15 @@ public final class ConfigHandler {
             this.glowEffect = builder.comment("Toggles the lantern glow effect, which may look bad with certain shaders.")
                     .translation(LANG_PREFIX + "glow_effect")
                     .define("glow_effect", true);
-            this.oldBarakoaTextures = builder.comment("Use the old Barakoa textures instead of the current ones.")
-                    .translation(LANG_PREFIX + "old_barakoa_textures")
-                    .define("old_barakoa_textures", false);
             this.doCameraShakes = builder.comment("Enable camera shaking during certain mob attacks and abilities.")
                     .translation(LANG_PREFIX + "do_camera_shake")
                     .define("do_camera_shake", true);
             this.playBossMusic = builder.comment("Play boss battle themes during boss encounters.")
                     .translation(LANG_PREFIX + "play_boss_music")
                     .define("play_boss_music", true);
+            this.customBossBars = builder.comment("Use custom boss health bar textures, if the boss has them.")
+                    .translation(LANG_PREFIX + "custom_boss_bar")
+                    .define("custom_boss_bar", true);
             this.customPlayerAnims = builder.comment("Use custom player animations.")
                     .translation(LANG_PREFIX + "custom_player_anims")
                     .define("custom_player_anims", true);
@@ -735,11 +735,11 @@ public final class ConfigHandler {
 
         public final BooleanValue glowEffect;
 
-        public final BooleanValue oldBarakoaTextures;
-
         public final BooleanValue doCameraShakes;
 
         public final BooleanValue playBossMusic;
+
+        public final BooleanValue customBossBars;
 
         public final BooleanValue customPlayerAnims;
     }

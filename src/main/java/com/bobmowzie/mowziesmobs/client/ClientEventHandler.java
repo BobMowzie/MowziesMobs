@@ -265,6 +265,7 @@ public enum ClientEventHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onBossBar(RenderGameOverlayEvent.BossInfo event){
+        if (!ConfigHandler.CLIENT.customBossBars.get()) return;
         if (event.getBossEvent().getName().toString().contains("entity.mowziesmobs.umvuthi")) {
             PoseStack stack = event.getMatrixStack();
             event.setCanceled(true);

@@ -230,7 +230,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, TALK_ABILITY, false));
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, ROAR_ABILITY, true));
         this.goalSelector.addGoal(5, new LookAtTargetGoal(this,24.0F));
-        this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 10.0F));
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, EntityUmvuthana.class, 8.0F));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
     }

@@ -260,6 +260,7 @@
   "config.mowziesmobs.old_umvuthana_textures": "Use Old Umvuthana Textures",
   "config.mowziesmobs.do_camera_shake": "Do Camera Shake",
   "config.mowziesmobs.play_boss_music": "Play Boss Music",
+  "config.mowziesmobs.custom_boss_bar": "Custom Boss Health Bars",
   "config.mowziesmobs.glow_effect": "Display Glow Effect",
   "config.mowziesmobs.custom_player_anims": "Custom Player Animations",
 
