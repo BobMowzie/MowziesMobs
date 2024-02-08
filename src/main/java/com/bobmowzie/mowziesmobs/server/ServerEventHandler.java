@@ -34,6 +34,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -368,8 +369,14 @@ public final class ServerEventHandler {
         BlockState block = event.getState();
         if (block.getBlock() == Blocks.GOLD_BLOCK ||
             block.getMaterial() == Material.WOOD ||
-            block.getBlock() == BlockHandler.THATCH.get() ||
+            block.is(BlockTags.LEAVES) ||
+            block.getBlock() == Blocks.LIGHT_GRAY_TERRACOTTA ||
             block.getBlock() == Blocks.RED_TERRACOTTA ||
+            block.getBlock() == Blocks.SMOOTH_RED_SANDSTONE_SLAB ||
+            block.getBlock() == Blocks.SMOOTH_RED_SANDSTONE ||
+            block.getBlock() == Blocks.SMOOTH_RED_SANDSTONE_STAIRS ||
+            block.getBlock() == Blocks.CAMPFIRE ||
+            block.getBlock() == Blocks.IRON_BARS ||
             block.getBlock() == Blocks.SKELETON_SKULL ||
             block.getBlock() == Blocks.TORCH
         ) {
