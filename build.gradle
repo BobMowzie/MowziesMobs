@@ -23,6 +23,12 @@ minecraft {
     runs {
         client {
             workingDirectory project.file("run")
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN'
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+
             property "forge.logging.console.level", "debug"
             mods {
                 mowziesmobs {
@@ -32,6 +38,12 @@ minecraft {
         }
         server {
             workingDirectory project.file("run-server")
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', ''
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+
             property "forge.logging.console.level", "debug"
             mods {
                 mowziesmobs {
