@@ -48,6 +48,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.ModList;
+import org.apache.commons.lang3.tuple.Pair;
 import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
 
 @OnlyIn(Dist.CLIENT)
@@ -55,8 +56,6 @@ public enum ClientEventHandler {
     INSTANCE;
 
     private static final ResourceLocation FROZEN_BLUR = new ResourceLocation("textures/misc/powder_snow_outline.png");
-    private static final ResourceLocation BOSS_BAR_LOCATION = new ResourceLocation(MowziesMobs.MODID, "textures/gui/boss_bar/umvuthi_bossbar.png");
-    private static final ResourceLocation BOSS_BAR_OVERLAY_LOCATION = new ResourceLocation(MowziesMobs.MODID,"textures/gui/boss_bar/umvuthi_bar_overlay.png");
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onHandRender(RenderHandEvent event) {
@@ -266,29 +265,31 @@ public enum ClientEventHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onBossBar(RenderGameOverlayEvent.BossInfo event){
         if (!ConfigHandler.CLIENT.customBossBars.get()) return;
-        if (event.getBossEvent().getName().toString().contains("entity.mowziesmobs.umvuthi")) {
-            PoseStack stack = event.getMatrixStack();
-            event.setCanceled(true);
-            int y = event.getY();
-            int i = Minecraft.getInstance().getWindow().getGuiScaledWidth();
-            int j = y - 10;
-            int k = i / 2 - 91;
-            Minecraft.getInstance().getProfiler().push("coolerBossBarBase");
+        Pair<ResourceLocation, ResourceLocation> bossBar = ClientProxy.bossBarResourceLocations.getOrDefault(event.getBossEvent().getId(), null);
+        if (bossBar == null || bossBar.getLeft() == null) return;
+        PoseStack stack = event.getMatrixStack();
+        event.setCanceled(true);
+        int y = event.getY();
+        int i = Minecraft.getInstance().getWindow().getGuiScaledWidth();
+        int j = y - 10;
+        int k = i / 2 - 91;
+        Minecraft.getInstance().getProfiler().push("coolerBossBarBase");
 
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            RenderSystem.setShaderTexture(0, BOSS_BAR_LOCATION);
-            drawBar(stack, event.getX() + 2, y, event.getBossEvent());
-            Component component = event.getBossEvent().getName().copy().withStyle(ChatFormatting.GOLD);
-            Minecraft.getInstance().getProfiler().pop();
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, bossBar.getLeft());
+        drawBar(stack, event.getX() + 2, y, event.getBossEvent());
+        Component component = event.getBossEvent().getName().copy().withStyle(ChatFormatting.GOLD);
+        Minecraft.getInstance().getProfiler().pop();
 
-            int l = Minecraft.getInstance().font.width(component);
-            int i1 = i / 2 - l / 2;
-            int j1 = j;
-            Minecraft.getInstance().font.drawShadow(stack, component, (float)i1, (float)j1, 16777215);
+        int l = Minecraft.getInstance().font.width(component);
+        int i1 = i / 2 - l / 2;
+        int j1 = j;
+        Minecraft.getInstance().font.drawShadow(stack, component, (float)i1, (float)j1, 16777215);
 
+        if (bossBar.getRight() != null) {
             Minecraft.getInstance().getProfiler().push("coolerBossBar");
-            RenderSystem.setShaderTexture(0,BOSS_BAR_OVERLAY_LOCATION);
-            Gui.blit(stack, event.getX() - 12, y - 5, 0,0,256, 16, 256, 16);
+            RenderSystem.setShaderTexture(0, bossBar.getRight());
+            Gui.blit(stack, event.getX() - 12, y - 5, 0, 0, 256, 16, 256, 16);
             Minecraft.getInstance().getProfiler().pop();
         }
     }
