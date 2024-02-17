@@ -1,46 +1,64 @@
 package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Nullable;
+
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthanaMinion;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.MaskType;
-import com.bobmowzie.mowziesmobs.server.item.ItemUmvuthanaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
+import com.bobmowzie.mowziesmobs.server.item.ItemUmvuthanaMask;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.*;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.StructureManager;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LadderBlock;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
-import net.minecraft.world.level.levelgen.structure.*;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.StructurePiece;
+import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor;
+import net.minecraft.world.level.levelgen.structure.TemplateStructurePiece;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockIgnoreProcessor;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import net.minecraft.world.level.material.FluidState;
-
-import javax.annotation.Nullable;
-import java.util.*;
 
 public class UmvuthanaGrovePieces {
     private static final Set<Block> BLOCKS_NEEDING_POSTPROCESSING = ImmutableSet.<Block>builder().add(Blocks.NETHER_BRICK_FENCE).add(Blocks.TORCH).add(Blocks.WALL_TORCH).add(Blocks.OAK_FENCE).add(Blocks.SPRUCE_FENCE).add(Blocks.DARK_OAK_FENCE).add(Blocks.ACACIA_FENCE).add(Blocks.BIRCH_FENCE).add(Blocks.JUNGLE_FENCE).add(Blocks.LADDER).add(Blocks.SKELETON_SKULL).build();
@@ -113,13 +131,13 @@ public class UmvuthanaGrovePieces {
             .put(THRONE, new Pair<>(new BlockPos(4, 0, 1), new BlockPos(-4, 0, -3)))
             .build();
 
-    public static StructurePiece addPiece(ResourceLocation resourceLocation, StructureManager manager, BlockPos pos, Rotation rot, StructurePieceAccessor pieces, WorldgenRandom rand) {
+    public static StructurePiece addPiece(ResourceLocation resourceLocation, StructureTemplateManager manager, BlockPos pos, Rotation rot, StructurePieceAccessor pieces, WorldgenRandom rand) {
         StructurePiece newPiece = new UmvuthanaGrovePieces.Piece(manager, resourceLocation, rot, pos);
         pieces.addPiece(newPiece);
         return newPiece;
     }
 
-    public static StructurePiece addPieceCheckBounds(ResourceLocation resourceLocation, StructureManager manager, BlockPos pos, Rotation rot, StructurePieceAccessor pieces, WorldgenRandom rand, List<StructurePiece> ignore) {
+    public static StructurePiece addPieceCheckBounds(ResourceLocation resourceLocation, StructureTemplateManager manager, BlockPos pos, Rotation rot, StructurePieceAccessor pieces, WorldgenRandom rand, List<StructurePiece> ignore) {
         UmvuthanaGrovePieces.Piece newPiece = new UmvuthanaGrovePieces.Piece(manager, resourceLocation, rot, pos);
         StructurePiece collisionPiece = pieces.findCollisionPiece(newPiece.getCollisionBoundingBox());
         if (collisionPiece != null && !ignore.contains(collisionPiece)) return null;
@@ -127,7 +145,7 @@ public class UmvuthanaGrovePieces {
         return newPiece;
     }
 
-    public static StructurePiece addPlatform(StructureManager manager, BlockPos pos, Rotation rot, StructurePiecesBuilder builder, WorldgenRandom rand) {
+    public static StructurePiece addPlatform(StructureTemplateManager manager, BlockPos pos, Rotation rot, StructurePiecesBuilder builder, WorldgenRandom rand) {
         int whichPlatform = rand.nextInt(PLATFORMS.length);
         Piece newPiece = new Piece(manager, PLATFORMS[whichPlatform], rot, pos);
         if (findCollisionPiece(builder.pieces, newPiece.getCollisionBoundingBox()) != null) return null;
@@ -140,7 +158,7 @@ public class UmvuthanaGrovePieces {
         return newPiece;
     }
 
-    public static StructurePiece addPieceCheckBounds(ResourceLocation resourceLocation, StructureManager manager, BlockPos pos, Rotation rot, StructurePiecesBuilder pieces, WorldgenRandom rand) {
+    public static StructurePiece addPieceCheckBounds(ResourceLocation resourceLocation, StructureTemplateManager manager, BlockPos pos, Rotation rot, StructurePiecesBuilder pieces, WorldgenRandom rand) {
        return addPieceCheckBounds(resourceLocation, manager, pos, rot, pieces, rand, Collections.emptyList());
     }
 
@@ -167,7 +185,7 @@ public class UmvuthanaGrovePieces {
         protected ResourceLocation resourceLocation;
         public BoundingBox collisionBoundingBox;
 
-        public Piece(StructurePieceType pieceType, StructureManager manager, ResourceLocation resourceLocationIn, Rotation rotation, BlockPos pos) {
+        public Piece(StructurePieceType pieceType, StructureTemplateManager manager, ResourceLocation resourceLocationIn, Rotation rotation, BlockPos pos) {
             super(pieceType, 0, manager, resourceLocationIn, resourceLocationIn.toString(), makeSettings(rotation, resourceLocationIn), makePosition(resourceLocationIn, pos, rotation));
             this.resourceLocation = resourceLocationIn;
             this.collisionBoundingBox = makeCollisionBoundingBox();
@@ -175,12 +193,12 @@ public class UmvuthanaGrovePieces {
         }
 
         public Piece(StructurePieceType pieceType, StructurePieceSerializationContext context, CompoundTag tagCompound) {
-            super(pieceType, tagCompound, context.structureManager(), (resourceLocation) -> makeSettings(Rotation.valueOf(tagCompound.getString("Rot")), resourceLocation));
+            super(pieceType, tagCompound, context.structureTemplateManager(), (resourceLocation) -> makeSettings(Rotation.valueOf(tagCompound.getString("Rot")), resourceLocation));
             this.collisionBoundingBox = makeCollisionBoundingBox();
             if (resourceLocation == THRONE || resourceLocation == FIREPIT) boundingBox = getBoundingBox().moved(0, 1, 0);
         }
 
-        public Piece(StructureManager manager, ResourceLocation resourceLocationIn, Rotation rotation, BlockPos pos) {
+        public Piece(StructureTemplateManager manager, ResourceLocation resourceLocationIn, Rotation rotation, BlockPos pos) {
             this(FeatureHandler.UMVUTHANA_GROVE_PIECE, manager, resourceLocationIn, rotation, pos);
         }
 
@@ -226,7 +244,7 @@ public class UmvuthanaGrovePieces {
         }
 
         @Override
-        public void postProcess(WorldGenLevel p_192682_, StructureFeatureManager p_192683_, ChunkGenerator p_192684_, Random p_192685_, BoundingBox p_192686_, ChunkPos p_192687_, BlockPos p_192688_) {
+        public void postProcess(WorldGenLevel p_192682_, StructureManager p_192683_, ChunkGenerator p_192684_, RandomSource p_192685_, BoundingBox p_192686_, ChunkPos p_192687_, BlockPos p_192688_) {
             super.postProcess(p_192682_, p_192683_, p_192684_, p_192685_, p_192686_, p_192687_, p_192688_);
         }
 
@@ -241,7 +259,7 @@ public class UmvuthanaGrovePieces {
          * rare block spawns under the floor, or what item an Item Frame will have.
          */
         @Override
-        protected void handleDataMarker(String function, BlockPos pos, ServerLevelAccessor worldIn, Random rand, BoundingBox sbb) {
+        protected void handleDataMarker(String function, BlockPos pos, ServerLevelAccessor worldIn, RandomSource rand, BoundingBox sbb) {
             Rotation rotation = this.placeSettings.getRotation();
             if (function.equals("support")) {
                 worldIn.setBlock(pos, Blocks.OAK_FENCE.defaultBlockState(), 3);
@@ -381,7 +399,7 @@ public class UmvuthanaGrovePieces {
             }
         }
 
-        public void fillAirLiquidDownTrunk(LevelAccessor worldIn, BlockPos startPos, Random rand) {
+        public void fillAirLiquidDownTrunk(LevelAccessor worldIn, BlockPos startPos, RandomSource rand) {
             int i = startPos.getX();
             int j = startPos.getY();
             int k = startPos.getZ();
@@ -392,7 +410,7 @@ public class UmvuthanaGrovePieces {
             }
         }
 
-        public void fillAirLiquidDownBase(LevelAccessor worldIn, BlockPos startPos, Random rand) {
+        public void fillAirLiquidDownBase(LevelAccessor worldIn, BlockPos startPos, RandomSource rand) {
             int i = startPos.getX();
             int j = startPos.getY();
             int k = startPos.getZ();
@@ -403,7 +421,7 @@ public class UmvuthanaGrovePieces {
             }
         }
 
-        public void genStairs(LevelAccessor worldIn, BlockPos pos, Random rand, Direction direction) {
+        public void genStairs(LevelAccessor worldIn, BlockPos pos, RandomSource rand, Direction direction) {
             for (int i = 1; i < 5; i++) {
                 if (!Block.canSupportRigidBlock(worldIn, pos)) {
                     BlockState state = rand.nextFloat() > 0.5 ? Blocks.ACACIA_SLAB.defaultBlockState() : Blocks.SMOOTH_RED_SANDSTONE_SLAB.defaultBlockState();
@@ -421,7 +439,7 @@ public class UmvuthanaGrovePieces {
             fillAirLiquidDown(worldIn, Blocks.LADDER.defaultBlockState().setValue(LadderBlock.FACING, direction), pos.relative(direction));
         }
 
-        public void genSpike(LevelAccessor worldIn, BlockPos startPos, Random rand, int numLogs, int numFence, int numBars, int numSkulls) {
+        public void genSpike(LevelAccessor worldIn, BlockPos startPos, RandomSource rand, int numLogs, int numFence, int numBars, int numSkulls) {
             int groundPos = worldIn.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, startPos.getX(), startPos.getZ());
             BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(startPos.getX(), groundPos - 1, startPos.getZ());
             for (int i = 0; i < numLogs; i++) {
@@ -444,7 +462,7 @@ public class UmvuthanaGrovePieces {
 
     public static class FirepitPiece extends Piece {
 
-        public FirepitPiece(StructureManager manager, Rotation rotation, BlockPos pos) {
+        public FirepitPiece(StructureTemplateManager manager, Rotation rotation, BlockPos pos) {
             super(FeatureHandler.UMVUTHANA_FIREPIT, manager, FIREPIT, rotation, pos);
         }
 
@@ -460,7 +478,7 @@ public class UmvuthanaGrovePieces {
         }
 
         @Override
-        public void postProcess(WorldGenLevel worldIn, StructureFeatureManager structureManager, ChunkGenerator chunkGenerator, Random randomIn, BoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+        public void postProcess(WorldGenLevel worldIn, StructureManager structureManager, ChunkGenerator chunkGenerator, RandomSource randomIn, BoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
             super.postProcess(worldIn, structureManager, chunkGenerator, randomIn, p_230383_5_, p_230383_6_, p_230383_7_);
             BlockPos centerPos = findGround(worldIn, 4, 4);
 

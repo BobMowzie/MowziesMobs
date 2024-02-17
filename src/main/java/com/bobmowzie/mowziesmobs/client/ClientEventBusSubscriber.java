@@ -1,15 +1,36 @@
 package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.gui.GuiUmvuthiTrade;
-import com.bobmowzie.mowziesmobs.client.gui.GuiUmvuthanaTrade;
 import com.bobmowzie.mowziesmobs.client.gui.GuiSculptorTrade;
+import com.bobmowzie.mowziesmobs.client.gui.GuiUmvuthanaTrade;
+import com.bobmowzie.mowziesmobs.client.gui.GuiUmvuthiTrade;
 import com.bobmowzie.mowziesmobs.client.render.block.GongRenderer;
-import com.bobmowzie.mowziesmobs.client.render.entity.*;
+import com.bobmowzie.mowziesmobs.client.render.entity.RenderAxeAttack;
+import com.bobmowzie.mowziesmobs.client.render.entity.RenderBoulder;
+import com.bobmowzie.mowziesmobs.client.render.entity.RenderDart;
+import com.bobmowzie.mowziesmobs.client.render.entity.RenderFallingBlock;
+import com.bobmowzie.mowziesmobs.client.render.entity.RenderFoliaath;
+import com.bobmowzie.mowziesmobs.client.render.entity.RenderFoliaathBaby;
+import com.bobmowzie.mowziesmobs.client.render.entity.RenderFrostmaw;
+import com.bobmowzie.mowziesmobs.client.render.entity.RenderGrottol;
+import com.bobmowzie.mowziesmobs.client.render.entity.RenderIceBall;
+import com.bobmowzie.mowziesmobs.client.render.entity.RenderLantern;
+import com.bobmowzie.mowziesmobs.client.render.entity.RenderNaga;
+import com.bobmowzie.mowziesmobs.client.render.entity.RenderNothing;
+import com.bobmowzie.mowziesmobs.client.render.entity.RenderPillar;
+import com.bobmowzie.mowziesmobs.client.render.entity.RenderPoisonBall;
+import com.bobmowzie.mowziesmobs.client.render.entity.RenderRockSling;
+import com.bobmowzie.mowziesmobs.client.render.entity.RenderSolarBeam;
+import com.bobmowzie.mowziesmobs.client.render.entity.RenderSunstrike;
+import com.bobmowzie.mowziesmobs.client.render.entity.RenderSuperNova;
+import com.bobmowzie.mowziesmobs.client.render.entity.RenderUmvuthana;
+import com.bobmowzie.mowziesmobs.client.render.entity.RenderUmvuthi;
+import com.bobmowzie.mowziesmobs.client.render.entity.RenderWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.block.entity.BlockEntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.MaskType;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerHandler;
+
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
@@ -64,9 +85,9 @@ public class ClientEventBusSubscriber {
         BlockEntityRenderers.register(BlockEntityHandler.GONG_BLOCK_ENTITY.get(), GongRenderer::new);
         EntityRenderers.register(EntityHandler.ROCK_SLING.get(), RenderRockSling::new);
 
-        MenuScreens.register(ContainerHandler.CONTAINER_UMVUTHANA_TRADE, GuiUmvuthanaTrade::new);
-        MenuScreens.register(ContainerHandler.CONTAINER_UMVUTHI_TRADE, GuiUmvuthiTrade::new);
-        MenuScreens.register(ContainerHandler.CONTAINER_SCULPTOR_TRADE, GuiSculptorTrade::new);
+        MenuScreens.register(ContainerHandler.CONTAINER_UMVUTHANA_TRADE.get(), GuiUmvuthanaTrade::new);
+        MenuScreens.register(ContainerHandler.CONTAINER_UMVUTHI_TRADE.get(), GuiUmvuthiTrade::new);
+        MenuScreens.register(ContainerHandler.CONTAINER_SCULPTOR_TRADE.get(), GuiSculptorTrade::new);
     }
 
     @SubscribeEvent

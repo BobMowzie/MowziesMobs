@@ -1,9 +1,13 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
+
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -12,9 +16,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-
-import javax.annotation.Nullable;
-import java.util.List;
 
 /**
  * Created by BobMowzie on 10/31/2016.
@@ -36,17 +37,17 @@ public class ItemGrantSunsBlessing extends Item {
         int effectDuration = ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.effectDuration.get();
         int solarBeamCost = ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.solarBeamCost.get();
         tooltip.add(
-                new TranslatableComponent(getDescriptionId() + ".text.0")
+                Component.translatable(getDescriptionId() + ".text.0")
                 .append(" " + effectDuration + " ")
-                .append(new TranslatableComponent(getDescriptionId() + ".text.1")).setStyle(ItemHandler.TOOLTIP_STYLE)
+                .append(Component.translatable(getDescriptionId() + ".text.1")).setStyle(ItemHandler.TOOLTIP_STYLE)
         );
-        tooltip.add(new TranslatableComponent(getDescriptionId() + ".text.2").setStyle(ItemHandler.TOOLTIP_STYLE));
-        tooltip.add(new TranslatableComponent(getDescriptionId() + ".text.3").setStyle(ItemHandler.TOOLTIP_STYLE));
+        tooltip.add(Component.translatable(getDescriptionId() + ".text.2").setStyle(ItemHandler.TOOLTIP_STYLE));
+        tooltip.add(Component.translatable(getDescriptionId() + ".text.3").setStyle(ItemHandler.TOOLTIP_STYLE));
         tooltip.add(
-                new TranslatableComponent(getDescriptionId() + ".text.4")
+                Component.translatable(getDescriptionId() + ".text.4")
                 .append(" " + solarBeamCost + " ")
-                .append(new TranslatableComponent(getDescriptionId() + ".text.5")).setStyle(ItemHandler.TOOLTIP_STYLE)
+                .append(Component.translatable(getDescriptionId() + ".text.5")).setStyle(ItemHandler.TOOLTIP_STYLE)
         );
-        tooltip.add(new TranslatableComponent(getDescriptionId() + ".text.6").setStyle(ItemHandler.TOOLTIP_STYLE));
+        tooltip.add(Component.translatable(getDescriptionId() + ".text.6").setStyle(ItemHandler.TOOLTIP_STYLE));
     }
 }

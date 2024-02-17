@@ -35,7 +35,7 @@ public class WroughtnautChamberStructure extends MowzieStructure<NoneFeatureConf
         Rotation rotation = tryResult.getRight();
         BlockPos rotationOffset = new BlockPos(0, 0, -9).rotate(rotation);
         pos = pos.offset(rotationOffset);
-        WroughtnautChamberPieces.start(pieceGenerator.structureManager(), pos, rotation, builder);
+        WroughtnautChamberPieces.start(pieceGenerator.structureTemplateManager(), pos, rotation, builder);
     }
 
     @Nullable

@@ -36,9 +36,13 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RenderGuiEvent;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -159,17 +163,17 @@ public enum ClientEventHandler {
     }
 
     @SubscribeEvent
-    public void onRenderOverlay(RenderGameOverlayEvent.PostLayer e) {
+    public void onRenderOverlay(RenderGuiOverlayEvent.Post e) {
         final int startTime = 210;
         final int pointStart = 1200;
         final int timePerMillis = 22;
-        if (e.getOverlay() == ForgeIngameGui.FROSTBITE_ELEMENT) {
+        if (e.getOverlay() == VanillaGuiOverlay.FROSTBITE.type()) {
             if (Minecraft.getInstance().player != null) {
                 FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(Minecraft.getInstance().player, CapabilityHandler.FROZEN_CAPABILITY);
                 if (frozenCapability != null && frozenCapability.getFrozen() && Minecraft.getInstance().options.getCameraType() == CameraType.FIRST_PERSON) {
                     RenderSystem.setShaderTexture(0, FROZEN_BLUR);
                     Window res = e.getWindow();
-                    GuiComponent.blit(e.getMatrixStack(), 0, 0, 0, 0, res.getGuiScaledWidth(), res.getGuiScaledHeight(), res.getGuiScaledWidth(), res.getGuiScaledHeight());
+                    GuiComponent.blit(e.getPoseStack(), 0, 0, 0, 0, res.getGuiScaledWidth(), res.getGuiScaledHeight(), res.getGuiScaledWidth(), res.getGuiScaledHeight());
                 }
             }
         }
@@ -177,14 +181,14 @@ public enum ClientEventHandler {
 
     // Remove frozen overlay
     @SubscribeEvent
-    public void onRenderHUD(RenderGameOverlayEvent.PreLayer event) {
+    public void onRenderHUD(RenderGuiOverlayEvent.Pre event) {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player != null && player.isPassenger()) {
             if (player.getVehicle() instanceof EntityFrozenController) {
-                if (event.getOverlay() == ForgeIngameGui.MOUNT_HEALTH_ELEMENT) {
+                if (event.getOverlay() == VanillaGuiOverlay.MOUNT_HEALTH.type()) {
                     event.setCanceled(true);
                 }
-                if (event.getType().equals(RenderGameOverlayEvent.ElementType.ALL)) {
+                if (event.getType().equals(RenderGuiOverlayEvent.ElementType.ALL)) {
                     Minecraft.getInstance().gui.setOverlayMessage(TextComponent.EMPTY, false);
                 }
             }
@@ -192,8 +196,8 @@ public enum ClientEventHandler {
     }
 
     @SubscribeEvent
-    public void updateFOV(FOVModifierEvent event) {
-        Player player = event.getEntity();
+    public void updateFOV(ViewportEvent.ComputeFov event) {
+        Player player = (Player) event.getCamera().getEntity();
         if (player.isUsingItem() && player.getUseItem().getItem() instanceof ItemBlowgun) {
             int i = player.getTicksUsingItem();
             float f1 = (float)i / 5.0F;
@@ -203,12 +207,12 @@ public enum ClientEventHandler {
                 f1 = f1 * f1;
             }
 
-            event.setNewfov(1.0F - f1 * 0.15F);
+            event.setFOV(1.0F - f1 * 0.15F);
         }
     }
 
     @SubscribeEvent
-    public void onSetupCamera(EntityViewRenderEvent.CameraSetup event) {
+    public void onSetupCamera(ViewportEvent.ComputeCameraAngles event) {
         Player player = Minecraft.getInstance().player;
         float delta = Minecraft.getInstance().getFrameTime();
         float ticksExistedDelta = player.tickCount + delta;
@@ -256,7 +260,7 @@ public enum ClientEventHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onBossBar(RenderGameOverlayEvent.BossInfo event){
+    public void onBossBar(RenderGuiEvent.BossInfo event){
         if (!ConfigHandler.CLIENT.customBossBars.get()) return;
         Pair<ResourceLocation, ResourceLocation> bossBar = ClientProxy.bossBarResourceLocations.getOrDefault(event.getBossEvent().getId(), null);
         if (bossBar == null || bossBar.getLeft() == null) return;
