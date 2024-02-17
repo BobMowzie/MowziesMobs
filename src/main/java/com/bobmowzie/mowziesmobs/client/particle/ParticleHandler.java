@@ -5,12 +5,12 @@ import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleData;
 import com.bobmowzie.mowziesmobs.client.particle.util.RibbonParticleData;
 import com.mojang.serialization.Codec;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -80,36 +80,36 @@ public class ParticleHandler {
     public static final RegistryObject<ParticleType<RibbonParticleData>> RIBBON_SQUIGGLE = registerRibbon("ribbon_squiggle", RibbonParticleData.DESERIALIZER);
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void registerParticles(ParticleFactoryRegisterEvent event) {
-        Minecraft.getInstance().particleEngine.register(ParticleHandler.SPARKLE.get(), ParticleSparkle.SparkleFactory::new);
-        Minecraft.getInstance().particleEngine.register(ParticleHandler.VANILLA_CLOUD_EXTENDED.get(), ParticleVanillaCloudExtended.CloudFactory::new);
-        Minecraft.getInstance().particleEngine.register(ParticleHandler.SNOWFLAKE.get(), ParticleSnowFlake.SnowFlakeFactory::new);
-        Minecraft.getInstance().particleEngine.register(ParticleHandler.CLOUD.get(), ParticleCloud.CloudFactory::new);
-        Minecraft.getInstance().particleEngine.register(ParticleHandler.ORB.get(), ParticleOrb.OrbFactory::new);
-        Minecraft.getInstance().particleEngine.register(ParticleHandler.RING.get(), ParticleRing.RingFactory::new);
+    public static void registerParticles(RegisterParticleProvidersEvent event) {
+        event.register(ParticleHandler.SPARKLE.get(), ParticleSparkle.SparkleFactory::new);
+        event.register(ParticleHandler.VANILLA_CLOUD_EXTENDED.get(), ParticleVanillaCloudExtended.CloudFactory::new);
+        event.register(ParticleHandler.SNOWFLAKE.get(), ParticleSnowFlake.SnowFlakeFactory::new);
+        event.register(ParticleHandler.CLOUD.get(), ParticleCloud.CloudFactory::new);
+        event.register(ParticleHandler.ORB.get(), ParticleOrb.OrbFactory::new);
+        event.register(ParticleHandler.RING.get(), ParticleRing.RingFactory::new);
 
-        Minecraft.getInstance().particleEngine.register(ParticleHandler.RING2.get(), AdvancedParticleBase.Factory::new);
-        Minecraft.getInstance().particleEngine.register(ParticleHandler.RING_BIG.get(), AdvancedParticleBase.Factory::new);
-        Minecraft.getInstance().particleEngine.register(ParticleHandler.PIXEL.get(), AdvancedParticleBase.Factory::new);
-        Minecraft.getInstance().particleEngine.register(ParticleHandler.ORB2.get(), AdvancedParticleBase.Factory::new);
-        Minecraft.getInstance().particleEngine.register(ParticleHandler.EYE.get(), AdvancedParticleBase.Factory::new);
-        Minecraft.getInstance().particleEngine.register(ParticleHandler.BUBBLE.get(), AdvancedParticleBase.Factory::new);
-        Minecraft.getInstance().particleEngine.register(ParticleHandler.SUN.get(), AdvancedParticleBase.Factory::new);
-        Minecraft.getInstance().particleEngine.register(ParticleHandler.SUN_NOVA.get(), AdvancedParticleBase.Factory::new);
-        Minecraft.getInstance().particleEngine.register(ParticleHandler.FLARE.get(), AdvancedParticleBase.Factory::new);
-        Minecraft.getInstance().particleEngine.register(ParticleHandler.FLARE_RADIAL.get(), AdvancedParticleBase.Factory::new);
-        Minecraft.getInstance().particleEngine.register(ParticleHandler.BURST_IN.get(), AdvancedParticleBase.Factory::new);
-        Minecraft.getInstance().particleEngine.register(ParticleHandler.BURST_MESSY.get(), AdvancedParticleBase.Factory::new);
-        Minecraft.getInstance().particleEngine.register(ParticleHandler.RING_SPARKS.get(), AdvancedParticleBase.Factory::new);
-        Minecraft.getInstance().particleEngine.register(ParticleHandler.BURST_OUT.get(), AdvancedParticleBase.Factory::new);
-        Minecraft.getInstance().particleEngine.register(ParticleHandler.GLOW.get(), AdvancedParticleBase.Factory::new);
-        Minecraft.getInstance().particleEngine.register(ParticleHandler.ARROW_HEAD.get(), AdvancedParticleBase.Factory::new);
-        Minecraft.getInstance().particleEngine.register(ParticleHandler.STRIX_FOOTPRINT.get(), ParticleDecal.Factory::new);
+        event.register(ParticleHandler.RING2.get(), AdvancedParticleBase.Factory::new);
+        event.register(ParticleHandler.RING_BIG.get(), AdvancedParticleBase.Factory::new);
+        event.register(ParticleHandler.PIXEL.get(), AdvancedParticleBase.Factory::new);
+        event.register(ParticleHandler.ORB2.get(), AdvancedParticleBase.Factory::new);
+        event.register(ParticleHandler.EYE.get(), AdvancedParticleBase.Factory::new);
+        event.register(ParticleHandler.BUBBLE.get(), AdvancedParticleBase.Factory::new);
+        event.register(ParticleHandler.SUN.get(), AdvancedParticleBase.Factory::new);
+        event.register(ParticleHandler.SUN_NOVA.get(), AdvancedParticleBase.Factory::new);
+        event.register(ParticleHandler.FLARE.get(), AdvancedParticleBase.Factory::new);
+        event.register(ParticleHandler.FLARE_RADIAL.get(), AdvancedParticleBase.Factory::new);
+        event.register(ParticleHandler.BURST_IN.get(), AdvancedParticleBase.Factory::new);
+        event.register(ParticleHandler.BURST_MESSY.get(), AdvancedParticleBase.Factory::new);
+        event.register(ParticleHandler.RING_SPARKS.get(), AdvancedParticleBase.Factory::new);
+        event.register(ParticleHandler.BURST_OUT.get(), AdvancedParticleBase.Factory::new);
+        event.register(ParticleHandler.GLOW.get(), AdvancedParticleBase.Factory::new);
+        event.register(ParticleHandler.ARROW_HEAD.get(), AdvancedParticleBase.Factory::new);
+        event.register(ParticleHandler.STRIX_FOOTPRINT.get(), ParticleDecal.Factory::new);
 
-        Minecraft.getInstance().particleEngine.register(ParticleHandler.RIBBON_FLAT.get(), ParticleRibbon.Factory::new);
-        Minecraft.getInstance().particleEngine.register(ParticleHandler.RIBBON_STREAKS.get(), ParticleRibbon.Factory::new);
-        Minecraft.getInstance().particleEngine.register(ParticleHandler.RIBBON_GLOW.get(), ParticleRibbon.Factory::new);
-        Minecraft.getInstance().particleEngine.register(ParticleHandler.RIBBON_SQUIGGLE.get(), ParticleRibbon.Factory::new);
+        event.register(ParticleHandler.RIBBON_FLAT.get(), ParticleRibbon.Factory::new);
+        event.register(ParticleHandler.RIBBON_STREAKS.get(), ParticleRibbon.Factory::new);
+        event.register(ParticleHandler.RIBBON_GLOW.get(), ParticleRibbon.Factory::new);
+        event.register(ParticleHandler.RIBBON_SQUIGGLE.get(), ParticleRibbon.Factory::new);
     }
 
     private static RegistryObject<SimpleParticleType> register(String key, boolean alwaysShow) {

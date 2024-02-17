@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -34,17 +35,17 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 	protected boolean useSmallArms;
 	
 	@Override
-	public ResourceLocation getAnimationFileLocation(GeckoPlayer animatable) {
+	public ResourceLocation getAnimationResource(GeckoPlayer animatable) {
 		return new ResourceLocation(MowziesMobs.MODID, "animations/animated_player.animation.json");
 	}
 
 	@Override
-	public ResourceLocation getModelLocation(GeckoPlayer animatable) {
+	public ResourceLocation getModelResource(GeckoPlayer animatable) {
 		return new ResourceLocation(MowziesMobs.MODID, "geo/animated_player.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(GeckoPlayer animatable) {
+	public ResourceLocation getTextureResource(GeckoPlayer animatable) {
 		return textureLocation;
 	}
 

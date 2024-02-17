@@ -4,13 +4,18 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
-import com.bobmowzie.mowziesmobs.server.ability.*;
+import com.bobmowzie.mowziesmobs.server.ability.Ability;
+import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
+import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
+import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
+import com.bobmowzie.mowziesmobs.server.ability.PlayerAbility;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderBase;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderProjectile;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityGeomancyBase;
 import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,7 +23,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.Blocks;
@@ -177,13 +181,13 @@ public class SpawnBoulderAbility extends PlayerAbility {
     @Override
     public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         super.onRightClickBlock(event);
-        if (!event.getWorld().isClientSide()) AbilityHandler.INSTANCE.sendAbilityMessage(event.getEntityLiving(), AbilityHandler.SPAWN_BOULDER_ABILITY);
+        if (!event.getLevel().isClientSide()) AbilityHandler.INSTANCE.sendAbilityMessage(event.getEntity(), AbilityHandler.SPAWN_BOULDER_ABILITY);
     }
 
     @Override
     public void onRightClickEmpty(PlayerInteractEvent.RightClickEmpty event) {
         super.onRightClickEmpty(event);
-        AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getPlayer(), AbilityHandler.SPAWN_BOULDER_ABILITY);
+        AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getEntity(), AbilityHandler.SPAWN_BOULDER_ABILITY);
     }
 
     @Override

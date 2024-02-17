@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.inventory;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthanaMinion;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.trade.Trade;
+
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -22,7 +23,7 @@ public final class ContainerUmvuthanaTrade extends ContainerTradeBase {
     }
 
     public ContainerUmvuthanaTrade(int id, EntityUmvuthanaMinion umvuthanaMinion, InventoryUmvuthana inventory, Inventory playerInv) {
-        super(ContainerHandler.CONTAINER_UMVUTHANA_TRADE, id, umvuthanaMinion, inventory, playerInv);
+        super(ContainerHandler.CONTAINER_UMVUTHANA_TRADE.get(), id, umvuthanaMinion, inventory, playerInv);
         this.inventoryUmvuthana = inventory;
         this.umvuthanaMinion = umvuthanaMinion;
     }

@@ -1,11 +1,14 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects.geomancy;
 
+import java.util.Optional;
+
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.IAnimationTickable;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityFallingBlock;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityMagicEffect;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -25,11 +28,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.registries.ForgeRegistries;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
-
-import java.util.Optional;
 
 public abstract class EntityGeomancyBase extends EntityMagicEffect implements IAnimatable, IAnimationTickable {
     private static final byte EXPLOSION_PARTICLES_ID = 69;
@@ -62,7 +64,7 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements IA
             Material mat = blockState.getMaterial();
             if (blockState.getBlock() == Blocks.GRASS_BLOCK || blockState.getBlock() == Blocks.MYCELIUM || mat == Material.DIRT) newBlock = Blocks.DIRT.defaultBlockState();
             else if (mat == Material.STONE) {
-                if (block.getRegistryName() != null && block.getRegistryName().getPath().contains("ore")) newBlock = Blocks.STONE.defaultBlockState();
+                if (ForgeRegistries.BLOCKS.getKey(block) != null && ForgeRegistries.BLOCKS.getKey(block).getPath().contains("ore")) newBlock = Blocks.STONE.defaultBlockState();
                 if (blockState.getBlock() == Blocks.NETHER_QUARTZ_ORE) newBlock = Blocks.NETHERRACK.defaultBlockState();
                 if (blockState.getBlock() == Blocks.FURNACE
                         || blockState.getBlock() == Blocks.DISPENSER

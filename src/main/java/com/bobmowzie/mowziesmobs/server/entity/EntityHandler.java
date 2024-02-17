@@ -1,9 +1,21 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.*;
-import com.bobmowzie.mowziesmobs.server.entity.effects.*;
-import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.*;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBlockSwapper;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityFallingBlock;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBall;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityPoisonBall;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySuperNova;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderPlatform;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderProjectile;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityPillar;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityPillarPiece;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityRockSling;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityBabyFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
@@ -11,8 +23,17 @@ import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
-import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthana;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthanaCrane;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthanaCraneToPlayer;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthanaFollowerToPlayer;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthanaFollowerToRaptor;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthanaMinion;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthanaRaptor;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.MaskType;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -25,7 +46,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 @Mod.EventBusSubscriber(modid = MowziesMobs.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class EntityHandler {
-    public static final DeferredRegister<EntityType<?>> REG = DeferredRegister.create(ForgeRegistries.ENTITIES, MowziesMobs.MODID);
+    public static final DeferredRegister<EntityType<?>> REG = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, MowziesMobs.MODID);
 
     public static final RegistryObject<EntityType<EntityFoliaath>> FOLIAATH = REG.register("foliaath", () -> EntityType.Builder.of(EntityFoliaath::new, MobCategory.MONSTER).sized(0.5f, 2.5f).build(new ResourceLocation(MowziesMobs.MODID, "foliaath").toString()));
     public static final RegistryObject<EntityType<EntityBabyFoliaath>> BABY_FOLIAATH = REG.register("baby_foliaath", () -> EntityType.Builder.of(EntityBabyFoliaath::new, MobCategory.MONSTER).sized(0.4f, 0.4f).build(new ResourceLocation(MowziesMobs.MODID, "baby_foliaath").toString()));

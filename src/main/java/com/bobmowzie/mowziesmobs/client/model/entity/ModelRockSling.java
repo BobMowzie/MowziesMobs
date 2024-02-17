@@ -1,19 +1,14 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityRockSling;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
-import net.minecraft.world.level.block.Blocks;
-import software.bernie.example.client.EntityResources;
-import software.bernie.example.entity.GeoExampleEntity;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
-
 import java.util.Map;
 import java.util.TreeMap;
+
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityRockSling;
+
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Blocks;
+import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 
 public class ModelRockSling extends AnimatedTickingGeoModel<EntityRockSling> {
     static Map<String, ResourceLocation> texMap;
@@ -32,18 +27,18 @@ public class ModelRockSling extends AnimatedTickingGeoModel<EntityRockSling> {
     }
 
     @Override
-    public ResourceLocation getAnimationFileLocation(EntityRockSling entity) {
+    public ResourceLocation getAnimationResource(EntityRockSling entity) {
         return new ResourceLocation(MowziesMobs.MODID, "animations/rock_sling.animation.json");
     }
 
     @Override
-    public ResourceLocation getModelLocation(EntityRockSling entity) {
+    public ResourceLocation getModelResource(EntityRockSling entity) {
         return new ResourceLocation(MowziesMobs.MODID, "geo/rock_sling.geo.json");
 
     }
 
     @Override
-    public ResourceLocation getTextureLocation(EntityRockSling entity) {
+    public ResourceLocation getTextureResource(EntityRockSling entity) {
         if (entity.storedBlock != null) {
             ResourceLocation tex = texMap.get(entity.storedBlock.getBlock().getDescriptionId());
             if (tex != null) return tex;

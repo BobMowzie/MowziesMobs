@@ -1,5 +1,8 @@
 package com.bobmowzie.mowziesmobs.client.render.entity.player;
 
+import java.util.HashMap;
+import java.util.Iterator;
+
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerFirstPerson;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.MowzieRenderUtils;
@@ -13,6 +16,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
@@ -36,9 +40,6 @@ import software.bernie.geckolib3.model.provider.GeoModelProvider;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 import software.bernie.geckolib3.util.RenderUtils;
 
-import java.util.HashMap;
-import java.util.Iterator;
-
 @OnlyIn(Dist.CLIENT)
 public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements IGeoRenderer<GeckoPlayer> {
     public MultiBufferSource rtb;
@@ -53,7 +54,7 @@ public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements IGeo
     public Vec3 particleEmitterRoot;
 
     public GeckoFirstPersonRenderer(Minecraft mcIn, ModelGeckoPlayerFirstPerson modelProvider) {
-        super(mcIn);
+        super(mcIn, mcIn.getEntityRenderDispatcher(), mcIn.getItemRenderer());
         this.modelProvider = modelProvider;
     }
 
@@ -91,7 +92,7 @@ public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements IGeo
             VertexConsumer ivertexbuilder = bufferIn.getBuffer(rendertype);
             matrixStackIn.translate(0, -2, -1);
             render(
-                    getGeoModelProvider().getModel(getGeoModelProvider().getModelLocation(geckoPlayer)),
+                    getGeoModelProvider().getModel(getGeoModelProvider().getModelResource(geckoPlayer)),
                     geckoPlayer, partialTicks, rendertype, matrixStackIn, bufferIn, ivertexbuilder, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F
             );
         }

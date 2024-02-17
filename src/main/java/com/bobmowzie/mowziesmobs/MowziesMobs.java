@@ -12,6 +12,7 @@ import com.bobmowzie.mowziesmobs.server.block.entity.BlockEntityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
+import com.bobmowzie.mowziesmobs.server.inventory.ContainerHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
@@ -61,6 +62,7 @@ public final class MowziesMobs {
         ParticleHandler.REG.register(bus);
         FeatureHandler.REG.register(bus);
         FeatureHandler.FEATURES.register(bus);
+        ContainerHandler.REG.register(bus);
 
         PROXY.init(bus);
         bus.<FMLCommonSetupEvent>addListener(this::init);

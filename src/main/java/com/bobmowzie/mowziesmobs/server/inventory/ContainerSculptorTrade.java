@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.inventory;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
+
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
@@ -19,7 +20,7 @@ public final class ContainerSculptorTrade extends ContainerTradeBase {
     }
 
     public ContainerSculptorTrade(int id, EntitySculptor sculptor, InventorySculptor inventory, Inventory playerInv) {
-        super(ContainerHandler.CONTAINER_SCULPTOR_TRADE, id, sculptor, inventory, playerInv);
+        super(ContainerHandler.CONTAINER_SCULPTOR_TRADE.get(), id, sculptor, inventory, playerInv);
         this.sculptor = sculptor;
         this.inventorySculptor = inventory;
     }

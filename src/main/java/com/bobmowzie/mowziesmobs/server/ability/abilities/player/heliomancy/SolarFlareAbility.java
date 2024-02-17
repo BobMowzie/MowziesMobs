@@ -1,5 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.ability.abilities.player.heliomancy;
 
+import java.util.List;
+
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleOrb;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
@@ -10,6 +12,7 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -21,8 +24,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-
-import java.util.List;
 
 public class SolarFlareAbility extends PlayerAbility {
 
@@ -112,12 +113,12 @@ public class SolarFlareAbility extends PlayerAbility {
     @Override
     public void onLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event) {
         super.onLeftClickEmpty(event);
-        if (event.getPlayer() == getUser() && event.getPlayer().isShiftKeyDown()) AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getPlayer(), AbilityHandler.SOLAR_FLARE_ABILITY);
+        if (event.getEntity() == getUser() && event.getEntity().isShiftKeyDown()) AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getEntity(), AbilityHandler.SOLAR_FLARE_ABILITY);
     }
 
     @Override
     public void onLeftClickEntity(AttackEntityEvent event) {
         super.onLeftClickEntity(event);
-        if (event.getPlayer() == getUser() && event.getPlayer().isShiftKeyDown()) AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getPlayer(), AbilityHandler.SOLAR_FLARE_ABILITY);
+        if (event.getEntity() == getUser() && event.getEntity().isShiftKeyDown()) AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getEntity(), AbilityHandler.SOLAR_FLARE_ABILITY);
     }
 }

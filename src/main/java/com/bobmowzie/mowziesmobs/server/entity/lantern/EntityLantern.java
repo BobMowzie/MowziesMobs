@@ -20,6 +20,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -283,7 +284,7 @@ public class EntityLantern extends MowzieLLibraryEntity {
         }
 
         public void start() {
-            Random lvt_1_1_ = this.parentEntity.getRandom();
+            RandomSource lvt_1_1_ = this.parentEntity.getRandom();
             double lvt_2_1_ = this.parentEntity.getX() + (double)((lvt_1_1_.nextFloat() * 2.0F - 1.0F) * 16.0F);
             double lvt_4_1_ = this.parentEntity.getY() + (double)((lvt_1_1_.nextFloat() * 2.0F - 1.0F) * 16.0F);
             double lvt_6_1_ = this.parentEntity.getZ() + (double)((lvt_1_1_.nextFloat() * 2.0F - 1.0F) * 16.0F);

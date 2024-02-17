@@ -1,19 +1,20 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.tuple.Triple;
+
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthana;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
+
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import org.apache.commons.lang3.tuple.Triple;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ModelUmvuthi extends MowzieAnimatedGeoModel<EntityUmvuthi> {
     public ModelUmvuthi() {
@@ -21,17 +22,17 @@ public class ModelUmvuthi extends MowzieAnimatedGeoModel<EntityUmvuthi> {
     }
 
     @Override
-    public ResourceLocation getModelLocation(EntityUmvuthi object) {
+    public ResourceLocation getModelResource(EntityUmvuthi object) {
         return new ResourceLocation(MowziesMobs.MODID, "geo/umvuthi.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureLocation(EntityUmvuthi object) {
+    public ResourceLocation getTextureResource(EntityUmvuthi object) {
         return new ResourceLocation(MowziesMobs.MODID, "textures/entity/umvuthi.png");
     }
 
     @Override
-    public ResourceLocation getAnimationFileLocation(EntityUmvuthi object) {
+    public ResourceLocation getAnimationResource(EntityUmvuthi object) {
         return new ResourceLocation(MowziesMobs.MODID, "animations/umvuthi.animation.json");
     }
 

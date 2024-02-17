@@ -1,11 +1,15 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects.geomancy;
 
+import java.util.List;
+
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import com.google.common.collect.Iterables;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,10 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib3.core.util.MathUtil;
 import software.bernie.shadowed.eliotlash.mclib.utils.MathHelper;
-
-import java.util.List;
 
 public class EntityBoulderPlatform extends EntityBoulderBase {
     private static final float MAX_DIST_HORIZONTAL = 4.0f;
@@ -161,15 +162,15 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
         EntityDimensions nextDims = SIZE_MAP.get(nextBoulder.getTier());
         Vec3 startLocation = position();
         Vec2 fromPillarPos = new Vec2((float) (caster.getX() - startLocation.x), (float) (caster.getZ() - startLocation.z));
-        float horizontalOffset = random.nextFloat(1, MAX_DIST_HORIZONTAL) + thisDims.width/2f + nextDims.width/2f;
-        float verticalOffset = random.nextFloat(0, MAX_DIST_VERTICAL) - (nextDims.height - thisDims.height);
+        float horizontalOffset = Mth.nextFloat(this.random, 1, MAX_DIST_HORIZONTAL) + thisDims.width/2f + nextDims.width/2f;
+        float verticalOffset = Mth.nextFloat(this.random, 0, MAX_DIST_VERTICAL) - (nextDims.height - thisDims.height);
 
         float baseAngle = (float) -Math.toDegrees(Math.atan2(fromPillarPos.y, fromPillarPos.x));
         // Minimum and maximum angles force the angle to approach 90 degrees as it gets too close or too far from the pillar
         float minRandomAngle = (float) (Math.min(Math.pow(3f, -fromPillarPos.length() + 3), 1f) * 90f);
         double radius = EntitySculptor.testRadiusAtHeight(startLocation.y + verticalOffset + nextDims.height - pillar.getY());
         float maxRandomAngle = 180f - (float) (Math.min(Math.pow(3f, fromPillarPos.length() - radius), 1f) * 90f);
-        float randomAngle = random.nextFloat(minRandomAngle, maxRandomAngle);
+        float randomAngle = Mth.nextFloat(this.random, minRandomAngle, maxRandomAngle);
         if (random.nextBoolean()) randomAngle *= -1;
         // random angle tends towards center as the platforms reach higher up
         randomAngle *= 1f - Math.pow(getHeightFrac(), 5f) * 0.75;
@@ -190,7 +191,7 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
         EntityDimensions nextDims = SIZE_MAP.get(nextBoulder.getTier());
         Vec3 startLocation = position();
         Vec2 fromPillarPos = new Vec2((float) (caster.getX() - startLocation.x), (float) (caster.getZ() - startLocation.z));
-        float horizontalOffset = random.nextFloat(1, MAX_DIST_HORIZONTAL) + thisDims.width/2f + nextDims.width/2f;
+        float horizontalOffset = Mth.nextFloat(this.random, 1, MAX_DIST_HORIZONTAL) + thisDims.width/2f + nextDims.width/2f;
 
         float baseAngle = (float) -Math.toDegrees(Math.atan2(fromPillarPos.y, fromPillarPos.x));
         Vec3 offset = new Vec3(horizontalOffset, 0, 0);

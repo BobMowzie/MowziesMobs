@@ -1,7 +1,9 @@
 package com.bobmowzie.mowziesmobs.client.sound;
 
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -17,7 +19,7 @@ public class NagaSwoopSound extends AbstractTickableSoundInstance {
     boolean active = true;
 
     public NagaSwoopSound(Entity naga) {
-        super(MMSounds.ENTITY_NAGA_SWOOP.get(), SoundSource.HOSTILE);
+        super(MMSounds.ENTITY_NAGA_SWOOP.get(), SoundSource.HOSTILE, SoundInstance.createUnseededRandom());
         this.naga = naga;
         volume = 2F;
         pitch = 1.2f;

@@ -637,7 +637,7 @@ public class MowzieJigsawManager {
                 }
             }
 
-            // Match each pos with its closest neighbor - naive approach for now. Robust approach needs Kuhn–Munkres algorithm
+            // Match each pos with its closest neighbor - naive approach for now. Robust approach needs Kuhn�밠unkres algorithm
             Set<StructureBlockInfo> used = new HashSet<>();
             for (StructureBlockInfo block1 : needConnecting) {
                 if (used.contains(block1)) continue;

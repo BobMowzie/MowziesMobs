@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity.layer;
 import com.bobmowzie.mowziesmobs.client.render.MowzieRenderUtils;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -29,7 +30,7 @@ public class ItemLayer<T extends LivingEntity, M extends EntityModel<T>> extends
         if (!modelRenderer.showModel || modelRenderer.isHidden()) return;
         matrixStackIn.pushPose();
         MowzieRenderUtils.matrixStackFromModel(matrixStackIn, getModelRenderer());
-        Minecraft.getInstance().getItemInHandRenderer().renderItem(entitylivingbaseIn, getItemstack(), transformType, false, matrixStackIn, bufferIn, packedLightIn);
+        Minecraft.getInstance().getEntityRenderDispatcher().getItemInHandRenderer().renderItem(entitylivingbaseIn, getItemstack(), transformType, false, matrixStackIn, bufferIn, packedLightIn);
         matrixStackIn.popPose();
     }
 

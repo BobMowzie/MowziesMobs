@@ -1,5 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
+import java.util.List;
+
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
@@ -12,15 +14,13 @@ import com.bobmowzie.mowziesmobs.server.damage.DamageUtil;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.List;
 
 public class EntitySuperNova extends EntityMagicEffect {
     public static int DURATION = 40;
@@ -93,7 +93,7 @@ public class EntitySuperNova extends EntityMagicEffect {
         }
         if (tickCount > DURATION) discard() ;
     }
-
+    
     @Override
     public float getBrightness() {
         return 15728880;

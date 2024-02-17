@@ -1,5 +1,8 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.RigUtils;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
@@ -8,7 +11,7 @@ import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3d;
-import com.mojang.math.Vector3f;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
@@ -16,26 +19,23 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class ModelSculptor extends MowzieAnimatedGeoModel<EntitySculptor> {
     public ModelSculptor() {
         super();
     }
 
     @Override
-    public ResourceLocation getModelLocation(EntitySculptor object) {
+    public ResourceLocation getModelResource(EntitySculptor object) {
         return new ResourceLocation(MowziesMobs.MODID, "geo/sculptor.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureLocation(EntitySculptor object) {
+    public ResourceLocation getTextureResource(EntitySculptor object) {
         return new ResourceLocation(MowziesMobs.MODID, "textures/entity/sculptor.png");
     }
 
     @Override
-    public ResourceLocation getAnimationFileLocation(EntitySculptor object) {
+    public ResourceLocation getAnimationResource(EntitySculptor object) {
         return new ResourceLocation(MowziesMobs.MODID, "animations/sculptor.animation.json");
     }
 

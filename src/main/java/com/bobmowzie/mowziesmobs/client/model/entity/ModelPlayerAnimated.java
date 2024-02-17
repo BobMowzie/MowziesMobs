@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -86,7 +87,7 @@ public class ModelPlayerAnimated<T extends LivingEntity> extends PlayerModel<T> 
     }
 
     @Override
-    public ModelPart getRandomModelPart(Random randomIn) {
+    public ModelPart getRandomModelPart(RandomSource randomIn) {
         return this.parts.get(randomIn.nextInt(this.parts.size()));
     }
 

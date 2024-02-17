@@ -73,7 +73,7 @@ public enum FrozenRenderHandler {
             if (frozenCapability != null && frozenCapability.getFrozen()) {
                 RenderType renderType = RenderType.entityTranslucent(FROZEN_TEXTURE);
 
-                getRenderer().render(getEntityModel().getModel(getEntityModel().getModelLocation(living)),
+                getRenderer().render(getEntityModel().getModel(getEntityModel().getModelResource(living)),
                         living, partialTicks, renderType, matrixStackIn, bufferIn, bufferIn.getBuffer(renderType),
                         packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
             }

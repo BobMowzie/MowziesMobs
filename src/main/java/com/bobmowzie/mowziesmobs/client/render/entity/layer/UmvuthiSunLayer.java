@@ -1,37 +1,24 @@
 package com.bobmowzie.mowziesmobs.client.render.entity.layer;
 
+import java.util.Optional;
+
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
-import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
-import com.bobmowzie.mowziesmobs.server.entity.MowzieGeckoEntity;
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthana;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import org.lwjgl.system.CallbackI;
-import org.lwjgl.system.MathUtil;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
 import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
-import software.bernie.geckolib3.util.RenderUtils;
-
-import java.util.Optional;
 
 public class UmvuthiSunLayer extends GeoLayerRenderer<EntityUmvuthi> {
     protected Matrix4f dispatchedMat = new Matrix4f();
@@ -159,7 +146,7 @@ public class UmvuthiSunLayer extends GeoLayerRenderer<EntityUmvuthi> {
     public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, EntityUmvuthi entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         if (entityLivingBaseIn.shouldRenderSun()) {
             poseStack.pushPose();
-            GeoModel model = this.entityRenderer.getGeoModelProvider().getModel(this.entityRenderer.getGeoModelProvider().getModelLocation(entityLivingBaseIn));
+            GeoModel model = this.entityRenderer.getGeoModelProvider().getModel(this.entityRenderer.getGeoModelProvider().getModelResource(entityLivingBaseIn));
             String boneName = "sun_render";
             Optional<GeoBone> bone = model.getBone(boneName);
             if (bone.isPresent() && !bone.get().isHidden()) {

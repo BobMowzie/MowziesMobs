@@ -3,11 +3,13 @@ package com.bobmowzie.mowziesmobs.server.ability.abilities.player.geomancy;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
-import com.bobmowzie.mowziesmobs.server.ability.*;
-import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
+import com.bobmowzie.mowziesmobs.server.ability.Ability;
+import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
+import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
+import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
+import com.bobmowzie.mowziesmobs.server.ability.PlayerAbility;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -62,7 +64,7 @@ public class BoulderRollAbility extends PlayerAbility {
     @Override
     public void onRightClickEmpty(PlayerInteractEvent.RightClickEmpty event) {
         super.onRightClickEmpty(event);
-        AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getPlayer(), AbilityHandler.BOULDER_ROLL_ABILITY);
+        AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getEntity(), AbilityHandler.BOULDER_ROLL_ABILITY);
     }
 
     @Override

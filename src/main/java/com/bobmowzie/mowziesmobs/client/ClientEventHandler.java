@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.client;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerFirstPerson;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerThirdPerson;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoFirstPersonRenderer;
@@ -15,41 +16,33 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.item.ItemBlowgun;
-import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import com.mojang.authlib.minecraft.client.MinecraftClient;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.gui.components.BossHealthOverlay;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.event.RenderHandEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.ModList;
-import org.apache.commons.lang3.tuple.Pair;
-import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
 
 @OnlyIn(Dist.CLIENT)
 public enum ClientEventHandler {
@@ -81,7 +74,7 @@ public enum ClientEventHandler {
                         event.setCanceled(true);
 
                         if (event.isCanceled()) {
-                            float delta = event.getPartialTicks();
+                            float delta = event.getPartialTick();
                             float f1 = Mth.lerp(delta, player.xRotO, player.getXRot());
                             firstPersonRenderer.renderItemInFirstPerson((AbstractClientPlayer) player, f1, delta, event.getHand(), event.getSwingProgress(), event.getItemStack(), event.getEquipProgress(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), geckoPlayer);
                         }

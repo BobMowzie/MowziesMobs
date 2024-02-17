@@ -1,5 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.render.entity.player;
 
+import javax.annotation.Nullable;
+
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerFirstPerson;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerThirdPerson;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
@@ -9,6 +11,7 @@ import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.entity.IAnimationTickable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -28,8 +31,6 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 import software.bernie.geckolib3.util.GeckoLibUtil;
-
-import javax.annotation.Nullable;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
@@ -206,7 +207,7 @@ public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 			ResourceManager resourceManager = minecraft.getResourceManager();
 			EntityModelSet entityModelSet = minecraft.getEntityModels();
 			Font font = minecraft.font;
-			EntityRendererProvider.Context context = new EntityRendererProvider.Context(dispatcher, itemRenderer, resourceManager, entityModelSet, font);
+			EntityRendererProvider.Context context = new EntityRendererProvider.Context(dispatcher, itemRenderer, minecraft.getBlockRenderer(), dispatcher.getItemInHandRenderer(), resourceManager, entityModelSet, font);
 			GeckoRenderPlayer geckoRenderer = new GeckoRenderPlayer(context, false, GECKO_MODEL_THIRD_PERSON_NORMAL);
 			if (!geckoRenderer.getModelsToLoad().containsKey(GeckoPlayer.GeckoPlayerThirdPerson.class)) {
 				geckoRenderer.getModelsToLoad().put(GeckoPlayer.GeckoPlayerThirdPerson.class, geckoRenderer);

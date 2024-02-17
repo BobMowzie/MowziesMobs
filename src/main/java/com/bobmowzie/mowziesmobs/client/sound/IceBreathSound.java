@@ -2,7 +2,9 @@ package com.bobmowzie.mowziesmobs.client.sound;
 
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.client.model.tools.ControlledAnimation;
+
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -16,7 +18,7 @@ public class IceBreathSound extends AbstractTickableSoundInstance {
     boolean active = true;
 
     public IceBreathSound(Entity icebreath) {
-        super(MMSounds.ENTITY_FROSTMAW_ICEBREATH.get(), SoundSource.NEUTRAL);
+        super(MMSounds.ENTITY_FROSTMAW_ICEBREATH.get(), SoundSource.NEUTRAL, SoundInstance.createUnseededRandom());
         this.iceBreath = icebreath;
         volume = 3F;
         pitch = 1f;

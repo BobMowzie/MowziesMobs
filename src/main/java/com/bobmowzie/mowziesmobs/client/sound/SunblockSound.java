@@ -4,7 +4,9 @@ import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthana;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.client.model.tools.ControlledAnimation;
+
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -18,7 +20,7 @@ public class SunblockSound extends AbstractTickableSoundInstance {
     boolean active = true;
 
     public SunblockSound(LivingEntity entity) {
-        super(MMSounds.ENTITY_UMVUTHANA_HEAL_LOOP.get(), SoundSource.NEUTRAL);
+        super(MMSounds.ENTITY_UMVUTHANA_HEAL_LOOP.get(), SoundSource.NEUTRAL, SoundInstance.createUnseededRandom());
         this.entity = entity;
         volume = 4F;
         pitch = 1f;
