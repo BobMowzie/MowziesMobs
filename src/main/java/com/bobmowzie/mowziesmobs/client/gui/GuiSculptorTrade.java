@@ -8,7 +8,7 @@ import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.message.MessageSculptorTrade;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -16,8 +16,8 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -48,7 +48,7 @@ public final class GuiSculptorTrade extends AbstractContainerScreen<ContainerScu
     protected void init() {
         super.init();
         String text = I18n.get("entity.mowziesmobs.sculptor.trade.button.text");
-        beginButton = addRenderableWidget(new Button(leftPos + 115, topPos + 52, 56, 20, new TranslatableComponent(text), this::actionPerformed));
+        beginButton = addRenderableWidget(new Button(leftPos + 115, topPos + 52, 56, 20, Component.translatable(text), this::actionPerformed));
         updateButton();
     }
 
@@ -107,11 +107,11 @@ public final class GuiSculptorTrade extends AbstractContainerScreen<ContainerScu
 	}
 
     private void updateButton() {
-        beginButton.setMessage(new TranslatableComponent(I18n.get("entity.mowziesmobs.sculptor.trade.button.text")));
+        beginButton.setMessage(Component.translatable(I18n.get("entity.mowziesmobs.sculptor.trade.button.text")));
     }
 
     private Style getHoverText() {
-        TranslatableComponent text = new TranslatableComponent(I18n.get("entity.mowziesmobs.sculptor.trade.button.hover"));
+        MutableComponent text = Component.translatable(I18n.get("entity.mowziesmobs.sculptor.trade.button.hover"));
         return text.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, text));
     }
 }

@@ -1,11 +1,15 @@
 package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
+import java.util.Map;
+
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
 import com.google.common.collect.ImmutableMap;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
@@ -14,11 +18,8 @@ import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor;
 import net.minecraft.world.level.levelgen.structure.TemplateStructurePiece;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockIgnoreProcessor;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
-
-import java.util.Map;
-import java.util.Random;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 
 public class FrostmawPieces {
 
@@ -28,7 +29,7 @@ public class FrostmawPieces {
             FROSTMAW, new BlockPos(0, 1, 0)
     );
 
-    public static void addPieces(StructureManager manager, BlockPos pos, Rotation rot, StructurePieceAccessor pieces, Random rand) {
+    public static void addPieces(StructureTemplateManager manager, BlockPos pos, Rotation rot, StructurePieceAccessor pieces, RandomSource rand) {
         BlockPos rotationOffset = new BlockPos(0, 0, 0).rotate(rot);
         BlockPos blockPos = rotationOffset.offset(pos);
         pieces.addPiece(new FrostmawPieces.FrostmawPiece(manager, FROSTMAW, blockPos, rot));
@@ -44,13 +45,13 @@ public class FrostmawPieces {
             return pos.offset(FrostmawPieces.OFFSET.get(resourceLocation));
         }
 
-        public FrostmawPiece(StructureManager templateManagerIn, ResourceLocation resourceLocationIn, BlockPos pos, Rotation rotationIn) {
+        public FrostmawPiece(StructureTemplateManager templateManagerIn, ResourceLocation resourceLocationIn, BlockPos pos, Rotation rotationIn) {
             super(FeatureHandler.FROSTMAW_PIECE, 0, templateManagerIn, resourceLocationIn, resourceLocationIn.toString(), makeSettings(rotationIn, resourceLocationIn), makePosition(resourceLocationIn, pos));
         }
 
 
         public FrostmawPiece(StructurePieceSerializationContext context, CompoundTag tag) {
-            super(FeatureHandler.FROSTMAW_PIECE, tag, context.structureManager(), (resourceLocation) -> makeSettings(Rotation.valueOf(tag.getString("Rot")), resourceLocation));
+            super(FeatureHandler.FROSTMAW_PIECE, tag, context.structureTemplateManager(), (resourceLocation) -> makeSettings(Rotation.valueOf(tag.getString("Rot")), resourceLocation));
         }
 
         /**
@@ -74,7 +75,7 @@ public class FrostmawPieces {
          * rare block spawns under the floor, or what item an Item Frame will have.
          */
         @Override
-        protected void handleDataMarker(String function, BlockPos pos, ServerLevelAccessor worldIn, Random rand, BoundingBox sbb) {
+        protected void handleDataMarker(String function, BlockPos pos, ServerLevelAccessor worldIn, RandomSource rand, BoundingBox sbb) {
 
         }
     }

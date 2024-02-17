@@ -46,7 +46,7 @@ public class MessagePlayerSummonSunstrike {
             final ServerPlayer player = context.getSender();
             context.enqueueWork(() -> {
                 BlockHitResult raytrace = rayTrace(player, REACH);
-                if (raytrace.getType() == HitResult.Type.BLOCK && raytrace.getDirection() == Direction.UP && player.getInventory().getSelected().isEmpty() && player.hasEffect(EffectHandler.SUNS_BLESSING)) {
+                if (raytrace.getType() == HitResult.Type.BLOCK && raytrace.getDirection() == Direction.UP && player.getInventory().getSelected().isEmpty() && player.hasEffect(EffectHandler.SUNS_BLESSING.get())) {
                     BlockPos hit = raytrace.getBlockPos();
                     EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE.get(), player.level, player, hit.getX(), hit.getY(), hit.getZ());
                     sunstrike.onSummon();

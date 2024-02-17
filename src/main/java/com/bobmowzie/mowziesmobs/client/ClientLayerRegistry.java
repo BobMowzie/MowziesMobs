@@ -31,7 +31,7 @@ public class ClientLayerRegistry {
     @SubscribeEvent@OnlyIn(Dist.CLIENT)
     public static void onAddLayers(EntityRenderersEvent.AddLayers event) {
         List<EntityType<? extends LivingEntity>> entityTypes = ImmutableList.copyOf(
-                ForgeRegistries.ENTITIES.getValues().stream()
+                ForgeRegistries.ENTITY_TYPES.getValues().stream()
                         .filter(DefaultAttributes::hasSupplier)
                         .map(entityType -> (EntityType<? extends LivingEntity>) entityType)
                         .collect(Collectors.toList()));
@@ -56,7 +56,7 @@ public class ClientLayerRegistry {
                 renderer = event.getRenderer(entityType);
             }catch (Exception e){
                 if (!entityType.getBaseClass().isAssignableFrom(MowzieEntity.class)) {
-                    MowziesMobs.LOGGER.warn("Could not apply layer to " + entityType.getRegistryName() + ", has custom renderer that is not LivingEntityRenderer.");
+                    MowziesMobs.LOGGER.warn("Could not apply layer to " + ForgeRegistries.ENTITY_TYPES.getKey(entityType) + ", has custom renderer that is not LivingEntityRenderer.");
                 }
             }
             if(renderer != null){

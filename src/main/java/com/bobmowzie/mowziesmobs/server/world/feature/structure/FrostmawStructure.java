@@ -22,6 +22,6 @@ public class FrostmawStructure extends MowzieStructure<NoneFeatureConfiguration>
         int y = pieceGenerator.chunkGenerator().getFirstFreeHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG, pieceGenerator.heightAccessor());
         BlockPos blockpos = new BlockPos(x, y, z);
         Rotation rotation = Rotation.getRandom(pieceGenerator.random());
-        FrostmawPieces.addPieces(pieceGenerator.structureManager(), blockpos, rotation, builder, pieceGenerator.random());
+        FrostmawPieces.addPieces(pieceGenerator.structureTemplateManager(), blockpos, rotation, builder, pieceGenerator.random());
     }
 }

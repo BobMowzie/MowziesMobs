@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.ConfiguredFeatureHandler;
 import com.mojang.serialization.Codec;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.LevelHeightAccessor;
@@ -14,7 +15,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 
 // Edited from Telepathic Grunt's base code
 
@@ -41,13 +42,13 @@ public class UmvuthanaGroveStructure extends MowzieStructure<NoneFeatureConfigur
 
         //Firepit
         BlockPos firepitPos = posToSurface(generator, centerPos, heightLimitView);
-        builder.addPiece(new UmvuthanaGrovePieces.FirepitPiece(pieceGenerator.structureManager(), Rotation.values()[random.nextInt(Rotation.values().length)], firepitPos));
+        builder.addPiece(new UmvuthanaGrovePieces.FirepitPiece(pieceGenerator.structureTemplateManager(), Rotation.values()[random.nextInt(Rotation.values().length)], firepitPos));
 
         //Throne
         BlockPos offset = new BlockPos(0, 0, 9);
         offset = offset.rotate(rotation);
         BlockPos thronePos = posToSurface(generator, centerPos.offset(offset), heightLimitView);
-        UmvuthanaGrovePieces.addPiece(UmvuthanaGrovePieces.THRONE, pieceGenerator.structureManager(), thronePos, rotation, builder, pieceGenerator.random());
+        UmvuthanaGrovePieces.addPiece(UmvuthanaGrovePieces.THRONE, pieceGenerator.structureTemplateManager(), thronePos, rotation, builder, pieceGenerator.random());
 
         //Platforms
         int numHouses = random.nextInt(2) + 2;
@@ -59,7 +60,7 @@ public class UmvuthanaGroveStructure extends MowzieStructure<NoneFeatureConfigur
                 housePos = posToSurface(generator, housePos, heightLimitView);
                 int houseOceanFloorY = generator.getBaseHeight(housePos.getX(), housePos.getZ(), Heightmap.Types.OCEAN_FLOOR_WG, heightLimitView);
                 if (houseOceanFloorY < housePos.getY()) continue;
-                if (startPlatform(generator, pieceGenerator.structureManager(), builder, housePos, pieceGenerator.random())) break;
+                if (startPlatform(generator, pieceGenerator.structureTemplateManager(), builder, housePos, pieceGenerator.random())) break;
             }
         }
 
@@ -74,7 +75,7 @@ public class UmvuthanaGroveStructure extends MowzieStructure<NoneFeatureConfigur
                 int treeOceanFloorY = generator.getBaseHeight(treePos.getX(), treePos.getZ(), Heightmap.Types.OCEAN_FLOOR_WG, heightLimitView);
                 if (treeOceanFloorY < treePos.getY()) continue;
                 int whichTree = random.nextInt(UmvuthanaGrovePieces.TREES.length);
-                StructurePiece tree = UmvuthanaGrovePieces.addPieceCheckBounds(UmvuthanaGrovePieces.TREES[whichTree], pieceGenerator.structureManager(), treePos, Rotation.values()[random.nextInt(Rotation.values().length)], builder, pieceGenerator.random());
+                StructurePiece tree = UmvuthanaGrovePieces.addPieceCheckBounds(UmvuthanaGrovePieces.TREES[whichTree], pieceGenerator.structureTemplateManager(), treePos, Rotation.values()[random.nextInt(Rotation.values().length)], builder, pieceGenerator.random());
                 if (tree != null) break;
             }
         }
@@ -92,7 +93,7 @@ public class UmvuthanaGroveStructure extends MowzieStructure<NoneFeatureConfigur
                 int pitOceanFloorY = generator.getBaseHeight(pitPos.getX(), pitPos.getZ(), Heightmap.Types.OCEAN_FLOOR_WG, heightLimitView);
                 if (pitOceanFloorY < pitPos.getY()) continue;
                 ResourceLocation whichPit = UmvuthanaGrovePieces.FIREPIT_SMALL[random.nextInt(UmvuthanaGrovePieces.FIREPIT_SMALL.length)];
-                StructurePiece piece = UmvuthanaGrovePieces.addPieceCheckBounds(whichPit, pieceGenerator.structureManager(), pitPos, Rotation.values()[random.nextInt(Rotation.values().length)], builder, pieceGenerator.random());
+                StructurePiece piece = UmvuthanaGrovePieces.addPieceCheckBounds(whichPit, pieceGenerator.structureTemplateManager(), pitPos, Rotation.values()[random.nextInt(Rotation.values().length)], builder, pieceGenerator.random());
                 if (piece != null) {
                     break;
                 }
@@ -112,7 +113,7 @@ public class UmvuthanaGroveStructure extends MowzieStructure<NoneFeatureConfigur
                 int stakeOceanFloorY = generator.getBaseHeight(stakePos.getX(), stakePos.getZ(), Heightmap.Types.OCEAN_FLOOR_WG, heightLimitView);
                 if (stakeOceanFloorY < stakePos.getY()) continue;
                 ResourceLocation whichSpike = UmvuthanaGrovePieces.SPIKES[random.nextInt(UmvuthanaGrovePieces.SPIKES.length)];
-                StructurePiece piece = UmvuthanaGrovePieces.addPieceCheckBounds(whichSpike, pieceGenerator.structureManager(), stakePos, Rotation.values()[random.nextInt(Rotation.values().length)], builder, pieceGenerator.random());
+                StructurePiece piece = UmvuthanaGrovePieces.addPieceCheckBounds(whichSpike, pieceGenerator.structureTemplateManager(), stakePos, Rotation.values()[random.nextInt(Rotation.values().length)], builder, pieceGenerator.random());
                 if (piece != null) {
                     break;
                 }
@@ -120,7 +121,7 @@ public class UmvuthanaGroveStructure extends MowzieStructure<NoneFeatureConfigur
         }
     }
 
-    private static boolean startPlatform(ChunkGenerator generator, StructureManager templateManagerIn, StructurePiecesBuilder builder, BlockPos housePos, WorldgenRandom random) {
+    private static boolean startPlatform(ChunkGenerator generator, StructureTemplateManager templateManagerIn, StructurePiecesBuilder builder, BlockPos housePos, WorldgenRandom random) {
         Rotation rotation = Rotation.values()[random.nextInt(Rotation.values().length)];
         StructurePiece newPlatform = UmvuthanaGrovePieces.addPlatform(templateManagerIn, housePos, rotation, builder, random);
         return newPlatform != null;

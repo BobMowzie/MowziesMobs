@@ -6,6 +6,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.network.NetworkHooks;
 
 /**
@@ -63,10 +64,10 @@ public class EntityFrozenController extends Entity {
     public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
-
+    
     @Override
-    public boolean canBeRiddenInWater(Entity rider) {
-        return true;
+    public boolean canBeRiddenUnderFluidType(FluidType type, Entity rider) {
+    	return true;
     }
 
     @Override

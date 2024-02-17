@@ -1,13 +1,20 @@
 package com.bobmowzie.mowziesmobs.server.world.feature.structure.jigsaw;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.JigsawBlock;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
@@ -15,14 +22,9 @@ import net.minecraft.world.level.block.entity.JigsawBlockEntity;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 
 public class MowziePoolElement extends SinglePoolElement {
     public static final Codec<MowziePoolElement> CODEC = RecordCodecBuilder.create((builder) -> builder
@@ -146,7 +148,7 @@ public class MowziePoolElement extends SinglePoolElement {
         return true;
     }
 
-    public String getRandomTag(Random random) {
+    public String getRandomTag(RandomSource random) {
         if (tags.tags.isEmpty()) return null;
 
         int total = 0;
@@ -164,7 +166,7 @@ public class MowziePoolElement extends SinglePoolElement {
     }
 
     @Override
-    public BoundingBox getBoundingBox(StructureManager structureManager, BlockPos blockPos, Rotation rotation) {
+    public BoundingBox getBoundingBox(StructureTemplateManager structureManager, BlockPos blockPos, Rotation rotation) {
         StructureTemplate structuretemplate = this.getTemplate(structureManager);
 
         Vec3i sizeVec = structuretemplate.getSize().offset(-1, -1, -1);
@@ -173,7 +175,7 @@ public class MowziePoolElement extends SinglePoolElement {
         return BoundingBox.fromCorners(blockpos, blockpos1).move(blockPos);
     }
 
-    public BoundingBox getCheckBoundingBox(StructureManager structureManager, BlockPos blockPos, Rotation rotation) {
+    public BoundingBox getCheckBoundingBox(StructureTemplateManager structureManager, BlockPos blockPos, Rotation rotation) {
         StructureTemplate structuretemplate = this.getTemplate(structureManager);
 
         Vec3i sizeVec = structuretemplate.getSize().offset(-1, -1, -1);
@@ -182,7 +184,7 @@ public class MowziePoolElement extends SinglePoolElement {
         return BoundingBox.fromCorners(blockpos, blockpos1).move(blockPos);
     }
 
-    public BoundingBox getInteriorBoundingBox(StructureManager structureManager, BlockPos blockPos, Rotation rotation) {
+    public BoundingBox getInteriorBoundingBox(StructureTemplateManager structureManager, BlockPos blockPos, Rotation rotation) {
         if (bounds.interiorBoundsMaxOffset.isEmpty() && bounds.interiorBoundsMinOffset.isEmpty()) return null;
         BlockPos interiorBoundsMinOffset = BlockPos.ZERO;
         BlockPos interiorBoundsMaxOffset = BlockPos.ZERO;

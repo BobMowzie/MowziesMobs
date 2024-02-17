@@ -1,11 +1,19 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
 import com.bobmowzie.mowziesmobs.client.sound.BossMusicPlayer;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.world.spawn.SpawnHandler;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -19,10 +27,17 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -44,9 +59,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
-
-import java.util.*;
-import java.util.stream.Collectors;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class MowzieEntity extends PathfinderMob implements IEntityAdditionalSpawnData, IntermittentAnimatableEntity {
     private static final byte START_IA_HEALTH_UPDATE_ID = 4;
@@ -139,7 +152,7 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
         return null;
     }
 
-    public static boolean spawnPredicate(EntityType type, LevelAccessor world, MobSpawnType reason, BlockPos spawnPos, Random rand) {
+    public static boolean spawnPredicate(EntityType type, LevelAccessor world, MobSpawnType reason, BlockPos spawnPos, RandomSource rand) {
         ConfigHandler.SpawnConfig spawnConfig = SpawnHandler.spawnConfigs.get(type);
         if (spawnConfig != null) {
             if (rand.nextDouble() > spawnConfig.extraRarity.get()) return false;
@@ -168,7 +181,7 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
 
             // Block check
             BlockState block = world.getBlockState(spawnPos.below());
-            ResourceLocation blockName = block.getBlock().getRegistryName();
+            ResourceLocation blockName = ForgeRegistries.BLOCKS.getKey(block.getBlock());
             List<? extends String> allowedBlocks = spawnConfig.allowedBlocks.get();
             List<? extends String> allowedBlockTags = spawnConfig.allowedBlockTags.get();
             if (blockName == null) return false;
@@ -194,7 +207,7 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
                 if (structureSetOptional.isEmpty()) continue;
                 Optional<ResourceKey<StructureSet>> resourceKeyOptional = structureSetRegistry.getResourceKey(structureSetOptional.get());
                 if (resourceKeyOptional.isEmpty()) continue;
-                if (generator.hasFeatureChunkInRange(resourceKeyOptional.get(), seed, chunkPos.x, chunkPos.z, 3)) {
+                if (generator.hasStructureChunkInRange(BuiltinRegistries.STRUCTURE_SETS.getHolderOrThrow(resourceKeyOptional.get()), serverLevel.getChunkSource().randomState(), seed, chunkPos.x, chunkPos.z, 3)) {
                     return false;
                 }
             }

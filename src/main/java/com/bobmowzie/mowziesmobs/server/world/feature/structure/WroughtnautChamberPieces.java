@@ -2,9 +2,11 @@ package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
@@ -13,27 +15,25 @@ import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor;
 import net.minecraft.world.level.levelgen.structure.TemplateStructurePiece;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockIgnoreProcessor;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
-
-import java.util.Random;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 
 public class WroughtnautChamberPieces {
 
     private static final ResourceLocation PART = new ResourceLocation(MowziesMobs.MODID, "wroughtnaut_chamber");
 
-    public static void start(StructureManager manager, BlockPos pos, Rotation rot, StructurePieceAccessor pieces) {
+    public static void start(StructureTemplateManager manager, BlockPos pos, Rotation rot, StructurePieceAccessor pieces) {
         pieces.addPiece(new WroughtnautChamberPieces.Piece(manager, PART, pos, rot));
     }
 
     public static class Piece extends TemplateStructurePiece {
 
-        public Piece(StructureManager templateManagerIn, ResourceLocation resourceLocationIn, BlockPos pos, Rotation rotationIn) {
+        public Piece(StructureTemplateManager templateManagerIn, ResourceLocation resourceLocationIn, BlockPos pos, Rotation rotationIn) {
             super(FeatureHandler.WROUGHTNAUT_CHAMBER_PIECE, 0, templateManagerIn, resourceLocationIn, resourceLocationIn.toString(), makeSettings(rotationIn, resourceLocationIn), pos);
         }
 
         public Piece(StructurePieceSerializationContext context, CompoundTag tagCompound) {
-            super(FeatureHandler.WROUGHTNAUT_CHAMBER_PIECE, tagCompound, context.structureManager(), (resourceLocation) -> makeSettings(Rotation.valueOf(tagCompound.contains("Rot") ? tagCompound.getString("Rot") : Rotation.NONE.name()), resourceLocation));
+            super(FeatureHandler.WROUGHTNAUT_CHAMBER_PIECE, tagCompound, context.structureTemplateManager(), (resourceLocation) -> makeSettings(Rotation.valueOf(tagCompound.contains("Rot") ? tagCompound.getString("Rot") : Rotation.NONE.name()), resourceLocation));
         }
 
         private static StructurePlaceSettings makeSettings(Rotation rotation, ResourceLocation resourceLocation) {
@@ -57,7 +57,7 @@ public class WroughtnautChamberPieces {
          * rare block spawns under the floor, or what item an Item Frame will have.
          */
         @Override
-        protected void handleDataMarker(String function, BlockPos pos, ServerLevelAccessor worldIn, Random rand, BoundingBox sbb) {
+        protected void handleDataMarker(String function, BlockPos pos, ServerLevelAccessor worldIn, RandomSource rand, BoundingBox sbb) {
 
         }
     }

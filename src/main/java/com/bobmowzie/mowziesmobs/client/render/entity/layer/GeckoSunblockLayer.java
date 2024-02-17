@@ -4,7 +4,7 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.LivingCapability;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.geo.render.built.GeoModel;
 import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 
@@ -29,7 +28,7 @@ public class GeckoSunblockLayer<T extends LivingEntity & IAnimatable> extends Ge
             float f = (float) entitylivingbaseIn.tickCount + partialTicks;
             RenderType renderType = RenderType.energySwirl(this.getTextureLocation(), this.xOffset(f), f * 0.01F);
 
-            getRenderer().render(getEntityModel().getModel(getEntityModel().getModelLocation(entitylivingbaseIn)),
+            getRenderer().render(getEntityModel().getModel(getEntityModel().getModelResource(entitylivingbaseIn)),
                     entitylivingbaseIn, partialTicks, renderType, matrixStackIn, bufferIn, bufferIn.getBuffer(renderType),
                     packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 0.1F, 1.0F);
         }

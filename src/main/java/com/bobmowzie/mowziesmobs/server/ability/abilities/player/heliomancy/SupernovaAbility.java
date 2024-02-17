@@ -36,9 +36,9 @@ public class SupernovaAbility extends PlayerAbility {
         getUser().playSound(MMSounds.ENTITY_SUPERNOVA_START.get(), 3f, 1f);
         playAnimation("supernova", false);
 
-        MobEffectInstance sunsBlessingInstance = getUser().getEffect(EffectHandler.SUNS_BLESSING);
+        MobEffectInstance sunsBlessingInstance = getUser().getEffect(EffectHandler.SUNS_BLESSING.get());
         if (sunsBlessingInstance != null) {
-            getUser().removeEffect(EffectHandler.SUNS_BLESSING);
+            getUser().removeEffect(EffectHandler.SUNS_BLESSING.get());
         }
 
         if (getLevel().isClientSide) {
@@ -52,7 +52,7 @@ public class SupernovaAbility extends PlayerAbility {
     @Override
     public boolean canUse() {
         if (getUser() != null && !(getUser().getInventory().getSelected().isEmpty())) return false;
-        return getUser().hasEffect(EffectHandler.SUNS_BLESSING) && super.canUse();
+        return getUser().hasEffect(EffectHandler.SUNS_BLESSING.get()) && super.canUse();
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.server.ability.abilities.player.geomancy.SpawnB
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -17,7 +18,7 @@ public class SpawnBoulderChargeSound extends AbstractTickableSoundInstance {
     private final SpawnBoulderAbility ability;
 
     public SpawnBoulderChargeSound(LivingEntity user) {
-        super(MMSounds.EFFECT_GEOMANCY_BOULDER_CHARGE.get(), SoundSource.PLAYERS);
+        super(MMSounds.EFFECT_GEOMANCY_BOULDER_CHARGE.get(), SoundSource.PLAYERS, SoundInstance.createUnseededRandom());
         this.user = user;
         volume = 1F;
         pitch = 0.95f;

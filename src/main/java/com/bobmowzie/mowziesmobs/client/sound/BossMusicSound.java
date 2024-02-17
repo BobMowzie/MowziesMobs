@@ -2,8 +2,10 @@ package com.bobmowzie.mowziesmobs.client.sound;
 
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.ilexiconn.llibrary.client.model.tools.ControlledAnimation;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 
@@ -16,7 +18,7 @@ public class BossMusicSound extends AbstractTickableSoundInstance {
     ControlledAnimation volumeControl;
 
     public BossMusicSound(SoundEvent sound, MowzieEntity boss) {
-        super(sound, SoundSource.MUSIC);
+        super(sound, SoundSource.MUSIC, SoundInstance.createUnseededRandom());
         this.boss = boss;
         this.soundEvent = sound;
         this.attenuation = Attenuation.NONE;

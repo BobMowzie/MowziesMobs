@@ -1,5 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelUmvuthana;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoSunblockLayer;
@@ -9,18 +11,16 @@ import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthana;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3d;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
 
 @OnlyIn(Dist.CLIENT)
@@ -36,7 +36,7 @@ public class RenderUmvuthana extends MowzieGeoEntityRenderer<EntityUmvuthana> {
 
     @Override
     public ResourceLocation getTextureLocation(EntityUmvuthana entity) {
-        return this.getGeoModelProvider().getTextureLocation(entity);
+        return this.getGeoModelProvider().getTextureResource(entity);
     }
 
     @Override

@@ -1,6 +1,9 @@
 package com.bobmowzie.mowziesmobs.client;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
+import java.lang.annotation.ElementType;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerFirstPerson;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerThirdPerson;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoFirstPersonRenderer;
@@ -15,41 +18,36 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.item.ItemBlowgun;
-import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import com.mojang.authlib.minecraft.client.MinecraftClient;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.gui.components.BossHealthOverlay;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.*;
-import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraftforge.client.event.CustomizeGuiOverlayEvent;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.event.RenderHandEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.ViewportEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.ModList;
-import org.apache.commons.lang3.tuple.Pair;
-import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
 
 @OnlyIn(Dist.CLIENT)
 public enum ClientEventHandler {
@@ -81,7 +79,7 @@ public enum ClientEventHandler {
                         event.setCanceled(true);
 
                         if (event.isCanceled()) {
-                            float delta = event.getPartialTicks();
+                            float delta = event.getPartialTick();
                             float f1 = Mth.lerp(delta, player.xRotO, player.getXRot());
                             firstPersonRenderer.renderItemInFirstPerson((AbstractClientPlayer) player, f1, delta, event.getHand(), event.getSwingProgress(), event.getItemStack(), event.getEquipProgress(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), geckoPlayer);
                         }
@@ -166,17 +164,17 @@ public enum ClientEventHandler {
     }
 
     @SubscribeEvent
-    public void onRenderOverlay(RenderGameOverlayEvent.PostLayer e) {
+    public void onRenderOverlay(RenderGuiOverlayEvent.Post e) {
         final int startTime = 210;
         final int pointStart = 1200;
         final int timePerMillis = 22;
-        if (e.getOverlay() == ForgeIngameGui.FROSTBITE_ELEMENT) {
+        if (e.getOverlay() == VanillaGuiOverlay.FROSTBITE.type()) {
             if (Minecraft.getInstance().player != null) {
                 FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(Minecraft.getInstance().player, CapabilityHandler.FROZEN_CAPABILITY);
                 if (frozenCapability != null && frozenCapability.getFrozen() && Minecraft.getInstance().options.getCameraType() == CameraType.FIRST_PERSON) {
                     RenderSystem.setShaderTexture(0, FROZEN_BLUR);
                     Window res = e.getWindow();
-                    GuiComponent.blit(e.getMatrixStack(), 0, 0, 0, 0, res.getGuiScaledWidth(), res.getGuiScaledHeight(), res.getGuiScaledWidth(), res.getGuiScaledHeight());
+                    GuiComponent.blit(e.getPoseStack(), 0, 0, 0, 0, res.getGuiScaledWidth(), res.getGuiScaledHeight(), res.getGuiScaledWidth(), res.getGuiScaledHeight());
                 }
             }
         }
@@ -184,23 +182,23 @@ public enum ClientEventHandler {
 
     // Remove frozen overlay
     @SubscribeEvent
-    public void onRenderHUD(RenderGameOverlayEvent.PreLayer event) {
+    public void onRenderHUD(RenderGuiOverlayEvent.Pre event) {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player != null && player.isPassenger()) {
             if (player.getVehicle() instanceof EntityFrozenController) {
-                if (event.getOverlay() == ForgeIngameGui.MOUNT_HEALTH_ELEMENT) {
+                if (event.getOverlay() == VanillaGuiOverlay.MOUNT_HEALTH.type()) {
                     event.setCanceled(true);
                 }
-                if (event.getType().equals(RenderGameOverlayEvent.ElementType.ALL)) {
-                    Minecraft.getInstance().gui.setOverlayMessage(TextComponent.EMPTY, false);
+                if (event.getType().equals(ElementType.ALL)) {
+                    Minecraft.getInstance().gui.setOverlayMessage(Component.empty(), false);
                 }
             }
         }
     }
 
     @SubscribeEvent
-    public void updateFOV(FOVModifierEvent event) {
-        Player player = event.getEntity();
+    public void updateFOV(ViewportEvent.ComputeFov event) {
+        Player player = (Player) event.getCamera().getEntity();
         if (player.isUsingItem() && player.getUseItem().getItem() instanceof ItemBlowgun) {
             int i = player.getTicksUsingItem();
             float f1 = (float)i / 5.0F;
@@ -210,12 +208,12 @@ public enum ClientEventHandler {
                 f1 = f1 * f1;
             }
 
-            event.setNewfov(1.0F - f1 * 0.15F);
+            event.setFOV(1.0F - f1 * 0.15F);
         }
     }
 
     @SubscribeEvent
-    public void onSetupCamera(EntityViewRenderEvent.CameraSetup event) {
+    public void onSetupCamera(ViewportEvent.ComputeCameraAngles event) {
         Player player = Minecraft.getInstance().player;
         float delta = Minecraft.getInstance().getFrameTime();
         float ticksExistedDelta = player.tickCount + delta;
@@ -263,11 +261,11 @@ public enum ClientEventHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onBossBar(RenderGameOverlayEvent.BossInfo event){
+    public void onBossBar(CustomizeGuiOverlayEvent.BossEventProgress event){
         if (!ConfigHandler.CLIENT.customBossBars.get()) return;
         Pair<ResourceLocation, ResourceLocation> bossBar = ClientProxy.bossBarResourceLocations.getOrDefault(event.getBossEvent().getId(), null);
         if (bossBar == null || bossBar.getLeft() == null) return;
-        PoseStack stack = event.getMatrixStack();
+        PoseStack stack = event.getPoseStack();
         event.setCanceled(true);
         int y = event.getY();
         int i = Minecraft.getInstance().getWindow().getGuiScaledWidth();

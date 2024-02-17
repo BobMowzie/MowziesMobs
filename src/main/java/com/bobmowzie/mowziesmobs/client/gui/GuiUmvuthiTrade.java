@@ -8,6 +8,7 @@ import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.message.MessageUmvuthiTrade;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -16,8 +17,8 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -52,7 +53,7 @@ public final class GuiUmvuthiTrade extends AbstractContainerScreen<ContainerUmvu
     protected void init() {
         super.init();
         String text = I18n.get(hasTraded ? "entity.mowziesmobs.umvuthi.replenish.button.text" : "entity.mowziesmobs.umvuthi.trade.button.text");
-        grantButton = addRenderableWidget(new Button(leftPos + 115, topPos + 52, 56, 20, new TranslatableComponent(text), this::actionPerformed));
+        grantButton = addRenderableWidget(new Button(leftPos + 115, topPos + 52, 56, 20, Component.translatable(text), this::actionPerformed));
         grantButton.active = hasTraded;
         updateButton();
     }
@@ -135,17 +136,17 @@ public final class GuiUmvuthiTrade extends AbstractContainerScreen<ContainerUmvu
 
     private void updateButton() {
         if (hasTraded) {
-            grantButton.setMessage(new TranslatableComponent(I18n.get("entity.mowziesmobs.umvuthi.replenish.button.text")));
+            grantButton.setMessage(Component.translatable(I18n.get("entity.mowziesmobs.umvuthi.replenish.button.text")));
             grantButton.setWidth(108);
             grantButton.x = leftPos + 63;
         }
         else {
-            grantButton.setMessage(new TranslatableComponent(I18n.get("entity.mowziesmobs.umvuthi.trade.button.text")));
+            grantButton.setMessage(Component.translatable(I18n.get("entity.mowziesmobs.umvuthi.trade.button.text")));
         }
     }
 
     private Style getHoverText() {
-        TranslatableComponent text = new TranslatableComponent(I18n.get(hasTraded ? "entity.mowziesmobs.umvuthi.replenish.button.hover" : "entity.mowziesmobs.umvuthi.trade.button.hover"));
+        MutableComponent text = Component.translatable(I18n.get(hasTraded ? "entity.mowziesmobs.umvuthi.replenish.button.hover" : "entity.mowziesmobs.umvuthi.trade.button.hover"));
         return text.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, text));
     }
 }

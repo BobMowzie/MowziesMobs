@@ -1,5 +1,10 @@
 package com.bobmowzie.mowziesmobs.server.capability;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoFirstPersonRenderer;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
@@ -16,6 +21,7 @@ import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseDown;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseUp;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.power.Power;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -34,12 +40,8 @@ import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.fml.LogicalSide;
-
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PlayerCapability {
     public static ResourceLocation ID = new ResourceLocation(MowziesMobs.MODID, "player_cap");
@@ -50,7 +52,7 @@ public class PlayerCapability {
 
         void tick(TickEvent.PlayerTickEvent event);
 
-        void addedToWorld(EntityJoinWorldEvent event);
+        void addedToWorld(EntityJoinLevelEvent event);
 
         boolean isVerticalSwing();
 
@@ -242,8 +244,8 @@ public class PlayerCapability {
         public Power[] powers = new Power[]{};
 
         @Override
-        public void addedToWorld(EntityJoinWorldEvent event) {
-            if (event.getWorld().isClientSide()) {
+        public void addedToWorld(EntityJoinLevelEvent event) {
+            if (event.getLevel().isClientSide()) {
                 Player player = (Player) event.getEntity();
                 geckoPlayer = new GeckoPlayer.GeckoPlayerThirdPerson(player);
                 if (event.getEntity() == Minecraft.getInstance().player) GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON = new GeckoPlayer.GeckoPlayerFirstPerson(player);
@@ -265,10 +267,10 @@ public class PlayerCapability {
             if (event.side == LogicalSide.SERVER) {
                 for (ItemStack itemStack : event.player.getInventory().items) {
                     if (itemStack.getItem() instanceof ItemEarthTalisman)
-                        player.addEffect(new MobEffectInstance(EffectHandler.GEOMANCY, 20, 0, false, false));
+                        player.addEffect(new MobEffectInstance(EffectHandler.GEOMANCY.get(), 20, 0, false, false));
                 }
                 if (player.getOffhandItem().getItem() instanceof ItemEarthTalisman)
-                    player.addEffect(new MobEffectInstance(EffectHandler.GEOMANCY, 20, 0, false, false));
+                    player.addEffect(new MobEffectInstance(EffectHandler.GEOMANCY.get(), 20, 0, false, false));
 
                 List<EntityUmvuthanaFollowerToPlayer> pack = tribePack;
                 float theta = (2 * (float) Math.PI / pack.size());

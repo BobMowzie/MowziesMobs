@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
+
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;
@@ -20,17 +21,17 @@ public class ModelGeckoPlayerFirstPerson extends MowzieAnimatedGeoModel<GeckoPla
 	protected boolean useSmallArms;
 	
 	@Override
-	public ResourceLocation getAnimationFileLocation(GeckoPlayer animatable) {
+	public ResourceLocation getAnimationResource(GeckoPlayer animatable) {
 		return new ResourceLocation(MowziesMobs.MODID, "animations/animated_player_first_person.animation.json");
 	}
 
 	@Override
-	public ResourceLocation getModelLocation(GeckoPlayer animatable) {
+	public ResourceLocation getModelResource(GeckoPlayer animatable) {
 		return new ResourceLocation(MowziesMobs.MODID, "geo/animated_player_first_person.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(GeckoPlayer animatable) {
+	public ResourceLocation getTextureResource(GeckoPlayer animatable) {
 		return textureLocation;
 	}
 

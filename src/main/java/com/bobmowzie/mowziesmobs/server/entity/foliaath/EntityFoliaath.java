@@ -12,6 +12,7 @@ import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -312,9 +313,9 @@ public class EntityFoliaath extends MowzieLLibraryEntity implements Enemy {
     }
 
     @Override
-    public void killed(ServerLevel world, LivingEntity killedEntity) {
+    public boolean wasKilled(ServerLevel world, LivingEntity killedEntity) {
         this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 300, 1, true, true));
-        super.killed(world, killedEntity);
+        return super.wasKilled(world, killedEntity);
     }
 
     @Override

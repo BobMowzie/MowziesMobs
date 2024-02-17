@@ -1,13 +1,40 @@
 package com.bobmowzie.mowziesmobs.server.world.feature.structure.jigsaw;
 
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.function.Predicate;
+
+import org.apache.commons.lang3.mutable.MutableObject;
+import org.slf4j.Logger;
+
+import com.bobmowzie.mowziesmobs.server.world.feature.structure.jigsaw.MowzieJigsawManager.FallbackPlacer;
+import com.bobmowzie.mowziesmobs.server.world.feature.structure.jigsaw.MowzieJigsawManager.InteriorPlacer;
+import com.bobmowzie.mowziesmobs.server.world.feature.structure.jigsaw.MowzieJigsawManager.PieceState;
+import com.bobmowzie.mowziesmobs.server.world.feature.structure.jigsaw.MowzieJigsawManager.Placer;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Queues;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
-import net.minecraft.core.*;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.QuartPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.Vec3i;
 import net.minecraft.data.worldgen.Pools;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelHeightAccessor;
+import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.JigsawBlock;
 import net.minecraft.world.level.block.Rotation;
@@ -21,18 +48,17 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.PoolElementStructurePiece;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
-import net.minecraft.world.level.levelgen.structure.pools.*;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
+import net.minecraft.world.level.levelgen.structure.pools.EmptyPoolElement;
+import net.minecraft.world.level.levelgen.structure.pools.JigsawJunction;
+import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
+import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
+import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.apache.commons.lang3.mutable.MutableObject;
-import org.slf4j.Logger;
-
-import java.util.*;
-import java.util.function.Predicate;
 
 public class MowzieJigsawManager {
     static final Logger LOGGER = LogUtils.getLogger();
@@ -142,7 +168,7 @@ public class MowzieJigsawManager {
     }
 
     public interface PieceFactory {
-        PoolElementStructurePiece create(StructureManager p_210301_, StructurePoolElement p_210302_, BlockPos p_210303_, int p_210304_, Rotation p_210305_, BoundingBox p_210306_);
+        PoolElementStructurePiece create(StructureTemplateManager p_210301_, StructurePoolElement p_210302_, BlockPos p_210303_, int p_210304_, Rotation p_210305_, BoundingBox p_210306_);
     }
 
     static class PieceState {
@@ -189,9 +215,9 @@ public class MowzieJigsawManager {
         final int maxDepth;
         final PieceFactory factory;
         final ChunkGenerator chunkGenerator;
-        final StructureManager structureManager;
+        final StructureTemplateManager structureManager;
         final List<? super PoolElementStructurePiece> pieces;
-        protected final Random random;
+        protected final RandomSource random;
         protected final String pathJigsawName;
         protected final String interiorJigsawName;
 
@@ -204,7 +230,7 @@ public class MowzieJigsawManager {
         final SortedSet<Pair<StructureBlockInfo, PieceState>> interior = new TreeSet<>(placeOrderComparator);
         protected int numPaths;
 
-        Placer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, Random p_210329_,
+        Placer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureTemplateManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, RandomSource p_210329_,
                String pathJigsawName, String interiorJigsawName,
                MutableObject<VoxelShape> free, MutableObject<VoxelShape> interiorFree, MutableObject<Map<String, VoxelShape>> specialBounds) {
             this.pools = p_210323_;
@@ -564,7 +590,7 @@ public class MowzieJigsawManager {
 
     static final class FallbackPlacer extends Placer {
 
-        FallbackPlacer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, Random p_210329_,
+        FallbackPlacer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureTemplateManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, RandomSource p_210329_,
                        String pathJigsawName, String interiorJigsawName,
                        MutableObject<VoxelShape> free, MutableObject<VoxelShape> interiorFree, MutableObject<Map<String, VoxelShape>> specialBounds,
                        Placer previousPlacer)
@@ -585,7 +611,7 @@ public class MowzieJigsawManager {
 
     static final class InteriorPlacer extends Placer {
 
-        InteriorPlacer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, Random p_210329_,
+        InteriorPlacer(Registry<StructureTemplatePool> p_210323_, int p_210324_, PieceFactory p_210325_, ChunkGenerator p_210326_, StructureTemplateManager p_210327_, List<? super PoolElementStructurePiece> p_210328_, RandomSource p_210329_,
                        String pathJigsawName, String interiorJigsawName,
                        MutableObject<VoxelShape> free, MutableObject<VoxelShape> interiorFree, MutableObject<Map<String, VoxelShape>> specialBounds,
                        Placer previousPlacer)
@@ -637,7 +663,7 @@ public class MowzieJigsawManager {
                 }
             }
 
-            // Match each pos with its closest neighbor - naive approach for now. Robust approach needs Kuhn–Munkres algorithm
+            // Match each pos with its closest neighbor - naive approach for now. Robust approach needs Kuhn�밠unkres algorithm
             Set<StructureBlockInfo> used = new HashSet<>();
             for (StructureBlockInfo block1 : needConnecting) {
                 if (used.contains(block1)) continue;

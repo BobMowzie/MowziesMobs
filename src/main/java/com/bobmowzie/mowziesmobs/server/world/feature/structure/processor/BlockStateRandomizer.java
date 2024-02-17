@@ -1,14 +1,14 @@
 package com.bobmowzie.mowziesmobs.server.world.feature.structure.processor;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 
 // Based on https://github.com/YUNG-GANG/YUNGs-API/blob/multiloader/1.19/Common/src/main/java/com/yungnickyoung/minecraft/yungsapi/world/BlockStateRandomizer.java
 
@@ -27,7 +27,7 @@ public class BlockStateRandomizer {
         this.defaultState = defaultBlockState;
     }
 
-    public BlockState chooseRandomState(Random randomSource) {
+    public BlockState chooseRandomState(RandomSource randomSource) {
         if (entries.isPresent()) {
             float total = 0.0f;
             for (Entry entry : entries.get()) {

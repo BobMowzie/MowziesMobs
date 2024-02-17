@@ -10,6 +10,9 @@ buildscript {
     }
 }
 
+apply plugin: "java"
+apply plugin: "eclipse"
+apply plugin: "maven-publish"
 apply plugin: "net.minecraftforge.gradle"
 
 version = "1.6.0"
@@ -18,7 +21,7 @@ archivesBaseName = "mowziesmobs"
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
-    mappings channel: "official", version: "1.18.2"
+    mappings channel: "official", version: "1.19.2"
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
     runs {
         client {
@@ -82,7 +85,7 @@ repositories {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:1.18.2-40.1.73"
-    implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.18:3.0.56')
-    implementation fg.deobf("curse.maven:worldedit-225608:3697298")
+    minecraft "net.minecraftforge:forge:1.19.2-43.3.0"
+    implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.19:3.1.40')
+    implementation fg.deobf("curse.maven:worldedit-225608:3922622")
 }

@@ -5,6 +5,7 @@ import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoMo
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthana;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.MaskType;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
@@ -17,18 +18,18 @@ public class ModelUmvuthana extends MowzieAnimatedGeoModel<EntityUmvuthana> {
     }
 
     @Override
-    public ResourceLocation getModelLocation(EntityUmvuthana object) {
+    public ResourceLocation getModelResource(EntityUmvuthana object) {
         return new ResourceLocation(MowziesMobs.MODID, "geo/umvuthana.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureLocation(EntityUmvuthana entity) {
+    public ResourceLocation getTextureResource(EntityUmvuthana entity) {
         boolean isElite = entity.getMaskType() == MaskType.FAITH || entity.getMaskType() == MaskType.FURY;
         return new ResourceLocation(MowziesMobs.MODID, isElite ? "textures/entity/umvuthana_elite.png" : "textures/entity/umvuthana.png");
     }
 
     @Override
-    public ResourceLocation getAnimationFileLocation(EntityUmvuthana object) {
+    public ResourceLocation getAnimationResource(EntityUmvuthana object) {
         return new ResourceLocation(MowziesMobs.MODID, "animations/umvuthana.animation.json");
     }
 

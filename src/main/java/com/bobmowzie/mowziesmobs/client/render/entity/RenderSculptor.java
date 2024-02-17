@@ -1,20 +1,18 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelSculptor;
-import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoItemlayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoSunblockLayer;
-import com.bobmowzie.mowziesmobs.client.render.entity.layer.SunblockLayer;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
-import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
 import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
@@ -38,7 +36,7 @@ public class RenderSculptor extends MowzieGeoEntityRenderer<EntitySculptor> {
 
     @Override
     public ResourceLocation getTextureLocation(EntitySculptor entity) {
-        return this.getGeoModelProvider().getTextureLocation(entity);
+        return this.getGeoModelProvider().getTextureResource(entity);
     }
 
     @Override

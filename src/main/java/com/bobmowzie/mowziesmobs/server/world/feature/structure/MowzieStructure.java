@@ -25,6 +25,7 @@ import net.minecraft.world.level.levelgen.structure.PostPlacementProcessor;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
 import java.util.Optional;
@@ -61,9 +62,9 @@ public abstract class MowzieStructure<C extends FeatureConfiguration> extends St
 
         int i = chunkPos.getMiddleBlockX();
         int j = chunkPos.getMiddleBlockZ();
-        int k = context.chunkGenerator().getFirstOccupiedHeight(i, j, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor());
+        int k = context.chunkGenerator().getFirstOccupiedHeight(i, j, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor(), context.randomState());
         Holder<Biome> biome = context.chunkGenerator().getNoiseBiome(QuartPos.fromBlock(i), QuartPos.fromBlock(k), QuartPos.fromBlock(j));
-        if (!allowedBiomes.contains(biome.value().getRegistryName())) {
+        if (!allowedBiomes.contains(ForgeRegistries.BIOMES.getKey(biome.value()))) {
             return false;
         }
 
@@ -78,8 +79,8 @@ public abstract class MowzieStructure<C extends FeatureConfiguration> extends St
         if (avoidWater) {
             ChunkGenerator chunkGenerator = context.chunkGenerator();
             LevelHeightAccessor heightLimitView = context.heightAccessor();
-            int centerHeight = chunkGenerator.getBaseHeight(centerOfChunk.getX(), centerOfChunk.getZ(), Heightmap.Types.WORLD_SURFACE_WG, heightLimitView);
-            NoiseColumn columnOfBlocks = chunkGenerator.getBaseColumn(centerOfChunk.getX(), centerOfChunk.getZ(), heightLimitView);
+            int centerHeight = chunkGenerator.getBaseHeight(centerOfChunk.getX(), centerOfChunk.getZ(), Heightmap.Types.WORLD_SURFACE_WG, heightLimitView, context.randomState());
+            NoiseColumn columnOfBlocks = chunkGenerator.getBaseColumn(centerOfChunk.getX(), centerOfChunk.getZ(), heightLimitView, context.randomState());
             BlockState topBlock = columnOfBlocks.getBlock(centerHeight);
             if (!topBlock.getFluidState().isEmpty()) return false;
         }

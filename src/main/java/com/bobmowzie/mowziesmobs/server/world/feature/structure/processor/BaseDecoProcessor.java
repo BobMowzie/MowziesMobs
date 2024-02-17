@@ -1,13 +1,18 @@
 package com.bobmowzie.mowziesmobs.server.world.feature.structure.processor;
 
 import com.mojang.serialization.Codec;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.WorldGenRegion;
-import net.minecraft.tags.BlockTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.SlabType;
@@ -15,8 +20,6 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlac
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-
-import java.util.Random;
 
 public class BaseDecoProcessor extends StructureProcessor {
     public static final BaseDecoProcessor INSTANCE = new BaseDecoProcessor();
@@ -51,7 +54,7 @@ public class BaseDecoProcessor extends StructureProcessor {
 
             Direction facing = blockInfoGlobal.state.getValue(StairBlock.FACING).getOpposite();
             facing = structurePlacementData.getRotation().rotate(facing);
-            Random random = structurePlacementData.getRandom(blockInfoGlobal.pos);
+            RandomSource random = structurePlacementData.getRandom(blockInfoGlobal.pos);
 
             blockInfoGlobal = new StructureTemplate.StructureBlockInfo(blockInfoGlobal.pos, Blocks.RED_TERRACOTTA.defaultBlockState(), blockInfoGlobal.nbt);
             for (int x = 0; x < 7; x++) {
@@ -86,7 +89,7 @@ public class BaseDecoProcessor extends StructureProcessor {
         return blockInfoGlobal;
     }
 
-    public BlockState chooseRandomState(Random random) {
+    public BlockState chooseRandomState(RandomSource random) {
         float v = random.nextFloat();
         if (v > 0.7) return Blocks.POLISHED_DEEPSLATE_STAIRS.defaultBlockState();
         else return Blocks.COBBLED_DEEPSLATE_STAIRS.defaultBlockState();

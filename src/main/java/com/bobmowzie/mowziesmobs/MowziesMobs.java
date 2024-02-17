@@ -12,8 +12,11 @@ import com.bobmowzie.mowziesmobs.server.block.entity.BlockEntityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
+import com.bobmowzie.mowziesmobs.server.inventory.ContainerHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
+import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
+import com.bobmowzie.mowziesmobs.server.potion.PotionTypeHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.bobmowzie.mowziesmobs.server.world.feature.ConfiguredFeatureHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
@@ -61,6 +64,9 @@ public final class MowziesMobs {
         ParticleHandler.REG.register(bus);
         FeatureHandler.REG.register(bus);
         FeatureHandler.FEATURES.register(bus);
+        ContainerHandler.REG.register(bus);
+        EffectHandler.REG.register(bus);
+        PotionTypeHandler.REG.register(bus);
 
         PROXY.init(bus);
         bus.<FMLCommonSetupEvent>addListener(this::init);
@@ -78,6 +84,7 @@ public final class MowziesMobs {
         PROXY.initNetwork();
         AdvancementHandler.preInit();
         LootTableHandler.init();
+        PotionTypeHandler.init();
 
         event.enqueueWork(() -> {
             JigsawHandler.registerJigsawElements();

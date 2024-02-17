@@ -1,13 +1,13 @@
 package com.bobmowzie.mowziesmobs.server.entity.umvuthana.trade;
 
 import com.google.common.collect.ImmutableSet;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.Random;
 
 public final class TradeStore {
     public static final TradeStore EMPTY = new TradeStore(ImmutableSet.of(), 0);
@@ -25,7 +25,7 @@ public final class TradeStore {
         return trades.size() > 0;
     }
 
-    public Trade get(Random rng) {
+    public Trade get(RandomSource rng) {
         if (totalWeight <= 0) {
             return null;
         }

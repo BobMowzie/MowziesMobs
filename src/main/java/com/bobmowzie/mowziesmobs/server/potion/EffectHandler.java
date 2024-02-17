@@ -1,34 +1,25 @@
 package com.bobmowzie.mowziesmobs.server.potion;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
-@Mod.EventBusSubscriber(modid = MowziesMobs.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class EffectHandler {
     private EffectHandler() {
     }
 
-    public static final EffectSunsBlessing SUNS_BLESSING = (EffectSunsBlessing) new EffectSunsBlessing().setRegistryName(MowziesMobs.MODID, "suns_blessing");
-    public static final EffectGeomancy GEOMANCY = (EffectGeomancy) new EffectGeomancy().setRegistryName(MowziesMobs.MODID, "geomancy");
-    public static final EffectFrozen FROZEN = (EffectFrozen) new EffectFrozen().setRegistryName(MowziesMobs.MODID, "frozen");
-    public static final EffectPoisonResist POISON_RESIST = (EffectPoisonResist) new EffectPoisonResist().setRegistryName(MowziesMobs.MODID, "poison_resist");
-    public static final EffectSunblock SUNBLOCK = (EffectSunblock) new EffectSunblock().setRegistryName(MowziesMobs.MODID, "sunblock");
-
-    @SubscribeEvent
-    public static void register(RegistryEvent.Register<MobEffect> event) {
-        event.getRegistry().registerAll(
-                SUNS_BLESSING,
-                GEOMANCY,
-                FROZEN,
-                POISON_RESIST,
-                SUNBLOCK
-        );
-    }
+	public static final DeferredRegister<MobEffect> REG = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, MowziesMobs.MODID);
+	
+    public static final RegistryObject<EffectSunsBlessing> SUNS_BLESSING = REG.register("suns_blessing", () -> new EffectSunsBlessing());
+    public static final RegistryObject<EffectGeomancy> GEOMANCY = REG.register("geomancy", () -> new EffectGeomancy());
+    public static final RegistryObject<EffectFrozen> FROZEN = REG.register("frozen", () -> new EffectFrozen());
+    public static final RegistryObject<EffectPoisonResist> POISON_RESIST = REG.register("poison_resist", () -> new EffectPoisonResist());
+    public static final RegistryObject<EffectSunblock> SUNBLOCK = REG.register("sunblock", () -> new EffectSunblock());
 
     public static void addOrCombineEffect(LivingEntity entity, MobEffect effect, int duration, int amplifier, boolean ambient, boolean showParticles) {
         if (effect == null) return;
