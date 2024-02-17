@@ -8,6 +8,7 @@ import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.MaskType;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
@@ -15,17 +16,20 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.RecordItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraftforge.common.ForgeSpawnEggItem;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
 
 @Mod.EventBusSubscriber(modid = MowziesMobs.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
-@ObjectHolder(MowziesMobs.MODID)
 public final class ItemHandler {
     private ItemHandler() {}
 
@@ -70,54 +74,55 @@ public final class ItemHandler {
     public static Style TOOLTIP_STYLE = Style.EMPTY.withColor(TextColor.fromLegacyFormat(ChatFormatting.GRAY));
 
     @SubscribeEvent
-    public static void register(RegistryEvent.Register<Item> event) {
-        event.getRegistry().registerAll(
-            new ItemFoliaathSeed(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("foliaath_seed"),
-            new ItemMobRemover(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("mob_remover"),
-            new ItemWroughtAxe(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).rarity(Rarity.UNCOMMON)).setRegistryName("wrought_axe"),
-            new ItemWroughtHelm(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).rarity(Rarity.UNCOMMON)).setRegistryName("wrought_helmet"),
-            new ItemUmvuthanaMask(MaskType.FURY, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("umvuthana_mask_fury"),
-            new ItemUmvuthanaMask(MaskType.FEAR, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("umvuthana_mask_fear"),
-            new ItemUmvuthanaMask(MaskType.RAGE, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("umvuthana_mask_rage"),
-            new ItemUmvuthanaMask(MaskType.BLISS, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("umvuthana_mask_bliss"),
-            new ItemUmvuthanaMask(MaskType.MISERY, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("umvuthana_mask_misery"),
-            new ItemUmvuthanaMask(MaskType.FAITH, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("umvuthana_mask_faith"),
-            new ItemSolVisage(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).rarity(Rarity.RARE)).setRegistryName("sol_visage"),
-            new ItemDart(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("dart"),
-            new ItemSpear(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1)).setRegistryName("spear"),
-            new ItemBlowgun(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1).durability(300)).setRegistryName("blowgun"),
-            new ItemGrantSunsBlessing(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1).rarity(Rarity.EPIC)).setRegistryName("grant_suns_blessing"),
-            new ItemIceCrystal(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).defaultDurability(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.durability.get()).rarity(Rarity.RARE)).setRegistryName("ice_crystal"),
-            new ItemEarthTalisman(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1).rarity(Rarity.EPIC)).setRegistryName("earth_talisman"),
-            new ItemCapturedGrottol(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1)).setRegistryName("captured_grottol"),
-            new ItemGlowingJelly( new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).food(ItemGlowingJelly.GLOWING_JELLY_FOOD)).setRegistryName("glowing_jelly"),
-            new ItemNagaFang(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("naga_fang"),
-            new ItemNagaFangDagger(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("naga_fang_dagger"),
-            new ItemEarthboreGauntlet(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).defaultDurability(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.durability.get()).rarity(Rarity.RARE)).setRegistryName("earthbore_gauntlet"),
-//            new ItemSculptorStaff(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).defaultDurability(1000).rarity(Rarity.RARE)).setRegistryName("sculptor_staff"),
-//            new ItemSandRake(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).defaultDurability(64)).setRegistryName("sand_rake"),
-            new Item(new Item.Properties()).setRegistryName("logo"),
-            new RecordItem(14, MMSounds.MUSIC_PETIOLE, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1).rarity(Rarity.RARE)).setRegistryName("music_disc_petiole"),
-    
-            new ForgeSpawnEggItem(EntityHandler.FOLIAATH, 0x47CC3B, 0xC03BCC, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("foliaath_spawn_egg"),
-            new ForgeSpawnEggItem(EntityHandler.WROUGHTNAUT, 0x8C8C8C, 0xFFFFFF, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("wroughtnaut_spawn_egg"),
-            new ForgeSpawnEggItem(EntityHandler.UMVUTHANA_MINION, 0xba5f1e, 0x3a2f2f, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("umvuthana_spawn_egg"),
-            new ForgeSpawnEggItem(EntityHandler.UMVUTHANA_RAPTOR, 0xba5f1e, 0xf6f2f1, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("umvuthana_raptor_spawn_egg"),
-            new ForgeSpawnEggItem(EntityHandler.UMVUTHANA_CRANE, 0xba5f1e, 0xfddc76, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("umvuthana_crane_spawn_egg"),
-            new ForgeSpawnEggItem(EntityHandler.UMVUTHI, 0xf6f2f1, 0xba5f1e, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("umvuthi_spawn_egg"),
-            new ForgeSpawnEggItem(EntityHandler.FROSTMAW, 0xf7faff, 0xafcdff, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("frostmaw_spawn_egg"),
-            new ForgeSpawnEggItem(EntityHandler.GROTTOL, 0x777777, 0xbce0ff, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("grottol_spawn_egg"),
-            new ForgeSpawnEggItem(EntityHandler.LANTERN, 0x6dea00, 0x235a10, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("lantern_spawn_egg"),
-            new ForgeSpawnEggItem(EntityHandler.NAGA, 0x154850, 0x8dd759, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("naga_spawn_egg"),
-//            new ForgeSpawnEggItem(EntityHandler.SCULPTOR, 0xc4a137, 0xfff5e7, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("sculptor_spawn_egg"),
+    public static void register(RegisterEvent event) {
+    	event.register(ForgeRegistries.Keys.ITEMS,
+    			helper -> {
+    	            helper.register("foliaath_seed", new ItemFoliaathSeed(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
+    	            helper.register("mob_remover", new ItemMobRemover(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
+    	            helper.register("wrought_axe", new ItemWroughtAxe(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).rarity(Rarity.UNCOMMON)));
+    	            helper.register("wrought_helmet", new ItemWroughtHelm(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).rarity(Rarity.UNCOMMON)));
+    	            helper.register("umvuthana_mask_fury", new ItemUmvuthanaMask(MaskType.FURY, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
+    	            helper.register("umvuthana_mask_fear", new ItemUmvuthanaMask(MaskType.FEAR, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
+    	            helper.register("umvuthana_mask_rage", new ItemUmvuthanaMask(MaskType.RAGE, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
+    	            helper.register("umvuthana_mask_bliss", new ItemUmvuthanaMask(MaskType.BLISS, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
+    	            helper.register("umvuthana_mask_misery", new ItemUmvuthanaMask(MaskType.MISERY, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
+    	            helper.register("umvuthana_mask_faith", new ItemUmvuthanaMask(MaskType.FAITH, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
+    	            helper.register("sol_visage", new ItemSolVisage(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).rarity(Rarity.RARE)));
+    	            helper.register("dart", new ItemDart(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
+    	            helper.register("spear", new ItemSpear(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1)));
+    	            helper.register("blowgun", new ItemBlowgun(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1).durability(300)));
+    	            helper.register("grant_suns_blessing", new ItemGrantSunsBlessing(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1).rarity(Rarity.EPIC)));
+    	            helper.register("ice_crystal", new ItemIceCrystal(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).defaultDurability(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.durability.get()).rarity(Rarity.RARE)));
+    	            helper.register("earth_talisman", new ItemEarthTalisman(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1).rarity(Rarity.EPIC)));
+    	            helper.register("captured_grottol", new ItemCapturedGrottol(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1)));
+    	            helper.register("glowing_jelly", new ItemGlowingJelly( new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).food(ItemGlowingJelly.GLOWING_JELLY_FOOD)));
+    	            helper.register("naga_fang", new ItemNagaFang(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
+    	            helper.register("naga_fang_dagger", new ItemNagaFangDagger(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
+    	            helper.register("earthbore_gauntlet", new ItemEarthboreGauntlet(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).defaultDurability(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.durability.get()).rarity(Rarity.RARE)));
+//    	            helper.register("sculptor_staff", new ItemSculptorStaff(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).defaultDurability(1000).rarity(Rarity.RARE)));
+//    	            helper.register("sand_rake", new ItemSandRake(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).defaultDurability(64)));
+    	            helper.register("logo", new Item(new Item.Properties()));
+    	            helper.register("music_disc_petiole", new RecordItem(14, MMSounds.MUSIC_PETIOLE, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1).rarity(Rarity.RARE), 0));
+    	    
+    	            helper.register("foliaath_spawn_egg", new ForgeSpawnEggItem(EntityHandler.FOLIAATH, 0x47CC3B, 0xC03BCC, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
+    	            helper.register("wroughtnaut_spawn_egg", new ForgeSpawnEggItem(EntityHandler.WROUGHTNAUT, 0x8C8C8C, 0xFFFFFF, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
+    	            helper.register("umvuthana_spawn_egg", new ForgeSpawnEggItem(EntityHandler.UMVUTHANA_MINION, 0xba5f1e, 0x3a2f2f, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
+    	            helper.register("umvuthana_raptor_spawn_egg", new ForgeSpawnEggItem(EntityHandler.UMVUTHANA_RAPTOR, 0xba5f1e, 0xf6f2f1, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
+    	            helper.register("umvuthana_crane_spawn_egg", new ForgeSpawnEggItem(EntityHandler.UMVUTHANA_CRANE, 0xba5f1e, 0xfddc76, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
+    	            helper.register("umvuthi_spawn_egg", new ForgeSpawnEggItem(EntityHandler.UMVUTHI, 0xf6f2f1, 0xba5f1e, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
+    	            helper.register("frostmaw_spawn_egg", new ForgeSpawnEggItem(EntityHandler.FROSTMAW, 0xf7faff, 0xafcdff, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
+    	            helper.register("grottol_spawn_egg", new ForgeSpawnEggItem(EntityHandler.GROTTOL, 0x777777, 0xbce0ff, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
+    	            helper.register("lantern_spawn_egg", new ForgeSpawnEggItem(EntityHandler.LANTERN, 0x6dea00, 0x235a10, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
+    	            helper.register("naga_spawn_egg", new ForgeSpawnEggItem(EntityHandler.NAGA, 0x154850, 0x8dd759, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
+//    	            helper.register("sculptor_spawn_egg", new ForgeSpawnEggItem(EntityHandler.SCULPTOR, 0xc4a137, 0xfff5e7, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
 
-            new BlockItem(BlockHandler.PAINTED_ACACIA.get(), new Item.Properties()).setRegistryName(BlockHandler.PAINTED_ACACIA.get().getRegistryName()),
-            new BlockItem(BlockHandler.PAINTED_ACACIA_SLAB.get(), new Item.Properties()).setRegistryName(BlockHandler.PAINTED_ACACIA_SLAB.get().getRegistryName()),
-            new BlockItem(BlockHandler.THATCH.get(), new Item.Properties()).setRegistryName(BlockHandler.THATCH.get().getRegistryName()),
-//            new BlockItem(BlockHandler.GONG.get(), new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.GONG.get().getRegistryName()),
-//            new BlockItem(BlockHandler.RAKED_SAND.get(), new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.RAKED_SAND.get().getRegistryName()),
-            new BlockItem(BlockHandler.CLAWED_LOG.get(), new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.CLAWED_LOG.get().getRegistryName())
-        );
+    	            helper.register("painted_acacia", new BlockItem(BlockHandler.PAINTED_ACACIA.get(), new Item.Properties()));
+    	            helper.register("painted_acacia_slab", new BlockItem(BlockHandler.PAINTED_ACACIA_SLAB.get(), new Item.Properties()));
+    	            helper.register("thatch_block", new BlockItem(BlockHandler.THATCH.get(), new Item.Properties()));
+//    	            helper.register("gong", new BlockItem(BlockHandler.GONG.get(), new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
+//    	            helper.register("raked_sand", new BlockItem(BlockHandler.RAKED_SAND.get(), new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
+    	            helper.register("clawed_log", new BlockItem(BlockHandler.CLAWED_LOG.get(), new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
+    			});
     }
 
     public static void initializeAttributes() {
