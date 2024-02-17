@@ -1,20 +1,22 @@
 package com.bobmowzie.mowziesmobs.server.world.feature;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.tag.TagHandler;
 import com.bobmowzie.mowziesmobs.server.world.BiomeChecker;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
-import net.minecraft.data.worldgen.PlainVillagePools;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.JigsawConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
@@ -23,15 +25,12 @@ import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class ConfiguredFeatureHandler {
 
-    public static Holder<ConfiguredStructureFeature<?, ?>> CONFIGURED_WROUGHT_CHAMBER;
-    public static Holder<ConfiguredStructureFeature<?, ?>> CONFIGURED_UMVUTHANA_GROVE;
-    public static Holder<ConfiguredStructureFeature<?, ?>> CONFIGURED_FROSTMAW;
-    public static Holder<ConfiguredStructureFeature<?, ?>> CONFIGURED_MONASTERY;
+    public static Holder<ConfiguredFeature<?, ?>> CONFIGURED_WROUGHT_CHAMBER;
+    public static Holder<ConfiguredFeature<?, ?>> CONFIGURED_UMVUTHANA_GROVE;
+    public static Holder<ConfiguredFeature<?, ?>> CONFIGURED_FROSTMAW;
+    public static Holder<ConfiguredFeature<?, ?>> CONFIGURED_MONASTERY;
 
     public static Holder<StructureSet> WROUGHT_CHAMBERS;
     public static Holder<StructureSet> UMVUTHANA_GROVES;
@@ -43,23 +42,23 @@ public class ConfiguredFeatureHandler {
     public static final Set<ResourceLocation> FROSTMAW_BIOMES = new HashSet<>();
     public static final Set<ResourceLocation> SCULPTOR_BIOMES = new HashSet<>();
 
-    private static ResourceKey<ConfiguredStructureFeature<?, ?>> createFeatureKey(String name) {
-        return ResourceKey.create(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY, new ResourceLocation(MowziesMobs.MODID, name));
+    private static ResourceKey<ConfiguredFeature<?, ?>> createFeatureKey(String name) {
+        return ResourceKey.create(Registry.CONFIGURED_FEATURE_REGISTRY, new ResourceLocation(MowziesMobs.MODID, name));
     }
 
     private static ResourceKey<StructureSet> createSetKey(String name) {
         return ResourceKey.create(Registry.STRUCTURE_SET_REGISTRY, new ResourceLocation(MowziesMobs.MODID, name));
     }
 
-    private static <FC extends FeatureConfiguration, F extends StructureFeature<FC>> Holder<ConfiguredStructureFeature<?, ?>> register(ResourceKey<ConfiguredStructureFeature<?, ?>> key, ConfiguredStructureFeature<FC, F> feature) {
-        return BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE, key, feature);
+    private static <FC extends FeatureConfiguration, F extends Feature<FC>> Holder<ConfiguredFeature<?, ?>> register(ResourceKey<ConfiguredFeature<?, ?>> key, ConfiguredFeature<FC, F> feature) {
+        return BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, key, feature);
     }
 
     static Holder<StructureSet> register(ResourceKey<StructureSet> key, StructureSet set) {
         return BuiltinRegistries.register(BuiltinRegistries.STRUCTURE_SETS, key, set);
     }
 
-    static Holder<StructureSet> register(ResourceKey<StructureSet> key, Holder<ConfiguredStructureFeature<?, ?>> configuredFeature, StructurePlacement placement) {
+    static Holder<StructureSet> register(ResourceKey<StructureSet> key, Holder<ConfiguredFeature<?, ?>> configuredFeature, StructurePlacement placement) {
         return register(key, new StructureSet(configuredFeature, placement));
     }
 

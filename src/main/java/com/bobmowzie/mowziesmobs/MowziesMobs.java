@@ -1,5 +1,8 @@
 package com.bobmowzie.mowziesmobs;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.bobmowzie.mowziesmobs.client.ClientProxy;
 import com.bobmowzie.mowziesmobs.client.model.tools.MowzieGeoBuilder;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
@@ -24,20 +27,18 @@ import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.structure.jigsaw.JigsawHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.structure.processor.ProcessorHandler;
 import com.bobmowzie.mowziesmobs.server.world.spawn.SpawnHandler;
+
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.simple.SimpleChannel;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import software.bernie.example.GeckoLibMod;
 import software.bernie.geckolib3.GeckoLib;
 
@@ -64,7 +65,6 @@ public final class MowziesMobs {
         BlockEntityHandler.REG.register(bus);
         ParticleHandler.REG.register(bus);
         FeatureHandler.REG.register(bus);
-        FeatureHandler.FEATURES.register(bus);
         ContainerHandler.REG.register(bus);
         EffectHandler.REG.register(bus);
         PotionTypeHandler.REG.register(bus);
@@ -106,7 +106,6 @@ public final class MowziesMobs {
 
     @SubscribeEvent
     public void onBiomeLoading(BiomeLoadingEvent event) {
-        SpawnHandler.onBiomeLoading(event);
         ConfiguredFeatureHandler.onBiomeLoading(event);
     }
 }

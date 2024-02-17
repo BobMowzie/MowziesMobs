@@ -20,12 +20,14 @@ public class MobSpawnBiomeModifier implements BiomeModifier
     	
     }
 
+    @Override
     public void modify(Holder<Biome> biome, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
         if (phase == Phase.ADD) {
             SpawnHandler.addBiomeSpawns(biome, builder);
         }
     }
 
+    @Override
     public Codec<? extends BiomeModifier> codec() {
         return SERIALIZER.get();
     }
