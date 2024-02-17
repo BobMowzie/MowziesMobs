@@ -95,7 +95,7 @@ public class EntitySuperNova extends EntityMagicEffect {
     }
     
     @Override
-    public float getBrightness() {
+    public float getLightLevelDependentMagicValue() {
         return 15728880;
     }
 }

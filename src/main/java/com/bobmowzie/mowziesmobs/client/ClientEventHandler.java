@@ -1,5 +1,7 @@
 package com.bobmowzie.mowziesmobs.client;
 
+import java.lang.annotation.ElementType;
+
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerFirstPerson;
@@ -187,7 +189,7 @@ public enum ClientEventHandler {
                 if (event.getOverlay() == VanillaGuiOverlay.MOUNT_HEALTH.type()) {
                     event.setCanceled(true);
                 }
-                if (event.getType().equals(RenderGuiOverlayEvent.ElementType.ALL)) {
+                if (event.getType().equals(ElementType.ALL)) {
                     Minecraft.getInstance().gui.setOverlayMessage(Component.empty(), false);
                 }
             }

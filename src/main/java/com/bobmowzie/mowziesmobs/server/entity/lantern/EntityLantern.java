@@ -84,7 +84,7 @@ public class EntityLantern extends MowzieLLibraryEntity {
     }
 
     @Override
-    public float getBrightness() {
+    public float getLightLevelDependentMagicValue() {
         return 0xF000F0;
     }
 

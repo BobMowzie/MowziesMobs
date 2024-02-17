@@ -73,13 +73,13 @@ public class MMModels {
                 }
 
                 @Override
-                public BakedModel handlePerspective(ItemTransforms.TransformType cameraTransformType, PoseStack mat) {
+                public BakedModel applyTransform(ItemTransforms.TransformType cameraTransformType, PoseStack mat, boolean applyLeftHandTransform) {
                     BakedModel modelToUse = bakedModelDefault;
                     if (cameraTransformType == ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND || cameraTransformType == ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND
                             || cameraTransformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND || cameraTransformType == ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND) {
                         modelToUse = bakedModelHand;
                     }
-                    return ForgeHooksClient.handlePerspective(modelToUse, cameraTransformType, mat);
+                    return ForgeHooksClient.handleCameraTransforms(mat, modelToUse, cameraTransformType, applyLeftHandTransform);
                 }
             };
             map.put(modelInventory, modelWrapper);
@@ -135,12 +135,12 @@ public class MMModels {
             }
 
             @Override
-            public BakedModel handlePerspective(ItemTransforms.TransformType cameraTransformType, PoseStack mat) {
+            public BakedModel applyTransform(ItemTransforms.TransformType cameraTransformType, PoseStack mat, boolean applyLeftHandTransform) {
                 BakedModel modelToUse = maskBakedModelDefault;
                 if (cameraTransformType == ItemTransforms.TransformType.FIXED) {
                     modelToUse = maskBakedModelFrame;
                 }
-                return ForgeHooksClient.handlePerspective(modelToUse, cameraTransformType, mat);
+                return ForgeHooksClient.handleCameraTransforms(mat, modelToUse, cameraTransformType, applyLeftHandTransform);
             }
         };
 

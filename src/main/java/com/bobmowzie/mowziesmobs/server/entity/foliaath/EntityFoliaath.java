@@ -313,9 +313,9 @@ public class EntityFoliaath extends MowzieLLibraryEntity implements Enemy {
     }
 
     @Override
-    public void killed(ServerLevel world, LivingEntity killedEntity) {
+    public boolean wasKilled(ServerLevel world, LivingEntity killedEntity) {
         this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 300, 1, true, true));
-        super.killed(world, killedEntity);
+        return super.wasKilled(world, killedEntity);
     }
 
     @Override
