@@ -33,13 +33,13 @@ public class SolarBeamAbility extends PlayerAbility {
             solarBeam.setHasPlayer(true);
             user.level.addFreshEntity(solarBeam);
             user.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 2, false, false));
-            MobEffectInstance sunsBlessingInstance = user.getEffect(EffectHandler.SUNS_BLESSING);
+            MobEffectInstance sunsBlessingInstance = user.getEffect(EffectHandler.SUNS_BLESSING.get());
             if (sunsBlessingInstance != null) {
                 int duration = sunsBlessingInstance.getDuration();
-                user.removeEffect(EffectHandler.SUNS_BLESSING);
+                user.removeEffect(EffectHandler.SUNS_BLESSING.get());
                 int solarBeamCost = ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.solarBeamCost.get() * 60 * 20;
                 if (duration - solarBeamCost > 0) {
-                    user.addEffect(new MobEffectInstance(EffectHandler.SUNS_BLESSING, duration - solarBeamCost, 0, false, false));
+                    user.addEffect(new MobEffectInstance(EffectHandler.SUNS_BLESSING.get(), duration - solarBeamCost, 0, false, false));
                 }
             }
 
@@ -63,6 +63,6 @@ public class SolarBeamAbility extends PlayerAbility {
     @Override
     public boolean canUse() {
         if (getUser() instanceof Player && !((Player)getUser()).getInventory().getSelected().isEmpty()) return false;
-        return getUser().hasEffect(EffectHandler.SUNS_BLESSING) && super.canUse();
+        return getUser().hasEffect(EffectHandler.SUNS_BLESSING.get()) && super.canUse();
     }
 }

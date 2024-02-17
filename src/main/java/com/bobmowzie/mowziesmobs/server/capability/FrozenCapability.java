@@ -241,7 +241,7 @@ public class FrozenCapability {
 
         @Override
         public void addFreezeProgress(LivingEntity entity, float amount) {
-            if (!entity.level.isClientSide && !entity.hasEffect(EffectHandler.FROZEN)) {
+            if (!entity.level.isClientSide && !entity.hasEffect(EffectHandler.FROZEN.get())) {
                 freezeProgress += amount;
                 freezeDecayDelay = MAX_FREEZE_DECAY_DELAY;
             }
@@ -290,7 +290,7 @@ public class FrozenCapability {
             if (entity != null) {
                 freezeProgress = 0;
                 if (frozen) {
-                    entity.removeEffectNoUpdate(EffectHandler.FROZEN);
+                    entity.removeEffectNoUpdate(EffectHandler.FROZEN.get());
                     frozen = false;
                     if (frozenController != null) {
                         Vec3 oldPosition = entity.position();
@@ -326,8 +326,8 @@ public class FrozenCapability {
         @Override
         public void tick(LivingEntity entity) {
             // Freeze logic
-            if (getFreezeProgress() >= 1 && !entity.hasEffect(EffectHandler.FROZEN)) {
-                entity.addEffect(new MobEffectInstance(EffectHandler.FROZEN, 50, 0, false, false));
+            if (getFreezeProgress() >= 1 && !entity.hasEffect(EffectHandler.FROZEN.get())) {
+                entity.addEffect(new MobEffectInstance(EffectHandler.FROZEN.get(), 50, 0, false, false));
                 freezeProgress = 1f;
             } else if (freezeProgress > 0) {
                 entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 9, Mth.floor(freezeProgress * 5 + 1), false, false));
@@ -367,7 +367,7 @@ public class FrozenCapability {
             else {
                 freezeDecayDelay--;
             }
-            prevFrozen = entity.hasEffect(EffectHandler.FROZEN);
+            prevFrozen = entity.hasEffect(EffectHandler.FROZEN.get());
         }
 
         @Override

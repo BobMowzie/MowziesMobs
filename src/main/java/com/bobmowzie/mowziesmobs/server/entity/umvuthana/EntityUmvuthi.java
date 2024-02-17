@@ -49,6 +49,7 @@ import net.minecraft.server.players.OldUsersConverter;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -388,13 +389,13 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             boolean targetComingCloser = target.getDeltaMovement().dot(betweenEntitiesVec) > 0 && target.getDeltaMovement().lengthSqr() > 0.015;
 
             // Attacks
-            if (getActiveAbility() == null && !isNoAi() && random.nextInt(80) == 0 && (targetDistance > 5.5 || hasEffect(EffectHandler.SUNBLOCK)) && timeUntilUmvuthana <= 0 && getEntitiesNearby(EntityUmvuthana.class, 50).size() < 4) {
+            if (getActiveAbility() == null && !isNoAi() && random.nextInt(80) == 0 && (targetDistance > 5.5 || hasEffect(EffectHandler.SUNBLOCK.get())) && timeUntilUmvuthana <= 0 && getEntitiesNearby(EntityUmvuthana.class, 50).size() < 4) {
                 sendAbilityMessage(SPAWN_ABILITY);
                 timeUntilUmvuthana = UMVUTHANA_PAUSE;
             } else if (getActiveAbility() == null && !isNoAi() && getHealthRatio() <= 0.6 && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300) && getSensing().hasLineOfSight(target) && targetDistance < EntitySolarBeam.RADIUS_UMVUTHI) {
                 sendAbilityMessage(SOLAR_BEAM_ABILITY);
                 timeUntilLaser = LASER_PAUSE;
-            } else if (getActiveAbility() == null && !isNoAi() && getHealthRatio() <= 0.6 && !hasEffect(EffectHandler.SUNBLOCK) && timeUntilSupernova <= 0 && targetDistance <= 10.5) {
+            } else if (getActiveAbility() == null && !isNoAi() && getHealthRatio() <= 0.6 && !hasEffect(EffectHandler.SUNBLOCK.get()) && timeUntilSupernova <= 0 && targetDistance <= 10.5) {
                 sendAbilityMessage(SUPERNOVA_ABILITY);
                 timeUntilSupernova = SUPERNOVA_PAUSE;
             } else if (getActiveAbility() == null && !isNoAi() && ((targetDistance <= 6f && targetComingCloser) || targetDistance < 4.f)) {
@@ -559,7 +560,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
 
     @Override
     public boolean hurt(DamageSource source, float damage) {
-        if (hasEffect(EffectHandler.SUNBLOCK) && !source.isBypassInvul()) {
+        if (hasEffect(EffectHandler.SUNBLOCK.get()) && !source.isBypassInvul()) {
             if (source.getDirectEntity() != null) playSound(MMSounds.ENTITY_WROUGHT_UNDAMAGED.get(), 0.4F, 2);
             return false;
         }
@@ -1261,7 +1262,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             if (pinLocation == null || pinLocation.length == 0 || pinLocation[0] == null) return;
             int ticksInUse = activeAbility.getTicksInUse();
             LivingEntity user = activeAbility.getUser();
-            Random random = user.getRandom();
+            RandomSource random = user.getRandom();
 
             if (ticksInUse == 1) {
                 AdvancedParticleBase.spawnParticle(level, ParticleHandler.SUN.get(), user.getX(), user.getY(), user.getZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 33, true, true, new ParticleComponent[]{

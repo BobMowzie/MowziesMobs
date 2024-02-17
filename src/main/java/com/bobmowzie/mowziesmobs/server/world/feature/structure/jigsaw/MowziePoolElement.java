@@ -14,6 +14,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.JigsawBlock;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
@@ -147,7 +148,7 @@ public class MowziePoolElement extends SinglePoolElement {
         return true;
     }
 
-    public String getRandomTag(Random random) {
+    public String getRandomTag(RandomSource random) {
         if (tags.tags.isEmpty()) return null;
 
         int total = 0;

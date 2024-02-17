@@ -1,10 +1,14 @@
 package com.bobmowzie.mowziesmobs.server.message;
 
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
+
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerUmvuthiTrade;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -12,9 +16,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
 /**
  * Created by BobMowzie on 11/14/2016.
@@ -68,7 +69,7 @@ public class MessageUmvuthiTrade {
                         }
                     }
                     if (satisfied) {
-                        player.addEffect(new MobEffectInstance(EffectHandler.SUNS_BLESSING, ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.effectDuration.get() * 60 * 20, 0, false, false));
+                        player.addEffect(new MobEffectInstance(EffectHandler.SUNS_BLESSING.get(), ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.effectDuration.get() * 60 * 20, 0, false, false));
                         if (barako.getActiveAbilityType() != EntityUmvuthi.BLESS_ABILITY) {
 //                            barako.setAnimationTick(0); TODO
                             barako.sendAbilityMessage(EntityUmvuthi.BLESS_ABILITY);

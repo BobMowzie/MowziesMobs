@@ -47,7 +47,7 @@ public class SolarFlareAbility extends PlayerAbility {
     @Override
     public boolean canUse() {
         if (getUser() != null && !(getUser().getInventory().getSelected().isEmpty())) return false;
-        return getUser().hasEffect(EffectHandler.SUNS_BLESSING) && super.canUse();
+        return getUser().hasEffect(EffectHandler.SUNS_BLESSING.get()) && super.canUse();
     }
 
     @Override

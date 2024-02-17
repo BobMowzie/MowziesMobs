@@ -68,7 +68,7 @@ public class EntityUmvuthanaCraneToPlayer extends EntityUmvuthanaFollowerToPlaye
     protected void sunBlockTarget() {
         LivingEntity target = getTarget();
         if (target != null && target == getLeader()) {
-            EffectHandler.addOrCombineEffect(target, EffectHandler.SUNBLOCK, 20, 0, true, false);
+            EffectHandler.addOrCombineEffect(target, EffectHandler.SUNBLOCK.get(), 20, 0, true, false);
         }
     }
 

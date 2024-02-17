@@ -267,10 +267,10 @@ public class PlayerCapability {
             if (event.side == LogicalSide.SERVER) {
                 for (ItemStack itemStack : event.player.getInventory().items) {
                     if (itemStack.getItem() instanceof ItemEarthTalisman)
-                        player.addEffect(new MobEffectInstance(EffectHandler.GEOMANCY, 20, 0, false, false));
+                        player.addEffect(new MobEffectInstance(EffectHandler.GEOMANCY.get(), 20, 0, false, false));
                 }
                 if (player.getOffhandItem().getItem() instanceof ItemEarthTalisman)
-                    player.addEffect(new MobEffectInstance(EffectHandler.GEOMANCY, 20, 0, false, false));
+                    player.addEffect(new MobEffectInstance(EffectHandler.GEOMANCY.get(), 20, 0, false, false));
 
                 List<EntityUmvuthanaFollowerToPlayer> pack = tribePack;
                 float theta = (2 * (float) Math.PI / pack.size());

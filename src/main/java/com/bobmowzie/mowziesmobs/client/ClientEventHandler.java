@@ -36,12 +36,11 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderGuiEvent;
+import net.minecraftforge.client.event.CustomizeGuiOverlayEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.ViewportEvent;
-import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -189,7 +188,7 @@ public enum ClientEventHandler {
                     event.setCanceled(true);
                 }
                 if (event.getType().equals(RenderGuiOverlayEvent.ElementType.ALL)) {
-                    Minecraft.getInstance().gui.setOverlayMessage(TextComponent.EMPTY, false);
+                    Minecraft.getInstance().gui.setOverlayMessage(Component.empty(), false);
                 }
             }
         }
@@ -260,11 +259,11 @@ public enum ClientEventHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onBossBar(RenderGuiEvent.BossInfo event){
+    public void onBossBar(CustomizeGuiOverlayEvent.BossEventProgress event){
         if (!ConfigHandler.CLIENT.customBossBars.get()) return;
         Pair<ResourceLocation, ResourceLocation> bossBar = ClientProxy.bossBarResourceLocations.getOrDefault(event.getBossEvent().getId(), null);
         if (bossBar == null || bossBar.getLeft() == null) return;
-        PoseStack stack = event.getMatrixStack();
+        PoseStack stack = event.getPoseStack();
         event.setCanceled(true);
         int y = event.getY();
         int i = Minecraft.getInstance().getWindow().getGuiScaledWidth();

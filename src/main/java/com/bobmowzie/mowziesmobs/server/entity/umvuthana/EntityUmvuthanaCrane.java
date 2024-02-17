@@ -253,7 +253,7 @@ public class EntityUmvuthanaCrane extends EntityUmvuthanaMinion {
     protected void sunBlockTarget() {
         LivingEntity target = getTarget();
         if (target != null) {
-            EffectHandler.addOrCombineEffect(target, EffectHandler.SUNBLOCK, 20, 0, true, false);
+            EffectHandler.addOrCombineEffect(target, EffectHandler.SUNBLOCK.get(), 20, 0, true, false);
             if (target.tickCount % 20 == 0) target.heal(0.15f);
         }
     }

@@ -2,7 +2,6 @@ package com.bobmowzie.mowziesmobs.client;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.MaskType;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -15,11 +14,12 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 @OnlyIn(Dist.CLIENT)
@@ -27,8 +27,8 @@ public class MMModels {
     public static final String[] HAND_MODEL_ITEMS = new String[] {"wrought_axe", "spear", "earthbore_gauntlet", "sculptor_staff"};
 
     @SubscribeEvent
-    public static void onModelBakeEvent(ModelBakeEvent event) {
-        Map<ResourceLocation, BakedModel> map = event.getModelRegistry();
+    public static void onModelBakeEvent(ModelEvent.BakingCompleted event) {
+        Map<ResourceLocation, BakedModel> map = event.getModels();
 
         for (String item : HAND_MODEL_ITEMS) {
             ResourceLocation modelInventory = new ModelResourceLocation("mowziesmobs:" + item, "inventory");
@@ -38,7 +38,7 @@ public class MMModels {
             BakedModel bakedModelHand = map.get(modelHand);
             BakedModel modelWrapper = new BakedModel() {
                 @Override
-                public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand) {
+                public List<BakedQuad> getQuads(BlockState state, Direction side, RandomSource rand) {
                     return bakedModelDefault.getQuads(state, side, rand);
                 }
 
@@ -100,7 +100,7 @@ public class MMModels {
         BakedModel maskBakedModelFrame = map.get(maskModelFrame);
         BakedModel maskModelWrapper = new BakedModel() {
             @Override
-            public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand) {
+            public List<BakedQuad> getQuads(BlockState state, Direction side, RandomSource rand) {
                 return maskBakedModelDefault.getQuads(state, side, rand);
             }
 

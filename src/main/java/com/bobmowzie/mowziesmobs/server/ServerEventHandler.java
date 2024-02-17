@@ -146,7 +146,7 @@ public final class ServerEventHandler {
         if (event.getEntity() instanceof LivingEntity) {
             LivingEntity entity = (LivingEntity) event.getEntity();
 
-            if (entity.getEffect(EffectHandler.POISON_RESIST) != null && entity.getEffect(MobEffects.POISON) != null) {
+            if (entity.getEffect(EffectHandler.POISON_RESIST.get()) != null && entity.getEffect(MobEffects.POISON) != null) {
                 entity.removeEffectNoUpdate(MobEffects.POISON);
             }
 
@@ -160,7 +160,7 @@ public final class ServerEventHandler {
 
             if (entity instanceof Mob && !(entity instanceof EntityUmvuthanaCrane)) {
                 Mob mob = (Mob) entity;
-                if (mob.getTarget() instanceof EntityUmvuthi && mob.getTarget().hasEffect(EffectHandler.SUNBLOCK)) {
+                if (mob.getTarget() instanceof EntityUmvuthi && mob.getTarget().hasEffect(EffectHandler.SUNBLOCK.get())) {
                     EntityUmvuthanaCrane sunblocker = mob.level.getNearestEntity(EntityUmvuthanaCrane.class, TargetingConditions.DEFAULT, mob, mob.getX(), mob.getY() + mob.getEyeHeight(), mob.getZ(), mob.getBoundingBox().inflate(40.0D, 15.0D, 40.0D));
                     mob.setTarget(sunblocker);
                 }
@@ -183,13 +183,13 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onAddPotionEffect(MobEffectEvent.Added event) {
-        if (event.getEffectInstance().getEffect() == EffectHandler.SUNBLOCK) {
+        if (event.getEffectInstance().getEffect() == EffectHandler.SUNBLOCK.get()) {
             if (!event.getEntity().level.isClientSide()) {
                 MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageSunblockEffect(event.getEntity(), true));
             }
             MowziesMobs.PROXY.playSunblockSound(event.getEntity());
         }
-        if (event.getEffectInstance().getEffect() == EffectHandler.FROZEN) {
+        if (event.getEffectInstance().getEffect() == EffectHandler.FROZEN.get()) {
             if (!event.getEntity().level.isClientSide()) {
                 MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageFreezeEffect(event.getEntity(), true));
                 FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(event.getEntity(), CapabilityHandler.FROZEN_CAPABILITY);
@@ -202,10 +202,10 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onRemovePotionEffect(MobEffectEvent.Remove event) {
-        if (!event.getEntity().level.isClientSide() && event.getEffectInstance().getEffect() == EffectHandler.SUNBLOCK) {
+        if (!event.getEntity().level.isClientSide() && event.getEffectInstance().getEffect() == EffectHandler.SUNBLOCK.get()) {
             MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageSunblockEffect(event.getEntity(), false));
         }
-        if (!event.getEntity().level.isClientSide() && event.getEffectInstance().getEffect() == EffectHandler.FROZEN) {
+        if (!event.getEntity().level.isClientSide() && event.getEffectInstance().getEffect() == EffectHandler.FROZEN.get()) {
             MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageFreezeEffect(event.getEntity(), false));
             FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(event.getEntity(), CapabilityHandler.FROZEN_CAPABILITY);
             if (frozenCapability != null) {
@@ -217,10 +217,10 @@ public final class ServerEventHandler {
     @SubscribeEvent
     public void onPotionEffectExpire(MobEffectEvent.Expired event) {
         MobEffectInstance effectInstance = event.getEffectInstance();
-        if (!event.getEntity().level.isClientSide() && effectInstance != null && effectInstance.getEffect() == EffectHandler.SUNBLOCK) {
+        if (!event.getEntity().level.isClientSide() && effectInstance != null && effectInstance.getEffect() == EffectHandler.SUNBLOCK.get()) {
             MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageSunblockEffect(event.getEntity(), false));
         }
-        if (!event.getEntity().level.isClientSide() && effectInstance != null && effectInstance.getEffect() == EffectHandler.FROZEN) {
+        if (!event.getEntity().level.isClientSide() && effectInstance != null && effectInstance.getEffect() == EffectHandler.FROZEN.get()) {
             MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageFreezeEffect(event.getEntity(), false));
             FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(event.getEntity(), CapabilityHandler.FROZEN_CAPABILITY);
             if (frozenCapability != null) {
@@ -237,8 +237,8 @@ public final class ServerEventHandler {
         if (source == null || livingEntity == null) return;
         float damage = event.getAmount();
         if (!source.isBypassMagic()) {
-            if (livingEntity.hasEffect(EffectHandler.SUNBLOCK) && source != DamageSource.OUT_OF_WORLD) {
-                int i = (livingEntity.getEffect(EffectHandler.SUNBLOCK).getAmplifier() + 2) * 5;
+            if (livingEntity.hasEffect(EffectHandler.SUNBLOCK.get()) && source != DamageSource.OUT_OF_WORLD) {
+                int i = (livingEntity.getEffect(EffectHandler.SUNBLOCK.get()).getAmplifier() + 2) * 5;
                 int j = 25 - i;
                 float f = damage * (float)j;
                 float f1 = damage;
@@ -255,7 +255,7 @@ public final class ServerEventHandler {
         }
 
         if (event.getSource().isFire()) {
-            event.getEntity().removeEffectNoUpdate(EffectHandler.FROZEN);
+            event.getEntity().removeEffectNoUpdate(EffectHandler.FROZEN.get());
             MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageFreezeEffect(event.getEntity(), false));
             FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(event.getEntity(), CapabilityHandler.FROZEN_CAPABILITY);
             if (frozenCapability != null) {
@@ -301,7 +301,7 @@ public final class ServerEventHandler {
     @SubscribeEvent
     public void onUseItem(LivingEntityUseItemEvent event) {
         LivingEntity living = event.getEntity();
-        if (event.isCancelable() && living.hasEffect(EffectHandler.FROZEN)) {
+        if (event.isCancelable() && living.hasEffect(EffectHandler.FROZEN.get())) {
             event.setCanceled(true);
             return;
         }
@@ -318,7 +318,7 @@ public final class ServerEventHandler {
         Entity entity = event.getEntity();
         if (entity instanceof LivingEntity) {
             LivingEntity living = (LivingEntity) entity;
-            if (event.isCancelable() && living.hasEffect(EffectHandler.FROZEN)) {
+            if (event.isCancelable() && living.hasEffect(EffectHandler.FROZEN.get())) {
                 event.setCanceled(true);
                 return;
             }
@@ -350,7 +350,7 @@ public final class ServerEventHandler {
     public void onFillBucket(FillBucketEvent event) {
         LivingEntity living = event.getEntity();
         if (living != null) {
-            if (event.isCancelable() && living.hasEffect(EffectHandler.FROZEN)) {
+            if (event.isCancelable() && living.hasEffect(EffectHandler.FROZEN.get())) {
                 event.setCanceled(true);
                 return;
             }
@@ -373,7 +373,7 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onBreakBlock(BlockEvent.BreakEvent event) {
-        if (event.isCancelable() && event.getPlayer().hasEffect(EffectHandler.FROZEN)) {
+        if (event.isCancelable() && event.getPlayer().hasEffect(EffectHandler.FROZEN.get())) {
             event.setCanceled(true);
             return;
         }
@@ -416,7 +416,7 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.RightClickEmpty event) {
-        if (event.isCancelable() && event.getEntity().hasEffect(EffectHandler.FROZEN)) {
+        if (event.isCancelable() && event.getEntity().hasEffect(EffectHandler.FROZEN.get())) {
             event.setCanceled(true);
             return;
         }
@@ -431,7 +431,7 @@ public final class ServerEventHandler {
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
         if (playerCapability != null) {
 
-            if (event.getLevel().isClientSide && player.getInventory().getSelected().isEmpty() && player.hasEffect(EffectHandler.SUNS_BLESSING)) {
+            if (event.getLevel().isClientSide && player.getInventory().getSelected().isEmpty() && player.hasEffect(EffectHandler.SUNS_BLESSING.get())) {
                 if (player.isShiftKeyDown()) {
                     AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getEntity(), AbilityHandler.SOLAR_BEAM_ABILITY);
                 } else {
@@ -448,7 +448,7 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.EntityInteract event) {
-        if (event.isCancelable() && event.getEntity().hasEffect(EffectHandler.FROZEN)) {
+        if (event.isCancelable() && event.getEntity().hasEffect(EffectHandler.FROZEN.get())) {
             event.setCanceled(true);
             return;
         }
@@ -470,7 +470,7 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event) {
-        if (event.isCancelable() && event.getEntity().hasEffect(EffectHandler.FROZEN)) {
+        if (event.isCancelable() && event.getEntity().hasEffect(EffectHandler.FROZEN.get())) {
             event.setCanceled(true);
             return;
         }
@@ -497,7 +497,7 @@ public final class ServerEventHandler {
                 aggroUmvuthana(player);
             }
 
-            if (event.getSide() == LogicalSide.CLIENT && player.getInventory().getSelected().isEmpty() && player.hasEffect(EffectHandler.SUNS_BLESSING)) {
+            if (event.getSide() == LogicalSide.CLIENT && player.getInventory().getSelected().isEmpty() && player.hasEffect(EffectHandler.SUNS_BLESSING.get())) {
                 if (player.isShiftKeyDown()) {
                     AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getEntity(), AbilityHandler.SOLAR_BEAM_ABILITY);
                 } else {
@@ -537,8 +537,8 @@ public final class ServerEventHandler {
     @SubscribeEvent
     public void onLivingDamage(LivingDamageEvent event) {
         LivingEntity entity = event.getEntity();
-        if (entity.getHealth() <= event.getAmount() && entity.hasEffect(EffectHandler.FROZEN)) {
-            entity.removeEffectNoUpdate(EffectHandler.FROZEN);
+        if (entity.getHealth() <= event.getAmount() && entity.hasEffect(EffectHandler.FROZEN.get())) {
+            entity.removeEffectNoUpdate(EffectHandler.FROZEN.get());
             FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.FROZEN_CAPABILITY);
             MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageFreezeEffect(event.getEntity(), false));
             if (frozenCapability != null) {
@@ -549,7 +549,7 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.RightClickItem event) {
-        if (event.isCancelable() && event.getEntity().hasEffect(EffectHandler.FROZEN)) {
+        if (event.isCancelable() && event.getEntity().hasEffect(EffectHandler.FROZEN.get())) {
             event.setCanceled(true);
             return;
         }
@@ -572,7 +572,7 @@ public final class ServerEventHandler {
     @SubscribeEvent
     public void onPlayerLeftClick(PlayerInteractEvent.LeftClickBlock event) {
         Player player = event.getEntity();
-        if (event.isCancelable() && player.hasEffect(EffectHandler.FROZEN)) {
+        if (event.isCancelable() && player.hasEffect(EffectHandler.FROZEN.get())) {
             event.setCanceled(true);
             return;
         }
@@ -596,7 +596,7 @@ public final class ServerEventHandler {
     public void onLivingJump(LivingEvent.LivingJumpEvent event) {
          if (event.getEntity() instanceof LivingEntity) {
             LivingEntity entity = (LivingEntity) event.getEntity();
-            if (entity.hasEffect(EffectHandler.FROZEN) && entity.isOnGround()) {
+            if (entity.hasEffect(EffectHandler.FROZEN.get()) && entity.isOnGround()) {
                 entity.setDeltaMovement(entity.getDeltaMovement().multiply(1, 0, 1));
             }
         }
@@ -614,7 +614,7 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onPlayerAttack(AttackEntityEvent event) {
-        if (event.isCancelable() && event.getEntity().hasEffect(EffectHandler.FROZEN)) {
+        if (event.isCancelable() && event.getEntity().hasEffect(EffectHandler.FROZEN.get())) {
             event.setCanceled(true);
             return;
         }

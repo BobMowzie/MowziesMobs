@@ -137,7 +137,7 @@ public class Ability<T extends LivingEntity> {
      * @return Whether or not the ability can be used
      */
     public boolean canUse() {
-        if (getUser().hasEffect(EffectHandler.FROZEN)) return false;
+        if (getUser().hasEffect(EffectHandler.FROZEN.get())) return false;
         boolean toReturn = (!isUsing() || canCancelSelf()) && cooldownTimer == 0;
         if (!runsInBackground()) toReturn = toReturn && (abilityCapability.getActiveAbility() == null || canCancelActiveAbility() || abilityCapability.getActiveAbility().canBeCanceledByAbility(this));
         return toReturn;
@@ -171,7 +171,7 @@ public class Ability<T extends LivingEntity> {
     }
 
     protected boolean canContinueUsing() {
-        return !getUser().hasEffect(EffectHandler.FROZEN);
+        return !getUser().hasEffect(EffectHandler.FROZEN.get());
     }
 
     public boolean isUsing() {

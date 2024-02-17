@@ -36,11 +36,11 @@ public class MessagePlayerSolarBeam {
                 solarBeam.setHasPlayer(true);
                 player.level.addFreshEntity(solarBeam);
                 player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 2, false, false));
-                int duration = player.getEffect(EffectHandler.SUNS_BLESSING).getDuration();
-                player.removeEffect(EffectHandler.SUNS_BLESSING);
+                int duration = player.getEffect(EffectHandler.SUNS_BLESSING.get()).getDuration();
+                player.removeEffect(EffectHandler.SUNS_BLESSING.get());
                 int solarBeamCost = ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.solarBeamCost.get() * 60 * 20;
                 if (duration - solarBeamCost > 0) {
-                    player.addEffect(new MobEffectInstance(EffectHandler.SUNS_BLESSING, duration - solarBeamCost, 0, false, false));
+                    player.addEffect(new MobEffectInstance(EffectHandler.SUNS_BLESSING.get(), duration - solarBeamCost, 0, false, false));
                 }
             });
             context.setPacketHandled(true);

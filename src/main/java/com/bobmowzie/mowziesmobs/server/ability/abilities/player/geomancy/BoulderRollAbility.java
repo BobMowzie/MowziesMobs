@@ -76,7 +76,7 @@ public class BoulderRollAbility extends PlayerAbility {
     @Override
     public boolean canUse() {
         if (getUser() instanceof Player && !((Player)getUser()).getInventory().getSelected().isEmpty()) return false;
-        return getUser().hasEffect(EffectHandler.GEOMANCY) && getUser().isSprinting() && super.canUse();
+        return getUser().hasEffect(EffectHandler.GEOMANCY.get()) && getUser().isSprinting() && super.canUse();
     }
 
     @Override
