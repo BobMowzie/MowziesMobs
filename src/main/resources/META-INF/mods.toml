@@ -4,10 +4,10 @@ loaderVersion="[40,)"
 issueTrackerURL="https://github.com/BobMowzie/MowziesMobs/issues"
 [[mods]]
     modId="mowziesmobs"
-    version="1.5.32"
+    version="1.6.0"
     displayName="Mowzie's Mobs"
     displayURL="https://www.curseforge.com/minecraft/mc-mods/mowzies-mobs"
-    authors="BobMowzie, Wadoo, pau101"
+    authors="BobMowzie, Wadoo, Vakypanda, Noonyez, pau101"
     description="Mowzie's Mobs adds a variety of high-quality fantasy creatures to your Minecraft world."
     logoFile="banner.png"
 [[dependencies.mowziesmobs]]
