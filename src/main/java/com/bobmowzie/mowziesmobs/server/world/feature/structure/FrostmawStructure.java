@@ -1,27 +1,36 @@
 package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.tag.TagHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.ConfiguredFeatureHandler;
+import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
 import com.mojang.serialization.Codec;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 
-public class FrostmawStructure extends MowzieStructure<NoneFeatureConfiguration> {
-    public FrostmawStructure(Codec<NoneFeatureConfiguration> codec) {
-        super(codec, ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig, ConfiguredFeatureHandler.FROSTMAW_BIOMES, FrostmawStructure::generatePieces);
+public class FrostmawStructure extends MowzieStructure {
+	public static final Codec<FrostmawStructure> CODEC = simpleCodec(FrostmawStructure::new);
+	
+    public FrostmawStructure(Structure.StructureSettings settings) {
+        super(settings, ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig, ConfiguredFeatureHandler.FROSTMAW_BIOMES);
     }
 
-    private static void generatePieces(StructurePiecesBuilder builder, PieceGenerator.Context<NoneFeatureConfiguration> pieceGenerator) {
-        int x = pieceGenerator.chunkPos().getMinBlockX();
-        int z = pieceGenerator.chunkPos().getMinBlockZ();
-        int y = pieceGenerator.chunkGenerator().getFirstFreeHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG, pieceGenerator.heightAccessor());
+    @Override
+    public void generatePieces(StructurePiecesBuilder builder, GenerationContext context) {
+        int x = context.chunkPos().getMinBlockX();
+        int z = context.chunkPos().getMinBlockZ();
+        int y = context.chunkGenerator().getFirstFreeHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor(), context.randomState());
         BlockPos blockpos = new BlockPos(x, y, z);
-        Rotation rotation = Rotation.getRandom(pieceGenerator.random());
-        FrostmawPieces.addPieces(pieceGenerator.structureTemplateManager(), blockpos, rotation, builder, pieceGenerator.random());
+        Rotation rotation = Rotation.getRandom(context.random());
+        FrostmawPieces.addPieces(context.structureTemplateManager(), blockpos, rotation, builder, context.random());
     }
+
+	@Override
+	public StructureType<?> type() {
+		return FeatureHandler.FROSTMAW.get();
+	}
 }

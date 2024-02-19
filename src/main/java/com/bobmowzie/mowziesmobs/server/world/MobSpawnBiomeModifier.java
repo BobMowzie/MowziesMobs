@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.world;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.world.feature.ConfiguredFeatureHandler;
 import com.bobmowzie.mowziesmobs.server.world.spawn.SpawnHandler;
 import com.mojang.serialization.Codec;
 
@@ -24,6 +25,7 @@ public class MobSpawnBiomeModifier implements BiomeModifier
     public void modify(Holder<Biome> biome, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
         if (phase == Phase.ADD) {
             SpawnHandler.addBiomeSpawns(biome, builder);
+            ConfiguredFeatureHandler.addBiomeSpawns(biome);
         }
     }
 

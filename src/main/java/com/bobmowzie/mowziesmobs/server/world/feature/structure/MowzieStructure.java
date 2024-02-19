@@ -5,12 +5,12 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.mojang.serialization.Codec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
 import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
@@ -21,57 +21,63 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
-import net.minecraft.world.level.levelgen.structure.PostPlacementProcessor;
+import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
-import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
-import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public abstract class MowzieStructure<C extends FeatureConfiguration> extends Feature<C> {
+public abstract class MowzieStructure extends Structure {
     private final ConfigHandler.GenerationConfig config;
+    private Set<ResourceLocation> allowedBiomes;
+    private boolean doCheckHeight;
+    private boolean doAvoidWater;
+    private boolean doAvoidStructures;
 
-    public MowzieStructure(Codec<C> codec, ConfigHandler.GenerationConfig config, Set<ResourceLocation> allowedBiomes, PieceGenerator<C> generator, boolean doCheckHeight, boolean doAvoidWater, boolean doAvoidStructures) {
-        super(codec, PieceGeneratorSupplier.simple((c) -> MowzieStructure.checkLocation(c, config, allowedBiomes, doCheckHeight, doAvoidWater, doAvoidStructures), generator), PostPlacementProcessor.NONE);
+    public MowzieStructure(Structure.StructureSettings settings, ConfigHandler.GenerationConfig config, Set<ResourceLocation> allowedBiomes, boolean doCheckHeight, boolean doAvoidWater, boolean doAvoidStructures) {
+        super(settings);
+        this.config = config;
+        this.allowedBiomes = allowedBiomes;
+        this.doCheckHeight = doCheckHeight;
+        this.doAvoidWater = doAvoidWater;
+        this.doAvoidStructures = doAvoidStructures;
+    }
+
+    public MowzieStructure(Structure.StructureSettings settings, ConfigHandler.GenerationConfig config, Set<ResourceLocation> allowedBiomes) {
+        this(settings, config, allowedBiomes, true, true, true);
+    }
+
+    public MowzieStructure(Structure.StructureSettings settings, ConfigHandler.GenerationConfig config) {
+        super(settings);
         this.config = config;
     }
-
-    public MowzieStructure(Codec<C> codec, ConfigHandler.GenerationConfig config, Set<ResourceLocation> allowedBiomes, PieceGenerator<C> generator) {
-        this(codec, config, allowedBiomes, generator, true, true, true);
+    
+    @Override
+    public Optional<GenerationStub> findGenerationPoint(GenerationContext context) {
+    	return checkLocation(context, this.config, this.allowedBiomes, this.doCheckHeight, this.doAvoidWater, this.doAvoidStructures);
     }
 
-    public MowzieStructure(Codec<C> codec, ConfigHandler.GenerationConfig config, PieceGeneratorSupplier<C> generatorSupplier) {
-        super(codec, generatorSupplier);
-        this.config = config;
-    }
-
-    protected static <C extends FeatureConfiguration> boolean checkLocation(PieceGeneratorSupplier.Context<C> context, ConfigHandler.GenerationConfig config, Set<ResourceLocation> allowedBiomes, boolean checkHeight, boolean avoidWater, boolean avoidStructures) {
+    protected Optional<Structure.GenerationStub> checkLocation(GenerationContext context, ConfigHandler.GenerationConfig config, Set<ResourceLocation> allowedBiomes, boolean checkHeight, boolean avoidWater, boolean avoidStructures) {
         if (config.generationDistance.get() < 0) {
-            return false;
+            return Optional.empty();
         }
 
         ChunkPos chunkPos = context.chunkPos();
         BlockPos centerOfChunk = new BlockPos((chunkPos.x << 4) + 7, 0, (chunkPos.z << 4) + 7);
 
-        if (!context.validBiomeOnTop(Heightmap.Types.WORLD_SURFACE_WG)) {
-            return false;
-        }
-
         int i = chunkPos.getMiddleBlockX();
         int j = chunkPos.getMiddleBlockZ();
         int k = context.chunkGenerator().getFirstOccupiedHeight(i, j, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor(), context.randomState());
-        Holder<Biome> biome = context.chunkGenerator().getNoiseBiome(QuartPos.fromBlock(i), QuartPos.fromBlock(k), QuartPos.fromBlock(j));
+        Holder<Biome> biome = context.chunkGenerator().getBiomeSource().getNoiseBiome(QuartPos.fromBlock(i), QuartPos.fromBlock(k), QuartPos.fromBlock(j), context.randomState().sampler());
         if (!allowedBiomes.contains(ForgeRegistries.BIOMES.getKey(biome.value()))) {
-            return false;
+            return Optional.empty();
         }
 
         if (checkHeight) {
             double minHeight = config.heightMin.get();
             double maxHeight = config.heightMax.get();
-            int landHeight = context.getLowestY(16, 16);
-            if (minHeight != -65 && landHeight < minHeight) return false;
-            if (maxHeight != -65 && landHeight > maxHeight) return false;
+            int landHeight = getLowestY(context, 16, 16);
+            if (minHeight != -65 && landHeight < minHeight) return Optional.empty();
+            if (maxHeight != -65 && landHeight > maxHeight) return Optional.empty();
         }
 
         if (avoidWater) {
@@ -80,7 +86,7 @@ public abstract class MowzieStructure<C extends FeatureConfiguration> extends Fe
             int centerHeight = chunkGenerator.getBaseHeight(centerOfChunk.getX(), centerOfChunk.getZ(), Heightmap.Types.WORLD_SURFACE_WG, heightLimitView, context.randomState());
             NoiseColumn columnOfBlocks = chunkGenerator.getBaseColumn(centerOfChunk.getX(), centerOfChunk.getZ(), heightLimitView, context.randomState());
             BlockState topBlock = columnOfBlocks.getBlock(centerHeight);
-            if (!topBlock.getFluidState().isEmpty()) return false;
+            if (!topBlock.getFluidState().isEmpty()) return Optional.empty();
         }
 
         if (avoidStructures) {
@@ -91,14 +97,18 @@ public abstract class MowzieStructure<C extends FeatureConfiguration> extends Fe
                 if (structureSetOptional.isEmpty()) continue;
                 Optional<ResourceKey<StructureSet>> resourceKeyOptional = structureSetRegistry.getResourceKey(structureSetOptional.get());
                 if (resourceKeyOptional.isEmpty()) continue;
-                if (context.chunkGenerator().hasFeatureChunkInRange(resourceKeyOptional.get(), context.seed(), chunkPos.x, chunkPos.z, 5)) {
-                    return false;
+                if (context.chunkGenerator().hasStructureChunkInRange(BuiltinRegistries.STRUCTURE_SETS.getHolderOrThrow(resourceKeyOptional.get()), context.randomState(), context.seed(), chunkPos.x, chunkPos.z, 5)) {
+                    return Optional.empty();
                 }
             }
         }
 
-        return true;
+        return onTopOfChunkCenter(context, Heightmap.Types.WORLD_SURFACE_WG, (builder) -> {
+        	this.generatePieces(builder, context);
+        });
     }
+    
+    public abstract void generatePieces(StructurePiecesBuilder builder, Structure.GenerationContext context);
 
     @Override
     public GenerationStep.Decoration step() {

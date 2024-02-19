@@ -30,7 +30,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 // Based on Telepathicgrunt's tutorial class: https://github.com/TelepathicGrunt/StructureTutorialMod/blob/1.18.0-Forge-Jigsaw/src/main/java/com/telepathicgrunt/structuretutorial/structures/RunDownHouseStructure.java
-public class MonasteryStructure extends MowzieStructure<JigsawConfiguration> {
+public class MonasteryStructure extends MowzieStructure {
 
     public static final Set<String> MUST_CONNECT_POOLS = Set.of(MowziesMobs.MODID + ":monastery/path_pool", MowziesMobs.MODID + ":monastery/path_connector_pool");
     public static final Set<String> REPLACE_POOLS = Set.of(MowziesMobs.MODID + ":monastery/path_pool");

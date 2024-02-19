@@ -31,7 +31,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.Vec3i;
 import net.minecraft.data.worldgen.Pools;
-import net.minecraft.data.worldgen.Structures;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelHeightAccessor;
@@ -44,8 +43,8 @@ import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.PoolElementStructurePiece;
-import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
-import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.Structure.GenerationContext;
 import net.minecraft.world.level.levelgen.structure.pools.EmptyPoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.JigsawJunction;
 import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
@@ -62,8 +61,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 public class MowzieJigsawManager {
     static final Logger LOGGER = LogUtils.getLogger();
 
-    public static Optional<PieceGenerator<JigsawStructure>> addPieces(
-            PieceGeneratorSupplier.Context<JigsawStructure> context,
+    public static Optional<Structure.GenerationStub> addPieces(
+            GenerationContext context,
             PieceFactory pieceFactory, BlockPos genPos, boolean villageBoundaryAdjust, boolean useTerrainHeight, int maxDistFromStart,
             String pathJigsawName, String interiorJigsawName,
             Set<String> mustConnectPools, Set<String> replacePools, String deadEndConnectorPool
@@ -76,7 +75,6 @@ public class MowzieJigsawManager {
         StructureTemplateManager structuremanager = context.structureTemplateManager();
         LevelHeightAccessor levelheightaccessor = context.heightAccessor();
         Predicate<Holder<Biome>> predicate = context.validBiome();
-        Structures.bootstrap();
         Registry<StructureTemplatePool> registry = registryaccess.registryOrThrow(Registry.TEMPLATE_POOL_REGISTRY);
         Rotation rotation = Rotation.getRandom(worldgenrandom);
         StructureTemplatePool structuretemplatepool = jigsawconfiguration.startPool().value();
@@ -95,12 +93,12 @@ public class MowzieJigsawManager {
             int centerZ = (pieceBoundingBox.maxZ() + pieceBoundingBox.minZ()) / 2;
             int height;
             if (useTerrainHeight) {
-                height = genPos.getY() + chunkgenerator.getFirstFreeHeight(centerX + offset.getX(), centerZ + offset.getZ(), Heightmap.Types.WORLD_SURFACE_WG, levelheightaccessor) + offset.getY();
+                height = genPos.getY() + chunkgenerator.getFirstFreeHeight(centerX + offset.getX(), centerZ + offset.getZ(), Heightmap.Types.WORLD_SURFACE_WG, levelheightaccessor, context.randomState()) + offset.getY();
             } else {
                 height = genPos.getY();
             }
 
-            if (!predicate.test(chunkgenerator.getNoiseBiome(QuartPos.fromBlock(centerX), QuartPos.fromBlock(height), QuartPos.fromBlock(centerZ)))) {
+            if (!predicate.test(chunkgenerator.getBiomeSource().getNoiseBiome(QuartPos.fromBlock(centerX), QuartPos.fromBlock(height), QuartPos.fromBlock(centerZ), context.randomState().sampler()))) {
                 return Optional.empty();
             } else {
                 int l = pieceBoundingBox.minY() + poolelementstructurepiece.getGroundLevelDelta();

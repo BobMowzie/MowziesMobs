@@ -18,19 +18,19 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadType;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class ConfiguredFeatureHandler {
 
-    public static Holder<ConfiguredFeature<?, ?>> CONFIGURED_WROUGHT_CHAMBER;
-    public static Holder<ConfiguredFeature<?, ?>> CONFIGURED_UMVUTHANA_GROVE;
-    public static Holder<ConfiguredFeature<?, ?>> CONFIGURED_FROSTMAW;
-    public static Holder<ConfiguredFeature<?, ?>> CONFIGURED_MONASTERY;
+    public static Holder<Structure> CONFIGURED_WROUGHT_CHAMBER;
+    public static Holder<Structure> CONFIGURED_UMVUTHANA_GROVE;
+    public static Holder<Structure> CONFIGURED_FROSTMAW;
+    public static Holder<Structure> CONFIGURED_MONASTERY;
 
     public static Holder<StructureSet> WROUGHT_CHAMBERS;
     public static Holder<StructureSet> UMVUTHANA_GROVES;
@@ -58,7 +58,7 @@ public class ConfiguredFeatureHandler {
         return BuiltinRegistries.register(BuiltinRegistries.STRUCTURE_SETS, key, set);
     }
 
-    static Holder<StructureSet> register(ResourceKey<StructureSet> key, Holder<ConfiguredFeature<?, ?>> configuredFeature, StructurePlacement placement) {
+    static Holder<StructureSet> register(ResourceKey<StructureSet> key, Holder<Structure> configuredFeature, StructurePlacement placement) {
         return register(key, new StructureSet(configuredFeature, placement));
     }
 
@@ -74,11 +74,9 @@ public class ConfiguredFeatureHandler {
 //        MONASTERIES = register(createSetKey("monasteries"), CONFIGURED_MONASTERY, new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.TRIANGULAR, 25327374));
     }
 
-    public static void onBiomeLoading(BiomeLoadingEvent event) {
-        ResourceLocation biomeName = event.getName();
+    public static void addBiomeSpawns(Holder<Biome> biomeKey) {
+        ResourceLocation biomeName = ForgeRegistries.BIOMES.getKey(biomeKey.get());
         if (biomeName == null) return;
-        ResourceKey<Biome> biomeKey = ResourceKey.create(ForgeRegistries.Keys.BIOMES, biomeName);
-
         if (ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig.generationDistance.get() >= 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig.biomeConfig, biomeKey)) {
 //            System.out.println("Added Ferrous Wroughtnaut biome: " + biomeName.toString());
             FERROUS_WROUGHTNAUT_BIOMES.add(biomeName);
