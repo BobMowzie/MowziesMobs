@@ -1,33 +1,31 @@
 package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Predicate;
+
+import org.apache.logging.log4j.Level;
+
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.ConfiguredFeatureHandler;
-import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.structure.jigsaw.MowzieJigsawManager;
 import com.google.common.collect.ImmutableList;
-import com.mojang.serialization.Codec;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.configurations.JigsawConfiguration;
 import net.minecraft.world.level.levelgen.structure.PoolElementStructurePiece;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.event.world.StructureSpawnListGatherEvent;
-import org.apache.logging.log4j.Level;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Predicate;
 
 // Based on Telepathicgrunt's tutorial class: https://github.com/TelepathicGrunt/StructureTutorialMod/blob/1.18.0-Forge-Jigsaw/src/main/java/com/telepathicgrunt/structuretutorial/structures/RunDownHouseStructure.java
 public class MonasteryStructure extends MowzieStructure {
@@ -36,11 +34,9 @@ public class MonasteryStructure extends MowzieStructure {
     public static final Set<String> REPLACE_POOLS = Set.of(MowziesMobs.MODID + ":monastery/path_pool");
     public static final String STRAIGHT_POOL = MowziesMobs.MODID + ":monastery/dead_end_connect_pool";
 
-    public MonasteryStructure(Codec<JigsawConfiguration> codec) {
+    public MonasteryStructure(StructureSettings settings) {
         // Create the pieces layout of the structure and give it to the game
-        super(codec, ConfigHandler.COMMON.MOBS.SCULPTOR.generationConfig, (context) -> MonasteryStructure.createPiecesGenerator(
-                (c) -> MowzieStructure.checkLocation(c, ConfigHandler.COMMON.MOBS.SCULPTOR.generationConfig, ConfiguredFeatureHandler.SCULPTOR_BIOMES, true, true, true)
-                , context));
+        super(settings, ConfigHandler.COMMON.MOBS.SCULPTOR.generationConfig, ConfiguredFeatureHandler.SCULPTOR_BIOMES, true, true, true);
     }
 
     @Override
