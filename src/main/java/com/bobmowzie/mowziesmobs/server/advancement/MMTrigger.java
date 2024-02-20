@@ -1,13 +1,14 @@
 package com.bobmowzie.mowziesmobs.server.advancement;
 
+import java.util.Map;
+import java.util.Set;
+
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.server.PlayerAdvancements;
-
-import java.util.Map;
-import java.util.Set;
 
 public abstract class MMTrigger<E extends CriterionTriggerInstance, T extends MMTrigger.Listener<E>> implements CriterionTrigger<E> {
 

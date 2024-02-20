@@ -53,12 +53,25 @@ public abstract class MowzieStructure extends Structure {
     
     @Override
     public Optional<GenerationStub> findGenerationPoint(GenerationContext context) {
-    	return checkLocation(context, this.config, this.allowedBiomes, this.doCheckHeight, this.doAvoidWater, this.doAvoidStructures);
+    	if(this.checkLocation(context)) {
+    		return onTopOfChunkCenter(context, Heightmap.Types.WORLD_SURFACE_WG, (builder) -> {
+    			this.generatePieces(builder, context);
+    		});
+    	}
+    	return Optional.empty();
+    }
+    
+    public void generatePieces(StructurePiecesBuilder builder, Structure.GenerationContext context) {
+    	
+    }
+    
+    public boolean checkLocation(GenerationContext context) {
+    	return this.checkLocation(context, config, allowedBiomes, doCheckHeight, doAvoidWater, doAvoidStructures);
     }
 
-    protected Optional<Structure.GenerationStub> checkLocation(GenerationContext context, ConfigHandler.GenerationConfig config, Set<ResourceLocation> allowedBiomes, boolean checkHeight, boolean avoidWater, boolean avoidStructures) {
+    protected boolean checkLocation(GenerationContext context, ConfigHandler.GenerationConfig config, Set<ResourceLocation> allowedBiomes, boolean checkHeight, boolean avoidWater, boolean avoidStructures) {
         if (config.generationDistance.get() < 0) {
-            return Optional.empty();
+            return false;
         }
 
         ChunkPos chunkPos = context.chunkPos();
@@ -69,15 +82,15 @@ public abstract class MowzieStructure extends Structure {
         int k = context.chunkGenerator().getFirstOccupiedHeight(i, j, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor(), context.randomState());
         Holder<Biome> biome = context.chunkGenerator().getBiomeSource().getNoiseBiome(QuartPos.fromBlock(i), QuartPos.fromBlock(k), QuartPos.fromBlock(j), context.randomState().sampler());
         if (!allowedBiomes.contains(ForgeRegistries.BIOMES.getKey(biome.value()))) {
-            return Optional.empty();
+            return false;
         }
 
         if (checkHeight) {
             double minHeight = config.heightMin.get();
             double maxHeight = config.heightMax.get();
             int landHeight = getLowestY(context, 16, 16);
-            if (minHeight != -65 && landHeight < minHeight) return Optional.empty();
-            if (maxHeight != -65 && landHeight > maxHeight) return Optional.empty();
+            if (minHeight != -65 && landHeight < minHeight) return false;
+            if (maxHeight != -65 && landHeight > maxHeight) return false;
         }
 
         if (avoidWater) {
@@ -86,7 +99,7 @@ public abstract class MowzieStructure extends Structure {
             int centerHeight = chunkGenerator.getBaseHeight(centerOfChunk.getX(), centerOfChunk.getZ(), Heightmap.Types.WORLD_SURFACE_WG, heightLimitView, context.randomState());
             NoiseColumn columnOfBlocks = chunkGenerator.getBaseColumn(centerOfChunk.getX(), centerOfChunk.getZ(), heightLimitView, context.randomState());
             BlockState topBlock = columnOfBlocks.getBlock(centerHeight);
-            if (!topBlock.getFluidState().isEmpty()) return Optional.empty();
+            if (!topBlock.getFluidState().isEmpty()) return false;
         }
 
         if (avoidStructures) {
@@ -98,17 +111,13 @@ public abstract class MowzieStructure extends Structure {
                 Optional<ResourceKey<StructureSet>> resourceKeyOptional = structureSetRegistry.getResourceKey(structureSetOptional.get());
                 if (resourceKeyOptional.isEmpty()) continue;
                 if (context.chunkGenerator().hasStructureChunkInRange(BuiltinRegistries.STRUCTURE_SETS.getHolderOrThrow(resourceKeyOptional.get()), context.randomState(), context.seed(), chunkPos.x, chunkPos.z, 5)) {
-                    return Optional.empty();
+                    return false;
                 }
             }
         }
 
-        return onTopOfChunkCenter(context, Heightmap.Types.WORLD_SURFACE_WG, (builder) -> {
-        	this.generatePieces(builder, context);
-        });
+        return true;
     }
-    
-    public abstract void generatePieces(StructurePiecesBuilder builder, Structure.GenerationContext context);
 
     @Override
     public GenerationStep.Decoration step() {
