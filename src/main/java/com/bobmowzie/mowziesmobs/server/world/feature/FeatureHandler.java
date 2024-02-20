@@ -1,38 +1,39 @@
 package com.bobmowzie.mowziesmobs.server.world.feature;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.world.feature.structure.*;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.StructureFeature;
-import net.minecraft.world.level.levelgen.feature.configurations.JigsawConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
-
 import java.util.function.Supplier;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.world.feature.structure.FrostmawPieces;
+import com.bobmowzie.mowziesmobs.server.world.feature.structure.FrostmawStructure;
+import com.bobmowzie.mowziesmobs.server.world.feature.structure.UmvuthanaGrovePieces;
+import com.bobmowzie.mowziesmobs.server.world.feature.structure.UmvuthanaGroveStructure;
+import com.bobmowzie.mowziesmobs.server.world.feature.structure.WroughtnautChamberPieces;
+import com.bobmowzie.mowziesmobs.server.world.feature.structure.WroughtnautChamberStructure;
+
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.StructureType;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
+
 public class FeatureHandler {
-    public static final DeferredRegister<StructureFeature<?>> REG = DeferredRegister.create(ForgeRegistries.STRUCTURE_FEATURES, MowziesMobs.MODID);
+    public static final DeferredRegister<StructureType<?>> REG = DeferredRegister.create(Registry.STRUCTURE_TYPE_REGISTRY, MowziesMobs.MODID);
 
-    public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, MowziesMobs.MODID);
-
-    public static RegistryObject<StructureFeature<NoneFeatureConfiguration>> WROUGHTNAUT_CHAMBER = registerStructure("wrought_chamber", () -> (new WroughtnautChamberStructure(NoneFeatureConfiguration.CODEC)));
+    public static RegistryObject<StructureType<WroughtnautChamberStructure>> WROUGHTNAUT_CHAMBER = registerStructure("wrought_chamber", () -> () -> WroughtnautChamberStructure.CODEC);
     public static StructurePieceType WROUGHTNAUT_CHAMBER_PIECE;
 
-    public static RegistryObject<StructureFeature<NoneFeatureConfiguration>> UMVUTHANA_GROVE = registerStructure("umvuthana_grove", () -> (new UmvuthanaGroveStructure(NoneFeatureConfiguration.CODEC)));
+    public static RegistryObject<StructureType<UmvuthanaGroveStructure>> UMVUTHANA_GROVE = registerStructure("umvuthana_grove", () -> () -> UmvuthanaGroveStructure.CODEC);
     public static StructurePieceType UMVUTHANA_GROVE_PIECE;
     public static StructurePieceType UMVUTHANA_FIREPIT;
 
-    public static RegistryObject<StructureFeature<NoneFeatureConfiguration>> FROSTMAW = registerStructure("frostmaw_spawn", () -> (new FrostmawStructure(NoneFeatureConfiguration.CODEC)));
+    public static RegistryObject<StructureType<FrostmawStructure>> FROSTMAW = registerStructure("frostmaw_spawn", () -> () -> FrostmawStructure.CODEC);
     public static StructurePieceType FROSTMAW_PIECE;
 
 //    public static RegistryObject<StructureFeature<JigsawConfiguration>> MONASTERY = registerStructure("monastery", () -> (new MonasteryStructure(JigsawConfiguration.CODEC)));
 
-    private static <T extends StructureFeature<?>> RegistryObject<T> registerStructure(String name, Supplier<T> structure) {
+    private static <T extends Structure> RegistryObject<StructureType<T>> registerStructure(String name, Supplier<StructureType<T>> structure) {
         return REG.register(name, structure);
     }
 

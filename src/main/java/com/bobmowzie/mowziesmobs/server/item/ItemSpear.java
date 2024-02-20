@@ -25,7 +25,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class ItemSpear extends MowzieToolItem {
     public ItemSpear(Item.Properties properties) {
-        super(-2 + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SPEAR.toolConfig.attackDamage.get().floatValue(), -4f + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SPEAR.toolConfig.attackSpeed.get().floatValue(), Tiers.STONE, BlockTags.MINEABLE_WITH_HOE, properties);
+        super(-2 + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SPEAR.toolConfig.attackDamageValue, -4f + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SPEAR.toolConfig.attackSpeedValue, Tiers.STONE, BlockTags.MINEABLE_WITH_HOE, properties);
     }
 
     @Override

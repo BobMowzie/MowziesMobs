@@ -128,7 +128,7 @@ public class ItemSolVisage extends MowzieArmorItem implements UmvuthanaMask, IAn
 
         @Override
         public int getDefenseForSlot(EquipmentSlot equipmentSlotType) {
-            return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.armorConfig.damageReduction.get();
+            return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.armorConfig.damageReductionValue;
         }
 
         @Override
@@ -153,7 +153,7 @@ public class ItemSolVisage extends MowzieArmorItem implements UmvuthanaMask, IAn
 
         @Override
         public float getToughness() {
-            return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.armorConfig.toughness.get().floatValue();
+            return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.armorConfig.toughnessValue;
         }
 
         @Override

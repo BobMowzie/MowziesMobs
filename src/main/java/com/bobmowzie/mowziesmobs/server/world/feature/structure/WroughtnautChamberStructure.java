@@ -1,9 +1,14 @@
 package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.tag.TagHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.ConfiguredFeatureHandler;
+import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
 import com.mojang.serialization.Codec;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelHeightAccessor;
@@ -13,33 +18,34 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
+import net.minecraft.world.level.levelgen.RandomState;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
-import org.apache.commons.lang3.tuple.Pair;
 
-import javax.annotation.Nullable;
-
-public class WroughtnautChamberStructure extends MowzieStructure<NoneFeatureConfiguration> {
-    public WroughtnautChamberStructure(Codec<NoneFeatureConfiguration> codec) {
-        super(codec, ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig, ConfiguredFeatureHandler.FERROUS_WROUGHTNAUT_BIOMES, WroughtnautChamberStructure::generatePieces, false, false, true);
+public class WroughtnautChamberStructure extends MowzieStructure {
+	public static final Codec<WroughtnautChamberStructure> CODEC = simpleCodec(WroughtnautChamberStructure::new);
+	
+    public WroughtnautChamberStructure(Structure.StructureSettings settings) {
+        super(settings, ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig, ConfiguredFeatureHandler.FERROUS_WROUGHTNAUT_BIOMES, false, false, true);
     }
 
-    private static void generatePieces(StructurePiecesBuilder builder, PieceGenerator.Context<NoneFeatureConfiguration> pieceGenerator) {
-        int x = pieceGenerator.chunkPos().getMiddleBlockX();
-        int z = pieceGenerator.chunkPos().getMiddleBlockZ();
-        int y = pieceGenerator.chunkGenerator().getFirstOccupiedHeight(x, z, Heightmap.Types.OCEAN_FLOOR_WG, pieceGenerator.heightAccessor());
-        Pair<BlockPos, Rotation> tryResult = tryWroughtChamber(pieceGenerator.chunkGenerator(), pieceGenerator.heightAccessor(), x, y, z);
+    @Override
+    public void generatePieces(StructurePiecesBuilder builder, GenerationContext context) {
+        int x = context.chunkPos().getMiddleBlockX();
+        int z = context.chunkPos().getMiddleBlockZ();
+        int y = context.chunkGenerator().getFirstOccupiedHeight(x, z, Heightmap.Types.OCEAN_FLOOR_WG, context.heightAccessor(), context.randomState());
+        Pair<BlockPos, Rotation> tryResult = tryWroughtChamber(context.chunkGenerator(), context.heightAccessor(), x, y, z, context.randomState());
         if (tryResult == null) return;
         BlockPos pos = tryResult.getLeft();
         Rotation rotation = tryResult.getRight();
         BlockPos rotationOffset = new BlockPos(0, 0, -9).rotate(rotation);
         pos = pos.offset(rotationOffset);
-        WroughtnautChamberPieces.start(pieceGenerator.structureTemplateManager(), pos, rotation, builder);
+        WroughtnautChamberPieces.start(context.structureTemplateManager(), pos, rotation, builder);
     }
 
     @Nullable
-    public static Pair<BlockPos, Rotation> tryWroughtChamber(ChunkGenerator generator, LevelHeightAccessor heightAccessor, int x, int surfaceY, int z) {
+    public static Pair<BlockPos, Rotation> tryWroughtChamber(ChunkGenerator generator, LevelHeightAccessor heightAccessor, int x, int surfaceY, int z, RandomState state) {
         int xzCheckDistance = 8; // Always starts at chunk center, so it can safely check 8 blocks in any direction
 
         int heightMax = ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig.heightMax.get().intValue();
@@ -51,7 +57,7 @@ public class WroughtnautChamberStructure extends MowzieStructure<NoneFeatureConf
             for (int dz = -xzCheckDistance; dz < xzCheckDistance; dz += 2) {
                 // Check for air to find a cave
                 BlockPos airPos = null;
-                NoiseColumn column = generator.getBaseColumn(x + dx, z + dz, heightAccessor);
+                NoiseColumn column = generator.getBaseColumn(x + dx, z + dz, heightAccessor, state);
                 for (int y = heightMax; y > heightMin; y--) {
                     if (!column.getBlock(y).getMaterial().isSolid()) {
                         airPos = new BlockPos(x + dx, y, z + dz);
@@ -76,7 +82,7 @@ public class WroughtnautChamberStructure extends MowzieStructure<NoneFeatureConf
                             BlockPos.MutableBlockPos checkWallPos = groundPos.above().mutable();
                             for (int d = 1; d <= xzCheckDistance; d++) {
                                 checkWallPos.move(dir);
-                                NoiseColumn wallCheckColumn = generator.getBaseColumn(checkWallPos.getX(), checkWallPos.getZ(), heightAccessor);
+                                NoiseColumn wallCheckColumn = generator.getBaseColumn(checkWallPos.getX(), checkWallPos.getZ(), heightAccessor, state);
                                 int wallBaseY = checkWallPos.getY() - 1;
 
                                 // Check upwards to see if four blocks up are solid. If not, checkWallPos moves up to the new floor
@@ -111,4 +117,9 @@ public class WroughtnautChamberStructure extends MowzieStructure<NoneFeatureConf
     public GenerationStep.Decoration step() {
         return GenerationStep.Decoration.UNDERGROUND_STRUCTURES;
     }
+
+	@Override
+	public StructureType<?> type() {
+		return FeatureHandler.WROUGHTNAUT_CHAMBER.get();
+	}
 }
