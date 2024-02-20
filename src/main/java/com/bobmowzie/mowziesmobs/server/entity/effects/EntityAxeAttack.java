@@ -62,7 +62,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
     protected void defineSynchedData() {
         super.defineSynchedData();
         getEntityData().define(VERTICAL, false);
-        getEntityData().define(AXE_STACK, ItemHandler.WROUGHT_AXE.getDefaultInstance());
+        getEntityData().define(AXE_STACK, ItemHandler.WROUGHT_AXE.get().getDefaultInstance());
     }
 
     @Override
@@ -178,7 +178,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
                 PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(caster, CapabilityHandler.PLAYER_CAPABILITY);
                 if (playerCapability != null) {
                     playerCapability.setAxeCanAttack(true);
-                    if (caster instanceof Player) attackTargetEntityWithCurrentItem(entityHit, (Player)caster, damage / ItemHandler.WROUGHT_AXE.getAttackDamage(), applyKnockback);
+                    if (caster instanceof Player) attackTargetEntityWithCurrentItem(entityHit, (Player)caster, damage / ItemHandler.WROUGHT_AXE.get().getAttackDamage(), applyKnockback);
                     playerCapability.setAxeCanAttack(false);
                 }
                 else {

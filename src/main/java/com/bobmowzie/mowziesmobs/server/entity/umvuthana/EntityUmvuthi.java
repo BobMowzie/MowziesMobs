@@ -913,7 +913,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
                 Player closestPlayer = players.get(0);
                 float closestPlayerDist = 6;
                 for (Player player : players) {
-                    if (player.getMainHandItem().getItem() == ItemHandler.UMVUTHI_SPAWN_EGG || player.getMainHandItem().getItem() == ItemHandler.UMVUTHI_SPAWN_EGG) {
+                    if (player.getMainHandItem().getItem() == ItemHandler.UMVUTHI_SPAWN_EGG.get() || player.getMainHandItem().getItem() == ItemHandler.UMVUTHI_SPAWN_EGG.get()) {
                         float thisDist = this.distanceTo(player);
                         if (thisDist < closestPlayerDist) {
                             closestPlayer = player;

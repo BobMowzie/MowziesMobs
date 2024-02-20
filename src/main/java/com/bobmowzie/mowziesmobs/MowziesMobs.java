@@ -67,6 +67,7 @@ public final class MowziesMobs {
         EffectHandler.REG.register(bus);
         PotionTypeHandler.REG.register(bus);
         BiomeModifiersHandler.REG.register(bus);
+        ItemHandler.REG.register(bus);
 
         PROXY.init(bus);
         bus.<FMLCommonSetupEvent>addListener(this::init);

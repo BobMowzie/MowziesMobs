@@ -16,7 +16,7 @@ public enum CreativeTabHandler {
             @Override
             @OnlyIn(Dist.CLIENT)
             public ItemStack makeIcon() {
-                return new ItemStack(ItemHandler.LOGO);
+                return new ItemStack(ItemHandler.LOGO.get());
             }
         };
     }

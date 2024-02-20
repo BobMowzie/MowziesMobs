@@ -34,7 +34,7 @@ public final class GuiUmvuthiTrade extends AbstractContainerScreen<ContainerUmvu
 
     private final InventoryUmvuthi inventory;
 
-    private final ItemStack output = new ItemStack(ItemHandler.GRANT_SUNS_BLESSING);
+    private final ItemStack output = new ItemStack(ItemHandler.GRANT_SUNS_BLESSING.get());
 
     private Button grantButton;
 

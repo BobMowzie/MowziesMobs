@@ -513,7 +513,7 @@ public class EntityFrostmaw extends MowzieLLibraryEntity implements Enemy {
                 crystalPos = crystalPos.add(position());
                 for (Player player : getPlayersNearby(8, 8, 8, 8)) {
                     if (player.position().distanceTo(crystalPos) <= 1.8 && (player.isCreative() || player.isInvisible()) && !isInventoryFull(player.getInventory())) {
-                        ItemHandlerHelper.giveItemToPlayer(player, new ItemStack(ItemHandler.ICE_CRYSTAL));
+                        ItemHandlerHelper.giveItemToPlayer(player, new ItemStack(ItemHandler.ICE_CRYSTAL.get()));
                         setHasCrystal(false);
                         if (level.getDifficulty() != Difficulty.PEACEFUL) {
                             AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_NO_CRYSTAL_ANIMATION);

@@ -339,25 +339,25 @@ public class UmvuthanaGrovePieces {
                 ItemFrame itemFrame = new ItemFrame(worldIn.getLevel(), pos, rotation.rotate(direction));
                 int i = rand.nextInt(MaskType.values().length);
                 MaskType type = MaskType.values()[i];
-                ItemUmvuthanaMask mask = ItemHandler.UMVUTHANA_MASK_FURY;
+                ItemUmvuthanaMask mask = ItemHandler.UMVUTHANA_MASK_FURY.get();
                 switch (type) {
                     case BLISS:
-                        mask = ItemHandler.UMVUTHANA_MASK_BLISS;
+                        mask = ItemHandler.UMVUTHANA_MASK_BLISS.get();
                         break;
                     case FEAR:
-                        mask = ItemHandler.UMVUTHANA_MASK_FEAR;
+                        mask = ItemHandler.UMVUTHANA_MASK_FEAR.get();
                         break;
                     case FURY:
-                        mask = ItemHandler.UMVUTHANA_MASK_FURY;
+                        mask = ItemHandler.UMVUTHANA_MASK_FURY.get();
                         break;
                     case MISERY:
-                        mask = ItemHandler.UMVUTHANA_MASK_MISERY;
+                        mask = ItemHandler.UMVUTHANA_MASK_MISERY.get();
                         break;
                     case RAGE:
-                        mask = ItemHandler.UMVUTHANA_MASK_RAGE;
+                        mask = ItemHandler.UMVUTHANA_MASK_RAGE.get();
                         break;
                     case FAITH:
-                        mask = ItemHandler.UMVUTHANA_MASK_FAITH;
+                        mask = ItemHandler.UMVUTHANA_MASK_FAITH.get();
                         break;
                 }
                 ItemStack stack = new ItemStack(mask);

@@ -225,7 +225,7 @@ public class EntityGrottol extends MowzieLLibraryEntity {
             Player player = (Player) entity;
             if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, player.getMainHandItem()) > 0) {
                 if (!level.isClientSide && isAlive()) {
-                    spawnAtLocation(ItemHandler.CAPTURED_GROTTOL.create(this), 0.0F);
+                    spawnAtLocation(ItemHandler.CAPTURED_GROTTOL.get().create(this), 0.0F);
                     BlockState state = Blocks.STONE.defaultBlockState();
                     SoundType sound = state.getBlock().getSoundType(state, level, this.blockPosition(), entity);
                     level.playSound(
