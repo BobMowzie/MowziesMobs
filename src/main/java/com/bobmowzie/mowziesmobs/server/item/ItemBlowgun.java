@@ -25,7 +25,7 @@ import net.minecraft.world.level.Level;
 
 public class ItemBlowgun extends BowItem {
     public static final Predicate<ItemStack> DARTS = (p_220002_0_) -> {
-        return p_220002_0_.getItem() == ItemHandler.DART.get();
+        return p_220002_0_.getItem() == ItemHandler.DART;
     };
 
     public ItemBlowgun(Item.Properties properties) {

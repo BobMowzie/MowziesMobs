@@ -520,7 +520,7 @@ public final class ServerEventHandler {
         double range = 6.5;
         Player player = event.getEntity();
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
-        if (player.getMainHandItem() != null && player.getMainHandItem().getItem() == ItemHandler.SPEAR.get()) {
+        if (player.getMainHandItem() != null && player.getMainHandItem().getItem() == ItemHandler.SPEAR) {
             LivingEntity entityHit = ItemSpear.raytraceEntities(player.getCommandSenderWorld(), player, range);
             if (entityHit != null) {
                 MowziesMobs.NETWORK.sendToServer(new MessagePlayerAttackMob(entityHit));

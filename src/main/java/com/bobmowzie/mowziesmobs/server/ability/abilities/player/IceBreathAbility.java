@@ -62,7 +62,7 @@ public class IceBreathAbility extends PlayerAbility {
     private boolean checkIceCrystal() {
         ItemStack stack = getUser().getUseItem();
         if (getTicksInUse() <= 1) return true;
-        if (stack.getItem() != ItemHandler.ICE_CRYSTAL.get()) return false;
+        if (stack.getItem() != ItemHandler.ICE_CRYSTAL) return false;
         return stack.getDamageValue() + 5 < stack.getMaxDamage() || ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable.get();
     }
 

@@ -395,7 +395,7 @@ public class PlayerCapability {
         }
 
         private void restoreIceCrystalStack(Player entity, ItemStack stack) {
-            if (stack.getItem() == ItemHandler.ICE_CRYSTAL.get()) {
+            if (stack.getItem() == ItemHandler.ICE_CRYSTAL) {
                 if (!ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable.get()) {
                     stack.setDamageValue(Math.max(stack.getDamageValue() - 1, 0));
                 }
@@ -404,7 +404,7 @@ public class PlayerCapability {
 
         private void useIceCrystalStack(Player player) {
             ItemStack stack = player.getUseItem();
-            if (stack.getItem() == ItemHandler.ICE_CRYSTAL.get()) {
+            if (stack.getItem() == ItemHandler.ICE_CRYSTAL) {
                 Ability iceBreathAbility = AbilityHandler.INSTANCE.getAbility(player, AbilityHandler.ICE_BREATH_ABILITY);
                 if (iceBreathAbility != null && iceBreathAbility.isUsing()) {
                     InteractionHand handIn = player.getUsedItemHand();

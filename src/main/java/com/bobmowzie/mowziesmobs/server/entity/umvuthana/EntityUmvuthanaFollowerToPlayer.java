@@ -54,7 +54,7 @@ public class EntityUmvuthanaFollowerToPlayer extends EntityUmvuthanaFollower<Pla
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        getEntityData().define(MASK_STORED, new ItemStack(ItemHandler.UMVUTHANA_MASK_FURY.get(), 1));
+        getEntityData().define(MASK_STORED, new ItemStack(ItemHandler.UMVUTHANA_MASK_FURY, 1));
     }
 
     @Override

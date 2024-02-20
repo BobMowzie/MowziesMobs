@@ -63,7 +63,7 @@ public abstract class EntityUmvuthanaFollower<L extends LivingEntity> extends En
 
     @Override
     public ItemStack getPickedResult(HitResult target) {
-        return new ItemStack(ItemHandler.UMVUTHANA_SPAWN_EGG.get());
+        return new ItemStack(ItemHandler.UMVUTHANA_SPAWN_EGG);
     }
 
     @Override

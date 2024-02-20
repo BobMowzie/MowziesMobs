@@ -22,8 +22,8 @@ public class RenderFrostmaw extends MobRenderer<EntityFrostmaw, ModelFrostmaw<En
 
     public RenderFrostmaw(EntityRendererProvider.Context mgr) {
         super(mgr, new ModelFrostmaw<>(), 3.5f);
-        addLayer(new ItemLayer<>(this, getModel().iceCrystalHand, ItemHandler.ICE_CRYSTAL.get().getDefaultInstance(), ItemTransforms.TransformType.GROUND));
-        addLayer(new ItemLayer<>(this, getModel().iceCrystal, ItemHandler.ICE_CRYSTAL.get().getDefaultInstance(), ItemTransforms.TransformType.GROUND));
+        addLayer(new ItemLayer<>(this, getModel().iceCrystalHand, ItemHandler.ICE_CRYSTAL.getDefaultInstance(), ItemTransforms.TransformType.GROUND));
+        addLayer(new ItemLayer<>(this, getModel().iceCrystal, ItemHandler.ICE_CRYSTAL.getDefaultInstance(), ItemTransforms.TransformType.GROUND));
     }
 
     @Override

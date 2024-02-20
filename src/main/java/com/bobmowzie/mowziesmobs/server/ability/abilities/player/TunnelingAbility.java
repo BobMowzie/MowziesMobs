@@ -68,18 +68,18 @@ public class TunnelingAbility extends PlayerAbility {
 
     public void playGauntletAnimation() {
         if (getUser() != null) {
-            if (gauntletStack != null && gauntletStack.getItem() == ItemHandler.EARTHBORE_GAUNTLET.get()) {
+            if (gauntletStack != null && gauntletStack.getItem() == ItemHandler.EARTHBORE_GAUNTLET) {
                 Player player = (Player) getUser();
-                ItemHandler.EARTHBORE_GAUNTLET.get().playAnimation(player, gauntletStack, ItemEarthboreGauntlet.ANIM_OPEN);
+                ItemHandler.EARTHBORE_GAUNTLET.playAnimation(player, gauntletStack, ItemEarthboreGauntlet.ANIM_OPEN);
             }
         }
     }
 
     public void stopGauntletAnimation() {
         if (getUser() != null) {
-            if (gauntletStack != null && gauntletStack.getItem() == ItemHandler.EARTHBORE_GAUNTLET.get()) {
+            if (gauntletStack != null && gauntletStack.getItem() == ItemHandler.EARTHBORE_GAUNTLET) {
                 Player player = (Player) getUser();
-                ItemHandler.EARTHBORE_GAUNTLET.get().playAnimation(player, gauntletStack, ItemEarthboreGauntlet.ANIM_REST);
+                ItemHandler.EARTHBORE_GAUNTLET.playAnimation(player, gauntletStack, ItemEarthboreGauntlet.ANIM_REST);
             }
         }
     }
@@ -100,7 +100,7 @@ public class TunnelingAbility extends PlayerAbility {
 
     public boolean damageGauntlet() {
         ItemStack stack = getUser().getUseItem();
-        if (stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET.get()) {
+        if (stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET) {
             InteractionHand handIn = getUser().getUsedItemHand();
             if (stack.getDamageValue() + 5 < stack.getMaxDamage()) {
                 stack.hurtAndBreak(5, getUser(), p -> p.broadcastBreakEvent(handIn));
@@ -117,7 +117,7 @@ public class TunnelingAbility extends PlayerAbility {
     }
 
     public void restoreGauntlet(ItemStack stack) {
-        if (stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET.get()) {
+        if (stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET) {
             if (!ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.breakable.get()) {
                 stack.setDamageValue(Math.max(stack.getDamageValue() - 1, 0));
             }
@@ -147,7 +147,7 @@ public class TunnelingAbility extends PlayerAbility {
         Vec3 lookVec = getUser().getLookAngle();
         float tunnelSpeed = 0.3f;
         ItemStack stack = getUser().getUseItem();
-        boolean usingGauntlet = stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET.get();
+        boolean usingGauntlet = stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET;
         if (underground) {
             timeUnderground++;
             if (usingGauntlet && damageGauntlet()) {
@@ -244,15 +244,15 @@ public class TunnelingAbility extends PlayerAbility {
     @Override
     protected boolean canContinueUsing() {
         ItemStack stack = getUser().getUseItem();
-        boolean usingGauntlet = stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET.get();
+        boolean usingGauntlet = stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET;
         if (whichHand == null) return false;
-        boolean canContinueUsing = (getTicksInUse() <= 1 || !(getUser().isOnGround() || (getUser().isInWater() && !usingGauntlet)) || underground) && getUser().getItemInHand(whichHand).getItem() == ItemHandler.EARTHBORE_GAUNTLET.get() && super.canContinueUsing();
+        boolean canContinueUsing = (getTicksInUse() <= 1 || !(getUser().isOnGround() || (getUser().isInWater() && !usingGauntlet)) || underground) && getUser().getItemInHand(whichHand).getItem() == ItemHandler.EARTHBORE_GAUNTLET && super.canContinueUsing();
         return canContinueUsing;
     }
 
     @Override
     public boolean preventsItemUse(ItemStack stack) {
-        if (stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET.get()) return false;
+        if (stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET) return false;
         return super.preventsItemUse(stack);
     }
 
@@ -261,7 +261,7 @@ public class TunnelingAbility extends PlayerAbility {
         e.getController().transitionLengthTicks = 4;
         if (perspective == GeckoPlayer.Perspective.THIRD_PERSON) {
             float yMotionThreshold = getUser() == Minecraft.getInstance().player ? 1 : 2;
-            if (!underground && getUser().getUseItem().getItem() != ItemHandler.EARTHBORE_GAUNTLET.get() && getUser().getDeltaMovement().y() < yMotionThreshold) {
+            if (!underground && getUser().getUseItem().getItem() != ItemHandler.EARTHBORE_GAUNTLET && getUser().getDeltaMovement().y() < yMotionThreshold) {
                 e.getController().setAnimation(new AnimationBuilder().addAnimation("tunneling_fall", false));
             }
             else {
