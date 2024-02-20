@@ -1,15 +1,12 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.message.MessageUpdateBossBar;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerBossEvent;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkDirection;
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.server.level.ServerPlayer;
 
 public class MMBossInfoServer extends ServerBossEvent {
     private final MowzieEntity entity;
@@ -42,9 +39,10 @@ public class MMBossInfoServer extends ServerBossEvent {
         }
     }
 
+    //FIXME
     @Override
     public void addPlayer(ServerPlayer player) {
-        MowziesMobs.NETWORK.sendTo(new MessageUpdateBossBar(this.getId(), bossBarLocation, bossBarOverlayLocation), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        //MowziesMobs.NETWORK.sendTo(new MessageUpdateBossBar(this.getId(), bossBarLocation, bossBarOverlayLocation), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
         if (this.entity.getSensing().hasLineOfSight(player)) {
             super.addPlayer(player);
         } else {
@@ -54,7 +52,7 @@ public class MMBossInfoServer extends ServerBossEvent {
 
     @Override
     public void removePlayer(ServerPlayer player) {
-        MowziesMobs.NETWORK.sendTo(new MessageUpdateBossBar(this.getId(), null, null), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        //MowziesMobs.NETWORK.sendTo(new MessageUpdateBossBar(this.getId(), null, null), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
         super.removePlayer(player);
         this.unseen.remove(player);
     }
