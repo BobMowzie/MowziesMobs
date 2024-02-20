@@ -202,6 +202,8 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onRemovePotionEffect(MobEffectEvent.Remove event) {
+    	if(event.getEffectInstance() == null)
+    		return;
         if (!event.getEntity().level.isClientSide() && event.getEffectInstance().getEffect() == EffectHandler.SUNBLOCK.get()) {
             MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageSunblockEffect(event.getEntity(), false));
         }
