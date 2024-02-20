@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.*;
 import com.bobmowzie.mowziesmobs.server.entity.effects.*;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.*;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityBabyFoliaath;
@@ -11,7 +10,7 @@ import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
-import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.*;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;

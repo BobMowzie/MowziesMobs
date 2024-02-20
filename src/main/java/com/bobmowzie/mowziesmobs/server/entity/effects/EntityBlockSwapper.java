@@ -1,8 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
-import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderPlatform;
-import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityPillarPiece;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

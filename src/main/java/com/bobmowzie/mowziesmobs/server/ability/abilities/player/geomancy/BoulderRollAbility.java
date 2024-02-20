@@ -4,10 +4,7 @@ import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoMo
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.*;
-import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import software.bernie.geckolib3.core.IAnimatable;

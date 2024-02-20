@@ -2,9 +2,9 @@ package com.bobmowzie.mowziesmobs.server;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.trade.Trade;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.trade.Trade;
 import com.bobmowzie.mowziesmobs.server.message.*;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseDown;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseUp;

@@ -5,7 +5,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.network.NetworkEvent;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.UUID;
 import java.util.function.BiConsumer;

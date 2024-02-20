@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;

@@ -1,14 +1,9 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.LayerHandler;
-import com.bobmowzie.mowziesmobs.client.model.armor.SolVisageModel;
 import com.bobmowzie.mowziesmobs.client.render.item.RenderSolVisageItem;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;

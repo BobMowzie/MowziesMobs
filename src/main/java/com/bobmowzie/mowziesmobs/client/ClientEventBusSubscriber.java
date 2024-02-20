@@ -1,9 +1,9 @@
 package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.gui.GuiUmvuthiTrade;
-import com.bobmowzie.mowziesmobs.client.gui.GuiUmvuthanaTrade;
 import com.bobmowzie.mowziesmobs.client.gui.GuiSculptorTrade;
+import com.bobmowzie.mowziesmobs.client.gui.GuiUmvuthanaTrade;
+import com.bobmowzie.mowziesmobs.client.gui.GuiUmvuthiTrade;
 import com.bobmowzie.mowziesmobs.client.render.block.GongRenderer;
 import com.bobmowzie.mowziesmobs.client.render.entity.*;
 import com.bobmowzie.mowziesmobs.server.block.entity.BlockEntityHandler;

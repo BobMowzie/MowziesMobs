@@ -2,7 +2,6 @@ package com.bobmowzie.mowziesmobs.server.entity.effects;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.ILinkedEntity;
-import com.bobmowzie.mowziesmobs.server.message.MessageInterruptAbility;
 import com.bobmowzie.mowziesmobs.server.message.MessageLinkEntities;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -21,7 +20,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PacketDistributor;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.List;
 import java.util.Optional;

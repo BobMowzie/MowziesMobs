@@ -1,9 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.render.item;
 
 import com.bobmowzie.mowziesmobs.client.model.armor.SolVisageModel;
-import com.bobmowzie.mowziesmobs.client.model.armor.UmvuthanaMaskModel;
 import com.bobmowzie.mowziesmobs.server.item.ItemSolVisage;
-import com.bobmowzie.mowziesmobs.server.item.ItemUmvuthanaMask;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;

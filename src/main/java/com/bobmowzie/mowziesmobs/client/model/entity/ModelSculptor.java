@@ -8,7 +8,6 @@ import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3d;
-import com.mojang.math.Vector3f;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;

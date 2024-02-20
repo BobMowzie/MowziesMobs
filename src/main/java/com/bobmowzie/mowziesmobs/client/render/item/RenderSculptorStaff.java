@@ -1,8 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.render.item;
 
-import com.bobmowzie.mowziesmobs.client.model.item.ModelEarthboreGauntlet;
 import com.bobmowzie.mowziesmobs.client.model.item.ModelSculptorStaff;
-import com.bobmowzie.mowziesmobs.server.item.ItemEarthboreGauntlet;
 import com.bobmowzie.mowziesmobs.server.item.ItemSculptorStaff;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;

@@ -3,14 +3,8 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityRockSling;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Blocks;
-import software.bernie.example.client.EntityResources;
-import software.bernie.example.entity.GeoExampleEntity;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 import java.util.Map;
 import java.util.TreeMap;

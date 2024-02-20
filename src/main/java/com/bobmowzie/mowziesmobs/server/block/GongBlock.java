@@ -2,13 +2,10 @@ package com.bobmowzie.mowziesmobs.server.block;
 
 import com.bobmowzie.mowziesmobs.server.block.entity.BlockEntityHandler;
 import com.bobmowzie.mowziesmobs.server.block.entity.GongBlockEntity;
-import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.stats.Stats;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;

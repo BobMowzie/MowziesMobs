@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.ai;
 
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthana;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;

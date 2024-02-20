@@ -20,11 +20,14 @@ import com.bobmowzie.mowziesmobs.server.ability.abilities.player.SimpleAnimation
 import com.bobmowzie.mowziesmobs.server.ai.EntityAIAvoidEntity;
 import com.bobmowzie.mowziesmobs.server.ai.UseAbilityAI;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.entity.*;
+import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieGeckoEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
-import com.bobmowzie.mowziesmobs.server.item.UmvuthanaMask;
-import com.bobmowzie.mowziesmobs.server.item.ItemUmvuthanaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
+import com.bobmowzie.mowziesmobs.server.item.ItemUmvuthanaMask;
+import com.bobmowzie.mowziesmobs.server.item.UmvuthanaMask;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;

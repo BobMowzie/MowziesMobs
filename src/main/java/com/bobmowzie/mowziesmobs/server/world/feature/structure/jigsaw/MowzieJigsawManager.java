@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.world.feature.structure.jigsaw;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Queues;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.*;
