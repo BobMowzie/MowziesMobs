@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.client;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.gui.CustomBossBar;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerFirstPerson;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerThirdPerson;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoFirstPersonRenderer;
@@ -15,30 +15,22 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.item.ItemBlowgun;
-import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import com.mojang.authlib.minecraft.client.MinecraftClient;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.gui.components.BossHealthOverlay;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.Component;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
@@ -47,9 +39,8 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.ModList;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
-import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
 
 @OnlyIn(Dist.CLIENT)
 public enum ClientEventHandler {
@@ -263,43 +254,14 @@ public enum ClientEventHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onBossBar(RenderGameOverlayEvent.BossInfo event){
+    public void onRenderBossBar(RenderGameOverlayEvent.BossInfo event) {
         if (!ConfigHandler.CLIENT.customBossBars.get()) return;
-        Pair<ResourceLocation, ResourceLocation> bossBar = ClientProxy.bossBarResourceLocations.getOrDefault(event.getBossEvent().getId(), null);
-        if (bossBar == null || bossBar.getLeft() == null) return;
-        PoseStack stack = event.getMatrixStack();
+        ResourceLocation bossRegistryName = ClientProxy.bossBarRegistryNames.getOrDefault(event.getBossEvent().getId(), null);
+        if (bossRegistryName == null) return;
+        CustomBossBar customBossBar = CustomBossBar.customBossBars.getOrDefault(bossRegistryName, null);
+        if (customBossBar == null) return;
+
         event.setCanceled(true);
-        int y = event.getY();
-        int i = Minecraft.getInstance().getWindow().getGuiScaledWidth();
-        int j = y - 10;
-        int k = i / 2 - 91;
-        Minecraft.getInstance().getProfiler().push("coolerBossBarBase");
-
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, bossBar.getLeft());
-        drawBar(stack, event.getX() + 2, y, event.getBossEvent());
-        Component component = event.getBossEvent().getName().copy().withStyle(ChatFormatting.GOLD);
-        Minecraft.getInstance().getProfiler().pop();
-
-        int l = Minecraft.getInstance().font.width(component);
-        int i1 = i / 2 - l / 2;
-        int j1 = j;
-        Minecraft.getInstance().font.drawShadow(stack, component, (float)i1, (float)j1, 16777215);
-
-        if (bossBar.getRight() != null) {
-            Minecraft.getInstance().getProfiler().push("coolerBossBar");
-            RenderSystem.setShaderTexture(0, bossBar.getRight());
-            Gui.blit(stack, event.getX() - 12, y - 5, 0, 0, 256, 16, 256, 16);
-            Minecraft.getInstance().getProfiler().pop();
-        }
-    }
-
-    private void drawBar(PoseStack stack, int x, int y, BossEvent p_93710_) {
-        Minecraft.getInstance().gui.blit(stack, x, y, 0, p_93710_.getColor().ordinal() * 5 * 2, 182, 6);
-        int i = (int)(p_93710_.getProgress() * 183.0F);
-        if (i > 0) {
-            Minecraft.getInstance().gui.blit(stack, x, y, 0, p_93710_.getColor().ordinal() * 5 * 2 + 5, i, 6);
-        }
-
+        customBossBar.renderBossBar(event);
     }
 }

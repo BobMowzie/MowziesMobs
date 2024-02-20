@@ -236,11 +236,6 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
     }
 
     @Override
-    protected MMBossInfoServer makeBossInfo() {
-        return new MMBossInfoServer(this, new ResourceLocation(MowziesMobs.MODID, "textures/gui/boss_bar/umvuthi_bossbar.png"), new ResourceLocation(MowziesMobs.MODID, "textures/gui/boss_bar/umvuthi_bar_overlay.png"));
-    }
-
-    @Override
     protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
         return super.getStandingEyeHeight(poseIn, sizeIn);
     }

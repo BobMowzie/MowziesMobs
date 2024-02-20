@@ -36,7 +36,7 @@ import java.util.*;
 @OnlyIn(Dist.CLIENT)
 public class ClientProxy extends ServerProxy {
     private static final List<SunblockSound> sunblockSounds = new ArrayList<>();
-    public static final Map<UUID, Pair<ResourceLocation, ResourceLocation>> bossBarResourceLocations = new HashMap<>();
+    public static final Map<UUID, ResourceLocation> bossBarRegistryNames = new HashMap<>();
 
     private Entity referencedMob = null;
 
