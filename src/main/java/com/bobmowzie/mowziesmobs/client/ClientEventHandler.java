@@ -36,6 +36,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ComputeFovModifierEvent;
 import net.minecraftforge.client.event.CustomizeGuiOverlayEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
@@ -196,8 +197,8 @@ public enum ClientEventHandler {
     }
 
     @SubscribeEvent
-    public void updateFOV(ViewportEvent.ComputeFov event) {
-        Player player = (Player) event.getCamera().getEntity();
+    public void updateFOV(ComputeFovModifierEvent event) {
+        Player player = event.getPlayer();
         if (player.isUsingItem() && player.getUseItem().getItem() instanceof ItemBlowgun) {
             int i = player.getTicksUsingItem();
             float f1 = (float)i / 5.0F;
@@ -207,7 +208,7 @@ public enum ClientEventHandler {
                 f1 = f1 * f1;
             }
 
-            event.setFOV(1.0F - f1 * 0.15F);
+            event.setNewFovModifier(1.0F - f1 * 0.15F);
         }
     }
 

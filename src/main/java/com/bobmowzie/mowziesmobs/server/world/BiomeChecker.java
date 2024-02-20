@@ -10,11 +10,13 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class BiomeChecker {
     public static boolean isBiomeInConfig(ConfigHandler.BiomeConfig biomeConfig, Holder<Biome> biomeKey) {
         ResourceLocation biomeName = ForgeRegistries.BIOMES.getKey(biomeKey.get());
-        if (biomeConfig.biomeWhitelist.get().contains(biomeName.toString())) {
-            return true;
-        }
-        if (biomeConfig.biomeBlacklist.get().contains(biomeName.toString())) {
-            return false;
+        if(biomeName != null) {
+            if (biomeConfig.biomeWhitelist.get().contains(biomeName.toString())) {
+                return true;
+            }
+            if (biomeConfig.biomeBlacklist.get().contains(biomeName.toString())) {
+                return false;
+            }
         }
         return false;
     }

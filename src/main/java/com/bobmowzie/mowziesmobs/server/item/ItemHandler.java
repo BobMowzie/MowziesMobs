@@ -27,47 +27,82 @@ import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.ObjectHolder;
 import net.minecraftforge.registries.RegisterEvent;
 
 @Mod.EventBusSubscriber(modid = MowziesMobs.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class ItemHandler {
     private ItemHandler() {}
 
+    @ObjectHolder(value = "mowziesmobs:foliaath_seed", registryName = "minecraft:item")
     public static final ItemFoliaathSeed FOLIAATH_SEED = null;
+    @ObjectHolder(value = "mowziesmobs:mob_remover", registryName = "minecraft:item")
     public static final ItemMobRemover MOB_REMOVER = null;
+    @ObjectHolder(value = "mowziesmobs:wrought_axe", registryName = "minecraft:item")
     public static final ItemWroughtAxe WROUGHT_AXE = null;
+    @ObjectHolder(value = "mowziesmobs:wrought_helmet", registryName = "minecraft:item")
     public static final ItemWroughtHelm WROUGHT_HELMET = null;
+    @ObjectHolder(value = "mowziesmobs:umvuthana_mask_fury", registryName = "minecraft:item")
     public static final ItemUmvuthanaMask UMVUTHANA_MASK_FURY = null;
+    @ObjectHolder(value = "mowziesmobs:umvuthana_mask_fear", registryName = "minecraft:item")
     public static final ItemUmvuthanaMask UMVUTHANA_MASK_FEAR = null;
+    @ObjectHolder(value = "mowziesmobs:umvuthana_mask_rage", registryName = "minecraft:item")
     public static final ItemUmvuthanaMask UMVUTHANA_MASK_RAGE = null;
+    @ObjectHolder(value = "mowziesmobs:umvuthana_mask_bliss", registryName = "minecraft:item")
     public static final ItemUmvuthanaMask UMVUTHANA_MASK_BLISS = null;
+    @ObjectHolder(value = "mowziesmobs:umvuthana_mask_misery", registryName = "minecraft:item")
     public static final ItemUmvuthanaMask UMVUTHANA_MASK_MISERY = null;
+    @ObjectHolder(value = "mowziesmobs:umvuthana_mask_faith", registryName = "minecraft:item")
     public static final ItemUmvuthanaMask UMVUTHANA_MASK_FAITH = null;
+    @ObjectHolder(value = "mowziesmobs:sol_visage", registryName = "minecraft:item")
     public static final ItemSolVisage SOL_VISAGE = null;
+    @ObjectHolder(value = "mowziesmobs:dart", registryName = "minecraft:item")
     public static final ItemDart DART = null;
+    @ObjectHolder(value = "mowziesmobs:spear", registryName = "minecraft:item")
     public static final ItemSpear SPEAR = null;
+    @ObjectHolder(value = "mowziesmobs:blowgun", registryName = "minecraft:item")
     public static final ItemBlowgun BLOWGUN = null;
+    @ObjectHolder(value = "mowziesmobs:grant_suns_blessing", registryName = "minecraft:item")
     public static final ItemGrantSunsBlessing GRANT_SUNS_BLESSING = null;
+    @ObjectHolder(value = "mowziesmobs:ice_crystal", registryName = "minecraft:item")
     public static final ItemIceCrystal ICE_CRYSTAL = null;
+    @ObjectHolder(value = "mowziesmobs:earth_talisman", registryName = "minecraft:item")
     public static final ItemEarthTalisman EARTH_TALISMAN = null;
+    @ObjectHolder(value = "mowziesmobs:captured_grottol", registryName = "minecraft:item")
     public static final ItemCapturedGrottol CAPTURED_GROTTOL = null;
+    @ObjectHolder(value = "mowziesmobs:glowing_jelly", registryName = "minecraft:item")
     public static final ItemGlowingJelly GLOWING_JELLY = null;
+    @ObjectHolder(value = "mowziesmobs:naga_fang", registryName = "minecraft:item")
     public static final ItemNagaFang NAGA_FANG = null;
+    @ObjectHolder(value = "mowziesmobs:naga_fang_dagger", registryName = "minecraft:item")
     public static final ItemNagaFangDagger NAGA_FANG_DAGGER = null;
+    @ObjectHolder(value = "mowziesmobs:earthbore_gauntlet", registryName = "minecraft:item")
     public static final ItemEarthboreGauntlet EARTHBORE_GAUNTLET = null;
 //    public static final ItemSculptorStaff SCULPTOR_STAFF = null;
+    @ObjectHolder(value = "mowziesmobs:logo", registryName = "minecraft:item")
     public static final Item LOGO = null;
+    @ObjectHolder(value = "mowziesmobs:music_disc_petiole", registryName = "minecraft:item")
     public static final RecordItem PETIOLE_MUSIC_DISC = null;
 
+    @ObjectHolder(value = "mowziesmobs:foliaath_spawn_egg", registryName = "minecraft:item")
     public static final ForgeSpawnEggItem FOLIAATH_SPAWN_EGG = null;
+    @ObjectHolder(value = "mowziesmobs:wroughtnaut_spawn_egg", registryName = "minecraft:item")
     public static final ForgeSpawnEggItem WROUGHTNAUT_SPAWN_EGG = null;
+    @ObjectHolder(value = "mowziesmobs:umvuthana_spawn_egg", registryName = "minecraft:item")
     public static final ForgeSpawnEggItem UMVUTHANA_SPAWN_EGG = null;
+    @ObjectHolder(value = "mowziesmobs:umvuthana_raptor_spawn_egg", registryName = "minecraft:item")
     public static final ForgeSpawnEggItem UMVUTHANA_RAPTOR_SPAWN_EGG = null;
+    @ObjectHolder(value = "mowziesmobs:umvuthana_crane_spawn_egg", registryName = "minecraft:item")
     public static final ForgeSpawnEggItem UMVUTHANA_CRANE_SPAWN_EGG = null;
+    @ObjectHolder(value = "mowziesmobs:umvuthi_spawn_egg", registryName = "minecraft:item")
     public static final ForgeSpawnEggItem UMVUTHI_SPAWN_EGG = null;
+    @ObjectHolder(value = "mowziesmobs:frostmaw_spawn_egg", registryName = "minecraft:item")
     public static final ForgeSpawnEggItem FROSTMAW_SPAWN_EGG = null;
+    @ObjectHolder(value = "mowziesmobs:grottol_spawn_egg", registryName = "minecraft:item")
     public static final ForgeSpawnEggItem GROTTOL_SPAWN_EGG = null;
+    @ObjectHolder(value = "mowziesmobs:lantern_spawn_egg", registryName = "minecraft:item")
     public static final ForgeSpawnEggItem LANTERN_SPAWN_EGG = null;
+    @ObjectHolder(value = "mowziesmobs:naga_spawn_egg", registryName = "minecraft:item")
     public static final ForgeSpawnEggItem NAGA_SPAWN_EGG = null;
 //    public static final ForgeSpawnEggItem SCULPTOR_SPAWN_EGG = null;
 
@@ -92,13 +127,13 @@ public final class ItemHandler {
     	            helper.register("spear", new ItemSpear(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1)));
     	            helper.register("blowgun", new ItemBlowgun(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1).durability(300)));
     	            helper.register("grant_suns_blessing", new ItemGrantSunsBlessing(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1).rarity(Rarity.EPIC)));
-    	            helper.register("ice_crystal", new ItemIceCrystal(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).defaultDurability(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.durability.get()).rarity(Rarity.RARE)));
+    	            helper.register("ice_crystal", new ItemIceCrystal(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).defaultDurability(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.durabilityValue).rarity(Rarity.RARE)));
     	            helper.register("earth_talisman", new ItemEarthTalisman(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1).rarity(Rarity.EPIC)));
     	            helper.register("captured_grottol", new ItemCapturedGrottol(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).stacksTo(1)));
     	            helper.register("glowing_jelly", new ItemGlowingJelly( new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).food(ItemGlowingJelly.GLOWING_JELLY_FOOD)));
     	            helper.register("naga_fang", new ItemNagaFang(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
     	            helper.register("naga_fang_dagger", new ItemNagaFangDagger(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
-    	            helper.register("earthbore_gauntlet", new ItemEarthboreGauntlet(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).defaultDurability(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.durability.get()).rarity(Rarity.RARE)));
+    	            helper.register("earthbore_gauntlet", new ItemEarthboreGauntlet(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).defaultDurability(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.durabilityValue).rarity(Rarity.RARE)));
 //    	            helper.register("sculptor_staff", new ItemSculptorStaff(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).defaultDurability(1000).rarity(Rarity.RARE)));
 //    	            helper.register("sand_rake", new ItemSandRake(new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab).defaultDurability(64)));
     	            helper.register("logo", new Item(new Item.Properties()));

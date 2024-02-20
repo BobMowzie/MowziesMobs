@@ -210,6 +210,9 @@ public final class ConfigHandler {
         }
 
         public final DoubleValue attackDamage;
+        
+        public float attackDamageValue = 9;
+        public float attackSpeedValue = 0.9F;
 
         public final DoubleValue attackSpeed;
     }
@@ -227,6 +230,9 @@ public final class ConfigHandler {
         }
 
         public final IntValue damageReduction;
+        
+        public int damageReductionValue = ArmorMaterials.IRON.getDefenseForSlot(EquipmentSlot.HEAD);
+        public float toughnessValue = ArmorMaterials.IRON.getToughness();
 
         public final DoubleValue toughness;
     }
@@ -542,6 +548,7 @@ public final class ConfigHandler {
         public final BooleanValue breakable;
 
         public final IntValue durability;
+        public int durabilityValue;
     }
 
     public static class EarthboreGauntlet {
@@ -565,6 +572,7 @@ public final class ConfigHandler {
         public final BooleanValue breakable;
 
         public final IntValue durability;
+        public int durabilityValue;
 
         public final ToolConfig toolConfig;
     }

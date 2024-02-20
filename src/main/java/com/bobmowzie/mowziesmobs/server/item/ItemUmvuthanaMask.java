@@ -199,7 +199,7 @@ public class ItemUmvuthanaMask extends MowzieArmorItem implements UmvuthanaMask,
 
         @Override
         public int getDefenseForSlot(EquipmentSlot equipmentSlotType) {
-            return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.UMVUTHANA_MASK.armorConfig.damageReduction.get();
+            return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.UMVUTHANA_MASK.armorConfig.damageReductionValue;
         }
 
         @Override
@@ -224,7 +224,7 @@ public class ItemUmvuthanaMask extends MowzieArmorItem implements UmvuthanaMask,
 
         @Override
         public float getToughness() {
-            return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.UMVUTHANA_MASK.armorConfig.toughness.get().floatValue();
+            return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.UMVUTHANA_MASK.armorConfig.toughnessValue;
         }
 
         @Override
