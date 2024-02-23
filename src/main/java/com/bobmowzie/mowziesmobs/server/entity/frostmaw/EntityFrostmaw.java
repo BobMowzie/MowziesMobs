@@ -1,5 +1,10 @@
 package com.bobmowzie.mowziesmobs.server.entity.frostmaw;
 
+import java.util.EnumSet;
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import com.bobmowzie.mowziesmobs.client.particle.ParticleCloud;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleRing;
@@ -7,7 +12,12 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleSnowFlake;
 import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
 import com.bobmowzie.mowziesmobs.server.ai.MMEntityMoveHelper;
 import com.bobmowzie.mowziesmobs.server.ai.MMPathNavigateGround;
-import com.bobmowzie.mowziesmobs.server.ai.animation.*;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationActivateAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAreaAttackAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDeactivateAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
+import com.bobmowzie.mowziesmobs.server.ai.animation.SimpleAnimationAI;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LegSolverQuadruped;
@@ -21,6 +31,7 @@ import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -35,10 +46,19 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.MoveTowardsRestrictionGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.monster.Enemy;
@@ -53,10 +73,6 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.ItemHandlerHelper;
-
-import javax.annotation.Nullable;
-import java.util.EnumSet;
-import java.util.List;
 
 /**
  * Created by BobMowzie on 5/8/2017.
@@ -119,7 +135,7 @@ public class EntityFrostmaw extends MowzieLLibraryEntity implements Enemy {
 
         moveControl = new MMEntityMoveHelper(this, 7);
     }
-
+    
     @Override
     protected void registerGoals() {
         super.registerGoals();

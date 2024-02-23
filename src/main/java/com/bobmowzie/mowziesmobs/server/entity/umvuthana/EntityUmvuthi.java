@@ -31,7 +31,6 @@ import com.bobmowzie.mowziesmobs.server.ai.UseAbilityAI;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
-import com.bobmowzie.mowziesmobs.server.entity.MMBossInfoServer;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieGeckoEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
@@ -256,11 +255,6 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 10.0F));
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, EntityUmvuthana.class, 8.0F));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-    }
-
-    @Override
-    protected MMBossInfoServer makeBossInfo() {
-        return new MMBossInfoServer(this, new ResourceLocation(MowziesMobs.MODID, "textures/gui/boss_bar/umvuthi_bossbar.png"), new ResourceLocation(MowziesMobs.MODID, "textures/gui/boss_bar/umvuthi_bar_overlay.png"));
     }
 
     @Override

@@ -87,7 +87,7 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
     private DamageSource killDataCause;
     private Player killDataAttackingPlayer;
 
-    private final MMBossInfoServer bossInfo;
+    private final MMBossInfoServer bossInfo= new MMBossInfoServer(this);
 
     private static final UUID HEALTH_CONFIG_MODIFIER_UUID = UUID.fromString("eff1c400-910c-11ec-b909-0242ac120002");
     private static final UUID ATTACK_CONFIG_MODIFIER_UUID = UUID.fromString("f76a7c90-910c-11ec-b909-0242ac120002");
@@ -118,12 +118,6 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
                 attackDamageAttr.addTransientModifier(new AttributeModifier(ATTACK_CONFIG_MODIFIER_UUID, "Attack config multiplier", difference, AttributeModifier.Operation.ADDITION));
             }
         }
-
-        bossInfo = makeBossInfo();
-    }
-
-    protected MMBossInfoServer makeBossInfo() {
-        return new MMBossInfoServer(this, null, null);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

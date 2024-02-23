@@ -1,41 +1,50 @@
 package com.bobmowzie.mowziesmobs.server.message;
 
-import com.bobmowzie.mowziesmobs.client.ClientProxy;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.NetworkEvent;
-import org.apache.commons.lang3.tuple.Pair;
-
 import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
+import com.bobmowzie.mowziesmobs.client.ClientProxy;
+
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.registries.ForgeRegistries;
+
 public class MessageUpdateBossBar {
     private UUID bossID;
-    private ResourceLocation barTexture;
-    private ResourceLocation overlayTexture;
+    private boolean remove;
+    private ResourceLocation registryName;
 
     public MessageUpdateBossBar() {
 
     }
 
-    public MessageUpdateBossBar(UUID bossID, ResourceLocation barTexture, ResourceLocation overlayTexture) {
+    // Set entity to null to remove boss from the map
+    public MessageUpdateBossBar(UUID bossID, LivingEntity entity) {
         this.bossID = bossID;
-        this.barTexture = barTexture;
-        this.overlayTexture = overlayTexture;
+        if (entity != null) {
+            this.registryName = ForgeRegistries.ENTITY_TYPES.getKey(entity.getType());
+            this.remove = false;
+        }
+        else {
+            this.registryName = null;
+            this.remove = true;
+        }
     }
 
     public static void serialize(final MessageUpdateBossBar message, final FriendlyByteBuf buf) {
         buf.writeUUID(message.bossID);
-        if (message.barTexture != null) buf.writeResourceLocation(message.barTexture);
-        if (message.overlayTexture != null) buf.writeResourceLocation(message.overlayTexture);
+        buf.writeBoolean(message.remove);
+        if (!message.remove && message.registryName != null) buf.writeResourceLocation(message.registryName);
     }
 
     public static MessageUpdateBossBar deserialize(final FriendlyByteBuf buf) {
         final MessageUpdateBossBar message = new MessageUpdateBossBar();
         message.bossID = buf.readUUID();
-        message.barTexture = buf.readResourceLocation();
-        message.overlayTexture = buf.readResourceLocation();
+        message.remove = buf.readBoolean();
+        if (!message.remove) message.registryName = buf.readResourceLocation();
         return message;
     }
 
@@ -44,11 +53,11 @@ public class MessageUpdateBossBar {
         public void accept(final MessageUpdateBossBar message, final Supplier<NetworkEvent.Context> contextSupplier) {
             final NetworkEvent.Context context = contextSupplier.get();
             context.enqueueWork(() -> {
-                if (message.barTexture == null) {
-                    ClientProxy.bossBarResourceLocations.remove(message.bossID);
+                if (message.registryName == null) {
+                    ClientProxy.bossBarRegistryNames.remove(message.bossID);
                 }
                 else {
-                    ClientProxy.bossBarResourceLocations.put(message.bossID, Pair.of(message.barTexture, message.overlayTexture));
+                	ClientProxy.bossBarRegistryNames.put(message.bossID, message.registryName);
                 }
             });
             context.setPacketHandled(true);

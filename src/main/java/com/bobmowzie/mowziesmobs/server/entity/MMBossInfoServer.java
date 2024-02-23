@@ -4,27 +4,22 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import net.minecraft.resources.ResourceLocation;
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.message.MessageUpdateBossBar;
+
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkDirection;
 
 public class MMBossInfoServer extends ServerBossEvent {
     private final MowzieEntity entity;
-    private final ResourceLocation bossBarLocation;
-    private final ResourceLocation bossBarOverlayLocation;
 
     private final Set<ServerPlayer> unseen = new HashSet<>();
 
     public MMBossInfoServer(MowzieEntity entity) {
-        this(entity, null, null);
-    }
-
-    public MMBossInfoServer(MowzieEntity entity, ResourceLocation bossBarLocation, ResourceLocation bossBarOverlayLocation) {
         super(entity.getDisplayName(), entity.bossBarColor(), BossBarOverlay.PROGRESS);
         this.setVisible(entity.hasBossBar());
         this.entity = entity;
-        this.bossBarLocation = bossBarLocation;
-        this.bossBarOverlayLocation = bossBarOverlayLocation;
     }
 
     public void update() {
@@ -39,10 +34,9 @@ public class MMBossInfoServer extends ServerBossEvent {
         }
     }
 
-    //FIXME
     @Override
     public void addPlayer(ServerPlayer player) {
-        //MowziesMobs.NETWORK.sendTo(new MessageUpdateBossBar(this.getId(), bossBarLocation, bossBarOverlayLocation), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+    	MowziesMobs.NETWORK.sendTo(new MessageUpdateBossBar(this.getId(), entity), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
         if (this.entity.getSensing().hasLineOfSight(player)) {
             super.addPlayer(player);
         } else {
@@ -52,7 +46,7 @@ public class MMBossInfoServer extends ServerBossEvent {
 
     @Override
     public void removePlayer(ServerPlayer player) {
-        //MowziesMobs.NETWORK.sendTo(new MessageUpdateBossBar(this.getId(), null, null), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+    	MowziesMobs.NETWORK.sendTo(new MessageUpdateBossBar(this.getId(), null), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
         super.removePlayer(player);
         this.unseen.remove(player);
     }
