@@ -54,11 +54,11 @@ public abstract class MowzieStructure extends Structure {
     @Override
     public Optional<GenerationStub> findGenerationPoint(GenerationContext context) {
     	if(this.checkLocation(context)) {
-    		return onTopOfChunkCenter(context, Heightmap.Types.WORLD_SURFACE_WG, (builder) -> {
-    			this.generatePieces(builder, context);
-    		});
+
     	}
-    	return Optional.empty();
+		return onTopOfChunkCenter(context, Heightmap.Types.WORLD_SURFACE_WG, (builder) -> {
+			this.generatePieces(builder, context);
+		});
     }
     
     public void generatePieces(StructurePiecesBuilder builder, Structure.GenerationContext context) {
@@ -69,6 +69,7 @@ public abstract class MowzieStructure extends Structure {
     	return this.checkLocation(context, config, allowedBiomes, doCheckHeight, doAvoidWater, doAvoidStructures);
     }
 
+    //FIXME
     protected boolean checkLocation(GenerationContext context, ConfigHandler.GenerationConfig config, Set<ResourceLocation> allowedBiomes, boolean checkHeight, boolean avoidWater, boolean avoidStructures) {
         if (config.generationDistance.get() < 0) {
             return false;
