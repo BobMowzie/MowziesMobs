@@ -7,8 +7,6 @@ import java.util.Set;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.QuartPos;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -16,7 +14,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.NoiseColumn;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.GenerationStep;
@@ -24,7 +21,6 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class MowzieStructure extends Structure {
     private final ConfigHandler.GenerationConfig config;
@@ -54,11 +50,11 @@ public abstract class MowzieStructure extends Structure {
     @Override
     public Optional<GenerationStub> findGenerationPoint(GenerationContext context) {
     	if(this.checkLocation(context)) {
-
+    		return onTopOfChunkCenter(context, Heightmap.Types.WORLD_SURFACE_WG, (builder) -> {
+    			this.generatePieces(builder, context);
+    		});
     	}
-		return onTopOfChunkCenter(context, Heightmap.Types.WORLD_SURFACE_WG, (builder) -> {
-			this.generatePieces(builder, context);
-		});
+    	return Optional.empty();
     }
     
     public void generatePieces(StructurePiecesBuilder builder, Structure.GenerationContext context) {
@@ -69,7 +65,6 @@ public abstract class MowzieStructure extends Structure {
     	return this.checkLocation(context, config, allowedBiomes, doCheckHeight, doAvoidWater, doAvoidStructures);
     }
 
-    //FIXME
     protected boolean checkLocation(GenerationContext context, ConfigHandler.GenerationConfig config, Set<ResourceLocation> allowedBiomes, boolean checkHeight, boolean avoidWater, boolean avoidStructures) {
         if (config.generationDistance.get() < 0) {
             return false;
@@ -78,16 +73,17 @@ public abstract class MowzieStructure extends Structure {
         ChunkPos chunkPos = context.chunkPos();
         BlockPos centerOfChunk = new BlockPos((chunkPos.x << 4) + 7, 0, (chunkPos.z << 4) + 7);
 
-        int i = chunkPos.getMiddleBlockX();
+        //FIXME
+        /*int i = chunkPos.getMiddleBlockX();
         int j = chunkPos.getMiddleBlockZ();
         int k = context.chunkGenerator().getFirstOccupiedHeight(i, j, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor(), context.randomState());
         Holder<Biome> biome = context.chunkGenerator().getBiomeSource().getNoiseBiome(QuartPos.fromBlock(i), QuartPos.fromBlock(k), QuartPos.fromBlock(j), context.randomState().sampler());
         if (!allowedBiomes.contains(ForgeRegistries.BIOMES.getKey(biome.value()))) {
-            return false;
-        }
+        	return false;
+        }*/
 
         if (checkHeight) {
-            double minHeight = config.heightMin.get();
+        	double minHeight = config.heightMin.get();
             double maxHeight = config.heightMax.get();
             int landHeight = getLowestY(context, 16, 16);
             if (minHeight != -65 && landHeight < minHeight) return false;
