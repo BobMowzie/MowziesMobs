@@ -576,6 +576,7 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
     public void setMask(MaskType type) {
         getEntityData().set(MASK, type.ordinal());
         setItemSlot(EquipmentSlot.HEAD, getMaskFromType(type).getDefaultInstance());
+        setDropChance(EquipmentSlot.HEAD, 0);
     }
 
     public int getWeapon() {
