@@ -412,6 +412,12 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
             }
         }
 
+        if (getTarget() != null) {
+            if (getTarget().isRemoved() || getTarget().isDeadOrDying()) {
+                setTarget(null);
+            }
+        }
+
         if (getActiveAbilityType() != BLOCK_ABILITY && blockCount > 0 && tickCount % 10 == 0) blockCount--;
 
         if (!level.isClientSide && active && !getActive()) {
