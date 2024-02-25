@@ -1244,6 +1244,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         );
         private static final ParticleComponent.KeyTrack superNovaKeyTrack2 = ParticleComponent.KeyTrack.oscillate(0, 7, 24);
 
+        @OnlyIn(Dist.CLIENT)
         public static void superNovaEffects(Ability activeAbility, Vec3[] pinLocation, Level level) {
             // Darken sky
             Player clientPlayer = Minecraft.getInstance().player;

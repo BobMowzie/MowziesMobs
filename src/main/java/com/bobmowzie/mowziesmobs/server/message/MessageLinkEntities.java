@@ -5,6 +5,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
@@ -42,6 +44,7 @@ public class MessageLinkEntities {
 
     public static class Handler implements BiConsumer<MessageLinkEntities, Supplier<NetworkEvent.Context>> {
         @Override
+        @OnlyIn(Dist.CLIENT)
         public void accept(final MessageLinkEntities message, final Supplier<NetworkEvent.Context> contextSupplier) {
             final NetworkEvent.Context context = contextSupplier.get();
             context.enqueueWork(() -> {
