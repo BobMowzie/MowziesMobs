@@ -12,7 +12,7 @@ buildscript {
 
 apply plugin: "net.minecraftforge.gradle"
 
-version = "1.6.0"
+version = "1.6.1"
 group = "com.bobmowzie.mowziesmobs"
 archivesBaseName = "mowziesmobs"
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
