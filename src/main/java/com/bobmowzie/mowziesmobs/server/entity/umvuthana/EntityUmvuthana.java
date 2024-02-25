@@ -408,6 +408,12 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
                 }
             }
         }
+        
+        if (getTarget() != null) {
+            if (getTarget().isRemoved() || getTarget().isDeadOrDying()) {
+                setTarget(null);
+            }
+        }
 
         if (getActiveAbilityType() != BLOCK_ABILITY && blockCount > 0 && tickCount % 10 == 0) blockCount--;
 
@@ -573,6 +579,7 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
     public void setMask(MaskType type) {
         getEntityData().set(MASK, type.ordinal());
         setItemSlot(EquipmentSlot.HEAD, getMaskFromType(type).getDefaultInstance());
+        setDropChance(EquipmentSlot.HEAD, 0);
     }
 
     public int getWeapon() {
