@@ -576,6 +576,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
 
     @Override
     public boolean hurt(DamageSource source, float damage) {
+    	if (source == DamageSource.HOT_FLOOR) return false;
         if (hasEffect(EffectHandler.SUNBLOCK.get()) && !source.isBypassInvul()) {
             if (source.getDirectEntity() != null) playSound(MMSounds.ENTITY_WROUGHT_UNDAMAGED.get(), 0.4F, 2);
             return false;
