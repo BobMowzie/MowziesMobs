@@ -20,8 +20,6 @@ import com.bobmowzie.mowziesmobs.server.ability.abilities.player.SimpleAnimation
 import com.bobmowzie.mowziesmobs.server.ai.EntityAIAvoidEntity;
 import com.bobmowzie.mowziesmobs.server.ai.UseAbilityAI;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
-import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieGeckoEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
@@ -42,7 +40,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
@@ -55,10 +52,7 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.*;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
@@ -77,7 +71,7 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 
 import java.util.EnumSet;
 
-public abstract class EntityUmvuthana extends MowzieGeckoEntity implements RangedAttackMob {
+public abstract class EntityUmvuthana extends MowzieGeckoEntity {
     public static final AbilityType<EntityUmvuthana, DieAbility<EntityUmvuthana>> DIE_ABILITY = new AbilityType<>("umvuthana_die", (type, entity) -> new DieAbility<>(type, entity,"die", 70) {
         @Override
         public void tickUsing() {
@@ -623,33 +617,6 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity implements Range
         super.readAdditionalSaveData(compound);
         setMask(MaskType.from(compound.getInt("mask")));
         setWeapon(compound.getInt("weapon"));
-    }
-
-    @Override
-    public void performRangedAttack(LivingEntity target, float p_82196_2_) {
-        AbstractArrow dart = new EntityDart(EntityHandler.DART.get(), this.level, this);
-        Vec3 targetPos = target.position();
-        double dx = targetPos.x() - this.getX();
-        double dy = target.getBoundingBox().minY + (double)(target.getBbHeight() / 3.0F) - dart.position().y();
-        double dz = targetPos.z() - this.getZ();
-        double dist = Mth.sqrt((float) (dx * dx + dz * dz));
-        dart.shoot(dx, dy + dist * 0.2D, dz, 1.6F, 1);
-        int i = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, this.getItemInHand(InteractionHand.MAIN_HAND));
-        int j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.PUNCH_ARROWS, this.getItemInHand(InteractionHand.MAIN_HAND));
-        dart.setBaseDamage((double) (p_82196_2_ * 2.0F) + this.random.nextGaussian() * 0.25D + (double) ((float) this.level.getDifficulty().getId() * 0.11F));
-
-        if (i > 0) {
-            dart.setBaseDamage(dart.getBaseDamage() + (double) i * 0.5D + 0.5D);
-        }
-
-        if (j > 0) {
-            dart.setKnockback(j);
-        }
-
-        dart.setBaseDamage(dart.getBaseDamage() * ConfigHandler.COMMON.MOBS.UMVUTHANA.combatConfig.attackMultiplier.get());
-
-        this.level.addFreshEntity(dart);
-        attacking = false;
     }
 
     @Override
