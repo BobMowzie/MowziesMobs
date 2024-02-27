@@ -1575,7 +1575,7 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
             animator.setStaticKeyframe(13);
 
             animator.startKeyframe(7);
-            animator.move(rootBox, 0, 15, -33);
+            animator.move(rootBox, 0, 20, -33);
             animator.rotate(rootBox, 1.5F, 0, 0);
 
             animator.rotate(shoulderLeft, 0, 0.5F, 0.75F);
