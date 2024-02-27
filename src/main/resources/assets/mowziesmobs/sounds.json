@@ -55,10 +55,6 @@
 		"sounds": [ "mowziesmobs:entity/wroughtnaut/creak" ],
 		"subtitle": "subtitles.mowziesmobs.wroughtnaut.creak"
 	},
-	"wroughtnaut.die": {
-		"sounds": [ "mowziesmobs:entity/wroughtnaut/die" ],
-		"subtitle": "subtitles.mowziesmobs.wroughtnaut.die"
-	},
 	"wroughtnaut.grunt1": {
 		"sounds": [ "mowziesmobs:entity/wroughtnaut/grunt1" ],
 		"subtitle": "subtitles.mowziesmobs.wroughtnaut.grunt"
