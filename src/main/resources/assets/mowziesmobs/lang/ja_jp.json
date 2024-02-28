@@ -30,6 +30,7 @@
   "item.mowziesmobs.umvuthana_mask_rage": "憤怒のマスク",
   "item.mowziesmobs.umvuthana_mask_bliss": "至福のマスク",
   "item.mowziesmobs.umvuthana_mask_misery": "苦悩のマスク",
+  "item.mowziesmobs.umvuthana_mask_faith": "忠誠のマスク",
   "item.mowziesmobs.sol_visage": "太陽の面",
   "item.mowziesmobs.dart": "毒の吹き矢",
   "item.mowziesmobs.spear": "槍",
@@ -42,21 +43,17 @@
   "item.mowziesmobs.glowing_jelly": "輝くジェル",
   "item.mowziesmobs.earthbore_gauntlet": "大地のガントレット",
 
-
   "item.mowziesmobs.blowgun.text.0": "チャージ速度が速い",
   "item.mowziesmobs.blowgun.text.1": "飛距離は長くない",
   "item.mowziesmobs.blowgun.text.2": "吹き矢専用",
-
 
   "item.mowziesmobs.wrought_axe.text.0": "耐久値無限",
   "item.mowziesmobs.wrought_axe.text.1": "右クリックで範囲攻撃",
   "item.mowziesmobs.wrought_axe.text.2": "地面へShift+右クリックで地響き",
 
-
   "item.mowziesmobs.barako_mask.text.0": "耐久値無限",
   "item.mowziesmobs.barako_mask.text.1": "ウムヴーサナのマスクで右クリック",
   "item.mowziesmobs.barako_mask.text.2": "手下を呼び出せる",
-
 
   "item.mowziesmobs.umvuthana_mask_fear.text.0": "移動速度が上昇する",
   "item.mowziesmobs.umvuthana_mask_fear.text.1": "もしかすると...?",
@@ -68,23 +65,22 @@
   "item.mowziesmobs.umvuthana_mask_bliss.text.1": "もしかすると...?",
   "item.mowziesmobs.umvuthana_mask_fury.text.0": "攻撃力が上昇する",
   "item.mowziesmobs.umvuthana_mask_fury.text.1": "もしかすると...?",
-
+  "item.mowziesmobs.umvuthana_mask_faith.text.0": "体力が増強される",
+  "item.mowziesmobs.umvuthana_mask_faith.text.1": "もしかすると...?",
 
   "item.mowziesmobs.dart.text.0": "吹き筒で撃ち出す",
   "item.mowziesmobs.dart.text.1": "当たったモブは毒に侵される",
-
 
   "item.mowziesmobs.foliaath_seed.text.0": "草ブロックに植える",
   "item.mowziesmobs.foliaath_seed.text.1": "半日後、苗は空腹になる",
   "item.mowziesmobs.foliaath_seed.text.2": "肉を投げると食べて満腹になる",
   "item.mowziesmobs.foliaath_seed.text.3": "2日後に完全成長するであろう",
 
-
-  "item.mowziesmobs.grant_suns_blessing.text.0": "太陽の祝福を得る",
-  "item.mowziesmobs.grant_suns_blessing.text.1": "分間",
+  "item.mowziesmobs.grant_suns_blessing.text.0": "太陽の祝福を得る (",
+  "item.mowziesmobs.grant_suns_blessing.text.1": "分間)",
   "item.mowziesmobs.grant_suns_blessing.text.2": "素手で右クリックでサンストライクを放つ",
   "item.mowziesmobs.grant_suns_blessing.text.3": "素手で左クリックでソーラーフレアを放つ",
-  "item.mowziesmobs.grant_suns_blessing.text.4": "素手でShift+右クリックで太陽光線を放つ(コストとして",
+  "item.mowziesmobs.grant_suns_blessing.text.4": "素手でShift+右クリックで太陽光線を放つ (コストとして",
   "item.mowziesmobs.grant_suns_blessing.text.5": "分消費)",
   "item.mowziesmobs.grant_suns_blessing.text.6": "素手でShiftの後左+右クリックを同時押しでスーパーノヴァを放つ (祝福の時間を全消費)",
 
@@ -149,8 +145,6 @@
 
   "_comment": "Tile Entities",
 
-
-
   "_comment": "Containers",
 
   "entity.mowziesmobs.umvuthanaya.trade": "ウムヴーサナ",
@@ -162,9 +156,8 @@
   "entity.mowziesmobs.sculptor.trade": "Sculptor",
   "entity.mowziesmobs.sculptor.trade.button.text": "Begin Test",
 
-
   "_comment": "Death Messages",
-  "death.attack.dart": "%1$sは%2$sに吹き矢で撃ち殺された"
+  "death.attack.dart": "%1$sは%2$sに吹き矢で撃ち殺された",
 
   "_comment": "Config",
   "config.mowziesmobs.mobs": "モブ",
@@ -282,17 +275,17 @@
   "advancements.mowziesmobs.kill_frostmaw.description": "フロストモーを倒す",
   "advancements.mowziesmobs.kill_naga.title": "翼を授ける",
   "advancements.mowziesmobs.kill_naga.description": "ナーガを倒す",
-  "advancements.mowziesmobs.kill_grottol.title": "ひどいよ!",
+  "advancements.mowziesmobs.kill_grottol.title": "鬼!悪魔!",
   "advancements.mowziesmobs.kill_grottol.description": "グロットルを倒す",
   "advancements.mowziesmobs.sneak_village.title": "同じ穴の...鳥",
   "advancements.mowziesmobs.sneak_village.description": "ウムヴーサナの集落に侵入する",
   "advancements.mowziesmobs.suns_blessing.title": "太陽師",
   "advancements.mowziesmobs.suns_blessing.description": "太陽の祝福を受ける",
-  "advancements.mowziesmobs.steal_ice_crystal.title": "しめしめ",
+  "advancements.mowziesmobs.steal_ice_crystal.title": "IQ1000",
   "advancements.mowziesmobs.steal_ice_crystal.description": "フロストモーからアイスクリスタルを盗む",
   "advancements.mowziesmobs.kill_grottol_fortune.title": "一か八か",
   "advancements.mowziesmobs.kill_grottol_fortune.description": "グロットルを幸運付きツルハシで倒す",
-  "advancements.mowziesmobs.kill_grottol_silk_touch.title": "共に行こうぜ",
+  "advancements.mowziesmobs.kill_grottol_silk_touch.title": "どこでもいっしょ",
   "advancements.mowziesmobs.kill_grottol_silk_touch.description": "グロットルをシルクタッチ付きツルハシで回収する",
 
   "subtitles.mowziesmobs.foliaath.bite": "フォリアスが咬む",
@@ -309,7 +302,7 @@
   "subtitles.mowziesmobs.wroughtnaut.die": "フェラス・ロートノートが死ぬ",
   "subtitles.mowziesmobs.wroughtnaut.grunt": "フェラス・ロートノートがうなる",
   "subtitles.mowziesmobs.wroughtnaut.hurt": "フェラス・ロートノートがダメージを受ける",
-  "subtitles.mowziesmobs.wroughtnaut.pre_swing": "Ferrous Wroughtnaut",
+  "subtitles.mowziesmobs.wroughtnaut.pre_swing": "フェラス・ロートノート",
   "subtitles.mowziesmobs.wroughtnaut.pull": "フェラス・ロートノートが斧を引く",
   "subtitles.mowziesmobs.wroughtnaut.release": "フェラス・ロートノートが斧を放つ",
   "subtitles.mowziesmobs.wroughtnaut.shout": "フェラス・ロートノートが怒鳴る",
