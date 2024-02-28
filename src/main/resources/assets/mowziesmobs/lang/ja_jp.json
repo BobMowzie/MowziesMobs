@@ -134,14 +134,18 @@
   "block.mowziesmobs.painted_acacia": "模様付きアカシアの木材",
   "block.mowziesmobs.painted_acacia_slab": "模様付きアカシアの木材ハーフブロック",
   "block.mowziesmobs.grottol": "グロットル",
+  "block.mowziesmobs.clawed_log": "爪痕の木",
 
   "_comment": "Potions",
   "effect.mowziesmobs.suns_blessing": "太陽の祝福",
   "effect.mowziesmobs.geomancy": "大地の力",
   "effect.mowziesmobs.frozen": "凍結",
+  "effect.mowziesmobs.sunblock": "日焼け耐性",
   "effect.mowziesmobs.poison_resist": "毒耐性",
-
-  "effect.mowziesmobs.effect.poison_resist": "耐毒のポーション",
+  "item.minecraft.potion.effect.poison_resist": "耐毒のポーション",
+  "item.minecraft.splash_potion.effect.poison_resist": "耐毒のスプラッシュポーション",
+  "item.minecraft.lingering_potion.effect.poison_resist": "耐毒の残留ポーション",
+  "item.minecraft.tipped_arrow.effect.poison_resist": "耐毒の矢",
 
   "_comment": "Tile Entities",
 
