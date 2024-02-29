@@ -342,10 +342,11 @@ public class EntityFrostmaw extends MowzieLLibraryEntity implements Enemy {
                 if (getAnimationTick() == 2) {
                     dodgeYaw = (float) Math.toRadians(targetAngle + 90 + random.nextFloat() * 150 - 75);
                 }
-                if (getAnimationTick() == 6 && (onGround || isInLava() || isInWater())) {
+                if (getAnimationTick() == 6 && (onGround || isInLava() || isInWater() || getLastDamageSource() == DamageSource.LAVA)) {
                     float speed = 1.7f;
                     Vec3 m = getDeltaMovement().add(speed * Math.cos(dodgeYaw), 0, speed * Math.sin(dodgeYaw));
                     setDeltaMovement(m.x, 0.6, m.z);
+                    shouldPlayLandAnimation = true;
                 }
                 if (getTarget() != null) lookControl.setLookAt(getTarget(), 30, 30);
             }
@@ -421,7 +422,7 @@ public class EntityFrostmaw extends MowzieLLibraryEntity implements Enemy {
 
             spawnSwipeParticles();
 
-            if ((fallDistance > 0.2 && !onGround) || getAnimation() == DODGE_ANIMATION) shouldPlayLandAnimation = true;
+            if (fallDistance > 0.2 && !onGround && getLastDamageSource() != DamageSource.LAVA) shouldPlayLandAnimation = true;
             if (onGround && shouldPlayLandAnimation && getAnimation() != DODGE_ANIMATION) {
                 if (!level.isClientSide && getAnimation() == NO_ANIMATION) {
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, LAND_ANIMATION);
