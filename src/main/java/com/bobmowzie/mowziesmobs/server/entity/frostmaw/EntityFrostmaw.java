@@ -437,7 +437,7 @@ public class EntityFrostmaw extends MowzieLLibraryEntity implements Enemy {
 
             spawnSwipeParticles();
 
-            if ((fallDistance > 0.2 && !onGround) || getAnimation() == DODGE_ANIMATION) shouldPlayLandAnimation = true;
+            if (fallDistance > 0.2 && !onGround && getLastDamageSource() != DamageSource.LAVA) shouldPlayLandAnimation = true;
             if (onGround && shouldPlayLandAnimation && getAnimation() != DODGE_ANIMATION) {
                 if (!level.isClientSide && getAnimation() == NO_ANIMATION) {
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, LAND_ANIMATION);
