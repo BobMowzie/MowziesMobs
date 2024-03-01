@@ -243,7 +243,7 @@ public final class ConfigHandler {
             builder.push("foliaath");
             spawnConfig = new SpawnConfig(builder,
                     70, 1, 4, 1,
-                    new BiomeConfig(builder, Collections.singletonList("JUNGLE"), new ArrayList<>(), new ArrayList<>()),
+                    new BiomeConfig(builder, Collections.singletonList("minecraft:is_jungle"), new ArrayList<>(), new ArrayList<>()),
                     Collections.emptyList(),
                     Arrays.asList("minecraft:valid_spawn", "minecraft:leaves", "minecraft:logs"),
                     -65, 60, true, false, false,
@@ -265,7 +265,7 @@ public final class ConfigHandler {
             builder.comment("Controls spawning for Umvuthana hunting groups", "Group size controls how many raptors spawn, not followers", "See Umvuthi config for grove structure controls");
             spawnConfig = new SpawnConfig(builder,
                     5, 1, 1, 1,
-                    new BiomeConfig(builder, Collections.singletonList("SAVANNA"), new ArrayList<>(), new ArrayList<>()),
+                    new BiomeConfig(builder, Collections.singletonList("minecraft:is_savanna"), new ArrayList<>(), new ArrayList<>()),
                     Collections.emptyList(),
                     Arrays.asList("minecraft:valid_spawn", "minecraft:sand"),
                     -65, 60, false, false, false,
@@ -285,7 +285,7 @@ public final class ConfigHandler {
             builder.push("naga");
             spawnConfig = new SpawnConfig(builder,
                     15, 2, 4, 1,
-                    new BiomeConfig(builder, Arrays.asList("BEACH,MOUNTAIN", "BEACH,HILLS"), Collections.singletonList("minecraft:stony_shore"), new ArrayList<>()),
+                    new BiomeConfig(builder, Arrays.asList("minecraft:is_beach,minecraft:is_mountain", "minecraft:is_beach,minecraft:is_hill"), Collections.singletonList("minecraft:stony_shore"), new ArrayList<>()),
                     Collections.emptyList(),
                     Collections.emptyList(),
                     -65, 70, false, true, false,
@@ -305,7 +305,7 @@ public final class ConfigHandler {
             builder.push("lantern");
             spawnConfig = new SpawnConfig(builder,
                     5, 2, 4, 1,
-                    new BiomeConfig(builder, Collections.singletonList("FOREST,MAGICAL,!SNOWY"), Collections.singletonList("minecraft:dark_forest"), new ArrayList<>()),
+                    new BiomeConfig(builder, Collections.singletonList("minecraft:is_forest,forge:is_magical,!forge:is_snowy"), Collections.singletonList("minecraft:dark_forest"), new ArrayList<>()),
                     Collections.emptyList(),
                     Arrays.asList("minecraft:valid_spawn", "minecraft:leaves", "minecraft:logs"),
                     -65, 60, true, false, false,
@@ -325,7 +325,7 @@ public final class ConfigHandler {
             builder.push("grottol");
             this.spawnConfig = new SpawnConfig(builder,
                     2, 1, 1, 1,
-                    new BiomeConfig(builder,  Collections.singletonList("!MUSHROOM"), new ArrayList<>(), new ArrayList<>()),
+                    new BiomeConfig(builder,  Collections.singletonList("!forge:is_mushroom"), new ArrayList<>(), new ArrayList<>()),
                     Collections.emptyList(),
                     Collections.singletonList("minecraft:base_stone_overworld"),
                     16, -65, true, false, true,
@@ -344,7 +344,7 @@ public final class ConfigHandler {
         FerrousWroughtnaut(final ForgeConfigSpec.Builder builder) {
             builder.push("ferrous_wroughtnaut");
             generationConfig = new GenerationConfig(builder, 15, 5,
-                    new BiomeConfig(builder, Collections.singletonList("!OCEAN"), new ArrayList<>(), new ArrayList<>()),
+                    new BiomeConfig(builder, Collections.singletonList("!minecraft:is_ocean"), new ArrayList<>(), new ArrayList<>()),
                     20, 50,
                     Collections.emptyList()
             );
@@ -376,7 +376,7 @@ public final class ConfigHandler {
             builder.push("umvuthi");
             builder.comment("Generation controls for Umvuthana Groves");
             generationConfig = new GenerationConfig(builder, 25, 8,
-                    new BiomeConfig(builder, Collections.singletonList("SAVANNA"), new ArrayList<>(), new ArrayList<>()),
+                    new BiomeConfig(builder, Collections.singletonList("minecraft:is_savanna"), new ArrayList<>(), new ArrayList<>()),
                     50, 100,
                     Arrays.asList("minecraft:villages", "minecraft:pillager_outposts")
             );
@@ -418,7 +418,7 @@ public final class ConfigHandler {
         Frostmaw(final ForgeConfigSpec.Builder builder) {
             builder.push("frostmaw");
             generationConfig = new GenerationConfig(builder, 25, 8,
-                    new BiomeConfig(builder, Collections.singletonList("SNOWY,!OCEAN,!RIVER,!BEACH,!FOREST"), new ArrayList<>(), new ArrayList<>()),
+                    new BiomeConfig(builder, Collections.singletonList("forge:is_snowy,!minecraft:is_ocean,!minecraft:is_river,!minecraft:is_beach,!minecraft:is_forest"), new ArrayList<>(), new ArrayList<>()),
                     50, 100,
                     Arrays.asList("minecraft:villages", "minecraft:pillager_outposts")
             );
@@ -455,7 +455,7 @@ public final class ConfigHandler {
         Sculptor(final ForgeConfigSpec.Builder builder) {
             builder.push("sculptor");
             generationConfig = new GenerationConfig(builder, 25, 8,
-                    new BiomeConfig(builder, Collections.singletonList("MOUNTAIN"), new ArrayList<>(), new ArrayList<>()),
+                    new BiomeConfig(builder, Collections.singletonList("minecraft:is_mountain"), new ArrayList<>(), new ArrayList<>()),
                     120, 200,
                     new ArrayList<>()
             );
