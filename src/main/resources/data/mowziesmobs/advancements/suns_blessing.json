@@ -12,7 +12,7 @@
     "hidden": true,
     "frame": "goal"
   },
-  "parent": "mowziesmobs:sneak_village",
+  "parent": "mowziesmobs:sneak_grove",
   "criteria": {
     "get_suns_blessing": {
       "trigger": "minecraft:effects_changed",

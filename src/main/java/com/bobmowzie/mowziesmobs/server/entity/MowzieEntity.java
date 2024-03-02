@@ -332,6 +332,12 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
     public double getAngleBetweenEntities(Entity first, Entity second) {
         return Math.atan2(second.getZ() - first.getZ(), second.getX() - first.getX()) * (180 / Math.PI) + 90;
     }
+    
+    public double getDotProductBodyFacingEntity(Entity second) {
+        Vec3 vecBetween = second.position().subtract(this.position());
+        vecBetween = vecBetween.normalize();
+        return vecBetween.dot(Vec3.directionFromRotation(0, yBodyRot).normalize());
+    }
 
     public List<Player> getPlayersNearby(double distanceX, double distanceY, double distanceZ, double radius) {
         List<Entity> nearbyEntities = level.getEntities(this, getBoundingBox().inflate(distanceX, distanceY, distanceZ));
