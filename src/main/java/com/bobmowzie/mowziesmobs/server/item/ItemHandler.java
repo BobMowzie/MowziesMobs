@@ -111,8 +111,8 @@ public final class ItemHandler {
             new ForgeSpawnEggItem(EntityHandler.NAGA, 0x154850, 0x8dd759, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("naga_spawn_egg"),
 //            new ForgeSpawnEggItem(EntityHandler.SCULPTOR, 0xc4a137, 0xfff5e7, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("sculptor_spawn_egg"),
 
-            new BlockItem(BlockHandler.PAINTED_ACACIA.get(), new Item.Properties()).setRegistryName(BlockHandler.PAINTED_ACACIA.get().getRegistryName()),
-            new BlockItem(BlockHandler.PAINTED_ACACIA_SLAB.get(), new Item.Properties()).setRegistryName(BlockHandler.PAINTED_ACACIA_SLAB.get().getRegistryName()),
+            new BlockItem(BlockHandler.PAINTED_ACACIA.get(), new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.PAINTED_ACACIA.get().getRegistryName()),
+            new BlockItem(BlockHandler.PAINTED_ACACIA_SLAB.get(), new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.PAINTED_ACACIA_SLAB.get().getRegistryName()),
             new BlockItem(BlockHandler.THATCH.get(), new Item.Properties()).setRegistryName(BlockHandler.THATCH.get().getRegistryName()),
 //            new BlockItem(BlockHandler.GONG.get(), new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.GONG.get().getRegistryName()),
 //            new BlockItem(BlockHandler.RAKED_SAND.get(), new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.RAKED_SAND.get().getRegistryName()),
