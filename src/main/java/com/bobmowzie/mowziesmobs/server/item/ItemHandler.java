@@ -151,8 +151,8 @@ public final class ItemHandler {
     	            helper.register("naga_spawn_egg", new ForgeSpawnEggItem(EntityHandler.NAGA, 0x154850, 0x8dd759, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
 //    	            helper.register("sculptor_spawn_egg", new ForgeSpawnEggItem(EntityHandler.SCULPTOR, 0xc4a137, 0xfff5e7, new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
 
-    	            helper.register("painted_acacia", new BlockItem(BlockHandler.PAINTED_ACACIA.get(), new Item.Properties()));
-    	            helper.register("painted_acacia_slab", new BlockItem(BlockHandler.PAINTED_ACACIA_SLAB.get(), new Item.Properties()));
+    	            helper.register("painted_acacia", new BlockItem(BlockHandler.PAINTED_ACACIA.get(), new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
+    	            helper.register("painted_acacia_slab", new BlockItem(BlockHandler.PAINTED_ACACIA_SLAB.get(), new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
     	            helper.register("thatch_block", new BlockItem(BlockHandler.THATCH.get(), new Item.Properties()));
 //    	            helper.register("gong", new BlockItem(BlockHandler.GONG.get(), new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
 //    	            helper.register("raked_sand", new BlockItem(BlockHandler.RAKED_SAND.get(), new Item.Properties().tab(CreativeTabHandler.INSTANCE.creativeTab)));
