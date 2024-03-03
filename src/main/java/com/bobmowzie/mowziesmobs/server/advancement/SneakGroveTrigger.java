@@ -9,10 +9,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.server.level.ServerPlayer;
 
-public class SneakVillageTrigger extends MMTrigger<AbstractCriterionTriggerInstance, SneakVillageTrigger.Listener> {
-    public static final ResourceLocation ID = new ResourceLocation(MowziesMobs.MODID, "sneak_village");
+public class SneakGroveTrigger extends MMTrigger<AbstractCriterionTriggerInstance, SneakGroveTrigger.Listener> {
+    public static final ResourceLocation ID = new ResourceLocation(MowziesMobs.MODID, "sneak_grove");
 
-    public SneakVillageTrigger() {
+    public SneakGroveTrigger() {
     }
 
     @Override
@@ -21,18 +21,18 @@ public class SneakVillageTrigger extends MMTrigger<AbstractCriterionTriggerInsta
     }
 
     @Override
-    public SneakVillageTrigger.Listener createListener(PlayerAdvancements playerAdvancements) {
-        return new SneakVillageTrigger.Listener(playerAdvancements);
+    public SneakGroveTrigger.Listener createListener(PlayerAdvancements playerAdvancements) {
+        return new SneakGroveTrigger.Listener(playerAdvancements);
     }
 
     @Override
     public AbstractCriterionTriggerInstance createInstance(JsonObject object, DeserializationContext conditions) {
         EntityPredicate.Composite player = EntityPredicate.Composite.fromJson(object, "player", conditions);
-        return new SneakVillageTrigger.Instance(player);
+        return new SneakGroveTrigger.Instance(player);
     }
 
     public void trigger(ServerPlayer player) {
-        SneakVillageTrigger.Listener listeners = this.listeners.get(player.getAdvancements());
+        SneakGroveTrigger.Listener listeners = this.listeners.get(player.getAdvancements());
 
         if (listeners != null) {
             listeners.trigger();
@@ -52,7 +52,7 @@ public class SneakVillageTrigger extends MMTrigger<AbstractCriterionTriggerInsta
 
     public static class Instance extends AbstractCriterionTriggerInstance {
         public Instance(EntityPredicate.Composite player) {
-            super(SneakVillageTrigger.ID, player);
+            super(SneakGroveTrigger.ID, player);
         }
     }
 }
