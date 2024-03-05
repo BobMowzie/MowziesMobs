@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.entity.umvuthana;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ai.AvoidProjectilesGoal;
 import com.bobmowzie.mowziesmobs.server.ai.NearestAttackableTargetPredicateGoal;
+import com.bobmowzie.mowziesmobs.server.ai.UmvuthanaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.item.UmvuthanaMask;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import net.minecraft.core.BlockPos;
@@ -16,6 +17,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.monster.AbstractSkeleton;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
@@ -46,7 +49,7 @@ public class EntityUmvuthanaCrane extends EntityUmvuthanaMinion {
         this.goalSelector.addGoal(1, new TeleportToSafeSpotGoal(this));
         this.goalSelector.addGoal(1, new AvoidProjectilesGoal(this, Projectile.class, target -> getActiveAbilityType() == HEAL_ABILITY, 5.0F, 0.8D, 0.6D));
         this.goalSelector.addGoal(4, new HealTargetGoal(this));
-        this.goalSelector.addGoal(6, new AvoidEntityGoal<Player>(this, Player.class, 50.0F, 0.8D, 0.6D, target -> {
+        this.goalSelector.addGoal(6, new AvoidEntityGoal<Player>(this, Player.class, 7.0F, 0.8D, 0.6D, target -> {
             if (target instanceof Player) {
                 if (this.level.getDifficulty() == Difficulty.PEACEFUL) return false;
                 if (getTarget() == target) return true;
@@ -63,11 +66,13 @@ public class EntityUmvuthanaCrane extends EntityUmvuthanaMinion {
                 setMisbehavedPlayerId(null);
             }
         });
+        this.goalSelector.addGoal(6, new AvoidEntityGoal<>(this, Zombie.class, 7.0F, 0.8D, 0.6D));
+        this.goalSelector.addGoal(6, new AvoidEntityGoal<>(this, AbstractSkeleton.class, 7.0F, 0.8D, 0.6D));
     }
 
     @Override
     protected void registerTargetGoals() {
-        super.registerTargetGoals();
+        this.targetSelector.addGoal(3, new UmvuthanaHurtByTargetAI(this));
         this.targetSelector.addGoal(2, new NearestAttackableTargetPredicateGoal<EntityUmvuthi>(this, EntityUmvuthi.class, 0, false, false, TargetingConditions.forNonCombat().range(getAttributeValue(Attributes.FOLLOW_RANGE) * 2).selector(target -> {
             if (!active) return false;
             if (target instanceof Mob) {
@@ -140,7 +145,7 @@ public class EntityUmvuthanaCrane extends EntityUmvuthanaMinion {
             if (!entity.active) return false;
             if (entity.getActiveAbilityType() == TELEPORT_ABILITY) return false;
             if (entity.getTarget() != null && entity.canHeal(entity.getTarget()) && (
-                    (entity.targetDistance >= 0 && entity.targetDistance < 7) || !hasTriedOrSucceededTeleport
+                    (entity.targetDistance >= 0 && entity.targetDistance < 11) || !hasTriedOrSucceededTeleport
             )) {
                 return findTeleportLocation();
             }
