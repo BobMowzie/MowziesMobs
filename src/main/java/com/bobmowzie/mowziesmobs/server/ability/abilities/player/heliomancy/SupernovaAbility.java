@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoFirstPersonRen
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoRenderPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.*;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySuperNova;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
@@ -35,11 +36,6 @@ public class SupernovaAbility extends PlayerAbility {
         super.start();
         getUser().playSound(MMSounds.ENTITY_SUPERNOVA_START.get(), 3f, 1f);
         playAnimation("supernova", false);
-
-        MobEffectInstance sunsBlessingInstance = getUser().getEffect(EffectHandler.SUNS_BLESSING);
-        if (sunsBlessingInstance != null) {
-            getUser().removeEffect(EffectHandler.SUNS_BLESSING);
-        }
 
         if (getLevel().isClientSide) {
             heldItemMainHandVisualOverride = ItemStack.EMPTY;
@@ -113,6 +109,16 @@ public class SupernovaAbility extends PlayerAbility {
             if (!getUser().level.isClientSide) {
                 EntitySuperNova superNova = new EntitySuperNova(EntityHandler.SUPER_NOVA.get(), getUser().level, getUser(), getUser().getX(), getUser().getY() + getUser().getBbHeight()/2f, getUser().getZ());
                 getUser().level.addFreshEntity(superNova);
+
+                MobEffectInstance sunsBlessingInstance = getUser().getEffect(EffectHandler.SUNS_BLESSING);
+                if (sunsBlessingInstance != null) {
+                    int duration = sunsBlessingInstance.getDuration();
+                    getUser().removeEffect(EffectHandler.SUNS_BLESSING);
+                    int supernovaCost = ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.supernovaCost.get() * 60 * 20;
+                    if (duration - supernovaCost > 0) {
+                        getUser().addEffect(new MobEffectInstance(EffectHandler.SUNS_BLESSING, duration - supernovaCost, 0, false, false));
+                    }
+                }
             }
         }
     }

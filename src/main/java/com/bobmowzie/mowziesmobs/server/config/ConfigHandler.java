@@ -627,6 +627,9 @@ public final class ConfigHandler {
             solarBeamCost = builder.comment("Cost in minutes of using the solar beam ability.")
                     .translation(LANG_PREFIX + "solar_beam_cost")
                     .defineInRange("solar_beam_cost", 5, 0, Integer.MAX_VALUE);
+            supernovaCost = builder.comment("Cost in minutes of using the supernova ability.")
+                    .translation(LANG_PREFIX + "supernova_cost")
+                    .defineInRange("supernova_cost", 60, 0, Integer.MAX_VALUE);
             builder.pop();
         }
 
@@ -635,6 +638,8 @@ public final class ConfigHandler {
         public final IntValue effectDuration;
 
         public final IntValue solarBeamCost;
+
+        public final IntValue supernovaCost;
     }
 
     public static class Mobs {

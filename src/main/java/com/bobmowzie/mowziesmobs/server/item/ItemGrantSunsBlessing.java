@@ -35,6 +35,7 @@ public class ItemGrantSunsBlessing extends Item {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
         int effectDuration = ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.effectDuration.get();
         int solarBeamCost = ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.solarBeamCost.get();
+        int supernovaCost = ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.supernovaCost.get();
         tooltip.add(
                 new TranslatableComponent(getDescriptionId() + ".text.0")
                 .append(" " + effectDuration + " ")
@@ -47,6 +48,15 @@ public class ItemGrantSunsBlessing extends Item {
                 .append(" " + solarBeamCost + " ")
                 .append(new TranslatableComponent(getDescriptionId() + ".text.5")).setStyle(ItemHandler.TOOLTIP_STYLE)
         );
-        tooltip.add(new TranslatableComponent(getDescriptionId() + ".text.6").setStyle(ItemHandler.TOOLTIP_STYLE));
+        TranslatableComponent supernovaComponent = new TranslatableComponent(getDescriptionId() + ".text.6");
+        if (supernovaCost >= effectDuration) {
+            supernovaComponent.append(new TranslatableComponent(getDescriptionId() + ".text.7"));
+        }
+        else {
+            supernovaComponent.append(" " + supernovaCost + " minutes");
+        }
+        supernovaComponent.append(new TranslatableComponent(getDescriptionId() + ".text.8"));
+        supernovaComponent.setStyle(ItemHandler.TOOLTIP_STYLE);
+        tooltip.add(supernovaComponent);
     }
 }
