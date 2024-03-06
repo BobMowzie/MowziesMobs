@@ -1131,7 +1131,7 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
 
         @Override
         public boolean damageInterrupts() {
-            return true;
+            return false;
         }
     }
 }

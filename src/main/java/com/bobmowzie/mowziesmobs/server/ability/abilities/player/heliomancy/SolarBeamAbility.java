@@ -34,15 +34,6 @@ public class SolarBeamAbility extends PlayerAbility {
             solarBeam.setHasPlayer(true);
             user.level.addFreshEntity(solarBeam);
             user.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 2, false, false));
-            MobEffectInstance sunsBlessingInstance = user.getEffect(EffectHandler.SUNS_BLESSING.get());
-            if (sunsBlessingInstance != null) {
-                int duration = sunsBlessingInstance.getDuration();
-                user.removeEffect(EffectHandler.SUNS_BLESSING.get());
-                int solarBeamCost = ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.solarBeamCost.get() * 60 * 20;
-                if (duration - solarBeamCost > 0) {
-                    user.addEffect(new MobEffectInstance(EffectHandler.SUNS_BLESSING.get(), duration - solarBeamCost, 0, false, false));
-                }
-            }
 
             this.solarBeam = solarBeam;
         }
@@ -53,6 +44,24 @@ public class SolarBeamAbility extends PlayerAbility {
             firstPersonMainHandDisplay = HandDisplay.FORCE_RENDER;
         }
         playAnimation("solar_beam_charge", false);
+    }
+    
+    @Override
+    protected void beginSection(AbilitySection section) {
+        super.beginSection(section);
+        if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
+            if (!getLevel().isClientSide()) {
+                MobEffectInstance sunsBlessingInstance = getUser().getEffect(EffectHandler.SUNS_BLESSING.get());
+                if (sunsBlessingInstance != null) {
+                    int duration = sunsBlessingInstance.getDuration();
+                    getUser().removeEffect(EffectHandler.SUNS_BLESSING.get());
+                    int solarBeamCost = ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.solarBeamCost.get() * 60 * 20;
+                    if (duration - solarBeamCost > 0) {
+                        getUser().addEffect(new MobEffectInstance(EffectHandler.SUNS_BLESSING.get(), duration - solarBeamCost, 0, false, false));
+                    }
+                }
+            }
+        }
     }
 
     @Override

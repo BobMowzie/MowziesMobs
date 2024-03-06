@@ -1,14 +1,22 @@
 package com.bobmowzie.mowziesmobs.server.ability.abilities.player.heliomancy;
 
+import java.util.List;
+
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoFirstPersonRenderer;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoRenderPlayer;
-import com.bobmowzie.mowziesmobs.server.ability.*;
+import com.bobmowzie.mowziesmobs.server.ability.Ability;
+import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
+import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
+import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
+import com.bobmowzie.mowziesmobs.server.ability.PlayerAbility;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySuperNova;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -17,8 +25,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.List;
 
 public class SupernovaAbility extends PlayerAbility {
     private boolean leftClickDown;
@@ -35,11 +41,6 @@ public class SupernovaAbility extends PlayerAbility {
         super.start();
         getUser().playSound(MMSounds.ENTITY_SUPERNOVA_START.get(), 3f, 1f);
         playAnimation("supernova", false);
-
-        MobEffectInstance sunsBlessingInstance = getUser().getEffect(EffectHandler.SUNS_BLESSING.get());
-        if (sunsBlessingInstance != null) {
-            getUser().removeEffect(EffectHandler.SUNS_BLESSING.get());
-        }
 
         if (getLevel().isClientSide) {
             heldItemMainHandVisualOverride = ItemStack.EMPTY;
@@ -113,6 +114,16 @@ public class SupernovaAbility extends PlayerAbility {
             if (!getUser().level.isClientSide) {
                 EntitySuperNova superNova = new EntitySuperNova(EntityHandler.SUPER_NOVA.get(), getUser().level, getUser(), getUser().getX(), getUser().getY() + getUser().getBbHeight()/2f, getUser().getZ());
                 getUser().level.addFreshEntity(superNova);
+                
+                MobEffectInstance sunsBlessingInstance = getUser().getEffect(EffectHandler.SUNS_BLESSING.get());
+                if (sunsBlessingInstance != null) {
+                    int duration = sunsBlessingInstance.getDuration();
+                    getUser().removeEffect(EffectHandler.SUNS_BLESSING.get());
+                    int supernovaCost = ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.supernovaCost.get() * 60 * 20;
+                    if (duration - supernovaCost > 0) {
+                        getUser().addEffect(new MobEffectInstance(EffectHandler.SUNS_BLESSING.get(), duration - supernovaCost, 0, false, false));
+                    }
+                }
             }
         }
     }

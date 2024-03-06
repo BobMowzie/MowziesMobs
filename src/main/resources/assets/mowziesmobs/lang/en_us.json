@@ -79,7 +79,9 @@
   "item.mowziesmobs.grant_suns_blessing.text.3": "With empty hand, sneak-left-click to do a Solar Flare",
   "item.mowziesmobs.grant_suns_blessing.text.4": "With empty hand, sneak-right-click to fire a Solar Beam (costs",
   "item.mowziesmobs.grant_suns_blessing.text.5": "minutes)",
-  "item.mowziesmobs.grant_suns_blessing.text.6": "With empty hand, sneak, then left and right click at the same time to call a Supernova (costs entire blessing)",
+  "item.mowziesmobs.grant_suns_blessing.text.6": "With empty hand, sneak, then left and right click at the same time to call a Supernova (costs",
+  "item.mowziesmobs.grant_suns_blessing.text.7": " entire blessing",
+  "item.mowziesmobs.grant_suns_blessing.text.8": ")",
 
   "item.mowziesmobs.earth_talisman.text.0": "Creative mode only",
   "item.mowziesmobs.earth_talisman.text.1": "Place in inventory to wield geomancy",
@@ -240,6 +242,7 @@
   "config.mowziesmobs.suns_blessing_attack_multiplier": "Sun's Blessing Attack Damage Multiplier",
   "config.mowziesmobs.suns_blessing_duration": "Sun's Blessing Duration",
   "config.mowziesmobs.solar_beam_cost": "Solar Beam Cost",
+  "config.mowziesmobs.supernova_cost": "Supernova Cost",
   "config.mowziesmobs.earthbore_gauntlet": "Earthbore Gauntlet",
   "config.mowziesmobs.earthbore_gauntlet.tooltip": "",
 
