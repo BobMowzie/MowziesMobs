@@ -71,7 +71,7 @@ public class ConfiguredFeatureHandler {
     public static void registerConfiguredFeatures() {
     	CONFIGURED_WROUGHT_CHAMBER = register(createStructureKey("wrought_chamber"), new WroughtnautChamberStructure(structure(TagHandler.HAS_MOWZIE_STRUCTURE, TerrainAdjustment.NONE)));
         CONFIGURED_UMVUTHANA_GROVE = register(createStructureKey("umvuthana_grove"), new UmvuthanaGroveStructure(structure(TagHandler.HAS_MOWZIE_STRUCTURE, TerrainAdjustment.NONE)));
-        CONFIGURED_FROSTMAW = register(createStructureKey("frostmaw_spawn"), new FrostmawStructure(structure(TagHandler.HAS_MOWZIE_STRUCTURE, TerrainAdjustment.NONE)));
+        CONFIGURED_FROSTMAW = register(createStructureKey("frostmaw_spawn"), new FrostmawStructure(structure(TagHandler.HAS_MOWZIE_STRUCTURE, TerrainAdjustment.BEARD_THIN)));
 //        CONFIGURED_MONASTERY = register(createFeatureKey("monastery"), FeatureHandler.MONASTERY.get().configured(new JigsawConfiguration(PlainVillagePools.START, 0), TagHandler.HAS_MOWZIE_STRUCTURE));
 
         WROUGHT_CHAMBERS = register(createSetKey("wrought_chambers"), CONFIGURED_WROUGHT_CHAMBER, new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.TRIANGULAR, 23217347));
