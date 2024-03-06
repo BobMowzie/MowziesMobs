@@ -1,14 +1,15 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
+import org.apache.commons.lang3.ArrayUtils;
+
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
-import org.apache.commons.lang3.ArrayUtils;
 
 public abstract class MowzieLLibraryEntity extends MowzieEntity implements IAnimatedEntity {
     private int animationTick;

@@ -495,7 +495,7 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
         }
 
         if (entity.getAnimation() != EntityWroughtnaut.ACTIVATE_ANIMATION && entity.getAnimation() != EntityWroughtnaut.DEACTIVATE_ANIMATION) {
-            if (entity.isActive()) {
+            if (entity.isActive() || entity.getAnimation() == EntityWroughtnaut.DIE_ANIMATION) {
                 shoulderLeft.rotateAngleZ -= 0.4;
                 shoulderRight.rotateAngleZ += 0.35;
                 shoulderLeft.rotateAngleY -= 0.3;

@@ -69,6 +69,7 @@ public class EntitySuperNova extends EntityMagicEffect {
             setPos(xo, yo, zo);
             List<LivingEntity> hitList = getEntitiesNearbyCube(LivingEntity.class, scale);
             for (LivingEntity entity : hitList) {
+            	if (caster == entity) continue;
                 if (caster instanceof EntityUmvuthi && entity instanceof LeaderSunstrikeImmune) continue;
                 if (caster.canAttack(entity)) {
                     float damageFire = 4f;

@@ -254,6 +254,8 @@ public class PlayerCapability {
 
         public void tick(TickEvent.PlayerTickEvent event) {
             Player player = event.player;
+            
+            tribeCircleTick++;
 
             prevMotion = player.position().subtract(new Vec3(player.xo, player.yo, player.zo));
             prevTime = time;

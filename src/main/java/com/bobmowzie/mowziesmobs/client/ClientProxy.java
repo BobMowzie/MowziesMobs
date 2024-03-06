@@ -1,13 +1,28 @@
 package com.bobmowzie.mowziesmobs.client;
 
+import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.bobmowzie.mowziesmobs.client.render.entity.FrozenRenderHandler;
-import com.bobmowzie.mowziesmobs.client.sound.*;
+import com.bobmowzie.mowziesmobs.client.sound.BlackPinkSound;
+import com.bobmowzie.mowziesmobs.client.sound.IceBreathSound;
+import com.bobmowzie.mowziesmobs.client.sound.NagaSwoopSound;
+import com.bobmowzie.mowziesmobs.client.sound.SpawnBoulderChargeSound;
+import com.bobmowzie.mowziesmobs.client.sound.SunblockSound;
+import com.bobmowzie.mowziesmobs.client.sound.SunstrikeSound;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityClientEventHandler;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.TerrainParticle;
@@ -29,17 +44,13 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.*;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientProxy extends ServerProxy {
     private static final List<SunblockSound> sunblockSounds = new ArrayList<>();
-    public static final Map<UUID, Pair<ResourceLocation, ResourceLocation>> bossBarResourceLocations = new HashMap<>();
+    public static final Map<UUID, ResourceLocation> bossBarRegistryNames = new HashMap<>();
 
     private Entity referencedMob = null;
-
 
     @Override
     public void init(final IEventBus modbus) {

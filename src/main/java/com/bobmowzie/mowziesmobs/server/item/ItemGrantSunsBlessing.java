@@ -8,6 +8,7 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -36,6 +37,7 @@ public class ItemGrantSunsBlessing extends Item {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
         int effectDuration = ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.effectDuration.get();
         int solarBeamCost = ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.solarBeamCost.get();
+        int supernovaCost = ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.supernovaCost.get();
         tooltip.add(
                 Component.translatable(getDescriptionId() + ".text.0")
                 .append(" " + effectDuration + " ")
@@ -48,6 +50,15 @@ public class ItemGrantSunsBlessing extends Item {
                 .append(" " + solarBeamCost + " ")
                 .append(Component.translatable(getDescriptionId() + ".text.5")).setStyle(ItemHandler.TOOLTIP_STYLE)
         );
-        tooltip.add(Component.translatable(getDescriptionId() + ".text.6").setStyle(ItemHandler.TOOLTIP_STYLE));
+        MutableComponent supernovaComponent = Component.translatable(getDescriptionId() + ".text.6");
+        if (supernovaCost >= effectDuration) {
+            supernovaComponent.append(Component.translatable(getDescriptionId() + ".text.7"));
+        }
+        else {
+            supernovaComponent.append(" " + supernovaCost + " minutes");
+        }
+        supernovaComponent.append(Component.translatable(getDescriptionId() + ".text.8"));
+        supernovaComponent.withStyle(ItemHandler.TOOLTIP_STYLE);
+        tooltip.add(supernovaComponent);
     }
 }

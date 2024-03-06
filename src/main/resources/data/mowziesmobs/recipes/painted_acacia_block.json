@@ -1,23 +1,33 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "minecraft:crafting_shapeless",
 
-  "pattern":
-  [
-    "S",
-    "S"
-  ],
-
-  "key":
-  {
-    "S":
+  "ingredients": [
     {
-      "item": "mowziesmobs:painted_acacia_slab"
+      "item": "minecraft:acacia_planks"
+    },
+    {
+      "item": "minecraft:acacia_planks"
+    },
+    {
+      "item": "minecraft:acacia_planks"
+    },
+    {
+      "item": "minecraft:acacia_planks"
+    },
+    {
+      "item": "minecraft:yellow_dye"
+    },
+    {
+      "item": "minecraft:white_dye"
+    },
+    {
+      "item": "minecraft:cyan_dye"
     }
-  },
+  ],
 
   "result":
   {
     "item": "mowziesmobs:painted_acacia",
-    "count": 1
+    "count": 4
   }
 }

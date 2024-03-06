@@ -31,7 +31,6 @@ import com.bobmowzie.mowziesmobs.server.ai.UseAbilityAI;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
-import com.bobmowzie.mowziesmobs.server.entity.MMBossInfoServer;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieGeckoEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
@@ -256,11 +255,6 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 10.0F));
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, EntityUmvuthana.class, 8.0F));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-    }
-
-    @Override
-    protected MMBossInfoServer makeBossInfo() {
-        return new MMBossInfoServer(this, new ResourceLocation(MowziesMobs.MODID, "textures/gui/boss_bar/umvuthi_bossbar.png"), new ResourceLocation(MowziesMobs.MODID, "textures/gui/boss_bar/umvuthi_bar_overlay.png"));
     }
 
     @Override
@@ -582,6 +576,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
 
     @Override
     public boolean hurt(DamageSource source, float damage) {
+    	if (source == DamageSource.HOT_FLOOR) return false;
         if (hasEffect(EffectHandler.SUNBLOCK.get()) && !source.isBypassInvul()) {
             if (source.getDirectEntity() != null) playSound(MMSounds.ENTITY_WROUGHT_UNDAMAGED.get(), 0.4F, 2);
             return false;
@@ -1184,9 +1179,11 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
                     }
                     entity.level.addFreshEntity(umvuthana);
                     umvuthana.setDeltaMovement(0.7 * Math.sin(-angle * (Math.PI / 180)), 0.5, 0.7 * Math.cos(-angle * (Math.PI / 180)));
-                    umvuthana.setTarget(entity.getTarget());
-                    if (entity.getTarget() instanceof Player) {
-                        umvuthana.setMisbehavedPlayerId(entity.getTarget().getUUID());
+                    if (!spawnSunblockers) {
+                        umvuthana.setTarget(entity.getTarget());
+                        if (entity.getTarget() instanceof Player) {
+                            umvuthana.setMisbehavedPlayerId(entity.getTarget().getUUID());
+                        }
                     }
                 }
             }
@@ -1269,6 +1266,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         );
         private static final ParticleComponent.KeyTrack superNovaKeyTrack2 = ParticleComponent.KeyTrack.oscillate(0, 7, 24);
 
+        @OnlyIn(Dist.CLIENT)
         public static void superNovaEffects(Ability activeAbility, Vec3[] pinLocation, Level level) {
             // Darken sky
             Player clientPlayer = Minecraft.getInstance().player;

@@ -16,6 +16,9 @@ public class DamageUtil {
     // TODO: Works for current use cases, but possibly not for future edge cases. Use reflection to get hurt sound for onHit2?
     public static Pair<Boolean, Boolean> dealMixedDamage(LivingEntity target, DamageSource source1, float amount1, DamageSource source2, float amount2) {
         if (target.level.isClientSide()) return Pair.of(false, false);
+        boolean flag1 = source1.getEntity() != null && target.isAlliedTo(source1.getEntity());
+        boolean flag2 = source2.getEntity() != null && target.isAlliedTo(source2.getEntity());
+        if(flag1 || flag2) return Pair.of(false, false);
         LivingCapability.ILivingCapability lastDamageCapability = CapabilityHandler.getCapability(target, CapabilityHandler.LIVING_CAPABILITY);
         if (lastDamageCapability != null) {
             lastDamageCapability.setLastDamage(-1);
