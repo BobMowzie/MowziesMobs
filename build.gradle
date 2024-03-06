@@ -15,7 +15,7 @@ apply plugin: "eclipse"
 apply plugin: "maven-publish"
 apply plugin: "net.minecraftforge.gradle"
 
-version = "1.6.1"
+version = "1.6.2"
 group = "com.bobmowzie.mowziesmobs"
 archivesBaseName = "mowziesmobs"
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
