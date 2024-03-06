@@ -518,9 +518,9 @@ public final class ConfigHandler {
         public final BooleanValue breakable;
     }
 
-    public static class BarakoaMask {
-        BarakoaMask(final ForgeConfigSpec.Builder builder) {
-            builder.push("barakoa_mask");
+    public static class UmvuthanaMask {
+        UmvuthanaMask(final ForgeConfigSpec.Builder builder) {
+            builder.push("umvuthana_mask");
             armorConfig = new ArmorConfig(builder, ArmorMaterials.LEATHER.getDefenseForSlot(EquipmentSlot.HEAD), ArmorMaterials.LEATHER.getToughness());
             builder.pop();
         }
@@ -577,9 +577,9 @@ public final class ConfigHandler {
         public final ToolConfig toolConfig;
     }
 
-    public static class BarakoaSpear {
-        BarakoaSpear(final ForgeConfigSpec.Builder builder) {
-            builder.push("barakoa_spear");
+    public static class Spear {
+        Spear(final ForgeConfigSpec.Builder builder) {
+            builder.push("spear");
             toolConfig = new ToolConfig(builder, 5, 1.6f);
             builder.pop();
         }
@@ -695,8 +695,8 @@ public final class ConfigHandler {
             AXE_OF_A_THOUSAND_METALS = new AxeOfAThousandMetals(builder);
             SOL_VISAGE = new SolVisage(builder);
             ICE_CRYSTAL = new IceCrystal(builder);
-            UMVUTHANA_MASK = new BarakoaMask(builder);
-            SPEAR = new BarakoaSpear(builder);
+            UMVUTHANA_MASK = new UmvuthanaMask(builder);
+            SPEAR = new Spear(builder);
             NAGA_FANG_DAGGER = new NagaFangDagger(builder);
             BLOW_GUN = new Blowgun(builder);
             EARTHBORE_GAUNTLET = new EarthboreGauntlet(builder);
@@ -715,9 +715,9 @@ public final class ConfigHandler {
 
         public final IceCrystal ICE_CRYSTAL;
 
-        public final BarakoaMask UMVUTHANA_MASK;
+        public final UmvuthanaMask UMVUTHANA_MASK;
 
-        public final BarakoaSpear SPEAR;
+        public final Spear SPEAR;
 
         public final NagaFangDagger NAGA_FANG_DAGGER;
 
