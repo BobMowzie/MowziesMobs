@@ -28,12 +28,12 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilde
 
 public abstract class MowzieStructure extends Structure {
     private final ConfigHandler.GenerationConfig config;
-    private Set<TagKey<Biome>> allowedBiomes;
+    private Set<Holder<Biome>> allowedBiomes;
     private boolean doCheckHeight;
     private boolean doAvoidWater;
     private boolean doAvoidStructures;
 
-    public MowzieStructure(Structure.StructureSettings settings, ConfigHandler.GenerationConfig config, Set<TagKey<Biome>> allowedBiomes, boolean doCheckHeight, boolean doAvoidWater, boolean doAvoidStructures) {
+    public MowzieStructure(Structure.StructureSettings settings, ConfigHandler.GenerationConfig config, Set<Holder<Biome>> allowedBiomes, boolean doCheckHeight, boolean doAvoidWater, boolean doAvoidStructures) {
         super(settings);
         this.config = config;
         this.allowedBiomes = allowedBiomes;
@@ -42,7 +42,7 @@ public abstract class MowzieStructure extends Structure {
         this.doAvoidStructures = doAvoidStructures;
     }
 
-    public MowzieStructure(Structure.StructureSettings settings, ConfigHandler.GenerationConfig config, Set<TagKey<Biome>> allowedBiomes) {
+    public MowzieStructure(Structure.StructureSettings settings, ConfigHandler.GenerationConfig config, Set<Holder<Biome>> allowedBiomes) {
         this(settings, config, allowedBiomes, true, true, true);
     }
 
@@ -69,7 +69,7 @@ public abstract class MowzieStructure extends Structure {
     	return this.checkLocation(context, config, allowedBiomes, doCheckHeight, doAvoidWater, doAvoidStructures);
     }
 
-    protected boolean checkLocation(GenerationContext context, ConfigHandler.GenerationConfig config, Set<TagKey<Biome>> allowedBiomes, boolean checkHeight, boolean avoidWater, boolean avoidStructures) {
+    protected boolean checkLocation(GenerationContext context, ConfigHandler.GenerationConfig config, Set<Holder<Biome>> allowedBiomes, boolean checkHeight, boolean avoidWater, boolean avoidStructures) {
         if (config.generationDistance.get() < 0) {
             return false;
         }
@@ -81,10 +81,8 @@ public abstract class MowzieStructure extends Structure {
         int j = chunkPos.getMiddleBlockZ();
         int k = context.chunkGenerator().getFirstOccupiedHeight(i, j, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor(), context.randomState());
         Holder<Biome> biome = context.chunkGenerator().getBiomeSource().getNoiseBiome(QuartPos.fromBlock(i), QuartPos.fromBlock(k), QuartPos.fromBlock(j), context.randomState().sampler());
-        for(TagKey<Biome> allowed : allowedBiomes) {
-            if (!biome.is(allowed) && !allowedBiomes.containsAll(biome.tags().toList())) {
-            	return false;
-            }
+        if (!allowedBiomes.contains(biome)) {
+            return false;
         }
 
         if (checkHeight) {

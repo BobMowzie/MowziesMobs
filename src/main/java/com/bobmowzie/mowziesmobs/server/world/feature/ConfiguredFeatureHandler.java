@@ -42,10 +42,14 @@ public class ConfiguredFeatureHandler {
     public static Holder<StructureSet> FROSTMAWS;
     public static Holder<StructureSet> MONASTERIES;
 
-    public static final Set<TagKey<Biome>> FERROUS_WROUGHTNAUT_BIOMES = new HashSet<>();
-    public static final Set<TagKey<Biome>> UMVUTHI_BIOMES = new HashSet<>();
-    public static final Set<TagKey<Biome>> FROSTMAW_BIOMES = new HashSet<>();
-    public static final Set<TagKey<Biome>> SCULPTOR_BIOMES = new HashSet<>();
+    public static BiomeChecker FERROUS_WROUGHTNAUT_BIOME_CHECKER;
+    public static final Set<Holder<Biome>> FERROUS_WROUGHTNAUT_BIOMES = new HashSet<>();
+    public static BiomeChecker UMVUTHI_BIOME_CHECKER;
+    public static final Set<Holder<Biome>> UMVUTHI_BIOMES = new HashSet<>();
+    public static BiomeChecker FROSTMAW_BIOME_CHECKER;
+    public static final Set<Holder<Biome>> FROSTMAW_BIOMES = new HashSet<>();
+    public static BiomeChecker SCULPTOR_BIOME_CHECKER;
+    public static final Set<Holder<Biome>> SCULPTOR_BIOMES = new HashSet<>();
 
     private static ResourceKey<Structure> createStructureKey(String name) {
         return ResourceKey.create(Registry.STRUCTURE_REGISTRY, new ResourceLocation(MowziesMobs.MODID, name));
@@ -67,7 +71,6 @@ public class ConfiguredFeatureHandler {
         return register(key, new StructureSet(configuredFeature, placement));
     }
 
-    //TODO idk if TerrainAdjustment.NONE is correct
     public static void registerConfiguredFeatures() {
     	CONFIGURED_WROUGHT_CHAMBER = register(createStructureKey("wrought_chamber"), new WroughtnautChamberStructure(structure(TagHandler.HAS_MOWZIE_STRUCTURE, TerrainAdjustment.NONE)));
         CONFIGURED_UMVUTHANA_GROVE = register(createStructureKey("umvuthana_grove"), new UmvuthanaGroveStructure(structure(TagHandler.HAS_MOWZIE_STRUCTURE, TerrainAdjustment.NONE)));
@@ -93,23 +96,28 @@ public class ConfiguredFeatureHandler {
     }
 
     public static void addBiomeSpawns(Holder<Biome> biomeKey) {
-    	for(TagKey<Biome> biome : biomeKey.tags().toList()) {
-	        if (ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig.generationDistance.get() >= 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig.biomeConfig, biome)) {
-	        	//System.out.println("Added Ferrous Wroughtnaut biome: " + biomeName.toString());
-	            FERROUS_WROUGHTNAUT_BIOMES.add(biome);
-	        }
-	        if (ConfigHandler.COMMON.MOBS.UMVUTHI.generationConfig.generationDistance.get() >= 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.UMVUTHI.generationConfig.biomeConfig, biome)) {
-	        	//System.out.println("Added Barako biome: " + biomeName.toString());
-	            UMVUTHI_BIOMES.add(biome);
-	        }
-	        if (ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig.generationDistance.get() >= 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig.biomeConfig, biome)) {
-	        	//System.out.println("Added frostmaw biome: " + biomeName.toString());
-	            FROSTMAW_BIOMES.add(biome);
-	        }
-	        /*if (ConfigHandler.COMMON.MOBS.SCULPTOR.generationConfig.generationDistance.get() >= 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.SCULPTOR.generationConfig.biomeConfig, biome)) {
-	            //System.out.println("Added frostmaw biome: " + biomeName.toString());
-	            SCULPTOR_BIOMES.add(biomeName);
-	        }*/
-    	}
+        if (FERROUS_WROUGHTNAUT_BIOME_CHECKER == null) FERROUS_WROUGHTNAUT_BIOME_CHECKER = new BiomeChecker(ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig.biomeConfig);
+        if (ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig.generationDistance.get() >= 0 && FERROUS_WROUGHTNAUT_BIOME_CHECKER.isBiomeInConfig(biomeKey)) {
+            //System.out.println("Added Ferrous Wroughtnaut biome: " + biomeName.toString());
+            FERROUS_WROUGHTNAUT_BIOMES.add(biomeKey);
+        }
+
+        if (UMVUTHI_BIOME_CHECKER == null) UMVUTHI_BIOME_CHECKER = new BiomeChecker(ConfigHandler.COMMON.MOBS.UMVUTHI.generationConfig.biomeConfig);
+        if (ConfigHandler.COMMON.MOBS.UMVUTHI.generationConfig.generationDistance.get() >= 0 && UMVUTHI_BIOME_CHECKER.isBiomeInConfig(biomeKey)) {
+            //System.out.println("Added Barako biome: " + biomeName.toString());
+            UMVUTHI_BIOMES.add(biomeKey);
+        }
+
+        if (FROSTMAW_BIOME_CHECKER == null) FROSTMAW_BIOME_CHECKER = new BiomeChecker(ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig.biomeConfig);
+        if (ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig.generationDistance.get() >= 0 && FROSTMAW_BIOME_CHECKER.isBiomeInConfig(biomeKey)) {
+            //System.out.println("Added frostmaw biome: " + biomeName.toString());
+            FROSTMAW_BIOMES.add(biomeKey);
+        }
+
+        /*if (SCULPTOR_BIOME_CHECKER == null) SCULPTOR_BIOME_CHECKER = new BiomeChecker(ConfigHandler.COMMON.MOBS.SCULPTOR.generationConfig.biomeConfig);
+        if (ConfigHandler.COMMON.MOBS.SCULPTOR.generationConfig.generationDistance.get() >= 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.SCULPTOR.generationConfig.biomeConfig, biomeKey)) {
+            //System.out.println("Added frostmaw biome: " + biomeName.toString());
+            SCULPTOR_BIOMES.add(biomeKey.get());
+        }*/
     }
 }

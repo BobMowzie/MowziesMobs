@@ -9,6 +9,7 @@ import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -34,7 +35,18 @@ public final class ConfigHandler {
     public static ForgeConfigSpec CLIENT_CONFIG;
 
     private static final Predicate<Object> STRING_PREDICATE = s -> s instanceof String;
-    private static final Predicate<Object> ITEM_NAME_PREDICATE = STRING_PREDICATE.and(s -> ForgeRegistries.ITEMS.containsKey(new ResourceLocation((String)s)));
+    private static final Predicate<Object> RESOURCE_LOCATION_PREDICATE = STRING_PREDICATE.and(s -> ResourceLocation.isValidResourceLocation((String) s));
+    private static final Predicate<Object> BIOME_COMBO_PREDICATE = STRING_PREDICATE.and(s -> {
+        String bigString = (String) s;
+        String[] typeStrings = bigString.replace(" ", "").split("[,!]");
+        for (String string : typeStrings) {
+            if (!RESOURCE_LOCATION_PREDICATE.test(string)) {
+                return false;
+            }
+        }
+        return true;
+    });
+    private static final Predicate<Object> ITEM_NAME_PREDICATE = RESOURCE_LOCATION_PREDICATE.and(s -> ForgeRegistries.ITEMS.containsKey(new ResourceLocation((String) s)));
 
     static {
         COMMON = new Common(COMMON_BUILDER);
@@ -46,22 +58,22 @@ public final class ConfigHandler {
 
     // Config templates
     public static class BiomeConfig {
-        BiomeConfig(final ForgeConfigSpec.Builder builder, List<? extends String> biomeTypes, List<? extends String> biomeWhitelist, List<? extends String> biomeBlacklist) {
+        BiomeConfig(final ForgeConfigSpec.Builder builder, List<? extends String> biomeTags, List<? extends String> biomeWhitelist, List<? extends String> biomeBlacklist) {
             builder.push("biome_config");
             builder.comment("Mowzie's Mobs bosses cannot generate in modded or non-overworld biomes unless the biome is added to the 'has_structure/has_mowzie_structure' tag via a datapack!");
-            this.biomeTypes = builder.comment("Each entry is a combination of allowed biome types.", "Separate types with commas to require biomes to have all types in an entry", "Put a '!' before a biome type to mean NOT that type", "A blank entry means all biomes. No entries means no biomes.", "For example, 'FOREST,MAGICAL,!SNOWY' would mean all biomes that are magical forests but not snowy", "'!MOUNTAIN' would mean all non-mountain biomes")
-                    .translation(LANG_PREFIX + "biome_type")
-                    .defineList("biome_type", biomeTypes, STRING_PREDICATE);
-            this.biomeWhitelist = builder.comment("Allow spawns in these biomes regardless of the biome type settings")
+            this.biomeTags = builder.comment("Each entry is a combination of allowed biome tags or biome names.", "Separate types with commas to require biomes to have all tags in an entry", "Put a '!' before a biome tag to mean NOT that tag", "A blank entry means all biomes. No entries means no biomes.", "For example, 'minecraft:is_forest,forge:is_spooky,!forge:is_snowy' would mean all biomes that are spooky forests but not snowy forests", "'!minecraft:is_mountain' would mean all non-mountain biomes")
+                    .translation(LANG_PREFIX + "biome_tags")
+                    .defineList("biome_tags", biomeTags, BIOME_COMBO_PREDICATE);
+            this.biomeWhitelist = builder.comment("Allow spawns in these biomes regardless of the biome tag settings")
                     .translation(LANG_PREFIX + "biome_whitelist")
-                    .defineList("biome_whitelist", biomeWhitelist, STRING_PREDICATE);
-            this.biomeBlacklist = builder.comment("Prevent spawns in these biomes regardless of the biome type settings")
+                    .defineList("biome_whitelist", biomeWhitelist, BIOME_COMBO_PREDICATE);
+            this.biomeBlacklist = builder.comment("Prevent spawns in these biomes regardless of the biome tag settings")
                     .translation(LANG_PREFIX + "biome_blacklist")
-                    .defineList("biome_blacklist", biomeBlacklist, STRING_PREDICATE);
+                    .defineList("biome_blacklist", biomeBlacklist, BIOME_COMBO_PREDICATE);
             builder.pop();
         }
 
-        public final ConfigValue<List<? extends String>> biomeTypes;
+        public final ConfigValue<List<? extends String>> biomeTags;
 
         public final ConfigValue<List<? extends String>> biomeWhitelist;
 
@@ -243,7 +255,7 @@ public final class ConfigHandler {
             builder.push("foliaath");
             spawnConfig = new SpawnConfig(builder,
                     70, 1, 4, 1,
-                    new BiomeConfig(builder, Collections.singletonList("minecraft:is_jungle"), new ArrayList<>(), new ArrayList<>()),
+                    new BiomeConfig(builder, Collections.singletonList("minecraft:is_jungle"), Collections.emptyList(), Collections.emptyList()),
                     Collections.emptyList(),
                     Arrays.asList("minecraft:valid_spawn", "minecraft:leaves", "minecraft:logs"),
                     -65, 60, true, false, false,
@@ -265,7 +277,7 @@ public final class ConfigHandler {
             builder.comment("Controls spawning for Umvuthana hunting groups", "Group size controls how many raptors spawn, not followers", "See Umvuthi config for grove structure controls");
             spawnConfig = new SpawnConfig(builder,
                     5, 1, 1, 1,
-                    new BiomeConfig(builder, Collections.singletonList("minecraft:is_savanna"), new ArrayList<>(), new ArrayList<>()),
+                    new BiomeConfig(builder, Collections.singletonList("minecraft:is_savanna"), Collections.emptyList(), Collections.emptyList()),
                     Collections.emptyList(),
                     Arrays.asList("minecraft:valid_spawn", "minecraft:sand"),
                     -65, 60, false, false, false,
@@ -285,7 +297,7 @@ public final class ConfigHandler {
             builder.push("naga");
             spawnConfig = new SpawnConfig(builder,
                     15, 2, 4, 1,
-                    new BiomeConfig(builder, Arrays.asList("minecraft:is_beach,minecraft:is_mountain", "minecraft:is_beach,minecraft:is_hill"), Collections.singletonList("minecraft:stony_shore"), new ArrayList<>()),
+                    new BiomeConfig(builder, Arrays.asList("minecraft:is_beach,minecraft:is_mountain", "minecraft:is_beach,minecraft:is_hill"), Collections.singletonList("minecraft:stony_shore"), Collections.emptyList()),
                     Collections.emptyList(),
                     Collections.emptyList(),
                     -65, 70, false, true, false,
@@ -305,7 +317,7 @@ public final class ConfigHandler {
             builder.push("lantern");
             spawnConfig = new SpawnConfig(builder,
                     5, 2, 4, 1,
-                    new BiomeConfig(builder, Collections.singletonList("minecraft:is_forest,forge:is_magical,!forge:is_snowy"), Collections.singletonList("minecraft:dark_forest"), new ArrayList<>()),
+                    new BiomeConfig(builder, Collections.singletonList("minecraft:is_forest,mowziesmobs:is_magical,!forge:is_snowy"), Collections.emptyList(), Collections.emptyList()),
                     Collections.emptyList(),
                     Arrays.asList("minecraft:valid_spawn", "minecraft:leaves", "minecraft:logs"),
                     -65, 60, true, false, false,
@@ -325,7 +337,7 @@ public final class ConfigHandler {
             builder.push("grottol");
             this.spawnConfig = new SpawnConfig(builder,
                     2, 1, 1, 1,
-                    new BiomeConfig(builder,  Collections.singletonList("!forge:is_mushroom"), new ArrayList<>(), new ArrayList<>()),
+                    new BiomeConfig(builder,  Collections.singletonList("!forge:is_mushroom"), Collections.emptyList(), Collections.emptyList()),
                     Collections.emptyList(),
                     Collections.singletonList("minecraft:base_stone_overworld"),
                     16, -65, true, false, true,
@@ -344,7 +356,7 @@ public final class ConfigHandler {
         FerrousWroughtnaut(final ForgeConfigSpec.Builder builder) {
             builder.push("ferrous_wroughtnaut");
             generationConfig = new GenerationConfig(builder, 15, 5,
-                    new BiomeConfig(builder, Collections.singletonList("!minecraft:is_ocean"), new ArrayList<>(), new ArrayList<>()),
+                    new BiomeConfig(builder, Collections.singletonList("!minecraft:is_ocean"), Collections.emptyList(), Collections.emptyList()),
                     20, 50,
                     Collections.emptyList()
             );
@@ -376,7 +388,7 @@ public final class ConfigHandler {
             builder.push("umvuthi");
             builder.comment("Generation controls for Umvuthana Groves");
             generationConfig = new GenerationConfig(builder, 25, 8,
-                    new BiomeConfig(builder, Collections.singletonList("minecraft:is_savanna"), new ArrayList<>(), new ArrayList<>()),
+                    new BiomeConfig(builder, Collections.singletonList("minecraft:is_savanna"), Collections.emptyList(), Collections.emptyList()),
                     50, 100,
                     Arrays.asList("minecraft:villages", "minecraft:pillager_outposts")
             );
@@ -418,7 +430,7 @@ public final class ConfigHandler {
         Frostmaw(final ForgeConfigSpec.Builder builder) {
             builder.push("frostmaw");
             generationConfig = new GenerationConfig(builder, 25, 8,
-                    new BiomeConfig(builder, Collections.singletonList("forge:is_snowy,!minecraft:is_ocean,!minecraft:is_river,!minecraft:is_beach,!minecraft:is_forest"), new ArrayList<>(), new ArrayList<>()),
+                    new BiomeConfig(builder, Collections.singletonList("forge:is_snowy,!minecraft:is_ocean,!minecraft:is_river,!minecraft:is_beach,!minecraft:is_forest,!minecraft:is_taiga"), Collections.emptyList(), Collections.emptyList()),
                     50, 100,
                     Arrays.asList("minecraft:villages", "minecraft:pillager_outposts")
             );
@@ -455,9 +467,9 @@ public final class ConfigHandler {
         Sculptor(final ForgeConfigSpec.Builder builder) {
             builder.push("sculptor");
             generationConfig = new GenerationConfig(builder, 25, 8,
-                    new BiomeConfig(builder, Collections.singletonList("minecraft:is_mountain"), new ArrayList<>(), new ArrayList<>()),
+                    new BiomeConfig(builder, Collections.singletonList("minecraft:is_mountain"), Collections.emptyList(), Collections.emptyList()),
                     120, 200,
-                    new ArrayList<>()
+                    Collections.emptyList()
             );
             combatConfig = new CombatConfig(builder, 1, 1);
             this.healsOutOfBattle = builder.comment("Disable/enable the Sculptor healing while not in combat")

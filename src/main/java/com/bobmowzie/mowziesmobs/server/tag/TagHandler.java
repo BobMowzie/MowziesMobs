@@ -15,4 +15,5 @@ public class TagHandler {
 
 
     public static final TagKey<Biome> HAS_MOWZIE_STRUCTURE = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "has_structure/has_mowzie_structure"));
+    public static final TagKey<Biome> IS_MAGICAL = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(MowziesMobs.MODID, "is_magical"));
 }
