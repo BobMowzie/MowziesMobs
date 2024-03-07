@@ -192,7 +192,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
 
     //FIXME according to spark, this method cause huge tps lag
     public void damageEntityLivingBaseNearby(double radius) {
-        AABB region = new AABB(getX() - radius, getY() - 0.5, getZ() - radius, getX() + radius, this.level.getMaxBuildHeight(), getZ() + radius);
+        AABB region = new AABB(getX() - radius, getY() - 0.5, getZ() - radius, getX() + radius, this.level.getMaxBuildHeight() + 20, getZ() + radius);
         List<Entity> entities = level.getEntities(this, region);
         double radiusSq = radius * radius;
         for (Entity entity : entities) {
