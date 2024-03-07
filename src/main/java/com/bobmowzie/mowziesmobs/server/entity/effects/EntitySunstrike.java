@@ -191,7 +191,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     }
 
     public void damageEntityLivingBaseNearby(double radius) {
-        AABB region = new AABB(getX() - radius, getY() - 0.5, getZ() - radius, getX() + radius, Double.POSITIVE_INFINITY, getZ() + radius);
+        AABB region = new AABB(getX() - radius, getY() - 0.5, getZ() - radius, getX() + radius, level.getMaxBuildHeight() + 20, getZ() + radius);
         List<Entity> entities = level.getEntities(this, region);
         double radiusSq = radius * radius;
         for (Entity entity : entities) {
