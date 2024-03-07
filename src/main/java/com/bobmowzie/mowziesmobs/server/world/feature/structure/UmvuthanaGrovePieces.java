@@ -61,7 +61,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import net.minecraft.world.level.material.FluidState;
 
 public class UmvuthanaGrovePieces {
-    private static final Set<Block> BLOCKS_NEEDING_POSTPROCESSING = ImmutableSet.<Block>builder().add(Blocks.NETHER_BRICK_FENCE).add(Blocks.TORCH).add(Blocks.WALL_TORCH).add(Blocks.OAK_FENCE).add(Blocks.SPRUCE_FENCE).add(Blocks.DARK_OAK_FENCE).add(Blocks.ACACIA_FENCE).add(Blocks.BIRCH_FENCE).add(Blocks.JUNGLE_FENCE).add(Blocks.LADDER).add(Blocks.SKELETON_SKULL).build();
+    private static final Set<Block> BLOCKS_NEEDING_POSTPROCESSING = ImmutableSet.<Block>builder().add(Blocks.NETHER_BRICK_FENCE).add(Blocks.TORCH).add(Blocks.WALL_TORCH).add(Blocks.OAK_FENCE).add(Blocks.SPRUCE_FENCE).add(Blocks.DARK_OAK_FENCE).add(Blocks.ACACIA_FENCE).add(Blocks.BIRCH_FENCE).add(Blocks.JUNGLE_FENCE).add(Blocks.MANGROVE_FENCE).add(Blocks.LADDER).add(Blocks.SKELETON_SKULL).build();
 
     public static final ResourceLocation PLATFORM_1 = new ResourceLocation(MowziesMobs.MODID, "umvuthana/umvuthana_platform_1");
     public static final ResourceLocation PLATFORM_2 = new ResourceLocation(MowziesMobs.MODID, "umvuthana/umvuthana_platform_2");
@@ -269,7 +269,7 @@ public class UmvuthanaGrovePieces {
                 fillAirLiquidDownTrunk(worldIn, pos, rand);
             }
             else if (function.equals("leg")) {
-                fillAirLiquidDown(worldIn, Blocks.STRIPPED_SPRUCE_LOG.defaultBlockState(), pos);
+                fillAirLiquidDown(worldIn, Blocks.STRIPPED_MANGROVE_LOG.defaultBlockState(), pos);
             }
             else if (function.equals("base")) {
                 fillAirLiquidDownBase(worldIn, pos, rand);
@@ -416,7 +416,7 @@ public class UmvuthanaGrovePieces {
             int k = startPos.getZ();
             while(!Block.canSupportRigidBlock(worldIn, new BlockPos(i, j, k)) && j > 1) {
                 BlockPos pos = new BlockPos(i, j, k);
-                setBlockState(worldIn, pos, rand.nextFloat() < 0.5 ? Blocks.STRIPPED_SPRUCE_LOG.defaultBlockState() : Blocks.LIGHT_GRAY_TERRACOTTA.defaultBlockState());
+                setBlockState(worldIn, pos, rand.nextFloat() < 0.5 ? Blocks.STRIPPED_MANGROVE_LOG.defaultBlockState() : Blocks.RED_TERRACOTTA.defaultBlockState());
                 --j;
             }
         }
@@ -435,7 +435,7 @@ public class UmvuthanaGrovePieces {
                 }
             }
             pos = pos.relative(direction.getOpposite());
-            fillAirLiquidDown(worldIn, Blocks.STRIPPED_SPRUCE_LOG.defaultBlockState(), pos);
+            fillAirLiquidDown(worldIn, Blocks.STRIPPED_MANGROVE_LOG.defaultBlockState(), pos);
             fillAirLiquidDown(worldIn, Blocks.LADDER.defaultBlockState().setValue(LadderBlock.FACING, direction), pos.relative(direction));
         }
 
@@ -443,11 +443,11 @@ public class UmvuthanaGrovePieces {
             int groundPos = worldIn.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, startPos.getX(), startPos.getZ());
             BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(startPos.getX(), groundPos - 1, startPos.getZ());
             for (int i = 0; i < numLogs; i++) {
-                setBlockState(worldIn, pos, Blocks.STRIPPED_SPRUCE_LOG.defaultBlockState());
+                setBlockState(worldIn, pos, Blocks.STRIPPED_MANGROVE_LOG.defaultBlockState());
                 pos.move(Direction.UP);
             }
             for (int i = 0; i < numFence; i++) {
-                setBlockState(worldIn, pos, Blocks.SPRUCE_FENCE.defaultBlockState());
+                setBlockState(worldIn, pos, Blocks.MANGROVE_FENCE.defaultBlockState());
                 pos.move(Direction.UP);
             }
             for (int i = 0; i < numBars; i++) {
