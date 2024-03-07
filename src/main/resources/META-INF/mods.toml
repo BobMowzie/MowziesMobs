@@ -4,7 +4,7 @@ loaderVersion="[43,)"
 issueTrackerURL="https://github.com/BobMowzie/MowziesMobs/issues"
 [[mods]]
     modId="mowziesmobs"
-    version="1.6.2"
+    version="1.6.3"
     displayName="Mowzie's Mobs"
     displayURL="https://www.curseforge.com/minecraft/mc-mods/mowzies-mobs"
     authors="BobMowzie, Wadoo, Vakypanda, Noonyez, pau101"
