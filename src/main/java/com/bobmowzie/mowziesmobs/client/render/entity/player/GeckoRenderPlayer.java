@@ -72,6 +72,8 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
     public Vec3 betweenHandsPos;
     public Vec3 particleEmitterRoot;
 
+    private boolean isInvisible = false;
+
     public GeckoRenderPlayer(EntityRendererProvider.Context context, boolean slim, ModelGeckoPlayerThirdPerson modelProvider) {
         super(context, slim);
 
@@ -261,7 +263,11 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
         boolean flag = this.isBodyVisible(entityIn);
         boolean flag1 = !flag && !entityIn.isInvisibleTo(minecraft.player);
         boolean flag2 = minecraft.shouldEntityAppearGlowing(entityIn);
+        this.isInvisible = !flag && !flag1 && !flag2;
         RenderType rendertype = this.getRenderType(entityIn, flag, flag1, flag2);
+        if (this.isInvisible) {
+            rendertype = this.model.renderType(getTextureLocation(geckoPlayer));
+        }
         if (rendertype != null) {
             VertexConsumer ivertexbuilder = bufferIn.getBuffer(rendertype);
             int i = getOverlayCoords(entityIn, this.getWhiteOverlayProgress(entityIn, partialTicks));
@@ -441,7 +447,9 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
             while(var10.hasNext()) {
                 GeoCube cube = (GeoCube)var10.next();
                 matrixStack.pushPose();
-                this.renderCube(cube, matrixStack, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                if (!isInvisible) {
+                    this.renderCube(cube, matrixStack, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                }
                 matrixStack.popPose();
             }
 
