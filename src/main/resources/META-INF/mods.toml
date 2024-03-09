@@ -13,18 +13,18 @@ issueTrackerURL="https://github.com/BobMowzie/MowziesMobs/issues"
 [[dependencies.mowziesmobs]]
     modId="forge"
     mandatory=true
-    versionRange="[43.3.0,)"
+    versionRange="[47.2.0,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.mowziesmobs]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19.2,)"
+    versionRange="[1.20.1,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.mowziesmobs]]
     modId="geckolib3"
     mandatory=true
-    versionRange="[3.1.40,)"
+    versionRange="[4.4.2,)"
     ordering="BEFORE"
     side="BOTH"
