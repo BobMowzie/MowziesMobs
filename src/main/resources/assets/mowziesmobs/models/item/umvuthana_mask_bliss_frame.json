@@ -2,5 +2,12 @@
 	"parent": "mowziesmobs:item/umvuthana_mask_frame",
 	"textures": {
 		"layer0": "mowziesmobs:item/umvuthana_mask_bliss"
+	},
+	"display": {
+		"fixed": {
+			"translation": [ 0, -33, 6 ],
+			"rotation": [ 0.0, 0.0, 0.0 ],
+			"scale": [ 1.3, 1.3, 1.3 ]
+		}
 	}
 }
