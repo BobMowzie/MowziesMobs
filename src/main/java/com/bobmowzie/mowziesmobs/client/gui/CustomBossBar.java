@@ -11,7 +11,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.BossEvent;
@@ -111,7 +111,7 @@ public class CustomBossBar {
     }
 
     public void renderBossBar(CustomizeGuiOverlayEvent.BossEventProgress event) {
-        PoseStack stack = event.getPoseStack();
+        GuiGraphics guiGraphics = event.getGuiGraphics();
         int y = event.getY();
         int i = Minecraft.getInstance().getWindow().getGuiScaledWidth();
         int j = y - 9;
@@ -120,30 +120,30 @@ public class CustomBossBar {
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, getBaseTexture());
-        drawBar(stack, event.getX() + 1, y + getBaseOffsetY(), event.getBossEvent());
+        drawBar(guiGraphics, event.getX() + 1, y + getBaseOffsetY(), event.getBossEvent());
         Component component = event.getBossEvent().getName().copy().withStyle(getTextColor());
         Minecraft.getInstance().getProfiler().pop();
 
         int l = Minecraft.getInstance().font.width(component);
         int i1 = i / 2 - l / 2;
         int j1 = j;
-        Minecraft.getInstance().font.drawShadow(stack, component, (float)i1, (float)j1, 16777215);
+        guiGraphics.drawString(Minecraft.getInstance().font, component, i1, j1, 16777215);
 
         if (hasOverlay()) {
             Minecraft.getInstance().getProfiler().push("customBossBarOverlay");
             RenderSystem.setShaderTexture(0, getOverlayTexture());
-            Gui.blit(stack, event.getX() + 1 + getOverlayOffsetX(), y + getOverlayOffsetY() + getBaseOffsetY(), 0, 0, getOverlayWidth(), getOverlayHeight(), getOverlayWidth(), getOverlayHeight());
+            event.getGuiGraphics().blit(getOverlayTexture(), event.getX() + 1 + getOverlayOffsetX(), y + getOverlayOffsetY() + getBaseOffsetY(), 0, 0, getOverlayWidth(), getOverlayHeight(), getOverlayWidth(), getOverlayHeight());
             Minecraft.getInstance().getProfiler().pop();
         }
 
         event.setIncrement(getVerticalIncrement());
     }
 
-    private void drawBar(PoseStack stack, int x, int y, BossEvent event) {
-        GuiComponent.blit(stack, x, y, 0, 0, 182, getBaseHeight(), 256, getBaseTextureHeight());
+    private void drawBar(GuiGraphics guiGraphics, int x, int y, BossEvent event) {
+        guiGraphics.blit(getBaseTexture(), x, y, 0, 0, 182, getBaseHeight(), 256, getBaseTextureHeight());
         int i = (int)(event.getProgress() * 183.0F);
         if (i > 0) {
-            GuiComponent.blit(stack, x, y, 0, getBaseHeight(), i, getBaseHeight(), 256, getBaseTextureHeight());
+            guiGraphics.blit(getBaseTexture(), x, y, 0, getBaseHeight(), i, getBaseHeight(), 256, getBaseTextureHeight());
         }
     }
 }
