@@ -8,36 +8,24 @@ import com.bobmowzie.mowziesmobs.server.ability.abilities.player.SimpleAnimation
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
-import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.easing.EasingType;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public abstract class MowzieGeckoEntity extends MowzieEntity implements IAnimatable, IAnimationTickable {
-
-    protected AnimationFactory factory = new AnimationFactory(this);
+public abstract class MowzieGeckoEntity extends MowzieEntity implements GeoEntity {
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     protected MowzieAnimationController<MowzieGeckoEntity> controller = new MowzieAnimationController<>(this, "controller", 5, this::predicate, 0);
 
     public MowzieGeckoEntity(EntityType<? extends MowzieEntity> type, Level world) {
         super(type, world);
-    }
-
-    @Override
-    public int tickTimer() {
-        return tickCount;
-    }
-
-    @Override
-    public AnimationFactory getFactory() {
-        return factory;
     }
 
     @Override
@@ -70,7 +58,7 @@ public abstract class MowzieGeckoEntity extends MowzieEntity implements IAnimata
         return attack;
     }
 
-    protected <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
+    protected <E extends GeoEntity> PlayState predicate(AnimationState<E> state) {
         AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability();
         FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(this, CapabilityHandler.FROZEN_CAPABILITY);
         if (abilityCapability == null) {
@@ -81,22 +69,22 @@ public abstract class MowzieGeckoEntity extends MowzieEntity implements IAnimata
         }
 
         if (abilityCapability.getActiveAbility() != null) {
-            getController().transitionLengthTicks = 0;
-            return abilityCapability.animationPredicate(event, null);
+            getController().transitionLength(0);
+            return abilityCapability.animationPredicate(state, null);
         }
         else {
-            loopingAnimations(event);
+            loopingAnimations(state);
             return PlayState.CONTINUE;
         }
     }
 
-    protected <E extends IAnimatable> void loopingAnimations(AnimationEvent<E> event) {
-        event.getController().setAnimation(new AnimationBuilder().addAnimation("idle"));
+    protected <E extends GeoEntity> void loopingAnimations(AnimationState<E> event) {
+        event.getController().setAnimation(RawAnimation.begin().thenLoop("idle"));
     }
 
     @Override
-    public void registerControllers(AnimationData data) {
-        data.addAnimationController(controller);
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(controller);
     }
 
     public MowzieAnimationController<MowzieGeckoEntity> getController() {

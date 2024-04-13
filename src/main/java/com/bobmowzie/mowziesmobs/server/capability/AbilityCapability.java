@@ -19,9 +19,9 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.object.PlayState;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -55,9 +55,9 @@ public class AbilityCapability {
 
         boolean itemUsePrevented(ItemStack itemStack);
 
-         <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e, GeckoPlayer.Perspective perspective);
+        <E extends GeoEntity> PlayState animationPredicate(AnimationState<E> e, GeckoPlayer.Perspective perspective);
 
-        void codeAnimations(MowzieGeoModel<? extends IAnimatable> model, float partialTick);
+        void codeAnimations(MowzieGeoModel<? extends GeoEntity> model, float partialTick);
     }
 
     public static class AbilityCapabilityImp implements IAbilityCapability {
@@ -145,11 +145,11 @@ public class AbilityCapability {
         }
 
         @Override
-        public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e, GeckoPlayer.Perspective perspective) {
+        public <E extends GeoEntity> PlayState animationPredicate(AnimationState<E> e, GeckoPlayer.Perspective perspective) {
             return getActiveAbility().animationPredicate(e, perspective);
         }
 
-        public void codeAnimations(MowzieGeoModel<? extends IAnimatable> model, float partialTick) {
+        public void codeAnimations(MowzieGeoModel<? extends GeoEntity> model, float partialTick) {
             getActiveAbility().codeAnimations(model, partialTick);
         }
 

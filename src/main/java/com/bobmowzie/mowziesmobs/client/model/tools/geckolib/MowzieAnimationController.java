@@ -5,7 +5,7 @@ import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
 
-public class MowzieAnimationController<T extends GeoAnimatable & IAnimationTickable> extends AnimationController<T> {
+public class MowzieAnimationController<T extends GeoAnimatable> extends AnimationController<T> {
     private double tickOffset;
     private double timingOffset;
 
@@ -20,7 +20,7 @@ public class MowzieAnimationController<T extends GeoAnimatable & IAnimationTicka
         setAnimation(animation);
         currentAnimation = this.animationQueue.poll();
         isJustStarting = true;
-        adjustTick(animatable.tickTimer());
+        adjustTick(animatable.getTick(animatable));
         transitionLength = 0;
     }
 

@@ -24,7 +24,7 @@ public abstract class MowzieLLibraryEntity extends MowzieEntity implements IAnim
         super.tick();
         if (getAnimation() != NO_ANIMATION) {
             animationTick++;
-            if (level.isClientSide && animationTick >= animation.getDuration()) {
+            if (level().isClientSide && animationTick >= animation.getDuration()) {
                 setAnimation(NO_ANIMATION);
             }
         }

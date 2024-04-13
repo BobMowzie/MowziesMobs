@@ -1,35 +1,27 @@
 package com.bobmowzie.mowziesmobs.server.ability;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoModel;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection.AbilitySectionDuration;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection.AbilitySectionInstant;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieGeckoEntity;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
-import com.bobmowzie.mowziesmobs.server.potion.PotionTypeHandler;
-import net.minecraft.client.model.EntityModel;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.player.AttackEntityEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.Event;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animation.Animation;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
 
 import java.util.List;
 import java.util.Random;
@@ -49,7 +41,7 @@ public class Ability<T extends LivingEntity> {
 
     protected Random rand;
 
-    protected AnimationBuilder activeAnimation;
+    protected RawAnimation activeAnimation;
 
     public Ability(AbilityType<T, ? extends Ability> abilityType, T user, AbilitySection[] sectionTrack, int cooldownMax) {
         this.abilityType = abilityType;
@@ -73,10 +65,10 @@ public class Ability<T extends LivingEntity> {
         beginSection(getSectionTrack()[0]);
     }
 
-    public void playAnimation(String animationName, boolean shouldLoop) {
-        if (getUser() instanceof MowzieGeckoEntity && getUser().level.isClientSide()) {
+    public void playAnimation(String animationName, Animation.LoopType loopType) {
+        if (getUser() instanceof MowzieGeckoEntity && getUser().level().isClientSide()) {
             MowzieGeckoEntity entity = (MowzieGeckoEntity) getUser();
-            AnimationBuilder newActiveAnimation = new AnimationBuilder().addAnimation(animationName, shouldLoop);
+            RawAnimation newActiveAnimation = RawAnimation.begin().then(animationName, loopType);
             activeAnimation = newActiveAnimation;
             MowzieAnimationController<MowzieGeckoEntity> controller = entity.getController();
             if (controller != null) {
@@ -183,7 +175,7 @@ public class Ability<T extends LivingEntity> {
     }
 
     public Level getLevel() {
-        return user.getLevel();
+        return user.level();
     }
 
     public int getTicksInUse() {
@@ -289,14 +281,14 @@ public class Ability<T extends LivingEntity> {
         return abilityCapability;
     }
 
-    public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e, GeckoPlayer.Perspective perspective) {
-        if (activeAnimation == null || activeAnimation.getRawAnimationList().isEmpty())
+    public <E extends GeoEntity> PlayState animationPredicate(AnimationState<E> e, GeckoPlayer.Perspective perspective) {
+        if (activeAnimation == null || activeAnimation.getAnimationStages().isEmpty())
             return PlayState.STOP;
         e.getController().setAnimation(activeAnimation);
         return PlayState.CONTINUE;
     }
 
-    public void codeAnimations(MowzieGeoModel<? extends IAnimatable> model, float partialTick) {
+    public void codeAnimations(MowzieGeoModel<? extends GeoEntity> model, float partialTick) {
 
     }
 
@@ -313,11 +305,11 @@ public class Ability<T extends LivingEntity> {
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(LivingEntity player, Class<T> entityClass, double r) {
-        return player.level.getEntitiesOfClass(entityClass, player.getBoundingBox().inflate(r, r, r), e -> e != player && player.distanceTo(e) <= r);
+        return player.level().getEntitiesOfClass(entityClass, player.getBoundingBox().inflate(r, r, r), e -> e != player && player.distanceTo(e) <= r);
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(LivingEntity player, Class<T> entityClass, double dX, double dY, double dZ, double r) {
-        return player.level.getEntitiesOfClass(entityClass, player.getBoundingBox().inflate(dX, dY, dZ), e -> e != player && player.distanceTo(e) <= r);
+        return player.level().getEntitiesOfClass(entityClass, player.getBoundingBox().inflate(dX, dY, dZ), e -> e != player && player.distanceTo(e) <= r);
     }
 
     public CompoundTag writeNBT() {
