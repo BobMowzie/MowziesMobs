@@ -3,10 +3,11 @@ package com.bobmowzie.mowziesmobs.client.model.armor;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.item.ItemSolVisage;
 
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class SolVisageModel extends AnimatedGeoModel<ItemSolVisage> {
+public class SolVisageModel extends GeoModel<ItemSolVisage> {
 
 	@Override
 	public ResourceLocation getModelResource(ItemSolVisage object) {
@@ -21,5 +22,10 @@ public class SolVisageModel extends AnimatedGeoModel<ItemSolVisage> {
 	@Override
 	public ResourceLocation getAnimationResource(ItemSolVisage animatable) {
 		return new ResourceLocation(MowziesMobs.MODID, "animations/sol_visage.animation.json");
+	}
+
+	@Override
+	public RenderType getRenderType(ItemSolVisage animatable, ResourceLocation texture) {
+		return RenderType.entityCutoutNoCull(texture);
 	}
 }

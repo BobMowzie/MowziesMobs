@@ -4,9 +4,9 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.item.ItemUmvuthanaMask;
 
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.GeoModel;
 
-public class UmvuthanaMaskModel extends AnimatedGeoModel<ItemUmvuthanaMask> {
+public class UmvuthanaMaskModel extends GeoModel<ItemUmvuthanaMask> {
 
     @Override
     public ResourceLocation getModelResource(ItemUmvuthanaMask object) {

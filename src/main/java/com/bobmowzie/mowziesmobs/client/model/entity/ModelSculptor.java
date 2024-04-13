@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.RigUtils;
-import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import com.mojang.math.Matrix4f;
@@ -19,7 +19,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
-public class ModelSculptor extends MowzieAnimatedGeoModel<EntitySculptor> {
+public class ModelSculptor extends MowzieGeoModel<EntitySculptor> {
     public ModelSculptor() {
         super();
     }

@@ -20,7 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
-import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
+import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,9 +42,6 @@ public class ClientLayerRegistry {
             event.getSkin(skinType).addLayer(new FrozenRenderHandler.LayerFrozen(event.getSkin(skinType)));
             event.getSkin(skinType).addLayer(new SunblockLayer(event.getSkin(skinType)));
         }
-
-        GeoArmorRenderer.registerArmorRenderer(ItemUmvuthanaMask.class, () -> new RenderUmvuthanaMaskArmor());
-        GeoArmorRenderer.registerArmorRenderer(ItemSolVisage.class, () -> new RenderSolVisageArmor());
 
         GeckoPlayer.GeckoPlayerThirdPerson.initRenderer();
     }

@@ -1,12 +1,12 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoModel;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityPillar;
 
 import net.minecraft.resources.ResourceLocation;
 
-public class ModelPillar extends MowzieAnimatedGeoModel<EntityPillar> {
+public class ModelPillar extends MowzieGeoModel<EntityPillar> {
     public ModelPillar() {
         super();
     }

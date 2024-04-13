@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelPillar;
 import com.bobmowzie.mowziesmobs.client.model.tools.BlockModelRenderer;
-import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.BlockLayer;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityGeomancyBase;
@@ -45,7 +45,7 @@ public class RenderPillar extends RenderGeomancyBase<EntityPillar> {
     public void renderEarly(EntityPillar animatable, PoseStack stackIn, float partialTicks, @Nullable MultiBufferSource renderTypeBuffer, @Nullable VertexConsumer vertexBuilder, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         super.renderEarly(animatable, stackIn, partialTicks, renderTypeBuffer, vertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         EntityGeomancyBase.GeomancyTier tier = getEntity().getTier();
-        MowzieAnimatedGeoModel<EntityPillar> model = (MowzieAnimatedGeoModel<EntityPillar>) getGeoModelProvider();
+        MowzieGeoModel<EntityPillar> model = (MowzieGeoModel<EntityPillar>) getGeoModelProvider();
         MowzieGeoBone tier1 = model.getMowzieBone("tier1");
         MowzieGeoBone tier2 = model.getMowzieBone("tier2");
         MowzieGeoBone tier3 = model.getMowzieBone("tier3");

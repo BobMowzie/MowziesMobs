@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.Triple;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
 
@@ -16,7 +16,7 @@ import net.minecraft.util.Mth;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
-public class ModelUmvuthi extends MowzieAnimatedGeoModel<EntityUmvuthi> {
+public class ModelUmvuthi extends MowzieGeoModel<EntityUmvuthi> {
     public ModelUmvuthi() {
         super();
     }

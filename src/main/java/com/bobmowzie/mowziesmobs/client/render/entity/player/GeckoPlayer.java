@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerFirstPerson;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerThirdPerson;
-import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
@@ -36,7 +36,7 @@ import software.bernie.geckolib3.util.GeckoLibUtil;
 public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 
 	protected IGeoRenderer<GeckoPlayer> renderer;
-	protected MowzieAnimatedGeoModel<GeckoPlayer> model;
+	protected MowzieGeoModel<GeckoPlayer> model;
 
 	private int tickTimer = 0;
 
@@ -127,7 +127,7 @@ public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 		return renderer;
 	}
 
-	public MowzieAnimatedGeoModel<GeckoPlayer> getModel() {
+	public MowzieGeoModel<GeckoPlayer> getModel() {
 		return model;
 	}
 

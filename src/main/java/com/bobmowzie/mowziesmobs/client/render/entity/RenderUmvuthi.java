@@ -80,13 +80,13 @@ public class RenderUmvuthi extends MowzieGeoEntityRenderer<EntityUmvuthi> {
 //        matrixStackIn.popPose();
         super.render(umvuthi, entityYaw, delta, matrixStackIn, bufferIn, packedLightIn);
 
-        MowzieGeoBone sunRender = getMowzieAnimatedGeoModel().getMowzieBone("sun_render");
+        MowzieGeoBone sunRender = getMowzieGeoModel().getMowzieBone("sun_render");
         Vector3d sunRenderPos = sunRender.getWorldPosition();
         if (umvuthi.headPos != null && umvuthi.headPos.length > 0)
         umvuthi.headPos[0] = new Vec3(sunRenderPos.x, sunRenderPos.y, sunRenderPos.z);
 
         if (umvuthi.getActiveAbilityType() == EntityUmvuthi.SUPERNOVA_ABILITY && umvuthi.betweenHandPos != null && umvuthi.betweenHandPos.length > 0) {
-            Vector3d novaRenderPos = getMowzieAnimatedGeoModel().getMowzieBone("superNovaCenter").getWorldPosition();
+            Vector3d novaRenderPos = getMowzieGeoModel().getMowzieBone("superNovaCenter").getWorldPosition();
             // Blend between sun position and animated supernova position
             float blendStart = 4;
             float blendDuration = 4;
@@ -103,7 +103,7 @@ public class RenderUmvuthi extends MowzieGeoEntityRenderer<EntityUmvuthi> {
         }
 
         if (!Minecraft.getInstance().isPaused()) {
-            MowzieGeoBone mask = getMowzieAnimatedGeoModel().getMowzieBone("maskTwitcher");
+            MowzieGeoBone mask = getMowzieGeoModel().getMowzieBone("maskTwitcher");
             animatable.updateRattleSound(mask.getRotationZ());
         }
     }

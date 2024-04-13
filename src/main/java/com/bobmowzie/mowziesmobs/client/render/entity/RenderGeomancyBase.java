@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoModel;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityGeomancyBase;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -23,9 +23,9 @@ public class RenderGeomancyBase<T extends EntityGeomancyBase & IAnimatable> exte
     private MultiBufferSource rtb;
     private T entity;
 
-    protected final MowzieAnimatedGeoModel<T> modelProvider;
+    protected final MowzieGeoModel<T> modelProvider;
 
-    protected RenderGeomancyBase(EntityRendererProvider.Context context, MowzieAnimatedGeoModel<T> modelProvider) {
+    protected RenderGeomancyBase(EntityRendererProvider.Context context, MowzieGeoModel<T> modelProvider) {
         super(context);
         this.modelProvider = modelProvider;
     }

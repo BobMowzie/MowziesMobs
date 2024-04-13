@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.ability;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection.AbilitySectionDuration;
@@ -296,7 +296,7 @@ public class Ability<T extends LivingEntity> {
         return PlayState.CONTINUE;
     }
 
-    public void codeAnimations(MowzieAnimatedGeoModel<? extends IAnimatable> model, float partialTick) {
+    public void codeAnimations(MowzieGeoModel<? extends IAnimatable> model, float partialTick) {
 
     }
 

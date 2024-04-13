@@ -1,93 +1,95 @@
 package com.bobmowzie.mowziesmobs.client.model.tools.geckolib;
 
-import com.mojang.math.Vector3d;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib3.geo.render.built.GeoBone;
+import org.joml.Vector3d;
+import software.bernie.geckolib.cache.object.GeoBone;
+
+import javax.annotation.Nullable;
 
 public class MowzieGeoBone extends GeoBone {
 
     protected boolean forceMatrixTransform = false;
 
-    public MowzieGeoBone() {
-        super();
+    public MowzieGeoBone(@Nullable GeoBone parent, String name, Boolean mirror, @Nullable Double inflate, @Nullable Boolean dontRender, @Nullable Boolean reset) {
+        super(parent, name, mirror, inflate, dontRender, reset);
     }
 
     public MowzieGeoBone getParent() {
-        return (MowzieGeoBone) parent;
+        return (MowzieGeoBone) super.getParent();
     }
 
     // Position utils
-    public void addPosition(Vec3 vec) {
-        addPosition((float) vec.x(), (float) vec.y(), (float) vec.z());
+    public void addPos(Vec3 vec) {
+        addPos((float) vec.x(), (float) vec.y(), (float) vec.z());
     }
 
-    public void addPosition(float x, float y, float z) {
-        addPositionX(x);
-        addPositionY(y);
-        addPositionZ(z);
+    public void addPos(float x, float y, float z) {
+        addPosX(x);
+        addPosY(y);
+        addPosZ(z);
     }
 
-    public void addPositionX(float x) {
-        setPositionX(getPositionX() + x);
+    public void addPosX(float x) {
+        setPosX(getPosX() + x);
     }
 
-    public void addPositionY(float y) {
-        setPositionY(getPositionY() + y);
+    public void addPosY(float y) {
+        setPosY(getPosY() + y);
     }
 
-    public void addPositionZ(float z) {
-        setPositionZ(getPositionZ() + z);
+    public void addPosZ(float z) {
+        setPosZ(getPosZ() + z);
     }
 
-    public void setPosition(Vec3 vec) {
-        setPosition((float) vec.x(), (float) vec.y(), (float) vec.z());
+    public void setPos(Vec3 vec) {
+        setPos((float) vec.x(), (float) vec.y(), (float) vec.z());
     }
 
-    public void setPosition(float x, float y, float z) {
-        setPositionX(x);
-        setPositionY(y);
-        setPositionZ(z);
+    public void setPos(float x, float y, float z) {
+        setPosX(x);
+        setPosY(y);
+        setPosZ(z);
     }
 
-    public Vector3d getPosition() {
-        return new Vector3d(getPositionX(), getPositionY(), getPositionZ());
+    public Vector3d getPos() {
+        return new Vector3d(getPosX(), getPosY(), getPosZ());
     }
 
     // Rotation utils
-    public void addRotation(Vec3 vec) {
-        addRotation((float) vec.x(), (float) vec.y(), (float) vec.z());
+    public void addRot(Vec3 vec) {
+        addRot((float) vec.x(), (float) vec.y(), (float) vec.z());
     }
 
-    public void addRotation(float x, float y, float z) {
-        addRotationX(x);
-        addRotationY(y);
-        addRotationZ(z);
+    public void addRot(float x, float y, float z) {
+        addRotX(x);
+        addRotY(y);
+        addRotZ(z);
     }
 
-    public void addRotationX(float x) {
-        setRotationX(getRotationX() + x);
+    public void addRotX(float x) {
+        setRotX(getRotX() + x);
     }
 
-    public void addRotationY(float y) {
-        setRotationY(getRotationY() + y);
+    public void addRotY(float y) {
+        setRotY(getRotY() + y);
     }
 
-    public void addRotationZ(float z) {
-        setRotationZ(getRotationZ() + z);
+    public void addRotZ(float z) {
+        setRotZ(getRotZ() + z);
     }
 
-    public void setRotation(Vec3 vec) {
-        setRotation((float) vec.x(), (float) vec.y(), (float) vec.z());
+    public void setRot(Vec3 vec) {
+        setRot((float) vec.x(), (float) vec.y(), (float) vec.z());
     }
 
-    public void setRotation(float x, float y, float z) {
-        setRotationX(x);
-        setRotationY(y);
-        setRotationZ(z);
+    public void setRot(float x, float y, float z) {
+        setRotX(x);
+        setRotY(y);
+        setRotZ(z);
     }
 
-    public Vector3d getRotation() {
-        return new Vector3d(getRotationX(), getRotationY(), getRotationZ());
+    public Vector3d getRot() {
+        return new Vector3d(getRotX(), getRotY(), getRotZ());
     }
 
     // Scale utils
@@ -116,9 +118,9 @@ public class MowzieGeoBone extends GeoBone {
     }
 
     public void addRotationOffsetFromBone(MowzieGeoBone source) {
-        setRotationX(getRotationX() + source.getRotationX() - source.getInitialSnapshot().rotationValueX);
-        setRotationY(getRotationY() + source.getRotationY() - source.getInitialSnapshot().rotationValueY);
-        setRotationZ(getRotationZ() + source.getRotationZ() - source.getInitialSnapshot().rotationValueZ);
+        setRotX(getRotX() + source.getRotX() - source.getInitialSnapshot().getRotX());
+        setRotY(getRotY() + source.getRotY() - source.getInitialSnapshot().getRotY());
+        setRotZ(getRotZ() + source.getRotZ() - source.getInitialSnapshot().getRotZ());
     }
 
     public void setForceMatrixTransform(boolean forceMatrixTransform) {

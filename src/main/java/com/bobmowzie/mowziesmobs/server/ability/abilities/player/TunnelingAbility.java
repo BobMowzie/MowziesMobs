@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.ability.abilities.player;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
@@ -272,7 +272,7 @@ public class TunnelingAbility extends PlayerAbility {
     }
 
     @Override
-    public void codeAnimations(MowzieAnimatedGeoModel<? extends IAnimatable> model, float partialTick) {
+    public void codeAnimations(MowzieGeoModel<? extends IAnimatable> model, float partialTick) {
         super.codeAnimations(model, partialTick);
         float faceMotionController = 1f - model.getControllerValueInverted("FaceVelocityController");
         Vec3 moveVec = getUser().getDeltaMovement().normalize();

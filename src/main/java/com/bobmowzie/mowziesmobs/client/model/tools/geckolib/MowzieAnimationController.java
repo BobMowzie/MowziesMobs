@@ -1,50 +1,42 @@
 package com.bobmowzie.mowziesmobs.client.model.tools.geckolib;
 
 import com.bobmowzie.mowziesmobs.server.entity.IAnimationTickable;
-import software.bernie.geckolib3.core.AnimationState;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.easing.EasingType;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
 
-public class MowzieAnimationController<T extends IAnimatable & IAnimationTickable> extends AnimationController<T> {
+public class MowzieAnimationController<T extends GeoAnimatable & IAnimationTickable> extends AnimationController<T> {
     private double tickOffset;
     private double timingOffset;
 
-    public MowzieAnimationController(T animatable, String name, float transitionLengthTicks, IAnimationPredicate<T> animationPredicate, double timingOffset) {
-        super(animatable, name, transitionLengthTicks, animationPredicate);
+    public MowzieAnimationController(T animatable, String name, int transitionLength, AnimationStateHandler<T> animationHandler, double timingOffset) {
+        super(animatable, name, transitionLength, animationHandler);
         tickOffset = 0.0d;
         this.timingOffset = timingOffset;
     }
 
-    public MowzieAnimationController(T animatable, String name, float transitionLengthTicks, EasingType easingType, IAnimationPredicate<T> animationPredicate, double timingOffset) {
-        super(animatable, name, transitionLengthTicks, easingType, animationPredicate);
-        tickOffset = 0.0d;
-        this.timingOffset = timingOffset;
-    }
-
-    public void playAnimation(T animatable, AnimationBuilder animationBuilder) {
-        markNeedsReload();
-        setAnimation(animationBuilder);
+    public void playAnimation(T animatable, RawAnimation animation) {
+        forceAnimationReset();
+        setAnimation(animation);
         currentAnimation = this.animationQueue.poll();
         isJustStarting = true;
         adjustTick(animatable.tickTimer());
-        transitionLengthTicks = 0;
+        transitionLength = 0;
     }
 
     @Override
     protected double adjustTick(double tick) {
         if (this.shouldResetTick) {
-            if (getAnimationState() == AnimationState.Transitioning) {
+            if (getAnimationState() == State.TRANSITIONING) {
                 this.tickOffset = tick;
             }
-            else if (getAnimationState() == AnimationState.Running) {
-                this.tickOffset += transitionLengthTicks;
+            else if (getAnimationState() == State.RUNNING) {
+                this.tickOffset += transitionLength;
             }
             this.shouldResetTick = false;
         }
         double adjustedTick = Math.max(tick - this.tickOffset, 0.0D) + timingOffset;
-        if (this.currentAnimation != null && this.currentAnimation.loop.isRepeatingAfterEnd()) adjustedTick = adjustedTick % this.currentAnimation.animationLength;
+        if (this.currentAnimation != null && this.currentAnimation.loopType().shouldPlayAgain(animatable, this, currentAnimation.animation())) adjustedTick = adjustedTick % this.currentAnimation.animation().length();
         if (adjustedTick == timingOffset) isJustStarting = true;
         return adjustedTick;
     }

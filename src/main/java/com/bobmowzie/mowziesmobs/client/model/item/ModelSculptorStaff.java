@@ -4,9 +4,9 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.item.ItemSculptorStaff;
 
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.GeoModel;
 
-public class ModelSculptorStaff extends AnimatedGeoModel<ItemSculptorStaff> {
+public class ModelSculptorStaff extends GeoModel<ItemSculptorStaff> {
 
     @Override
     public ResourceLocation getModelResource(ItemSculptorStaff object) {

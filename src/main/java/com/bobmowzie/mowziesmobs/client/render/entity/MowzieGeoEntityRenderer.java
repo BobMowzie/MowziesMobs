@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.MowzieRenderUtils;
 import com.bobmowzie.mowziesmobs.server.entity.IAnimationTickable;
@@ -30,7 +30,7 @@ import software.bernie.geckolib3.core.util.Color;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.geo.render.built.GeoCube;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.GeoModel;
 import software.bernie.geckolib3.model.provider.GeoModelProvider;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
@@ -44,7 +44,7 @@ import java.util.Iterator;
 public abstract class MowzieGeoEntityRenderer<T extends LivingEntity & IAnimatable & IAnimationTickable> extends GeoEntityRenderer<T> {
     private Matrix4f renderEarlyMat = new Matrix4f();
 
-    protected MowzieGeoEntityRenderer(EntityRendererProvider.Context renderManager, AnimatedGeoModel<T> modelProvider) {
+    protected MowzieGeoEntityRenderer(EntityRendererProvider.Context renderManager, GeoModel<T> modelProvider) {
         super(renderManager, modelProvider);
     }
 
@@ -59,8 +59,8 @@ public abstract class MowzieGeoEntityRenderer<T extends LivingEntity & IAnimatab
         renderEarlyMat = stackIn.last().pose().copy();
     }
 
-    public MowzieAnimatedGeoModel<T> getMowzieAnimatedGeoModel() {
-        return (MowzieAnimatedGeoModel<T>) super.getGeoModelProvider();
+    public MowzieGeoModel<T> getMowzieGeoModel() {
+        return (MowzieGeoModel<T>) super.getGeoModelProvider();
     }
 
     @Override

@@ -1,31 +1,26 @@
 package com.bobmowzie.mowziesmobs.client.model.tools.geckolib;
 
-import com.bobmowzie.mowziesmobs.server.entity.IAnimationTickable;
-import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
-import software.bernie.geckolib3.resource.GeckoLibCache;
+import com.ilexiconn.llibrary.server.event.AnimationEvent;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.model.GeoModel;
 
-import java.util.Collections;
+import java.util.Optional;
 
-public abstract class MowzieAnimatedGeoModel<T extends IAnimatable & IAnimationTickable> extends AnimatedGeoModel<T> {
-    public MowzieAnimatedGeoModel() {
+public abstract class MowzieGeoModel<T extends GeoAnimatable> extends GeoModel<T> {
+    public MowzieGeoModel() {
     }
 
     public MowzieGeoBone getMowzieBone(String boneName) {
-        IBone bone = this.getBone(boneName);
-        return (MowzieGeoBone) bone;
+        Optional<GeoBone> bone = this.getBone(boneName);
+        return (MowzieGeoBone) bone.orElse(null);
     }
 
     public boolean isInitialized() {
-        return !this.getAnimationProcessor().getModelRendererList().isEmpty();
+        return !this.getAnimationProcessor().getRegisteredBones().isEmpty();
     }
 
+    /* TODO: New function is called handleAnimations, but was made final
     @Override
     public void setCustomAnimations(T animatable, int instanceId, AnimationEvent animationEvent) {
         if (animatable instanceof MowzieEntity && ((MowzieEntity) animatable).renderingInGUI) return;
@@ -57,7 +52,7 @@ public abstract class MowzieAnimatedGeoModel<T extends IAnimatable & IAnimationT
         if (!Minecraft.getInstance().isPaused() || manager.shouldPlayWhilePaused) {
             codeAnimations(animatable, instanceId, animationEvent);
         }
-    }
+    }*/
 
     public void codeAnimations(T entity, Integer uniqueID, AnimationEvent<?> customPredicate) {
 
@@ -65,11 +60,15 @@ public abstract class MowzieAnimatedGeoModel<T extends IAnimatable & IAnimationT
 
     public float getControllerValueInverted(String controllerName) {
         if (!isInitialized()) return 1.0f;
-        return 1.0f - getBone(controllerName).getPositionX();
+        Optional<GeoBone> bone = getBone(controllerName);
+        if (bone.isEmpty()) return 1.0f;
+        return 1.0f - bone.get().getPosX();
     }
 
     public float getControllerValue(String controllerName) {
         if (!isInitialized()) return 0.0f;
-        return getBone(controllerName).getPositionX();
+        Optional<GeoBone> bone = getBone(controllerName);
+        if (bone.isEmpty()) return 0.0f;
+        return bone.get().getPosX();
     }
 }

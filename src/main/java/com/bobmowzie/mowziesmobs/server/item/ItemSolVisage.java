@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import javax.annotation.Nullable;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.render.item.RenderSolVisageArmor;
 import com.bobmowzie.mowziesmobs.client.render.item.RenderSolVisageItem;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 
@@ -25,25 +26,23 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.renderer.GeoArmorRenderer;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 /**
  * Created by BobMowzie on 8/15/2016.
  */
-public class ItemSolVisage extends MowzieArmorItem implements UmvuthanaMask, IAnimatable {
+public class ItemSolVisage extends MowzieArmorItem implements UmvuthanaMask, GeoItem {
     private static final SolVisageMaterial SOL_VISAGE_MATERIAL = new SolVisageMaterial();
 
     public String controllerName = "controller";
-    public AnimationFactory factory = GeckoLibUtil.createFactory(this);
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     public ItemSolVisage(Item.Properties properties) {
         super(SOL_VISAGE_MATERIAL, EquipmentSlot.HEAD, properties);
@@ -104,30 +103,29 @@ public class ItemSolVisage extends MowzieArmorItem implements UmvuthanaMask, IAn
         return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.armorConfig;
     }
 
-    public <P extends Item & IAnimatable> PlayState predicate(AnimationEvent<P> event) {
-        event.getController().setAnimation(new AnimationBuilder().addAnimation("default", ILoopType.EDefaultLoopTypes.LOOP));
-        return PlayState.CONTINUE;
+    private PlayState predicate(AnimationState<ItemSolVisage> state) {
+        return PlayState.STOP;
     }
 
     @Override
-    public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController<>(this, controllerName, 0, this::predicate));
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, controllerName, 0, this::predicate));
     }
 
     @Override
-    public AnimationFactory getFactory() {
-        return this.factory;
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
     }
 
     private static class SolVisageMaterial implements ArmorMaterial {
 
         @Override
-        public int getDurabilityForSlot(EquipmentSlot equipmentSlotType) {
-            return ArmorMaterials.GOLD.getDurabilityForSlot(equipmentSlotType);
+        public int getDurabilityForType(Type equipmentSlotType) {
+            return ArmorMaterials.GOLD.getDurabilityForType(equipmentSlotType);
         }
 
         @Override
-        public int getDefenseForSlot(EquipmentSlot equipmentSlotType) {
+        public int getDefenseForType(Type equipmentSlotType) {
             return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.armorConfig.damageReductionValue;
         }
 
@@ -167,18 +165,17 @@ public class ItemSolVisage extends MowzieArmorItem implements UmvuthanaMask, IAn
         super.initializeClient(consumer);
         consumer.accept(new IClientItemExtensions() {
             @Override
-            public HumanoidModel<?> getHumanoidArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel<?> _default) {
-                if (armorSlot != EquipmentSlot.HEAD) return null;
-                return (HumanoidModel<?>) GeoArmorRenderer.getRenderer(ItemSolVisage.this.getClass(), entityLiving)
-                        .applyEntityStats(_default).setCurrentItem(entityLiving, itemStack, armorSlot)
-                        .applySlot(armorSlot);
+            public HumanoidModel<?> getHumanoidArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<?> original) {
+                if (equipmentSlot == EquipmentSlot.HEAD) armorRenderer.prepForRender(entityLiving, itemStack, equipmentSlot, original);
+                return armorRenderer;
             }
 
-            private final BlockEntityWithoutLevelRenderer renderer = new RenderSolVisageItem();
+            private final BlockEntityWithoutLevelRenderer itemRenderer = new RenderSolVisageItem();
+            private final GeoArmorRenderer<?> armorRenderer = new RenderSolVisageArmor();
 
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return renderer;
+                return itemRenderer;
             }
         });
     }

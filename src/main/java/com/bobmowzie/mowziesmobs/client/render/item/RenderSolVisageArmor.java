@@ -16,9 +16,4 @@ public class RenderSolVisageArmor extends MowzieGeoArmorRenderer<ItemSolVisage> 
     public RenderSolVisageArmor() {
         super(new SolVisageModel());
     }
-
-    @Override
-    public RenderType getRenderType(ItemSolVisage animatable, float partialTick, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, ResourceLocation texture) {
-        return RenderType.entityCutoutNoCull(texture);
-    }
 }

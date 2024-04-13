@@ -4,9 +4,9 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.item.ItemEarthboreGauntlet;
 
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.GeoModel;
 
-public class ModelEarthboreGauntlet extends AnimatedGeoModel<ItemEarthboreGauntlet> {
+public class ModelEarthboreGauntlet extends GeoModel<ItemEarthboreGauntlet> {
 
     @Override
     public ResourceLocation getModelResource(ItemEarthboreGauntlet object) {
