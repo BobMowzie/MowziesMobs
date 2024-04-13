@@ -50,7 +50,7 @@ public class EntityRockSling extends EntityBoulderProjectile implements GeoEntit
         AnimationController<EntityRockSling> controller = new AnimationController<>(this, "controller", 0,
                 event -> {
                     event.getController()
-                            .setAnimation(new RawAnimation().addAnimation("roll", ILoopType.EDefaultLoopTypes.LOOP));
+                            .setAnimation(RawAnimation.begin().addAnimation("roll", ILoopType.EDefaultLoopTypes.LOOP));
                     return PlayState.CONTINUE;
                 });
         data.addAnimationController(controller);

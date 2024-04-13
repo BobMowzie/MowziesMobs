@@ -166,10 +166,10 @@ public class ItemUmvuthanaMask extends MowzieArmorItem implements UmvuthanaMask,
     public <P extends Item & IAnimatable> PlayState predicate(AnimationState<P> event) {
         List<LivingEntity> livingEntities = event.getExtraDataOfType(LivingEntity.class);
         if (livingEntities.size() > 0 && livingEntities.get(0) instanceof EntityUmvuthana) {
-            event.getController().setAnimation(new RawAnimation().addAnimation("umvuthana", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(RawAnimation.begin().addAnimation("umvuthana", ILoopType.EDefaultLoopTypes.LOOP));
         }
         else {
-            event.getController().setAnimation(new RawAnimation().addAnimation("player", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(RawAnimation.begin().addAnimation("player", ILoopType.EDefaultLoopTypes.LOOP));
         }
         return PlayState.CONTINUE;
     }

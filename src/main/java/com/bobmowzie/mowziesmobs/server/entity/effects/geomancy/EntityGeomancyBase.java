@@ -9,6 +9,7 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
@@ -26,13 +27,16 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.Optional;
 
-public abstract class EntityGeomancyBase extends EntityMagicEffect implements GeoEntity, IAnimationTickable {
+public abstract class EntityGeomancyBase extends EntityMagicEffect implements GeoEntity {
     private static final byte EXPLOSION_PARTICLES_ID = 69;
 
-    protected static final EntityDataAccessor<Optional<BlockState>> BLOCK_STATE = SynchedEntityData.defineId(EntityGeomancyBase.class, EntityDataSerializers.BLOCK_STATE);
+    protected static final EntityDataAccessor<BlockState> BLOCK_STATE = SynchedEntityData.defineId(EntityGeomancyBase.class, EntityDataSerializers.BLOCK_STATE);
     private static final EntityDataAccessor<Integer> TIER = SynchedEntityData.defineId(EntityGeomancyBase.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DEATH_TIME = SynchedEntityData.defineId(EntityGeomancyBase.class, EntityDataSerializers.INT);
 
@@ -44,7 +48,7 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements Ge
         HUGE
     }
 
-    private AnimationFactory factory = new AnimationFactory(this);
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     private boolean doRemoveTimer = true;
 
@@ -54,6 +58,7 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements Ge
 
     public EntityGeomancyBase(EntityType<? extends EntityMagicEffect> type, Level worldIn, LivingEntity caster, BlockState blockState, BlockPos pos) {
         super(type, worldIn, caster);
+        /* TODO: Update to use block tags
         if (!worldIn.isClientSide && blockState != null) {
             Block block = blockState.getBlock();
             BlockState newBlock = blockState;
@@ -81,7 +86,7 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements Ge
                 newBlock = Blocks.STONE.defaultBlockState();
             }
             setBlock(newBlock);
-        }
+        }*/
     }
 
     @Override
@@ -97,7 +102,7 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements Ge
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        getEntityData().define(BLOCK_STATE, Optional.of(Blocks.DIRT.defaultBlockState()));
+        getEntityData().define(BLOCK_STATE, Blocks.DIRT.defaultBlockState());
         getEntityData().define(DEATH_TIME, 1200);
         getEntityData().define(TIER, 0);
     }
@@ -133,7 +138,7 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements Ge
     }
 
     protected void explode() {
-        this.level.broadcastEntityEvent(this, EXPLOSION_PARTICLES_ID);
+        this.level().broadcastEntityEvent(this, EXPLOSION_PARTICLES_ID);
         GeomancyTier tier = getTier();
         if (tier == GeomancyTier.SMALL) {
             playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL.get(), 1.5f, 0.9f);
@@ -146,14 +151,14 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements Ge
         else if (tier == GeomancyTier.LARGE) {
             playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG.get(), 1.5f, 1f);
             playSound(MMSounds.EFFECT_GEOMANCY_BREAK_MEDIUM_1.get(), 1.5f, 0.9f);
-            EntityCameraShake.cameraShake(level, position(), 15, 0.05f, 0, 20);
+            EntityCameraShake.cameraShake(level(), position(), 15, 0.05f, 0, 20);
 
             for (int i = 0; i < 5; i++) {
                 Vec3 particlePos = new Vec3(random.nextFloat() * 2, 0, 0);
                 particlePos = particlePos.yRot((float) (random.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.xRot((float) (random.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.add(new Vec3(0, getBbHeight() / 4, 0));
-                EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK.get(), level, 70, getBlock());
+                EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK.get(), level(), 70, getBlock());
                 fallingBlock.setPos(getX() + particlePos.x, getY() + 0.5 + particlePos.y, getZ() + particlePos.z);
                 fallingBlock.setDeltaMovement((float) particlePos.x * 0.3f, 0.2f + random.nextFloat() * 0.6f, (float) particlePos.z * 0.3f);
                 level().addFreshEntity(fallingBlock);
@@ -162,17 +167,17 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements Ge
         else if (tier == GeomancyTier.HUGE) {
             playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG.get(), 1.5f, 0.5f);
             playSound(MMSounds.EFFECT_GEOMANCY_BREAK_LARGE_1.get(), 1.5f, 0.5f);
-            EntityCameraShake.cameraShake(level, position(), 20, 0.05f, 0, 20);
+            EntityCameraShake.cameraShake(level(), position(), 20, 0.05f, 0, 20);
 
             for (int i = 0; i < 7; i++) {
                 Vec3 particlePos = new Vec3(random.nextFloat() * 2.5f, 0, 0);
                 particlePos = particlePos.yRot((float) (random.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.xRot((float) (random.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.add(new Vec3(0, getBbHeight() / 4, 0));
-                EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK.get(), level, 70, getBlock());
+                EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK.get(), level(), 70, getBlock());
                 fallingBlock.setPos(getX() + particlePos.x, getY() + 0.5 + particlePos.y, getZ() + particlePos.z);
                 fallingBlock.setDeltaMovement((float) particlePos.x * 0.3f, 0.2f + random.nextFloat() * 0.6f, (float) particlePos.z * 0.3f);
-                level.addFreshEntity(fallingBlock);
+                level().addFreshEntity(fallingBlock);
             }
         }
         discard();
@@ -183,7 +188,7 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements Ge
             Vec3 particlePos = new Vec3(random.nextFloat() * 0.7 * getBbWidth(), 0, 0);
             particlePos = particlePos.yRot((float) (random.nextFloat() * 2 * Math.PI));
             particlePos = particlePos.xRot((float) (random.nextFloat() * 2 * Math.PI));
-            level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, getBlock()), getX() + particlePos.x, getY() + 0.5 + particlePos.y, getZ() + particlePos.z, particlePos.x, particlePos.y, particlePos.z);
+            level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, getBlock()), getX() + particlePos.x, getY() + 0.5 + particlePos.y, getZ() + particlePos.z, particlePos.x, particlePos.y, particlePos.z);
         }
     }
 
@@ -196,12 +201,11 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements Ge
     }
 
     public BlockState getBlock() {
-        Optional<BlockState> bsOp = getEntityData().get(BLOCK_STATE);
-        return bsOp.orElse(null);
+        return getEntityData().get(BLOCK_STATE);
     }
 
     public void setBlock(BlockState block) {
-        getEntityData().set(BLOCK_STATE, Optional.of(block));
+        getEntityData().set(BLOCK_STATE, block);
     }
 
     public GeomancyTier getTier() {
@@ -234,7 +238,7 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements Ge
         super.readAdditionalSaveData(compound);
         Tag blockStateCompound = compound.get("block");
         if (blockStateCompound != null) {
-            BlockState blockState = NbtUtils.readBlockState((CompoundTag) blockStateCompound);
+            BlockState blockState = NbtUtils.readBlockState(this.level().holderLookup(Registries.BLOCK), (CompoundTag) blockStateCompound);
             setBlock(blockState);
         }
         if (compound.contains("deathTime")) {
@@ -248,17 +252,12 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements Ge
     }
 
     @Override
-    public AnimationFactory getFactory() {
-        return factory;
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
     }
 
     @Override
-    public int tickTimer() {
-        return tickCount;
-    }
-
-    @Override
-    public void registerControllers(AnimationData data) {
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
 
     }
 

@@ -124,7 +124,7 @@ public class ItemEarthboreGauntlet extends MowzieToolItem implements IAnimatable
     }
 
     public <P extends Item & IAnimatable> PlayState predicateIdle(AnimationState<P> event) {
-        event.getController().setAnimation(new RawAnimation().addAnimation("idle", true));
+        event.getController().setAnimation(RawAnimation.begin().addAnimation("idle", true));
         return PlayState.CONTINUE;
     }
 
@@ -152,13 +152,13 @@ public class ItemEarthboreGauntlet extends MowzieToolItem implements IAnimatable
         controller.markNeedsReload();
         if (state == ANIM_REST) {
             controller.clearAnimationCache();
-            controller.setAnimation(new RawAnimation().addAnimation("idle", true));
+            controller.setAnimation(RawAnimation.begin().addAnimation("idle", true));
         } else if (state == ANIM_OPEN) {
             controller.clearAnimationCache();
-            controller.setAnimation(new RawAnimation().addAnimation("open", true));
+            controller.setAnimation(RawAnimation.begin().addAnimation("open", true));
         } else if (state == ANIM_FIST) {
             controller.clearAnimationCache();
-            controller.setAnimation(new RawAnimation().addAnimation("attack", false));
+            controller.setAnimation(RawAnimation.begin().addAnimation("attack", false));
         }
     }
 

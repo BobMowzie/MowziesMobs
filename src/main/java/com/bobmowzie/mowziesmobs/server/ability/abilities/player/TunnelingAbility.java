@@ -262,10 +262,10 @@ public class TunnelingAbility extends PlayerAbility {
         if (perspective == GeckoPlayer.Perspective.THIRD_PERSON) {
             float yMotionThreshold = getUser() == Minecraft.getInstance().player ? 1 : 2;
             if (!underground && getUser().getUseItem().getItem() != ItemHandler.EARTHBORE_GAUNTLET && getUser().getDeltaMovement().y() < yMotionThreshold) {
-                e.getController().setAnimation(new RawAnimation().addAnimation("tunneling_fall", false));
+                e.getController().setAnimation(RawAnimation.begin().addAnimation("tunneling_fall", false));
             }
             else {
-                e.getController().setAnimation(new RawAnimation().addAnimation("tunneling_drill", true));
+                e.getController().setAnimation(RawAnimation.begin().addAnimation("tunneling_drill", true));
             }
         }
         return PlayState.CONTINUE;

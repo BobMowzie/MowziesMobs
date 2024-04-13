@@ -10,9 +10,11 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.RawAnimation;
-import software.bernie.geckolib3.core.event.predicate.AnimationState;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animation.Animation;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
 
 public class PlayerAbility extends Ability<Player> {
     protected RawAnimation activeFirstPersonAnimation;
@@ -31,8 +33,8 @@ public class PlayerAbility extends Ability<Player> {
 
     public PlayerAbility(AbilityType<Player, ? extends Ability> abilityType, Player user, AbilitySection[] sectionTrack, int cooldownMax) {
         super(abilityType, user, sectionTrack, cooldownMax);
-        if (user.level.isClientSide) {
-            this.activeAnimation = new RawAnimation().addAnimation("idle");
+        if (user.level().isClientSide) {
+            this.activeAnimation = RawAnimation.begin().thenLoop("idle");
             heldItemMainHandVisualOverride = null;
             heldItemOffHandVisualOverride = null;
             firstPersonMainHandDisplay = HandDisplay.DEFAULT;
@@ -44,32 +46,32 @@ public class PlayerAbility extends Ability<Player> {
         this(abilityType, user, sectionTrack, 0);
     }
 
-    public void playAnimation(String animationName, GeckoPlayer.Perspective perspective, boolean shouldLoop) {
-        if (getUser() != null && getUser().level.isClientSide()) {
-            RawAnimation newActiveAnimation = new RawAnimation().addAnimation(animationName, shouldLoop);
+    public void playAnimation(String animationName, GeckoPlayer.Perspective perspective, Animation.LoopType loopType) {
+        if (getUser() != null && getUser().level().isClientSide()) {
+            RawAnimation newActiveAnimation = RawAnimation.begin().then(animationName, loopType);
             if (perspective == GeckoPlayer.Perspective.FIRST_PERSON) {
                 activeFirstPersonAnimation = newActiveAnimation;
             }
             else {
                 activeAnimation = newActiveAnimation;
             }
-            MowzieAnimationController<GeckoPlayer> controller = GeckoPlayer.getAnimationController((Player) getUser(), perspective);
-            GeckoPlayer geckoPlayer = GeckoPlayer.getGeckoPlayer((Player) getUser(), perspective);
+            MowzieAnimationController<GeckoPlayer> controller = GeckoPlayer.getAnimationController(getUser(), perspective);
+            GeckoPlayer geckoPlayer = GeckoPlayer.getGeckoPlayer(getUser(), perspective);
             if (controller != null && geckoPlayer != null) {
                 controller.playAnimation(geckoPlayer, newActiveAnimation);
             }
         }
     }
 
-    public void playAnimation(String animationName, boolean shouldLoop) {
-        playAnimation(animationName, GeckoPlayer.Perspective.FIRST_PERSON, shouldLoop);
-        playAnimation(animationName, GeckoPlayer.Perspective.THIRD_PERSON, shouldLoop);
+    public void playAnimation(String animationName, Animation.LoopType loopType) {
+        playAnimation(animationName, GeckoPlayer.Perspective.FIRST_PERSON, loopType);
+        playAnimation(animationName, GeckoPlayer.Perspective.THIRD_PERSON, loopType);
     }
 
     @Override
     public void end() {
         super.end();
-        if (getUser().level.isClientSide) {
+        if (getUser().level().isClientSide) {
             heldItemMainHandVisualOverride = null;
             heldItemOffHandVisualOverride = null;
             firstPersonMainHandDisplay = HandDisplay.DEFAULT;
@@ -95,7 +97,7 @@ public class PlayerAbility extends Ability<Player> {
         else {
             whichAnimation = activeAnimation;
         }
-        if (whichAnimation == null || whichAnimation.getRawAnimationList().isEmpty())
+        if (whichAnimation == null || whichAnimation.getAnimationStages().isEmpty())
             return PlayState.STOP;
         e.getController().setAnimation(whichAnimation);
         return PlayState.CONTINUE;

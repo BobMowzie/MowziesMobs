@@ -52,6 +52,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.OldUsersConverter;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.*;
@@ -82,13 +83,12 @@ import net.minecraft.world.scores.PlayerTeam;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
-import software.bernie.geckolib3.core.GeoEntity;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.RawAnimation;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationState;
-import software.bernie.geckolib3.core.manager.AnimationData;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -253,16 +253,16 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
     }
 
     @Override
-    public void registerControllers(AnimationData data) {
-        super.registerControllers(data);
-        data.addAnimationController(maskController);
-        data.addAnimationController(blinkController);
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        super.registerControllers(controllers);
+        controllers.add(maskController);
+        controllers.add(blinkController);
     }
 
-    protected <E extends GeoEntity> PlayState predicateMask(AnimationState<E> event)
+    protected <E extends GeoEntity> PlayState predicateMask(AnimationState<E> state)
     {
         if (isAlive() && getActiveAbilityType() != SOLAR_BEAM_ABILITY && getActiveAbilityType() != SUPERNOVA_ABILITY && getActiveAbilityType() != SPAWN_ABILITY && getActiveAbilityType() != SPAWN_SUNBLOCKERS_ABILITY) {
-            event.getController().setAnimation(new RawAnimation().addAnimation("mask_twitch", ILoopType.EDefaultLoopTypes.LOOP));
+            state.getController().setAnimation(RawAnimation.begin().thenLoop("mask_twitch"));
             return PlayState.CONTINUE;
         }
         return PlayState.STOP;
@@ -271,7 +271,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
     protected <E extends GeoEntity> PlayState predicateBlink(AnimationState<E> event)
     {
         if (isAlive() && getActiveAbilityType() != SOLAR_BEAM_ABILITY) {
-            event.getController().setAnimation(new RawAnimation().addAnimation("blink", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(RawAnimation.begin().thenLoop("blink"));
             return PlayState.CONTINUE;
         }
         return PlayState.STOP;
@@ -279,7 +279,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
 
     @Override
     protected <E extends GeoEntity> void loopingAnimations(AnimationState<E> event) {
-        event.getController().transitionLengthTicks = 4;
+        event.getController().transitionLength(4);
         super.loopingAnimations(event);
     }
 
@@ -345,11 +345,11 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
 //        this.posX = prevPosX;
 //        this.posZ = prevPosZ;
 
-        if (level.isClientSide()) {
+        if (level().isClientSide()) {
             if (shouldRenderSun()) {
                 if (headPos != null && headPos.length > 0 && headPos[0] != null) {
-                    if (this.tickTimer() % 10 == 1) {
-                        AdvancedParticleBase.spawnParticle(level, ParticleHandler.GLOW.get(), getX(), getY(), getZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 0.3, 0.4, 1, 9, true, false, new ParticleComponent[]{
+                    if (this.tickCount % 10 == 1) {
+                        AdvancedParticleBase.spawnParticle(level(), ParticleHandler.GLOW.get(), getX(), getY(), getZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 0.3, 0.4, 1, 9, true, false, new ParticleComponent[]{
                                 new ParticleComponent.PinLocation(headPos),
                                 new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.oscillate(12.5f, 13.5f, 12), false)
                         });
@@ -361,14 +361,14 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
                             float r = random.nextFloat() * 0.4F;
                             float x = r * Mth.cos(theta);
                             float z = r * Mth.sin(theta);
-                            level.addParticle(ParticleTypes.SMOKE, headPos[0].x() + x, headPos[0].y() + 0.1, headPos[0].z() + z, 0, 0, 0);
+                            level().addParticle(ParticleTypes.SMOKE, headPos[0].x() + x, headPos[0].y() + 0.1, headPos[0].z() + z, 0, 0, 0);
                         }
                     }
                 }
             }
         }
 
-        if (!level.isClientSide && getHealthLost() >= HEALTH_LOST_BETWEEN_SUNBLOCKERS && getActiveAbility() == null && !isNoAi() && getEntitiesNearby(EntityUmvuthanaCrane.class, 40).size() < 3) {
+        if (!level().isClientSide && getHealthLost() >= HEALTH_LOST_BETWEEN_SUNBLOCKERS && getActiveAbility() == null && !isNoAi() && getEntitiesNearby(EntityUmvuthanaCrane.class, 40).size() < 3) {
             sendAbilityMessage(SPAWN_SUNBLOCKERS_ABILITY);
             setHealthLost(0);
         }
@@ -408,7 +408,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
                 hurtByTargetAI.stop();
             }
         } else {
-            if (!level.isClientSide) {
+            if (!level().isClientSide) {
                 this.setAngry(false);
             }
         }
@@ -448,12 +448,12 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
 //                this.playSound(MMSounds.ENTITY_UMVUTHI_BURST, 1.7f, 1.5f);
 //            }
             if (getActiveAbility().getTicksInUse() == 10) {
-                if (level.isClientSide) {
+                if (level().isClientSide) {
                     spawnExplosionParticles(30);
                 }
                 this.playSound(MMSounds.ENTITY_UMVUTHI_ATTACK.get(), 1.7f, 0.9f);
             }
-            if (getActiveAbility().getTicksInUse() <= 6 && level.isClientSide) {
+            if (getActiveAbility().getTicksInUse() <= 6 && level().isClientSide) {
                 int particleCount = 8;
                 while (--particleCount != 0) {
                     double radius = 2f;
@@ -465,7 +465,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
                     float offsetX = (float) (-0.3 * Math.sin(getYRot() * Math.PI / 180));
                     float offsetZ = (float) (-0.3 * Math.cos(getYRot() * Math.PI / 180));
                     float offsetY = 1;
-                    level.addParticle(new ParticleOrb.OrbData((float) getX() + offsetX, (float) getY() + offsetY, (float) getZ() + offsetZ, 6), getX() + ox + offsetX, getY() + offsetY + oy, getZ() + oz + offsetZ, 0, 0, 0);
+                    level().addParticle(new ParticleOrb.OrbData((float) getX() + offsetX, (float) getY() + offsetY, (float) getZ() + offsetZ, 6), getX() + ox + offsetX, getY() + offsetY + oy, getZ() + oz + offsetZ, 0, 0, 0);
                 }
             }
         }
@@ -476,7 +476,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             if (getActiveAbility().getTicksInUse() == 1) {
                 blessingPlayer = getCustomer();
             }
-            if (level.isClientSide && blessingPlayer != null) {
+            if (level().isClientSide && blessingPlayer != null) {
                 blessingPlayerPos[0] = blessingPlayer.position().add(new Vec3(0, blessingPlayer.getBbHeight() / 2f, 0));
                 if (getActiveAbility().getTicksInUse() > 5 && getActiveAbility().getTicksInUse() < 40) {
                     int particleCount = 2;
@@ -487,7 +487,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
                         double ox = radius * Math.sin(yaw) * Math.sin(pitch);
                         double oy = radius * Math.cos(pitch);
                         double oz = radius * Math.cos(yaw) * Math.sin(pitch);
-                        AdvancedParticleBase.spawnParticle(level, ParticleHandler.ORB2.get(), getX() + ox, getY() + 0.8f + oy, getZ() + oz, 0, 0, 0, true, 0, 0, 0, 0, 5F, 1, 1, 1, 1, 1, 20, true, true, new ParticleComponent[]{
+                        AdvancedParticleBase.spawnParticle(level(), ParticleHandler.ORB2.get(), getX() + ox, getY() + 0.8f + oy, getZ() + oz, 0, 0, 0, true, 0, 0, 0, 0, 5F, 1, 1, 1, 1, 1, 20, true, true, new ParticleComponent[]{
                                 new ParticleComponent.Attractor(blessingPlayerPos, 0.5f, 0.2f, ParticleComponent.Attractor.EnumAttractorBehavior.LINEAR),
                                 new ParticleComponent.PropertyControl(EnumParticleProperty.POS_X, new ParticleComponent.Oscillator(0, (float) ox, 6f, 2.5f), true),
                                 new ParticleComponent.PropertyControl(EnumParticleProperty.POS_Y, new ParticleComponent.Oscillator(0, (float) oy, 6f, 2.5f), true),
@@ -500,7 +500,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
                     }
                 }
                 if (getActiveAbility().getTicksInUse() % 15 == 0) {
-                    AdvancedParticleBase.spawnParticle(level, ParticleHandler.RING2.get(), getX(), getY() + 0.8f, getZ(), 0, 0, 0, true, 0, 0, 0, 0, 3.5F, 1, 223/255f, 66/255f, 1, 1, 15, true, true, new ParticleComponent[]{
+                    AdvancedParticleBase.spawnParticle(level(), ParticleHandler.RING2.get(), getX(), getY() + 0.8f, getZ(), 0, 0, 0, true, 0, 0, 0, 0, 3.5F, 1, 223/255f, 66/255f, 1, 1, 15, true, true, new ParticleComponent[]{
                             new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                             new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(5f, 35f), false)
                     });
@@ -517,7 +517,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             }
         }
 
-        if (!level.isClientSide && getTarget() == null && getActiveAbilityType() != SOLAR_BEAM_ABILITY && getActiveAbilityType() != SUPERNOVA_ABILITY) {
+        if (!level().isClientSide && getTarget() == null && getActiveAbilityType() != SOLAR_BEAM_ABILITY && getActiveAbilityType() != SUPERNOVA_ABILITY) {
             timeUntilHeal--;
             if (ConfigHandler.COMMON.MOBS.UMVUTHI.healsOutOfBattle.get() && timeUntilHeal <= 0) heal(0.3f);
             if (getHealth() == getMaxHealth()) setHealthLost(0);
@@ -559,8 +559,8 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
 
     @Override
     public boolean hurt(DamageSource source, float damage) {
-    	if (source == DamageSource.HOT_FLOOR) return false;
-        if (hasEffect(EffectHandler.SUNBLOCK.get()) && !source.isBypassInvul()) {
+    	if (source == level().damageSources().hotFloor()) return false;
+        if (hasEffect(EffectHandler.SUNBLOCK.get()) && !source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             if (source.getDirectEntity() != null) playSound(MMSounds.ENTITY_WROUGHT_UNDAMAGED.get(), 0.4F, 2);
             return false;
         }
@@ -582,28 +582,28 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         if (direction == 1) {
             posLeft = new BlockPos(Mth.floor(getX()) + 1, Math.round((float) (getY() - 1)), Mth.floor(getZ()) + 1);
             posRight = new BlockPos(Mth.floor(getX()) - 1, Math.round((float) (getY() - 1)), Mth.floor(getZ()) + 1);
-            blockLeft = level.getBlockState(posLeft);
-            blockRight = level.getBlockState(posRight);
+            blockLeft = level().getBlockState(posLeft);
+            blockRight = level().getBlockState(posRight);
         } else if (direction == 2) {
             posLeft = new BlockPos(Mth.floor(getX()) - 1, Math.round((float) (getY() - 1)), Mth.floor(getZ()) + 1);
             posRight = new BlockPos(Mth.floor(getX()) - 1, Math.round((float) (getY() - 1)), Mth.floor(getZ()) - 1);
-            blockLeft = level.getBlockState(posLeft);
-            blockRight = level.getBlockState(posRight);
+            blockLeft = level().getBlockState(posLeft);
+            blockRight = level().getBlockState(posRight);
         } else if (direction == 3) {
             posLeft = new BlockPos(Mth.floor(getX()) - 1, Math.round((float) (getY() - 1)), Mth.floor(getZ()) - 1);
             posRight = new BlockPos(Mth.floor(getX()) + 1, Math.round((float) (getY() - 1)), Mth.floor(getZ()) - 1);
-            blockLeft = level.getBlockState(posLeft);
-            blockRight = level.getBlockState(posRight);
+            blockLeft = level().getBlockState(posLeft);
+            blockRight = level().getBlockState(posRight);
         } else if (direction == 4) {
             posLeft = new BlockPos(Mth.floor(getX()) + 1, Math.round((float) (getY() - 1)), Mth.floor(getZ()) - 1);
             posRight = new BlockPos(Mth.floor(getX()) + 1, Math.round((float) (getY() - 1)), Mth.floor(getZ()) + 1);
-            blockLeft = level.getBlockState(posLeft);
-            blockRight = level.getBlockState(posRight);
+            blockLeft = level().getBlockState(posLeft);
+            blockRight = level().getBlockState(posRight);
         } else {
             return false;
         }
 //        System.out.println(direction + ", " + (MathHelper.floor(posX) - 1) + ", " + Math.round((float) (posY - 1)) + ", " + MathHelper.floor(posZ) + 1);
-        return blockLeft.getMaterial().blocksMotion() || blockRight.getMaterial().blocksMotion();
+        return blockLeft.blocksMotion() || blockRight.blocksMotion();
     }
 
     private void spawnExplosionParticles(int amount) {
@@ -613,7 +613,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             float vy = random.nextFloat() * 0.1F - 0.05f;
             float vx = velocity * Mth.cos(yaw);
             float vz = velocity * Mth.sin(yaw);
-            level.addParticle(ParticleTypes.FLAME, getX(), getY() + 1, getZ(), vx, vy, vz);
+            level().addParticle(ParticleTypes.FLAME, getX(), getY() + 1, getZ(), vx, vy, vz);
         }
     }
 
@@ -770,7 +770,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
     public LivingEntity getMisbehavedPlayer() {
         try {
             UUID uuid = this.getMisbehavedPlayerId();
-            return uuid == null ? null : this.level.getPlayerByUUID(uuid);
+            return uuid == null ? null : this.level().getPlayerByUUID(uuid);
         } catch (IllegalArgumentException illegalargumentexception) {
             return null;
         }
@@ -826,7 +826,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
     public void openGUI(Player playerEntity) {
         setCustomer(playerEntity);
         MowziesMobs.PROXY.setReferencedMob(this);
-        if (!this.level.isClientSide && getTarget() == null && isAlive()) {
+        if (!this.level().isClientSide && getTarget() == null && isAlive()) {
             playerEntity.openMenu(new MenuProvider() {
                 @Override
                 public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player) {
@@ -891,7 +891,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
                 Player closestPlayer = players.get(0);
                 float closestPlayerDist = 6;
                 for (Player player : players) {
-                    if (player.getMainHandItem().getItem() == ItemHandler.UMVUTHI_SPAWN_EGG || player.getMainHandItem().getItem() == ItemHandler.UMVUTHI_SPAWN_EGG) {
+                    if (player.getMainHandItem().getItem() == ItemHandler.UMVUTHI_SPAWN_EGG.get() || player.getMainHandItem().getItem() == ItemHandler.UMVUTHI_SPAWN_EGG.get()) {
                         float thisDist = this.distanceTo(player);
                         if (thisDist < closestPlayerDist) {
                             closestPlayer = player;
@@ -965,7 +965,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         @Override
         public void tickUsing() {
             super.tickUsing();
-            if (!getUser().level.isClientSide()) {
+            if (!getUser().level().isClientSide()) {
                 if (entityTarget == null) {
                     return;
                 }
@@ -987,7 +987,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
                         newZ = Mth.floor(entityTarget.getZ());
                     }
                     for (int i = 0; i < 5; i++) {
-                        if (!getUser().level.canSeeSkyFromBelowWater(new BlockPos(newX, y, newZ))) {
+                        if (!getUser().level().canSeeSkyFromBelowWater(new BlockPos(newX, y, newZ))) {
                             y++;
                         } else {
                             break;
@@ -1007,12 +1007,12 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         @Override
         protected void beginSection(AbilitySection section) {
             super.beginSection(section);
-            if (!getUser().level.isClientSide()) {
+            if (!getUser().level().isClientSide()) {
                 if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
                     getUser().playSound(MMSounds.ENTITY_UMVUTHI_ATTACK.get(), 1.4f, 1);
-                    EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE.get(), getUser().level, getUser(), newX, y, newZ);
+                    EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE.get(), getUser().level(), getUser(), newX, y, newZ);
                     sunstrike.onSummon();
-                    getUser().level.addFreshEntity(sunstrike);
+                    getUser().level().addFreshEntity(sunstrike);
                 }
             }
         }
@@ -1042,9 +1042,9 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             super.tickUsing();
             float radius1 = 0.8f;
             EntityUmvuthi entity = getUser();
-            if (getTicksInUse() == 4 && !entity.level.isClientSide) {
-                solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM.get(), getUser().level, entity, entity.getX() + radius1 * Math.sin(-entity.getYRot() * Math.PI / 180), entity.getY() + 1.4, entity.getZ() + radius1 * Math.cos(-entity.getYRot() * Math.PI / 180), (float) ((entity.yHeadRot + 90) * Math.PI / 180), (float) (-entity.getXRot() * Math.PI / 180), 55);
-                entity.level.addFreshEntity(solarBeam);
+            if (getTicksInUse() == 4 && !entity.level().isClientSide) {
+                solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM.get(), getUser().level(), entity, entity.getX() + radius1 * Math.sin(-entity.getYRot() * Math.PI / 180), entity.getY() + 1.4, entity.getZ() + radius1 * Math.cos(-entity.getYRot() * Math.PI / 180), (float) ((entity.yHeadRot + 90) * Math.PI / 180), (float) (-entity.getXRot() * Math.PI / 180), 55);
+                entity.level().addFreshEntity(solarBeam);
             }
             if (getTicksInUse() >= 22) {
                 if (entityTarget != null) {
@@ -1135,7 +1135,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
                 playAnimation("spawn_strix", false);
             }
             if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
-                if (!getUser().level.isClientSide()) {
+                if (!getUser().level().isClientSide()) {
                     entity.playSound(MMSounds.ENTITY_UMVUTHI_BELLY.get(), 1.5f, 1);
                     entity.playSound(MMSounds.ENTITY_UMVUTHANA_BLOWDART.get(), 1.5f, 0.5f);
                     double angle = entity.yHeadRot;
@@ -1149,18 +1149,18 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
                     }
                     EntityUmvuthanaMinion umvuthana;
                     if (spawnSunblockers) {
-                        umvuthana = new EntityUmvuthanaCrane(EntityHandler.UMVUTHANA_CRANE.get(), entity.level);
+                        umvuthana = new EntityUmvuthanaCrane(EntityHandler.UMVUTHANA_CRANE.get(), entity.level());
                         ((EntityUmvuthanaCrane) umvuthana).hasTriedOrSucceededTeleport = false;
-                    } else umvuthana = new EntityUmvuthanaMinion(EntityHandler.UMVUTHANA_MINION.get(), entity.level);
+                    } else umvuthana = new EntityUmvuthanaMinion(EntityHandler.UMVUTHANA_MINION.get(), entity.level());
                     umvuthana.absMoveTo(entity.getX() + 2 * Math.sin(-angle * (Math.PI / 180)), entity.getY() + 2.5, entity.getZ() + 2 * Math.cos(-angle * (Math.PI / 180)), entity.yHeadRot, 0);
                     umvuthana.setActive(false);
                     umvuthana.active = false;
-                    umvuthana.finalizeSpawn((ServerLevelAccessor) entity.getCommandSenderWorld(), entity.level.getCurrentDifficultyAt(umvuthana.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
+                    umvuthana.finalizeSpawn((ServerLevelAccessor) entity.getCommandSenderWorld(), entity.level().getCurrentDifficultyAt(umvuthana.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
                     umvuthana.restrictTo(entity.getRestrictCenter(), 25);
                     if (entity.getTeam() instanceof PlayerTeam) {
-                        umvuthana.level.getScoreboard().addPlayerToTeam(umvuthana.getScoreboardName(), (PlayerTeam) entity.getTeam());
+                        umvuthana.level().getScoreboard().addPlayerToTeam(umvuthana.getScoreboardName(), (PlayerTeam) entity.getTeam());
                     }
-                    entity.level.addFreshEntity(umvuthana);
+                    entity.level().addFreshEntity(umvuthana);
                     umvuthana.setDeltaMovement(0.7 * Math.sin(-angle * (Math.PI / 180)), 0.5, 0.7 * Math.cos(-angle * (Math.PI / 180)));
                     if (!spawnSunblockers) {
                         umvuthana.setTarget(entity.getTarget());
@@ -1234,11 +1234,11 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         protected void beginSection(AbilitySection section) {
             super.beginSection(section);
             if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
-                if (!getUser().level.isClientSide) {
+                if (!getUser().level().isClientSide) {
                     Vec3 offset = new Vec3(1.1f, 0, 0);
                     offset = offset.yRot((float) Math.toRadians(-getUser().getYRot() - 90));
-                    EntitySuperNova superNova = new EntitySuperNova(EntityHandler.SUPER_NOVA.get(), getUser().level, getUser(), getUser().getX() + offset.x, getUser().getY() + 0.05, getUser().getZ() + offset.z);
-                    getUser().level.addFreshEntity(superNova);
+                    EntitySuperNova superNova = new EntitySuperNova(EntityHandler.SUPER_NOVA.get(), getUser().level(), getUser(), getUser().getX() + offset.x, getUser().getY() + 0.05, getUser().getZ() + offset.z);
+                    getUser().level().addFreshEntity(superNova);
                 }
             }
         }

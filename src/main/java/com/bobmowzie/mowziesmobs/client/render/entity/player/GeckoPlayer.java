@@ -20,27 +20,28 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import software.bernie.geckolib3.core.GeoEntity;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.RawAnimation;
-import software.bernie.geckolib3.core.event.predicate.AnimationState;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.renderer.GeoRenderer;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class GeckoPlayer implements GeoEntity, IAnimationTickable {
 
-	protected IGeoRenderer<GeckoPlayer> renderer;
+	protected GeoRenderer<GeckoPlayer> renderer;
 	protected MowzieGeoModel<GeckoPlayer> model;
+	protected MowzieAnimationController<GeckoPlayer> controller;
 
 	private int tickTimer = 0;
 
 	private Player player;
-	private AnimationFactory factory = new AnimationFactory(this);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	public static final String THIRD_PERSON_CONTROLLER_NAME = "thirdPersonAnimation";
 	public static final String FIRST_PERSON_CONTROLLER_NAME = "firstPersonAnimation";
 
@@ -55,13 +56,13 @@ public abstract class GeckoPlayer implements GeoEntity, IAnimationTickable {
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new MowzieAnimationController<>(this, getControllerName(), 0, this::predicate, 0));
+	public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+		controller = new MowzieAnimationController<>(this, getControllerName(), 0, this::predicate, 0);
+		controllers.add(controller);
 	}
 
-	@Override
-	public AnimationFactory getFactory() {
-		return factory;
+	public MowzieAnimationController<GeckoPlayer> getController() {
+		return controller;
 	}
 
 	public Player getPlayer() {
@@ -79,7 +80,7 @@ public abstract class GeckoPlayer implements GeoEntity, IAnimationTickable {
 	}
 
 	public <E extends GeoEntity> PlayState predicate(AnimationState<E> e) {
-		e.getController().transitionLengthTicks = 0;
+		e.getController().transitionLength(0);
 		Player player = getPlayer();
 		if (player == null) {
 			return PlayState.STOP;
@@ -93,7 +94,7 @@ public abstract class GeckoPlayer implements GeoEntity, IAnimationTickable {
 			return abilityCapability.animationPredicate(e, getPerspective());
 		}
 		else {
-			e.getController().setAnimation(new RawAnimation().addAnimation("idle"));
+			e.getController().setAnimation(RawAnimation.begin().thenLoop("idle"));
 			return PlayState.CONTINUE;
 		}
 	}
@@ -115,14 +116,13 @@ public abstract class GeckoPlayer implements GeoEntity, IAnimationTickable {
 			if (perspective == Perspective.FIRST_PERSON) geckoPlayer = GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON;
 			else geckoPlayer = playerCapability.getGeckoPlayer();
 			if (geckoPlayer != null) {
-				String name = perspective == Perspective.FIRST_PERSON ? FIRST_PERSON_CONTROLLER_NAME : THIRD_PERSON_CONTROLLER_NAME;
-				return (MowzieAnimationController<GeckoPlayer>) GeckoLibUtil.getControllerForID(geckoPlayer.getFactory(), player.getUUID().hashCode(), name);
+				return geckoPlayer.controller;
 			}
 		}
 		return null;
 	}
 
-	public IGeoRenderer<GeckoPlayer> getPlayerRenderer() {
+	public GeoRenderer<GeckoPlayer> getPlayerRenderer() {
 		return renderer;
 	}
 
@@ -135,6 +135,11 @@ public abstract class GeckoPlayer implements GeoEntity, IAnimationTickable {
 	public abstract Perspective getPerspective();
 
 	public abstract void setup(Player player);
+
+	@Override
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return cache;
+	}
 
 	public static class GeckoPlayerFirstPerson extends GeckoPlayer {
 		public GeckoPlayerFirstPerson(Player player) {

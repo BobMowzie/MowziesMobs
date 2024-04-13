@@ -1,8 +1,8 @@
 package com.bobmowzie.mowziesmobs.client.model.tools.geckolib;
 
-import com.ilexiconn.llibrary.server.event.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.model.GeoModel;
 
 import java.util.Optional;

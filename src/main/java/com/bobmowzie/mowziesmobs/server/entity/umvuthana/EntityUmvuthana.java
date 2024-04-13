@@ -255,7 +255,7 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
     protected <E extends GeoEntity> PlayState predicateMask(AnimationState<E> event)
     {
         if (isAlive() && active && getActiveAbilityType() != HEAL_ABILITY) {
-            event.getController().setAnimation(new RawAnimation().addAnimation("mask_twitch", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(RawAnimation.begin().addAnimation("mask_twitch", ILoopType.EDefaultLoopTypes.LOOP));
             return PlayState.CONTINUE;
         }
         return PlayState.STOP;
@@ -270,10 +270,10 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
         }
 
         if (event.getLimbSwingAmount() > threshold && !isStrafing()) {
-            event.getController().setAnimation(new RawAnimation().addAnimation("run_switch", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(RawAnimation.begin().addAnimation("run_switch", ILoopType.EDefaultLoopTypes.LOOP));
         }
         else {
-            event.getController().setAnimation(new RawAnimation().addAnimation("walk_switch", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(RawAnimation.begin().addAnimation("walk_switch", ILoopType.EDefaultLoopTypes.LOOP));
         }
         return PlayState.CONTINUE;
     }
@@ -284,26 +284,26 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
             if (isAggressive()) {
                 event.getController().transitionLengthTicks = 4;
                 if (event.isMoving()) {
-                    event.getController().setAnimation(new RawAnimation().addAnimation("walk_aggressive", ILoopType.EDefaultLoopTypes.LOOP));
+                    event.getController().setAnimation(RawAnimation.begin().addAnimation("walk_aggressive", ILoopType.EDefaultLoopTypes.LOOP));
                 } else {
-                    event.getController().setAnimation(new RawAnimation().addAnimation("idle_aggressive", ILoopType.EDefaultLoopTypes.LOOP));
+                    event.getController().setAnimation(RawAnimation.begin().addAnimation("idle_aggressive", ILoopType.EDefaultLoopTypes.LOOP));
                 }
             } else {
                 event.getController().transitionLengthTicks = 4;
                 if (event.isMoving()) {
-                    event.getController().setAnimation(new RawAnimation().addAnimation("walk_neutral", ILoopType.EDefaultLoopTypes.LOOP));
+                    event.getController().setAnimation(RawAnimation.begin().addAnimation("walk_neutral", ILoopType.EDefaultLoopTypes.LOOP));
                 } else {
-                    event.getController().setAnimation(new RawAnimation().addAnimation("idle_neutral", ILoopType.EDefaultLoopTypes.LOOP));
+                    event.getController().setAnimation(RawAnimation.begin().addAnimation("idle_neutral", ILoopType.EDefaultLoopTypes.LOOP));
                 }
             }
         }
         else {
             event.getController().transitionLengthTicks = 0;
             if (!isOnGround() && !isInLava() && !isInWater()) {
-                event.getController().setAnimation(new RawAnimation().addAnimation("tumble", ILoopType.EDefaultLoopTypes.LOOP));
+                event.getController().setAnimation(RawAnimation.begin().addAnimation("tumble", ILoopType.EDefaultLoopTypes.LOOP));
             }
             else {
-                event.getController().setAnimation(new RawAnimation().addAnimation("inactive", ILoopType.EDefaultLoopTypes.LOOP));
+                event.getController().setAnimation(RawAnimation.begin().addAnimation("inactive", ILoopType.EDefaultLoopTypes.LOOP));
             }
         }
     }

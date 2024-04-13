@@ -80,7 +80,7 @@ public abstract class EntityMagicEffect extends Entity implements ILinkedEntity 
     public void onAddedToWorld() {
         super.onAddedToWorld();
         if (!level().isClientSide() && getCasterID().isPresent() && caster == null) {
-            Entity casterEntity = ((ServerLevel)this.level).getEntity(getCasterID().get());
+            Entity casterEntity = ((ServerLevel)this.level()).getEntity(getCasterID().get());
             if (casterEntity instanceof LivingEntity) {
                 caster = (LivingEntity) casterEntity;
                 MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> this), new MessageLinkEntities(this, caster));
@@ -95,11 +95,6 @@ public abstract class EntityMagicEffect extends Entity implements ILinkedEntity 
             caster = (LivingEntity) entity;
         }
         hasSyncedCaster = true;
-    }
-
-    @Override
-    public Packet<?> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override

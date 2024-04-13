@@ -27,6 +27,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib3.core.GeoEntity;
 import software.bernie.geckolib3.core.GeoEntityModel;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -40,21 +43,21 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 @OnlyIn(Dist.CLIENT)
-public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements IGeoRenderer<GeckoPlayer> {
+public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements GeoRenderer<GeckoPlayer> {
     public MultiBufferSource rtb;
 
     public static GeckoPlayer.GeckoPlayerFirstPerson GECKO_PLAYER_FIRST_PERSON;
 
     private static HashMap<Class<? extends GeckoPlayer>, GeckoFirstPersonRenderer> modelsToLoad = new HashMap<>();
-    private ModelGeckoPlayerFirstPerson modelProvider;
+    private ModelGeckoPlayerFirstPerson geoModel;
 
     boolean mirror;
 
     public Vec3 particleEmitterRoot;
 
-    public GeckoFirstPersonRenderer(Minecraft mcIn, ModelGeckoPlayerFirstPerson modelProvider) {
+    public GeckoFirstPersonRenderer(Minecraft mcIn, ModelGeckoPlayerFirstPerson geoModel) {
         super(mcIn, mcIn.getEntityRenderDispatcher(), mcIn.getItemRenderer());
-        this.modelProvider = modelProvider;
+        this.geoModel = geoModel;
     }
 
     static {
@@ -84,8 +87,8 @@ public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements IGeo
         mirror = player.getMainArm() == HumanoidArm.LEFT;
 
         if (flag) {
-            this.modelProvider.setTextureFromPlayer(player);
-            this.modelProvider.setLivingAnimations(geckoPlayer, player.getUUID().hashCode());
+            this.geoModel.setTextureFromPlayer(player);
+            this.geoModel.setLivingAnimations(geckoPlayer, player.getUUID().hashCode());
 
             RenderType rendertype = RenderType.itemEntityTranslucentCull(getTextureLocation(geckoPlayer));
             VertexConsumer ivertexbuilder = bufferIn.getBuffer(rendertype);
@@ -115,17 +118,17 @@ public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements IGeo
                 offHandEquipProgress = Mth.clamp((ability.getTicksInSection() + partialTicks - ((AbilitySection.AbilitySectionDuration)ability.getCurrentSection()).duration + 5) / 5f, 0f, 1f);
         }
 
-        if (modelProvider.isInitialized()) {
+        if (geoModel.isInitialized()) {
             if (handDisplay != PlayerAbility.HandDisplay.DONT_RENDER) {
                 int sideMult = handside == HumanoidArm.RIGHT ? -1 : 1;
                 if (mirror) handside = handside.getOpposite();
                 String sideName = handside == HumanoidArm.RIGHT ? "Right" : "Left";
                 String boneName = sideName + "Arm";
-                MowzieGeoBone bone = this.modelProvider.getMowzieBone(boneName);
+                MowzieGeoBone bone = this.geoModel.getMowzieBone(boneName);
 
                 PoseStack newMatrixStack = new PoseStack();
 
-                float fixedPitchController = 1f - this.modelProvider.getControllerValueInverted("FixedPitchController" + sideName);
+                float fixedPitchController = 1f - this.geoModel.getControllerValueInverted("FixedPitchController" + sideName);
                 newMatrixStack.mulPose(new Quaternion(Vector3f.XP, pitch * fixedPitchController, true));
 
                 newMatrixStack.last().normal().mul(bone.getWorldSpaceNormal());
@@ -146,7 +149,7 @@ public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements IGeo
             toWorldSpace.translate(player.getX(), player.getY() + player.getEyeHeight(), player.getZ());
             toWorldSpace.mulPose(new Quaternion(0,-player.getYRot() + 180, 0, true));
             toWorldSpace.mulPose(new Quaternion(-player.getXRot(),0, 0, true));
-            MowzieGeoBone particleEmitterRootBone = modelProvider.getMowzieBone("ParticleEmitterRoot");
+            MowzieGeoBone particleEmitterRootBone = geoModel.getMowzieBone("ParticleEmitterRoot");
             Vector4f emitterRootPos = new Vector4f(0, 0, 0, 1);
             emitterRootPos.transform(particleEmitterRootBone.getWorldSpaceXform());
             emitterRootPos.transform(toWorldSpace.last().pose());
@@ -155,21 +158,46 @@ public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements IGeo
     }
 
     public void setSmallArms() {
-        this.modelProvider.setUseSmallArms(true);
-    }
-
-    @Override
-    public GeoModelProvider<GeckoPlayer> getGeoModelProvider() {
-        return this.modelProvider;
+        this.geoModel.setUseSmallArms(true);
     }
 
     public ModelGeckoPlayerFirstPerson getAnimatedPlayerModel() {
-        return this.modelProvider;
+        return this.geoModel;
+    }
+
+    @Override
+    public GeoModel<GeckoPlayer> getGeoModel() {
+        return geoModel;
+    }
+
+    @Override
+    public GeckoPlayer getAnimatable() {
+        return null;
     }
 
     @Override
     public ResourceLocation getTextureLocation(GeckoPlayer geckoPlayer) {
         return ((AbstractClientPlayer)geckoPlayer.getPlayer()).getSkinTextureLocation();
+    }
+
+    @Override
+    public void fireCompileRenderLayersEvent() {
+
+    }
+
+    @Override
+    public boolean firePreRenderEvent(PoseStack poseStack, BakedGeoModel model, MultiBufferSource bufferSource, float partialTick, int packedLight) {
+        return false;
+    }
+
+    @Override
+    public void firePostRenderEvent(PoseStack poseStack, BakedGeoModel model, MultiBufferSource bufferSource, float partialTick, int packedLight) {
+
+    }
+
+    @Override
+    public void updateAnimatedTextureFrame(GeckoPlayer animatable) {
+
     }
 
     @Override

@@ -33,7 +33,7 @@ public class BoulderRollAbility extends PlayerAbility {
     public <E extends GeoEntity> PlayState animationPredicate(AnimationState<E> e, GeckoPlayer.Perspective perspective) {
         e.getController().transitionLengthTicks = 0;
         if (perspective == GeckoPlayer.Perspective.THIRD_PERSON) {
-            e.getController().setAnimation(new RawAnimation().addAnimation("boulder_roll_loop_still", true));
+            e.getController().setAnimation(RawAnimation.begin().addAnimation("boulder_roll_loop_still", true));
         }
         return PlayState.CONTINUE;
     }

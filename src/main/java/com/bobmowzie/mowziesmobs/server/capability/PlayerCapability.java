@@ -283,8 +283,8 @@ public class PlayerCapability {
                             barakoan.getNavigation().moveTo(player.getX() + tribePackRadius * Mth.cos(theta * i), player.getY(), player.getZ() + tribePackRadius * Mth.sin(theta * i), 0.45);
                         else
                             barakoan.getNavigation().stop();
-                        if (distanceToPlayer > 20 && player.isOnGround()) {
-                            tryTeleportBarakoan(player, barakoan);
+                        if (distanceToPlayer > 20 && player.onGround()) {
+                            tryTeleportUmvuthanaFollower(player, barakoan);
                         }
                     }
                 }
@@ -395,7 +395,7 @@ public class PlayerCapability {
         }
 
         private void restoreIceCrystalStack(Player entity, ItemStack stack) {
-            if (stack.getItem() == ItemHandler.ICE_CRYSTAL) {
+            if (stack.getItem() == ItemHandler.ICE_CRYSTAL.get()) {
                 if (!ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable.get()) {
                     stack.setDamageValue(Math.max(stack.getDamageValue() - 1, 0));
                 }
@@ -404,7 +404,7 @@ public class PlayerCapability {
 
         private void useIceCrystalStack(Player player) {
             ItemStack stack = player.getUseItem();
-            if (stack.getItem() == ItemHandler.ICE_CRYSTAL) {
+            if (stack.getItem() == ItemHandler.ICE_CRYSTAL.get()) {
                 Ability iceBreathAbility = AbilityHandler.INSTANCE.getAbility(player, AbilityHandler.ICE_BREATH_ABILITY);
                 if (iceBreathAbility != null && iceBreathAbility.isUsing()) {
                     InteractionHand handIn = player.getUsedItemHand();
@@ -421,16 +421,16 @@ public class PlayerCapability {
             }
         }
 
-        private void tryTeleportBarakoan(Player player, EntityUmvuthanaFollowerToPlayer barakoan) {
+        private void tryTeleportUmvuthanaFollower(Player player, EntityUmvuthanaFollowerToPlayer umvuthana) {
             int x = Mth.floor(player.getX()) - 2;
             int z = Mth.floor(player.getZ()) - 2;
             int y = Mth.floor(player.getBoundingBox().minY);
 
             for (int l = 0; l <= 4; ++l) {
                 for (int i1 = 0; i1 <= 4; ++i1) {
-                    if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && barakoan.isTeleportFriendlyBlock(x, z, y, l, i1)) {
-                        barakoan.moveTo((float) (x + l) + 0.5F, y, (float) (z + i1) + 0.5F, barakoan.getYRot(), barakoan.getXRot());
-                        barakoan.getNavigation().stop();
+                    if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && umvuthana.isTeleportFriendlyBlock(x, z, y, l, i1)) {
+                        umvuthana.moveTo((float) (x + l) + 0.5F, y, (float) (z + i1) + 0.5F, umvuthana.getYRot(), umvuthana.getXRot());
+                        umvuthana.getNavigation().stop();
                         return;
                     }
                 }
