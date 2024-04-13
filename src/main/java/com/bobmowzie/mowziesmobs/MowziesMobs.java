@@ -41,8 +41,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.simple.SimpleChannel;
-import software.bernie.example.GeckoLibMod;
-import software.bernie.geckolib3.GeckoLib;
+import software.bernie.geckolib.GeckoLib;
 
 @Mod(MowziesMobs.MODID)
 @Mod.EventBusSubscriber(modid = MowziesMobs.MODID)
@@ -54,13 +53,12 @@ public final class MowziesMobs {
     public static SimpleChannel NETWORK;
 
     public MowziesMobs() {
-        GeckoLibMod.DISABLE_IN_DEV = true;
-        MowzieGeoBuilder.registerGeoBuilder(MODID, new MowzieGeoBuilder());
+//        MowzieGeoBuilder.registerGeoBuilder(MODID, new MowzieGeoBuilder());
         GeckoLib.initialize();
 
         PROXY = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
         final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        CreativeTabHandler.INSTANCE.onInit();
+        CreativeTabHandler.register(bus);
         EntityHandler.REG.register(bus);
         MMSounds.REG.register(bus);
         BlockHandler.REG.register(bus);

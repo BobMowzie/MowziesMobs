@@ -153,7 +153,7 @@ public enum ClientEventHandler {
             entity.yHeadRot = entity.yHeadRotO = frozenCapability.getFrozenYawHead();
             entity.yBodyRot = entity.yBodyRotO = frozenCapability.getFrozenRenderYawOffset();
             entity.attackAnim = entity.oAttackAnim = frozenCapability.getFrozenSwingProgress();
-            entity.animationSpeed = entity.animationSpeedOld = frozenCapability.getFrozenLimbSwingAmount();
+//            entity.animationSpeed = entity.animationSpeedOld = frozenCapability.getFrozenLimbSwingAmount();   TODO: Update to use WalkAnimationState
             entity.setShiftKeyDown(false);
         }
     }
