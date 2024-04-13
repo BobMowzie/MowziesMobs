@@ -1,24 +1,22 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
-import org.jetbrains.annotations.Nullable;
-
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoModel;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityGeomancyBase;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.core.IAnimatable;
+import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib3.core.GeoEntity;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
 import software.bernie.geckolib3.model.provider.GeoModelProvider;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 
-public class RenderGeomancyBase<T extends EntityGeomancyBase & IAnimatable> extends EntityRenderer<T> implements IGeoRenderer<T> {
+public class RenderGeomancyBase<T extends EntityGeomancyBase & GeoEntity> extends EntityRenderer<T> implements IGeoRenderer<T> {
     private static final ResourceLocation TEXTURE_STONE = new ResourceLocation("textures/blocks/stone.png");
     private MultiBufferSource rtb;
     private T entity;

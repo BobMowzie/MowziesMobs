@@ -67,7 +67,7 @@ public class MMAIAvoidEntity<U extends PathfinderMob, T extends Entity> extends 
 
     @Override
     public boolean canUse() {
-        List<T> entities = entity.level.getEntitiesOfClass(avoidedEntityType, entity.getBoundingBox().inflate(evadeDistance, 3.0D, evadeDistance), selector);
+        List<T> entities = entity.level().getEntitiesOfClass(avoidedEntityType, entity.getBoundingBox().inflate(evadeDistance, 3.0D, evadeDistance), selector);
         if (entities.isEmpty()) {
             onSafe();
             return false;

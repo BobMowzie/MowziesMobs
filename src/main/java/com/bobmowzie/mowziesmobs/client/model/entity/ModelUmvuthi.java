@@ -1,20 +1,18 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.tuple.Triple;
-
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoModel;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
-
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import org.apache.commons.lang3.tuple.Triple;
+import software.bernie.geckolib3.core.event.predicate.AnimationState;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ModelUmvuthi extends MowzieGeoModel<EntityUmvuthi> {
     public ModelUmvuthi() {
@@ -37,7 +35,7 @@ public class ModelUmvuthi extends MowzieGeoModel<EntityUmvuthi> {
     }
 
     @Override
-    public void codeAnimations(EntityUmvuthi entity, Integer uniqueID, AnimationEvent<?> customPredicate) {
+    public void codeAnimations(EntityUmvuthi entity, Integer uniqueID, AnimationState<?> customPredicate) {
         float frame = entity.frame + customPredicate.getPartialTick();
 
         MowzieGeoBone rightThigh = getMowzieBone("rightThigh");

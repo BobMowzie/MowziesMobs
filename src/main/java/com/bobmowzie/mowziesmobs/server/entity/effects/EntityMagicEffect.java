@@ -2,7 +2,6 @@ package com.bobmowzie.mowziesmobs.server.entity.effects;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.ILinkedEntity;
-import com.bobmowzie.mowziesmobs.server.message.MessageInterruptAbility;
 import com.bobmowzie.mowziesmobs.server.message.MessageLinkEntities;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -21,7 +20,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PacketDistributor;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -81,7 +79,7 @@ public abstract class EntityMagicEffect extends Entity implements ILinkedEntity 
     @Override
     public void onAddedToWorld() {
         super.onAddedToWorld();
-        if (!level.isClientSide() && getCasterID().isPresent() && caster == null) {
+        if (!level().isClientSide() && getCasterID().isPresent() && caster == null) {
             Entity casterEntity = ((ServerLevel)this.level).getEntity(getCasterID().get());
             if (casterEntity instanceof LivingEntity) {
                 caster = (LivingEntity) casterEntity;
@@ -121,11 +119,11 @@ public abstract class EntityMagicEffect extends Entity implements ILinkedEntity 
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double r) {
-        return level.getEntitiesOfClass(entityClass, getBoundingBox().inflate(r, r, r), e -> e != this && distanceTo(e) <= r + e.getBbWidth() / 2f);
+        return level().getEntitiesOfClass(entityClass, getBoundingBox().inflate(r, r, r), e -> e != this && distanceTo(e) <= r + e.getBbWidth() / 2f);
     }
 
     public <T extends Entity> List<T> getEntitiesNearbyCube(Class<T> entityClass, double r) {
-        return level.getEntitiesOfClass(entityClass, getBoundingBox().inflate(r, r, r), e -> e != this);
+        return level().getEntitiesOfClass(entityClass, getBoundingBox().inflate(r, r, r), e -> e != this);
     }
 
     public boolean raytraceCheckEntity(Entity entity) {
@@ -134,7 +132,7 @@ public abstract class EntityMagicEffect extends Entity implements ILinkedEntity 
         for (int i = 0; i < numChecks; i++) {
             float increment = entity.getBbHeight() / (numChecks + 1);
             Vec3 to = entity.position().add(0, increment * (i + 1), 0);
-            BlockHitResult result = level.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+            BlockHitResult result = level().clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
             if (result.getType() != HitResult.Type.BLOCK) {
                 return true;
             }

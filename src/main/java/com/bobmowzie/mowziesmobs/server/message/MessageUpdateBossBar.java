@@ -1,16 +1,15 @@
 package com.bobmowzie.mowziesmobs.server.message;
 
-import java.util.UUID;
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
-
 import com.bobmowzie.mowziesmobs.client.ClientProxy;
-
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.UUID;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 public class MessageUpdateBossBar {
     private UUID bossID;

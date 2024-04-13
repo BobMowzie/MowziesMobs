@@ -2,7 +2,6 @@ package com.bobmowzie.mowziesmobs.client.model.armor;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.item.ItemSolVisage;
-
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;

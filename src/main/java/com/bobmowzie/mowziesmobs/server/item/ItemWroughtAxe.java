@@ -1,14 +1,9 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
@@ -22,6 +17,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class ItemWroughtAxe extends MowzieAxeItem {
 
@@ -54,7 +52,7 @@ public class ItemWroughtAxe extends MowzieAxeItem {
     @Override
     public boolean hurtEnemy(ItemStack heldItemStack, LivingEntity entityHit, LivingEntity attacker) {
         if (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable.get()) heldItemStack.hurtAndBreak(2, attacker, p -> p.broadcastBreakEvent(InteractionHand.MAIN_HAND));
-        if (!entityHit.level.isClientSide) {
+        if (!entityHit.level().isClientSide) {
             entityHit.playSound(SoundEvents.ANVIL_LAND, 0.3F, 0.5F);
         }
         return true;

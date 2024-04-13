@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.model.tools.geckolib;
 
-import com.ilexiconn.llibrary.server.event.AnimationEvent;
+import com.ilexiconn.llibrary.server.event.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.model.GeoModel;
@@ -54,7 +54,7 @@ public abstract class MowzieGeoModel<T extends GeoAnimatable> extends GeoModel<T
         }
     }*/
 
-    public void codeAnimations(T entity, Integer uniqueID, AnimationEvent<?> customPredicate) {
+    public void codeAnimations(T entity, Integer uniqueID, AnimationState<?> customPredicate) {
 
     }
 

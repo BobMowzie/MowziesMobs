@@ -1,11 +1,7 @@
 package com.bobmowzie.mowziesmobs.client;
 
-import java.util.List;
-import java.util.Map;
-
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.MaskType;
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -21,6 +17,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+
+import java.util.List;
+import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
 public class MMModels {

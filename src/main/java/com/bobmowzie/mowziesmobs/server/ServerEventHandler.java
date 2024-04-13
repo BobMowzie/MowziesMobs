@@ -1,9 +1,5 @@
 package com.bobmowzie.mowziesmobs.server;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleVanillaCloudExtended;
@@ -12,11 +8,7 @@ import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleRotation;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ai.AvoidEntityIfNotTamedGoal;
-import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
-import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
-import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
-import com.bobmowzie.mowziesmobs.server.capability.LivingCapability;
-import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
+import com.bobmowzie.mowziesmobs.server.capability.*;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
@@ -25,12 +17,7 @@ import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthana;
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthanaCrane;
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthanaFollowerToPlayer;
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthanaMinion;
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.MaskType;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.*;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemNagaFangDagger;
@@ -42,7 +29,6 @@ import com.bobmowzie.mowziesmobs.server.message.MessageSunblockEffect;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.power.Power;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
@@ -51,11 +37,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
@@ -79,21 +61,17 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.living.MobEffectEvent;
-import net.minecraftforge.event.entity.player.AttackEntityEvent;
-import net.minecraftforge.event.entity.player.CriticalHitEvent;
-import net.minecraftforge.event.entity.player.FillBucketEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.living.*;
+import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.PacketDistributor;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public final class ServerEventHandler {
 
@@ -150,7 +128,7 @@ public final class ServerEventHandler {
                 entity.removeEffectNoUpdate(MobEffects.POISON);
             }
 
-            if (!entity.level.isClientSide) {
+            if (!entity.level().isClientSide) {
                 Item headItemStack = entity.getItemBySlot(EquipmentSlot.HEAD).getItem();
                 if (headItemStack instanceof ItemUmvuthanaMask) {
                     ItemUmvuthanaMask mask = (ItemUmvuthanaMask) headItemStack;
@@ -161,7 +139,7 @@ public final class ServerEventHandler {
             if (entity instanceof Mob && !(entity instanceof EntityUmvuthanaCrane)) {
                 Mob mob = (Mob) entity;
                 if (mob.getTarget() instanceof EntityUmvuthi && mob.getTarget().hasEffect(EffectHandler.SUNBLOCK.get())) {
-                    EntityUmvuthanaCrane sunblocker = mob.level.getNearestEntity(EntityUmvuthanaCrane.class, TargetingConditions.DEFAULT, mob, mob.getX(), mob.getY() + mob.getEyeHeight(), mob.getZ(), mob.getBoundingBox().inflate(40.0D, 15.0D, 40.0D));
+                    EntityUmvuthanaCrane sunblocker = mob.level().getNearestEntity(EntityUmvuthanaCrane.class, TargetingConditions.DEFAULT, mob, mob.getX(), mob.getY() + mob.getEyeHeight(), mob.getZ(), mob.getBoundingBox().inflate(40.0D, 15.0D, 40.0D));
                     mob.setTarget(sunblocker);
                 }
             }
@@ -184,13 +162,13 @@ public final class ServerEventHandler {
     @SubscribeEvent
     public void onAddPotionEffect(MobEffectEvent.Added event) {
         if (event.getEffectInstance().getEffect() == EffectHandler.SUNBLOCK.get()) {
-            if (!event.getEntity().level.isClientSide()) {
+            if (!event.getEntity().level().isClientSide()) {
                 MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageSunblockEffect(event.getEntity(), true));
             }
             MowziesMobs.PROXY.playSunblockSound(event.getEntity());
         }
         if (event.getEffectInstance().getEffect() == EffectHandler.FROZEN.get()) {
-            if (!event.getEntity().level.isClientSide()) {
+            if (!event.getEntity().level().isClientSide()) {
                 MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageFreezeEffect(event.getEntity(), true));
                 FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(event.getEntity(), CapabilityHandler.FROZEN_CAPABILITY);
                 if (frozenCapability != null) {
@@ -204,10 +182,10 @@ public final class ServerEventHandler {
     public void onRemovePotionEffect(MobEffectEvent.Remove event) {
     	if(event.getEffectInstance() == null)
     		return;
-        if (!event.getEntity().level.isClientSide() && event.getEffectInstance().getEffect() == EffectHandler.SUNBLOCK.get()) {
+        if (!event.getEntity().level().isClientSide() && event.getEffectInstance().getEffect() == EffectHandler.SUNBLOCK.get()) {
             MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageSunblockEffect(event.getEntity(), false));
         }
-        if (!event.getEntity().level.isClientSide() && event.getEffectInstance().getEffect() == EffectHandler.FROZEN.get()) {
+        if (!event.getEntity().level().isClientSide() && event.getEffectInstance().getEffect() == EffectHandler.FROZEN.get()) {
             MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageFreezeEffect(event.getEntity(), false));
             FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(event.getEntity(), CapabilityHandler.FROZEN_CAPABILITY);
             if (frozenCapability != null) {
@@ -219,10 +197,10 @@ public final class ServerEventHandler {
     @SubscribeEvent
     public void onPotionEffectExpire(MobEffectEvent.Expired event) {
         MobEffectInstance effectInstance = event.getEffectInstance();
-        if (!event.getEntity().level.isClientSide() && effectInstance != null && effectInstance.getEffect() == EffectHandler.SUNBLOCK.get()) {
+        if (!event.getEntity().level().isClientSide() && effectInstance != null && effectInstance.getEffect() == EffectHandler.SUNBLOCK.get()) {
             MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageSunblockEffect(event.getEntity(), false));
         }
-        if (!event.getEntity().level.isClientSide() && effectInstance != null && effectInstance.getEffect() == EffectHandler.FROZEN.get()) {
+        if (!event.getEntity().level().isClientSide() && effectInstance != null && effectInstance.getEffect() == EffectHandler.FROZEN.get()) {
             MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageFreezeEffect(event.getEntity(), false));
             FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(event.getEntity(), CapabilityHandler.FROZEN_CAPABILITY);
             if (frozenCapability != null) {

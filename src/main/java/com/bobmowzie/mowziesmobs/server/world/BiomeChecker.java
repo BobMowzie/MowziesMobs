@@ -1,16 +1,14 @@
 package com.bobmowzie.mowziesmobs.server.world;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class BiomeChecker {
     private Set<BiomeCombo> comboList;

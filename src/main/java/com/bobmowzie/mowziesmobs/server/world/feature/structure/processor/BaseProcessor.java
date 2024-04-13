@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.world.feature.structure.processor;
 
 import com.mojang.serialization.Codec;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.WorldGenRegion;

@@ -1,10 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.message;
 
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
-
 import com.bobmowzie.mowziesmobs.server.entity.ILinkedEntity;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
@@ -12,6 +8,9 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
+
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 /**
  * Created by BobMowzie on 10/28/2016.

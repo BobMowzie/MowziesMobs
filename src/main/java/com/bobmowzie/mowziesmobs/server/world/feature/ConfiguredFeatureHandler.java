@@ -1,9 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.world.feature;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.tag.TagHandler;
@@ -11,7 +7,6 @@ import com.bobmowzie.mowziesmobs.server.world.BiomeChecker;
 import com.bobmowzie.mowziesmobs.server.world.feature.structure.FrostmawStructure;
 import com.bobmowzie.mowziesmobs.server.world.feature.structure.UmvuthanaGroveStructure;
 import com.bobmowzie.mowziesmobs.server.world.feature.structure.WroughtnautChamberStructure;
-
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
@@ -29,6 +24,10 @@ import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadType;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
+
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class ConfiguredFeatureHandler {
 

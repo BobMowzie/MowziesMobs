@@ -1,11 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
-import java.util.Map;
-
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
 import com.google.common.collect.ImmutableMap;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -20,6 +17,8 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSeriali
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockIgnoreProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
+
+import java.util.Map;
 
 public class FrostmawPieces {
 

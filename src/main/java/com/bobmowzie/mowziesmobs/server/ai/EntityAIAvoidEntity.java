@@ -49,7 +49,7 @@ public final class EntityAIAvoidEntity<T extends Entity> extends Goal {
 
     @Override
     public boolean canUse() {
-        List<T> entities = entity.level.getEntitiesOfClass(avoidClass, entity.getBoundingBox().inflate(distance, 3, distance), predicate);
+        List<T> entities = entity.level().getEntitiesOfClass(avoidClass, entity.getBoundingBox().inflate(distance, 3, distance), predicate);
         if (entities.isEmpty()) {
             return false;
         }

@@ -1,8 +1,5 @@
 package com.bobmowzie.mowziesmobs.client.render.entity.player;
 
-import java.util.HashMap;
-import java.util.Iterator;
-
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerFirstPerson;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.MowzieRenderUtils;
@@ -16,7 +13,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
@@ -31,14 +27,17 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.IAnimatableModel;
+import software.bernie.geckolib3.core.GeoEntity;
+import software.bernie.geckolib3.core.GeoEntityModel;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.geo.render.built.GeoCube;
 import software.bernie.geckolib3.model.provider.GeoModelProvider;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 import software.bernie.geckolib3.util.RenderUtils;
+
+import java.util.HashMap;
+import java.util.Iterator;
 
 @OnlyIn(Dist.CLIENT)
 public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements IGeoRenderer<GeckoPlayer> {
@@ -59,10 +58,10 @@ public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements IGeo
     }
 
     static {
-        AnimationController.addModelFetcher((IAnimatable object) -> {
+        AnimationController.addModelFetcher((GeoEntity object) -> {
             if (object instanceof GeckoPlayer.GeckoPlayerFirstPerson) {
                 GeckoFirstPersonRenderer render = modelsToLoad.get(object.getClass());
-                return (IAnimatableModel<Object>) render.getGeoModelProvider();
+                return (GeoEntityModel<Object>) render.getGeoModelProvider();
             } else {
                 return null;
             }

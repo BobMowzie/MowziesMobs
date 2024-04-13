@@ -10,13 +10,12 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.builder.RawAnimation;
+import software.bernie.geckolib3.core.event.predicate.AnimationState;
 
 public class PlayerAbility extends Ability<Player> {
-    protected AnimationBuilder activeFirstPersonAnimation;
+    protected RawAnimation activeFirstPersonAnimation;
 
     protected ItemStack heldItemMainHandVisualOverride;
     protected ItemStack heldItemOffHandVisualOverride;
@@ -33,7 +32,7 @@ public class PlayerAbility extends Ability<Player> {
     public PlayerAbility(AbilityType<Player, ? extends Ability> abilityType, Player user, AbilitySection[] sectionTrack, int cooldownMax) {
         super(abilityType, user, sectionTrack, cooldownMax);
         if (user.level.isClientSide) {
-            this.activeAnimation = new AnimationBuilder().addAnimation("idle");
+            this.activeAnimation = new RawAnimation().addAnimation("idle");
             heldItemMainHandVisualOverride = null;
             heldItemOffHandVisualOverride = null;
             firstPersonMainHandDisplay = HandDisplay.DEFAULT;
@@ -47,7 +46,7 @@ public class PlayerAbility extends Ability<Player> {
 
     public void playAnimation(String animationName, GeckoPlayer.Perspective perspective, boolean shouldLoop) {
         if (getUser() != null && getUser().level.isClientSide()) {
-            AnimationBuilder newActiveAnimation = new AnimationBuilder().addAnimation(animationName, shouldLoop);
+            RawAnimation newActiveAnimation = new RawAnimation().addAnimation(animationName, shouldLoop);
             if (perspective == GeckoPlayer.Perspective.FIRST_PERSON) {
                 activeFirstPersonAnimation = newActiveAnimation;
             }
@@ -88,8 +87,8 @@ public class PlayerAbility extends Ability<Player> {
         return super.canContinueUsing() && !getUser().isSpectator();
     }
 
-    public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e, GeckoPlayer.Perspective perspective) {
-        AnimationBuilder whichAnimation;
+    public <E extends GeoEntity> PlayState animationPredicate(AnimationState<E> e, GeckoPlayer.Perspective perspective) {
+        RawAnimation whichAnimation;
         if (perspective == GeckoPlayer.Perspective.FIRST_PERSON) {
             whichAnimation = activeFirstPersonAnimation;
         }

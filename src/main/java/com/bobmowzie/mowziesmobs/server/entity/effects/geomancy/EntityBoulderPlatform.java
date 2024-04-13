@@ -1,12 +1,9 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects.geomancy;
 
-import java.util.List;
-
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import com.google.common.collect.Iterables;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
@@ -20,6 +17,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.shadowed.eliotlash.mclib.utils.MathHelper;
+
+import java.util.List;
 
 public class EntityBoulderPlatform extends EntityBoulderBase {
     private static final float MAX_DIST_HORIZONTAL = 4.0f;
@@ -112,7 +111,7 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
     public boolean nextSingleBoulder() {
         int whichTierIndex = (int) (Math.pow(random.nextFloat(), 2) * (GeomancyTier.values().length - 2) + 1);
         GeomancyTier nextTier = GeomancyTier.values()[whichTierIndex];
-        EntityBoulderPlatform nextBoulder = new EntityBoulderPlatform(EntityHandler.BOULDER_PLATFORM.get(), getLevel(), caster, getBlock(), blockPosition(), nextTier);
+        EntityBoulderPlatform nextBoulder = new EntityBoulderPlatform(EntityHandler.BOULDER_PLATFORM.get(), level(), caster, getBlock(), blockPosition(), nextTier);
 
         // Try many times to find a good placement for the next boulder
         for (int j = 0; j < MAX_TRIES; j++) {
@@ -143,7 +142,7 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
                     }
                 }
                 if (!obstructsPath) {
-                    getLevel().addFreshEntity(nextBoulder);
+                    level().addFreshEntity(nextBoulder);
                     if (isMainPath && this.nextBoulder == null) {
                         this.nextBoulder = nextBoulder;
                         this.nextBoulder.setMainPath();

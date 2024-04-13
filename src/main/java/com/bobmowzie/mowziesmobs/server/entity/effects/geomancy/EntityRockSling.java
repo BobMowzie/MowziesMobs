@@ -1,24 +1,22 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects.geomancy;
 
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntityMagicEffect;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.GeoEntity;
 import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.RawAnimation;
 import software.bernie.geckolib3.core.builder.ILoopType;
 import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.util.GeckoLibUtil;
 
-public class EntityRockSling extends EntityBoulderProjectile implements IAnimatable, IAnimationTickable {
+public class EntityRockSling extends EntityBoulderProjectile implements GeoEntity, IAnimationTickable {
     public AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
     private Vec3 launchVec;
@@ -52,7 +50,7 @@ public class EntityRockSling extends EntityBoulderProjectile implements IAnimata
         AnimationController<EntityRockSling> controller = new AnimationController<>(this, "controller", 0,
                 event -> {
                     event.getController()
-                            .setAnimation(new AnimationBuilder().addAnimation("roll", ILoopType.EDefaultLoopTypes.LOOP));
+                            .setAnimation(new RawAnimation().addAnimation("roll", ILoopType.EDefaultLoopTypes.LOOP));
                     return PlayState.CONTINUE;
                 });
         data.addAnimationController(controller);

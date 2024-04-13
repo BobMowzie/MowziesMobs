@@ -47,7 +47,7 @@ public class EntityPillarPiece extends Entity {
 
     @Override
     public void tick() {
-        if (!level.isClientSide()) {
+        if (!level().isClientSide()) {
             if (pillar == null) {
                 pillar = getPillar();
                 if (pillar == null) {
@@ -123,7 +123,7 @@ public class EntityPillarPiece extends Entity {
 
     public EntityPillar getPillar() {
         Optional<UUID> uuid = getPillarUUID();
-        if (uuid.isPresent() && !level.isClientSide) {
+        if (uuid.isPresent() && !level().isClientSide) {
             return (EntityPillar) ((ServerLevel) level).getEntity(uuid.get());
         }
         return null;

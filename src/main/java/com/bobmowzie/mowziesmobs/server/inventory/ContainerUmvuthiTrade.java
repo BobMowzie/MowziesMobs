@@ -2,7 +2,6 @@ package com.bobmowzie.mowziesmobs.server.inventory;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
-
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;

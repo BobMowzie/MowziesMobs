@@ -1,28 +1,14 @@
 package com.bobmowzie.mowziesmobs.client.render.entity.player;
 
-import java.util.HashMap;
-import java.util.Iterator;
-
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBipedAnimated;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerThirdPerson;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelPlayerAnimated;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.entity.FrozenRenderHandler;
-import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoArmorLayer;
-import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoCapeLayer;
-import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoElytraLayer;
-import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoParrotOnShoulderLayer;
-import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoPlayerItemInHandLayer;
-import com.bobmowzie.mowziesmobs.client.render.entity.layer.IGeckoRenderLayer;
-import com.bobmowzie.mowziesmobs.client.render.entity.layer.SolarFlareLayer;
+import com.bobmowzie.mowziesmobs.client.render.entity.layer.*;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
-
+import com.mojang.math.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
@@ -32,12 +18,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.layers.ArrowLayer;
-import net.minecraft.client.renderer.entity.layers.BeeStingerLayer;
-import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
-import net.minecraft.client.renderer.entity.layers.Deadmau5EarsLayer;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.entity.layers.SpinAttackEffectLayer;
+import net.minecraft.client.renderer.entity.layers.*;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -51,14 +32,17 @@ import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.IAnimatableModel;
+import software.bernie.geckolib3.core.GeoEntity;
+import software.bernie.geckolib3.core.GeoEntityModel;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.geo.render.built.GeoCube;
 import software.bernie.geckolib3.model.provider.GeoModelProvider;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 import software.bernie.geckolib3.util.RenderUtils;
+
+import java.util.HashMap;
+import java.util.Iterator;
 
 @OnlyIn(Dist.CLIENT)
 public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<GeckoPlayer> {
@@ -104,10 +88,10 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
     }
 
     static {
-        AnimationController.addModelFetcher((IAnimatable object) -> {
+        AnimationController.addModelFetcher((GeoEntity object) -> {
             if (object instanceof GeckoPlayer.GeckoPlayerThirdPerson) {
                 GeckoRenderPlayer render = modelsToLoad.get(object.getClass());
-                return (IAnimatableModel<Object>) render.getGeoModelProvider();
+                return (GeoEntityModel<Object>) render.getGeoModelProvider();
             } else {
                 return null;
             }

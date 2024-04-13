@@ -1,15 +1,14 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoModel;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthana;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.MaskType;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.event.predicate.AnimationState;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 public class ModelUmvuthana extends MowzieGeoModel<EntityUmvuthana> {
@@ -34,7 +33,7 @@ public class ModelUmvuthana extends MowzieGeoModel<EntityUmvuthana> {
     }
 
     @Override
-    public void codeAnimations(EntityUmvuthana entity, Integer uniqueID, AnimationEvent<?> customPredicate) {
+    public void codeAnimations(EntityUmvuthana entity, Integer uniqueID, AnimationState<?> customPredicate) {
         boolean isRaptor = entity.getMaskType() == MaskType.FURY;
         boolean isElite = entity.getMaskType() == MaskType.FAITH || isRaptor;
         getMowzieBone("crestRight").isHidden = !isElite;

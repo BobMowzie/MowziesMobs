@@ -10,7 +10,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
 public class ModelPlayerAnimated<T extends LivingEntity> extends PlayerModel<T> {

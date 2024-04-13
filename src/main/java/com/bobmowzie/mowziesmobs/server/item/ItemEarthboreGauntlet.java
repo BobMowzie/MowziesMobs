@@ -1,15 +1,9 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
-import java.util.List;
-import java.util.function.Consumer;
-
-import javax.annotation.Nullable;
-
 import com.bobmowzie.mowziesmobs.client.render.item.RenderEarthboreGauntlet;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -28,14 +22,18 @@ import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.network.PacketDistributor;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.RawAnimation;
 import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.event.predicate.AnimationState;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.network.GeckoLibNetwork;
 import software.bernie.geckolib3.network.ISyncable;
 import software.bernie.geckolib3.util.GeckoLibUtil;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Created by BobMowzie on 6/6/2017.
@@ -121,12 +119,12 @@ public class ItemEarthboreGauntlet extends MowzieToolItem implements IAnimatable
         animationData.addAnimationController(new AnimationController<>(this, controllerName, 3, this::predicate));
     }
 
-    public <P extends Item & IAnimatable> PlayState predicate(AnimationEvent<P> event) {
+    public <P extends Item & IAnimatable> PlayState predicate(AnimationState<P> event) {
         return PlayState.CONTINUE;
     }
 
-    public <P extends Item & IAnimatable> PlayState predicateIdle(AnimationEvent<P> event) {
-        event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+    public <P extends Item & IAnimatable> PlayState predicateIdle(AnimationState<P> event) {
+        event.getController().setAnimation(new RawAnimation().addAnimation("idle", true));
         return PlayState.CONTINUE;
     }
 
@@ -154,13 +152,13 @@ public class ItemEarthboreGauntlet extends MowzieToolItem implements IAnimatable
         controller.markNeedsReload();
         if (state == ANIM_REST) {
             controller.clearAnimationCache();
-            controller.setAnimation(new AnimationBuilder().addAnimation("idle", true));
+            controller.setAnimation(new RawAnimation().addAnimation("idle", true));
         } else if (state == ANIM_OPEN) {
             controller.clearAnimationCache();
-            controller.setAnimation(new AnimationBuilder().addAnimation("open", true));
+            controller.setAnimation(new RawAnimation().addAnimation("open", true));
         } else if (state == ANIM_FIST) {
             controller.clearAnimationCache();
-            controller.setAnimation(new AnimationBuilder().addAnimation("attack", false));
+            controller.setAnimation(new RawAnimation().addAnimation("attack", false));
         }
     }
 
@@ -170,8 +168,8 @@ public class ItemEarthboreGauntlet extends MowzieToolItem implements IAnimatable
     }
 
     public void playAnimation(LivingEntity entity, ItemStack stack, int state) {
-        if (!entity.level.isClientSide) {
-            int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel)entity.level);
+        if (!entity.level().isClientSide) {
+            int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel)entity.level());
             PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> {
                 return entity;
             });

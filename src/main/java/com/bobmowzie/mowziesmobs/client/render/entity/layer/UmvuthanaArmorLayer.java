@@ -1,14 +1,11 @@
 package com.bobmowzie.mowziesmobs.client.render.entity.layer;
 
-import java.util.Optional;
-
 import com.bobmowzie.mowziesmobs.server.entity.MowzieGeckoEntity;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthana;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
-
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -26,6 +23,8 @@ import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
 import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
+
+import java.util.Optional;
 
 public class UmvuthanaArmorLayer extends GeoLayerRenderer<EntityUmvuthana> {
     private final HumanoidModel defaultBipedModel;

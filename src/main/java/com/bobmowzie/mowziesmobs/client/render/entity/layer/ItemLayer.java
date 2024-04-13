@@ -3,7 +3,6 @@ package com.bobmowzie.mowziesmobs.client.render.entity.layer;
 import com.bobmowzie.mowziesmobs.client.render.MowzieRenderUtils;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;

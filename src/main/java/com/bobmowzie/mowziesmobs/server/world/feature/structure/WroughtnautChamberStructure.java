@@ -1,14 +1,9 @@
 package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
-import javax.annotation.Nullable;
-
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.ConfiguredFeatureHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
 import com.mojang.serialization.Codec;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelHeightAccessor;
@@ -22,6 +17,9 @@ import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
+import org.apache.commons.lang3.tuple.Pair;
+
+import javax.annotation.Nullable;
 
 public class WroughtnautChamberStructure extends MowzieStructure {
 	public static final Codec<WroughtnautChamberStructure> CODEC = simpleCodec(WroughtnautChamberStructure::new);

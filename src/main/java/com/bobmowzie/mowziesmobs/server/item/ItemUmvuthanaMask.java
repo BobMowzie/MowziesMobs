@@ -1,10 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
-import java.util.List;
-import java.util.function.Consumer;
-
-import javax.annotation.Nullable;
-
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.render.item.RenderUmvuthanaMaskItem;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
@@ -16,7 +11,6 @@ import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthanaCraneToP
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthanaFollowerToPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.MaskType;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -31,24 +25,24 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.ArmorMaterials;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.RawAnimation;
 import software.bernie.geckolib3.core.builder.ILoopType;
 import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.event.predicate.AnimationState;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
 import software.bernie.geckolib3.util.GeckoLibUtil;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.function.Consumer;
 
 public class ItemUmvuthanaMask extends MowzieArmorItem implements UmvuthanaMask, IAnimatable {
     private final MaskType type;
@@ -96,10 +90,10 @@ public class ItemUmvuthanaMask extends MowzieArmorItem implements UmvuthanaMask,
                 angle = angle + 360;
             }
             EntityUmvuthanaFollowerToPlayer umvuthana;
-            if (mask == MaskType.FAITH) umvuthana = new EntityUmvuthanaCraneToPlayer(EntityHandler.UMVUTHANA_CRANE_TO_PLAYER.get(), player.level, player);
-            else umvuthana = new EntityUmvuthanaFollowerToPlayer(EntityHandler.UMVUTHANA_FOLLOWER_TO_PLAYER.get(), player.level, player);
+            if (mask == MaskType.FAITH) umvuthana = new EntityUmvuthanaCraneToPlayer(EntityHandler.UMVUTHANA_CRANE_TO_PLAYER.get(), player.level(), player);
+            else umvuthana = new EntityUmvuthanaFollowerToPlayer(EntityHandler.UMVUTHANA_FOLLOWER_TO_PLAYER.get(), player.level(), player);
 //            property.addPackMember(umvuthana);
-            if (!player.level.isClientSide) {
+            if (!player.level().isClientSide) {
                 if (mask != MaskType.FAITH) {
                     int weapon;
                     if (mask != MaskType.FURY) weapon = umvuthana.randomizeWeapon();
@@ -109,7 +103,7 @@ public class ItemUmvuthanaMask extends MowzieArmorItem implements UmvuthanaMask,
                 umvuthana.absMoveTo(player.getX() + 1 * Math.sin(-angle * (Math.PI / 180)), player.getY() + 1.5, player.getZ() + 1 * Math.cos(-angle * (Math.PI / 180)), (float) angle, 0);
                 umvuthana.setActive(false);
                 umvuthana.active = false;
-                player.level.addFreshEntity(umvuthana);
+                player.level().addFreshEntity(umvuthana);
                 double vx = 0.5 * Math.sin(-angle * Math.PI / 180);
                 double vy = 0.5;
                 double vz = 0.5 * Math.cos(-angle * Math.PI / 180);
@@ -169,13 +163,13 @@ public class ItemUmvuthanaMask extends MowzieArmorItem implements UmvuthanaMask,
         return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.UMVUTHANA_MASK.armorConfig;
     }
 
-    public <P extends Item & IAnimatable> PlayState predicate(AnimationEvent<P> event) {
+    public <P extends Item & IAnimatable> PlayState predicate(AnimationState<P> event) {
         List<LivingEntity> livingEntities = event.getExtraDataOfType(LivingEntity.class);
         if (livingEntities.size() > 0 && livingEntities.get(0) instanceof EntityUmvuthana) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("umvuthana", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(new RawAnimation().addAnimation("umvuthana", ILoopType.EDefaultLoopTypes.LOOP));
         }
         else {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("player", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(new RawAnimation().addAnimation("player", ILoopType.EDefaultLoopTypes.LOOP));
         }
         return PlayState.CONTINUE;
     }

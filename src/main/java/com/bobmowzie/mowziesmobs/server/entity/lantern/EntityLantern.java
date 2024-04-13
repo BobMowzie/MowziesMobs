@@ -36,7 +36,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.EnumSet;
-import java.util.Random;
 
 /**
  * Created by BobMowzie on 7/24/2018.

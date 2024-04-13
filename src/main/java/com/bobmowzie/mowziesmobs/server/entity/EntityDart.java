@@ -64,7 +64,7 @@ public class EntityDart extends Arrow {
             if (hit instanceof LivingEntity) {
                 LivingEntity living = (LivingEntity) hit;
                 if (
-                        level.isClientSide ||
+                        level().isClientSide ||
                         (shooter == hit) ||
                         (shooter instanceof EntityUmvuthana && living instanceof EntityUmvuthana && ((EntityUmvuthana) shooter).isUmvuthiDevoted() == ((EntityUmvuthana) living).isUmvuthiDevoted()) ||
                         (shooter instanceof EntityUmvuthanaFollowerToPlayer && living == ((EntityUmvuthanaFollowerToPlayer) shooter).getLeader())

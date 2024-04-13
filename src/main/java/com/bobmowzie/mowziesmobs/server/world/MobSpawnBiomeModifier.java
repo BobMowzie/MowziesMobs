@@ -4,7 +4,6 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.world.feature.ConfiguredFeatureHandler;
 import com.bobmowzie.mowziesmobs.server.world.spawn.SpawnHandler;
 import com.mojang.serialization.Codec;
-
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;

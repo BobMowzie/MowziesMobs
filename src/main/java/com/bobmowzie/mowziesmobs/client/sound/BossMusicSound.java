@@ -2,7 +2,6 @@ package com.bobmowzie.mowziesmobs.client.sound;
 
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.ilexiconn.llibrary.client.model.tools.ControlledAnimation;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;

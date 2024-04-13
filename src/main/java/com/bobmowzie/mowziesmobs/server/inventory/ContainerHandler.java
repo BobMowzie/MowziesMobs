@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.inventory;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;

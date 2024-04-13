@@ -72,8 +72,8 @@ public class EntityAxeAttack extends EntityMagicEffect {
             if (!caster.isAlive()) discard();
             absMoveTo(caster.getX(), caster.getY() + caster.getEyeHeight(), caster.getZ(), caster.getYRot(), caster.getXRot());
         }
-        if (!level.isClientSide && tickCount == 7) playSound(MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 0.7F, 1.1f);
-        if (!level.isClientSide && caster != null) {
+        if (!level().isClientSide && tickCount == 7) playSound(MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 0.7F, 1.1f);
+        if (!level().isClientSide && caster != null) {
             if (!getVertical() && tickCount == SWING_DURATION_HOR /2 - 1) dealDamage(7.0f * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f, 4f, 160, 1.2f);
             else if (getVertical() && tickCount == SWING_DURATION_VER /2 - 1) {
                 dealDamage(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue(), 4.5f, 40, 0.8f);

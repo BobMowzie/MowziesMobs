@@ -1,21 +1,16 @@
 package com.bobmowzie.mowziesmobs.server.ability.abilities.player.geomancy;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoModel;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
-import com.bobmowzie.mowziesmobs.server.ability.Ability;
-import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
-import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
-import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
-import com.bobmowzie.mowziesmobs.server.ability.PlayerAbility;
+import com.bobmowzie.mowziesmobs.server.ability.*;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
-
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.GeoEntity;
 import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.builder.RawAnimation;
+import software.bernie.geckolib3.core.event.predicate.AnimationState;
 
 public class BoulderRollAbility extends PlayerAbility {
     private static int START_UP = 15;
@@ -35,10 +30,10 @@ public class BoulderRollAbility extends PlayerAbility {
     }
 
     @Override
-    public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e, GeckoPlayer.Perspective perspective) {
+    public <E extends GeoEntity> PlayState animationPredicate(AnimationState<E> e, GeckoPlayer.Perspective perspective) {
         e.getController().transitionLengthTicks = 0;
         if (perspective == GeckoPlayer.Perspective.THIRD_PERSON) {
-            e.getController().setAnimation(new AnimationBuilder().addAnimation("boulder_roll_loop_still", true));
+            e.getController().setAnimation(new RawAnimation().addAnimation("boulder_roll_loop_still", true));
         }
         return PlayState.CONTINUE;
     }
@@ -80,7 +75,7 @@ public class BoulderRollAbility extends PlayerAbility {
     }
 
     @Override
-    public void codeAnimations(MowzieGeoModel<? extends IAnimatable> model, float partialTick) {
+    public void codeAnimations(MowzieGeoModel<? extends GeoEntity> model, float partialTick) {
         super.codeAnimations(model, partialTick);
         float spinSpeed = 0.35f;
         spinAmount += partialTick * spinSpeed;

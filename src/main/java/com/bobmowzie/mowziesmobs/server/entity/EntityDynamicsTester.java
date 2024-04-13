@@ -41,7 +41,7 @@ public class EntityDynamicsTester extends MowzieLLibraryEntity {
     @Override
     public void tick() {
         super.tick();
-        if (level.isClientSide) {
+        if (level().isClientSide) {
             if (tickCount == 1) {
                 dc = new DynamicChain(this);
             }

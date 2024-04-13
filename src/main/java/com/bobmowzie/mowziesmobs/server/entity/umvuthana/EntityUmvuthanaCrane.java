@@ -1,27 +1,18 @@
 package com.bobmowzie.mowziesmobs.server.entity.umvuthana;
 
-import java.util.EnumSet;
-import java.util.List;
-
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ai.AvoidProjectilesGoal;
 import com.bobmowzie.mowziesmobs.server.ai.NearestAttackableTargetPredicateGoal;
 import com.bobmowzie.mowziesmobs.server.ai.UmvuthanaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.item.UmvuthanaMask;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -38,6 +29,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.EnumSet;
+import java.util.List;
 
 public class EntityUmvuthanaCrane extends EntityUmvuthanaMinion {
     public boolean hasTriedOrSucceededTeleport = true;

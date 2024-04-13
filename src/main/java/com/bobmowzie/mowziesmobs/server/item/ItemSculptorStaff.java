@@ -1,14 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
-import java.util.List;
-import java.util.function.Consumer;
-
-import javax.annotation.Nullable;
-
 import com.bobmowzie.mowziesmobs.client.render.item.RenderSculptorStaff;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -27,12 +21,16 @@ import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.network.PacketDistributor;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.event.predicate.AnimationState;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.network.GeckoLibNetwork;
 import software.bernie.geckolib3.network.ISyncable;
 import software.bernie.geckolib3.util.GeckoLibUtil;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Created by BobMowzie on 6/6/2017.
@@ -93,7 +91,7 @@ public class ItemSculptorStaff extends MowzieToolItem implements IAnimatable, IS
 //        animationData.addAnimationController(new AnimationController<>(this, controllerName, 3, this::predicate));
     }
 
-    public <P extends Item & IAnimatable> PlayState predicate(AnimationEvent<P> event) {
+    public <P extends Item & IAnimatable> PlayState predicate(AnimationState<P> event) {
 //        event.getController().setAnimation(new AnimationBuilder().addAnimation("empty", ILoopType.EDefaultLoopTypes.LOOP));
         return PlayState.CONTINUE;
     }
@@ -115,8 +113,8 @@ public class ItemSculptorStaff extends MowzieToolItem implements IAnimatable, IS
     }
 
     public void playAnimation(LivingEntity entity, ItemStack stack, int state) {
-        if (!entity.level.isClientSide) {
-            int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel)entity.level);
+        if (!entity.level().isClientSide) {
+            int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel)entity.level());
             PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> {
                 return entity;
             });

@@ -1,7 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
-import java.util.List;
-
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
@@ -14,13 +12,14 @@ import com.bobmowzie.mowziesmobs.server.damage.DamageUtil;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.List;
 
 public class EntitySuperNova extends EntityMagicEffect {
     public static int DURATION = 40;
@@ -42,7 +41,7 @@ public class EntitySuperNova extends EntityMagicEffect {
         if (tickCount == 1) {
             EntityCameraShake.cameraShake(level, position(), 30, 0.05f, 10, 30);
             playSound(MMSounds.ENTITY_SUPERNOVA_END.get(), 3f, 1f);
-            if (level.isClientSide) {
+            if (level().isClientSide) {
                 float scale = 8.2f;
                 for (int i = 0; i < 15; i++) {
                     float phaseOffset = random.nextFloat();

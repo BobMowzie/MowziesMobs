@@ -28,7 +28,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 
@@ -61,7 +60,7 @@ public enum FrozenRenderHandler {
         }
     }
 
-    public static class GeckoLayerFrozen<T extends LivingEntity & IAnimatable> extends GeoLayerRenderer<T> {
+    public static class GeckoLayerFrozen<T extends LivingEntity & GeoEntity> extends GeoLayerRenderer<T> {
 
         public GeckoLayerFrozen(IGeoRenderer<T> entityRendererIn, EntityRendererProvider.Context context) {
             super(entityRendererIn);

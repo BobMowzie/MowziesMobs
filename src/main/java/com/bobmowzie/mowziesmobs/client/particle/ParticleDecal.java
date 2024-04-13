@@ -1,8 +1,10 @@
 package com.bobmowzie.mowziesmobs.client.particle;
 
-import com.bobmowzie.mowziesmobs.client.particle.util.*;
+import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
+import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleData;
+import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
+import com.bobmowzie.mowziesmobs.client.particle.util.ParticleRotation;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
@@ -10,7 +12,6 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.RenderShape;

@@ -112,11 +112,11 @@ public class EntitySolarBeam extends Entity {
         xo = getX();
         yo = getY();
         zo = getZ();
-        if (tickCount == 1 && level.isClientSide) {
-            caster = (LivingEntity) level.getEntity(getCasterID());
+        if (tickCount == 1 && level().isClientSide) {
+            caster = (LivingEntity) level().getEntity(getCasterID());
         }
 
-        if (!level.isClientSide) {
+        if (!level().isClientSide) {
             if (getHasPlayer()) {
                 this.updateWithPlayer();
             }

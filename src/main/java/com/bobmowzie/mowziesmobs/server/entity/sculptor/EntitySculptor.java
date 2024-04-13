@@ -48,12 +48,12 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.event.CustomInstructionKeyframeEvent;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.keyframe.event.CustomInstructionKeyframeEvent;
+import software.bernie.geckolib.core.object.PlayState;
 
 import java.util.List;
 import java.util.Optional;
@@ -122,9 +122,9 @@ public class EntitySculptor extends MowzieGeckoEntity {
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1);
     }
 
-    protected <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event)
+    protected <E extends GeoEntity> PlayState predicate(AnimationState<E> event)
     {
-        getController().transitionLengthTicks = 0;
+        getController().transitionLength(0);
         AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability();
         if (abilityCapability == null) {
             return PlayState.STOP;
@@ -134,7 +134,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
             return abilityCapability.animationPredicate(event, null);
         }
         else {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("test_fail_start", true));
+            event.getController().setAnimation(RawAnimation.begin().thenLoop("test_fail_start"));
             return PlayState.CONTINUE;
         }
     }
@@ -186,7 +186,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
         setDeltaMovement(0, getDeltaMovement().y, 0);
         super.tick();
         if (testingPlayer == null && getTestingPlayerID().isPresent()) {
-            testingPlayer = level.getPlayerByUUID(getTestingPlayerID().get());
+            testingPlayer = level().getPlayerByUUID(getTestingPlayerID().get());
         }
 
         if (testingPlayer != null) {
@@ -196,7 +196,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
             getLookControl().setLookAt(customer);
         }
 
-        if (testing && !level.isClientSide()) {
+        if (testing && !level().isClientSide()) {
             if (testingPlayer == null) {
                 sendAbilityMessage(END_TEST);
                 prevPlayerPosition = Optional.empty();
@@ -217,7 +217,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
         // Check if testing player is flying
         if (testingPlayer != null && testingPlayer.getAbilities().flying) playerCheated();
-        if (testingPlayer != null && !testingPlayer.isOnGround()) {
+        if (testingPlayer != null && !testingPlayer.onGround()) {
             double playerVelY = testingPlayer.getDeltaMovement().y();
             if (prevPlayerVelY != null && prevPlayerVelY.isPresent()) {
                 double acceleration = playerVelY - prevPlayerVelY.get();
@@ -296,7 +296,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
     public void openGUI(Player playerEntity) {
         setCustomer(playerEntity);
         MowziesMobs.PROXY.setReferencedMob(this);
-        if (!this.level.isClientSide && getTarget() == null && isAlive()) {
+        if (!this.level().isClientSide && getTarget() == null && isAlive()) {
             playerEntity.openMenu(new MenuProvider() {
                 @Override
                 public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player) {
@@ -345,25 +345,25 @@ public class EntitySculptor extends MowzieGeckoEntity {
         this.pillar = pillar;
     }
 
-    private <ENTITY extends IAnimatable> void instructionListener(CustomInstructionKeyframeEvent<ENTITY> event) {
-        if (event.instructions.contains("closeHandR")) {
+    private <ENTITY extends GeoEntity> void instructionListener(CustomInstructionKeyframeEvent<ENTITY> event) {
+        if (event.getKeyframeData().getInstructions().contains("closeHandR")) {
             handROpen = false;
         }
-        if (event.instructions.contains("closeHandL")) {
+        if (event.getKeyframeData().getInstructions().contains("closeHandL")) {
             handLOpen = false;
         }
-        if (event.instructions.contains("openHandR")) {
+        if (event.getKeyframeData().getInstructions().contains("openHandR")) {
             handROpen = true;
         }
-        if (event.instructions.contains("openHandL")) {
+        if (event.getKeyframeData().getInstructions().contains("openHandL")) {
             handLOpen = true;
         }
     }
 
     @Override
-    public void registerControllers(AnimationData data) {
-        super.registerControllers(data);
-        controller.registerCustomInstructionListener(this::instructionListener);
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        super.registerControllers(controllers);
+        controller.setCustomInstructionKeyframeHandler(this::instructionListener);
     }
 
     @Override
@@ -407,13 +407,13 @@ public class EntitySculptor extends MowzieGeckoEntity {
         public boolean tryAbility() {
             Vec3 from = getUser().position();
             Vec3 to = from.subtract(0, MAX_RANGE_TO_GROUND, 0);
-            BlockHitResult result = getUser().level.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, getUser()));
+            BlockHitResult result = getUser().level().clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, getUser()));
             if (result.getType() != HitResult.Type.MISS) {
                 this.spawnPillarPos = result.getBlockPos();
-                this.spawnPillarBlock = getUser().level.getBlockState(spawnPillarPos);
+                this.spawnPillarBlock = getUser().level().getBlockState(spawnPillarPos);
                 if (result.getDirection() != Direction.UP) {
-                    BlockState blockAbove = getUser().level.getBlockState(spawnPillarPos.above());
-                    if (blockAbove.isSuffocating(getUser().level, spawnPillarPos.above()) || blockAbove.isAir())
+                    BlockState blockAbove = getUser().level().getBlockState(spawnPillarPos.above());
+                    if (blockAbove.isSuffocating(getUser().level(), spawnPillarPos.above()) || blockAbove.isAir())
                         return false;
                 }
                 return true;
@@ -424,7 +424,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
         @Override
         public void start() {
             super.start();
-            playAnimation("testStart", false);
+            playAnimation("testStart");
             getUser().testing = true;
             getUser().setTestingPlayer(getUser().getCustomer());
         }
@@ -433,18 +433,18 @@ public class EntitySculptor extends MowzieGeckoEntity {
         protected void beginSection(AbilitySection section) {
             super.beginSection(section);
             if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE && spawnPillarPos != null) {
-                if (!getUser().getLevel().isClientSide()) {
-                    EntityBlockSwapper.EntityBlockSwapperSculptor swapper = new EntityBlockSwapper.EntityBlockSwapperSculptor(EntityHandler.BLOCK_SWAPPER_SCULPTOR.get(), getUser().getLevel(), getUser().blockPosition(), Blocks.AIR.defaultBlockState(), 60, false, false);
-                    getUser().getLevel().addFreshEntity(swapper);
+                if (!getUser().level().isClientSide()) {
+                    EntityBlockSwapper.EntityBlockSwapperSculptor swapper = new EntityBlockSwapper.EntityBlockSwapperSculptor(EntityHandler.BLOCK_SWAPPER_SCULPTOR.get(), getUser().level(), getUser().blockPosition(), Blocks.AIR.defaultBlockState(), 60, false, false);
+                    getUser().level().addFreshEntity(swapper);
                 }
 
                 if (spawnPillarBlock == null || !EffectGeomancy.isBlockDiggable(spawnPillarBlock)) spawnPillarBlock = Blocks.STONE.defaultBlockState();
-                getUser().pillar = new EntityPillar(EntityHandler.PILLAR.get(), getUser().level, getUser(), Blocks.STONE.defaultBlockState(), spawnPillarPos);
+                getUser().pillar = new EntityPillar(EntityHandler.PILLAR.get(), getUser().level(), getUser(), Blocks.STONE.defaultBlockState(), spawnPillarPos);
                 getUser().pillar.setTier(EntityGeomancyBase.GeomancyTier.SMALL);
                 getUser().pillar.setPos(spawnPillarPos.getX() + 0.5F, spawnPillarPos.getY() + 1, spawnPillarPos.getZ() + 0.5F);
                 getUser().pillar.setDoRemoveTimer(false);
                 if (getUser().pillar.checkCanSpawn()) {
-                    getUser().level.addFreshEntity(getUser().pillar);
+                    getUser().level().addFreshEntity(getUser().pillar);
                 }
 
                 int numStartBoulders = rand.nextInt(2, 5);
@@ -453,10 +453,10 @@ public class EntitySculptor extends MowzieGeckoEntity {
                     float angleInc = (float) (2f * Math.PI) / ((float) numStartBoulders * 2f);
                     float angle = angleOffset + angleInc * (i * 2) + rand.nextFloat(angleInc);
                     Vec3 spawnBoulderPos = getUser().pillar.position().add(new Vec3(rand.nextFloat(3, 6), 0, 0).yRot(angle));
-                    EntityBoulderPlatform boulderPlatform = new EntityBoulderPlatform(EntityHandler.BOULDER_PLATFORM.get(), getUser().getLevel(), getUser(), Blocks.STONE.defaultBlockState(), BlockPos.ZERO, EntityGeomancyBase.GeomancyTier.MEDIUM);
+                    EntityBoulderPlatform boulderPlatform = new EntityBoulderPlatform(EntityHandler.BOULDER_PLATFORM.get(), getUser().level(), getUser(), Blocks.STONE.defaultBlockState(), BlockPos.ZERO, EntityGeomancyBase.GeomancyTier.MEDIUM);
                     boulderPlatform.setPos(spawnBoulderPos.add(0, 1, 0));
                     if (i == 0) boulderPlatform.setMainPath();
-                    getUser().getLevel().addFreshEntity(boulderPlatform);
+                    getUser().level().addFreshEntity(boulderPlatform);
                 }
                 getUser().numLivePaths = numStartBoulders;
             }
@@ -474,7 +474,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
                     player.push(vec.x, vec.y, vec.z);
                 }
 
-                if (!getUser().getLevel().isClientSide() && getUser().pillar != null) {
+                if (!getUser().level().isClientSide() && getUser().pillar != null) {
                     getUser().setPos(getUser().pillar.position().add(0, getUser().pillar.getHeight(), 0));
                 }
 
@@ -517,7 +517,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
         public void tickUsing() {
             super.tickUsing();
             if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
-                if (!getUser().getLevel().isClientSide() && getUser().pillar != null) {
+                if (!getUser().level().isClientSide() && getUser().pillar != null) {
                     getUser().setPos(getUser().pillar.position().add(0, getUser().pillar.getHeight(), 0));
                 }
                 if (getUser().pillar == null || getUser().pillar.isRemoved()) nextSection();
@@ -550,7 +550,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
         @Override
         public void start() {
             if (getUser().testingPlayer != null) {
-                List<EntityBoulderPlatform> platforms = getUser().getLevel().getEntitiesOfClass(EntityBoulderPlatform.class, getUser().testingPlayer.getBoundingBox().expandTowards(0, -6, 0));
+                List<EntityBoulderPlatform> platforms = getUser().level().getEntitiesOfClass(EntityBoulderPlatform.class, getUser().testingPlayer.getBoundingBox().expandTowards(0, -6, 0));
                 EntityBoulderPlatform platformBelowPlayer = platforms.get(0);
                 platformBelowPlayer.descend();
             }
@@ -560,7 +560,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
         @Override
         public void end() {
             super.end();
-            getUser().spawnAtLocation(ItemHandler.EARTHBORE_GAUNTLET.getDefaultInstance());
+            getUser().spawnAtLocation(ItemHandler.EARTHBORE_GAUNTLET.get().getDefaultInstance());
         }
 
         @Override

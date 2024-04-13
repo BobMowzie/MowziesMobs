@@ -136,7 +136,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         super.tick();
         prevStrikeTime = strikeTime;
 
-        if (level.isClientSide) {
+        if (level().isClientSide) {
             if (strikeTime == 0) {
                 MowziesMobs.PROXY.playSunstrikeSound(this);
             } else if (strikeTime < STRIKE_EXPLOSION - 10) {
@@ -151,7 +151,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                     float oz = r * Mth.sin(theta);
                     final float minY = 0.1F;
                     float oy = random.nextFloat() * (time * 6 - minY) + minY;
-                    level.addParticle(new ParticleOrb.OrbData((float) getX(), (float) getZ()), getX() + ox, getY() + oy, getZ() + oz, 0, 0, 0);
+                    level().addParticle(new ParticleOrb.OrbData((float) getX(), (float) getZ()), getX() + ox, getY() + oy, getZ() + oz, 0, 0, 0);
                 }
             } else if (strikeTime > STRIKE_EXPLOSION) {
                 this.smolder();
@@ -160,7 +160,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
             }
         } else {
             this.moveDownToGround();
-            if (strikeTime >= STRIKE_LINGER || !level.canSeeSkyFromBelowWater(blockPosition())) {
+            if (strikeTime >= STRIKE_LINGER || !level().canSeeSkyFromBelowWater(blockPosition())) {
                 this.discard() ;
             } else if (strikeTime == STRIKE_EXPLOSION) {
                 this.damageEntityLivingBaseNearby(3);
@@ -174,8 +174,8 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         if (rayTrace.getType() == HitResult.Type.BLOCK) {
             BlockHitResult hitResult = (BlockHitResult) rayTrace;
             if (hitResult.getDirection() == Direction.UP) {
-                BlockState hitBlock = level.getBlockState(hitResult.getBlockPos());
-                if (strikeTime > STRIKE_LENGTH && hitBlock != level.getBlockState(blockPosition().below())) {
+                BlockState hitBlock = level().getBlockState(hitResult.getBlockPos());
+                if (strikeTime > STRIKE_LENGTH && hitBlock != level().getBlockState(blockPosition().below())) {
                     this.discard() ;
                 }
                 if (hitBlock.getBlock() instanceof SlabBlock && hitBlock.getValue(BlockStateProperties.SLAB_TYPE) == SlabType.BOTTOM) {
@@ -183,8 +183,8 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                 } else {
                     this.setPos(getX(), hitResult.getBlockPos().getY() + 1.0625F, getZ());
                 }
-                if (this.level instanceof ServerLevel) {
-                    ((ServerLevel) this.level).getChunkSource().broadcast(this, new ClientboundTeleportEntityPacket(this));
+                if (this.level() instanceof ServerLevel) {
+                    ((ServerLevel) this.level()).getChunkSource().broadcast(this, new ClientboundTeleportEntityPacket(this));
                 }
             }
         }
@@ -192,8 +192,8 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
 
     //FIXME according to spark, this method cause huge tps lag
     public void damageEntityLivingBaseNearby(double radius) {
-        AABB region = new AABB(getX() - radius, getY() - 0.5, getZ() - radius, getX() + radius, this.level.getMaxBuildHeight() + 20, getZ() + radius);
-        List<Entity> entities = level.getEntities(this, region);
+        AABB region = new AABB(getX() - radius, getY() - 0.5, getZ() - radius, getX() + radius, this.level().getMaxBuildHeight() + 20, getZ() + radius);
+        List<Entity> entities = level().getEntities(this, region);
         double radiusSq = radius * radius;
         for (Entity entity : entities) {
             if (entity instanceof LivingEntity && getDistanceSqXZToEntity(entity) < radiusSq) {
@@ -236,7 +236,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                 float r = random.nextFloat() * 0.7F;
                 float x = r * Mth.cos(theta);
                 float z = r * Mth.sin(theta);
-                level.addParticle(ParticleTypes.LARGE_SMOKE, getX() + x, getY() + 0.1, getZ() + z, 0, 0, 0);
+                level().addParticle(ParticleTypes.LARGE_SMOKE, getX() + x, getY() + 0.1, getZ() + z, 0, 0, 0);
             }
         }
     }
@@ -248,10 +248,10 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
             float vy = random.nextFloat() * 0.08F;
             float vx = velocity * Mth.cos(yaw);
             float vz = velocity * Mth.sin(yaw);
-            level.addParticle(ParticleTypes.FLAME, getX(), getY() + 0.1, getZ(), vx, vy, vz);
+            level().addParticle(ParticleTypes.FLAME, getX(), getY() + 0.1, getZ(), vx, vy, vz);
         }
         for (int i = 0; i < amount / 2; i++) {
-            level.addParticle(ParticleTypes.LAVA, getX(), getY() + 0.1, getZ(), 0, 0, 0);
+            level().addParticle(ParticleTypes.LAVA, getX(), getY() + 0.1, getZ(), 0, 0, 0);
         }
     }
 
@@ -261,8 +261,8 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
 
     private HitResult rayTrace(EntitySunstrike entity) {
         Vec3 startPos = new Vec3(entity.getX(), entity.getY(), entity.getZ());
-        Vec3 endPos = new Vec3(entity.getX(), level.getMinBuildHeight(), entity.getZ());
-        return entity.level.clip(new ClipContext(startPos, endPos, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+        Vec3 endPos = new Vec3(entity.getX(), level().getMinBuildHeight(), entity.getZ());
+        return entity.level().clip(new ClipContext(startPos, endPos, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
     }
 
     @Override

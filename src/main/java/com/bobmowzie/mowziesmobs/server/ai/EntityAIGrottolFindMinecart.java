@@ -24,14 +24,14 @@ public final class EntityAIGrottolFindMinecart extends Goal {
     public EntityAIGrottolFindMinecart(EntityGrottol grottol) {
         this.grottol = grottol;
         this.sorter = Comparator.comparing(grottol::distanceToSqr);
-        this.predicate = minecart -> minecart != null && minecart.isAlive() && !minecart.isVehicle() && EntityGrottol.isBlockRail(minecart.level.getBlockState(minecart.blockPosition()).getBlock());
+        this.predicate = minecart -> minecart != null && minecart.isAlive() && !minecart.isVehicle() && EntityGrottol.isBlockRail(minecart.level().getBlockState(minecart.blockPosition()).getBlock());
         setFlags(EnumSet.of(Flag.LOOK, Flag.MOVE));
     }
 
     @Override
     public boolean canUse() {
         if (grottol.fleeTime <= 1) return false;
-        List<Minecart> minecarts = grottol.level.getEntitiesOfClass(Minecart.class, grottol.getBoundingBox().inflate(8.0D, 4.0D, 8.0D), predicate);
+        List<Minecart> minecarts = grottol.level().getEntitiesOfClass(Minecart.class, grottol.getBoundingBox().inflate(8.0D, 4.0D, 8.0D), predicate);
         minecarts.sort(sorter);
         if (minecarts.isEmpty()) {
             return false;

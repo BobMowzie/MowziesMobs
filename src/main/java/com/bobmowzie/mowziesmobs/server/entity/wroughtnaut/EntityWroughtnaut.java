@@ -235,7 +235,7 @@ public class EntityWroughtnaut extends MowzieLLibraryEntity implements Enemy {
 
         if (getTarget() != null && (!getTarget().isAlive() || getTarget().getHealth() <= 0)) setTarget(null);
 
-        if (!level.isClientSide) {
+        if (!level().isClientSide) {
             if (isAlwaysActive()) {
                 setActive(true);
                 active = true;
@@ -298,13 +298,13 @@ public class EntityWroughtnaut extends MowzieLLibraryEntity implements Enemy {
             walkAnim.decreaseTimer(2);
         }
 
-        if (this.level.isClientSide && frame % 20 == 1 && speed > 0.03 && getAnimation() == NO_ANIMATION && isActive()) {
-            this.level.playLocalSound(this.getX(), this.getY(), this.getZ(), MMSounds.ENTITY_WROUGHT_STEP.get(), this.getSoundSource(), 0.5F, 0.5F, false);
+        if (this.level().isClientSide && frame % 20 == 1 && speed > 0.03 && getAnimation() == NO_ANIMATION && isActive()) {
+            this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), MMSounds.ENTITY_WROUGHT_STEP.get(), this.getSoundSource(), 0.5F, 0.5F, false);
         }
 
         repelEntities(1.7F, 4, 1.7F, 1.7F);
 
-        if (!active && !level.isClientSide && getAnimation() != ACTIVATE_ANIMATION) {
+        if (!active && !level().isClientSide && getAnimation() != ACTIVATE_ANIMATION) {
             if (ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.healsOutOfBattle.get()) heal(0.3f);
         }
 
@@ -372,7 +372,7 @@ public class EntityWroughtnaut extends MowzieLLibraryEntity implements Enemy {
             int hitX = Mth.floor(x + ox);
             int hitZ = Mth.floor(z + oy);
             BlockPos hit = new BlockPos(hitX, hitY, hitZ);
-            BlockState block = level.getBlockState(hit);
+            BlockState block = level().getBlockState(hit);
             if (block.getRenderShape() != RenderShape.INVISIBLE) {
                 for (int n = 0; n < 6; n++) {
                     double pa = random.nextDouble() * 2 * Math.PI;
@@ -387,7 +387,7 @@ public class EntityWroughtnaut extends MowzieLLibraryEntity implements Enemy {
                         velX = -velX;
                         velZ = -velZ;
                     }
-                    level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, block), px, y, pz, velX, velY, velZ);
+                    level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, block), px, y, pz, velX, velY, velZ);
                 }
             }
         }
@@ -399,7 +399,7 @@ public class EntityWroughtnaut extends MowzieLLibraryEntity implements Enemy {
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
         for (; height --> 0; ceilY++) {
             pos.set(hitX, ceilY, hitZ);
-            if (level.getBlockState(pos).getMaterial().blocksMotion()) {
+            if (level().getBlockState(pos).getMaterial().blocksMotion()) {
                 break;
             }
         }
@@ -425,16 +425,16 @@ public class EntityWroughtnaut extends MowzieLLibraryEntity implements Enemy {
                 double fx = getX() + vx + perpX * side;
                 double fy = getBoundingBox().minY + 0.1;
                 double fz = getZ() + vz + perpZ * side;
-                int amount = 16 + level.random.nextInt(8);
+                int amount = 16 + level().random.nextInt(8);
                 while (amount-- > 0) {
-                    double theta = level.random.nextDouble() * Math.PI * 2;
-                    double dist = level.random.nextDouble() * 0.1 + 0.25;
+                    double theta = level().random.nextDouble() * Math.PI * 2;
+                    double dist = level().random.nextDouble() * 0.1 + 0.25;
                     double sx = Math.cos(theta);
                     double sz = Math.sin(theta);
                     double px = fx + sx * dist;
-                    double py = fy + level.random.nextDouble() * 0.1;
+                    double py = fy + level().random.nextDouble() * 0.1;
                     double pz = fz + sz * dist;
-                    level.addParticle(ParticleTypes.SMOKE, px, py, pz, sx * 0.065, 0, sz * 0.065);
+                    level().addParticle(ParticleTypes.SMOKE, px, py, pz, sx * 0.065, 0, sz * 0.065);
                 }
             }
             if (tick % 2 == 0) {
@@ -448,13 +448,13 @@ public class EntityWroughtnaut extends MowzieLLibraryEntity implements Enemy {
                     double px = getX() + vx * distance;
                     double pz = getZ() + vz * distance;
                     float factor = 1 - distance / (float) maxDistance;
-                    if (level.random.nextBoolean()) {
-                        int amount = level.random.nextInt(5);
+                    if (level().random.nextBoolean()) {
+                        int amount = level().random.nextInt(5);
                         while (amount-- > 0) {
                             double velX = vx * 0.075;
                             double velY = factor * 0.3 + 0.025;
                             double velZ = vz * 0.075;
-                            level.addParticle(ParticleTypes.CLOUD, px + level.random.nextFloat() * 2 - 1, getBoundingBox().minY + 0.1 + level.random.nextFloat() * 1.5, pz + level.random.nextFloat() * 2 - 1, velX, velY, velZ);
+                            level().addParticle(ParticleTypes.CLOUD, px + level().random.nextFloat() * 2 - 1, getBoundingBox().minY + 0.1 + level().random.nextFloat() * 1.5, pz + level.random.nextFloat() * 2 - 1, velX, velY, velZ);
                         }
                     }
                 }

@@ -1,8 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
-import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderPlatform;
-import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityPillarPiece;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -121,8 +119,8 @@ public class EntityBlockSwapper extends Entity {
     }
 
     public void restoreBlock() {
-        List<EntityBlockSwapper> swappers = level.getEntitiesOfClass(EntityBlockSwapper.class, getBoundingBox());
-        if (!level.isClientSide) {
+        List<EntityBlockSwapper> swappers = level().getEntitiesOfClass(EntityBlockSwapper.class, getBoundingBox());
+        if (!level().isClientSide) {
             boolean canReplace = true;
             for (EntityBlockSwapper swapper : swappers) {
                 if (swapper == this) continue;
@@ -132,8 +130,8 @@ public class EntityBlockSwapper extends Entity {
                 }
             }
             if (canReplace) {
-                if (breakParticlesEnd) level.destroyBlock(pos, false);
-                level.setBlock(pos, getOrigBlock(), 19);
+                if (breakParticlesEnd) level().destroyBlock(pos, false);
+                level().setBlock(pos, getOrigBlock(), 19);
             }
             discard();
         }
@@ -146,7 +144,7 @@ public class EntityBlockSwapper extends Entity {
     }
 
     protected boolean canRestoreBlock() {
-        return tickCount > duration && level.getEntitiesOfClass(Player.class, getBoundingBox()).isEmpty();
+        return tickCount > duration && level().getEntitiesOfClass(Player.class, getBoundingBox()).isEmpty();
     }
 
     @Override

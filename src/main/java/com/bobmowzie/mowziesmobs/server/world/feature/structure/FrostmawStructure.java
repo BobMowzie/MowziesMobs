@@ -4,7 +4,6 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.ConfiguredFeatureHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
 import com.mojang.serialization.Codec;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.Heightmap;

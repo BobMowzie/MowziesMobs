@@ -22,14 +22,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import software.bernie.example.entity.GeoExampleEntity;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +74,7 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
         if (tickCount == 1) activate();
         super.tick();
         if (ridingEntities != null) ridingEntities.clear();
-        List<Entity> onTopOfEntities = level.getEntities(this, getBoundingBox().contract(0, getBbHeight() - 1, 0).move(new Vec3(0, getBbHeight() - 0.5, 0)).inflate(0.6,0.5,0.6));
+        List<Entity> onTopOfEntities = level().getEntities(this, getBoundingBox().contract(0, getBbHeight() - 1, 0).move(new Vec3(0, getBbHeight() - 0.5, 0)).inflate(0.6,0.5,0.6));
         for (Entity entity : onTopOfEntities) {
             if (entity != null && entity.isPickable() && !(entity instanceof EntityBoulderProjectile) && entity.getY() >= this.getY() + 0.2) ridingEntities.add(entity);
         }
@@ -96,7 +88,7 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
         List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(1.7);
         if (travelling && !entitiesHit.isEmpty()) {
             for (Entity entity : entitiesHit) {
-                if (level.isClientSide) continue;
+                if (level().isClientSide) continue;
                 if (entity == caster) continue;
                 if (ridingEntities.contains(entity)) continue;
                 if (caster != null) entity.hurt(DamageSource.indirectMobAttack(this, caster), damage);
@@ -106,7 +98,7 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
         }
 
         // Hit other boulders
-        List<EntityBoulderProjectile> bouldersHit = level.getEntitiesOfClass(EntityBoulderProjectile.class, getBoundingBox().inflate(0.2, 0.2, 0.2).move(getDeltaMovement().normalize().scale(0.5)));
+        List<EntityBoulderProjectile> bouldersHit = level().getEntitiesOfClass(EntityBoulderProjectile.class, getBoundingBox().inflate(0.2, 0.2, 0.2).move(getDeltaMovement().normalize().scale(0.5)));
         if (travelling && !bouldersHit.isEmpty()) {
             for (EntityBoulderProjectile entity : bouldersHit) {
                 if (!entity.travelling) {
@@ -119,8 +111,8 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
         // Hit blocks
         if (travelling) {
             if (
-                    !level.getEntities(this, getBoundingBox().inflate(0.1), (e)->!ridingEntities.contains(e) && e.canBeCollidedWith()).isEmpty() ||
-                            Iterables.size(level.getBlockCollisions(this, getBoundingBox().inflate(0.1))) > 0
+                    !level().getEntities(this, getBoundingBox().inflate(0.1), (e)->!ridingEntities.contains(e) && e.canBeCollidedWith()).isEmpty() ||
+                            Iterables.size(level().getBlockCollisions(this, getBoundingBox().inflate(0.1))) > 0
             ) {
                 this.explode();
             }

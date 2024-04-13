@@ -1,13 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.entity.umvuthana;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-
-import javax.annotation.Nullable;
-
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
@@ -42,7 +34,6 @@ import com.bobmowzie.mowziesmobs.server.item.UmvuthanaMask;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
@@ -63,20 +54,9 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.BossEvent;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
+import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -102,13 +82,16 @@ import net.minecraft.world.scores.PlayerTeam;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
-import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.GeoEntity;
 import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.RawAnimation;
 import software.bernie.geckolib3.core.builder.ILoopType;
 import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.event.predicate.AnimationState;
 import software.bernie.geckolib3.core.manager.AnimationData;
+
+import javax.annotation.Nullable;
+import java.util.*;
 
 public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeImmune, Enemy {
     public static final AbilityType<EntityUmvuthi, DieAbility<EntityUmvuthi>> DIE_ABILITY = new AbilityType<>("umvuthi_die", (type, entity) -> new DieAbility<>(type, entity,"death", 115) {
@@ -224,7 +207,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         this.targetSelector.addGoal(3, hurtByTargetAI);
         this.targetSelector.addGoal(4, new NearestAttackableTargetPredicateGoal<Player>(this, Player.class, 0, false, true, (TargetingConditions.forCombat().range(getAttributeValue(Attributes.FOLLOW_RANGE)).selector(target -> {
             if (target instanceof Player) {
-                if (this.level.getDifficulty() == Difficulty.PEACEFUL) return false;
+                if (this.level().getDifficulty() == Difficulty.PEACEFUL) return false;
                 ItemStack headArmorStack = ((Player) target).getInventory().armor.get(3);
                 return !(headArmorStack.getItem() instanceof UmvuthanaMask) || target == getMisbehavedPlayer();
             }
@@ -276,26 +259,26 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         data.addAnimationController(blinkController);
     }
 
-    protected <E extends IAnimatable> PlayState predicateMask(AnimationEvent<E> event)
+    protected <E extends GeoEntity> PlayState predicateMask(AnimationState<E> event)
     {
         if (isAlive() && getActiveAbilityType() != SOLAR_BEAM_ABILITY && getActiveAbilityType() != SUPERNOVA_ABILITY && getActiveAbilityType() != SPAWN_ABILITY && getActiveAbilityType() != SPAWN_SUNBLOCKERS_ABILITY) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("mask_twitch", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(new RawAnimation().addAnimation("mask_twitch", ILoopType.EDefaultLoopTypes.LOOP));
             return PlayState.CONTINUE;
         }
         return PlayState.STOP;
     }
 
-    protected <E extends IAnimatable> PlayState predicateBlink(AnimationEvent<E> event)
+    protected <E extends GeoEntity> PlayState predicateBlink(AnimationState<E> event)
     {
         if (isAlive() && getActiveAbilityType() != SOLAR_BEAM_ABILITY) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("blink", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(new RawAnimation().addAnimation("blink", ILoopType.EDefaultLoopTypes.LOOP));
             return PlayState.CONTINUE;
         }
         return PlayState.STOP;
     }
 
     @Override
-    protected <E extends IAnimatable> void loopingAnimations(AnimationEvent<E> event) {
+    protected <E extends GeoEntity> void loopingAnimations(AnimationState<E> event) {
         event.getController().transitionLengthTicks = 4;
         super.loopingAnimations(event);
     }
@@ -317,7 +300,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
     public void updateRattleSound(float maskRot) {
         if (!rattling) {
             if (Math.abs(maskRot - prevMaskRot) > 0.06) {
-                level.playLocalSound(getX(), getY(), getZ(), MMSounds.ENTITY_UMVUTHANA_RATTLE.get(), SoundSource.HOSTILE, 0.04f, getVoicePitch() * 0.75f, false);
+                level().playLocalSound(getX(), getY(), getZ(), MMSounds.ENTITY_UMVUTHANA_RATTLE.get(), SoundSource.HOSTILE, 0.04f, getVoicePitch() * 0.75f, false);
             }
         }
         else {

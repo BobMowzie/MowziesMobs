@@ -1,11 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.BlockTags;
@@ -22,6 +17,9 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class ItemNagaFangDagger extends MowzieToolItem {
     public ItemNagaFangDagger(Item.Properties properties) {

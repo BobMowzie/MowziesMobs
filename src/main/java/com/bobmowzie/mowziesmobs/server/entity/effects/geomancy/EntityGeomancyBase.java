@@ -1,14 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects.geomancy;
 
-import java.util.Optional;
-
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.IAnimationTickable;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityFallingBlock;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityMagicEffect;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -25,15 +22,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib.animatable.GeoEntity;
 
-public abstract class EntityGeomancyBase extends EntityMagicEffect implements IAnimatable, IAnimationTickable {
+import java.util.Optional;
+
+public abstract class EntityGeomancyBase extends EntityMagicEffect implements GeoEntity, IAnimationTickable {
     private static final byte EXPLOSION_PARTICLES_ID = 69;
 
     protected static final EntityDataAccessor<Optional<BlockState>> BLOCK_STATE = SynchedEntityData.defineId(EntityGeomancyBase.class, EntityDataSerializers.BLOCK_STATE);
@@ -160,7 +156,7 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements IA
                 EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK.get(), level, 70, getBlock());
                 fallingBlock.setPos(getX() + particlePos.x, getY() + 0.5 + particlePos.y, getZ() + particlePos.z);
                 fallingBlock.setDeltaMovement((float) particlePos.x * 0.3f, 0.2f + random.nextFloat() * 0.6f, (float) particlePos.z * 0.3f);
-                level.addFreshEntity(fallingBlock);
+                level().addFreshEntity(fallingBlock);
             }
         }
         else if (tier == GeomancyTier.HUGE) {

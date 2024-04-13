@@ -50,8 +50,8 @@ public class EntityPillar extends EntityGeomancyBase {
     }
 
     public boolean checkCanSpawn() {
-        if (!level.getEntitiesOfClass(EntityPillar.class, getBoundingBox().deflate(0.01)).isEmpty()) return false;
-        return level.noCollision(this, getBoundingBox().deflate(0.01));
+        if (!level().getEntitiesOfClass(EntityPillar.class, getBoundingBox().deflate(0.01)).isEmpty()) return false;
+        return level().noCollision(this, getBoundingBox().deflate(0.01));
     }
 
     @Override
@@ -73,13 +73,13 @@ public class EntityPillar extends EntityGeomancyBase {
         prevPrevHeight = prevHeight;
         prevHeight = getHeight();
 
-        if (!level.isClientSide()) {
+        if (!level().isClientSide()) {
             if (isRising()) {
                 float height = getHeight();
 
                 if (height == 0.0) {
                     currentPiece = new EntityPillarPiece(EntityHandler.PILLAR_PIECE.get(), this.level, this, new Vec3(this.getX(), this.getY() - 1.0f, this.getZ()));
-                    level.addFreshEntity(currentPiece);
+                    level().addFreshEntity(currentPiece);
                 }
 
                 height += RISING_SPEED;
@@ -87,10 +87,10 @@ public class EntityPillar extends EntityGeomancyBase {
 
                 if (Math.floor(height) > Math.floor(prevHeight)) {
                     currentPiece = new EntityPillarPiece(EntityHandler.PILLAR_PIECE.get(), this.level, this, new Vec3(this.getX(), this.getY() + Math.floor(height) - 1.0f, this.getZ()));
-                    level.addFreshEntity(currentPiece);
+                    level().addFreshEntity(currentPiece);
                 }
 
-                List<EntityBoulderProjectile> boulders = level.getEntitiesOfClass(EntityBoulderProjectile.class, getBoundingBox().deflate(0.1f));
+                List<EntityBoulderProjectile> boulders = level().getEntitiesOfClass(EntityBoulderProjectile.class, getBoundingBox().deflate(0.1f));
                 for (EntityBoulderProjectile boulder : boulders) {
                     if (!boulder.isTravelling() && boulder.getTier().ordinal() > this.getTier().ordinal()) {
                         this.setTier(boulder.getTier());
@@ -111,7 +111,7 @@ public class EntityPillar extends EntityGeomancyBase {
         this.setBoundingBox(this.makeBoundingBox());
 
         AABB popUpBounds = getBoundingBox().deflate(0.1f);
-        List<Entity> popUpEntities = level.getEntities(this, popUpBounds);
+        List<Entity> popUpEntities = level().getEntities(this, popUpBounds);
         for (Entity entity : popUpEntities) {
             if (entity.isPickable() && !(entity instanceof EntityBoulderBase) && !(entity instanceof EntityPillar) && !(entity instanceof EntityPillarPiece)) {
                 double belowAmount = entity.getY() - (getY() + getHeight());

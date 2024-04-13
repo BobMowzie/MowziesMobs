@@ -1,17 +1,14 @@
 package com.bobmowzie.mowziesmobs.client.render.entity.player;
 
-import javax.annotation.Nullable;
-
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerFirstPerson;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerThirdPerson;
-import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoModel;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.entity.IAnimationTickable;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -23,17 +20,19 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.GeoEntity;
 import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.builder.RawAnimation;
+import software.bernie.geckolib3.core.event.predicate.AnimationState;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 import software.bernie.geckolib3.util.GeckoLibUtil;
 
+import javax.annotation.Nullable;
+
 @OnlyIn(Dist.CLIENT)
-public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
+public abstract class GeckoPlayer implements GeoEntity, IAnimationTickable {
 
 	protected IGeoRenderer<GeckoPlayer> renderer;
 	protected MowzieGeoModel<GeckoPlayer> model;
@@ -79,7 +78,7 @@ public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 		return tickTimer;
 	}
 
-	public <E extends IAnimatable> PlayState predicate(AnimationEvent<E> e) {
+	public <E extends GeoEntity> PlayState predicate(AnimationState<E> e) {
 		e.getController().transitionLengthTicks = 0;
 		Player player = getPlayer();
 		if (player == null) {
@@ -94,7 +93,7 @@ public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 			return abilityCapability.animationPredicate(e, getPerspective());
 		}
 		else {
-			e.getController().setAnimation(new AnimationBuilder().addAnimation("idle"));
+			e.getController().setAnimation(new RawAnimation().addAnimation("idle"));
 			return PlayState.CONTINUE;
 		}
 	}

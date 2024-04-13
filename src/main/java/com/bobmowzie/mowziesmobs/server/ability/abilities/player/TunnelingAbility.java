@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.ability.abilities.player;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoModel;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
@@ -32,10 +32,10 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.GeoEntity;
 import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.builder.RawAnimation;
+import software.bernie.geckolib3.core.event.predicate.AnimationState;
 
 import java.util.List;
 
@@ -257,22 +257,22 @@ public class TunnelingAbility extends PlayerAbility {
     }
 
     @Override
-    public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e, GeckoPlayer.Perspective perspective) {
+    public <E extends GeoEntity> PlayState animationPredicate(AnimationState<E> e, GeckoPlayer.Perspective perspective) {
         e.getController().transitionLengthTicks = 4;
         if (perspective == GeckoPlayer.Perspective.THIRD_PERSON) {
             float yMotionThreshold = getUser() == Minecraft.getInstance().player ? 1 : 2;
             if (!underground && getUser().getUseItem().getItem() != ItemHandler.EARTHBORE_GAUNTLET && getUser().getDeltaMovement().y() < yMotionThreshold) {
-                e.getController().setAnimation(new AnimationBuilder().addAnimation("tunneling_fall", false));
+                e.getController().setAnimation(new RawAnimation().addAnimation("tunneling_fall", false));
             }
             else {
-                e.getController().setAnimation(new AnimationBuilder().addAnimation("tunneling_drill", true));
+                e.getController().setAnimation(new RawAnimation().addAnimation("tunneling_drill", true));
             }
         }
         return PlayState.CONTINUE;
     }
 
     @Override
-    public void codeAnimations(MowzieGeoModel<? extends IAnimatable> model, float partialTick) {
+    public void codeAnimations(MowzieGeoModel<? extends GeoEntity> model, float partialTick) {
         super.codeAnimations(model, partialTick);
         float faceMotionController = 1f - model.getControllerValueInverted("FaceVelocityController");
         Vec3 moveVec = getUser().getDeltaMovement().normalize();

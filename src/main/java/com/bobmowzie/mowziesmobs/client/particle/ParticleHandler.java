@@ -5,7 +5,6 @@ import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleData;
 import com.bobmowzie.mowziesmobs.client.particle.util.RibbonParticleData;
 import com.mojang.serialization.Codec;
-
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;

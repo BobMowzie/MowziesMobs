@@ -1,14 +1,13 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import java.util.Map;
-import java.util.TreeMap;
-
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityRockSling;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
+
+import java.util.Map;
+import java.util.TreeMap;
 
 public class ModelRockSling extends AnimatedTickingGeoModel<EntityRockSling> {
     static Map<String, ResourceLocation> texMap;

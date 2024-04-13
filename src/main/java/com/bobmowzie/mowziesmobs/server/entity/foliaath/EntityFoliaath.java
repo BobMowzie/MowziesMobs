@@ -12,7 +12,6 @@ import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -50,7 +49,7 @@ public class EntityFoliaath extends MowzieLLibraryEntity implements Enemy {
     private static final EntityDataAccessor<Boolean> CAN_DESPAWN = SynchedEntityData.defineId(EntityFoliaath.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> ACTIVATE_TARGET = SynchedEntityData.defineId(EntityFoliaath.class, EntityDataSerializers.INT);
     private static final int ACTIVATE_DURATION = 30;
-    public IntermittentAnimation<EntityFoliaath> openMouth = new IntermittentAnimation<>(this, 15, 30, 50, !level.isClientSide);
+    public IntermittentAnimation<EntityFoliaath> openMouth = new IntermittentAnimation<>(this, 15, 30, 50, !level().isClientSide);
     public ControlledAnimation activate = new ControlledAnimation(ACTIVATE_DURATION);
     public ControlledAnimation deathFlail = new ControlledAnimation(5);
     public ControlledAnimation stopDance = new ControlledAnimation(10);
@@ -177,7 +176,7 @@ public class EntityFoliaath extends MowzieLLibraryEntity implements Enemy {
         prevOpenMouth = openMouthTime;
 
         int activateTime = activate.getTimer();
-        if (!level.isClientSide) {
+        if (!level().isClientSide) {
             SoundEvent sound = null;
             if (prevActivate - activateTime < 0) {
                 switch (activateTime) {
@@ -209,7 +208,7 @@ public class EntityFoliaath extends MowzieLLibraryEntity implements Enemy {
         yBodyRot = 0;
         setYRot(0);
 
-        if (resettingTargetTimer > 0 && !level.isClientSide) {
+        if (resettingTargetTimer > 0 && !level().isClientSide) {
             yHeadRot = yHeadRotO;
         }
 
@@ -227,7 +226,7 @@ public class EntityFoliaath extends MowzieLLibraryEntity implements Enemy {
                 setActivateTarget(0);
                 lastTimeDecrease++;
             }
-        } else if (!level.isClientSide && lastTimeDecrease <= 30 && getAnimation() == NO_ANIMATION && resettingTargetTimer == 0) {
+        } else if (!level().isClientSide && lastTimeDecrease <= 30 && getAnimation() == NO_ANIMATION && resettingTargetTimer == 0) {
             setActivateTarget(0);
             lastTimeDecrease++;
         }
@@ -252,7 +251,7 @@ public class EntityFoliaath extends MowzieLLibraryEntity implements Enemy {
             activate.increaseTimer(activateTime < activateTarget ? 1 : -2);
         }
 
-        if (!this.level.isClientSide && this.level.getDifficulty() == Difficulty.PEACEFUL)
+        if (!this.level().isClientSide && this.level().getDifficulty() == Difficulty.PEACEFUL)
         {
             this.discard() ;
         }

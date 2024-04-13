@@ -1,10 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.capability;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoFirstPersonRenderer;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
@@ -21,7 +16,6 @@ import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseDown;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseUp;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.power.Power;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -42,6 +36,10 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.fml.LogicalSide;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlayerCapability {
     public static ResourceLocation ID = new ResourceLocation(MowziesMobs.MODID, "player_cap");

@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.client.model.tools.geckolib;
 
-import com.bobmowzie.mowziesmobs.server.entity.IAnimationTickable;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;

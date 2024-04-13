@@ -1,14 +1,10 @@
 package com.bobmowzie.mowziesmobs.server.message;
 
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
-
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerUmvuthiTrade;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -16,6 +12,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.network.NetworkEvent;
+
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 /**
  * Created by BobMowzie on 11/14/2016.

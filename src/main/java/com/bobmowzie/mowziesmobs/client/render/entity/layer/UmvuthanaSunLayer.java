@@ -1,7 +1,5 @@
 package com.bobmowzie.mowziesmobs.client.render.entity.layer;
 
-import java.util.Optional;
-
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthana;
@@ -10,7 +8,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector4f;
-
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -22,6 +19,8 @@ import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
 import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
+
+import java.util.Optional;
 
 public class UmvuthanaSunLayer extends GeoLayerRenderer<EntityUmvuthana> {
     protected final EntityRenderDispatcher entityRenderDispatcher;

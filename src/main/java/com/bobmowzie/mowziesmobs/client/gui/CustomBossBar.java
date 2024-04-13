@@ -1,22 +1,19 @@
 package com.bobmowzie.mowziesmobs.client.gui;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.BossEvent;
 import net.minecraftforge.client.event.CustomizeGuiOverlayEvent;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class CustomBossBar {
     public static Map<ResourceLocation, CustomBossBar> customBossBars = new HashMap<>();

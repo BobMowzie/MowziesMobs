@@ -1,15 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.world.feature;
 
-import java.util.function.Supplier;
-
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.world.feature.structure.FrostmawPieces;
-import com.bobmowzie.mowziesmobs.server.world.feature.structure.FrostmawStructure;
-import com.bobmowzie.mowziesmobs.server.world.feature.structure.UmvuthanaGrovePieces;
-import com.bobmowzie.mowziesmobs.server.world.feature.structure.UmvuthanaGroveStructure;
-import com.bobmowzie.mowziesmobs.server.world.feature.structure.WroughtnautChamberPieces;
-import com.bobmowzie.mowziesmobs.server.world.feature.structure.WroughtnautChamberStructure;
-
+import com.bobmowzie.mowziesmobs.server.world.feature.structure.*;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -17,6 +9,8 @@ import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
+
+import java.util.function.Supplier;
 
 public class FeatureHandler {
     public static final DeferredRegister<StructureType<?>> REG = DeferredRegister.create(Registry.STRUCTURE_TYPE_REGISTRY, MowziesMobs.MODID);

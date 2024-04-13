@@ -1,10 +1,6 @@
 package com.bobmowzie.mowziesmobs;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.bobmowzie.mowziesmobs.client.ClientProxy;
-import com.bobmowzie.mowziesmobs.client.model.tools.MowzieGeoBuilder;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.server.ServerEventHandler;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
@@ -28,7 +24,6 @@ import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.structure.jigsaw.JigsawHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.structure.processor.ProcessorHandler;
 import com.bobmowzie.mowziesmobs.server.world.spawn.SpawnHandler;
-
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -41,6 +36,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.simple.SimpleChannel;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import software.bernie.geckolib.GeckoLib;
 
 @Mod(MowziesMobs.MODID)

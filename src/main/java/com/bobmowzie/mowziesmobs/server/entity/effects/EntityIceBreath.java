@@ -11,7 +11,6 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -45,7 +44,7 @@ public class EntityIceBreath extends EntityMagicEffect {
     public void tick() {
         super.tick();
         if (tickCount == 1) {
-            if (level.isClientSide) {
+            if (level().isClientSide) {
                 MowziesMobs.PROXY.playIceBreathSound(this);
             }
         }
@@ -64,23 +63,23 @@ public class EntityIceBreath extends EntityMagicEffect {
         float xComp = (float) (Math.sin(yaw) * Math.cos(pitch));
         float yComp = (float) (Math.sin(pitch));
         float zComp = (float) (Math.cos(yaw) * Math.cos(pitch));
-        if (level.isClientSide) {
+        if (level().isClientSide) {
             if (tickCount % 8 == 0) {
-                level.addParticle(new ParticleRing.RingData(yaw, -pitch, 40, 1f, 1f, 1f, 1f, 110f * spread, false, ParticleRing.EnumRingBehavior.GROW), getX(), getY(), getZ(), 0.5f * xComp, 0.5f * yComp, 0.5f * zComp);
+                level().addParticle(new ParticleRing.RingData(yaw, -pitch, 40, 1f, 1f, 1f, 1f, 110f * spread, false, ParticleRing.EnumRingBehavior.GROW), getX(), getY(), getZ(), 0.5f * xComp, 0.5f * yComp, 0.5f * zComp);
             }
 
             for (int i = 0; i < 6; i++) {
                 double xSpeed = speed * 1f * xComp;// + (spread * (rand.nextFloat() * 2 - 1) * (1 - Math.abs(xComp)));
                 double ySpeed = speed * 1f * yComp;// + (spread * (rand.nextFloat() * 2 - 1) * (1 - Math.abs(yComp)));
                 double zSpeed = speed * 1f * zComp;// + (spread * (rand.nextFloat() * 2 - 1) * (1 - Math.abs(zComp)));
-                level.addParticle(new ParticleSnowFlake.SnowflakeData(37f, true), getX(), getY(), getZ(), xSpeed, ySpeed, zSpeed);
+                level().addParticle(new ParticleSnowFlake.SnowflakeData(37f, true), getX(), getY(), getZ(), xSpeed, ySpeed, zSpeed);
             }
             for (int i = 0; i < 5; i++) {
                 double xSpeed = speed * xComp + (spread * 0.7 * (random.nextFloat() * 2 - 1) * (Math.sqrt(1 - xComp * xComp)));
                 double ySpeed = speed * yComp + (spread * 0.7 * (random.nextFloat() * 2 - 1) * (Math.sqrt(1 - yComp * yComp)));
                 double zSpeed = speed * zComp + (spread * 0.7 * (random.nextFloat() * 2 - 1) * (Math.sqrt(1 - zComp * zComp)));
                 float value = random.nextFloat() * 0.15f;
-                level.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f + value, 0.75f + value,1f, 10f + random.nextFloat() * 20f, 40, ParticleCloud.EnumCloudBehavior.GROW, 1f), getX(), getY(), getZ(), xSpeed, ySpeed, zSpeed);
+                level().addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f + value, 0.75f + value,1f, 10f + random.nextFloat() * 20f, 40, ParticleCloud.EnumCloudBehavior.GROW, 1f), getX(), getY(), getZ(), xSpeed, ySpeed, zSpeed);
             }
         }
         if (tickCount > 10) hitEntities();
@@ -147,8 +146,8 @@ public class EntityIceBreath extends EntityMagicEffect {
                 for (int k = (int)getZ() - checkDist; k < (int)getZ() + checkDist; k++) {
                     BlockPos pos = new BlockPos(i, j, k);
 
-                    BlockState blockState = level.getBlockState(pos);
-                    BlockState blockStateAbove = level.getBlockState(pos.above());
+                    BlockState blockState = level().getBlockState(pos);
+                    BlockState blockStateAbove = level().getBlockState(pos.above());
                     if (blockState.getBlock() != Blocks.WATER || blockStateAbove.getBlock() != Blocks.AIR) {
                         continue;
                     }

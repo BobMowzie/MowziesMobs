@@ -1,7 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.entity.umvuthana;
 
-import java.util.EnumSet;
-
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
@@ -31,7 +29,6 @@ import com.bobmowzie.mowziesmobs.server.item.UmvuthanaMask;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -45,29 +42,15 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.BodyRotationControl;
-import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
-import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.monster.AbstractSkeleton;
-import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.monster.Zoglin;
-import net.minecraft.world.entity.monster.Zombie;
-import net.minecraft.world.entity.monster.ZombifiedPiglin;
+import net.minecraft.world.entity.monster.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -76,15 +59,17 @@ import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.GeoEntity;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.Animation;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.RawAnimation;
 import software.bernie.geckolib3.core.builder.ILoopType;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.easing.EasingType;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.event.predicate.AnimationState;
 import software.bernie.geckolib3.core.manager.AnimationData;
+
+import java.util.EnumSet;
 
 public abstract class EntityUmvuthana extends MowzieGeckoEntity {
     public static final AbilityType<EntityUmvuthana, DieAbility<EntityUmvuthana>> DIE_ABILITY = new AbilityType<>("umvuthana_die", (type, entity) -> new DieAbility<>(type, entity,"die", 70) {
@@ -143,7 +128,7 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
             super.end();
             getUser().discard();
             ItemUmvuthanaMask mask = getMaskFromType(getUser().getMaskType());
-            if (!getUser().level.isClientSide) {
+            if (!getUser().level().isClientSide) {
                 ItemEntity itemEntity = getUser().spawnAtLocation(getUser().getDeactivatedMask(mask), 1.5f);
                 if (itemEntity != null) {
                     ItemStack item = itemEntity.getItem();
@@ -252,7 +237,7 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
         this.targetSelector.addGoal(6, new AvoidEntityGoal<>(this, Creeper.class, 6.0F, 1.0D, 1.2D));
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Player.class, 0, true, true, target -> {
             if (target instanceof Player) {
-                if (this.level.getDifficulty() == Difficulty.PEACEFUL) return false;
+                if (this.level().getDifficulty() == Difficulty.PEACEFUL) return false;
                 ItemStack headArmorStack = ((Player) target).getInventory().armor.get(3);
                 return !(headArmorStack.getItem() instanceof UmvuthanaMask);
             }
@@ -267,16 +252,16 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
         data.addAnimationController(walkRunController);
     }
 
-    protected <E extends IAnimatable> PlayState predicateMask(AnimationEvent<E> event)
+    protected <E extends GeoEntity> PlayState predicateMask(AnimationState<E> event)
     {
         if (isAlive() && active && getActiveAbilityType() != HEAL_ABILITY) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("mask_twitch", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(new RawAnimation().addAnimation("mask_twitch", ILoopType.EDefaultLoopTypes.LOOP));
             return PlayState.CONTINUE;
         }
         return PlayState.STOP;
     }
 
-    protected <E extends IAnimatable> PlayState predicateWalkRun(AnimationEvent<E> event)
+    protected <E extends GeoEntity> PlayState predicateWalkRun(AnimationState<E> event)
     {
         float threshold = 0.9f;
         Animation currentAnim = event.getController().getCurrentAnimation();
@@ -285,40 +270,40 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
         }
 
         if (event.getLimbSwingAmount() > threshold && !isStrafing()) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("run_switch", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(new RawAnimation().addAnimation("run_switch", ILoopType.EDefaultLoopTypes.LOOP));
         }
         else {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("walk_switch", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(new RawAnimation().addAnimation("walk_switch", ILoopType.EDefaultLoopTypes.LOOP));
         }
         return PlayState.CONTINUE;
     }
 
     @Override
-    protected <E extends IAnimatable> void loopingAnimations(AnimationEvent<E> event) {
+    protected <E extends GeoEntity> void loopingAnimations(AnimationState<E> event) {
         if (active) {
             if (isAggressive()) {
                 event.getController().transitionLengthTicks = 4;
                 if (event.isMoving()) {
-                    event.getController().setAnimation(new AnimationBuilder().addAnimation("walk_aggressive", ILoopType.EDefaultLoopTypes.LOOP));
+                    event.getController().setAnimation(new RawAnimation().addAnimation("walk_aggressive", ILoopType.EDefaultLoopTypes.LOOP));
                 } else {
-                    event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_aggressive", ILoopType.EDefaultLoopTypes.LOOP));
+                    event.getController().setAnimation(new RawAnimation().addAnimation("idle_aggressive", ILoopType.EDefaultLoopTypes.LOOP));
                 }
             } else {
                 event.getController().transitionLengthTicks = 4;
                 if (event.isMoving()) {
-                    event.getController().setAnimation(new AnimationBuilder().addAnimation("walk_neutral", ILoopType.EDefaultLoopTypes.LOOP));
+                    event.getController().setAnimation(new RawAnimation().addAnimation("walk_neutral", ILoopType.EDefaultLoopTypes.LOOP));
                 } else {
-                    event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_neutral", ILoopType.EDefaultLoopTypes.LOOP));
+                    event.getController().setAnimation(new RawAnimation().addAnimation("idle_neutral", ILoopType.EDefaultLoopTypes.LOOP));
                 }
             }
         }
         else {
             event.getController().transitionLengthTicks = 0;
             if (!isOnGround() && !isInLava() && !isInWater()) {
-                event.getController().setAnimation(new AnimationBuilder().addAnimation("tumble", ILoopType.EDefaultLoopTypes.LOOP));
+                event.getController().setAnimation(new RawAnimation().addAnimation("tumble", ILoopType.EDefaultLoopTypes.LOOP));
             }
             else {
-                event.getController().setAnimation(new AnimationBuilder().addAnimation("inactive", ILoopType.EDefaultLoopTypes.LOOP));
+                event.getController().setAnimation(new RawAnimation().addAnimation("inactive", ILoopType.EDefaultLoopTypes.LOOP));
             }
         }
     }
@@ -398,7 +383,7 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
     public void tick() {
         super.tick();
 
-        if (level.isClientSide()) {
+        if (level().isClientSide()) {
             if (deathTime < 20 && active && !(getActiveAbilityType() == TELEPORT_ABILITY && getActiveAbility().getCurrentSection().sectionType != AbilitySection.AbilitySectionType.RECOVERY)) {
                 if (this.tickTimer() % 10 == 1) {
                     AdvancedParticleBase.spawnParticle(level, ParticleHandler.GLOW.get(), getX(), getY(), getZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 0.3, 0.4, 1, 9, true, false, new ParticleComponent[]{

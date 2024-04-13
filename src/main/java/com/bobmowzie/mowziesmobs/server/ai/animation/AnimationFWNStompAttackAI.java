@@ -36,7 +36,7 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
         int hitY = Mth.floor(entity.getBoundingBox().minY - 0.5);
         int tick = entity.getAnimationTick();
         final int maxDistance = 6;
-        ServerLevel world = (ServerLevel) entity.level;
+        ServerLevel world = (ServerLevel) entity.level();
         if (tick == 6) {
             entity.playSound(MMSounds.ENTITY_WROUGHT_SHOUT_2.get(), 1, 1);
         } else if (tick > 9 && tick < 17) {
@@ -44,7 +44,7 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                 entity.playSound(MMSounds.ENTITY_WROUGHT_STEP.get(), 1.2F, 0.5F + entity.getRandom().nextFloat() * 0.1F);
             } else if (tick == 12) {
                 entity.playSound(SoundEvents.GENERIC_EXPLODE, 2, 1F + entity.getRandom().nextFloat() * 0.1F);
-                EntityCameraShake.cameraShake(entity.level, entity.position(), 25, 0.1f, 0, 20);
+                EntityCameraShake.cameraShake(entity.level(), entity.position(), 25, 0.1f, 0, 20);
             }
             if (tick % 2 == 0) {
                 int distance = tick / 2 - 2;

@@ -12,13 +12,7 @@ import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.geo.render.built.GeoBone;
-import software.bernie.geckolib3.model.GeoModel;
-import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
-import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 import software.bernie.geckolib3.util.GeoUtils;
 import software.bernie.geckolib3.util.RenderUtils;
 

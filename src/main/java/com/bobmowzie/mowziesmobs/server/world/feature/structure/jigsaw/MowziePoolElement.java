@@ -1,14 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.world.feature.structure.jigsaw;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -25,6 +19,10 @@ import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 public class MowziePoolElement extends SinglePoolElement {
     public static final Codec<MowziePoolElement> CODEC = RecordCodecBuilder.create((builder) -> builder

@@ -46,7 +46,7 @@ public class MMEntityMoveHelper extends MoveControl
             {
                 NodeEvaluator nodeprocessor = pathnavigate.getNodeEvaluator();
 
-                if (nodeprocessor != null && nodeprocessor.getBlockPathType(this.mob.level, Mth.floor(this.mob.getX() + (double)f7), Mth.floor(this.mob.getY()), Mth.floor(this.mob.getZ() + (double)f8)) != BlockPathTypes.WALKABLE)
+                if (nodeprocessor != null && nodeprocessor.getBlockPathType(this.mob.level(), Mth.floor(this.mob.getX() + (double)f7), Mth.floor(this.mob.getY()), Mth.floor(this.mob.getZ() + (double)f8)) != BlockPathTypes.WALKABLE)
                 {
                     this.strafeForwards = 1.0F;
                     this.strafeRight = 0.0F;

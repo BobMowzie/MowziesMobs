@@ -1,10 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.world.feature.structure.jigsaw;
 
-import java.util.Collections;
-import java.util.List;
-
 import com.mojang.serialization.Codec;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.RandomSource;
@@ -18,6 +14,9 @@ import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElementTy
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
+
+import java.util.Collections;
+import java.util.List;
 
 public class FallbackPoolElement extends StructurePoolElement {
     public static final Codec<FallbackPoolElement> CODEC = Codec.unit(() -> {

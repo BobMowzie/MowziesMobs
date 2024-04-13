@@ -1,16 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.world.spawn;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.world.BiomeChecker;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
@@ -24,6 +19,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.common.util.TriPredicate;
 import net.minecraftforge.common.world.ModifiableBiomeInfo;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SpawnHandler {
     public static BiomeChecker FOLIAATH_BIOME_CHECKER;

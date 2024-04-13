@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.MMModelAnimator;
-import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieLLibraryEntity;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import com.ilexiconn.llibrary.client.model.tools.BasicModelRenderer;

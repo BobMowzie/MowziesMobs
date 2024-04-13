@@ -134,12 +134,12 @@ public class AvoidProjectilesGoal extends Goal {
     private Vec3 guessProjectileDestination(Projectile projectile) {
         Vec3 vector3d = projectile.position();
         Vec3 vector3d1 = vector3d.add(projectile.getDeltaMovement().scale(50));
-        return entity.level.clip(new ClipContext(vector3d, vector3d1, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, projectile)).getLocation();
+        return entity.level().clip(new ClipContext(vector3d, vector3d1, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, projectile)).getLocation();
     }
 
     @Nullable
     private <T extends Projectile> T getMostMovingTowardsMeEntity(Class<? extends T> entityClazz, Predicate<? super T> predicate, LivingEntity entity, AABB p_225318_10_) {
-        return this.getMostMovingTowardsMeEntityFromList(entity.level.getEntitiesOfClass(entityClazz, p_225318_10_, predicate), entity);
+        return this.getMostMovingTowardsMeEntityFromList(entity.level().getEntitiesOfClass(entityClazz, p_225318_10_, predicate), entity);
     }
 
     private <T extends Projectile> T getMostMovingTowardsMeEntityFromList(List<? extends T> entities, LivingEntity target) {

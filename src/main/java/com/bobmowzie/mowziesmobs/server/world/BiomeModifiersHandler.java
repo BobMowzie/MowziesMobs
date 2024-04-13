@@ -2,7 +2,6 @@ package com.bobmowzie.mowziesmobs.server.world;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.mojang.serialization.Codec;
-
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;

@@ -91,6 +91,11 @@ public abstract class MowzieGeckoEntity extends MowzieEntity implements GeoEntit
         return controller;
     }
 
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
+    }
+
     public AbilityType<?, ?>[] getAbilities() {
         return new AbilityType[]{};
     }

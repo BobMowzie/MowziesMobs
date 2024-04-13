@@ -62,7 +62,7 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
             }
         } else if (entity.getAnimationTick() == 28) {
             entity.playSound(MMSounds.ENTITY_WROUGHT_AXE_LAND.get(), 1, 0.5F);
-            EntityCameraShake.cameraShake(entity.level, entity.position(), 20, 0.3f, 0, 10);
+            EntityCameraShake.cameraShake(entity.level(), entity.position(), 20, 0.3f, 0, 10);
         } else if (entity.getAnimationTick() == 44) {
             entity.playSound(MMSounds.ENTITY_WROUGHT_PULL_1.get(), 1, 1F);
             entity.playSound(MMSounds.ENTITY_WROUGHT_CREAK.get(), 0.5F, 1F);

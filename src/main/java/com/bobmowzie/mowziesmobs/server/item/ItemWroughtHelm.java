@@ -1,15 +1,9 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
-import java.util.List;
-import java.util.function.Consumer;
-
-import javax.annotation.Nullable;
-
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.LayerHandler;
 import com.bobmowzie.mowziesmobs.client.model.armor.WroughtHelmModel;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -20,14 +14,14 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.ArmorMaterials;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.function.Consumer;
 
 public class ItemWroughtHelm extends MowzieArmorItem {
     private static final WroughtHelmMaterial ARMOR_WROUGHT_HELM = new WroughtHelmMaterial();

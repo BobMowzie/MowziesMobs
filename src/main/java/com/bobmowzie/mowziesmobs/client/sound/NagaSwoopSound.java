@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.sound;
 
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundSource;
