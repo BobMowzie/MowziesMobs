@@ -1,6 +1,7 @@
 package com.ilexiconn.llibrary.client.model.tools;
 
 
+import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.render.MowzieRenderUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -14,6 +15,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.*;
+
+import java.lang.Math;
 
 /**
  * An enhanced ModelRenderer
@@ -407,7 +411,7 @@ public class AdvancedModelRenderer extends BasicModelRenderer {
         float dz = (float) (entity.zOld + (entity.getZ() - entity.zOld) * delta);
         matrixStack.translate(dx, dy, dz);
         float dYaw = Mth.rotLerp(delta, entity.yRotO, entity.getYRot());
-        matrixStack.mulPose(new Quaternion(0, -dYaw + 180, 0, true));
+        matrixStack.mulPose(MathUtils.quatFromRotationXYZ(0, -dYaw + 180, 0, true));
         matrixStack.scale(-1, -1, 1);
         matrixStack.translate(0, -1.5f, 0);
         MowzieRenderUtils.matrixStackFromModel(matrixStack, this);
@@ -415,7 +419,7 @@ public class AdvancedModelRenderer extends BasicModelRenderer {
         Matrix4f matrix4f = matrixEntry.pose();
 
         Vector4f vec = new Vector4f(0, 0, 0, 1);
-        vec.transform(matrix4f);
+        vec.mul(matrix4f);
         return new Vec3(vec.x(), vec.y(), vec.z());
     }
 
@@ -426,7 +430,7 @@ public class AdvancedModelRenderer extends BasicModelRenderer {
         float dz = (float) (entity.zOld + (entity.getZ() - entity.zOld) * delta);
         matrixStack.translate(dx, dy, dz);
         float dYaw = Mth.rotLerp(delta, entity.yRotO, entity.getYRot());
-        matrixStack.mulPose(new Quaternion(0, -dYaw + 180, 0, true));
+        matrixStack.mulPose(MathUtils.quatFromRotationXYZ(0, -dYaw + 180, 0, true));
         matrixStack.scale(-1, -1, 1);
         matrixStack.translate(0, -1.5f, 0);
         PoseStack.Pose matrixEntry = matrixStack.last();
@@ -434,7 +438,7 @@ public class AdvancedModelRenderer extends BasicModelRenderer {
         matrix4f.invert();
 
         Vector4f vec = new Vector4f((float) worldPos.x(), (float) worldPos.y(), (float) worldPos.z(), 1);
-        vec.transform(matrix4f);
+        vec.mul(matrix4f);
         rotationPointX = vec.x() * 16;
         rotationPointY = vec.y() * 16;
         rotationPointZ = vec.z() * 16;
@@ -509,8 +513,8 @@ public class AdvancedModelRenderer extends BasicModelRenderer {
         @Override
         public void render(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
             for(AdvancedModelRenderer.TexturedQuad modelrenderer$texturedquad : quads) {
-                Vector3f vector3f = modelrenderer$texturedquad.normal.copy();
-                vector3f.transform(matrix3f);
+                Vector3f vector3f = new Vector3f(modelrenderer$texturedquad.normal);
+                vector3f.mul(matrix3f);
                 float f = vector3f.x();
                 float f1 = vector3f.y();
                 float f2 = vector3f.z();
@@ -521,7 +525,7 @@ public class AdvancedModelRenderer extends BasicModelRenderer {
                     float f4 = modelrenderer$positiontexturevertex.position.y() / 16.0F;
                     float f5 = modelrenderer$positiontexturevertex.position.z() / 16.0F;
                     Vector4f vector4f = new Vector4f(f3, f4, f5, 1.0F);
-                    vector4f.transform(matrix4f);
+                    vector4f.mul(matrix4f);
                     bufferIn.vertex(vector4f.x(), vector4f.y(), vector4f.z(), red, green, blue, alpha, modelrenderer$positiontexturevertex.textureU, modelrenderer$positiontexturevertex.textureV, packedOverlayIn, packedLightIn, f, f1, f2);
                 }
             }
