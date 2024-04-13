@@ -12,8 +12,9 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.world.spawn.SpawnHandler;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -53,7 +54,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -191,17 +192,18 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
             }
 
             List<? extends String> avoidStructures = spawnConfig.avoidStructures.get();
-            Registry<StructureSet> structureSetRegistry = world.registryAccess().registryOrThrow(Registry.STRUCTURE_SET_REGISTRY);
+            Registry<StructureSet> structureSetRegistry = world.registryAccess().registryOrThrow(Registries.STRUCTURE_SET);
             ServerLevel serverLevel = (ServerLevel) world;
-            ChunkGenerator generator = serverLevel.getChunkSource().getGenerator();
-            long seed = serverLevel.getSeed();
+            ChunkGeneratorStructureState generatorState = serverLevel.getChunkSource().getGeneratorState();
             ChunkPos chunkPos = new ChunkPos(spawnPos);
             for (String structureName : avoidStructures) {
                 Optional<StructureSet> structureSetOptional = structureSetRegistry.getOptional(new ResourceLocation(structureName));
                 if (structureSetOptional.isEmpty()) continue;
                 Optional<ResourceKey<StructureSet>> resourceKeyOptional = structureSetRegistry.getResourceKey(structureSetOptional.get());
                 if (resourceKeyOptional.isEmpty()) continue;
-                if (generator.hasStructureChunkInRange(BuiltinRegistries.STRUCTURE_SETS.getHolderOrThrow(resourceKeyOptional.get()), serverLevel.getChunkSource().randomState(), seed, chunkPos.x, chunkPos.z, 3)) {
+                Optional<Holder.Reference<StructureSet>> holderOptional = structureSetRegistry.getHolder(resourceKeyOptional.get());
+                if (holderOptional.isEmpty()) continue;
+                if (generatorState.hasStructureChunkInRange(holderOptional.get(), chunkPos.x, chunkPos.z, 3)) {
                     return false;
                 }
             }
@@ -211,7 +213,7 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
 
     private static boolean isBlockTagAllowed(List<? extends String> allowedBlockTags, BlockState block) {
         for (String allowedBlockTag : allowedBlockTags) {
-            TagKey<Block> tagKey = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(allowedBlockTag));
+            TagKey<Block> tagKey = TagKey.create(Registries.BLOCK, new ResourceLocation(allowedBlockTag));
             if (block.is(tagKey)) return true;
         }
         return false;
@@ -224,7 +226,7 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
     @Override
     public void tick() {
         prevPrevOnGround = prevOnGround;
-        prevOnGround = onGround;
+        prevOnGround = onGround();
         super.tick();
         frame++;
         if (tickCount % 4 == 0) bossInfo.update();
@@ -232,14 +234,14 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
             targetDistance = distanceTo(getTarget()) - getTarget().getBbWidth() / 2f;
             targetAngle = (float) getAngleBetweenEntities(this, getTarget());
         }
-        willLandSoon = !onGround && level.noCollision(getBoundingBox().move(getDeltaMovement()));
+        willLandSoon = !onGround() && level().noCollision(getBoundingBox().move(getDeltaMovement()));
 
-        if (!level.isClientSide && getBossMusic() != null) {
+        if (!level().isClientSide && getBossMusic() != null) {
             if (canPlayMusic()) {
-                this.level.broadcastEntityEvent(this, MUSIC_PLAY_ID);
+                this.level().broadcastEntityEvent(this, MUSIC_PLAY_ID);
             }
             else {
-                this.level.broadcastEntityEvent(this, MUSIC_STOP_ID);
+                this.level().broadcastEntityEvent(this, MUSIC_STOP_ID);
             }
         }
     }
@@ -295,7 +297,7 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
             entityIn.setSecondsOnFire(i * 4);
         }
 
-        boolean flag = entityIn.hurt(DamageSource.mobAttack(this), f);
+        boolean flag = entityIn.hurt(damageSources().mobAttack(this), f);
         if (flag) {
             entityIn.setDeltaMovement(entityIn.getDeltaMovement().multiply(applyKnockbackMultiplier, 1.0, applyKnockbackMultiplier));
             if (f1 > 0.0F && entityIn instanceof LivingEntity) {
@@ -320,7 +322,7 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
             float f = 0.25F + (float)EnchantmentHelper.getBlockEfficiency(this) * 0.05F;
             if (this.random.nextFloat() < f) {
                 player.getCooldowns().addCooldown(Items.SHIELD, 100);
-                this.level.broadcastEntityEvent(player, (byte)30);
+                this.level().broadcastEntityEvent(player, (byte)30);
             }
         }
     }
@@ -340,13 +342,13 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
     }
 
     public List<Player> getPlayersNearby(double distanceX, double distanceY, double distanceZ, double radius) {
-        List<Entity> nearbyEntities = level.getEntities(this, getBoundingBox().inflate(distanceX, distanceY, distanceZ));
+        List<Entity> nearbyEntities = level().getEntities(this, getBoundingBox().inflate(distanceX, distanceY, distanceZ));
         List<Player> listEntityPlayers = nearbyEntities.stream().filter(entityNeighbor -> entityNeighbor instanceof Player && distanceTo(entityNeighbor) <= radius + entityNeighbor.getBbWidth() / 2f).map(entityNeighbor -> (Player) entityNeighbor).collect(Collectors.toList());
         return listEntityPlayers;
     }
 
     public List<LivingEntity> getAttackableEntityLivingBaseNearby(double distanceX, double distanceY, double distanceZ, double radius) {
-        List<Entity> nearbyEntities = level.getEntities(this, getBoundingBox().inflate(distanceX, distanceY, distanceZ));
+        List<Entity> nearbyEntities = level().getEntities(this, getBoundingBox().inflate(distanceX, distanceY, distanceZ));
         List<LivingEntity> listEntityLivingBase = nearbyEntities.stream().filter(entityNeighbor -> entityNeighbor instanceof LivingEntity && ((LivingEntity)entityNeighbor).attackable() && (!(entityNeighbor instanceof Player) || !((Player)entityNeighbor).isCreative()) && distanceTo(entityNeighbor) <= radius + entityNeighbor.getBbWidth() / 2f).map(entityNeighbor -> (LivingEntity) entityNeighbor).collect(Collectors.toList());
         return listEntityLivingBase;
     }
@@ -356,24 +358,24 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double r) {
-        return level.getEntitiesOfClass(entityClass, getBoundingBox().inflate(r, r, r), e -> e != this && distanceTo(e) <= r + e.getBbWidth() / 2f);
+        return level().getEntitiesOfClass(entityClass, getBoundingBox().inflate(r, r, r), e -> e != this && distanceTo(e) <= r + e.getBbWidth() / 2f);
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double dX, double dY, double dZ, double r) {
-        return level.getEntitiesOfClass(entityClass, getBoundingBox().inflate(dX, dY, dZ), e -> e != this && distanceTo(e) <= r + e.getBbWidth() / 2f && e.getY() <= getY() + dY);
+        return level().getEntitiesOfClass(entityClass, getBoundingBox().inflate(dX, dY, dZ), e -> e != this && distanceTo(e) <= r + e.getBbWidth() / 2f && e.getY() <= getY() + dY);
     }
 
     @Override
     protected void tickDeath() { // Copied from entityLiving
         ++this.deathTime;
         int deathDuration = getDeathDuration();
-        if (this.deathTime >= deathDuration && !this.level.isClientSide()) {
+        if (this.deathTime >= deathDuration && !this.level().isClientSide()) {
             lastHurtByPlayer = killDataAttackingPlayer;
             lastHurtByPlayerTime = killDataRecentlyHit;
             if (dropAfterDeathAnim && killDataCause != null) {
                 dropAllDeathLoot(killDataCause);
             }
-            this.level.broadcastEntityEvent(this, (byte)60);
+            this.level().broadcastEntityEvent(this, (byte)60);
             this.remove(Entity.RemovalReason.KILLED);
         }
     }
