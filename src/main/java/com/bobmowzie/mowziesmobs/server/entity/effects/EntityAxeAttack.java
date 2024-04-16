@@ -29,7 +29,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -62,7 +61,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
     protected void defineSynchedData() {
         super.defineSynchedData();
         getEntityData().define(VERTICAL, false);
-        getEntityData().define(AXE_STACK, ItemHandler.WROUGHT_AXE.getDefaultInstance());
+        getEntityData().define(AXE_STACK, ItemHandler.WROUGHT_AXE.get().getDefaultInstance());
     }
 
     @Override
@@ -83,7 +82,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
                 playSound(SoundEvents.GENERIC_EXPLODE, 2, 0.9F + random.nextFloat() * 0.1F);
             }
             else if (getVertical() && tickCount == SWING_DURATION_VER /2 + 1) {
-                EntityCameraShake.cameraShake(level, position(), 10, 0.05f, 0, 10);
+                EntityCameraShake.cameraShake(level(), position(), 10, 0.05f, 0, 10);
             }
         }
 
@@ -106,9 +105,9 @@ public class EntityAxeAttack extends EntityMagicEffect {
                     double pz = getZ() + vz * distance;
                     float factor = 1 - distance / (float) maxDistance;
                     AABB selection = new AABB(px - 1.5, minY, pz - 1.5, px + 1.5, maxY, pz + 1.5);
-                    List<Entity> hit = level.getEntitiesOfClass(Entity.class, selection);
+                    List<Entity> hit = level().getEntitiesOfClass(Entity.class, selection);
                     for (Entity entity : hit) {
-                        if (entity.isOnGround()) {
+                        if (entity.onGround()) {
                             if (entity == this || entity instanceof FallingBlockEntity || entity == caster) {
                                 continue;
                             }
@@ -118,16 +117,16 @@ public class EntityAxeAttack extends EntityMagicEffect {
                                 if (!raytraceCheckEntity(entity)) continue;
 
                                 if (caster instanceof Player)
-                                    hitEntity = entity.hurt(DamageSource.playerAttack((Player) caster), (factor * 5 + 1) * (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f));
+                                    hitEntity = entity.hurt(damageSources().playerAttack((Player) caster), (factor * 5 + 1) * (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f));
                                 else
-                                    hitEntity = entity.hurt(DamageSource.mobAttack(caster), (factor * 5 + 1) * (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f));
+                                    hitEntity = entity.hurt(damageSources().mobAttack(caster), (factor * 5 + 1) * (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f));
                                 applyKnockbackResistance = (float) ((LivingEntity) entity).getAttribute(Attributes.KNOCKBACK_RESISTANCE).getValue();
                             }
                             if (hitEntity) {
                                 double magnitude = -4;
                                 double x = vx * (1 - factor) * magnitude * (1 - applyKnockbackResistance);
                                 double y = 0;
-                                if (entity.isOnGround()) {
+                                if (entity.onGround()) {
                                     y += 0.15 * (1 - applyKnockbackResistance);
                                 }
                                 double z = vz * (1 - factor) * magnitude * (1 - applyKnockbackResistance);
@@ -138,17 +137,17 @@ public class EntityAxeAttack extends EntityMagicEffect {
                             }
                         }
                     }
-                    if (level.random.nextBoolean()) {
+                    if (level().random.nextBoolean()) {
                         int hitX = Mth.floor(px);
                         int hitZ = Mth.floor(pz);
                         BlockPos pos = new BlockPos(hitX, hitY, hitZ);
                         BlockPos abovePos = new BlockPos(pos).above();
-                        BlockState block = level.getBlockState(pos);
-                        BlockState blockAbove = level.getBlockState(abovePos);
-                        if (block.getMaterial() != Material.AIR && block.isRedstoneConductor(level, pos) && !block.hasBlockEntity() && !blockAbove.getMaterial().blocksMotion()) {
-                            EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK.get(), level, block, 0.3f);
+                        BlockState block = level().getBlockState(pos);
+                        BlockState blockAbove = level().getBlockState(abovePos);
+                        if (!block.isAir() && block.isRedstoneConductor(level(), pos) && !block.hasBlockEntity() && !blockAbove.blocksMotion()) {
+                            EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK.get(), level(), block, 0.3f);
                             fallingBlock.setPos(hitX + 0.5, hitY + 1, hitZ + 0.5);
-                            level.addFreshEntity(fallingBlock);
+                            level().addFreshEntity(fallingBlock);
                         }
                     }
                 }
@@ -178,11 +177,11 @@ public class EntityAxeAttack extends EntityMagicEffect {
                 PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(caster, CapabilityHandler.PLAYER_CAPABILITY);
                 if (playerCapability != null) {
                     playerCapability.setAxeCanAttack(true);
-                    if (caster instanceof Player) attackTargetEntityWithCurrentItem(entityHit, (Player)caster, damage / ItemHandler.WROUGHT_AXE.getAttackDamage(), applyKnockback);
+                    if (caster instanceof Player) attackTargetEntityWithCurrentItem(entityHit, (Player)caster, damage / ItemHandler.WROUGHT_AXE.get().getAttackDamage(), applyKnockback);
                     playerCapability.setAxeCanAttack(false);
                 }
                 else {
-                    entityHit.hurt(DamageSource.mobAttack(caster), damage);
+                    entityHit.hurt(damageSources().mobAttack(caster), damage);
                     entityHit.setDeltaMovement(entityHit.getDeltaMovement().x * applyKnockback, entityHit.getDeltaMovement().y, entityHit.getDeltaMovement().z * applyKnockback);
                 }
                 hit = true;
@@ -202,7 +201,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
     }
 
     private List<LivingEntity> getEntityLivingBaseNearby(double distanceX, double distanceY, double distanceZ, double radius) {
-        List<Entity> list = level.getEntities(this, getBoundingBox().inflate(distanceX, distanceY, distanceZ));
+        List<Entity> list = level().getEntities(this, getBoundingBox().inflate(distanceX, distanceY, distanceZ));
         ArrayList<LivingEntity> nearEntities = list.stream().filter(entityNeighbor -> entityNeighbor instanceof LivingEntity && distanceTo(entityNeighbor) <= radius + entityNeighbor.getBbWidth() / 2f).map(entityNeighbor -> (LivingEntity) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
         return nearEntities;
     }
@@ -249,7 +248,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
                     int i = 0;
                     i = i + EnchantmentHelper.getKnockbackBonus(player);
                     if (player.isSprinting() && flag) {
-                        player.level.playSound((Player)null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_ATTACK_KNOCKBACK, player.getSoundSource(), 1.0F, 1.0F);
+                        player.level().playSound((Player)null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_ATTACK_KNOCKBACK, player.getSoundSource(), 1.0F, 1.0F);
                         ++i;
                         flag1 = true;
                     }
@@ -269,7 +268,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
                     }
 
                     Vec3 vector3d = targetEntity.getDeltaMovement();
-                    boolean flag5 = targetEntity.hurt(DamageSource.playerAttack(player), f);
+                    boolean flag5 = targetEntity.hurt(damageSources().playerAttack(player), f);
                     if (flag5) {
                         if (i > 0) {
                             if (targetEntity instanceof LivingEntity) {
@@ -289,9 +288,9 @@ public class EntityAxeAttack extends EntityMagicEffect {
                         }
 
                         if (flag) {
-                            player.level.playSound((Player)null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_ATTACK_STRONG, player.getSoundSource(), 1.0F, 1.0F);
+                            player.level().playSound((Player)null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_ATTACK_STRONG, player.getSoundSource(), 1.0F, 1.0F);
                         } else {
-                            player.level.playSound((Player)null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_ATTACK_WEAK, player.getSoundSource(), 1.0F, 1.0F);
+                            player.level().playSound((Player)null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_ATTACK_WEAK, player.getSoundSource(), 1.0F, 1.0F);
                         }
 
                         if (f1 > 0.0F) {
@@ -310,7 +309,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
                             entity = ((net.minecraftforge.entity.PartEntity<?>) targetEntity).getParent();
                         }
 
-                        if (!player.level.isClientSide && !itemstack1.isEmpty() && entity instanceof LivingEntity) {
+                        if (!player.level().isClientSide && !itemstack1.isEmpty() && entity instanceof LivingEntity) {
                             ItemStack copy = itemstack1.copy();
                             itemstack1.hurtEnemy((LivingEntity)entity, player);
                             if (itemstack1.isEmpty()) {
@@ -326,15 +325,15 @@ public class EntityAxeAttack extends EntityMagicEffect {
                                 targetEntity.setSecondsOnFire(j * 4);
                             }
 
-                            if (player.level instanceof ServerLevel && f5 > 2.0F) {
+                            if (player.level() instanceof ServerLevel && f5 > 2.0F) {
                                 int k = (int)((double)f5 * 0.5D);
-                                ((ServerLevel)player.level).sendParticles(ParticleTypes.DAMAGE_INDICATOR, targetEntity.getX(), targetEntity.getY(0.5D), targetEntity.getZ(), k, 0.1D, 0.0D, 0.1D, 0.2D);
+                                ((ServerLevel)player.level()).sendParticles(ParticleTypes.DAMAGE_INDICATOR, targetEntity.getX(), targetEntity.getY(0.5D), targetEntity.getZ(), k, 0.1D, 0.0D, 0.1D, 0.2D);
                             }
                         }
 
                         player.causeFoodExhaustion(0.1F);
                     } else {
-                        player.level.playSound((Player)null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_ATTACK_NODAMAGE, player.getSoundSource(), 1.0F, 1.0F);
+                        player.level().playSound((Player)null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_ATTACK_NODAMAGE, player.getSoundSource(), 1.0F, 1.0F);
                         if (flag4) {
                             targetEntity.clearFire();
                         }

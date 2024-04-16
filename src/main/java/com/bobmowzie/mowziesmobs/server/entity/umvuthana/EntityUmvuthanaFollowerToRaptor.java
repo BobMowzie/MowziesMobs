@@ -32,7 +32,7 @@ public class EntityUmvuthanaFollowerToRaptor extends EntityUmvuthanaFollower<Ent
             setTarget(leader.getTarget());
         }
 
-        if (!this.level.isClientSide && this.level.getDifficulty() == Difficulty.PEACEFUL)
+        if (!this.level().isClientSide && this.level().getDifficulty() == Difficulty.PEACEFUL)
         {
             this.discard() ;
         }

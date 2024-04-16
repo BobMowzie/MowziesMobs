@@ -307,7 +307,7 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
     protected PathNavigation createNavigation(Level worldIn) {
         FlyingPathNavigation flyingpathnavigator = new FlyingPathNavigation(this, worldIn) {
             public boolean isStableDestination(BlockPos pos) {
-                return !this.level.getBlockState(pos.below()).isAir();
+                return !this.level().getBlockState(pos.below()).isAir();
             }
         };
         flyingpathnavigator.setCanOpenDoors(false);
@@ -431,7 +431,7 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
                 movement = EnumNagaMovement.HOVERING;
                 hoverAnim.increaseTimer();
 
-                if (getAnimation() == NO_ANIMATION && !level.isClientSide) {
+                if (getAnimation() == NO_ANIMATION && !level().isClientSide) {
                     List<Projectile> projectilesNearby = getEntitiesNearby(Projectile.class, 30);
                     for (Projectile a : projectilesNearby) {
                         Vec3 aActualMotion = new Vec3(a.getX() - a.xo, a.getY() - a.yo, a.getZ() - a.zo);
@@ -509,7 +509,7 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
             flapAnim.increaseTimer();
         }
 
-        if (getAnimation() == SPIT_ANIMATION && level.isClientSide && mouthPos != null && !interrupted) {
+        if (getAnimation() == SPIT_ANIMATION && level().isClientSide && mouthPos != null && !interrupted) {
             if (getAnimationTick() == 33) {
 //            System.out.println(mouthPos);
                 float explodeSpeed = 2.4f;
@@ -519,7 +519,7 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
                     particlePos = particlePos.xRot((float) (random.nextFloat() * 2 * Math.PI));
                     double value = random.nextFloat() * 0.1f;
                     double life = random.nextFloat() * 10f + 20f;
-                    ParticleVanillaCloudExtended.spawnVanillaCloud(level, particlePos.x + mouthPos[0].x, particlePos.y + mouthPos[0].y, particlePos.z + mouthPos[0].z, particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 1, 0.25d + value, 0.75d + value, 0.25d + value, 0.6, life);
+                    ParticleVanillaCloudExtended.spawnVanillaCloud(level(), particlePos.x + mouthPos[0].x, particlePos.y + mouthPos[0].y, particlePos.z + mouthPos[0].z, particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 1, 0.25d + value, 0.75d + value, 0.25d + value, 0.6, life);
                 }
             }
 
@@ -532,7 +532,7 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
                     particlePos = particlePos.yRot((float) (random.nextFloat() * 2 * Math.PI));
                     particlePos = particlePos.xRot((float) (random.nextFloat() * 2 * Math.PI));
                     double value = random.nextFloat() * 0.15f;
-                    ParticleVanillaCloudExtended.spawnVanillaCloudDestination(level, particlePos.x + mouthPos[0].x, particlePos.y + mouthPos[0].y, particlePos.z + mouthPos[0].z, 0, 0, 0, 1, 0.25d + value, 0.75d + value, 0.25d + value, 0.9, 15, mouthPos);
+                    ParticleVanillaCloudExtended.spawnVanillaCloudDestination(level(), particlePos.x + mouthPos[0].x, particlePos.y + mouthPos[0].y, particlePos.z + mouthPos[0].z, 0, 0, 0, 1, 0.25d + value, 0.75d + value, 0.25d + value, 0.9, 15, mouthPos);
                 }
             }
         }
@@ -545,12 +545,12 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
             movement = EnumNagaMovement.HOVERING;
         }
 
-        if (level.isClientSide && movement == EnumNagaMovement.HOVERING && flapAnim.getAnimationFraction() >= 0.5) {
+        if (level().isClientSide && movement == EnumNagaMovement.HOVERING && flapAnim.getAnimationFraction() >= 0.5) {
 
             if (shoulderRot > 0.9) hasFlapSoundPlayed = false;
 
             if (shoulderRot <= 0.7 && !hasFlapSoundPlayed) {
-                level.playLocalSound(getX(), getY(), getZ(), MMSounds.ENTITY_NAGA_FLAP_1.get(), SoundSource.HOSTILE, 2, (float) (0.85 + random.nextFloat() * 0.2), false);
+                level().playLocalSound(getX(), getY(), getZ(), MMSounds.ENTITY_NAGA_FLAP_1.get(), SoundSource.HOSTILE, 2, (float) (0.85 + random.nextFloat() * 0.2), false);
                 hasFlapSoundPlayed = true;
             }
         }
@@ -558,7 +558,7 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
         hoverAnimFrac = hoverAnim.getAnimationProgressSinSqrt();
         flapAnimFrac = flapAnim.getAnimationProgressSinSqrt();
 
-        if (!this.level.isClientSide && this.level.getDifficulty() == Difficulty.PEACEFUL)
+        if (!this.level().isClientSide && this.level().getDifficulty() == Difficulty.PEACEFUL)
         {
             this.discard() ;
         }
@@ -598,9 +598,9 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
 
     @Override
     public boolean checkSpawnObstruction(LevelReader worldIn) {
-        boolean liquid = !this.level.containsAnyLiquid(this.getBoundingBox());
-        boolean worldCollision = this.level.noCollision(this, this.getBoundingBox());
-        boolean mobCollision = this.level.isUnobstructed(this);
+        boolean liquid = !this.level().containsAnyLiquid(this.getBoundingBox());
+        boolean worldCollision = this.level().noCollision(this, this.getBoundingBox());
+        boolean mobCollision = this.level().isUnobstructed(this);
 
         return liquid && worldCollision && mobCollision;
     }
@@ -631,7 +631,7 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
         projectilePos = projectilePos.add(position());
         projectilePos = projectilePos.add(new Vec3(0, 0, 1).xRot((float)Math.toRadians(-getXRot())).yRot((float)Math.toRadians(-yHeadRot)));
         projectilePos = projectilePos.add(new Vec3(0, 0, 0));
-        EntityPoisonBall poisonBall = new EntityPoisonBall(EntityHandler.POISON_BALL.get(), this.level, this);
+        EntityPoisonBall poisonBall = new EntityPoisonBall(EntityHandler.POISON_BALL.get(), this.level(), this);
         poisonBall.setPos(projectilePos.x, projectilePos.y, projectilePos.z);
         Vec3 look = getLookAngle();
         Vec3 dir = new Vec3(look.x, 0, look.z).normalize();
@@ -644,7 +644,7 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
             float speed = Math.min(dist/timeGuess, 0.9f);
             poisonBall.shoot(dir.x * speed, 0.1, dir.z * speed, 1f, 0);
         }
-        this.level.addFreshEntity(poisonBall);
+        this.level().addFreshEntity(poisonBall);
 
         playSound(MMSounds.ENTITY_NAGA_ACID_SPIT.get(), 2, 1);
         playSound(MMSounds.ENTITY_NAGA_ACID_SPIT_HISS.get(), 2, 1);
@@ -693,7 +693,7 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
 //        } TODO: SLOW_FALLING has private access. Skip?
         d0 = gravity.getValue();
 
-        FluidState fluidstate = this.level.getFluidState(this.blockPosition());
+        FluidState fluidstate = this.level().getFluidState(this.blockPosition());
         if (this.isInWater() && this.isAffectedByFluids() && !this.canStandOnFluid(fluidstate)) {
             double d8 = this.getY();
             float f5 = this.isSprinting() ? 0.9F : this.getWaterSlowDown();
@@ -754,17 +754,17 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
         else if (movement == EnumNagaMovement.HOVERING) {
             BlockPos ground = new BlockPos(this.getX(), this.getBoundingBox().minY - 1.0D, this.getZ());
             float f = 0.91F;
-            if (this.isOnGround()) {
-                f = this.level.getBlockState(ground).getFriction(level, ground, this) * 0.91F;
+            if (this.onGround()) {
+                f = this.level().getBlockState(ground).getFriction(level(), ground, this) * 0.91F;
             }
 
             float f1 = 0.16277137F / (f * f * f);
             f = 0.91F;
-            if (this.isOnGround()) {
-                f = this.level.getBlockState(ground).getFriction(level, ground, this) * 0.91F;
+            if (this.onGround()) {
+                f = this.level().getBlockState(ground).getFriction(level(), ground, this) * 0.91F;
             }
 
-            this.moveRelative(this.isOnGround() ? 0.1F * f1 : 0.02F, motion);
+            this.moveRelative(this.onGround() ? 0.1F * f1 : 0.02F, motion);
             this.move(MoverType.SELF, this.getDeltaMovement());
             this.setDeltaMovement(this.getDeltaMovement().scale(f));
 
@@ -814,8 +814,8 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
 
         } else if (movement == EnumNagaMovement.FALLING || movement == EnumNagaMovement.FALLEN || isNoAi()) {
             BlockPos blockpos = new BlockPos(this.getX(), this.getBoundingBox().minY - 1.0D, this.getZ());
-            float f5 = this.level.getBlockState(blockpos).getFriction(level, blockpos, this);
-            float f7 = this.isOnGround() ? f5 * 0.91F : 0.91F;
+            float f5 = this.level().getBlockState(blockpos).getFriction(level(), blockpos, this);
+            float f7 = this.onGround() ? f5 * 0.91F : 0.91F;
 
             this.move(MoverType.SELF, this.getDeltaMovement());
             Vec3 Vector3d5 = this.getDeltaMovement();
@@ -827,7 +827,7 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
             if (this.hasEffect(MobEffects.LEVITATION)) {
                 d10 += (0.05D * (double)(this.getEffect(MobEffects.LEVITATION).getAmplifier() + 1) - Vector3d5.y) * 0.2D;
                 this.fallDistance = 0.0F;
-            } else if (this.level.isClientSide && !this.level.hasChunkAt(blockpos)) {
+            } else if (this.level().isClientSide && !this.level().hasChunkAt(blockpos)) {
                 if (this.getY() > 0.0D) {
                     d10 = -0.1D;
                 } else {
@@ -1021,10 +1021,10 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
             else {
                 seesGround = true;
             }
-            if (position == null || !level.isEmptyBlock(new BlockPos(position).below())) return null;
+            if (position == null || !level().isEmptyBlock(new BlockPos(position).below())) return null;
             Vec3 offset = position.subtract(EntityNaga.this.position());
             AABB newBB = EntityNaga.this.getBoundingBox().move(offset);
-            if (level.noCollision(newBB) && EntityNaga.this.level.clip(new ClipContext(EntityNaga.this.position(), position, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, EntityNaga.this)).getType() != HitResult.Type.BLOCK)
+            if (level().noCollision(newBB) && EntityNaga.this.level().clip(new ClipContext(EntityNaga.this.position(), position, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, EntityNaga.this)).getType() != HitResult.Type.BLOCK)
                 return position;
             return null;
         }
@@ -1095,7 +1095,7 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
 //                d1 += 1;
 //            }
             double speed = parentEntity.getAttribute(Attributes.MOVEMENT_SPEED).getValue();
-            if (!parentEntity.level.isWaterAt(new BlockPos(d0, d1, d2)))
+            if (!parentEntity.level().isWaterAt(new BlockPos(d0, d1, d2)))
                 this.parentEntity.getNavigation().moveTo(d0, d1, d2, speed);
         }
 
@@ -1150,7 +1150,7 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
             LivingEntity target = parentEntity.getTarget();
             double speed = parentEntity.getAttribute(Attributes.MOVEMENT_SPEED).getValue();
             BlockPos targetPos = target.blockPosition().above(8);
-            if (!parentEntity.level.isWaterAt(targetPos))
+            if (!parentEntity.level().isWaterAt(targetPos))
                 this.parentEntity.getNavigation().moveTo(targetPos.getX(), targetPos.getY(), targetPos.getZ(), speed);
         }
 
@@ -1277,7 +1277,7 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
 
             for(int i = 1; i < p_220673_2_; ++i) {
                 axisalignedbb = axisalignedbb.move(p_220673_1_);
-                if (!this.parentEntity.level.noCollision(this.parentEntity, axisalignedbb)) {
+                if (!this.parentEntity.level().noCollision(this.parentEntity, axisalignedbb)) {
                     return false;
                 }
             }

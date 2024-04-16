@@ -78,7 +78,7 @@ public class EntityPillar extends EntityGeomancyBase {
                 float height = getHeight();
 
                 if (height == 0.0) {
-                    currentPiece = new EntityPillarPiece(EntityHandler.PILLAR_PIECE.get(), this.level, this, new Vec3(this.getX(), this.getY() - 1.0f, this.getZ()));
+                    currentPiece = new EntityPillarPiece(EntityHandler.PILLAR_PIECE.get(), this.level(), this, new Vec3(this.getX(), this.getY() - 1.0f, this.getZ()));
                     level().addFreshEntity(currentPiece);
                 }
 
@@ -86,7 +86,7 @@ public class EntityPillar extends EntityGeomancyBase {
                 setHeight(height);
 
                 if (Math.floor(height) > Math.floor(prevHeight)) {
-                    currentPiece = new EntityPillarPiece(EntityHandler.PILLAR_PIECE.get(), this.level, this, new Vec3(this.getX(), this.getY() + Math.floor(height) - 1.0f, this.getZ()));
+                    currentPiece = new EntityPillarPiece(EntityHandler.PILLAR_PIECE.get(), this.level(), this, new Vec3(this.getX(), this.getY() + Math.floor(height) - 1.0f, this.getZ()));
                     level().addFreshEntity(currentPiece);
                 }
 
@@ -148,8 +148,8 @@ public class EntityPillar extends EntityGeomancyBase {
     public void stopRising() {
         getEntityData().set(RISING, false);
         this.setBoundingBox(this.makeBoundingBox());
-        currentPiece = new EntityPillarPiece(EntityHandler.PILLAR_PIECE.get(), this.level, this, new Vec3(this.getX(), this.getY() + getHeight() - 1.0f, this.getZ()));
-        level.addFreshEntity(currentPiece);
+        currentPiece = new EntityPillarPiece(EntityHandler.PILLAR_PIECE.get(), this.level(), this, new Vec3(this.getX(), this.getY() + getHeight() - 1.0f, this.getZ()));
+        level().addFreshEntity(currentPiece);
     }
 
     public boolean isRising() {

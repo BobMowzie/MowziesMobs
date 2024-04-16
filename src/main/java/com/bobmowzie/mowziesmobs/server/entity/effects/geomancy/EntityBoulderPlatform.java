@@ -70,13 +70,13 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
             nextBoulders();
         }
 
-        if (pillar != null && !level.isClientSide()) {
+        if (pillar != null && !level().isClientSide()) {
             if (pillar.getY() + pillar.getHeight() >= this.getY()) activate();
         }
 
         if (descending) {
             move(MoverType.SELF, new Vec3(0, -EntityPillar.RISING_SPEED, 0));
-            if (Iterables.size(level.getBlockCollisions(this, getBoundingBox().inflate(0.1))) > 0) {
+            if (Iterables.size(level().getBlockCollisions(this, getBoundingBox().inflate(0.1))) > 0) {
                 discard();
                 return;
             }
@@ -86,7 +86,7 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
     public void nextBoulders() {
         if (caster == null || sculptor == null || pillar == null) return;
         spawnedNextBoulders = true;
-        if (level.isClientSide()) return;
+        if (level().isClientSide()) return;
 
         // If it's not the main path, path has a random chance of ending. Chance is weighted by the number of live paths.
         if (!isMainPath) {
@@ -127,13 +127,13 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
 
             // Make sure boulder has no collision, even with the future fully-grown pillar
             if (
-                    level.getEntitiesOfClass(EntityBoulderPlatform.class, nextBoulder.getBoundingBox(), (b) -> b != this).isEmpty()
-                    && Iterables.size(level.getBlockCollisions(nextBoulder, nextBoulder.getBoundingBox())) == 0
+                    level().getEntitiesOfClass(EntityBoulderPlatform.class, nextBoulder.getBoundingBox(), (b) -> b != this).isEmpty()
+                    && Iterables.size(level().getBlockCollisions(nextBoulder, nextBoulder.getBoundingBox())) == 0
                     && !pillar.getBoundingBox().setMaxY(pillar.getY() + EntitySculptor.TEST_HEIGHT).intersects(nextBoulder.getBoundingBox())
             ) {
                 // Check nearby boulders below to make sure this boulder doesn't block jumping path
                 AABB toCheck = nextBoulder.getBoundingBox().inflate(MAX_DIST_HORIZONTAL, MAX_DIST_VERTICAL / 2f + 1.5f, MAX_DIST_HORIZONTAL).move(0, -MAX_DIST_VERTICAL / 2f - 1.5f, 0);
-                List<EntityBoulderPlatform> platforms = level.getEntitiesOfClass(EntityBoulderPlatform.class, toCheck);
+                List<EntityBoulderPlatform> platforms = level().getEntitiesOfClass(EntityBoulderPlatform.class, toCheck);
                 boolean obstructsPath = false;
                 for (EntityBoulderPlatform platform : platforms) {
                     if (platform != nextBoulder && !nextBoulder.checkJumpPath(platform)) {

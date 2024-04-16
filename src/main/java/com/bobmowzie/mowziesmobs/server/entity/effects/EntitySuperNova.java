@@ -39,13 +39,13 @@ public class EntitySuperNova extends EntityMagicEffect {
         if (caster == null || caster.isRemoved() || !caster.isAlive()) this.discard();
 
         if (tickCount == 1) {
-            EntityCameraShake.cameraShake(level, position(), 30, 0.05f, 10, 30);
+            EntityCameraShake.cameraShake(level(), position(), 30, 0.05f, 10, 30);
             playSound(MMSounds.ENTITY_SUPERNOVA_END.get(), 3f, 1f);
             if (level().isClientSide) {
                 float scale = 8.2f;
                 for (int i = 0; i < 15; i++) {
                     float phaseOffset = random.nextFloat();
-                    AdvancedParticleBase.spawnParticle(level, ParticleHandler.ARROW_HEAD.get(), getX(), getY(), getZ(), 0, 0, 0, false, 0, 0, 0, 0, 8F, 0.95, 0.9, 0.35, 1, 1, 30, true, true, new ParticleComponent[]{
+                    AdvancedParticleBase.spawnParticle(level(), ParticleHandler.ARROW_HEAD.get(), getX(), getY(), getZ(), 0, 0, 0, false, 0, 0, 0, 0, 8F, 0.95, 0.9, 0.35, 1, 1, 30, true, true, new ParticleComponent[]{
                             new ParticleComponent.Orbit(new Vec3[]{position().add(0, getBbHeight() / 2, 0)}, KeyTrack.startAndEnd(0 + phaseOffset, 1.6f + phaseOffset), new ParticleComponent.KeyTrack(
                                     new float[]{0.2f * scale, 0.63f * scale, 0.87f * scale, 0.974f * scale, 0.998f * scale, 1f * scale},
                                     new float[]{0, 0.15f, 0.3f, 0.45f, 0.6f, 0.75f}

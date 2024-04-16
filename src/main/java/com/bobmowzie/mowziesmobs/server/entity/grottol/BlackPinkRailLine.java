@@ -19,7 +19,7 @@ public final class BlackPinkRailLine implements Consumer<AbstractMinecart> {
 
     @Override
     public void accept(AbstractMinecart minecart) {
-        state = next(minecart.level, minecart);
+        state = next(minecart.level(), minecart);
     }
 
     private State next(Level world, AbstractMinecart minecart) {

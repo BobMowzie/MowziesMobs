@@ -7,8 +7,6 @@ import com.bobmowzie.mowziesmobs.client.particle.util.RibbonComponent.PropertyOv
 import com.bobmowzie.mowziesmobs.client.particle.util.RibbonComponent.PropertyOverLength.EnumRibbonProperty;
 import com.bobmowzie.mowziesmobs.client.particle.util.RibbonParticleData;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector4f;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
@@ -20,6 +18,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Matrix4f;
+import org.joml.Vector4f;
 
 public class ParticleRibbon extends AdvancedParticleBase {
     public Vec3[] positions;
@@ -155,12 +155,12 @@ public class ParticleRibbon extends AdvancedParticleBase {
                     new Vector4f((float)aVector3d2[2].x,  (float)aVector3d2[2].y,  (float)aVector3d2[2].z, 1f),
                     new Vector4f((float)aVector3d2[3].x,  (float)aVector3d2[3].y,  (float)aVector3d2[3].z, 1f)
             };
-            Matrix4f boxTranslate = Matrix4f.createTranslateMatrix((float)p1.x, (float)p1.y, (float)p1.z);
-            vertices2[0].transform(boxTranslate);
-            vertices2[1].transform(boxTranslate);
-            boxTranslate = Matrix4f.createTranslateMatrix((float)p2.x, (float)p2.y, (float)p2.z);
-            vertices2[2].transform(boxTranslate);
-            vertices2[3].transform(boxTranslate);
+            Matrix4f boxTranslate = (new Matrix4f()).translate((float)p1.x, (float)p1.y, (float)p1.z);
+            vertices2[0].mul(boxTranslate);
+            vertices2[1].mul(boxTranslate);
+            boxTranslate = (new Matrix4f()).translate((float)p2.x, (float)p2.y, (float)p2.z);
+            vertices2[2].mul(boxTranslate);
+            vertices2[3].mul(boxTranslate);
 
             float halfU = (getU1() - getU0()) / 2 + getU0();
             float f = this.getU0() + texPanOffset;

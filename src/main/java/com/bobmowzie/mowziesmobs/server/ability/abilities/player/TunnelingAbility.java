@@ -89,7 +89,7 @@ public class TunnelingAbility extends PlayerAbility {
         super.start();
         underground = false;
         prevUnderground = false;
-        if (getUser().isOnGround()) getUser().push(0, 0.8f, 0);
+        if (getUser().onGround()) getUser().push(0, 0.8f, 0);
         whichHand = getUser().getUsedItemHand();
         gauntletStack = getUser().getUseItem();
         if (getUser().level.isClientSide()) {
@@ -246,7 +246,7 @@ public class TunnelingAbility extends PlayerAbility {
         ItemStack stack = getUser().getUseItem();
         boolean usingGauntlet = stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET;
         if (whichHand == null) return false;
-        boolean canContinueUsing = (getTicksInUse() <= 1 || !(getUser().isOnGround() || (getUser().isInWater() && !usingGauntlet)) || underground) && getUser().getItemInHand(whichHand).getItem() == ItemHandler.EARTHBORE_GAUNTLET && super.canContinueUsing();
+        boolean canContinueUsing = (getTicksInUse() <= 1 || !(getUser().onGround() || (getUser().isInWater() && !usingGauntlet)) || underground) && getUser().getItemInHand(whichHand).getItem() == ItemHandler.EARTHBORE_GAUNTLET && super.canContinueUsing();
         return canContinueUsing;
     }
 

@@ -68,7 +68,7 @@ public class ItemWroughtAxe extends MowzieAxeItem {
         if (hand == InteractionHand.MAIN_HAND && player.getAttackStrengthScale(0.5F) == 1.0f) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
             if (playerCapability != null && playerCapability.getUntilAxeSwing() <= 0) {
-                boolean verticalAttack = player.isShiftKeyDown() && player.isOnGround();
+                boolean verticalAttack = player.isShiftKeyDown() && player.onGround();
                 if (verticalAttack)
                     AbilityHandler.INSTANCE.sendAbilityMessage(player, AbilityHandler.WROUGHT_AXE_SLAM_ABILITY);
                 else

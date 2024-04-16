@@ -105,7 +105,7 @@ public class EntityUmvuthanaMinion extends EntityUmvuthana implements LeaderSuns
         targetSelector.addGoal(3, new UmvuthanaHurtByTargetAI(this));
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<Player>(this, Player.class, 0, true, true, target -> {
             if (target instanceof Player) {
-                if (this.level.getDifficulty() == Difficulty.PEACEFUL) return false;
+                if (this.level().getDifficulty() == Difficulty.PEACEFUL) return false;
                 ItemStack headArmorStack = ((Player) target).getInventory().armor.get(3);
                 return !(headArmorStack.getItem() instanceof UmvuthanaMask) || target == getMisbehavedPlayer();
             }
@@ -189,7 +189,7 @@ public class EntityUmvuthanaMinion extends EntityUmvuthana implements LeaderSuns
     public void openGUI(Player playerEntity) {
         setCustomer(playerEntity);
         MowziesMobs.PROXY.setReferencedMob(this);
-        if (!this.level.isClientSide && getTarget() == null && isAlive()) {
+        if (!this.level().isClientSide && getTarget() == null && isAlive()) {
             playerEntity.openMenu(new MenuProvider() {
                 @Override
                 public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player) {
@@ -208,7 +208,7 @@ public class EntityUmvuthanaMinion extends EntityUmvuthana implements LeaderSuns
     protected InteractionResult mobInteract(Player player, InteractionHand hand) {
         if (canTradeWith(player) && getTarget() == null && isAlive()) {
             openGUI(player);
-            return InteractionResult.sidedSuccess(this.level.isClientSide);
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
         }
         return InteractionResult.PASS;
     }
@@ -294,7 +294,7 @@ public class EntityUmvuthanaMinion extends EntityUmvuthana implements LeaderSuns
     public LivingEntity getMisbehavedPlayer() {
         try {
             UUID uuid = this.getMisbehavedPlayerId();
-            return uuid == null ? null : this.level.getPlayerByUUID(uuid);
+            return uuid == null ? null : this.level().getPlayerByUUID(uuid);
         } catch (IllegalArgumentException illegalargumentexception) {
             return null;
         }

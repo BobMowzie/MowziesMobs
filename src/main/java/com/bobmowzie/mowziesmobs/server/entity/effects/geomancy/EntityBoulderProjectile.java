@@ -91,8 +91,8 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
                 if (level().isClientSide) continue;
                 if (entity == caster) continue;
                 if (ridingEntities.contains(entity)) continue;
-                if (caster != null) entity.hurt(DamageSource.indirectMobAttack(this, caster), damage);
-                else entity.hurt(DamageSource.FALLING_BLOCK, damage);
+                if (caster != null) entity.hurt(damageSources().mobProjectile(this, caster), damage);
+                else entity.hurt(damageSources().generic(), damage);
                 if (isAlive() && boulderSize != GeomancyTier.HUGE) this.explode();
             }
         }
@@ -163,18 +163,18 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
             else if (boulderSize == GeomancyTier.LARGE) {
                 playSound(MMSounds.EFFECT_GEOMANCY_HIT_SMALL.get(), 1.5f, 0.5f);
                 playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG.get(), 1.5f, 1.3f);
-                EntityCameraShake.cameraShake(level, position(), 10, 0.05f, 0, 20);
+                EntityCameraShake.cameraShake(level(), position(), 10, 0.05f, 0, 20);
             }
             else if (boulderSize == GeomancyTier.HUGE) {
                 playSound(MMSounds.EFFECT_GEOMANCY_HIT_MEDIUM_1.get(), 1.5f, 1f);
                 playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG.get(), 1.5f, 0.9f);
-                EntityCameraShake.cameraShake(level, position(), 15, 0.05f, 0, 20);
+                EntityCameraShake.cameraShake(level(), position(), 15, 0.05f, 0, 20);
             }
 
-            if (level.isClientSide) {
+            if (level().isClientSide) {
                 Vec3 ringOffset = getDeltaMovement().scale(-1).normalize();
                 ParticleRotation.OrientVector rotation = new ParticleRotation.OrientVector(ringOffset);
-                AdvancedParticleBase.spawnParticle(level, ParticleHandler.RING2.get(), (float) getX() + (float) ringOffset.x, (float) getY() + 0.5f + (float) ringOffset.y, (float) getZ() + (float) ringOffset.z, 0, 0, 0, rotation, 3.5F, 0.83f, 1, 0.39f, 1, 1, (int) (5 + 2 * getBbWidth()), true, true, new ParticleComponent[]{
+                AdvancedParticleBase.spawnParticle(level(), ParticleHandler.RING2.get(), (float) getX() + (float) ringOffset.x, (float) getY() + 0.5f + (float) ringOffset.y, (float) getZ() + (float) ringOffset.z, 0, 0, 0, rotation, 3.5F, 0.83f, 1, 0.39f, 1, 1, (int) (5 + 2 * getBbWidth()), true, true, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0.7f, 0f), false),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0f, (1.0f + 0.5f * getBbWidth()) * 8f), false)
                 });

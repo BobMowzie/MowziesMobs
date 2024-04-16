@@ -63,8 +63,8 @@ public class EntityBoulderBase extends EntityGeomancyBase {
     }
 
     public boolean checkCanSpawn() {
-        if (!level.getEntitiesOfClass(EntityBoulderBase.class, getBoundingBox().deflate(0.01)).isEmpty()) return false;
-        return level.noCollision(this, getBoundingBox().deflate(0.01));
+        if (!level().getEntitiesOfClass(EntityBoulderBase.class, getBoundingBox().deflate(0.01)).isEmpty()) return false;
+        return level().noCollision(this, getBoundingBox().deflate(0.01));
     }
 
     public void setSizeParams() {
@@ -88,7 +88,7 @@ public class EntityBoulderBase extends EntityGeomancyBase {
 
     public void activate() {
         active = true;
-        level.broadcastEntityEvent(this, ACTIVATE_ID);
+        level().broadcastEntityEvent(this, ACTIVATE_ID);
     }
 
     @Override
@@ -117,7 +117,7 @@ public class EntityBoulderBase extends EntityGeomancyBase {
         }
 
         if (risingTick < finishedRisingTick) {
-            List<Entity> popUpEntities = level.getEntities(this, getBoundingBox());
+            List<Entity> popUpEntities = level().getEntities(this, getBoundingBox());
             for (Entity entity:popUpEntities) {
                 if (entity.isPickable() && !(entity instanceof EntityBoulderBase)) {
                     if (boulderSize != GeomancyTier.HUGE) entity.move(MoverType.SHULKER_BOX, new Vec3(0, 2 * (Math.pow(2, -risingTick * (0.6 - 0.1 * boulderSize.ordinal()))), 0));
@@ -130,7 +130,7 @@ public class EntityBoulderBase extends EntityGeomancyBase {
             for (int i = 0; i < 20 * getBbWidth(); i++) {
                 Vec3 particlePos = new Vec3(random.nextFloat() * 1.3 * getBbWidth(), 0, 0);
                 particlePos = particlePos.yRot((float) (random.nextFloat() * 2 * Math.PI));
-                level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, storedBlock), getX() + particlePos.x, getY() - 1, getZ() + particlePos.z, particlePos.x, 2, particlePos.z);
+                level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, storedBlock), getX() + particlePos.x, getY() - 1, getZ() + particlePos.z, particlePos.x, 2, particlePos.z);
             }
             if (boulderSize == GeomancyTier.SMALL) {
                 playSound(MMSounds.EFFECT_GEOMANCY_SMALL_CRASH.get(), 1.5f, 1.3f);
@@ -141,14 +141,14 @@ public class EntityBoulderBase extends EntityGeomancyBase {
             } else if (boulderSize == GeomancyTier.LARGE) {
                 playSound(MMSounds.EFFECT_GEOMANCY_HIT_MEDIUM_1.get(), 1.5f, 0.9f);
                 playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG.get(), 1.5f, 1.5f);
-                EntityCameraShake.cameraShake(level, position(), 10, 0.05f, 0, 20);
+                EntityCameraShake.cameraShake(level(), position(), 10, 0.05f, 0, 20);
             } else if (boulderSize == GeomancyTier.HUGE) {
                 playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG.get(), 2f, 0.5f);
                 playSound(MMSounds.EFFECT_GEOMANCY_RUMBLE_1.get(), 2, 0.8f);
-                EntityCameraShake.cameraShake(level, position(), 15, 0.05f, 50, 30);
+                EntityCameraShake.cameraShake(level(), position(), 15, 0.05f, 50, 30);
             }
-            if (level.isClientSide) {
-                AdvancedParticleBase.spawnParticle(level, ParticleHandler.RING2.get(), getX(), getY() - 0.9f, getZ(), 0, 0, 0, false, 0, Math.PI / 2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, (int) (5 + 2 * getBbWidth()), true, true, new ParticleComponent[]{
+            if (level().isClientSide) {
+                AdvancedParticleBase.spawnParticle(level(), ParticleHandler.RING2.get(), getX(), getY() - 0.9f, getZ(), 0, 0, 0, false, 0, Math.PI / 2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, (int) (5 + 2 * getBbWidth()), true, true, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0f, (1.0f + 0.5f * getBbWidth()) * 10f), false)
                 });
@@ -169,7 +169,7 @@ public class EntityBoulderBase extends EntityGeomancyBase {
                 float offsetY;
                 if (boulderSize == GeomancyTier.HUGE && risingTick < finishedRisingTick) offsetY = random.nextFloat() * (getBbHeight()-1) - getBbHeight() * (finishedRisingTick - risingTick)/finishedRisingTick;
                 else offsetY = random.nextFloat() * (getBbHeight()-1);
-                level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, storedBlock), getX() + particlePos.x, getY() + offsetY, getZ() + particlePos.z, 0, -1, 0);
+                level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, storedBlock), getX() + particlePos.x, getY() + offsetY, getZ() + particlePos.z, 0, -1, 0);
             }
         }
         if (active) {

@@ -16,7 +16,7 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import software.bernie.geckolib3.geo.render.built.GeoBone;
+import software.bernie.geckolib.cache.object.GeoBone;
 
 @OnlyIn(Dist.CLIENT)
 public class ModelGeckoBiped extends MowzieGeoModel<GeckoPlayer> {
@@ -104,14 +104,14 @@ public class ModelGeckoBiped extends MowzieGeoModel<GeckoPlayer> {
 		float yaw = 0;
 		float pitch = 0;
 		float roll = 0;
-		GeoBone parent = neck.parent;
+		GeoBone parent = neck.getParent();
 		while (parent != null) {
-			pitch += parent.getRotationX();
-			yaw += parent.getRotationY();
-			roll += parent.getRotationZ();
-			parent = parent.parent;
+			pitch += parent.getRotX();
+			yaw += parent.getRotY();
+			roll += parent.getRotZ();
+			parent = parent.getParent();
 		}
-		neck.addRotation(-yaw, -pitch, -roll);
+		neck.addRot(-yaw, -pitch, -roll);
 	}
 
 	public void setRotationAngles(Player entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float partialTick) {
@@ -139,25 +139,25 @@ public class ModelGeckoBiped extends MowzieGeoModel<GeckoPlayer> {
 
 		float headLookAmount = getControllerValueInverted("HeadLookController");
 		float armLookAmount = 1f - getControllerValueInverted("ArmPitchController");
-		float armLookAmountRight = getBone("ArmPitchController").getPositionY();
-		float armLookAmountLeft = getBone("ArmPitchController").getPositionZ();
+		float armLookAmountRight = getBone("ArmPitchController").get().getPosY();
+		float armLookAmountLeft = getBone("ArmPitchController").get().getPosZ();
 		boolean flag = entityIn.getFallFlyingTicks() > 4;
 		boolean flag1 = entityIn.isVisuallySwimming();
-		this.bipedHead().addRotationY(headLookAmount * -netHeadYaw * ((float)Math.PI / 180F));
-		this.getMowzieBone("LeftClavicle").addRotationY(Math.min(armLookAmount + armLookAmountLeft, 1) * -netHeadYaw * ((float)Math.PI / 180F));
-		this.getMowzieBone("RightClavicle").addRotationY(Math.min(armLookAmount + armLookAmountRight, 1) * -netHeadYaw * ((float)Math.PI / 180F));
+		this.bipedHead().addRotY(headLookAmount * -netHeadYaw * ((float)Math.PI / 180F));
+		this.getMowzieBone("LeftClavicle").addRotY(Math.min(armLookAmount + armLookAmountLeft, 1) * -netHeadYaw * ((float)Math.PI / 180F));
+		this.getMowzieBone("RightClavicle").addRotY(Math.min(armLookAmount + armLookAmountRight, 1) * -netHeadYaw * ((float)Math.PI / 180F));
 		if (flag) {
-			this.bipedHead().addRotationX((-(float)Math.PI / 4F));
+			this.bipedHead().addRotX((-(float)Math.PI / 4F));
 		} else if (this.swimAnimation > 0.0F) {
 			if (flag1) {
-				this.bipedHead().addRotationX(headLookAmount * this.rotLerpRad(this.swimAnimation, this.bipedHead().getRotationX(), (-(float)Math.PI / 4F)));
+				this.bipedHead().addRotX(headLookAmount * this.rotLerpRad(this.swimAnimation, this.bipedHead().getRotX(), (-(float)Math.PI / 4F)));
 			} else {
-				this.bipedHead().addRotationX(headLookAmount * this.rotLerpRad(this.swimAnimation, this.bipedHead().getRotationX(), headPitch * ((float)Math.PI / 180F)));
+				this.bipedHead().addRotX(headLookAmount * this.rotLerpRad(this.swimAnimation, this.bipedHead().getRotX(), headPitch * ((float)Math.PI / 180F)));
 			}
 		} else {
-			this.bipedHead().addRotationX(headLookAmount * -headPitch * ((float)Math.PI / 180F));
-			this.getMowzieBone("LeftClavicle").addRotationX(Math.min(armLookAmount + armLookAmountLeft, 1) * -headPitch * ((float)Math.PI / 180F));
-			this.getMowzieBone("RightClavicle").addRotationX(Math.min(armLookAmount + armLookAmountRight, 1) * -headPitch * ((float)Math.PI / 180F));
+			this.bipedHead().addRotX(headLookAmount * -headPitch * ((float)Math.PI / 180F));
+			this.getMowzieBone("LeftClavicle").addRotX(Math.min(armLookAmount + armLookAmountLeft, 1) * -headPitch * ((float)Math.PI / 180F));
+			this.getMowzieBone("RightClavicle").addRotX(Math.min(armLookAmount + armLookAmountRight, 1) * -headPitch * ((float)Math.PI / 180F));
 		}
 		
 		float f = 1.0F;
@@ -173,24 +173,24 @@ public class ModelGeckoBiped extends MowzieGeoModel<GeckoPlayer> {
 
 		float legWalkAmount = getControllerValueInverted("LegWalkController");
 		float armSwingAmount = getControllerValueInverted("ArmSwingController");
-		float armSwingAmountRight = 1.0f - getBone("ArmSwingController").getPositionY();
-		float armSwingAmountLeft = 1.0f - getBone("ArmSwingController").getPositionZ();
-		this.bipedRightArm().addRotationX(armSwingAmount * armSwingAmountRight *Mth.cos(limbSwing * 0.6662F + (float)Math.PI) * 2.0F * limbSwingAmount * 0.5F / f);
-		this.bipedLeftArm().addRotationX(armSwingAmount * armSwingAmountLeft * Mth.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F / f);
-		this.bipedRightLeg().addRotationX(legWalkAmount * Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount / f);
-		this.bipedLeftLeg().addRotationX(legWalkAmount * Mth.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount / f);
+		float armSwingAmountRight = 1.0f - getBone("ArmSwingController").get().getPosY();
+		float armSwingAmountLeft = 1.0f - getBone("ArmSwingController").get().getPosZ();
+		this.bipedRightArm().addRotX(armSwingAmount * armSwingAmountRight *Mth.cos(limbSwing * 0.6662F + (float)Math.PI) * 2.0F * limbSwingAmount * 0.5F / f);
+		this.bipedLeftArm().addRotX(armSwingAmount * armSwingAmountLeft * Mth.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F / f);
+		this.bipedRightLeg().addRotX(legWalkAmount * Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount / f);
+		this.bipedLeftLeg().addRotX(legWalkAmount * Mth.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount / f);
 
 		if (this.isSitting) {
-			this.bipedRightArm().setRotationX(bipedRightArm().getRotationX() + (-(float)Math.PI / 5F));
-			this.bipedLeftArm().setRotationX(bipedRightArm().getRotationX() + (-(float)Math.PI / 5F));
-			this.bipedRightLeg().setRotationX(-1.4137167F);
-			this.bipedRightLeg().setRotationY(((float)Math.PI / 10F));
-			this.bipedRightLeg().setRotationZ(0.07853982F);
-			this.bipedLeftLeg().setRotationX(-1.4137167F);
-			this.bipedLeftLeg().setRotationY((-(float)Math.PI / 10F));
-			this.bipedLeftLeg().setRotationZ(-0.07853982F);
-			getMowzieBone("Waist").setRotation(0, 0, 0);
-			getMowzieBone("Root").setRotation(0, 0, 0);
+			this.bipedRightArm().setRotX(bipedRightArm().getRotX() + (-(float)Math.PI / 5F));
+			this.bipedLeftArm().setRotX(bipedRightArm().getRotX() + (-(float)Math.PI / 5F));
+			this.bipedRightLeg().setRotX(-1.4137167F);
+			this.bipedRightLeg().setRotY(((float)Math.PI / 10F));
+			this.bipedRightLeg().setRotZ(0.07853982F);
+			this.bipedLeftLeg().setRotX(-1.4137167F);
+			this.bipedLeftLeg().setRotY((-(float)Math.PI / 10F));
+			this.bipedLeftLeg().setRotZ(-0.07853982F);
+			getMowzieBone("Waist").setRot(0, 0, 0);
+			getMowzieBone("Root").setRot(0, 0, 0);
 		}
 
 		boolean flag2 = entityIn.getMainArm() == HumanoidArm.RIGHT;
@@ -207,19 +207,19 @@ public class ModelGeckoBiped extends MowzieGeoModel<GeckoPlayer> {
 
 		float sneakController = getControllerValueInverted("CrouchController");
 		if (this.isSneak) {
-			this.bipedBody().addRotationX(-0.5F * sneakController);
-			this.getMowzieBone("Neck").addRotationX(0.5F * sneakController);
-			this.bipedRightArm().addRotation(0.4F * sneakController, 0, 0);
-			this.bipedLeftArm().addRotation(0.4F * sneakController, 0, 0);
-			this.bipedHead().addPositionY(-1F * sneakController);
-			this.bipedBody().addPosition(0, -1.5F * sneakController, 1.7f * sneakController);
-			this.getMowzieBone("Waist").addPosition(0, -0.2f * sneakController, 4F * sneakController);
-			this.bipedLeftArm().addRotationX(-0.4f * sneakController);
-			this.bipedLeftArm().addPosition(0, 0.2f * sneakController, -1f * sneakController);
-			this.bipedRightArm().addRotationX(-0.4f * sneakController);
-			this.bipedRightArm().addPosition(0, 0.2f * sneakController, -1f * sneakController);
+			this.bipedBody().addRotX(-0.5F * sneakController);
+			this.getMowzieBone("Neck").addRotX(0.5F * sneakController);
+			this.bipedRightArm().addRot(0.4F * sneakController, 0, 0);
+			this.bipedLeftArm().addRot(0.4F * sneakController, 0, 0);
+			this.bipedHead().addPosY(-1F * sneakController);
+			this.bipedBody().addPos(0, -1.5F * sneakController, 1.7f * sneakController);
+			this.getMowzieBone("Waist").addPos(0, -0.2f * sneakController, 4F * sneakController);
+			this.bipedLeftArm().addRotX(-0.4f * sneakController);
+			this.bipedLeftArm().addPos(0, 0.2f * sneakController, -1f * sneakController);
+			this.bipedRightArm().addRotX(-0.4f * sneakController);
+			this.bipedRightArm().addPos(0, 0.2f * sneakController, -1f * sneakController);
 
-			this.getMowzieBone("Waist").addPositionY(2f * (1f - sneakController));
+			this.getMowzieBone("Waist").addPosY(2f * (1f - sneakController));
 		}
 
 		float armBreathAmount = getControllerValueInverted("ArmBreathController");
@@ -231,34 +231,34 @@ public class ModelGeckoBiped extends MowzieGeoModel<GeckoPlayer> {
 //			float f2 = handside == HandSide.RIGHT && this.swingProgress > 0.0F ? 0.0F : this.swimAnimation;
 //			float f3 = handside == HandSide.LEFT && this.swingProgress > 0.0F ? 0.0F : this.swimAnimation;
 //			if (f1 < 14.0F) {
-//				this.bipedLeftArm().setRotationX(this.rotLerpRad(f3, this.bipedLeftArm().getRotationX(), 0.0F));
-//				this.bipedRightArm().setRotationX(MathHelper.lerp(f2, this.bipedRightArm().getRotationX(), 0.0F));
-//				this.bipedLeftArm().setRotationY(this.rotLerpRad(f3, this.bipedLeftArm().getRotationY(), (float)Math.PI));
-//				this.bipedRightArm().setRotationY(MathHelper.lerp(f2, this.bipedRightArm().getRotationY(), (float)Math.PI));
-//				this.bipedLeftArm().setRotationZ(this.rotLerpRad(f3, this.bipedLeftArm().getRotationZ(), (float)Math.PI + 1.8707964F * this.getArmAngleSq(f1) / this.getArmAngleSq(14.0F)));
-//				this.bipedRightArm().setRotationZ(MathHelper.lerp(f2, this.bipedRightArm().getRotationZ(), (float)Math.PI - 1.8707964F * this.getArmAngleSq(f1) / this.getArmAngleSq(14.0F)));
+//				this.bipedLeftArm().setRotX(this.rotLerpRad(f3, this.bipedLeftArm().getRotX(), 0.0F));
+//				this.bipedRightArm().setRotX(MathHelper.lerp(f2, this.bipedRightArm().getRotX(), 0.0F));
+//				this.bipedLeftArm().setRotY(this.rotLerpRad(f3, this.bipedLeftArm().getRotY(), (float)Math.PI));
+//				this.bipedRightArm().setRotY(MathHelper.lerp(f2, this.bipedRightArm().getRotY(), (float)Math.PI));
+//				this.bipedLeftArm().setRotZ(this.rotLerpRad(f3, this.bipedLeftArm().getRotZ(), (float)Math.PI + 1.8707964F * this.getArmAngleSq(f1) / this.getArmAngleSq(14.0F)));
+//				this.bipedRightArm().setRotZ(MathHelper.lerp(f2, this.bipedRightArm().getRotZ(), (float)Math.PI - 1.8707964F * this.getArmAngleSq(f1) / this.getArmAngleSq(14.0F)));
 //			} else if (f1 >= 14.0F && f1 < 22.0F) {
 //				float f6 = (f1 - 14.0F) / 8.0F;
-//				this.bipedLeftArm().setRotationX(this.rotLerpRad(f3, this.bipedLeftArm().getRotationX(), ((float)Math.PI / 2F) * f6));
-//				this.bipedRightArm().setRotationX(MathHelper.lerp(f2, this.bipedRightArm().getRotationX(), ((float)Math.PI / 2F) * f6));
-//				this.bipedLeftArm().setRotationY(this.rotLerpRad(f3, this.bipedLeftArm().getRotationY(), (float)Math.PI));
-//				this.bipedRightArm().setRotationY(MathHelper.lerp(f2, this.bipedRightArm().getRotationY(), (float)Math.PI));
-//				this.bipedLeftArm().setRotationZ(this.rotLerpRad(f3, this.bipedLeftArm().getRotationZ(), 5.012389F - 1.8707964F * f6));
-//				this.bipedRightArm().setRotationZ(MathHelper.lerp(f2, this.bipedRightArm().getRotationZ(), 1.2707963F + 1.8707964F * f6));
+//				this.bipedLeftArm().setRotX(this.rotLerpRad(f3, this.bipedLeftArm().getRotX(), ((float)Math.PI / 2F) * f6));
+//				this.bipedRightArm().setRotX(MathHelper.lerp(f2, this.bipedRightArm().getRotX(), ((float)Math.PI / 2F) * f6));
+//				this.bipedLeftArm().setRotY(this.rotLerpRad(f3, this.bipedLeftArm().getRotY(), (float)Math.PI));
+//				this.bipedRightArm().setRotY(MathHelper.lerp(f2, this.bipedRightArm().getRotY(), (float)Math.PI));
+//				this.bipedLeftArm().setRotZ(this.rotLerpRad(f3, this.bipedLeftArm().getRotZ(), 5.012389F - 1.8707964F * f6));
+//				this.bipedRightArm().setRotZ(MathHelper.lerp(f2, this.bipedRightArm().getRotZ(), 1.2707963F + 1.8707964F * f6));
 //			} else if (f1 >= 22.0F && f1 < 26.0F) {
 //				float f4 = (f1 - 22.0F) / 4.0F;
-//				this.bipedLeftArm().setRotationX(this.rotLerpRad(f3, this.bipedLeftArm().getRotationX(), ((float)Math.PI / 2F) - ((float)Math.PI / 2F) * f4));
-//				this.bipedRightArm().setRotationX(MathHelper.lerp(f2, this.bipedRightArm().getRotationX(), ((float)Math.PI / 2F) - ((float)Math.PI / 2F) * f4));
-//				this.bipedLeftArm().setRotationY(this.rotLerpRad(f3, this.bipedLeftArm().getRotationY(), (float)Math.PI));
-//				this.bipedRightArm().setRotationY(MathHelper.lerp(f2, this.bipedRightArm().getRotationY(), (float)Math.PI));
-//				this.bipedLeftArm().setRotationZ(this.rotLerpRad(f3, this.bipedLeftArm().getRotationZ(), (float)Math.PI));
-//				this.bipedRightArm().setRotationZ(MathHelper.lerp(f2, this.bipedRightArm().getRotationZ(), (float)Math.PI));
+//				this.bipedLeftArm().setRotX(this.rotLerpRad(f3, this.bipedLeftArm().getRotX(), ((float)Math.PI / 2F) - ((float)Math.PI / 2F) * f4));
+//				this.bipedRightArm().setRotX(MathHelper.lerp(f2, this.bipedRightArm().getRotX(), ((float)Math.PI / 2F) - ((float)Math.PI / 2F) * f4));
+//				this.bipedLeftArm().setRotY(this.rotLerpRad(f3, this.bipedLeftArm().getRotY(), (float)Math.PI));
+//				this.bipedRightArm().setRotY(MathHelper.lerp(f2, this.bipedRightArm().getRotY(), (float)Math.PI));
+//				this.bipedLeftArm().setRotZ(this.rotLerpRad(f3, this.bipedLeftArm().getRotZ(), (float)Math.PI));
+//				this.bipedRightArm().setRotZ(MathHelper.lerp(f2, this.bipedRightArm().getRotZ(), (float)Math.PI));
 //			}
 //
 //			float f7 = 0.3F;
 //			float f5 = 0.33333334F;
-//			this.bipedLeftLeg().setRotationX(MathHelper.lerp(this.swimAnimation, this.bipedLeftLeg().getRotationX(), 0.3F * MathHelper.cos(limbSwing * 0.33333334F + (float)Math.PI)));
-//			this.bipedRightLeg().setRotationX(MathHelper.lerp(this.swimAnimation, this.bipedRightLeg().getRotationX(), 0.3F * MathHelper.cos(limbSwing * 0.33333334F)));
+//			this.bipedLeftLeg().setRotX(MathHelper.lerp(this.swimAnimation, this.bipedLeftLeg().getRotX(), 0.3F * MathHelper.cos(limbSwing * 0.33333334F + (float)Math.PI)));
+//			this.bipedRightLeg().setRotX(MathHelper.lerp(this.swimAnimation, this.bipedRightLeg().getRotX(), 0.3F * MathHelper.cos(limbSwing * 0.33333334F)));
 //		}
 
 		AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(entityIn);
@@ -294,10 +294,10 @@ public class ModelGeckoBiped extends MowzieGeoModel<GeckoPlayer> {
 	}
 
 	public static void breathAnim(MowzieGeoBone rightArm, MowzieGeoBone leftArm, float ageInTicks, float armBreathAmount) {
-		rightArm.addRotationZ(armBreathAmount * Mth.cos(ageInTicks * 0.09F) * 0.05F + 0.05F);
-		leftArm.addRotationZ(armBreathAmount * -Mth.cos(ageInTicks * 0.09F) * 0.05F - 0.05F);
-		rightArm.addRotationX(armBreathAmount * Mth.sin(ageInTicks * 0.067F) * 0.05F);
-		leftArm.addRotationX(armBreathAmount * -Mth.sin(ageInTicks * 0.067F) * 0.05F);
+		rightArm.addRotZ(armBreathAmount * Mth.cos(ageInTicks * 0.09F) * 0.05F + 0.05F);
+		leftArm.addRotZ(armBreathAmount * -Mth.cos(ageInTicks * 0.09F) * 0.05F - 0.05F);
+		rightArm.addRotX(armBreathAmount * Mth.sin(ageInTicks * 0.067F) * 0.05F);
+		leftArm.addRotX(armBreathAmount * -Mth.sin(ageInTicks * 0.067F) * 0.05F);
 	}
 
 	private void poseRightArm(Player p_241654_1_) {
@@ -306,10 +306,10 @@ public class ModelGeckoBiped extends MowzieGeoModel<GeckoPlayer> {
 			case EMPTY:
 				break;
 			case BLOCK:
-				this.bipedRightArm().addRotationX(0.9424779F * armSwingAmount);
+				this.bipedRightArm().addRotX(0.9424779F * armSwingAmount);
 				break;
 			case ITEM:
-				this.bipedRightArm().addRotationX( ((float)Math.PI / 10F) * armSwingAmount);
+				this.bipedRightArm().addRotX( ((float)Math.PI / 10F) * armSwingAmount);
 				break;
 		}
 
@@ -321,10 +321,10 @@ public class ModelGeckoBiped extends MowzieGeoModel<GeckoPlayer> {
 			case EMPTY:
 				break;
 			case BLOCK:
-				this.bipedLeftArm().addRotationX(0.9424779F * armSwingAmount);
+				this.bipedLeftArm().addRotX(0.9424779F * armSwingAmount);
 				break;
 			case ITEM:
-				this.bipedLeftArm().addRotationX(((float)Math.PI / 10F) * armSwingAmount);
+				this.bipedLeftArm().addRotX(((float)Math.PI / 10F) * armSwingAmount);
 				break;
 		}
 	}

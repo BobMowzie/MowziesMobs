@@ -454,7 +454,7 @@ public class EntityWroughtnaut extends MowzieLLibraryEntity implements Enemy {
                             double velX = vx * 0.075;
                             double velY = factor * 0.3 + 0.025;
                             double velZ = vz * 0.075;
-                            level().addParticle(ParticleTypes.CLOUD, px + level().random.nextFloat() * 2 - 1, getBoundingBox().minY + 0.1 + level().random.nextFloat() * 1.5, pz + level.random.nextFloat() * 2 - 1, velX, velY, velZ);
+                            level().addParticle(ParticleTypes.CLOUD, px + level().random.nextFloat() * 2 - 1, getBoundingBox().minY + 0.1 + level().random.nextFloat() * 1.5, pz + level().random.nextFloat() * 2 - 1, velX, velY, velZ);
                         }
                     }
                 }
@@ -500,12 +500,12 @@ public class EntityWroughtnaut extends MowzieLLibraryEntity implements Enemy {
                 int blockX = Mth.floor(x);
                 int blockZ = Mth.floor(z);
                 pos.set(blockX, ceilY, blockZ);
-                BlockState block = level.getBlockState(pos);
+                BlockState block = level().getBlockState(pos);
                 if (block.getRenderShape() != RenderShape.INVISIBLE) {
-                    level.addParticle(new BlockParticleOption(ParticleTypes.FALLING_DUST, block), x, y, z, 0, 0, 0);
+                    level().addParticle(new BlockParticleOption(ParticleTypes.FALLING_DUST, block), x, y, z, 0, 0, 0);
                     if (playSound && random.nextFloat() < 0.075F) {
-                        SoundType sound = block.getBlock().getSoundType(block, level, pos, null);
-                        level.playLocalSound(getX(), getY(), getZ(), sound.getBreakSound(), SoundSource.BLOCKS, sound.getVolume() * 2, sound.getPitch() * 0.6F, false);
+                        SoundType sound = block.getBlock().getSoundType(block, level(), pos, null);
+                        level().playLocalSound(getX(), getY(), getZ(), sound.getBreakSound(), SoundSource.BLOCKS, sound.getVolume() * 2, sound.getPitch() * 0.6F, false);
                         playSound = false;
                     }
                 }

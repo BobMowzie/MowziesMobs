@@ -87,7 +87,7 @@ public class MMEntityMoveHelper extends MoveControl
         {
             this.mob.setSpeed((float)(this.speedModifier * this.mob.getAttribute(Attributes.MOVEMENT_SPEED).getValue()));
 
-            if (this.mob.isOnGround())
+            if (this.mob.onGround())
             {
                 this.operation = MMEntityMoveHelper.Operation.WAIT;
             }

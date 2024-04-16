@@ -576,7 +576,7 @@ public final class ServerEventHandler {
     public void onLivingJump(LivingEvent.LivingJumpEvent event) {
          if (event.getEntity() instanceof LivingEntity) {
             LivingEntity entity = (LivingEntity) event.getEntity();
-            if (entity.hasEffect(EffectHandler.FROZEN.get()) && entity.isOnGround()) {
+            if (entity.hasEffect(EffectHandler.FROZEN.get()) && entity.onGround()) {
                 entity.setDeltaMovement(entity.getDeltaMovement().multiply(1, 0, 1));
             }
         }

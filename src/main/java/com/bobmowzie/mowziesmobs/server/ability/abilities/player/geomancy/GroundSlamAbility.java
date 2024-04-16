@@ -39,7 +39,7 @@ public class GroundSlamAbility extends PlayerAbility {
         }
         if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
             getUser().setDeltaMovement(0d,-1.5d,0d);
-            if(getUser().isOnGround()){
+            if(getUser().onGround()){
                 nextSection();
                 for(LivingEntity livingentity : getUser().level.getEntitiesOfClass(LivingEntity.class, getUser().getBoundingBox().inflate(5.2D, 2.0D, 5.2D))) {
                     livingentity.hurt(DamageSource.mobAttack(getUser()),10f);
@@ -87,7 +87,7 @@ public class GroundSlamAbility extends PlayerAbility {
     @Override
     public void onRightClickEmpty(PlayerInteractEvent.RightClickEmpty event) {
         super.onRightClickEmpty(event);
-        if (!getUser().isOnGround() && getUser().isCrouching()){
+        if (!getUser().onGround() && getUser().isCrouching()){
             AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getEntity(), AbilityHandler.GROUND_SLAM_ABILITY);
         }
     }

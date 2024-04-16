@@ -55,13 +55,13 @@ public class LegSolver {
 
         private float settle(LivingEntity entity, double x, double y, double z, float height) {
             BlockPos pos = new BlockPos(x, y + 1e-3, z);
-            float dist = getDistance(entity.level, pos);
+            float dist = getDistance(entity.level(), pos);
             if (1 - dist < 1e-3) {
-                dist = getDistance(entity.level, pos.below()) + (float) y % 1;
+                dist = getDistance(entity.level(), pos.below()) + (float) y % 1;
             } else {
                 dist -= 1 - (y % 1);
             }
-            if (entity.isOnGround() && height <= dist) {
+            if (entity.onGround() && height <= dist) {
                 return height == dist ? height : Math.min(height + 0.3F, dist);
             } else if (height > 0) {
                 return Math.max(height - 0.4F, dist);

@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.model.tools.geckolib;
 
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix4f;
 import org.joml.Vector3d;
 import software.bernie.geckolib.cache.object.GeoBone;
 
@@ -8,10 +9,12 @@ import javax.annotation.Nullable;
 
 public class MowzieGeoBone extends GeoBone {
 
+    public Matrix4f rotMat;
     protected boolean forceMatrixTransform = false;
 
     public MowzieGeoBone(@Nullable GeoBone parent, String name, Boolean mirror, @Nullable Double inflate, @Nullable Boolean dontRender, @Nullable Boolean reset) {
         super(parent, name, mirror, inflate, dontRender, reset);
+        rotMat = null;
     }
 
     public MowzieGeoBone getParent() {
@@ -78,6 +81,10 @@ public class MowzieGeoBone extends GeoBone {
         setRotZ(getRotZ() + z);
     }
 
+    public void setRot(Vector3d vec) {
+        setRot((float) vec.x(), (float) vec.y(), (float) vec.z());
+    }
+
     public void setRot(Vec3 vec) {
         setRot((float) vec.x(), (float) vec.y(), (float) vec.z());
     }
@@ -129,5 +136,22 @@ public class MowzieGeoBone extends GeoBone {
 
     public boolean isForceMatrixTransform() {
         return forceMatrixTransform;
+    }
+
+
+    public Matrix4f getModelRotationMat() {
+        Matrix4f matrix = new Matrix4f(getModelSpaceMatrix());
+        removeMatrixTranslation(matrix);
+        return matrix;
+    }
+
+    public static void removeMatrixTranslation(Matrix4f matrix) {
+        matrix.m03(0);
+        matrix.m13(0);
+        matrix.m23(0);
+    }
+
+    public void setModelRotationMat(Matrix4f mat) {
+        rotMat = mat;
     }
 }

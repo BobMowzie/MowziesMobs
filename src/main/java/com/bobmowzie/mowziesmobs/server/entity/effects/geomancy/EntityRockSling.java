@@ -6,19 +6,13 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib3.core.GeoEntity;
-import software.bernie.geckolib3.core.IAnimationTickable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.RawAnimation;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
 
-public class EntityRockSling extends EntityBoulderProjectile implements GeoEntity, IAnimationTickable {
-    public AnimationFactory factory = GeckoLibUtil.createFactory(this);
-
+public class EntityRockSling extends EntityBoulderProjectile implements GeoEntity {
     private Vec3 launchVec;
 
     public EntityRockSling(EntityType<? extends EntityRockSling> type, Level worldIn) {
@@ -46,18 +40,14 @@ public class EntityRockSling extends EntityBoulderProjectile implements GeoEntit
     }
 
     @Override
-    public void registerControllers(AnimationData data) {
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        super.registerControllers(controllers);
         AnimationController<EntityRockSling> controller = new AnimationController<>(this, "controller", 0,
                 event -> {
                     event.getController()
-                            .setAnimation(RawAnimation.begin().addAnimation("roll", ILoopType.EDefaultLoopTypes.LOOP));
+                            .setAnimation(RawAnimation.begin().thenLoop("roll"));
                     return PlayState.CONTINUE;
                 });
-        data.addAnimationController(controller);
-    }
-
-    @Override
-    public int tickTimer() {
-        return tickCount;
+        controllers.add(controller);
     }
 }

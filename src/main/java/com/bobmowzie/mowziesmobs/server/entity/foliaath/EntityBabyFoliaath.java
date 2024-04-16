@@ -18,6 +18,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -33,7 +34,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,7 +103,7 @@ public class EntityBabyFoliaath extends MowzieLLibraryEntity {
         }
         prevActivate = activate.getTimer();
 
-        if (!level.isClientSide && getHungry() && getAnimation() == NO_ANIMATION) {
+        if (!level().isClientSide && getHungry() && getAnimation() == NO_ANIMATION) {
             for (ItemEntity meat : getMeatsNearby(0.4, 0.2, 0.4, 0.4)) {
                 ItemStack stack = meat.getItem().split(1);
                 if (!stack.isEmpty()) {
@@ -116,14 +116,14 @@ public class EntityBabyFoliaath extends MowzieLLibraryEntity {
                 }
             }
         }
-        if (level.isClientSide && getAnimation() == EAT_ANIMATION && (getAnimationTick() == 3 || getAnimationTick() == 7 || getAnimationTick() == 11 || getAnimationTick() == 15 || getAnimationTick() == 19)) {
+        if (level().isClientSide && getAnimation() == EAT_ANIMATION && (getAnimationTick() == 3 || getAnimationTick() == 7 || getAnimationTick() == 11 || getAnimationTick() == 15 || getAnimationTick() == 19)) {
             for (int i = 0; i <= 5; i++) {
-                level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, getEating()), getX(), getY() + 0.2, getZ(), random.nextFloat() * 0.2 - 0.1, random.nextFloat() * 0.2, random.nextFloat() * 0.2 - 0.1);
+                level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, getEating()), getX(), getY() + 0.2, getZ(), random.nextFloat() * 0.2 - 0.1, random.nextFloat() * 0.2, random.nextFloat() * 0.2 - 0.1);
             }
         }
 
         //Growing
-        if (!level.isClientSide) {
+        if (!level().isClientSide) {
             if (tickCount % 20 == 0 && !getHungry()) {
                 incrementGrowth();
             }
@@ -142,10 +142,10 @@ public class EntityBabyFoliaath extends MowzieLLibraryEntity {
                 setHungry(true);
             }
             if (getGrowth() == 2400) {
-                EntityFoliaath adultFoliaath = new EntityFoliaath(EntityHandler.FOLIAATH.get(), level);
+                EntityFoliaath adultFoliaath = new EntityFoliaath(EntityHandler.FOLIAATH.get(), level());
                 adultFoliaath.setPos(getX(), getY(), getZ());
                 adultFoliaath.setCanDespawn(false);
-                level.addFreshEntity(adultFoliaath);
+                level().addFreshEntity(adultFoliaath);
                 discard() ;
             }
         }
@@ -177,7 +177,7 @@ public class EntityBabyFoliaath extends MowzieLLibraryEntity {
     public void die(DamageSource source) {
         super.die(source);
         for (int i = 0; i < 10; i++) {
-            level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.JUNGLE_LEAVES.defaultBlockState()), getX(), getY() + 0.2, getZ(), 0, 0, 0);
+            level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.JUNGLE_LEAVES.defaultBlockState()), getX(), getY() + 0.2, getZ(), 0, 0, 0);
         }
         discard() ;
     }
@@ -209,7 +209,7 @@ public class EntityBabyFoliaath extends MowzieLLibraryEntity {
 
             BlockState block = world.getBlockState(ground);
 
-            if (block.getBlock() == Blocks.GRASS_BLOCK || block.getMaterial() == Material.DIRT || block.getMaterial() == Material.LEAVES) {
+            if (block.getBlock() == Blocks.GRASS_BLOCK || block.is(BlockTags.DIRT) || block.is(BlockTags.LEAVES)) {
                 playSound(SoundEvents.GRASS_HIT, 1, 0.8F);
                 return true;
             }
@@ -218,7 +218,7 @@ public class EntityBabyFoliaath extends MowzieLLibraryEntity {
     }
 
     public List<ItemEntity> getMeatsNearby(double distanceX, double distanceY, double distanceZ, double radius) {
-        List<Entity> list = level.getEntities(this, getBoundingBox().inflate(distanceX, distanceY, distanceZ));
+        List<Entity> list = level().getEntities(this, getBoundingBox().inflate(distanceX, distanceY, distanceZ));
         ArrayList<ItemEntity> listEntityItem = new ArrayList<>();
         for (Entity entityNeighbor : list) {
             if (entityNeighbor instanceof ItemEntity && distanceTo(entityNeighbor) <= radius) {

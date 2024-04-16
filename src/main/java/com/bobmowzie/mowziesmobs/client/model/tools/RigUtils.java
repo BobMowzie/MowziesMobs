@@ -1,12 +1,12 @@
 package com.bobmowzie.mowziesmobs.client.model.tools;
 
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib3.core.processor.IBone;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
+import software.bernie.geckolib.cache.object.GeoBone;
 
 public class RigUtils {
     public static Vec3 lerp(Vec3 v, Vec3 u, float alpha) {
@@ -62,19 +62,19 @@ public class RigUtils {
             );
         }
 
-        public void apply(IBone bone) {
+        public void apply(GeoBone bone) {
             apply(bone, false);
         }
 
-        public void apply(IBone bone, boolean mirrorX) {
+        public void apply(GeoBone bone, boolean mirrorX) {
             float mirror = mirrorX ? -1 : 1;
-            bone.setPositionX(bone.getPositionX() + mirror * (float) translation.x());
-            bone.setPositionY(bone.getPositionY() + (float) translation.y());
-            bone.setPositionZ(bone.getPositionZ() + (float) translation.z());
+            bone.setPosX(bone.getPosX() + mirror * (float) translation.x());
+            bone.setPosY(bone.getPosY() + (float) translation.y());
+            bone.setPosZ(bone.getPosZ() + (float) translation.z());
 
-            bone.setRotationX(bone.getRotationX() + (float) rotation.x());
-            bone.setRotationY(bone.getRotationY() + mirror * (float) rotation.y());
-            bone.setRotationZ(bone.getRotationZ() + mirror * (float) rotation.z());
+            bone.setRotX(bone.getRotX() + (float) rotation.x());
+            bone.setRotY(bone.getRotY() + mirror * (float) rotation.y());
+            bone.setRotZ(bone.getRotZ() + mirror * (float) rotation.z());
 
             bone.setScaleX(bone.getScaleX() * (float) scale.x());
             bone.setScaleY(bone.getScaleY() * (float) scale.y());
@@ -111,7 +111,7 @@ public class RigUtils {
             this.entries = entries;
         }
 
-        public void evaluate(IBone bone, Vec3 dir) {
+        public void evaluate(GeoBone bone, Vec3 dir) {
             evaluate(bone, dir, false);
         }
 
@@ -172,7 +172,7 @@ public class RigUtils {
             return weights;
         }
 
-        public void evaluate(IBone bone, Vec3 d, boolean mirrorX) {
+        public void evaluate(GeoBone bone, Vec3 d, boolean mirrorX) {
             Vec3 dir = mirrorX ? d.multiply(-1, 1, 1) : d;
             dir = dir.normalize();
 
@@ -190,9 +190,9 @@ public class RigUtils {
         }
     }
 
-    public static Quaternion matrixToQuaternion(Matrix3f matrix)
+    public static Quaternionf matrixToQuaternion(Matrix3f matrix)
     {
-        double tr = matrix.m00 + matrix.m11 + matrix.m22;
+        double tr = matrix.m00() + matrix.m11() + matrix.m22();
         double qw = 0;
         double qx = 0;
         double qy = 0;
@@ -202,68 +202,68 @@ public class RigUtils {
         {
             double S = Math.sqrt(tr+1.0) * 2; // S=4*qw
             qw = 0.25 * S;
-            qx = (matrix.m21 - matrix.m12) / S;
-            qy = (matrix.m02 - matrix.m20) / S;
-            qz = (matrix.m10 - matrix.m01) / S;
+            qx = (matrix.m21() - matrix.m12()) / S;
+            qy = (matrix.m02() - matrix.m20()) / S;
+            qz = (matrix.m10() - matrix.m01()) / S;
         }
-        else if ((matrix.m00 > matrix.m11) & (matrix.m00 > matrix.m22))
+        else if ((matrix.m00() > matrix.m11()) & (matrix.m00() > matrix.m22()))
         {
-            double S = Math.sqrt(1.0 + matrix.m00 - matrix.m11 - matrix.m22) * 2; // S=4*qx
-            qw = (matrix.m21 - matrix.m12) / S;
+            double S = Math.sqrt(1.0 + matrix.m00() - matrix.m11() - matrix.m22()) * 2; // S=4*qx
+            qw = (matrix.m21() - matrix.m12()) / S;
             qx = 0.25 * S;
-            qy = (matrix.m01 + matrix.m10) / S;
-            qz = (matrix.m02 + matrix.m20) / S;
+            qy = (matrix.m01() + matrix.m10()) / S;
+            qz = (matrix.m02() + matrix.m20()) / S;
         }
-        else if (matrix.m11 > matrix.m22)
+        else if (matrix.m11() > matrix.m22())
         {
-            double S = Math.sqrt(1.0 + matrix.m11 - matrix.m00 - matrix.m22) * 2; // S=4*qy
-            qw = (matrix.m02 - matrix.m20) / S;
-            qx = (matrix.m01 + matrix.m10) / S;
+            double S = Math.sqrt(1.0 + matrix.m11() - matrix.m00() - matrix.m22()) * 2; // S=4*qy
+            qw = (matrix.m02() - matrix.m20()) / S;
+            qx = (matrix.m01() + matrix.m10()) / S;
             qy = 0.25 * S;
-            qz = (matrix.m12 + matrix.m21) / S;
+            qz = (matrix.m12() + matrix.m21()) / S;
         }
         else
         {
-            double S = Math.sqrt(1.0 + matrix.m22 - matrix.m00 - matrix.m11) * 2; // S=4*qz
-            qw = (matrix.m10 - matrix.m01) / S;
-            qx = (matrix.m02 + matrix.m20) / S;
-            qy = (matrix.m12 + matrix.m21) / S;
+            double S = Math.sqrt(1.0 + matrix.m22() - matrix.m00() - matrix.m11()) * 2; // S=4*qz
+            qw = (matrix.m10() - matrix.m01()) / S;
+            qx = (matrix.m02() + matrix.m20()) / S;
+            qy = (matrix.m12() + matrix.m21()) / S;
             qz = 0.25 * S;
         }
 
-        return new Quaternion((float)qw, (float)qx, (float)qy, (float)qz);
+        return new Quaternionf((float)qw, (float)qx, (float)qy, (float)qz);
     }
 
     public static void removeMatrixRotation(Matrix4f matrix)
     {
-        matrix.m00 = 1;
-        matrix.m11 = 1;
-        matrix.m22 = 1;
-        matrix.m01 = 0;
-        matrix.m02 = 0;
-        matrix.m10 = 0;
-        matrix.m12 = 0;
-        matrix.m20 = 0;
-        matrix.m21 = 0;
+        matrix.m00(1);
+        matrix.m11(1);
+        matrix.m22(1);
+        matrix.m01(0);
+        matrix.m02(0);
+        matrix.m10(0);
+        matrix.m12(0);
+        matrix.m20(0);
+        matrix.m21(0);
     }
 
     public static void removeMatrixTranslation(Matrix4f matrix)
     {
-        matrix.m03 = 0;
-        matrix.m13 = 0;
-        matrix.m23 = 0;
+        matrix.m03(0);
+        matrix.m13(0);
+        matrix.m23(0);
     }
 
-    public static Quaternion betweenVectors(Vec3 u, Vec3 v) {
+    public static Quaternionf betweenVectors(Vec3 u, Vec3 v) {
         Vec3 a = u.cross(v);
         float w = (float) (Math.sqrt(u.lengthSqr() * v.lengthSqr()) + u.dot(v));
-        Quaternion q = new Quaternion((float) a.x(), -(float) a.y(), -(float) a.z(), w);
+        Quaternionf q = new Quaternionf((float) a.x(), -(float) a.y(), -(float) a.z(), w);
         q.normalize();
         return q;
     }
 
     public static Vector3f translationFromMatrix(Matrix4f matrix4f) {
-        return new Vector3f(matrix4f.m03, matrix4f.m13, matrix4f.m23);
+        return new Vector3f(matrix4f.m03(), matrix4f.m13(), matrix4f.m23());
     }
 
     public static Vector3f eulerAnglesZYXFromMatrix(Matrix4f matrix4f) {
@@ -271,21 +271,21 @@ public class RigUtils {
         float thetaZ;
         float thetaY;
         float thetaX;
-        if (matrix4f.m20 < 1f) {
-            if (matrix4f.m20 > -1f) {
-                thetaY = (float) Math.asin(-matrix4f.m20);
-                thetaZ = (float) Math.atan2(matrix4f.m10, matrix4f.m00) ;
-                thetaX = (float) Math.atan2(matrix4f.m21, matrix4f.m22);
+        if (matrix4f.m20() < 1f) {
+            if (matrix4f.m20() > -1f) {
+                thetaY = (float) Math.asin(-matrix4f.m20());
+                thetaZ = (float) Math.atan2(matrix4f.m10(), matrix4f.m00()) ;
+                thetaX = (float) Math.atan2(matrix4f.m21(), matrix4f.m22());
             }
             else { // m20 = −1
                 thetaY = (float) (Math.PI / 2f);
-                thetaZ = -(float) Math.atan2(-matrix4f.m12, matrix4f.m11);
+                thetaZ = -(float) Math.atan2(-matrix4f.m12(), matrix4f.m11());
                 thetaX = 0;
             }
         }
         else { // m20 = +1
             thetaY = -(float) (Math.PI / 2f);
-            thetaZ = (float) Math.atan2(-matrix4f.m12, matrix4f.m11);
+            thetaZ = (float) Math.atan2(-matrix4f.m12(), matrix4f.m11());
             thetaX = 0;
         }
         return new Vector3f(thetaX, thetaY, thetaZ);
@@ -296,21 +296,21 @@ public class RigUtils {
         float thetaZ;
         float thetaY;
         float thetaX;
-        if (matrix4f.m20 < 1f) {
-            if (matrix4f.m20 > -1f) {
-                thetaY = (float) Math.asin(matrix4f.m02);
-                thetaX = (float) Math.atan2(-matrix4f.m12, matrix4f.m22) ;
-                thetaZ = (float) Math.atan2(-matrix4f.m01, matrix4f.m00);
+        if (matrix4f.m20() < 1f) {
+            if (matrix4f.m20() > -1f) {
+                thetaY = (float) Math.asin(matrix4f.m02());
+                thetaX = (float) Math.atan2(-matrix4f.m12(), matrix4f.m22()) ;
+                thetaZ = (float) Math.atan2(-matrix4f.m01(), matrix4f.m00());
             }
             else { // m20 = −1
                 thetaY = -(float) (Math.PI / 2f);
-                thetaX = -(float) Math.atan2(matrix4f.m10, matrix4f.m11);
+                thetaX = -(float) Math.atan2(matrix4f.m10(), matrix4f.m11());
                 thetaZ = 0;
             }
         }
         else { // m20 = +1
             thetaY = (float) (Math.PI / 2f);
-            thetaX = (float) Math.atan2(matrix4f.m10, matrix4f.m11);
+            thetaX = (float) Math.atan2(matrix4f.m10(), matrix4f.m11());
             thetaZ = 0;
         }
         return new Vector3f(thetaX, thetaY, thetaZ);

@@ -9,6 +9,7 @@ import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix4f;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.geo.render.built.GeoCube;
 
@@ -126,11 +127,12 @@ public class MowzieRenderUtils {
         stack.last().normal().mul(part.getWorldNormal());
     }
 
+    /* TODO: See if minecraft's new math library actually inverts matrices correctly
     public static Matrix4f invertAndMultiplyMatrices(Matrix4f baseMatrix, Matrix4f inputMatrix) {
-        inputMatrix = inputMatrix.copy();
+        inputMatrix = new Matrix4f(inputMatrix);
 
         invertFixed(inputMatrix);
-        inputMatrix.multiply(baseMatrix);
+        inputMatrix.mul(baseMatrix);
 
         return inputMatrix;
     }
@@ -143,5 +145,5 @@ public class MowzieRenderUtils {
         } else {
             return false;
         }
-    }
+    }*/
 }

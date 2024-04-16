@@ -111,7 +111,7 @@ public abstract class EntityUmvuthanaFollower<L extends LivingEntity> extends En
     public L getLeader() {
         Optional<UUID> uuid = getLeaderUUID();
         if (uuid.isPresent()) {
-            List<L> potentialLeaders = level.getEntitiesOfClass(leaderClass, getBoundingBox().inflate(32, 32, 32));
+            List<L> potentialLeaders = level().getEntitiesOfClass(leaderClass, getBoundingBox().inflate(32, 32, 32));
             for (L entity : potentialLeaders) {
                 if (uuid.get().equals(entity.getUUID())) {
                     return entity;

@@ -2,14 +2,15 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityRockSling;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
 import java.util.Map;
 import java.util.TreeMap;
 
-public class ModelRockSling extends AnimatedTickingGeoModel<EntityRockSling> {
+public class ModelRockSling extends GeoModel<EntityRockSling> {
     static Map<String, ResourceLocation> texMap;
     private static final ResourceLocation TEXTURE_DIRT = new ResourceLocation("textures/block/dirt.png");
     private static final ResourceLocation TEXTURE_STONE = new ResourceLocation("textures/block/stone.png");
@@ -45,4 +46,8 @@ public class ModelRockSling extends AnimatedTickingGeoModel<EntityRockSling> {
         return TEXTURE_DIRT;
     }
 
+    @Override
+    public RenderType getRenderType(EntityRockSling animatable, ResourceLocation texture) {
+        return RenderType.entityCutout(texture);
+    }
 }

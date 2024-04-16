@@ -1,10 +1,10 @@
 package com.bobmowzie.mowziesmobs.client.particle.util;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleRibbon;
 import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
@@ -14,6 +14,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 public class AdvancedParticleBase extends TextureSheetParticle {
     public boolean doRender;
@@ -152,15 +154,15 @@ public class AdvancedParticleBase extends TextureSheetParticle {
         float f1 = (float)(Mth.lerp(partialTicks, this.yo, this.y) - Vector3d.y());
         float f2 = (float)(Mth.lerp(partialTicks, this.zo, this.z) - Vector3d.z());
 
-        Quaternion quaternion = new Quaternion(0.0F, 0.0F, 0.0F, 1.0F);
+        Quaternionf quaternion = new Quaternionf(0.0F, 0.0F, 0.0F, 1.0F);
         if (rotation instanceof ParticleRotation.FaceCamera) {
             ParticleRotation.FaceCamera faceCameraRot = (ParticleRotation.FaceCamera) rotation;
             if (faceCameraRot.faceCameraAngle == 0.0F && faceCameraRot.prevFaceCameraAngle == 0.0F) {
                 quaternion = renderInfo.rotation();
             } else {
-                quaternion = new Quaternion(renderInfo.rotation());
+                quaternion = new Quaternionf(renderInfo.rotation());
                 float f3 = Mth.lerp(partialTicks, faceCameraRot.prevFaceCameraAngle, faceCameraRot.faceCameraAngle);
-                quaternion.mul(Vector3f.ZP.rotation(f3));
+                quaternion.mul(Axis.ZP.rotation(f3));
             }
         }
         else if (rotation instanceof ParticleRotation.EulerAngles) {
@@ -168,9 +170,9 @@ public class AdvancedParticleBase extends TextureSheetParticle {
             float rotX = eulerRot.prevPitch + (eulerRot.pitch - eulerRot.prevPitch) * partialTicks;
             float rotY = eulerRot.prevYaw + (eulerRot.yaw - eulerRot.prevYaw) * partialTicks;
             float rotZ = eulerRot.prevRoll + (eulerRot.roll - eulerRot.prevRoll) * partialTicks;
-            Quaternion quatX = new Quaternion(rotX, 0, 0, false);
-            Quaternion quatY = new Quaternion(0, rotY, 0, false);
-            Quaternion quatZ = new Quaternion(0, 0, rotZ, false);
+            Quaternionf quatX = MathUtils.quatFromRotationXYZ(rotX, 0, 0, false);
+            Quaternionf quatY = MathUtils.quatFromRotationXYZ(0, rotY, 0, false);
+            Quaternionf quatZ = MathUtils.quatFromRotationXYZ(0, 0, rotZ, false);
             quaternion.mul(quatZ);
             quaternion.mul(quatY);
             quaternion.mul(quatX);
@@ -182,8 +184,8 @@ public class AdvancedParticleBase extends TextureSheetParticle {
             double z = orientRot.prevOrientation.z + (orientRot.orientation.z - orientRot.prevOrientation.z) * partialTicks;
             float pitch = (float) Math.asin(-y);
             float yaw = (float) (Mth.atan2(x, z));
-            Quaternion quatX = new Quaternion(pitch, 0, 0, false);
-            Quaternion quatY = new Quaternion(0, yaw, 0, false);
+            Quaternionf quatX = MathUtils.quatFromRotationXYZ(pitch, 0, 0, false);
+            Quaternionf quatY = MathUtils.quatFromRotationXYZ(0, yaw, 0, false);
             quaternion.mul(quatY);
             quaternion.mul(quatX);
         }
@@ -193,7 +195,7 @@ public class AdvancedParticleBase extends TextureSheetParticle {
 
         for(int i = 0; i < 4; ++i) {
             Vector3f vector3f = avector3f[i];
-            vector3f.transform(quaternion);
+            quaternion.transform(vector3f);
             vector3f.mul(f4);
             vector3f.add(f, f1, f2);
         }

@@ -16,7 +16,7 @@ public final class EntityAIUmvuthanaTrade extends Goal {
 
     @Override
     public boolean canUse() {
-        if (!umvuthana.isAlive() || umvuthana.isInWater() || !umvuthana.isOnGround() || umvuthana.hurtMarked) {
+        if (!umvuthana.isAlive() || umvuthana.isInWater() || !umvuthana.onGround() || umvuthana.hurtMarked) {
             return false;
         } else {
             Player plyr = umvuthana.getCustomer();

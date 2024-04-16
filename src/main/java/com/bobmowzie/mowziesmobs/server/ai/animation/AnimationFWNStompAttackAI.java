@@ -62,7 +62,7 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                     AABB selection = new AABB(px - 1.5, minY, pz - 1.5, px + 1.5, maxY, pz + 1.5);
                     List<Entity> hit = world.getEntitiesOfClass(Entity.class, selection);
                     for (Entity entity : hit) {
-                        if (entity.isOnGround()) {
+                        if (entity.onGround()) {
                             if (entity == this.entity || entity instanceof EntityFallingBlock) {
                                 continue;
                             }

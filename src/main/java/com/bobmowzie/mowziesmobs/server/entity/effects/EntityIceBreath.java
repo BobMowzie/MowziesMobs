@@ -179,7 +179,7 @@ public class EntityIceBreath extends EntityMagicEffect {
                     boolean yawCheck = (blockRelativeYaw <= ARC / 2f && blockRelativeYaw >= -ARC / 2f) || (blockRelativeYaw >= 360 - ARC / 2f || blockRelativeYaw <= -360 + ARC / 2f);
                     boolean pitchCheck = (blockRelativePitch <= ARC / 2f && blockRelativePitch >= -ARC / 2f) || (blockRelativePitch >= 360 - ARC / 2f || blockRelativePitch <= -360 + ARC / 2f);
                     if (inRange && yawCheck && pitchCheck) {
-                        EntityBlockSwapper.swapBlock(level, pos, Blocks.ICE.defaultBlockState(), 140, false, false);
+                        EntityBlockSwapper.swapBlock(level(), pos, Blocks.ICE.defaultBlockState(), 140, false, false);
                     }
                 }
             }
@@ -191,6 +191,6 @@ public class EntityIceBreath extends EntityMagicEffect {
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double dX, double dY, double dZ, double r) {
-        return level.getEntitiesOfClass(entityClass, getBoundingBox().inflate(dX, dY, dZ), e -> e != this && distanceTo(e) <= r + e.getBbWidth() / 2f && e.getY() <= getY() + dY);
+        return level().getEntitiesOfClass(entityClass, getBoundingBox().inflate(dX, dY, dZ), e -> e != this && distanceTo(e) <= r + e.getBbWidth() / 2f && e.getY() <= getY() + dY);
     }
 }

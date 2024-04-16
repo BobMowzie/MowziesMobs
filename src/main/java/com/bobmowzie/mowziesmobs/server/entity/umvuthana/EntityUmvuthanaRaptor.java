@@ -65,7 +65,7 @@ public class EntityUmvuthanaRaptor extends EntityUmvuthana implements LeaderSuns
             pack.get(i).index = i;
         }
 
-        if (!level.isClientSide && pack != null) {
+        if (!level().isClientSide && pack != null) {
             float theta = (2 * (float) Math.PI / pack.size());
             for (int i = 0; i < pack.size(); i++) {
                 EntityUmvuthanaFollowerToRaptor hunter = pack.get(i);
@@ -78,7 +78,7 @@ public class EntityUmvuthanaRaptor extends EntityUmvuthana implements LeaderSuns
             }
         }
 
-        if (!this.level.isClientSide && this.level.getDifficulty() == Difficulty.PEACEFUL)
+        if (!this.level().isClientSide && this.level().getDifficulty() == Difficulty.PEACEFUL)
         {
             this.discard() ;
         }
@@ -99,7 +99,7 @@ public class EntityUmvuthanaRaptor extends EntityUmvuthana implements LeaderSuns
             return !worldReader.containsAnyLiquid(this.getBoundingBox()) && worldReader.noCollision(this);
         }
         else {
-            return !worldReader.containsAnyLiquid(this.getBoundingBox()) && worldReader.noCollision(this) && this.level.isUnobstructed(this);
+            return !worldReader.containsAnyLiquid(this.getBoundingBox()) && worldReader.noCollision(this) && this.level().isUnobstructed(this);
         }
     }
 
@@ -146,7 +146,7 @@ public class EntityUmvuthanaRaptor extends EntityUmvuthana implements LeaderSuns
         int size = random.nextInt(2) + 3;
         float theta = (2 * (float) Math.PI / size);
         for (int i = 0; i <= size; i++) {
-            EntityUmvuthanaFollowerToRaptor tribeHunter = new EntityUmvuthanaFollowerToRaptor(EntityHandler.UMVUTHANA_FOLLOWER_TO_RAPTOR.get(), this.level, this);
+            EntityUmvuthanaFollowerToRaptor tribeHunter = new EntityUmvuthanaFollowerToRaptor(EntityHandler.UMVUTHANA_FOLLOWER_TO_RAPTOR.get(), this.level(), this);
             tribeHunter.setPos(getX() + 0.1 * Mth.cos(theta * i), getY(), getZ() + 0.1 * Mth.sin(theta * i));
             int weapon = random.nextInt(3) == 0 ? 1 : 0;
             tribeHunter.setWeapon(weapon);
@@ -185,10 +185,10 @@ public class EntityUmvuthanaRaptor extends EntityUmvuthana implements LeaderSuns
     @Override
     public void checkDespawn() {
         super.checkDespawn();
-        if (this.level.getDifficulty() == Difficulty.PEACEFUL && this.shouldDespawnInPeaceful()) {
+        if (this.level().getDifficulty() == Difficulty.PEACEFUL && this.shouldDespawnInPeaceful()) {
             this.discard() ;
         } else if (!this.isPersistenceRequired() && !this.requiresCustomPersistence()) {
-            Entity entity = this.level.getNearestPlayer(this, -1.0D);
+            Entity entity = this.level().getNearestPlayer(this, -1.0D);
             net.minecraftforge.eventbus.api.Event.Result result = net.minecraftforge.event.ForgeEventFactory.canEntityDespawn(this);
             if (result == net.minecraftforge.eventbus.api.Event.Result.DENY) {
                 noActionTime = 0;
@@ -217,10 +217,10 @@ public class EntityUmvuthanaRaptor extends EntityUmvuthana implements LeaderSuns
         }
 
 
-        if (this.level.getDifficulty() == Difficulty.PEACEFUL && this.shouldDespawnInPeaceful()) {
+        if (this.level().getDifficulty() == Difficulty.PEACEFUL && this.shouldDespawnInPeaceful()) {
             this.discard();
         } else if (!this.isPersistenceRequired() && !this.requiresCustomPersistence()) {
-            Entity entity = this.level.getNearestPlayer(this, -1.0D);
+            Entity entity = this.level().getNearestPlayer(this, -1.0D);
             net.minecraftforge.eventbus.api.Event.Result result = net.minecraftforge.event.ForgeEventFactory.canEntityDespawn(this);
             if (result == net.minecraftforge.eventbus.api.Event.Result.DENY) {
                 noActionTime = 0;

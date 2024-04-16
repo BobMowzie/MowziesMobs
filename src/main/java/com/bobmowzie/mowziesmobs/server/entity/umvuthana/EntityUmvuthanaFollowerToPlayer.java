@@ -69,9 +69,9 @@ public class EntityUmvuthanaFollowerToPlayer extends EntityUmvuthanaFollower<Pla
             deactivate();
         }
         super.tick();
-        if (level.isClientSide && feetPos != null && feetPos.length > 0 && active) {
+        if (level().isClientSide && feetPos != null && feetPos.length > 0 && active) {
             feetPos[0] = position().add(0, 0.05f, 0);
-            if (tickCount % 10 == 0) AdvancedParticleBase.spawnParticle(level, ParticleHandler.RING2.get(), feetPos[0].x(), feetPos[0].y(), feetPos[0].z(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 1.5F, 1, 223 / 255f, 66 / 255f, 1, 1, 15, true, false, new ParticleComponent[]{
+            if (tickCount % 10 == 0) AdvancedParticleBase.spawnParticle(level(), ParticleHandler.RING2.get(), feetPos[0].x(), feetPos[0].y(), feetPos[0].z(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 1.5F, 1, 223 / 255f, 66 / 255f, 1, 1, 15, true, false, new ParticleComponent[]{
                     new ParticleComponent.PinLocation(feetPos),
                     new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                     new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(1f, 10f), false)
@@ -155,8 +155,8 @@ public class EntityUmvuthanaFollowerToPlayer extends EntityUmvuthanaFollower<Pla
     public boolean isTeleportFriendlyBlock(int x, int z, int y, int xOffset, int zOffset)
     {
         BlockPos blockpos = new BlockPos(x + xOffset, y - 1, z + zOffset);
-        BlockState iblockstate = this.level.getBlockState(blockpos);
-        return iblockstate.isValidSpawn(this.level, blockpos, this.getType()) && this.level.isEmptyBlock(blockpos.above()) && this.level.isEmptyBlock(blockpos.above(2));
+        BlockState iblockstate = this.level().getBlockState(blockpos);
+        return iblockstate.isValidSpawn(this.level(), blockpos, this.getType()) && this.level().isEmptyBlock(blockpos.above()) && this.level().isEmptyBlock(blockpos.above(2));
     }
 
     public ItemStack getStoredMask() {

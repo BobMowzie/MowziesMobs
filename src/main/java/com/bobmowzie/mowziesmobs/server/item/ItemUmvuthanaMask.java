@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.render.item.RenderSolVisageArmor;
 import com.bobmowzie.mowziesmobs.client.render.item.RenderUmvuthanaMaskItem;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
@@ -29,27 +30,27 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.RawAnimation;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationState;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.renderer.GeoArmorRenderer;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class ItemUmvuthanaMask extends MowzieArmorItem implements UmvuthanaMask, IAnimatable {
+public class ItemUmvuthanaMask extends MowzieArmorItem implements UmvuthanaMask, GeoItem {
     private final MaskType type;
     private static final UmvuthanaMaskMaterial UMVUTHANA_MASK_MATERIAL = new UmvuthanaMaskMaterial();
 
     public String controllerName = "controller";
-    public AnimationFactory factory = GeckoLibUtil.createFactory(this);
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     public ItemUmvuthanaMask(MaskType type, Item.Properties properties) {
         super(UMVUTHANA_MASK_MATERIAL, EquipmentSlot.HEAD, properties);
@@ -124,23 +125,22 @@ public class ItemUmvuthanaMask extends MowzieArmorItem implements UmvuthanaMask,
         super.initializeClient(consumer);
         consumer.accept(new IClientItemExtensions() {
             @Override
-            public HumanoidModel<?> getHumanoidArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel<?> _default) {
-                if (armorSlot != EquipmentSlot.HEAD) return null;
-                return (HumanoidModel<?>) GeoArmorRenderer.getRenderer(ItemUmvuthanaMask.this.getClass(), entityLiving)
-                        .applyEntityStats(_default).setCurrentItem(entityLiving, itemStack, armorSlot)
-                        .applySlot(armorSlot);
+            public HumanoidModel<?> getHumanoidArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<?> original) {
+                if (equipmentSlot == EquipmentSlot.HEAD) armorRenderer.prepForRender(entityLiving, itemStack, equipmentSlot, original);
+                return armorRenderer;
             }
 
-            private final BlockEntityWithoutLevelRenderer renderer = new RenderUmvuthanaMaskItem();
+            private final BlockEntityWithoutLevelRenderer itemRenderer = new RenderUmvuthanaMaskItem();
+            private final GeoArmorRenderer<?> armorRenderer = new RenderSolVisageArmor();
 
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return renderer;
+                return itemRenderer;
             }
         });
     }
 
-    public MaskType getType() {
+    public MaskType getMaskType() {
         return type;
     }
 
@@ -163,36 +163,36 @@ public class ItemUmvuthanaMask extends MowzieArmorItem implements UmvuthanaMask,
         return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.UMVUTHANA_MASK.armorConfig;
     }
 
-    public <P extends Item & IAnimatable> PlayState predicate(AnimationState<P> event) {
-        List<LivingEntity> livingEntities = event.getExtraDataOfType(LivingEntity.class);
-        if (livingEntities.size() > 0 && livingEntities.get(0) instanceof EntityUmvuthana) {
-            event.getController().setAnimation(RawAnimation.begin().addAnimation("umvuthana", ILoopType.EDefaultLoopTypes.LOOP));
+    public <P extends Item & GeoItem> PlayState predicate(AnimationState<P> event) {
+        Entity entity = event.getData(DataTickets.ENTITY);
+        if (entity instanceof EntityUmvuthana) {
+            event.getController().setAnimation(RawAnimation.begin().thenLoop("umvuthana"));
         }
         else {
-            event.getController().setAnimation(RawAnimation.begin().addAnimation("player", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(RawAnimation.begin().thenLoop("player"));
         }
         return PlayState.CONTINUE;
     }
 
     @Override
-    public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController<>(this, controllerName, 0, this::predicate));
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, controllerName, 0, this::predicate));
     }
 
     @Override
-    public AnimationFactory getFactory() {
-        return this.factory;
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
     }
 
     private static class UmvuthanaMaskMaterial implements ArmorMaterial {
 
         @Override
-        public int getDurabilityForSlot(EquipmentSlot equipmentSlotType) {
-            return ArmorMaterials.LEATHER.getDurabilityForSlot(equipmentSlotType);
+        public int getDurabilityForType(Type equipmentSlotType) {
+            return ArmorMaterials.LEATHER.getDurabilityForType(equipmentSlotType);
         }
 
         @Override
-        public int getDefenseForSlot(EquipmentSlot equipmentSlotType) {
+        public int getDefenseForType(Type equipmentSlotType) {
             return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.UMVUTHANA_MASK.armorConfig.damageReductionValue;
         }
 

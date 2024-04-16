@@ -140,7 +140,7 @@ public class EntitySolarBeam extends Entity {
 
         if (caster != null && !caster.isAlive()) discard() ;
 
-        if (level.isClientSide && tickCount <= 10 && caster != null) {
+        if (level().isClientSide && tickCount <= 10 && caster != null) {
             int particleCount = 8;
             while (--particleCount != 0) {
                 double radius = 2f * caster.getBbWidth();
@@ -178,7 +178,7 @@ public class EntitySolarBeam extends Entity {
                 else {
                     attractorPos[0] = new Vec3(rootX, rootY, rootZ);
                 }
-                AdvancedParticleBase.spawnParticle(level, ParticleHandler.ORB2.get(), rootX + ox, rootY + oy, rootZ + oz, 0, 0, 0, true, 0, 0, 0, 0, 5F, 1, 1, 1, 1, 1, 7, true, false, new ParticleComponent[]{
+                AdvancedParticleBase.spawnParticle(level(), ParticleHandler.ORB2.get(), rootX + ox, rootY + oy, rootZ + oz, 0, 0, 0, true, 0, 0, 0, 0, 5F, 1, 1, 1, 1, 1, 7, true, false, new ParticleComponent[]{
                         new ParticleComponent.Attractor(attractorPos, 1.7f, 0.0f, ParticleComponent.Attractor.EnumAttractorBehavior.EXPONENTIAL),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, new ParticleComponent.KeyTrack(
                                 new float[]{0f, 0.8f},
@@ -193,11 +193,11 @@ public class EntitySolarBeam extends Entity {
         }
         if (tickCount > 20) {
             this.calculateEndPos();
-            List<LivingEntity> hit = raytraceEntities(level, new Vec3(getX(), getY(), getZ()), new Vec3(endPosX, endPosY, endPosZ), false, true, true).entities;
+            List<LivingEntity> hit = raytraceEntities(level(), new Vec3(getX(), getY(), getZ()), new Vec3(endPosX, endPosY, endPosZ), false, true, true).entities;
             if (blockSide != null) {
                 spawnExplosionParticles(2);
             }
-            if (!level.isClientSide) {
+            if (!level().isClientSide) {
                 for (LivingEntity target : hit) {
                     if (caster instanceof EntityUmvuthi && target instanceof LeaderSunstrikeImmune) {
                         continue;
@@ -227,7 +227,7 @@ public class EntitySolarBeam extends Entity {
                         double o2x = (float) (-1 * Math.cos(getYaw()) * Math.cos(getPitch()));
                         double o2y = (float) (-1 * Math.sin(getPitch()));
                         double o2z = (float) (-1 * Math.sin(getYaw()) * Math.cos(getPitch()));
-                        level.addParticle(new ParticleOrb.OrbData((float) (collidePosX + o2x + ox), (float) (collidePosY + o2y + oy), (float) (collidePosZ + o2z + oz), 15), getX() + o2x + ox, getY() + o2y + oy, getZ() + o2z + oz, 0, 0, 0);
+                        level().addParticle(new ParticleOrb.OrbData((float) (collidePosX + o2x + ox), (float) (collidePosY + o2y + oy), (float) (collidePosZ + o2z + oz), 15), getX() + o2x + ox, getY() + o2y + oy, getZ() + o2z + oz, 0, 0, 0);
                     }
                     particleCount = 4;
                     while (particleCount --> 0) {
@@ -240,7 +240,7 @@ public class EntitySolarBeam extends Entity {
                         double o2x = -1 * Math.cos(getYaw()) * Math.cos(getPitch());
                         double o2y = -1 * Math.sin(getPitch());
                         double o2z = -1 * Math.sin(getYaw()) * Math.cos(getPitch());
-                        level.addParticle(new ParticleOrb.OrbData((float) (collidePosX + o2x + ox), (float) (collidePosY + o2y + oy), (float) (collidePosZ + o2z + oz), 20), collidePosX + o2x, collidePosY + o2y, collidePosZ + o2z, 0, 0, 0);
+                        level().addParticle(new ParticleOrb.OrbData((float) (collidePosX + o2x + ox), (float) (collidePosY + o2y + oy), (float) (collidePosZ + o2z + oz), 20), collidePosX + o2x, collidePosY + o2y, collidePosZ + o2z, 0, 0, 0);
                     }
                 }
             }
@@ -257,10 +257,10 @@ public class EntitySolarBeam extends Entity {
             float motionY = random.nextFloat() * 0.08F;
             float motionX = velocity * Mth.cos(yaw);
             float motionZ = velocity * Mth.sin(yaw);
-            level.addParticle(ParticleTypes.FLAME, collidePosX, collidePosY + 0.1, collidePosZ, motionX, motionY, motionZ);
+            level().addParticle(ParticleTypes.FLAME, collidePosX, collidePosY + 0.1, collidePosZ, motionX, motionY, motionZ);
         }
         for (int i = 0; i < amount / 2; i++) {
-            level.addParticle(ParticleTypes.LAVA, collidePosX, collidePosY + 0.1, collidePosZ, 0, 0, 0);
+            level().addParticle(ParticleTypes.LAVA, collidePosX, collidePosY + 0.1, collidePosZ, 0, 0, 0);
         }
     }
 
@@ -326,7 +326,7 @@ public class EntitySolarBeam extends Entity {
 
     private void calculateEndPos() {
         double radius = caster instanceof EntityUmvuthi ? RADIUS_UMVUTHI : RADIUS_PLAYER;
-        if (level.isClientSide()) {
+        if (level().isClientSide()) {
             endPosX = getX() + radius * Math.cos(renderYaw) * Math.cos(renderPitch);
             endPosZ = getZ() + radius * Math.sin(renderYaw) * Math.cos(renderPitch);
             endPosY = getY() + radius * Math.sin(renderPitch);

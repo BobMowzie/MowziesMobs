@@ -20,7 +20,7 @@ public class EntityFrozenController extends Entity {
     @Override
     public void tick() {
         super.tick();
-        if (!level.isClientSide && tickCount >= 70 && !isVehicle()) discard() ;
+        if (!level().isClientSide && tickCount >= 70 && !isVehicle()) discard() ;
 //        List<Entity> passengers = getPassengers();
 //        for (Entity passenger : passengers) {
 //            if (passenger instanceof LivingEntity) {

@@ -273,12 +273,12 @@ public class EntityBlockSwapper extends Entity {
 
         @Override
         public void restoreBlock() {
-            if (!level.isClientSide) {
-                List<EntityBlockSwapper> swappers = level.getEntitiesOfClass(EntityBlockSwapper.class, getBoundingBox());
+            if (!level().isClientSide) {
+                List<EntityBlockSwapper> swappers = level().getEntitiesOfClass(EntityBlockSwapper.class, getBoundingBox());
                 for (int k = 0; k < height; k++) {
                     for (int i = -radius; i < radius; i++) {
                         for (int j = -radius; j < radius; j++) {
-                            if (!level.isClientSide) {
+                            if (!level().isClientSide) {
                                 BlockPos thisPos = getStorePos().offset(i, k, j);
                                 if (isBlockPosInsideSwapper(thisPos)) {
                                     boolean canReplace = true;
@@ -292,8 +292,8 @@ public class EntityBlockSwapper extends Entity {
                                     if (canReplace) {
                                         BlockState restoreState = origStates[k][i + radius][j + radius];
                                         if (restoreState != null) {
-                                            if (breakParticlesEnd) level.destroyBlock(thisPos, false);
-                                            level.setBlock(thisPos, restoreState, 19);
+                                            if (breakParticlesEnd) level().destroyBlock(thisPos, false);
+                                            level().setBlock(thisPos, restoreState, 19);
                                         }
                                     }
                                 }
@@ -307,7 +307,7 @@ public class EntityBlockSwapper extends Entity {
 
         @Override
         protected boolean canRestoreBlock() {
-            return tickCount > duration && level.getEntitiesOfClass(EntitySculptor.class, this.getBoundingBox(), EntitySculptor::isTesting).isEmpty();
+            return tickCount > duration && level().getEntitiesOfClass(EntitySculptor.class, this.getBoundingBox(), EntitySculptor::isTesting).isEmpty();
         }
 
         @Override

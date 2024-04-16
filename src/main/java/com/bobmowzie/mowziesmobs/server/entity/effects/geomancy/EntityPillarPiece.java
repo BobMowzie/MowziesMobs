@@ -23,12 +23,12 @@ public class EntityPillarPiece extends Entity {
 
     private EntityPillar pillar;
 
-    public EntityPillarPiece(EntityType<?> type, Level level) {
-        super(type, level);
+    public EntityPillarPiece(EntityType<?> type, Level level()) {
+        super(type, level());
     }
 
-    public EntityPillarPiece(EntityType<?> type, Level level, EntityPillar pillar, Vec3 position) {
-        super(type, level);
+    public EntityPillarPiece(EntityType<?> type, Level level(), EntityPillar pillar, Vec3 position) {
+        super(type, level());
         this.pillar = pillar;
         setTier(pillar.getTier());
         this.absMoveTo(position.x, position.y, position.z);
@@ -124,7 +124,7 @@ public class EntityPillarPiece extends Entity {
     public EntityPillar getPillar() {
         Optional<UUID> uuid = getPillarUUID();
         if (uuid.isPresent() && !level().isClientSide) {
-            return (EntityPillar) ((ServerLevel) level).getEntity(uuid.get());
+            return (EntityPillar) ((ServerLevel) level()).getEntity(uuid.get());
         }
         return null;
     }

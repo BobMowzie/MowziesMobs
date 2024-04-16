@@ -51,7 +51,7 @@ public class EntityUmvuthanaCrane extends EntityUmvuthanaMinion {
         this.goalSelector.addGoal(4, new HealTargetGoal(this));
         this.goalSelector.addGoal(6, new AvoidEntityGoal<Player>(this, Player.class, 7.0F, 0.8D, 0.6D, target -> {
             if (target instanceof Player) {
-                if (this.level.getDifficulty() == Difficulty.PEACEFUL) return false;
+                if (this.level().getDifficulty() == Difficulty.PEACEFUL) return false;
                 if (getTarget() == target) return true;
                 if (getTarget() instanceof EntityUmvuthi) return false;
                 if (getActiveAbilityType() != null) return false;
@@ -118,7 +118,7 @@ public class EntityUmvuthanaCrane extends EntityUmvuthanaMinion {
     public void die(DamageSource cause) {
         // If healing Umvuthi, set the attack target of any mob targeting the crane to Umvuthi
         if (this.getTarget() instanceof EntityUmvuthi) {
-            List<Mob> targetingMobs = level.getEntitiesOfClass(Mob.class, getBoundingBox().inflate(30), (e) -> e.getTarget() == this);
+            List<Mob> targetingMobs = level().getEntitiesOfClass(Mob.class, getBoundingBox().inflate(30), (e) -> e.getTarget() == this);
             if (cause.getEntity() instanceof Mob) {
                 Mob damagingMob = (Mob) cause.getEntity();
                 if (damagingMob.getTarget() == this && !targetingMobs.contains(damagingMob)) {
@@ -189,12 +189,12 @@ public class EntityUmvuthanaCrane extends EntityUmvuthanaMinion {
                 Vec3 newPos = new Vec3(i1, j1, k1);
                 Vec3 offset = newPos.subtract(entity.position());
                 AABB newBB = entity.getBoundingBox().move(offset);
-                if (testBlock(blockpos, newBB) && entity.level.getEntitiesOfClass(EntityUmvuthi.class, newBB.inflate(7)).isEmpty()) {
+                if (testBlock(blockpos, newBB) && entity.level().getEntitiesOfClass(EntityUmvuthi.class, newBB.inflate(7)).isEmpty()) {
                     entity.teleportDestination = newPos.add(0, 0, 0);
                     if (entity.teleportAttempts >= 3) foundPosition = true;
-                    if (entity.level.getEntitiesOfClass(EntityUmvuthanaCrane.class, newBB.inflate(5)).isEmpty()) {
+                    if (entity.level().getEntitiesOfClass(EntityUmvuthanaCrane.class, newBB.inflate(5)).isEmpty()) {
                         if (entity.teleportAttempts >= 2) foundPosition = true;
-                        if (!entity.level.hasNearbyAlivePlayer(i1, j1, k1, 5) && !entity.level.containsAnyLiquid(newBB)) {
+                        if (!entity.level().hasNearbyAlivePlayer(i1, j1, k1, 5) && !entity.level().containsAnyLiquid(newBB)) {
                             if (entity.teleportAttempts >= 1) foundPosition = true;
                             LivingEntity target = getTarget();
                             if (target instanceof Mob && ((Mob) target).getTarget() != null) {
@@ -214,11 +214,11 @@ public class EntityUmvuthanaCrane extends EntityUmvuthanaMinion {
         public boolean canEntityBeSeenFromLocation(Entity entityIn, Vec3 location) {
             Vec3 vector3d = new Vec3(location.x(), location.y() + entity.getEyeHeight(), location.z());
             Vec3 vector3d1 = new Vec3(entityIn.getX(), entityIn.getEyeY(), entityIn.getZ());
-            return entity.level.clip(new ClipContext(vector3d, vector3d1, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity)).getType() != HitResult.Type.BLOCK;
+            return entity.level().clip(new ClipContext(vector3d, vector3d1, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity)).getType() != HitResult.Type.BLOCK;
         }
 
         public boolean testBlock(BlockPos blockpos, AABB aabb) {
-            Level world = entity.level;
+            Level world = entity.level();
             if (world.hasChunkAt(blockpos)) {
                 BlockPos blockpos1 = blockpos.below();
                 BlockState blockstate = world.getBlockState(blockpos1);
