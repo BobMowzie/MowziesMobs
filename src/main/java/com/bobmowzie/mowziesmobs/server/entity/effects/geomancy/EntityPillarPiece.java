@@ -23,12 +23,12 @@ public class EntityPillarPiece extends Entity {
 
     private EntityPillar pillar;
 
-    public EntityPillarPiece(EntityType<?> type, Level level()) {
-        super(type, level());
+    public EntityPillarPiece(EntityType<?> type, Level level) {
+        super(type, level);
     }
 
-    public EntityPillarPiece(EntityType<?> type, Level level(), EntityPillar pillar, Vec3 position) {
-        super(type, level());
+    public EntityPillarPiece(EntityType<?> type, Level level, EntityPillar pillar, Vec3 position) {
+        super(type, level);
         this.pillar = pillar;
         setTier(pillar.getTier());
         this.absMoveTo(position.x, position.y, position.z);
@@ -91,12 +91,6 @@ public class EntityPillarPiece extends Entity {
     protected void addAdditionalSaveData(CompoundTag compound) {
         if (pillar != null) compound.putUUID("pillar", pillar.getUUID());
     }
-
-    @Override
-    public Packet<?> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
-
 
     @Override
     public boolean displayFireAnimation() {

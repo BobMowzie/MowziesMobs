@@ -80,6 +80,6 @@ public class BoulderRollAbility extends PlayerAbility {
         float spinSpeed = 0.35f;
         spinAmount += partialTick * spinSpeed;
         MowzieGeoBone centerOfMass = model.getMowzieBone("CenterOfMass");
-        centerOfMass.addRotationX(-spinAmount);
+        centerOfMass.addRotX(-spinAmount);
     }
 }

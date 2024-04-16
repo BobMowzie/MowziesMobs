@@ -8,8 +8,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.apache.commons.lang3.tuple.Triple;
-import software.bernie.geckolib3.core.event.predicate.AnimationState;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.model.data.EntityModelData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,33 +36,34 @@ public class ModelUmvuthi extends MowzieGeoModel<EntityUmvuthi> {
     }
 
     @Override
-    public void codeAnimations(EntityUmvuthi entity, Integer uniqueID, AnimationState<?> customPredicate) {
-        float frame = entity.frame + customPredicate.getPartialTick();
+    public void codeAnimations(EntityUmvuthi entity, Integer uniqueID, AnimationState<?> animationState) {
+        float frame = entity.frame + animationState.getPartialTick();
 
         MowzieGeoBone rightThigh = getMowzieBone("rightThigh");
         MowzieGeoBone leftThigh = getMowzieBone("leftThigh");
 
-        float liftLegs = entity.legsUp.getAnimationProgressSinSqrt(customPredicate.getPartialTick());
-        leftThigh.addRotationX(1f * liftLegs);
-        rightThigh.addRotationX(1f * liftLegs);
-        leftThigh.addRotationZ(1.5f * liftLegs);
-        rightThigh.addRotationZ(-1.5f * liftLegs);
-        leftThigh.addRotationY(-0.5f * liftLegs);
-        rightThigh.addRotationY(0.5f * liftLegs);
+        float liftLegs = entity.legsUp.getAnimationProgressSinSqrt(animationState.getPartialTick());
+        leftThigh.addRotX(1f * liftLegs);
+        rightThigh.addRotX(1f * liftLegs);
+        leftThigh.addRotZ(1.5f * liftLegs);
+        rightThigh.addRotZ(-1.5f * liftLegs);
+        leftThigh.addRotY(-0.5f * liftLegs);
+        rightThigh.addRotY(0.5f * liftLegs);
 
         if (entity.isAlive() && entity.active) {
             MowzieGeoBone neck1 = getMowzieBone("neck");
             MowzieGeoBone neck2 = getMowzieBone("neck2");
             MowzieGeoBone head = getMowzieBone("head");
             MowzieGeoBone[] lookPieces = new MowzieGeoBone[] { neck1, neck2, head };
-            EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
-            float headYaw = Mth.wrapDegrees(extraData.netHeadYaw);
-            float headPitch = Mth.wrapDegrees(extraData.headPitch);
+
+            EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
+            float headYaw = Mth.wrapDegrees(entityData.netHeadYaw());
+            float headPitch = Mth.wrapDegrees(entityData.headPitch());
             float maxYaw = 140f;
             headYaw = Mth.clamp(headYaw, -maxYaw, maxYaw);
             for (MowzieGeoBone bone : lookPieces) {
-                bone.addRotationX(headPitch * ((float) Math.PI / 180F) / (float) lookPieces.length);
-                bone.addRotationY(headYaw * ((float) Math.PI / 180F) / (float) lookPieces.length);
+                bone.addRotX(headPitch * ((float) Math.PI / 180F) / (float) lookPieces.length);
+                bone.addRotY(headYaw * ((float) Math.PI / 180F) / (float) lookPieces.length);
             }
 
             MowzieGeoBone featherRaiseController = getMowzieBone("featherRaiseController");
@@ -81,35 +83,35 @@ public class ModelUmvuthi extends MowzieGeoModel<EntityUmvuthi> {
             MowzieGeoBone body = getMowzieBone("body");
             MowzieGeoBone headJoint = getMowzieBone("headJoint");
             float idleSpeed = 0.08f;
-            featherRaiseController.addPositionX((float) (Math.sin((frame - 1.2) * idleSpeed) * 0.1));
-            body.addRotationX((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.035));
-            chest.addPositionY((float) (-0.7 + Math.sin((frame - 0.0) * idleSpeed) * 0.014));
-            chest.addRotationX((float) (Math.sin((frame - 0.0) * idleSpeed) * -0.017));
-            neck1.addRotationX((float) (Math.cos((frame - 0.3) * idleSpeed) * -0.052));
-            neck2.addRotationX((float) (Math.cos((frame - 0.5) * idleSpeed) * -0.052));
-            headJoint.addRotationX((float) (Math.cos((frame - 0.6) * idleSpeed) * 0.1));
-            leftArmJoint.addRotationX((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.052));
-            leftLowerArm.addRotationY((float) (-Math.cos((frame - 0.0) * idleSpeed) * 0.035));
-            leftHand.addRotationY((float) (-Math.sin((frame - 0.0) * idleSpeed) * 0.087));
-            rightArmJoint.addRotationX((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.052));
-            rightLowerArm.addRotationY((float) (Math.cos((frame - 0.0) * idleSpeed) * 0.035));
-            rightHand.addRotationY((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.087));
-            leftThigh.addRotationY((float) (Math.cos((frame - 0.0) * idleSpeed) * -0.052) * (1.0f - liftLegs));
-            leftThigh.addRotationZ((float) (Math.sin((frame - 0.0) * idleSpeed) * -0.052) * (1.0f - liftLegs));
-            leftCalf.addRotationX((float) (Math.sin((frame - 0.2) * idleSpeed) * 0.087) * (1.0f - liftLegs));
-            leftAnkle.addRotationX((float) (Math.cos((frame - 0.2) * idleSpeed) * -0.087) * (1.0f - liftLegs));
-            leftFoot.addRotationX((float) (Math.cos((frame - 0.4) * idleSpeed) * -0.14));
-            rightThigh.addRotationY((float) (Math.cos((frame - 0.0) * idleSpeed) * 0.052) * (1.0f - liftLegs));
-            rightThigh.addRotationZ((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.052) * (1.0f - liftLegs));
-            rightCalf.addRotationX((float) (Math.sin((frame - 0.2) * idleSpeed) * 0.087) * (1.0f - liftLegs));
-            rightAnkle.addRotationX((float) (Math.cos((frame - 0.2) * idleSpeed) * -0.087) * (1.0f - liftLegs));
-            rightFoot.addRotationX((float) (Math.cos((frame - 0.4) * idleSpeed) * -0.14));
-            leftThigh.addRotationY((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.035) * liftLegs);
-            rightThigh.addRotationY((float) (-Math.sin((frame - 0.0) * idleSpeed) * 0.035) * liftLegs);
+            featherRaiseController.addPosX((float) (Math.sin((frame - 1.2) * idleSpeed) * 0.1));
+            body.addRotX((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.035));
+            chest.addPosY((float) (-0.7 + Math.sin((frame - 0.0) * idleSpeed) * 0.014));
+            chest.addRotX((float) (Math.sin((frame - 0.0) * idleSpeed) * -0.017));
+            neck1.addRotX((float) (Math.cos((frame - 0.3) * idleSpeed) * -0.052));
+            neck2.addRotX((float) (Math.cos((frame - 0.5) * idleSpeed) * -0.052));
+            headJoint.addRotX((float) (Math.cos((frame - 0.6) * idleSpeed) * 0.1));
+            leftArmJoint.addRotX((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.052));
+            leftLowerArm.addRotY((float) (-Math.cos((frame - 0.0) * idleSpeed) * 0.035));
+            leftHand.addRotY((float) (-Math.sin((frame - 0.0) * idleSpeed) * 0.087));
+            rightArmJoint.addRotX((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.052));
+            rightLowerArm.addRotY((float) (Math.cos((frame - 0.0) * idleSpeed) * 0.035));
+            rightHand.addRotY((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.087));
+            leftThigh.addRotY((float) (Math.cos((frame - 0.0) * idleSpeed) * -0.052) * (1.0f - liftLegs));
+            leftThigh.addRotZ((float) (Math.sin((frame - 0.0) * idleSpeed) * -0.052) * (1.0f - liftLegs));
+            leftCalf.addRotX((float) (Math.sin((frame - 0.2) * idleSpeed) * 0.087) * (1.0f - liftLegs));
+            leftAnkle.addRotX((float) (Math.cos((frame - 0.2) * idleSpeed) * -0.087) * (1.0f - liftLegs));
+            leftFoot.addRotX((float) (Math.cos((frame - 0.4) * idleSpeed) * -0.14));
+            rightThigh.addRotY((float) (Math.cos((frame - 0.0) * idleSpeed) * 0.052) * (1.0f - liftLegs));
+            rightThigh.addRotZ((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.052) * (1.0f - liftLegs));
+            rightCalf.addRotX((float) (Math.sin((frame - 0.2) * idleSpeed) * 0.087) * (1.0f - liftLegs));
+            rightAnkle.addRotX((float) (Math.cos((frame - 0.2) * idleSpeed) * -0.087) * (1.0f - liftLegs));
+            rightFoot.addRotX((float) (Math.cos((frame - 0.4) * idleSpeed) * -0.14));
+            leftThigh.addRotY((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.035) * liftLegs);
+            rightThigh.addRotY((float) (-Math.sin((frame - 0.0) * idleSpeed) * 0.035) * liftLegs);
 
             float armAimControl = getControllerValue("armAimController");
-            leftArmJoint.addRotationX(headPitch * ((float) Math.PI / 180F) * armAimControl);
-            leftArmJoint.addRotationY(headYaw * ((float) Math.PI / 180F) * armAimControl);
+            leftArmJoint.addRotX(headPitch * ((float) Math.PI / 180F) * armAimControl);
+            leftArmJoint.addRotY(headYaw * ((float) Math.PI / 180F) * armAimControl);
         }
 
         float bellyBounceControl = getControllerValue("bellyBounceController");
@@ -119,10 +121,10 @@ public class ModelUmvuthi extends MowzieGeoModel<EntityUmvuthi> {
         MowzieGeoBone chest = getMowzieBone("chest");
         MowzieGeoBone tail = getMowzieBone("tail");
         stomach.setScale(stomach.getScaleX() + jiggleScale, stomach.getScaleY() + jiggleScale, stomach.getScaleZ() + jiggleScale);
-        chest.addPositionY(jiggleScale * 3);
-        leftThigh.addPositionX(-jiggleScale * 5);
-        rightThigh.addPositionX(jiggleScale * 5);
-        tail.addPositionZ(jiggleScale * 4);
+        chest.addPosY(jiggleScale * 3);
+        leftThigh.addPosX(-jiggleScale * 5);
+        rightThigh.addPosX(jiggleScale * 5);
+        tail.addPosZ(jiggleScale * 4);
 
         float featherShakeControl = getControllerValue("featherShakeController");
         float featherRaiseControl = getControllerValue("featherRaiseController");
@@ -179,13 +181,13 @@ public class ModelUmvuthi extends MowzieGeoModel<EntityUmvuthi> {
             if (feather.getRight()) oscillation *= -1;
             Direction.Axis axis = feather.getMiddle();
             if (axis == Direction.Axis.X) {
-                bone.addRotationX(oscillation);
+                bone.addRotX(oscillation);
             }
             else if (axis == Direction.Axis.Y) {
-                bone.addRotationY(oscillation);
+                bone.addRotY(oscillation);
             }
             else {
-                bone.addRotationZ(oscillation);
+                bone.addRotZ(oscillation);
             }
         }
 

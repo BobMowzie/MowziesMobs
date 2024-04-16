@@ -51,7 +51,7 @@ public class MowzieGeoArmorRenderer<T extends ArmorItem & GeoItem> extends GeoAr
         poseStack.popPose();
     }
 
-    public void copyFrom(IBone geoBone, ModelPart modelRendererIn) {
+    public void copyFrom(GeoBone geoBone, ModelPart modelRendererIn) {
         if (usingCustomPlayerAnimations && modelRendererIn instanceof ModelPartMatrix && geoBone instanceof MowzieGeoBone) {
             MowzieGeoBone thisBone = (MowzieGeoBone) geoBone;
             ModelPartMatrix other = (ModelPartMatrix) modelRendererIn;
@@ -61,9 +61,9 @@ public class MowzieGeoArmorRenderer<T extends ArmorItem & GeoItem> extends GeoAr
         }
         else {
             GeoUtils.copyRotations(modelRendererIn, geoBone);
-            geoBone.setPositionX(this.head.x);
-            geoBone.setPositionY(-this.head.y);
-            geoBone.setPositionZ(this.head.z);
+            geoBone.setPosX(this.head.x);
+            geoBone.setPosY(-this.head.y);
+            geoBone.setPosZ(this.head.z);
         }
     }
 

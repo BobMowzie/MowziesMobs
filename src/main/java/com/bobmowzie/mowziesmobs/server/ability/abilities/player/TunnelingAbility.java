@@ -294,7 +294,7 @@ public class TunnelingAbility extends PlayerAbility {
             spinAmount = (float) (spinAmount % (Math.PI * 2));
         }
         MowzieGeoBone waist = model.getMowzieBone("Waist");
-        waist.addRotationY(-spinAmount);
+        waist.addRotY(-spinAmount);
     }
 
     @Override
