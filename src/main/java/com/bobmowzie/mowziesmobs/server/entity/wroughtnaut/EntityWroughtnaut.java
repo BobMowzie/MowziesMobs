@@ -24,6 +24,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
@@ -108,7 +109,7 @@ public class EntityWroughtnaut extends MowzieLLibraryEntity implements Enemy {
         super(type, world);
         xpReward = 30;
         active = false;
-        maxUpStep = 1;
+        setMaxUpStep(1);
 //        rightEyePos = new Vector3d(0, 0, 0);
 //        leftEyePos = new Vector3d(0, 0, 0);
 //        rightEyeRot = new Vector3d(0, 0, 0);
@@ -195,7 +196,7 @@ public class EntityWroughtnaut extends MowzieLLibraryEntity implements Enemy {
                 playSound(MMSounds.ENTITY_WROUGHT_UNDAMAGED.get(), 0.4F, 2);
             }
         }
-        else if (source.isBypassInvul()) {
+        else if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             return super.hurt(source, amount);
         }
         return false;
@@ -399,7 +400,7 @@ public class EntityWroughtnaut extends MowzieLLibraryEntity implements Enemy {
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
         for (; height --> 0; ceilY++) {
             pos.set(hitX, ceilY, hitZ);
-            if (level().getBlockState(pos).getMaterial().blocksMotion()) {
+            if (level().getBlockState(pos).blocksMotion()) {
                 break;
             }
         }

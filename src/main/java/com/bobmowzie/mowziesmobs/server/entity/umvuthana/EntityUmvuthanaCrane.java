@@ -222,7 +222,7 @@ public class EntityUmvuthanaCrane extends EntityUmvuthanaMinion {
             if (world.hasChunkAt(blockpos)) {
                 BlockPos blockpos1 = blockpos.below();
                 BlockState blockstate = world.getBlockState(blockpos1);
-                return blockstate.getMaterial().isSolid() && blockstate.getMaterial().blocksMotion() && world.noCollision(aabb);
+                return blockstate.getMaterial().isSolid() && blockstate.blocksMotion() && world.noCollision(aabb);
             }
             return false;
         }

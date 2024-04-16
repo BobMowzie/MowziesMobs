@@ -107,7 +107,7 @@ public class EntityFrostmaw extends MowzieLLibraryEntity implements Enemy {
 
     public EntityFrostmaw(EntityType<? extends EntityFrostmaw> type, Level world) {
         super(type, world);
-        maxUpStep = 1;
+        setMaxUpStep(1);
         frame += random.nextInt(50);
         legSolver = new LegSolverQuadruped(1f, 2f, -1, 1.5f);
         if (world.isClientSide)
