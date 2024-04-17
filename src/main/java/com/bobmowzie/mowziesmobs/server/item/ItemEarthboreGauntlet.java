@@ -19,17 +19,15 @@ import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.network.PacketDistributor;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.RawAnimation;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationState;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.network.GeckoLibNetwork;
-import software.bernie.geckolib3.network.ISyncable;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -38,17 +36,20 @@ import java.util.function.Consumer;
 /**
  * Created by BobMowzie on 6/6/2017.
  */
-public class ItemEarthboreGauntlet extends MowzieToolItem implements IAnimatable, ISyncable {
-    public static final int ANIM_REST = 0;
-    public static final int ANIM_OPEN = 1;
-    public static final int ANIM_FIST = 2;
+public class ItemEarthboreGauntlet extends MowzieToolItem implements GeoItem {
     public String controllerName = "controller";
     public String controllerIdleName = "controller_idle";
-    public AnimationFactory factory = new AnimationFactory(this);
+
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+    private static final RawAnimation IDLE_ANIM = RawAnimation.begin().thenLoop("idle");
+    private static final RawAnimation OPEN_ANIM = RawAnimation.begin().thenLoop("open");
+    private static final RawAnimation ATTACK_ANIM = RawAnimation.begin().thenPlay("attack");
+    private static final String ATTACK_ANIM_NAME = "attack";
 
     public ItemEarthboreGauntlet(Properties properties) {
         super(-2 + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.toolConfig.attackDamageValue, -4f + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.toolConfig.attackSpeedValue, Tiers.STONE, BlockTags.MINEABLE_WITH_PICKAXE, properties);
-        GeckoLibNetwork.registerSyncable(this);
+
+        SingletonGeoAnimatable.registerSyncedAnimatable(this);
     }
 
     @Override
@@ -114,17 +115,14 @@ public class ItemEarthboreGauntlet extends MowzieToolItem implements IAnimatable
     }
 
     @Override
-    public void registerControllers(AnimationData animationData) {
-        animationData.addAnimationController(new AnimationController<>(this, controllerIdleName, 3, this::predicateIdle));
-        animationData.addAnimationController(new AnimationController<>(this, controllerName, 3, this::predicate));
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, controllerIdleName, 3, this::predicateIdle));
+        controllers.add(new AnimationController<>(this, controllerName, 3, state -> PlayState.STOP)
+                .triggerableAnim(ATTACK_ANIM_NAME, ATTACK_ANIM));
     }
 
-    public <P extends Item & IAnimatable> PlayState predicate(AnimationState<P> event) {
-        return PlayState.CONTINUE;
-    }
-
-    public <P extends Item & IAnimatable> PlayState predicateIdle(AnimationState<P> event) {
-        event.getController().setAnimation(RawAnimation.begin().addAnimation("idle", true));
+    public <P extends Item & GeoItem> PlayState predicateIdle(AnimationState<P> event) {
+        event.getController().setAnimation(IDLE_ANIM);
         return PlayState.CONTINUE;
     }
 
@@ -133,52 +131,21 @@ public class ItemEarthboreGauntlet extends MowzieToolItem implements IAnimatable
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(entity);
         if (abilityCapability != null && abilityCapability.getActiveAbility() == null) {
             if (entity.getUseItem() != stack) {
-                playAnimation(entity, stack, ANIM_FIST);
+                if (entity.level() instanceof ServerLevel) {
+                    triggerAnim(entity, GeoItem.getOrAssignId(stack, (ServerLevel) entity.level()), controllerName, ATTACK_ANIM_NAME);
+                }
             }
         }
         return super.onEntitySwing(stack, entity);
     }
 
     @Override
-    public AnimationFactory getFactory() {
-        return this.factory;
-    }
-
-    @Override
-    public void onAnimationSync(int id, int state) {
-        // Always use GeckoLibUtil to get AnimationControllers when you don't have
-        // access to an AnimationEvent
-        final AnimationController<?> controller = GeckoLibUtil.getControllerForID(this.factory, id, controllerName);
-        controller.markNeedsReload();
-        if (state == ANIM_REST) {
-            controller.clearAnimationCache();
-            controller.setAnimation(RawAnimation.begin().addAnimation("idle", true));
-        } else if (state == ANIM_OPEN) {
-            controller.clearAnimationCache();
-            controller.setAnimation(RawAnimation.begin().addAnimation("open", true));
-        } else if (state == ANIM_FIST) {
-            controller.clearAnimationCache();
-            controller.setAnimation(RawAnimation.begin().addAnimation("attack", false));
-        }
-    }
-
-    public void playAnimation(LivingEntity entity, InteractionHand hand, int state) {
-        ItemStack stack = entity.getItemInHand(hand);
-        playAnimation(entity, stack, state);
-    }
-
-    public void playAnimation(LivingEntity entity, ItemStack stack, int state) {
-        if (!entity.level().isClientSide) {
-            int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel)entity.level());
-            PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> {
-                return entity;
-            });
-            GeckoLibNetwork.syncAnimation(target, this, id, state);
-        }
-    }
-
-    @Override
     public ConfigHandler.ToolConfig getConfig() {
         return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.toolConfig;
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return this.cache;
     }
 }
