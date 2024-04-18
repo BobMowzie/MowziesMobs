@@ -1,20 +1,21 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.model.tools.ModelPartMatrix;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Quaternion;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.ArmorItem;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
-import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.util.GeoUtils;
-import software.bernie.geckolib3.util.RenderUtils;
+import software.bernie.geckolib.util.RenderUtils;
 
 public class MowzieGeoArmorRenderer<T extends ArmorItem & GeoItem> extends GeoArmorRenderer<T> {
     public boolean usingCustomPlayerAnimations = false;
@@ -30,27 +31,28 @@ public class MowzieGeoArmorRenderer<T extends ArmorItem & GeoItem> extends GeoAr
     }
 
     @Override
-    public void renderRecursively(GeoBone bone, PoseStack poseStack, VertexConsumer buffer, int packedLight,
-                                  int packedOverlay, float red, float green, float blue, float alpha) {
+    public void renderRecursively(PoseStack poseStack, T animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferIn, VertexConsumer buffer, boolean isReRender, float partialTick,
+                                  int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         poseStack.pushPose();
         if (usingCustomPlayerAnimations && bone instanceof MowzieGeoBone && ((MowzieGeoBone) bone).isForceMatrixTransform()) {
             PoseStack.Pose last = poseStack.last();
-            last.pose().setIdentity();
-            last.normal().setIdentity();
+            last.pose().identity();
+            last.normal().identity();
             Matrix4f matrix4f = bone.getWorldSpaceMatrix();
-            last.pose().multiply(matrix4f);
+            last.pose().mul(matrix4f);
             last.normal().mul(bone.getWorldSpaceNormal());
-            poseStack.mulPose(new Quaternion(0, 0, 180, true));
+            poseStack.mulPose(MathUtils.quatFromRotationXYZ(0, 0, 180, true));
             poseStack.translate(0, -1.5, 0);
         }
         else {
             RenderUtils.prepMatrixForBone(poseStack, bone);
         }
-        renderCubesOfBone(bone, poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-        renderChildBones(bone, poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        renderCubesOfBone(poseStack, bone, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        renderChildBones(poseStack, animatable, bone, renderType, bufferIn, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
         poseStack.popPose();
     }
 
+    /* TODO: Use new per-bone geckolib armor renderer
     public void copyFrom(GeoBone geoBone, ModelPart modelRendererIn) {
         if (usingCustomPlayerAnimations && modelRendererIn instanceof ModelPartMatrix && geoBone instanceof MowzieGeoBone) {
             MowzieGeoBone thisBone = (MowzieGeoBone) geoBone;
@@ -108,5 +110,5 @@ public class MowzieGeoArmorRenderer<T extends ArmorItem & GeoItem> extends GeoAr
                 copyFrom(leftBootBone, leftLeg);
             }
         }
-    }
+    }*/
 }

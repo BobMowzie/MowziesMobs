@@ -6,8 +6,6 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -19,6 +17,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.AxisAngle4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderAxeAttack extends EntityRenderer<EntityAxeAttack> {
@@ -48,7 +49,7 @@ public class RenderAxeAttack extends EntityRenderer<EntityAxeAttack> {
                 Vec3 playerPos = prevPlayerPos.add(player.position().subtract(prevPlayerPos).scale(delta));
                 Vec3 deltaPos = axePos.subtract(playerPos).scale(-1);
                 matrixStackIn.translate(deltaPos.x(), deltaPos.y(), deltaPos.z());
-                matrixStackIn.mulPose(new Quaternion(new Vector3f(0, -1, 0), player.getYRot(), true));
+                matrixStackIn.mulPose(new Quaternionf(new AxisAngle4f(player.getYRot() * (float) Math.PI/180f, new Vector3f(0, -1, 0))));
                 VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entitySolid(TEXTURE));
                 model.setupAnim(axe, 0, 0, axe.tickCount + delta, 0, 0);
                 model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
