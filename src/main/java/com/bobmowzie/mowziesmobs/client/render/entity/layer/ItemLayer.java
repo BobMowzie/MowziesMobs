@@ -10,14 +10,15 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 public class ItemLayer<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T, M> {
     private AdvancedModelRenderer modelRenderer;
     private ItemStack itemstack;
-    private ItemTransforms.TransformType transformType;
+    private ItemDisplayContext transformType;
 
-    public ItemLayer(RenderLayerParent<T, M> renderer, AdvancedModelRenderer modelRenderer, ItemStack itemstack, ItemTransforms.TransformType transformType) {
+    public ItemLayer(RenderLayerParent<T, M> renderer, AdvancedModelRenderer modelRenderer, ItemStack itemstack, ItemDisplayContext transformType) {
         super(renderer);
         this.itemstack = itemstack;
         this.modelRenderer = modelRenderer;

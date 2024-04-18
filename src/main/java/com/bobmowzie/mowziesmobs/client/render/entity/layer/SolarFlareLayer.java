@@ -9,13 +9,13 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.player.heliomancy.SolarFlareAbility;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector4f;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Vector4f;
 
 public class SolarFlareLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
     private GeckoRenderPlayer renderPlayerAnimated;
@@ -32,7 +32,7 @@ public class SolarFlareLayer extends RenderLayer<AbstractClientPlayer, PlayerMod
             matrixStackIn.pushPose();
             MowzieGeoBone bone = renderPlayerAnimated.getAnimatedPlayerModel().getMowzieBone("Body");
             Vector4f vecTranslation = new Vector4f(0, 0, 0, 1);
-            vecTranslation.transform(bone.getWorldSpaceMatrix());
+            vecTranslation.mul(bone.getWorldSpaceMatrix());
             PoseStack newMatrixStack = new PoseStack();
             newMatrixStack.translate(vecTranslation.x(), vecTranslation.y(), vecTranslation.z());
             newMatrixStack.scale(0.8f, 0.8f, 0.8f);

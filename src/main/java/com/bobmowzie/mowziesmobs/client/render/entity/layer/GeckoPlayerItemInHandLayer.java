@@ -7,15 +7,15 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.PlayerAbility;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -54,20 +54,20 @@ public class GeckoPlayerItemInHandLayer extends RenderLayer<AbstractClientPlayer
                 matrixStackIn.scale(0.5F, 0.5F, 0.5F);
             }
 
-            this.renderArmWithItem(entitylivingbaseIn, itemstack1, ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND, HumanoidArm.RIGHT, matrixStackIn, bufferIn, packedLightIn);
-            this.renderArmWithItem(entitylivingbaseIn, itemstack, ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND, HumanoidArm.LEFT, matrixStackIn, bufferIn, packedLightIn);
+            this.renderArmWithItem(entitylivingbaseIn, itemstack1, ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, HumanoidArm.RIGHT, matrixStackIn, bufferIn, packedLightIn);
+            this.renderArmWithItem(entitylivingbaseIn, itemstack, ItemDisplayContext.THIRD_PERSON_LEFT_HAND, HumanoidArm.LEFT, matrixStackIn, bufferIn, packedLightIn);
             matrixStackIn.popPose();
         }
     }
 
-    private void renderArmWithItem(LivingEntity entity, ItemStack itemStack, ItemTransforms.TransformType transformType, HumanoidArm side, PoseStack matrixStack, MultiBufferSource buffer, int packedLightIn) {
+    private void renderArmWithItem(LivingEntity entity, ItemStack itemStack, ItemDisplayContext transformType, HumanoidArm side, PoseStack matrixStack, MultiBufferSource buffer, int packedLightIn) {
         if (!itemStack.isEmpty()) {
             String boneName = side == HumanoidArm.RIGHT ? "RightHeldItem" : "LeftHeldItem";
             MowzieGeoBone bone = renderPlayerAnimated.getAnimatedPlayerModel().getMowzieBone(boneName);
             PoseStack newMatrixStack = new PoseStack();
             newMatrixStack.last().normal().mul(bone.getWorldSpaceNormal());
-            newMatrixStack.last().pose().multiply(bone.getWorldSpaceMatrix());
-            newMatrixStack.mulPose(Vector3f.XP.rotationDegrees(-90.0F));
+            newMatrixStack.last().pose().mul(bone.getWorldSpaceMatrix());
+            newMatrixStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
             boolean flag = side == HumanoidArm.LEFT;
             Minecraft.getInstance().getEntityRenderDispatcher().getItemInHandRenderer().renderItem(entity, itemStack, transformType, flag, newMatrixStack, buffer, packedLightIn);
         }

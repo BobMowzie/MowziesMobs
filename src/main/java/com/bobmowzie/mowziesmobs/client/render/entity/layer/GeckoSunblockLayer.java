@@ -10,14 +10,14 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
-import software.bernie.geckolib3.core.GeoEntity;
-import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
-import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.renderer.GeoRenderer;
+import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
-public class GeckoSunblockLayer<T extends LivingEntity & GeoEntity> extends GeoLayerRenderer<T> {
+public class GeckoSunblockLayer<T extends LivingEntity & GeoEntity> extends GeoRenderLayer<T> {
     private static final ResourceLocation SUNBLOCK_ARMOR = new ResourceLocation(MowziesMobs.MODID, "textures/entity/sunblock_glow.png");
 
-    public GeckoSunblockLayer(IGeoRenderer<T> entityRendererIn, EntityRendererProvider.Context context) {
+    public GeckoSunblockLayer(GeoRenderer<T> entityRendererIn, EntityRendererProvider.Context context) {
         super(entityRendererIn);
     }
 
@@ -27,8 +27,8 @@ public class GeckoSunblockLayer<T extends LivingEntity & GeoEntity> extends GeoL
             float f = (float) entitylivingbaseIn.tickCount + partialTicks;
             RenderType renderType = RenderType.energySwirl(this.getTextureLocation(), this.xOffset(f), f * 0.01F);
 
-            getRenderer().render(getEntityModel().getModel(getEntityModel().getModelResource(entitylivingbaseIn)),
-                    entitylivingbaseIn, partialTicks, renderType, matrixStackIn, bufferIn, bufferIn.getBuffer(renderType),
+            getRenderer().reRender(getDefaultBakedModel(entitylivingbaseIn),
+                    matrixStackIn, bufferIn, entitylivingbaseIn, renderType, bufferIn.getBuffer(renderType), partialTicks,
                     packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 0.1F, 1.0F);
         }
     }

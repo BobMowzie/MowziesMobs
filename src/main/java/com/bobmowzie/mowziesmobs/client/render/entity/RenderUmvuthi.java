@@ -9,10 +9,6 @@ import com.bobmowzie.mowziesmobs.client.render.entity.layer.UmvuthiSunLayer;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3d;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.culling.Frustum;
@@ -22,6 +18,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3d;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderUmvuthi extends MowzieGeoEntityRenderer<EntityUmvuthi> {
@@ -37,16 +37,16 @@ public class RenderUmvuthi extends MowzieGeoEntityRenderer<EntityUmvuthi> {
 
     public RenderUmvuthi(EntityRendererProvider.Context mgr) {
         super(mgr, new ModelUmvuthi());
-        this.addLayer(new FrozenRenderHandler.GeckoLayerFrozen<>(this, mgr));
-        this.addLayer(new GeckoSunblockLayer(this, mgr));
-        this.addLayer(new UmvuthiSunLayer(this));
+        this.addRenderLayer(new FrozenRenderHandler.GeckoLayerFrozen<>(this, mgr));
+        this.addRenderLayer(new GeckoSunblockLayer(this, mgr));
+        this.addRenderLayer(new UmvuthiSunLayer(this));
 
         this.shadowRadius = 1.0f;
     }
 
     @Override
     public ResourceLocation getTextureLocation(EntityUmvuthi entity) {
-        return this.getGeoModelProvider().getTextureResource(entity);
+        return this.getMowzieGeoModel().getTextureResource(entity);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class RenderUmvuthi extends MowzieGeoEntityRenderer<EntityUmvuthi> {
         if (!umvuthi.isInvisible()) {
             if (umvuthi.getActiveAbilityType() == EntityUmvuthi.SOLAR_FLARE_ABILITY && umvuthi.getActiveAbility().getTicksInUse() > BURST_START_FRAME && umvuthi.getActiveAbility().getTicksInUse() < BURST_START_FRAME + BURST_FRAME_COUNT - 1) {
                 matrixStackIn.pushPose();
-                Quaternion quat = this.entityRenderDispatcher.cameraOrientation();
+                Quaternionf quat = this.entityRenderDispatcher.cameraOrientation();
                 matrixStackIn.mulPose(quat);
                 matrixStackIn.translate(0, 1, 0);
                 matrixStackIn.scale(0.8f, 0.8f, 0.8f);
@@ -103,7 +103,7 @@ public class RenderUmvuthi extends MowzieGeoEntityRenderer<EntityUmvuthi> {
 
         if (!Minecraft.getInstance().isPaused()) {
             MowzieGeoBone mask = getMowzieGeoModel().getMowzieBone("maskTwitcher");
-            animatable.updateRattleSound(mask.getRotationZ());
+            animatable.updateRattleSound(mask.getRotZ());
         }
     }
 

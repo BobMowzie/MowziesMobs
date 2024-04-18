@@ -13,7 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
-import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
+import software.bernie.geckolib3.renderers.geo.GeoRenderLayer;
 
 public class RenderSculptor extends MowzieGeoEntityRenderer<EntitySculptor> {
     public final ResourceLocation staff_geo_location = new ResourceLocation(MowziesMobs.MODID, "geo/sculptor_staff.geo.json");
@@ -45,7 +45,7 @@ public class RenderSculptor extends MowzieGeoEntityRenderer<EntitySculptor> {
     }
 
     @Override
-    protected void renderLayer(PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, EntitySculptor animatable, float limbSwing, float limbSwingAmount, float partialTick, float rotFloat, float netHeadYaw, float headPitch, MultiBufferSource bufferSource2, GeoLayerRenderer<EntitySculptor> layerRenderer) {
+    protected void renderLayer(PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, EntitySculptor animatable, float limbSwing, float limbSwingAmount, float partialTick, float rotFloat, float netHeadYaw, float headPitch, MultiBufferSource bufferSource2, GeoRenderLayer<EntitySculptor> layerRenderer) {
         super.renderLayer(poseStack, bufferSource, packedLight, animatable, limbSwing, limbSwingAmount, partialTick, rotFloat, netHeadYaw, headPitch, bufferSource2, layerRenderer);
 
 

@@ -14,9 +14,9 @@ import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.GeoEntity;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
 import software.bernie.geckolib3.model.provider.GeoModelProvider;
-import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
+import software.bernie.geckolib3.renderers.geo.GeoRenderer;
 
-public class RenderGeomancyBase<T extends EntityGeomancyBase & GeoEntity> extends EntityRenderer<T> implements IGeoRenderer<T> {
+public class RenderGeomancyBase<T extends EntityGeomancyBase & GeoEntity> extends EntityRenderer<T> implements GeoRenderer<T> {
     private static final ResourceLocation TEXTURE_STONE = new ResourceLocation("textures/blocks/stone.png");
     private MultiBufferSource rtb;
     private T entity;
@@ -42,7 +42,7 @@ public class RenderGeomancyBase<T extends EntityGeomancyBase & GeoEntity> extend
     public void renderEarly(T animatable, PoseStack stackIn, float partialTicks, @Nullable MultiBufferSource renderTypeBuffer, @Nullable VertexConsumer vertexBuilder, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         this.rtb = renderTypeBuffer;
         this.entity = animatable;
-        IGeoRenderer.super.renderEarly(animatable, stackIn, partialTicks, renderTypeBuffer, vertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        GeoRenderer.super.renderEarly(animatable, stackIn, partialTicks, renderTypeBuffer, vertexBuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
     @Override
