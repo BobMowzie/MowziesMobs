@@ -37,7 +37,7 @@ public class MowzieGeoArmorRenderer<T extends ArmorItem & GeoItem> extends GeoAr
             PoseStack.Pose last = poseStack.last();
             last.pose().setIdentity();
             last.normal().setIdentity();
-            Matrix4f matrix4f = bone.getWorldSpaceXform();
+            Matrix4f matrix4f = bone.getWorldSpaceMatrix();
             last.pose().multiply(matrix4f);
             last.normal().mul(bone.getWorldSpaceNormal());
             poseStack.mulPose(new Quaternion(0, 0, 180, true));
@@ -56,7 +56,7 @@ public class MowzieGeoArmorRenderer<T extends ArmorItem & GeoItem> extends GeoAr
             MowzieGeoBone thisBone = (MowzieGeoBone) geoBone;
             ModelPartMatrix other = (ModelPartMatrix) modelRendererIn;
             thisBone.setWorldSpaceNormal(other.getWorldNormal());
-            thisBone.setWorldSpaceXform(other.getWorldXform());
+            thisBone.setWorldSpaceMatrix(other.getWorldXform());
             thisBone.setForceMatrixTransform(true);
         }
         else {

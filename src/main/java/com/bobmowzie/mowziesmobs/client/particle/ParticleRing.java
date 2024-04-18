@@ -1,11 +1,11 @@
 package com.bobmowzie.mowziesmobs.client.particle;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.Camera;
@@ -14,11 +14,14 @@ import net.minecraft.client.particle.*;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.util.Locale;
 
@@ -98,31 +101,31 @@ public class ParticleRing extends TextureSheetParticle {
         float f = (float)(Mth.lerp(partialTicks, this.xo, this.x) - Vector3d.x());
         float f1 = (float)(Mth.lerp(partialTicks, this.yo, this.y) - Vector3d.y());
         float f2 = (float)(Mth.lerp(partialTicks, this.zo, this.z) - Vector3d.z());
-        Quaternion quaternion = new Quaternion(0.0F, 0.0F, 0.0F, 1.0F);
+        Quaternionf quaternionf = new Quaternionf(0.0F, 0.0F, 0.0F, 1.0F);
         if (facesCamera) {
             if (this.roll == 0.0F) {
-                quaternion = renderInfo.rotation();
+                quaternionf = renderInfo.rotation();
             } else {
-                quaternion = new Quaternion(renderInfo.rotation());
+                quaternionf = new Quaternionf(renderInfo.rotation());
                 float f3 = Mth.lerp(partialTicks, this.oRoll, this.roll);
-                quaternion.mul(Vector3f.ZP.rotation(f3));
+                quaternionf.mul(Axis.ZP.rotation(f3));
             }
         }
         else {
-            Quaternion quatX = new Quaternion(pitch, 0, 0, false);
-            Quaternion quatY = new Quaternion(0, yaw, 0, false);
-            quaternion.mul(quatY);
-            quaternion.mul(quatX);
+            Quaternionf quatX = MathUtils.quatFromRotationXYZ(pitch, 0, 0, false);
+            Quaternionf quatY = MathUtils.quatFromRotationXYZ(0, yaw, 0, false);
+            quaternionf.mul(quatY);
+            quaternionf.mul(quatX);
         }
 
         Vector3f vector3f1 = new Vector3f(-1.0F, -1.0F, 0.0F);
-        vector3f1.transform(quaternion);
+        quaternionf.transform(vector3f1);
         Vector3f[] avector3f = new Vector3f[]{new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};
         float f4 = this.getQuadSize(partialTicks);
 
         for(int i = 0; i < 4; ++i) {
             Vector3f vector3f = avector3f[i];
-            vector3f.transform(quaternion);
+            quaternionf.transform(vector3f);
             vector3f.mul(f4);
             vector3f.add(f, f1, f2);
         }
@@ -224,7 +227,7 @@ public class ParticleRing extends TextureSheetParticle {
         @SuppressWarnings("deprecation")
         @Override
         public String writeToString() {
-            return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %.2f %.2f %.2f %d %b", Registry.PARTICLE_TYPE.getKey(this.getType()),
+            return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %.2f %.2f %.2f %d %b", BuiltInRegistries.PARTICLE_TYPE.getKey(this.getType()),
                     this.yaw, this.pitch, this.r, this.g, this.b, this.scale, this.a, this.duration, this.facesCamera);
         }
 

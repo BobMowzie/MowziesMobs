@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs;
 
 import com.bobmowzie.mowziesmobs.client.ClientProxy;
+import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelFactory;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.server.ServerEventHandler;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
@@ -39,6 +40,8 @@ import net.minecraftforge.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import software.bernie.geckolib.GeckoLib;
+import software.bernie.geckolib.loading.object.BakedModelFactory;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 @Mod(MowziesMobs.MODID)
 @Mod.EventBusSubscriber(modid = MowziesMobs.MODID)
@@ -50,7 +53,7 @@ public final class MowziesMobs {
     public static SimpleChannel NETWORK;
 
     public MowziesMobs() {
-//        MowzieGeoBuilder.registerGeoBuilder(MODID, new MowzieGeoBuilder());
+        GeckoLibUtil.addCustomBakedModelFactory(MODID, new MowzieModelFactory());
         GeckoLib.initialize();
 
         PROXY = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);

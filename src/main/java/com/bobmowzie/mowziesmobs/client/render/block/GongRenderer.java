@@ -2,10 +2,10 @@ package com.bobmowzie.mowziesmobs.client.render.block;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.LayerHandler;
+import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.server.block.entity.GongBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
@@ -56,9 +56,9 @@ public class GongRenderer implements BlockEntityRenderer<GongBlockEntity> {
     public void render(GongBlockEntity entity, float delta, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int overlay) {
         poseStack.pushPose();
         poseStack.translate(0.5, 1.485, 0.5);
-        poseStack.mulPose(new Quaternion(0, 0, 180, true));
+        poseStack.mulPose(MathUtils.quatFromRotationXYZ(0, 0, 180, true));
         if (entity.facing.getAxis() == Direction.Axis.X) {
-            poseStack.mulPose(new Quaternion(0, 90, 0, true));
+            poseStack.mulPose(MathUtils.quatFromRotationXYZ(0, 90, 0, true));
         }
 
         float f = (float)entity.ticks + delta;

@@ -1,9 +1,9 @@
 package com.bobmowzie.mowziesmobs.client.model.tools;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
 import net.minecraft.client.model.geom.ModelPart;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 
 public class ModelPartMatrix extends ModelPart {
     private Matrix4f worldXform;
@@ -21,9 +21,9 @@ public class ModelPartMatrix extends ModelPart {
         copyFrom(original);
 
         worldNormal = new Matrix3f();
-        worldNormal.setIdentity();
+        worldNormal.identity();
         worldXform = new Matrix4f();
-        worldXform.setIdentity();
+        worldXform.identity();
 
         useMatrixMode = true;
         this.resetUseMatrixMode = resetUseMatrixMode;
@@ -36,9 +36,9 @@ public class ModelPartMatrix extends ModelPart {
         }
         else {
             PoseStack.Pose last = matrixStackIn.last();
-            last.pose().setIdentity();
-            last.normal().setIdentity();
-            last.pose().multiply(getWorldXform());
+            last.pose().identity();
+            last.normal().identity();
+            last.pose().mul(getWorldXform());
             last.normal().mul(getWorldNormal());
         }
         if (resetUseMatrixMode) useMatrixMode = false;

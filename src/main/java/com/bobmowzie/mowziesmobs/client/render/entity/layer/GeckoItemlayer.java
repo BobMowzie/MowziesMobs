@@ -2,22 +2,18 @@ package com.bobmowzie.mowziesmobs.client.render.entity.layer;
 
 import com.bobmowzie.mowziesmobs.server.entity.MowzieGeckoEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib3.geo.render.built.GeoBone;
-import software.bernie.geckolib3.geo.render.built.GeoModel;
-import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
-import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
-import software.bernie.geckolib3.util.RenderUtils;
+import org.joml.Matrix4f;
+import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.GeoRenderer;
+import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
-public class GeckoItemlayer<T extends MowzieGeckoEntity> extends GeoLayerRenderer<T> {
+public class GeckoItemlayer<T extends MowzieGeckoEntity> extends GeoRenderLayer<T> {
     protected Matrix4f dispatchedMat = new Matrix4f();
     protected Matrix4f renderEarlyMat = new Matrix4f();
 
@@ -26,13 +22,13 @@ public class GeckoItemlayer<T extends MowzieGeckoEntity> extends GeoLayerRendere
     private String boneName;
     private ItemStack renderedItem;
 
-    public GeckoItemlayer(IGeoRenderer<T> entityRendererIn, String boneName, ItemStack renderedItem) {
+    public GeckoItemlayer(GeoRenderer<T> entityRendererIn, String boneName, ItemStack renderedItem) {
         super(entityRendererIn);
         this.boneName = boneName;
         this.renderedItem = renderedItem;
     }
 
-    @Override
+    /*@Override
     public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, T entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         this.entity = entity;
         GeoModel model = this.entityRenderer.getGeoModelProvider().getModel(this.entityRenderer.getGeoModelProvider().getModelResource(entity));
@@ -77,7 +73,7 @@ public class GeckoItemlayer<T extends MowzieGeckoEntity> extends GeoLayerRendere
             Matrix4f worldState = localMatrix.copy();
 
             worldState.translate(new Vector3f(this.entity.position()));
-            bone.setWorldSpaceXform(worldState);
+            bone.setWorldSpaceMatrix(worldState);
         }
 
         RenderUtils.translateAwayFromPivotPoint(poseStack, bone);
@@ -95,6 +91,6 @@ public class GeckoItemlayer<T extends MowzieGeckoEntity> extends GeoLayerRendere
 
     public Vec3 getRenderOffset(MowzieGeckoEntity p_114483_, float p_114484_) {
         return Vec3.ZERO;
-    }
+    }*/
 
 }

@@ -5,7 +5,7 @@ import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.PlayerModel;
@@ -28,8 +28,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
-import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.renderer.GeoRenderer;
+import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
 /**
  * Created by BobMowzie on 6/28/2017.
@@ -60,21 +62,21 @@ public enum FrozenRenderHandler {
         }
     }
 
-    public static class GeckoLayerFrozen<T extends LivingEntity & GeoEntity> extends GeoLayerRenderer<T> {
+    public static class GeckoLayerFrozen<T extends LivingEntity & GeoEntity> extends GeoRenderLayer<T> {
 
-        public GeckoLayerFrozen(IGeoRenderer<T> entityRendererIn, EntityRendererProvider.Context context) {
+        public GeckoLayerFrozen(GeoRenderer<T> entityRendererIn, EntityRendererProvider.Context context) {
             super(entityRendererIn);
         }
 
         @Override
-        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, T living, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(living, CapabilityHandler.FROZEN_CAPABILITY);
+        public void render(PoseStack poseStack, T animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(animatable, CapabilityHandler.FROZEN_CAPABILITY);
             if (frozenCapability != null && frozenCapability.getFrozen()) {
-                RenderType renderType = RenderType.entityTranslucent(FROZEN_TEXTURE);
+                RenderType frozenRenderType = RenderType.entityTranslucent(FROZEN_TEXTURE);
 
-                getRenderer().render(getEntityModel().getModel(getEntityModel().getModelResource(living)),
-                        living, partialTicks, renderType, matrixStackIn, bufferIn, bufferIn.getBuffer(renderType),
-                        packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
+                getRenderer().reRender(getDefaultBakedModel(animatable),
+                        poseStack, bufferSource, animatable, renderType, bufferSource.getBuffer(frozenRenderType),
+                        partialTick, packedLight, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
             }
         }
     }
@@ -103,8 +105,8 @@ public enum FrozenRenderHandler {
     /**
      * From ItemRenderer#renderArmFirstPerson
      * @param swingProgress
-     * @param equipProgress
-     * @param handSide
+     * @param equippedProgress
+     * @param side
      */
     private void renderArmFirstPersonFrozen(PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, float equippedProgress, float swingProgress, HumanoidArm side) {
         Minecraft mc = Minecraft.getInstance();
@@ -117,17 +119,17 @@ public enum FrozenRenderHandler {
         float f3 = 0.4F * Mth.sin(f1 * ((float)Math.PI * 2F));
         float f4 = -0.4F * Mth.sin(swingProgress * (float)Math.PI);
         matrixStackIn.translate(f * (f2 + 0.64000005F), f3 + -0.6F + equippedProgress * -0.6F, f4 + -0.71999997F);
-        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(f * 45.0F));
+        matrixStackIn.mulPose(Axis.YP.rotationDegrees(f * 45.0F));
         float f5 = Mth.sin(swingProgress * swingProgress * (float)Math.PI);
         float f6 = Mth.sin(f1 * (float)Math.PI);
-        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(f * f6 * 70.0F));
-        matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(f * f5 * -20.0F));
+        matrixStackIn.mulPose(Axis.YP.rotationDegrees(f * f6 * 70.0F));
+        matrixStackIn.mulPose(Axis.ZP.rotationDegrees(f * f5 * -20.0F));
         AbstractClientPlayer abstractclientplayerentity = mc.player;
         mc.getTextureManager().bindForSetup(abstractclientplayerentity.getSkinTextureLocation());
         matrixStackIn.translate(f * -1.0F, 3.6F, 3.5D);
-        matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(f * 120.0F));
-        matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(200.0F));
-        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(f * -135.0F));
+        matrixStackIn.mulPose(Axis.ZP.rotationDegrees(f * 120.0F));
+        matrixStackIn.mulPose(Axis.XP.rotationDegrees(200.0F));
+        matrixStackIn.mulPose(Axis.YP.rotationDegrees(f * -135.0F));
         matrixStackIn.translate(f * 5.6F, 0.0D, 0.0D);
         PlayerRenderer playerrenderer = (PlayerRenderer)renderManager.getRenderer(abstractclientplayerentity);
         if (flag) {

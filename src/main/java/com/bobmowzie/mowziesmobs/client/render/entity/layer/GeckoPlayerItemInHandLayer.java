@@ -66,7 +66,7 @@ public class GeckoPlayerItemInHandLayer extends RenderLayer<AbstractClientPlayer
             MowzieGeoBone bone = renderPlayerAnimated.getAnimatedPlayerModel().getMowzieBone(boneName);
             PoseStack newMatrixStack = new PoseStack();
             newMatrixStack.last().normal().mul(bone.getWorldSpaceNormal());
-            newMatrixStack.last().pose().multiply(bone.getWorldSpaceXform());
+            newMatrixStack.last().pose().multiply(bone.getWorldSpaceMatrix());
             newMatrixStack.mulPose(Vector3f.XP.rotationDegrees(-90.0F));
             boolean flag = side == HumanoidArm.LEFT;
             Minecraft.getInstance().getEntityRenderDispatcher().getItemInHandRenderer().renderItem(entity, itemStack, transformType, flag, newMatrixStack, buffer, packedLightIn);

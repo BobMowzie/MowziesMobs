@@ -132,7 +132,7 @@ public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements GeoR
                 newMatrixStack.mulPose(new Quaternion(Vector3f.XP, pitch * fixedPitchController, true));
 
                 newMatrixStack.last().normal().mul(bone.getWorldSpaceNormal());
-                newMatrixStack.last().pose().multiply(bone.getWorldSpaceXform());
+                newMatrixStack.last().pose().multiply(bone.getWorldSpaceMatrix());
                 newMatrixStack.translate(sideMult * 0.547, 0.7655, 0.625);
 
                 if (mirror) handside = handside.getOpposite();
@@ -151,7 +151,7 @@ public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements GeoR
             toWorldSpace.mulPose(new Quaternion(-player.getXRot(),0, 0, true));
             MowzieGeoBone particleEmitterRootBone = geoModel.getMowzieBone("ParticleEmitterRoot");
             Vector4f emitterRootPos = new Vector4f(0, 0, 0, 1);
-            emitterRootPos.transform(particleEmitterRootBone.getWorldSpaceXform());
+            emitterRootPos.transform(particleEmitterRootBone.getWorldSpaceMatrix());
             emitterRootPos.transform(toWorldSpace.last().pose());
             particleEmitterRoot = new Vec3(emitterRootPos.x(), emitterRootPos.y(), emitterRootPos.z());
         }
@@ -222,7 +222,7 @@ public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements GeoR
                 matrixStack.pushPose();
                 PoseStack.Pose entry = matrixStack.last();
                 mowzieBone.setWorldSpaceNormal(entry.normal().copy());
-                mowzieBone.setWorldSpaceXform(entry.pose().copy());
+                mowzieBone.setWorldSpaceMatrix(entry.pose().copy());
                 matrixStack.popPose();
             }
         }

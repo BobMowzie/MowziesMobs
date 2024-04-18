@@ -32,7 +32,7 @@ public class SolarFlareLayer extends RenderLayer<AbstractClientPlayer, PlayerMod
             matrixStackIn.pushPose();
             MowzieGeoBone bone = renderPlayerAnimated.getAnimatedPlayerModel().getMowzieBone("Body");
             Vector4f vecTranslation = new Vector4f(0, 0, 0, 1);
-            vecTranslation.transform(bone.getWorldSpaceXform());
+            vecTranslation.transform(bone.getWorldSpaceMatrix());
             PoseStack newMatrixStack = new PoseStack();
             newMatrixStack.translate(vecTranslation.x(), vecTranslation.y(), vecTranslation.z());
             newMatrixStack.scale(0.8f, 0.8f, 0.8f);

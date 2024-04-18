@@ -1,11 +1,10 @@
 package com.bobmowzie.mowziesmobs.client.particle;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.Camera;
@@ -14,9 +13,14 @@ import net.minecraft.client.particle.*;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.AxisAngle4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.util.Locale;
 
@@ -65,11 +69,11 @@ public class ParticleSnowFlake extends TextureSheetParticle {
             float yaw = (float) Math.atan2(motionVec.x(), motionVec.z());
             float pitch = (float) Math.atan2(motionVec.y(), 1);
             float swirlRadius = 4f * (age / (float) lifetime) * spread;
-            Quaternion quatSpin = motionVec.rotation(swirlTick * 0.2f);
-            Quaternion quatOrient = new Quaternion(pitch, yaw, 0, false);
+            Quaternionf quatSpin = new Quaternionf(new AxisAngle4f(swirlTick * 0.2f, motionVec)); //TODO: Test this math!
+            Quaternionf quatOrient = MathUtils.quatFromRotationXYZ(pitch, yaw, 0, false);
             Vector3f vec = new Vector3f(swirlRadius, 0, 0);
-            vec.transform(quatOrient);
-            vec.transform(quatSpin);
+            quatOrient.transform(vec);
+            quatSpin.transform(vec);
             x += vec.x();
             y += vec.y();
             z += vec.z();
@@ -138,7 +142,7 @@ public class ParticleSnowFlake extends TextureSheetParticle {
         @SuppressWarnings("deprecation")
         @Override
         public String writeToString() {
-            return String.format(Locale.ROOT, "%s %.2f %b", Registry.PARTICLE_TYPE.getKey(this.getType()),
+            return String.format(Locale.ROOT, "%s %.2f %b", BuiltInRegistries.PARTICLE_TYPE.getKey(this.getType()),
                     this.duration, this.swirls);
         }
 
