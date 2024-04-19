@@ -7,19 +7,19 @@ import com.bobmowzie.mowziesmobs.client.render.entity.layer.WroughtnautEyesLayer
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderWroughtnaut extends MobRenderer<EntityWroughtnaut, ModelWroughtnaut<EntityWroughtnaut>> {
@@ -28,7 +28,7 @@ public class RenderWroughtnaut extends MobRenderer<EntityWroughtnaut, ModelWroug
     public RenderWroughtnaut(EntityRendererProvider.Context mgr) {
         super(mgr, new ModelWroughtnaut<>(), 1.0F);
         addLayer(new WroughtnautEyesLayer<>(this));
-        addLayer(new ItemLayer<>(this, getModel().sword, Items.DIAMOND_SWORD.getDefaultInstance(), ItemTransforms.TransformType.GROUND));
+        addLayer(new ItemLayer<>(this, getModel().sword, Items.DIAMOND_SWORD.getDefaultInstance(), ItemDisplayContext.GROUND));
     }
     
     @Override

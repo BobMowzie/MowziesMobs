@@ -1,12 +1,11 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -19,6 +18,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderSolarBeam extends EntityRenderer<EntitySolarBeam> {
@@ -86,7 +88,7 @@ public class RenderSolarBeam extends EntityRenderer<EntitySolarBeam> {
             return;
         }
         matrixStackIn.pushPose();
-        Quaternion quat = this.entityRenderDispatcher.cameraOrientation();
+        Quaternionf quat = this.entityRenderDispatcher.cameraOrientation();
         matrixStackIn.mulPose(quat);
         renderFlatQuad(frame, matrixStackIn, builder, packedLightIn);
         matrixStackIn.popPose();
@@ -94,7 +96,7 @@ public class RenderSolarBeam extends EntityRenderer<EntitySolarBeam> {
 
     private void renderEnd(int frame, Direction side, PoseStack matrixStackIn, VertexConsumer builder, int packedLightIn) {
         matrixStackIn.pushPose();
-        Quaternion quat = this.entityRenderDispatcher.cameraOrientation();
+        Quaternionf quat = this.entityRenderDispatcher.cameraOrientation();
         matrixStackIn.mulPose(quat);
         renderFlatQuad(frame, matrixStackIn, builder, packedLightIn);
         matrixStackIn.popPose();
@@ -102,8 +104,8 @@ public class RenderSolarBeam extends EntityRenderer<EntitySolarBeam> {
             return;
         }
         matrixStackIn.pushPose();
-        Quaternion sideQuat = side.getRotation();
-        sideQuat.mul(new Quaternion(90, 0, 0, true));
+        Quaternionf sideQuat = side.getRotation();
+        sideQuat.mul(MathUtils.quatFromRotationXYZ(90, 0, 0, true));
         matrixStackIn.mulPose(sideQuat);
         matrixStackIn.translate(0, 0, -0.01f);
         renderFlatQuad(frame, matrixStackIn, builder, packedLightIn);
@@ -127,19 +129,19 @@ public class RenderSolarBeam extends EntityRenderer<EntitySolarBeam> {
 
     private void renderBeam(float length, float yaw, float pitch, int frame,  PoseStack matrixStackIn, VertexConsumer builder, int packedLightIn) {
         matrixStackIn.pushPose();
-        matrixStackIn.mulPose(new Quaternion(90, 0, 0, true));
-        matrixStackIn.mulPose(new Quaternion(0, 0, yaw - 90f, true));
-        matrixStackIn.mulPose(new Quaternion(-pitch, 0, 0, true));
+        matrixStackIn.mulPose(MathUtils.quatFromRotationXYZ(90, 0, 0, true));
+        matrixStackIn.mulPose(MathUtils.quatFromRotationXYZ(0, 0, yaw - 90f, true));
+        matrixStackIn.mulPose(MathUtils.quatFromRotationXYZ(-pitch, 0, 0, true));
         matrixStackIn.pushPose();
         if (!clearerView) {
-            matrixStackIn.mulPose(new Quaternion(0, Minecraft.getInstance().gameRenderer.getMainCamera().getXRot() + 90, 0, true));
+            matrixStackIn.mulPose(MathUtils.quatFromRotationXYZ(0, Minecraft.getInstance().gameRenderer.getMainCamera().getXRot() + 90, 0, true));
         }
         drawBeam(length, frame, matrixStackIn, builder, packedLightIn);
         matrixStackIn.popPose();
 
         if (!clearerView) {
             matrixStackIn.pushPose();
-            matrixStackIn.mulPose(new Quaternion(0, -Minecraft.getInstance().gameRenderer.getMainCamera().getXRot() - 90, 0, true));
+            matrixStackIn.mulPose(MathUtils.quatFromRotationXYZ(0, -Minecraft.getInstance().gameRenderer.getMainCamera().getXRot() - 90, 0, true));
             drawBeam(length, frame, matrixStackIn, builder, packedLightIn);
             matrixStackIn.popPose();
         }

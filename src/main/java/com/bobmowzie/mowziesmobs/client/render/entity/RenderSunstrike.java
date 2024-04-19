@@ -1,12 +1,11 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -17,10 +16,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 
 import java.util.Random;
 
@@ -89,12 +89,12 @@ public class RenderSunstrike extends EntityRenderer<EntitySunstrike> {
         int maxY = Mth.floor(ey);
         int minZ = Mth.floor(ez - LINGER_RADIUS);
         int maxZ = Mth.floor(ez + LINGER_RADIUS);
-        float opacityMultiplier = (0.6F + RANDOMIZER.nextFloat() * 0.2F) * world.getMaxLocalRawBrightness(new BlockPos(ex, ey, ez));
+        float opacityMultiplier = (0.6F + RANDOMIZER.nextFloat() * 0.2F) * world.getMaxLocalRawBrightness(new BlockPos((int) ex, (int) ey, (int) ez));
         byte mirrorX = (byte) (RANDOMIZER.nextBoolean() ? -1 : 1);
         byte mirrorZ = (byte) (RANDOMIZER.nextBoolean() ? -1 : 1);
         for (BlockPos pos : BlockPos.betweenClosed(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ))) {
             BlockState block = world.getBlockState(pos.below());
-            if (block.getMaterial() != Material.AIR && world.getMaxLocalRawBrightness(pos) > 3) {
+            if (!block.isAir() && world.getMaxLocalRawBrightness(pos) > 3) {
                 drawScorchBlock(world, block, pos, ex, ey, ez, opacityMultiplier, mirrorX, mirrorZ, matrixStack, builder, packedLightIn);
             }
         }
@@ -138,7 +138,7 @@ public class RenderSunstrike extends EntityRenderer<EntitySunstrike> {
             opacity *= DRAW_OPACITY_MULTIPLER;
         }
         drawRing(drawing, drawTime, strikeTime, opacity, matrixStack, builder, packedLightIn);
-        matrixStack.mulPose(new Quaternion(0, -Minecraft.getInstance().gameRenderer.getMainCamera().getYRot(), 0, true));
+        matrixStack.mulPose(MathUtils.quatFromRotationXYZ(0, -Minecraft.getInstance().gameRenderer.getMainCamera().getYRot(), 0, true));
         drawBeam(drawing, drawTime, strikeTime, opacity, maxY, matrixStack, builder, packedLightIn);
     }
 

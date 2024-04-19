@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -22,8 +23,8 @@ public class RenderFrostmaw extends MobRenderer<EntityFrostmaw, ModelFrostmaw<En
 
     public RenderFrostmaw(EntityRendererProvider.Context mgr) {
         super(mgr, new ModelFrostmaw<>(), 3.5f);
-        addLayer(new ItemLayer<>(this, getModel().iceCrystalHand, ItemHandler.ICE_CRYSTAL.getDefaultInstance(), ItemTransforms.TransformType.GROUND));
-        addLayer(new ItemLayer<>(this, getModel().iceCrystal, ItemHandler.ICE_CRYSTAL.getDefaultInstance(), ItemTransforms.TransformType.GROUND));
+        addLayer(new ItemLayer<>(this, getModel().iceCrystalHand, ItemHandler.ICE_CRYSTAL.get().getDefaultInstance(), ItemDisplayContext.GROUND));
+        addLayer(new ItemLayer<>(this, getModel().iceCrystal, ItemHandler.ICE_CRYSTAL.get().getDefaultInstance(), ItemDisplayContext.GROUND));
     }
 
     @Override

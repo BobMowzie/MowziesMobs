@@ -5,6 +5,7 @@ import com.bobmowzie.mowziesmobs.client.model.entity.ModelPoisonBall;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityPoisonBall;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -29,7 +30,7 @@ public class RenderPoisonBall extends EntityRenderer<EntityPoisonBall> {
     @Override
     public void render(EntityPoisonBall entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
-        matrixStackIn.mulPose(new Quaternion(new Vector3f(0, -1, 0), entityYaw, true));
+        matrixStackIn.mulPose(Axis.YN.rotationDegrees(entityYaw));
         VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(this.getTextureLocation(entityIn)));
         model.setupAnim(entityIn, 0, 0, entityIn.tickCount + partialTicks, 0, 0);
         model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
