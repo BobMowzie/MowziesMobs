@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.shadowed.eliotlash.mclib.utils.MathHelper;
+import net.royawesome.jlibnoise.MathHelper;
 
 import java.util.List;
 
@@ -61,12 +61,12 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
                 pillar = sculptor.getPillar();
             }
         }
-        if (tickTimer() > 2 && hasSyncedCaster && (sculptor == null || sculptor.isRemoved() || pillar == null || pillar.isRemoved() || (pillar.isFalling() && !descending))) {
+        if (tickCount > 2 && hasSyncedCaster && (sculptor == null || sculptor.isRemoved() || pillar == null || pillar.isRemoved() || (pillar.isFalling() && !descending))) {
             explode();
             return;
         }
 
-        if (tickTimer() >= 2 && !spawnedNextBoulders && hasSyncedCaster) {
+        if (tickCount >= 2 && !spawnedNextBoulders && hasSyncedCaster) {
             nextBoulders();
         }
 
@@ -174,7 +174,7 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
         // random angle tends towards center as the platforms reach higher up
         randomAngle *= 1f - Math.pow(getHeightFrac(), 5f) * 0.75;
         Vec3 offset = new Vec3(horizontalOffset, verticalOffset, 0);
-        float finalAngle = (float) Math.toRadians(MathHelper.wrapDegrees(baseAngle + randomAngle));
+        float finalAngle = (float) Math.toRadians(MathHelper.wrapAngle(baseAngle + randomAngle));
         offset = offset.yRot(finalAngle);
         Vec3 nextLocation = startLocation.add(offset);
         if (nextLocation.y() + nextDims.height > pillar.getY() + EntitySculptor.TEST_HEIGHT) {
@@ -194,7 +194,7 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
 
         float baseAngle = (float) -Math.toDegrees(Math.atan2(fromPillarPos.y, fromPillarPos.x));
         Vec3 offset = new Vec3(horizontalOffset, 0, 0);
-        float finalAngle = (float) Math.toRadians(MathHelper.wrapDegrees(baseAngle));
+        float finalAngle = (float) Math.toRadians(MathHelper.wrapAngle(baseAngle));
         offset = offset.yRot(finalAngle);
 
         return startLocation.add(offset);

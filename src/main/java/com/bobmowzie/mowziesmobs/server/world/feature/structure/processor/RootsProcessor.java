@@ -27,28 +27,28 @@ public class RootsProcessor extends StructureProcessor {
 
     @Override
     public StructureTemplate.StructureBlockInfo process(LevelReader levelReader, BlockPos jigsawPiecePos, BlockPos jigsawPieceBottomCenterPos, StructureTemplate.StructureBlockInfo blockInfoLocal, StructureTemplate.StructureBlockInfo blockInfoGlobal, StructurePlaceSettings structurePlacementData, StructureTemplate template) {
-        if (levelReader instanceof WorldGenRegion worldGenRegion && !worldGenRegion.getCenter().equals(new ChunkPos(blockInfoGlobal.pos))) {
+        if (levelReader instanceof WorldGenRegion worldGenRegion && !worldGenRegion.getCenter().equals(new ChunkPos(blockInfoGlobal.pos()))) {
             return blockInfoGlobal;
         }
-        RandomSource random = structurePlacementData.getRandom(blockInfoGlobal.pos);
+        RandomSource random = structurePlacementData.getRandom(blockInfoGlobal.pos());
         if (random.nextFloat() < 0.15) {
             if (
-                    blockInfoGlobal.state.is(Blocks.DARK_OAK_PLANKS) ||
-                            blockInfoGlobal.state.is(Blocks.DARK_OAK_SLAB) && blockInfoGlobal.state.getValue(SlabBlock.TYPE) != SlabType.TOP
+                    blockInfoGlobal.state().is(Blocks.DARK_OAK_PLANKS) ||
+                            blockInfoGlobal.state().is(Blocks.DARK_OAK_SLAB) && blockInfoGlobal.state().getValue(SlabBlock.TYPE) != SlabType.TOP
             ) {
 
 
-                BlockPos pos = blockInfoGlobal.pos.below();
+                BlockPos pos = blockInfoGlobal.pos().below();
                 BlockState belowState = levelReader.getBlockState(pos);
                 if (belowState.isAir()) {
                     levelReader.getChunk(pos).setBlockState(pos, Blocks.HANGING_ROOTS.defaultBlockState(), false);
                 }
             } else if (
-                    blockInfoGlobal.state.is(Blocks.DARK_OAK_TRAPDOOR) &&
-                            blockInfoGlobal.state.getValue(TrapDoorBlock.HALF) == Half.TOP &&
-                            !blockInfoGlobal.state.getValue(TrapDoorBlock.OPEN)
+                    blockInfoGlobal.state().is(Blocks.DARK_OAK_TRAPDOOR) &&
+                            blockInfoGlobal.state().getValue(TrapDoorBlock.HALF) == Half.TOP &&
+                            !blockInfoGlobal.state().getValue(TrapDoorBlock.OPEN)
             ) {
-                blockInfoGlobal = new StructureTemplate.StructureBlockInfo(blockInfoGlobal.pos, Blocks.HANGING_ROOTS.defaultBlockState(), blockInfoGlobal.nbt);
+                blockInfoGlobal = new StructureTemplate.StructureBlockInfo(blockInfoGlobal.pos(), Blocks.HANGING_ROOTS.defaultBlockState(), blockInfoGlobal.nbt());
             }
         }
         return blockInfoGlobal;

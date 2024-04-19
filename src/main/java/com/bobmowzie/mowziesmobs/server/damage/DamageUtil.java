@@ -4,9 +4,10 @@ import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.LivingCapability;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.EntityDamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -14,8 +15,9 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class DamageUtil {
     // TODO: Works for current use cases, but possibly not for future edge cases. Use reflection to get hurt sound for onHit2?
+    // TODO: Check new 1.20 damage code and make sure this matches
     public static Pair<Boolean, Boolean> dealMixedDamage(LivingEntity target, DamageSource source1, float amount1, DamageSource source2, float amount2) {
-        if (target.level.isClientSide()) return Pair.of(false, false);
+        if (target.level().isClientSide()) return Pair.of(false, false);
         boolean flag1 = source1.getEntity() != null && target.isAlliedTo(source1.getEntity());
         boolean flag2 = source2.getEntity() != null && target.isAlliedTo(source2.getEntity());
         if(flag1 || flag2) return Pair.of(false, false);
@@ -49,8 +51,8 @@ public class DamageUtil {
                 onHit2(target, source2);
                 if (target instanceof Player) {
                     SoundEvent sound = SoundEvents.PLAYER_HURT;
-                    if (source2 == DamageSource.ON_FIRE) sound = SoundEvents.PLAYER_HURT_ON_FIRE;
-                    else if (source2 == DamageSource.DROWN) sound = SoundEvents.PLAYER_HURT_DROWN;
+                    if (source2.is(DamageTypeTags.IS_FIRE)) sound = SoundEvents.PLAYER_HURT_ON_FIRE;
+                    else if (source2.is(DamageTypeTags.IS_DROWNING)) sound = SoundEvents.PLAYER_HURT_DROWN;
                     target.playSound(sound, 1F, getSoundPitch(target));
                 }
             }
@@ -64,19 +66,19 @@ public class DamageUtil {
     }
 
     private static void onHit2(LivingEntity target, DamageSource source) {
-        if (source instanceof EntityDamageSource && ((EntityDamageSource)source).isThorns())
+        if (source.is(DamageTypes.THORNS))
         {
-            target.level.broadcastEntityEvent(target, (byte)33);
+            target.level().broadcastEntityEvent(target, (byte)33);
         }
         else
         {
             byte b0;
 
-            if (source == DamageSource.DROWN)
+            if (source.is(DamageTypeTags.IS_DROWNING))
             {
                 b0 = 36;
             }
-            else if (source.isFire())
+            else if (source.is(DamageTypeTags.IS_FIRE))
             {
                 b0 = 37;
             }
@@ -85,7 +87,7 @@ public class DamageUtil {
                 b0 = 2;
             }
 
-            target.level.broadcastEntityEvent(target, b0);
+            target.level().broadcastEntityEvent(target, b0);
         }
 
         Entity entity1 = source.getEntity();
@@ -99,12 +101,16 @@ public class DamageUtil {
                 d1 = (Math.random() - Math.random()) * 0.01D;
             }
 
-            target.hurtDir = (float)(Mth.atan2(d0, d1) * (180D / Math.PI) - (double)target.getYRot());
+            if (target instanceof Player) {
+                ((Player)target).hurtDir = (float)(Mth.atan2(d0, d1) * (180D / Math.PI) - (double)target.getYRot());
+            }
             target.knockback(0.4F, d1, d0);
         }
         else
         {
-            target.hurtDir = (float)((int)(Math.random() * 2.0D) * 180);
+            if (target instanceof Player) {
+                ((Player)target).hurtDir = (float) ((int) (Math.random() * 2.0D) * 180);
+            }
         }
     }
 }

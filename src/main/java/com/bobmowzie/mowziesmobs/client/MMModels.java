@@ -11,6 +11,7 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -30,8 +31,8 @@ public class MMModels {
         Map<ResourceLocation, BakedModel> map = event.getModels();
 
         for (String item : HAND_MODEL_ITEMS) {
-            ResourceLocation modelInventory = new ModelResourceLocation("mowziesmobs:" + item, "inventory");
-            ResourceLocation modelHand = new ModelResourceLocation("mowziesmobs:" + item + "_in_hand", "inventory");
+            ResourceLocation modelInventory = new ModelResourceLocation(new ResourceLocation("mowziesmobs", item), "inventory");
+            ResourceLocation modelHand = new ModelResourceLocation(new ResourceLocation("mowziesmobs", item + "_in_hand"), "inventory");
 
             BakedModel bakedModelDefault = map.get(modelInventory);
             BakedModel bakedModelHand = map.get(modelHand);
@@ -72,10 +73,10 @@ public class MMModels {
                 }
 
                 @Override
-                public BakedModel applyTransform(ItemTransforms.TransformType cameraTransformType, PoseStack mat, boolean applyLeftHandTransform) {
+                public BakedModel applyTransform(ItemDisplayContext cameraTransformType, PoseStack mat, boolean applyLeftHandTransform) {
                     BakedModel modelToUse = bakedModelDefault;
-                    if (cameraTransformType == ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND || cameraTransformType == ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND
-                            || cameraTransformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND || cameraTransformType == ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND) {
+                    if (cameraTransformType == ItemDisplayContext.FIRST_PERSON_LEFT_HAND || cameraTransformType == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND
+                            || cameraTransformType == ItemDisplayContext.THIRD_PERSON_LEFT_HAND || cameraTransformType == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND) {
                         modelToUse = bakedModelHand;
                     }
                     return ForgeHooksClient.handleCameraTransforms(mat, modelToUse, cameraTransformType, applyLeftHandTransform);
@@ -85,12 +86,12 @@ public class MMModels {
         }
 
         for (MaskType type : MaskType.values()) {
-            ModelResourceLocation maskModelInventory = new ModelResourceLocation("mowziesmobs:umvuthana_mask_" + type.name, "inventory");
-            ModelResourceLocation maskModelFrame = new ModelResourceLocation("mowziesmobs:umvuthana_mask_" + type.name + "_frame", "inventory");
+            ModelResourceLocation maskModelInventory = new ModelResourceLocation(new ResourceLocation("mowziesmobs","umvuthana_mask_" + type.name), "inventory");
+            ModelResourceLocation maskModelFrame = new ModelResourceLocation(new ResourceLocation("mowziesmobs", "umvuthana_mask_" + type.name + "_frame"), "inventory");
             bakeMask(map, maskModelInventory, maskModelFrame);
         }
-        ModelResourceLocation maskModelInventory = new ModelResourceLocation("mowziesmobs:sol_visage", "inventory");
-        ModelResourceLocation maskModelFrame = new ModelResourceLocation("mowziesmobs:sol_visage_frame", "inventory");
+        ModelResourceLocation maskModelInventory = new ModelResourceLocation(new ResourceLocation("mowziesmobs", "sol_visage"), "inventory");
+        ModelResourceLocation maskModelFrame = new ModelResourceLocation(new ResourceLocation("mowziesmobs", "sol_visage_frame"), "inventory");
         bakeMask(map, maskModelInventory, maskModelFrame);
     }
 
@@ -134,9 +135,9 @@ public class MMModels {
             }
 
             @Override
-            public BakedModel applyTransform(ItemTransforms.TransformType cameraTransformType, PoseStack mat, boolean applyLeftHandTransform) {
+            public BakedModel applyTransform(ItemDisplayContext cameraTransformType, PoseStack mat, boolean applyLeftHandTransform) {
                 BakedModel modelToUse = maskBakedModelDefault;
-                if (cameraTransformType == ItemTransforms.TransformType.FIXED) {
+                if (cameraTransformType == ItemDisplayContext.FIXED) {
                     modelToUse = maskBakedModelFrame;
                 }
                 return ForgeHooksClient.handleCameraTransforms(mat, modelToUse, cameraTransformType, applyLeftHandTransform);

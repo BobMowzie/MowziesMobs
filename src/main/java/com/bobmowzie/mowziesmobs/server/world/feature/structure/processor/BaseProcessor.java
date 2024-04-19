@@ -24,19 +24,19 @@ public class BaseProcessor extends StructureProcessor {
 
     @Override
     public StructureTemplate.StructureBlockInfo process(LevelReader levelReader, BlockPos jigsawPiecePos, BlockPos jigsawPieceBottomCenterPos, StructureTemplate.StructureBlockInfo blockInfoLocal, StructureTemplate.StructureBlockInfo blockInfoGlobal, StructurePlaceSettings structurePlacementData, StructureTemplate template) {
-        if (blockInfoGlobal.state.is(Blocks.COBBLED_DEEPSLATE)) {
-            if (levelReader instanceof WorldGenRegion worldGenRegion && !worldGenRegion.getCenter().equals(new ChunkPos(blockInfoGlobal.pos))) {
+        if (blockInfoGlobal.state().is(Blocks.COBBLED_DEEPSLATE)) {
+            if (levelReader instanceof WorldGenRegion worldGenRegion && !worldGenRegion.getCenter().equals(new ChunkPos(blockInfoGlobal.pos()))) {
                 return blockInfoGlobal;
             }
 
-            BlockPos.MutableBlockPos mutable = blockInfoGlobal.pos.mutable().move(Direction.DOWN);
+            BlockPos.MutableBlockPos mutable = blockInfoGlobal.pos().mutable().move(Direction.DOWN);
             BlockState currBlockState = levelReader.getBlockState(mutable);
-            RandomSource random = structurePlacementData.getRandom(blockInfoGlobal.pos);
+            RandomSource random = structurePlacementData.getRandom(blockInfoGlobal.pos());
 
-            blockInfoGlobal = new StructureTemplate.StructureBlockInfo(blockInfoGlobal.pos, chooseRandomState(random), blockInfoGlobal.nbt);
+            blockInfoGlobal = new StructureTemplate.StructureBlockInfo(blockInfoGlobal.pos(), chooseRandomState(random), blockInfoGlobal.nbt());
             while (mutable.getY() > levelReader.getMinBuildHeight()
                     && mutable.getY() < levelReader.getMaxBuildHeight()
-                    && !currBlockState.getMaterial().isSolid()) {
+                    && !currBlockState.isSolid()) {
                 levelReader.getChunk(mutable).setBlockState(mutable, chooseRandomState(random), false);
 
                 // Update to next position

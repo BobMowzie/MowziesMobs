@@ -39,7 +39,7 @@ public final class Trade {
         }
         if (o instanceof Trade) {
             Trade trade = (Trade) o;
-            return weight == trade.weight && ItemStack.isSame(input, trade.input) && ItemStack.isSame(output, trade.output);
+            return weight == trade.weight && ItemStack.matches(input, trade.input) && ItemStack.matches(output, trade.output);
         }
         return false;
     }

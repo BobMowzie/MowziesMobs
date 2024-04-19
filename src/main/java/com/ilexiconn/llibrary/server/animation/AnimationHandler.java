@@ -23,7 +23,7 @@ public enum AnimationHandler {
      * @param <T>       the entity type
      */
     public <T extends Entity & IAnimatedEntity> void sendAnimationMessage(T entity, Animation animation) {
-        if (entity.level.isClientSide) {
+        if (entity.level().isClientSide) {
             return;
         }
         entity.setAnimation(animation);

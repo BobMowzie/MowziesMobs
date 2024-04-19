@@ -40,16 +40,16 @@ public class BlockSwapProcessor extends StructureProcessor {
     @Override
     public StructureTemplate.StructureBlockInfo process(LevelReader levelReader, BlockPos jigsawPiecePos, BlockPos jigsawPieceBottomCenterPos, StructureTemplate.StructureBlockInfo blockInfoLocal, StructureTemplate.StructureBlockInfo blockInfoGlobal, StructurePlaceSettings structurePlacementData, StructureTemplate template) {
         for (BlockState toReplaceState : toReplace) {
-            if (blockInfoGlobal.state.is(toReplaceState.getBlock())) {
-                if (levelReader instanceof WorldGenRegion worldGenRegion && !worldGenRegion.getCenter().equals(new ChunkPos(blockInfoGlobal.pos))) {
+            if (blockInfoGlobal.state().is(toReplaceState.getBlock())) {
+                if (levelReader instanceof WorldGenRegion worldGenRegion && !worldGenRegion.getCenter().equals(new ChunkPos(blockInfoGlobal.pos()))) {
                     return blockInfoGlobal;
                 }
-                RandomSource random = structurePlacementData.getRandom(blockInfoGlobal.pos);
+                RandomSource random = structurePlacementData.getRandom(blockInfoGlobal.pos());
                 BlockState newState = replaceWith.chooseRandomState(random);
                 if (copyProperties) {
-                    newState = newState.getBlock().withPropertiesOf(blockInfoGlobal.state);
+                    newState = newState.getBlock().withPropertiesOf(blockInfoGlobal.state());
                 }
-                blockInfoGlobal = new StructureTemplate.StructureBlockInfo(blockInfoGlobal.pos, newState, blockInfoGlobal.nbt);
+                blockInfoGlobal = new StructureTemplate.StructureBlockInfo(blockInfoGlobal.pos(), newState, blockInfoGlobal.nbt());
                 break;
             }
         }

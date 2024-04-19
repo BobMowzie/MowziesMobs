@@ -160,9 +160,8 @@ public enum ClientEventHandler {
             if (Minecraft.getInstance().player != null) {
                 FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(Minecraft.getInstance().player, CapabilityHandler.FROZEN_CAPABILITY);
                 if (frozenCapability != null && frozenCapability.getFrozen() && Minecraft.getInstance().options.getCameraType() == CameraType.FIRST_PERSON) {
-                    RenderSystem.setShaderTexture(0, FROZEN_BLUR);
                     Window res = e.getWindow();
-                    GuiComponent.blit(e.getPoseStack(), 0, 0, 0, 0, res.getGuiScaledWidth(), res.getGuiScaledHeight(), res.getGuiScaledWidth(), res.getGuiScaledHeight());
+                    e.getGuiGraphics().blit(FROZEN_BLUR, 0, 0, 0, 0, res.getGuiScaledWidth(), res.getGuiScaledHeight(), res.getGuiScaledWidth(), res.getGuiScaledHeight());
                 }
             }
         }
@@ -259,14 +258,5 @@ public enum ClientEventHandler {
 
         event.setCanceled(true);
         customBossBar.renderBossBar(event);
-    }
-
-    private void drawBar(PoseStack stack, int x, int y, BossEvent p_93710_) {
-        Minecraft.getInstance().gui.blit(stack, x, y, 0, p_93710_.getColor().ordinal() * 5 * 2, 182, 6);
-        int i = (int)(p_93710_.getProgress() * 183.0F);
-        if (i > 0) {
-            Minecraft.getInstance().gui.blit(stack, x, y, 0, p_93710_.getColor().ordinal() * 5 * 2 + 5, i, 6);
-        }
-
     }
 }

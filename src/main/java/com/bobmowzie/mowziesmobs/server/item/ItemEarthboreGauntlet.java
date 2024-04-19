@@ -37,14 +37,16 @@ import java.util.function.Consumer;
  * Created by BobMowzie on 6/6/2017.
  */
 public class ItemEarthboreGauntlet extends MowzieToolItem implements GeoItem {
-    public String controllerName = "controller";
-    public String controllerIdleName = "controller_idle";
+    public static final String CONTROLLER_NAME = "controller";
+    public static final String CONTROLLER_IDLE_NAME = "controller_idle";
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     private static final RawAnimation IDLE_ANIM = RawAnimation.begin().thenLoop("idle");
     private static final RawAnimation OPEN_ANIM = RawAnimation.begin().thenLoop("open");
     private static final RawAnimation ATTACK_ANIM = RawAnimation.begin().thenPlay("attack");
-    private static final String ATTACK_ANIM_NAME = "attack";
+    public static final String IDLE_ANIM_NAME = "idle";
+    public static final String OPEN_ANIM_NAME = "open";
+    public static final String ATTACK_ANIM_NAME = "attack";
 
     public ItemEarthboreGauntlet(Properties properties) {
         super(-2 + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.toolConfig.attackDamageValue, -4f + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.toolConfig.attackSpeedValue, Tiers.STONE, BlockTags.MINEABLE_WITH_PICKAXE, properties);
@@ -116,8 +118,10 @@ public class ItemEarthboreGauntlet extends MowzieToolItem implements GeoItem {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, controllerIdleName, 3, this::predicateIdle));
-        controllers.add(new AnimationController<>(this, controllerName, 3, state -> PlayState.STOP)
+        controllers.add(new AnimationController<>(this, CONTROLLER_IDLE_NAME, 3, this::predicateIdle));
+        controllers.add(new AnimationController<>(this, CONTROLLER_NAME, 3, state -> PlayState.STOP)
+                .triggerableAnim(IDLE_ANIM_NAME, IDLE_ANIM)
+                .triggerableAnim(OPEN_ANIM_NAME, OPEN_ANIM)
                 .triggerableAnim(ATTACK_ANIM_NAME, ATTACK_ANIM));
     }
 

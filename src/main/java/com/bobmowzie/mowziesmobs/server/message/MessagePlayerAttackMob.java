@@ -40,7 +40,7 @@ public class MessagePlayerAttackMob {
             final ServerPlayer player = context.getSender();
             context.enqueueWork(() -> {
                 if (player != null) {
-                    Entity entity = player.level.getEntity(message.entityID);
+                    Entity entity = player.level().getEntity(message.entityID);
                     if (entity != null) player.attack(entity);
                 }
             });

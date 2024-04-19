@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.advancement;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.resources.ResourceLocation;
@@ -22,7 +23,7 @@ public class GrottolKillSilkTouchTrigger extends MMTrigger<AbstractCriterionTrig
 
     @Override
     public AbstractCriterionTriggerInstance createInstance(JsonObject object, DeserializationContext conditions) {
-        EntityPredicate.Composite player = EntityPredicate.Composite.fromJson(object, "player", conditions);
+        ContextAwarePredicate player = EntityPredicate.fromJson(object, "player", conditions);
         return new GrottolKillSilkTouchTrigger.Instance(player);
     }
 
@@ -51,7 +52,7 @@ public class GrottolKillSilkTouchTrigger extends MMTrigger<AbstractCriterionTrig
     }
 
     public static class Instance extends AbstractCriterionTriggerInstance {
-        public Instance(EntityPredicate.Composite player) {
+        public Instance(ContextAwarePredicate player) {
             super(GrottolKillSilkTouchTrigger.ID, player);
         }
     }

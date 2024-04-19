@@ -27,7 +27,7 @@ public class ItemWroughtHelm extends MowzieArmorItem {
     private static final WroughtHelmMaterial ARMOR_WROUGHT_HELM = new WroughtHelmMaterial();
 
     public ItemWroughtHelm(Item.Properties properties) {
-        super(ARMOR_WROUGHT_HELM, EquipmentSlot.HEAD, properties);
+        super(ARMOR_WROUGHT_HELM, Type.HELMET, properties);
     }
 
     @Override
@@ -81,12 +81,12 @@ public class ItemWroughtHelm extends MowzieArmorItem {
     private static class WroughtHelmMaterial implements ArmorMaterial {
 
         @Override
-        public int getDurabilityForSlot(EquipmentSlot equipmentSlotType) {
-            return ArmorMaterials.IRON.getDurabilityForSlot(equipmentSlotType);
+        public int getDurabilityForType(Type equipmentSlotType) {
+            return ArmorMaterials.IRON.getDurabilityForType(equipmentSlotType);
         }
 
         @Override
-        public int getDefenseForSlot(EquipmentSlot equipmentSlotType) {
+        public int getDefenseForType(Type equipmentSlotType) {
             return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorConfig.damageReductionValue;
         }
 

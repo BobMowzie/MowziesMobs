@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.config;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterials;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
@@ -241,7 +242,7 @@ public final class ConfigHandler {
 
         public final IntValue damageReduction;
         
-        public int damageReductionValue = ArmorMaterials.IRON.getDefenseForSlot(EquipmentSlot.HEAD);
+        public int damageReductionValue = ArmorMaterials.IRON.getDefenseForType(ArmorItem.Type.HELMET);
         public float toughnessValue = ArmorMaterials.IRON.getToughness();
 
         public final DoubleValue toughness;
@@ -486,7 +487,7 @@ public final class ConfigHandler {
     public static class WroughtHelm {
         WroughtHelm(final ForgeConfigSpec.Builder builder) {
             builder.push("wrought_helm");
-            armorConfig = new ArmorConfig(builder, ArmorMaterials.IRON.getDefenseForSlot(EquipmentSlot.HEAD), ArmorMaterials.IRON.getToughness());
+            armorConfig = new ArmorConfig(builder, ArmorMaterials.IRON.getDefenseForType(ArmorItem.Type.HELMET), ArmorMaterials.IRON.getToughness());
             breakable = builder.comment("Set to true for the Wrought Helm to have limited durability.")
                     .translation(LANG_PREFIX + "breakable")
                     .define("breakable", false);
@@ -516,7 +517,7 @@ public final class ConfigHandler {
     public static class SolVisage {
         SolVisage(final ForgeConfigSpec.Builder builder) {
             builder.push("sol_visage");
-            armorConfig = new ArmorConfig(builder, ArmorMaterials.GOLD.getDefenseForSlot(EquipmentSlot.HEAD), ArmorMaterials.GOLD.getToughness());
+            armorConfig = new ArmorConfig(builder, ArmorMaterials.GOLD.getDefenseForType(ArmorItem.Type.HELMET), ArmorMaterials.GOLD.getToughness());
             breakable = builder.comment("Set to true for the Sol Visage to have limited durability.")
                     .translation(LANG_PREFIX + "breakable")
                     .define("breakable", false);
@@ -531,7 +532,7 @@ public final class ConfigHandler {
     public static class UmvuthanaMask {
         UmvuthanaMask(final ForgeConfigSpec.Builder builder) {
             builder.push("umvuthana_mask");
-            armorConfig = new ArmorConfig(builder, ArmorMaterials.LEATHER.getDefenseForSlot(EquipmentSlot.HEAD), ArmorMaterials.LEATHER.getToughness());
+            armorConfig = new ArmorConfig(builder, ArmorMaterials.LEATHER.getDefenseForType(ArmorItem.Type.HELMET), ArmorMaterials.LEATHER.getToughness());
             builder.pop();
         }
 

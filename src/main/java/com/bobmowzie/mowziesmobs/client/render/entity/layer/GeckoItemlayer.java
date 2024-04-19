@@ -58,7 +58,7 @@ public class GeckoItemlayer<T extends MowzieGeckoEntity> extends GeoRenderLayer<
 
         if(bone.getName().equals(this.boneName) && !bone.isHidden()){
             poseStack.scale(1.5f,1.5f,1.5f);
-            Minecraft.getInstance().getItemRenderer().renderStatic(this.renderedItem, ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND,
+            Minecraft.getInstance().getItemRenderer().renderStatic(this.renderedItem, ItemDisplayContext.THIRD_PERSON_RIGHT_HAND,
                     packedLight, packedOverlay, poseStack, buffer, entity.getId());
         }
 

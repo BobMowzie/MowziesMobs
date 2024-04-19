@@ -165,7 +165,7 @@ public class ParticleVanillaCloudExtended extends TextureSheetParticle {
         @SuppressWarnings("deprecation")
         @Override
         public String writeToString() {
-            return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %.2f %.2f", Registry.PARTICLE_TYPE.getKey(this.getType()),
+            return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %.2f %.2f", ForgeRegistries.PARTICLE_TYPES.getKey(this.getType()),
                     this.scale, this.red, this.green, this.blue, this.drag, this.duration);
         }
 

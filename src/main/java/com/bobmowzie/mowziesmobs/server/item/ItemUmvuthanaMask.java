@@ -53,7 +53,7 @@ public class ItemUmvuthanaMask extends MowzieArmorItem implements UmvuthanaMask,
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     public ItemUmvuthanaMask(MaskType type, Item.Properties properties) {
-        super(UMVUTHANA_MASK_MATERIAL, EquipmentSlot.HEAD, properties);
+        super(UMVUTHANA_MASK_MATERIAL, Type.HELMET, properties);
         this.type = type;
     }
 

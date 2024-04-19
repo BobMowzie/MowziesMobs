@@ -23,7 +23,7 @@ public final class PotionTypeHandler {
     public static final RegistryObject<Potion> LONG_POISON_RESIST = REG.register("long_poison_resist", () -> new Potion("long_poison_resist", new MobEffectInstance(EffectHandler.POISON_RESIST.get(), 9600)));
     
     public static void init() {
-        PotionBrewing.addMix(Potions.AWKWARD, ItemHandler.NAGA_FANG, POISON_RESIST.get());
+        PotionBrewing.addMix(Potions.AWKWARD, ItemHandler.NAGA_FANG.get(), POISON_RESIST.get());
         PotionBrewing.addMix(POISON_RESIST.get(), Items.REDSTONE, LONG_POISON_RESIST.get());
     }
 }

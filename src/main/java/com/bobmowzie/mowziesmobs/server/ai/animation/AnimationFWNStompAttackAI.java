@@ -18,7 +18,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 
 import java.util.List;
@@ -68,7 +67,7 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                             }
                             float applyKnockbackResistance = 0;
                             if (entity instanceof LivingEntity) {
-                                entity.hurt(DamageSource.mobAttack(this.entity), (factor * 5 + 1) * ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.combatConfig.attackMultiplier.get().floatValue());
+                                entity.hurt(entity.damageSources().mobAttack(this.entity), (factor * 5 + 1) * ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.combatConfig.attackMultiplier.get().floatValue());
                                 applyKnockbackResistance = (float) ((LivingEntity) entity).getAttribute(Attributes.KNOCKBACK_RESISTANCE).getValue();
                             }
                             double magnitude = world.random.nextDouble() * 0.15 + 0.1;
@@ -89,7 +88,7 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                         BlockPos abovePos = new BlockPos(pos).above();
                         BlockState block = world.getBlockState(pos);
                         BlockState blockAbove = world.getBlockState(abovePos);
-                        if (block.getMaterial() != Material.AIR && block.isRedstoneConductor(world, pos) && !block.hasBlockEntity() && !blockAbove.getMaterial().blocksMotion()) {
+                        if (!block.isAir() && block.isRedstoneConductor(world, pos) && !block.hasBlockEntity() && !blockAbove.blocksMotion()) {
                             EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK.get(), world, block, (float) (0.4 + factor * 0.2));
                             fallingBlock.setPos(hitX + 0.5, hitY + 1, hitZ + 0.5);
                             world.addFreshEntity(fallingBlock);

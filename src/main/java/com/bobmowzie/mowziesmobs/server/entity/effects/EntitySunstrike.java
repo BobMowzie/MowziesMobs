@@ -213,8 +213,8 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                     damageFire *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier.get();
                     damageMob *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier.get();
                 }
-                if (entity.hurt(DamageSource.indirectMobAttack(this, caster), damageMob)) entity.invulnerableTime = 0;
-                if (entity.hurt(DamageSource.ON_FIRE, damageFire)) {
+                if (entity.hurt(damageSources().mobProjectile(this, caster), damageMob)) entity.invulnerableTime = 0;
+                if (entity.hurt(damageSources().onFire(), damageFire)) {
                     entity.setSecondsOnFire(3);
                 }
             }
@@ -269,11 +269,6 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     public void addAdditionalSaveData(CompoundTag compound) {
         compound.putInt("strikeTime", strikeTime);
         compound.putLong("variant", getVariant());
-    }
-
-    @Override
-    public Packet<?> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override

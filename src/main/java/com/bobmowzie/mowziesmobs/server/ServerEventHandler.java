@@ -33,8 +33,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
@@ -55,8 +58,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
@@ -216,8 +219,8 @@ public final class ServerEventHandler {
         LivingEntity livingEntity = event.getEntity();
         if (source == null || livingEntity == null) return;
         float damage = event.getAmount();
-        if (!source.isBypassMagic()) {
-            if (livingEntity.hasEffect(EffectHandler.SUNBLOCK.get()) && source != DamageSource.OUT_OF_WORLD) {
+        if (!source.is(DamageTypeTags.BYPASSES_RESISTANCE)) {
+            if (livingEntity.hasEffect(EffectHandler.SUNBLOCK.get()) && !source.is(DamageTypes.FELL_OUT_OF_WORLD)) {
                 int i = (livingEntity.getEffect(EffectHandler.SUNBLOCK.get()).getAmplifier() + 2) * 5;
                 int j = 25 - i;
                 float f = damage * (float)j;
@@ -234,7 +237,7 @@ public final class ServerEventHandler {
             }
         }
 
-        if (event.getSource().isFire()) {
+        if (event.getSource().is(DamageTypeTags.IS_FIRE)) {
             event.getEntity().removeEffectNoUpdate(EffectHandler.FROZEN.get());
             MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageFreezeEffect(event.getEntity(), false));
             FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(event.getEntity(), CapabilityHandler.FROZEN_CAPABILITY);
@@ -368,7 +371,8 @@ public final class ServerEventHandler {
 
         BlockState block = event.getState();
         if (block.getBlock() == Blocks.GOLD_BLOCK ||
-            block.getMaterial() == Material.WOOD ||
+            block.is(BlockTags.PLANKS) ||
+            block.is(BlockTags.LOGS) ||
             block.is(BlockTags.LEAVES) ||
             block.getBlock() == Blocks.LIGHT_GRAY_TERRACOTTA ||
             block.getBlock() == Blocks.RED_TERRACOTTA ||
@@ -385,11 +389,11 @@ public final class ServerEventHandler {
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Entity startEntity, Class<T> entityClass, double r) {
-        return startEntity.level.getEntitiesOfClass(entityClass, startEntity.getBoundingBox().inflate(r, r, r), e -> e != startEntity && startEntity.distanceTo(e) <= r);
+        return startEntity.level().getEntitiesOfClass(entityClass, startEntity.getBoundingBox().inflate(r, r, r), e -> e != startEntity && startEntity.distanceTo(e) <= r);
     }
 
     private List<LivingEntity> getEntityBaseNearby(LivingEntity user, double distanceX, double distanceY, double distanceZ, double radius) {
-        List<Entity> list = user.level.getEntities(user, user.getBoundingBox().inflate(distanceX, distanceY, distanceZ));
+        List<Entity> list = user.level().getEntities(user, user.getBoundingBox().inflate(distanceX, distanceY, distanceZ));
         ArrayList<LivingEntity> nearEntities = list.stream().filter(entityNeighbor -> entityNeighbor instanceof LivingEntity && user.distanceTo(entityNeighbor) <= radius).map(entityNeighbor -> (LivingEntity) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
         return nearEntities;
     }
@@ -462,7 +466,7 @@ public final class ServerEventHandler {
         }
 
         Player player = event.getEntity();
-        if (player.level.getBlockState(event.getPos()).getBlock() instanceof ChestBlock) {
+        if (player.level().getBlockState(event.getPos()).getBlock() instanceof ChestBlock) {
             aggroUmvuthana(player);
         }
 
@@ -484,7 +488,7 @@ public final class ServerEventHandler {
                     AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getEntity(), AbilityHandler.SUNSTRIKE_ABILITY);
                 }
             }
-            if (player.level.getBlockState(event.getPos()).getMenuProvider(player.level, event.getPos()) != null) {
+            if (player.level().getBlockState(event.getPos()).getMenuProvider(player.level(), event.getPos()) != null) {
                 player.resetAttackStrengthTicker();
                 return;
             }
@@ -500,7 +504,7 @@ public final class ServerEventHandler {
         double range = 6.5;
         Player player = event.getEntity();
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
-        if (player.getMainHandItem() != null && player.getMainHandItem().getItem() == ItemHandler.SPEAR) {
+        if (player.getMainHandItem() != null && player.getMainHandItem().getItem() == ItemHandler.SPEAR.get()) {
             LivingEntity entityHit = ItemSpear.raytraceEntities(player.getCommandSenderWorld(), player, range);
             if (entityHit != null) {
                 MowziesMobs.NETWORK.sendToServer(new MessagePlayerAttackMob(entityHit));
@@ -599,7 +603,7 @@ public final class ServerEventHandler {
             return;
         }
 
-        if (event.getEntity() instanceof Player) {
+        if (event.getEntity() != null) {
             AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(event.getEntity());
             if (abilityCapability != null && event.isCancelable() && abilityCapability.attackingPrevented()) {
                 event.setCanceled(true);
@@ -627,7 +631,7 @@ public final class ServerEventHandler {
 
                 if (!(event.getTarget() instanceof LivingEntity)) return;
                 if (event.getTarget() instanceof EntityUmvuthanaFollowerToPlayer) return;
-                if (!event.getEntity().level.isClientSide()) {
+                if (!event.getEntity().level().isClientSide()) {
                     for (int i = 0; i < playerCapability.getPackSize(); i++) {
                         EntityUmvuthanaFollowerToPlayer barakoa = playerCapability.getTribePack().get(i);
                         LivingEntity living = (LivingEntity) event.getTarget();
@@ -657,15 +661,15 @@ public final class ServerEventHandler {
                     target.playSound(MMSounds.ENTITY_NAGA_ACID_HIT.get(), 1f, 1.2f);
                     AbilityHandler.INSTANCE.sendAbilityMessage(attacker, AbilityHandler.BACKSTAB_ABILITY);
 
-                    if (target.level.isClientSide() && target != null && attacker != null) {
+                    if (target.level().isClientSide() && target != null && attacker != null) {
                         Vec3 ringOffset = attacker.getLookAngle().scale(-target.getBbWidth() / 2.f);
                         ParticleRotation.OrientVector rotation = new ParticleRotation.OrientVector(ringOffset);
                         Vec3 pos = target.position().add(0, target.getBbHeight() / 2f, 0).add(ringOffset);
-                        AdvancedParticleBase.spawnParticle(target.level, ParticleHandler.RING_SPARKS.get(), pos.x(), pos.y(), pos.z(), 0, 0, 0, rotation, 3.5F, 0.83f, 1, 0.39f, 1, 1, 6, false, true, new ParticleComponent[]{
+                        AdvancedParticleBase.spawnParticle(target.level(), ParticleHandler.RING_SPARKS.get(), pos.x(), pos.y(), pos.z(), 0, 0, 0, rotation, 3.5F, 0.83f, 1, 0.39f, 1, 1, 6, false, true, new ParticleComponent[]{
                                 new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, new ParticleComponent.KeyTrack(new float[]{1f, 1f, 0f}, new float[]{0f, 0.5f, 1f}), false),
                                 new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0f, 15f), false)
                         });
-                        RandomSource rand = attacker.level.getRandom();
+                        RandomSource rand = attacker.level().getRandom();
                         float explodeSpeed = 2.5f;
                         for (int i = 0; i < 10; i++) {
                             Vec3 particlePos = new Vec3(rand.nextFloat() * 0.25, 0, 0);
@@ -673,7 +677,7 @@ public final class ServerEventHandler {
                             particlePos = particlePos.xRot((float) (rand.nextFloat() * 2 * Math.PI));
                             double value = rand.nextFloat() * 0.1f;
                             double life = rand.nextFloat() * 8f + 15f;
-                            ParticleVanillaCloudExtended.spawnVanillaCloud(target.level, pos.x(), pos.y(), pos.z(), particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 1, 0.25d + value, 0.75d + value, 0.25d + value, 0.6, life);
+                            ParticleVanillaCloudExtended.spawnVanillaCloud(target.level(), pos.x(), pos.y(), pos.z(), particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 1, 0.25d + value, 0.75d + value, 0.25d + value, 0.6, life);
                         }
                         for (int i = 0; i < 10; i++) {
                             Vec3 particlePos = new Vec3(rand.nextFloat() * 0.25, 0, 0);
@@ -681,7 +685,7 @@ public final class ServerEventHandler {
                             particlePos = particlePos.xRot((float) (rand.nextFloat() * 2 * Math.PI));
                             double value = rand.nextFloat() * 0.1f;
                             double life = rand.nextFloat() * 2.5f + 5f;
-                            AdvancedParticleBase.spawnParticle(target.level, ParticleHandler.PIXEL.get(), pos.x(), pos.y(), pos.z(), particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, true, 0, 0, 0, 0, 3f, 0.07d + value, 0.25d + value, 0.07d + value, 1d, 0.6, life * 0.95, false, true);
+                            AdvancedParticleBase.spawnParticle(target.level(), ParticleHandler.PIXEL.get(), pos.x(), pos.y(), pos.z(), particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, true, 0, 0, 0, 0, 3f, 0.07d + value, 0.25d + value, 0.07d + value, 1d, 0.6, life * 0.95, false, true);
                         }
                         for (int i = 0; i < 6; i++) {
                             Vec3 particlePos = new Vec3(rand.nextFloat() * 0.25, 0, 0);
@@ -689,13 +693,13 @@ public final class ServerEventHandler {
                             particlePos = particlePos.xRot((float) (rand.nextFloat() * 2 * Math.PI));
                             double value = rand.nextFloat() * 0.1f;
                             double life = rand.nextFloat() * 5f + 10f;
-                            AdvancedParticleBase.spawnParticle(target.level, ParticleHandler.BUBBLE.get(), pos.x(), pos.y(), pos.z(), particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, true, 0, 0, 0, 0, 3f, 0.25d + value, 0.75d + value, 0.25d + value, 1d, 0.6, life * 0.95, false, true);
+                            AdvancedParticleBase.spawnParticle(target.level(), ParticleHandler.BUBBLE.get(), pos.x(), pos.y(), pos.z(), particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, true, 0, 0, 0, 0, 3f, 0.25d + value, 0.75d + value, 0.25d + value, 1d, 0.6, life * 0.95, false, true);
                         }
                     }
                 }
             }
             else if (weapon.getItem() instanceof ItemSpear) {
-                if (target instanceof Animal && target.getMaxHealth() <= 30 && attacker.level.getRandom().nextFloat() <= 0.334) {
+                if (target instanceof Animal && target.getMaxHealth() <= 30 && attacker.level().getRandom().nextFloat() <= 0.334) {
                     event.setResult(Event.Result.ALLOW);
                     event.setDamageModifier(400);
                 }
@@ -751,7 +755,7 @@ public final class ServerEventHandler {
     }
 
     private void cheatSculptor(Player player) {
-        List<EntitySculptor> sculptors = player.level.getEntitiesOfClass(EntitySculptor.class, player.getBoundingBox().inflate(EntitySculptor.TEST_RADIUS + 3, EntitySculptor.TEST_HEIGHT, EntitySculptor.TEST_RADIUS + 3), EntitySculptor::isTesting);
+        List<EntitySculptor> sculptors = player.level().getEntitiesOfClass(EntitySculptor.class, player.getBoundingBox().inflate(EntitySculptor.TEST_RADIUS + 3, EntitySculptor.TEST_HEIGHT, EntitySculptor.TEST_RADIUS + 3), EntitySculptor::isTesting);
         for (EntitySculptor sculptor : sculptors) {
             sculptor.playerCheated();
         }

@@ -30,7 +30,7 @@ import java.util.Optional;
  * Created by BobMowzie on 7/8/2018.
  */
 public class EntityBlockSwapper extends Entity {
-    private static final EntityDataAccessor<Optional<BlockState>> ORIG_BLOCK_STATE = SynchedEntityData.defineId(EntityBlockSwapper.class, EntityDataSerializers.BLOCK_STATE);
+    private static final EntityDataAccessor<BlockState> ORIG_BLOCK_STATE = SynchedEntityData.defineId(EntityBlockSwapper.class, EntityDataSerializers.BLOCK_STATE);
     private static final EntityDataAccessor<Integer> RESTORE_TIME = SynchedEntityData.defineId(EntityBlockSwapper.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<BlockPos> POS = SynchedEntityData.defineId(EntityBlockSwapper.class, EntityDataSerializers.BLOCK_POS);
     protected int duration;
@@ -85,7 +85,7 @@ public class EntityBlockSwapper extends Entity {
 
     @Override
     protected void defineSynchedData() {
-        getEntityData().define(ORIG_BLOCK_STATE, Optional.of(Blocks.DIRT.defaultBlockState()));
+        getEntityData().define(ORIG_BLOCK_STATE, Blocks.DIRT.defaultBlockState());
         getEntityData().define(RESTORE_TIME, 20);
         getEntityData().define(POS, new BlockPos(0, 0, 0));
     }
@@ -149,8 +149,8 @@ public class EntityBlockSwapper extends Entity {
 
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
-        Optional<BlockState> blockOption = getEntityData().get(ORIG_BLOCK_STATE);
-        blockOption.ifPresent(blockState -> compound.put("block", NbtUtils.writeBlockState(blockState)));
+        BlockState blockState = getEntityData().get(ORIG_BLOCK_STATE);
+        compound.put("block", NbtUtils.writeBlockState(blockState));
         compound.putInt("restoreTime", getRestoreTime());
         compound.putInt("storePosX", getStorePos().getX());
         compound.putInt("storePosY", getStorePos().getY());

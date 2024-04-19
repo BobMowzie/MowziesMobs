@@ -224,7 +224,7 @@ public class ParticleOrb extends TextureSheetParticle {
         @SuppressWarnings("deprecation")
         @Override
         public String writeToString() {
-            return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %d", Registry.PARTICLE_TYPE.getKey(this.getType()),
+            return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %d", ForgeRegistries.PARTICLE_TYPES.getKey(this.getType()),
                     this.r, this.g, this.b, this.scale, this.duration);
         }
 

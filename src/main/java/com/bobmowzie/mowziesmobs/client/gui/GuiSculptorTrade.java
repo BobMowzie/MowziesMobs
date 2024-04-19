@@ -8,6 +8,7 @@ import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.message.MessageSculptorTrade;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -31,7 +32,7 @@ public final class GuiSculptorTrade extends AbstractContainerScreen<ContainerScu
 
     private final InventorySculptor inventory;
 
-    private final ItemStack output = new ItemStack(ItemHandler.EARTHBORE_GAUNTLET);
+    private final ItemStack output = new ItemStack(ItemHandler.EARTHBORE_GAUNTLET.get());
 
     private Button beginButton;
 
@@ -58,12 +59,11 @@ public final class GuiSculptorTrade extends AbstractContainerScreen<ContainerScu
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack, float partialTicks, int x, int y) {
+    protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int x, int y) {
         RenderSystem.colorMask(true, true, true, true);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, TEXTURE_TRADE);
-        blit(matrixStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        guiGraphics.blit(TEXTURE_TRADE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
         InventoryScreen.renderEntityInInventory(leftPos + 33, topPos + 56, 14, 0, 0, sculptor);
     }
 

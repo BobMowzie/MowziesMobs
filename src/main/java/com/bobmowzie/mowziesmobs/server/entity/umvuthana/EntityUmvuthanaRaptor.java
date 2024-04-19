@@ -71,7 +71,7 @@ public class EntityUmvuthanaRaptor extends EntityUmvuthana implements LeaderSuns
                 EntityUmvuthanaFollowerToRaptor hunter = pack.get(i);
                 if (hunter.getTarget() == null) {
                     hunter.getNavigation().moveTo(getX() + packRadius * Mth.cos(theta * i), getY(), getZ() + packRadius * Mth.sin(theta * i), 0.45);
-                    if (distanceTo(hunter) > 20 && onGround) {
+                    if (distanceTo(hunter) > 20 && onGround()) {
                         hunter.setPos(getX() + packRadius * Mth.cos(theta * i), getY(), getZ() + packRadius * Mth.sin(theta * i));
                     }
                 }
@@ -189,7 +189,7 @@ public class EntityUmvuthanaRaptor extends EntityUmvuthana implements LeaderSuns
             this.discard() ;
         } else if (!this.isPersistenceRequired() && !this.requiresCustomPersistence()) {
             Entity entity = this.level().getNearestPlayer(this, -1.0D);
-            net.minecraftforge.eventbus.api.Event.Result result = net.minecraftforge.event.ForgeEventFactory.canEntityDespawn(this);
+            net.minecraftforge.eventbus.api.Event.Result result = net.minecraftforge.event.ForgeEventFactory.canEntityDespawn(this, (ServerLevelAccessor) level());
             if (result == net.minecraftforge.eventbus.api.Event.Result.DENY) {
                 noActionTime = 0;
                 entity = null;
@@ -221,7 +221,7 @@ public class EntityUmvuthanaRaptor extends EntityUmvuthana implements LeaderSuns
             this.discard();
         } else if (!this.isPersistenceRequired() && !this.requiresCustomPersistence()) {
             Entity entity = this.level().getNearestPlayer(this, -1.0D);
-            net.minecraftforge.eventbus.api.Event.Result result = net.minecraftforge.event.ForgeEventFactory.canEntityDespawn(this);
+            net.minecraftforge.eventbus.api.Event.Result result = net.minecraftforge.event.ForgeEventFactory.canEntityDespawn(this, (ServerLevelAccessor) this.level());
             if (result == net.minecraftforge.eventbus.api.Event.Result.DENY) {
                 noActionTime = 0;
                 entity = null;

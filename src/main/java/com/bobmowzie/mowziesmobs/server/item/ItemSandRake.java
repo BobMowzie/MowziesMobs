@@ -46,10 +46,10 @@ public class ItemSandRake extends Item {
                 BlockPlaceContext blockPlaceContext = new BlockPlaceContext(player, context.getHand(), context.getItemInHand(), new BlockHitResult(context.getClickLocation(), context.getClickedFace(), context.getClickedPos(), context.isInside()));
                 RakedSandBlock origBlock = null;
                 if (blockstate.is(Tags.Blocks.SAND_COLORLESS)) {
-                    origBlock = BlockHandler.RAKED_SAND.get();
+                    origBlock = (RakedSandBlock) BlockHandler.RAKED_SAND.get();
                 }
                 else if (blockstate.is(Tags.Blocks.SAND_RED)) {
-                    origBlock = BlockHandler.RED_RAKED_SAND.get();
+                    origBlock = (RakedSandBlock) BlockHandler.RED_RAKED_SAND.get();
                 }
 
                 if (origBlock != null) {

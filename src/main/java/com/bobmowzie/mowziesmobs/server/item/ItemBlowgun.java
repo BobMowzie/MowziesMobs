@@ -18,7 +18,7 @@ import java.util.function.Predicate;
 
 public class ItemBlowgun extends BowItem {
     public static final Predicate<ItemStack> DARTS = (p_220002_0_) -> {
-        return p_220002_0_.getItem() == ItemHandler.DART;
+        return p_220002_0_.getItem() == ItemHandler.DART.get();
     };
 
     public ItemBlowgun(Item.Properties properties) {

@@ -28,7 +28,7 @@ public class MessagePlayerSummonSunstrike {
         Vec3 pos = entity.getEyePosition(0);
         Vec3 segment = entity.getLookAngle();
         segment = pos.add(segment.x * reach, segment.y * reach, segment.z * reach);
-        return entity.level.clip(new ClipContext(pos, segment, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity));
+        return entity.level().clip(new ClipContext(pos, segment, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity));
     }
 
     public static void serialize(final MessagePlayerSummonSunstrike message, final FriendlyByteBuf buf) {
@@ -48,9 +48,9 @@ public class MessagePlayerSummonSunstrike {
                 BlockHitResult raytrace = rayTrace(player, REACH);
                 if (raytrace.getType() == HitResult.Type.BLOCK && raytrace.getDirection() == Direction.UP && player.getInventory().getSelected().isEmpty() && player.hasEffect(EffectHandler.SUNS_BLESSING.get())) {
                     BlockPos hit = raytrace.getBlockPos();
-                    EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE.get(), player.level, player, hit.getX(), hit.getY(), hit.getZ());
+                    EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE.get(), player.level(), player, hit.getX(), hit.getY(), hit.getZ());
                     sunstrike.onSummon();
-                    player.level.addFreshEntity(sunstrike);
+                    player.level().addFreshEntity(sunstrike);
                 }
             });
             context.setPacketHandled(true);

@@ -14,6 +14,7 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -71,11 +72,11 @@ public class ClientEventBusSubscriber {
     @SubscribeEvent
     public static void onRegisterModels(ModelEvent.RegisterAdditional modelRegistryEvent) {
         for (String item : MMModels.HAND_MODEL_ITEMS) {
-        	modelRegistryEvent.register(new ModelResourceLocation(MowziesMobs.MODID + ":" + item + "_in_hand", "inventory"));
+        	modelRegistryEvent.register(new ModelResourceLocation(new ResourceLocation(MowziesMobs.MODID, item + "_in_hand"), "inventory"));
         }
         for (MaskType type : MaskType.values()) {
-        	modelRegistryEvent.register(new ModelResourceLocation(MowziesMobs.MODID + ":umvuthana_mask_" + type.name + "_frame", "inventory"));
+        	modelRegistryEvent.register(new ModelResourceLocation(new ResourceLocation(MowziesMobs.MODID,"umvuthana_mask_" + type.name + "_frame"), "inventory"));
         }
-        modelRegistryEvent.register(new ModelResourceLocation(MowziesMobs.MODID + ":sol_visage_frame", "inventory"));
+        modelRegistryEvent.register(new ModelResourceLocation(new ResourceLocation(MowziesMobs.MODID, "sol_visage_frame"), "inventory"));
     }
 }

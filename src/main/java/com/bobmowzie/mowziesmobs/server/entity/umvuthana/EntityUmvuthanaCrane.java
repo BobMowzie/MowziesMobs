@@ -8,10 +8,13 @@ import com.bobmowzie.mowziesmobs.server.item.UmvuthanaMask;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
@@ -222,7 +225,7 @@ public class EntityUmvuthanaCrane extends EntityUmvuthanaMinion {
             if (world.hasChunkAt(blockpos)) {
                 BlockPos blockpos1 = blockpos.below();
                 BlockState blockstate = world.getBlockState(blockpos1);
-                return blockstate.getMaterial().isSolid() && blockstate.blocksMotion() && world.noCollision(aabb);
+                return blockstate.isSolid() && blockstate.blocksMotion() && world.noCollision(aabb);
             }
             return false;
         }
@@ -266,7 +269,7 @@ public class EntityUmvuthanaCrane extends EntityUmvuthanaMinion {
     @Override
     public boolean isInvulnerableTo(DamageSource source) {
         boolean teleporting = getActiveAbilityType() == TELEPORT_ABILITY && getAnimationTick() <= 16;
-        return super.isInvulnerableTo(source) || ((!active || teleporting || !hasTriedOrSucceededTeleport) && source != DamageSource.OUT_OF_WORLD && timeUntilDeath != 0);
+        return super.isInvulnerableTo(source) || ((!active || teleporting || !hasTriedOrSucceededTeleport) && !source.is(DamageTypes.FELL_OUT_OF_WORLD) && timeUntilDeath != 0);
     }
 
     @Override

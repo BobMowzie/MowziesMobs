@@ -7,22 +7,22 @@ import com.bobmowzie.mowziesmobs.server.ability.*;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import software.bernie.geckolib3.core.GeoEntity;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.RawAnimation;
-import software.bernie.geckolib3.core.event.predicate.AnimationState;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
 
 public class BoulderRollAbility extends PlayerAbility {
     private static int START_UP = 15;
     float spinAmount = 0;
+
+    private RawAnimation ROLL_ANIM = RawAnimation.begin().thenLoop("boulder_roll_loop_still");
 
     public BoulderRollAbility(AbilityType<Player, ? extends Ability> abilityType, Player user) {
         super(abilityType, user,  new AbilitySection[] {
                 new AbilitySection.AbilitySectionInfinite(AbilitySection.AbilitySectionType.ACTIVE)
         });
     }
-
-
 
     @Override
     protected void beginSection(AbilitySection section) {
@@ -31,9 +31,9 @@ public class BoulderRollAbility extends PlayerAbility {
 
     @Override
     public <E extends GeoEntity> PlayState animationPredicate(AnimationState<E> e, GeckoPlayer.Perspective perspective) {
-        e.getController().transitionLengthTicks = 0;
+        e.getController().transitionLength(0);
         if (perspective == GeckoPlayer.Perspective.THIRD_PERSON) {
-            e.getController().setAnimation(RawAnimation.begin().addAnimation("boulder_roll_loop_still", true));
+            e.getController().setAnimation(ROLL_ANIM);
         }
         return PlayState.CONTINUE;
     }
@@ -70,7 +70,7 @@ public class BoulderRollAbility extends PlayerAbility {
 
     @Override
     public boolean canUse() {
-        if (getUser() instanceof Player && !((Player)getUser()).getInventory().getSelected().isEmpty()) return false;
+        if (getUser() != null && !getUser().getInventory().getSelected().isEmpty()) return false;
         return getUser().hasEffect(EffectHandler.GEOMANCY.get()) && getUser().isSprinting() && super.canUse();
     }
 

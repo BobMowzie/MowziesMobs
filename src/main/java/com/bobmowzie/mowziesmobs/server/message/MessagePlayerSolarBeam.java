@@ -32,9 +32,9 @@ public class MessagePlayerSolarBeam {
             final NetworkEvent.Context context = contextSupplier.get();
             final ServerPlayer player = context.getSender();
             context.enqueueWork(() -> {
-                EntitySolarBeam solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM.get(), player.level, player, player.getX(), player.getY() + 1.2f, player.getZ(), (float) ((player.yHeadRot + 90) * Math.PI / 180), (float) (-player.getXRot() * Math.PI / 180), 55);
+                EntitySolarBeam solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM.get(), player.level(), player, player.getX(), player.getY() + 1.2f, player.getZ(), (float) ((player.yHeadRot + 90) * Math.PI / 180), (float) (-player.getXRot() * Math.PI / 180), 55);
                 solarBeam.setHasPlayer(true);
-                player.level.addFreshEntity(solarBeam);
+                player.level().addFreshEntity(solarBeam);
                 player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 2, false, false));
                 int duration = player.getEffect(EffectHandler.SUNS_BLESSING.get()).getDuration();
                 player.removeEffect(EffectHandler.SUNS_BLESSING.get());

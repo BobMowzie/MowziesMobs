@@ -39,9 +39,4 @@ public class TestEntity extends Entity {
     protected void addAdditionalSaveData(CompoundTag p_20139_) {
 
     }
-
-    @Override
-    public Packet<?> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
 }

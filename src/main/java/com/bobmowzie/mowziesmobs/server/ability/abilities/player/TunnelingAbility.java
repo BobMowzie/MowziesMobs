@@ -22,6 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
@@ -32,10 +33,11 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib3.core.GeoEntity;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.RawAnimation;
-import software.bernie.geckolib3.core.event.predicate.AnimationState;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
 
 import java.util.List;
 
@@ -68,18 +70,18 @@ public class TunnelingAbility extends PlayerAbility {
 
     public void playGauntletAnimation() {
         if (getUser() != null) {
-            if (gauntletStack != null && gauntletStack.getItem() == ItemHandler.EARTHBORE_GAUNTLET) {
+            if (gauntletStack != null && gauntletStack.getItem() == ItemHandler.EARTHBORE_GAUNTLET.get()) {
                 Player player = (Player) getUser();
-                ItemHandler.EARTHBORE_GAUNTLET.playAnimation(player, gauntletStack, ItemEarthboreGauntlet.ANIM_OPEN);
+                ItemHandler.EARTHBORE_GAUNTLET.get().triggerAnim(player, GeoItem.getOrAssignId(gauntletStack, (ServerLevel) player.level()), ItemEarthboreGauntlet.CONTROLLER_NAME, ItemEarthboreGauntlet.OPEN_ANIM_NAME);
             }
         }
     }
 
     public void stopGauntletAnimation() {
         if (getUser() != null) {
-            if (gauntletStack != null && gauntletStack.getItem() == ItemHandler.EARTHBORE_GAUNTLET) {
+            if (gauntletStack != null && gauntletStack.getItem() == ItemHandler.EARTHBORE_GAUNTLET.get()) {
                 Player player = (Player) getUser();
-                ItemHandler.EARTHBORE_GAUNTLET.playAnimation(player, gauntletStack, ItemEarthboreGauntlet.ANIM_REST);
+                ItemHandler.EARTHBORE_GAUNTLET.get().triggerAnim(player, GeoItem.getOrAssignId(gauntletStack, (ServerLevel) player.level()), ItemEarthboreGauntlet.CONTROLLER_NAME, ItemEarthboreGauntlet.IDLE_ANIM_NAME);
             }
         }
     }
@@ -92,7 +94,7 @@ public class TunnelingAbility extends PlayerAbility {
         if (getUser().onGround()) getUser().push(0, 0.8f, 0);
         whichHand = getUser().getUsedItemHand();
         gauntletStack = getUser().getUseItem();
-        if (getUser().level.isClientSide()) {
+        if (getUser().level().isClientSide()) {
             spinAmount = 0;
             pitch = 0;
         }
@@ -100,7 +102,7 @@ public class TunnelingAbility extends PlayerAbility {
 
     public boolean damageGauntlet() {
         ItemStack stack = getUser().getUseItem();
-        if (stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET) {
+        if (stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET.get()) {
             InteractionHand handIn = getUser().getUsedItemHand();
             if (stack.getDamageValue() + 5 < stack.getMaxDamage()) {
                 stack.hurtAndBreak(5, getUser(), p -> p.broadcastBreakEvent(handIn));
@@ -117,7 +119,7 @@ public class TunnelingAbility extends PlayerAbility {
     }
 
     public void restoreGauntlet(ItemStack stack) {
-        if (stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET) {
+        if (stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET.get()) {
             if (!ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.breakable.get()) {
                 stack.setDamageValue(Math.max(stack.getDamageValue() - 1, 0));
             }
@@ -142,12 +144,12 @@ public class TunnelingAbility extends PlayerAbility {
     public void tickUsing() {
         super.tickUsing();
         getUser().fallDistance = 0;
-        if (getUser() instanceof Player) ((Player)getUser()).getAbilities().flying = false;
-        underground = !getUser().level.getEntitiesOfClass(EntityBlockSwapper.class, getUser().getBoundingBox().inflate(0.3)).isEmpty();
+        getUser().getAbilities().flying = false;
+        underground = !getUser().level().getEntitiesOfClass(EntityBlockSwapper.class, getUser().getBoundingBox().inflate(0.3)).isEmpty();
         Vec3 lookVec = getUser().getLookAngle();
         float tunnelSpeed = 0.3f;
         ItemStack stack = getUser().getUseItem();
-        boolean usingGauntlet = stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET;
+        boolean usingGauntlet = stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET.get();
         if (underground) {
             timeUnderground++;
             if (usingGauntlet && damageGauntlet()) {
@@ -159,8 +161,7 @@ public class TunnelingAbility extends PlayerAbility {
 
             List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(getUser(),2, 2, 2, 2);
             for (LivingEntity entityHit : entitiesHit) {
-                DamageSource damageSource = DamageSource.mobAttack(getUser());
-                if (getUser() instanceof Player) damageSource = DamageSource.playerAttack((Player) getUser());
+                DamageSource damageSource = getUser().damageSources().playerAttack(getUser());
                 entityHit.hurt(damageSource, 6 * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.geomancyAttackMultiplier.get().floatValue());
             }
         }
@@ -184,11 +185,11 @@ public class TunnelingAbility extends PlayerAbility {
                             if (posVec.add(0.5, 0.5, 0.5).subtract(userCenter).lengthSqr() > radius * radius) continue;
                             Vec3 motionScaled = getUser().getDeltaMovement().normalize().scale(i);
                             posVec = posVec.add(motionScaled);
-                            BlockPos pos = new BlockPos(posVec);
-                            BlockState blockState = getUser().level.getBlockState(pos);
+                            BlockPos pos = new BlockPos((int) posVec.x, (int) posVec.y, (int) posVec.z);
+                            BlockState blockState = getUser().level().getBlockState(pos);
                             if (EffectGeomancy.isBlockDiggable(blockState) && blockState.getBlock() != Blocks.BEDROCK) {
                                 justDug = blockState;
-                                EntityBlockSwapper.swapBlock(getUser().level, pos, Blocks.AIR.defaultBlockState(), 15, false, false);
+                                EntityBlockSwapper.swapBlock(getUser().level(), pos, Blocks.AIR.defaultBlockState(), 15, false, false);
                             }
                         }
                     }
@@ -198,8 +199,8 @@ public class TunnelingAbility extends PlayerAbility {
         if (!prevUnderground && underground) {
             timeUnderground = 0;
             getUser().playSound(MMSounds.EFFECT_GEOMANCY_BREAK_MEDIUM.get(rand.nextInt(3)).get(), 1f, 0.9f + rand.nextFloat() * 0.1f);
-            if (getUser().level.isClientSide)
-                AdvancedParticleBase.spawnParticle(getUser().level, ParticleHandler.RING2.get(), (float) getUser().getX(), (float) getUser().getY() + 0.02f, (float) getUser().getZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, true, new ParticleComponent[]{
+            if (getUser().level().isClientSide)
+                AdvancedParticleBase.spawnParticle(getUser().level(), ParticleHandler.RING2.get(), (float) getUser().getX(), (float) getUser().getY() + 0.02f, (float) getUser().getZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, true, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(10f, 30f), false)
                 });
@@ -208,8 +209,8 @@ public class TunnelingAbility extends PlayerAbility {
         if (prevUnderground && !underground) {
             timeAboveGround = 0;
             getUser().playSound(MMSounds.EFFECT_GEOMANCY_BREAK.get(), 1f, 0.9f + rand.nextFloat() * 0.1f);
-            if (getUser().level.isClientSide)
-                AdvancedParticleBase.spawnParticle(getUser().level, ParticleHandler.RING2.get(), (float) getUser().getX(), (float) getUser().getY() + 0.02f, (float) getUser().getZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, true, new ParticleComponent[]{
+            if (getUser().level().isClientSide)
+                AdvancedParticleBase.spawnParticle(getUser().level(), ParticleHandler.RING2.get(), (float) getUser().getX(), (float) getUser().getY() + 0.02f, (float) getUser().getZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, true, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(10f, 30f), false)
                 });
@@ -220,10 +221,10 @@ public class TunnelingAbility extends PlayerAbility {
 
             for (int i = 0; i < 6; i++) {
                 if (justDug == null) justDug = Blocks.DIRT.defaultBlockState();
-                EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK.get(), getUser().level, 80, justDug);
+                EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK.get(), getUser().level(), 80, justDug);
                 fallingBlock.setPos(getUser().getX(), getUser().getY() + 1, getUser().getZ());
                 fallingBlock.setDeltaMovement(getUser().getRandom().nextFloat() * 0.8f - 0.4f, 0.4f + getUser().getRandom().nextFloat() * 0.8f, getUser().getRandom().nextFloat() * 0.8f - 0.4f);
-                getUser().level.addFreshEntity(fallingBlock);
+                getUser().level().addFreshEntity(fallingBlock);
             }
             stopGauntletAnimation();
         }
@@ -244,28 +245,31 @@ public class TunnelingAbility extends PlayerAbility {
     @Override
     protected boolean canContinueUsing() {
         ItemStack stack = getUser().getUseItem();
-        boolean usingGauntlet = stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET;
+        boolean usingGauntlet = stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET.get();
         if (whichHand == null) return false;
-        boolean canContinueUsing = (getTicksInUse() <= 1 || !(getUser().onGround() || (getUser().isInWater() && !usingGauntlet)) || underground) && getUser().getItemInHand(whichHand).getItem() == ItemHandler.EARTHBORE_GAUNTLET && super.canContinueUsing();
+        boolean canContinueUsing = (getTicksInUse() <= 1 || !(getUser().onGround() || (getUser().isInWater() && !usingGauntlet)) || underground) && getUser().getItemInHand(whichHand).getItem() == ItemHandler.EARTHBORE_GAUNTLET.get() && super.canContinueUsing();
         return canContinueUsing;
     }
 
     @Override
     public boolean preventsItemUse(ItemStack stack) {
-        if (stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET) return false;
+        if (stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET.get()) return false;
         return super.preventsItemUse(stack);
     }
 
+    private static final RawAnimation FALL_ANIM = RawAnimation.begin().thenPlayAndHold("tunneling_fall");
+    private static final RawAnimation DRILL_ANIM = RawAnimation.begin().thenLoop("tunneling_drill");
+
     @Override
     public <E extends GeoEntity> PlayState animationPredicate(AnimationState<E> e, GeckoPlayer.Perspective perspective) {
-        e.getController().transitionLengthTicks = 4;
+        e.getController().transitionLength(4);
         if (perspective == GeckoPlayer.Perspective.THIRD_PERSON) {
             float yMotionThreshold = getUser() == Minecraft.getInstance().player ? 1 : 2;
-            if (!underground && getUser().getUseItem().getItem() != ItemHandler.EARTHBORE_GAUNTLET && getUser().getDeltaMovement().y() < yMotionThreshold) {
-                e.getController().setAnimation(RawAnimation.begin().addAnimation("tunneling_fall", false));
+            if (!underground && getUser().getUseItem().getItem() != ItemHandler.EARTHBORE_GAUNTLET.get() && getUser().getDeltaMovement().y() < yMotionThreshold) {
+                e.getController().setAnimation(FALL_ANIM);
             }
             else {
-                e.getController().setAnimation(RawAnimation.begin().addAnimation("tunneling_drill", true));
+                e.getController().setAnimation(DRILL_ANIM);
             }
         }
         return PlayState.CONTINUE;
@@ -278,7 +282,7 @@ public class TunnelingAbility extends PlayerAbility {
         Vec3 moveVec = getUser().getDeltaMovement().normalize();
         pitch = (float) Mth.lerp(0.3 * partialTick, pitch, moveVec.y());
         MowzieGeoBone com = model.getMowzieBone("CenterOfMass");
-        com.setRotationX((float) (-Math.PI/2f + Math.PI/2f * pitch) * faceMotionController);
+        com.setRotX((float) (-Math.PI/2f + Math.PI/2f * pitch) * faceMotionController);
 
         float spinSpeed = 0.35f;
         if (faceMotionController < 1 && spinAmount < Math.PI * 2f - 0.01 && spinAmount > 0.01) {

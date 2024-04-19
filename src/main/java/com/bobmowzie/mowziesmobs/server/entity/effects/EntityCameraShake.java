@@ -109,11 +109,6 @@ public class EntityCameraShake extends Entity {
         compound.putInt("ticks_existed", tickCount);
     }
 
-    @Override
-    public Packet<?> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
-
     public static void cameraShake(Level world, Vec3 position, float radius, float magnitude, int duration, int fadeDuration) {
         if (!world.isClientSide) {
             EntityCameraShake cameraShake = new EntityCameraShake(world, position, radius, magnitude, duration, fadeDuration);

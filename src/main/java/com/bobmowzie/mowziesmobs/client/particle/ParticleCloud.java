@@ -149,7 +149,7 @@ public class ParticleCloud extends TextureSheetParticle {
         @SuppressWarnings("deprecation")
         @Override
         public String writeToString() {
-            return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %d %.2f", Registry.PARTICLE_TYPE.getKey(this.getType()),
+            return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %d %.2f", ForgeRegistries.PARTICLE_TYPES.getKey(this.getType()),
                     this.r, this.g, this.b, this.scale, this.duration, this.airDrag);
         }
 

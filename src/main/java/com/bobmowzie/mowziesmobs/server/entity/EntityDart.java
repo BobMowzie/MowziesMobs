@@ -40,7 +40,7 @@ public class EntityDart extends Arrow {
 
     @Override
     protected ItemStack getPickupItem() {
-        return new ItemStack(ItemHandler.DART);
+        return new ItemStack(ItemHandler.DART.get());
     }
 
     @Override
@@ -49,11 +49,6 @@ public class EntityDart extends Arrow {
         if (getOwner() instanceof Player) living.addEffect(new MobEffectInstance(MobEffects.POISON, ConfigHandler.COMMON.TOOLS_AND_ABILITIES.BLOW_GUN.poisonDuration.get(), 3, false, true));
         else living.addEffect(new MobEffectInstance(MobEffects.POISON, 30, 1, false, true));
         living.setArrowCount(living.getArrowCount() - 1);
-    }
-
-    @Override
-    public Packet<?> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override

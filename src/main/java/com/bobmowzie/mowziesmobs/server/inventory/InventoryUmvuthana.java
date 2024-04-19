@@ -123,6 +123,6 @@ public final class InventoryUmvuthana implements Container {
     }
 
     private static boolean areItemsEqual(ItemStack s1, ItemStack s2) {
-        return ItemStack.isSame(s1, s2) && (!s2.hasTag() || s1.hasTag() && NbtUtils.compareNbt(s2.getTag(), s1.getTag(), false));
+        return ItemStack.matches(s1, s2) && (!s2.hasTag() || s1.hasTag() && NbtUtils.compareNbt(s2.getTag(), s1.getTag(), false));
     }
 }

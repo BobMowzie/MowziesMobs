@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
 import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
@@ -14,6 +14,7 @@ import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -100,19 +101,23 @@ public abstract class MowzieStructure extends Structure {
             if (!topBlock.getFluidState().isEmpty()) return false;
         }
 
+        /* TODO: Fix this later
         if (avoidStructures) {
             List<? extends String> structuresToAvoid = config.avoidStructures.get();
-            Registry<StructureSet> structureSetRegistry = context.registryAccess().registryOrThrow(Registry.STRUCTURE_SET_REGISTRY);
+            ChunkGeneratorStructureState generatorState = serverLevel.getChunkSource().getGeneratorState();
+            Registry<StructureSet> structureSetRegistry = context.registryAccess().registryOrThrow(Registries.STRUCTURE_SET);
             for (String structureName : structuresToAvoid) {
                 Optional<StructureSet> structureSetOptional = structureSetRegistry.getOptional(new ResourceLocation(structureName));
                 if (structureSetOptional.isEmpty()) continue;
                 Optional<ResourceKey<StructureSet>> resourceKeyOptional = structureSetRegistry.getResourceKey(structureSetOptional.get());
                 if (resourceKeyOptional.isEmpty()) continue;
-                if (context.chunkGenerator().hasStructureChunkInRange(BuiltinRegistries.STRUCTURE_SETS.getHolderOrThrow(resourceKeyOptional.get()), context.randomState(), context.seed(), chunkPos.x, chunkPos.z, 5)) {
+                Optional<Holder.Reference<StructureSet>> holderOptional = structureSetRegistry.getHolder(resourceKeyOptional.get());
+                if (holderOptional.isEmpty()) continue;
+                if (generatorState.hasStructureChunkInRange(holderOptional.get(), chunkPos.x, chunkPos.z, 3)) {
                     return false;
                 }
             }
-        }
+        }*/
 
         return true;
     }

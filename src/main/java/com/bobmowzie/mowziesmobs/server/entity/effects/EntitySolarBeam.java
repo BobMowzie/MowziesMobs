@@ -212,7 +212,7 @@ public class EntitySolarBeam extends Entity {
                         damageFire *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier.get() * 0.75;
                         damageMob *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier.get() * 0.75;
                     }
-                    DamageUtil.dealMixedDamage(target, DamageSource.indirectMobAttack(this, caster), damageMob, DamageSource.ON_FIRE, damageFire);
+                    DamageUtil.dealMixedDamage(target, damageSources().mobProjectile(this, caster), damageMob, damageSources().onFire(), damageFire);
                 }
             } else {
                 if (tickCount - 15 < getDuration()) {
@@ -318,11 +318,6 @@ public class EntitySolarBeam extends Entity {
 
     @Override
     protected void addAdditionalSaveData(CompoundTag nbt) {}
-
-    @Override
-    public Packet<?> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
 
     private void calculateEndPos() {
         double radius = caster instanceof EntityUmvuthi ? RADIUS_UMVUTHI : RADIUS_PLAYER;

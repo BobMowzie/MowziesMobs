@@ -56,7 +56,7 @@ public class ClientProxy extends ServerProxy {
     @Override
     public void onLateInit(final IEventBus modbus) {
         ItemPropertyFunction pulling = ItemProperties.getProperty(Items.BOW, new ResourceLocation("pulling"));
-        ItemProperties.register(ItemHandler.BLOWGUN.asItem(), new ResourceLocation("pulling"), pulling);
+        ItemProperties.register(ItemHandler.BLOWGUN.get().asItem(), new ResourceLocation("pulling"), pulling);
     }
 
     @Override

@@ -10,7 +10,7 @@ import com.bobmowzie.mowziesmobs.server.world.feature.structure.WroughtnautChamb
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -51,19 +51,20 @@ public class ConfiguredFeatureHandler {
     public static final Set<Holder<Biome>> SCULPTOR_BIOMES = new HashSet<>();
 
     private static ResourceKey<Structure> createStructureKey(String name) {
-        return ResourceKey.create(Registry.STRUCTURE_REGISTRY, new ResourceLocation(MowziesMobs.MODID, name));
+        return ResourceKey.create(Registries.STRUCTURE, new ResourceLocation(MowziesMobs.MODID, name));
     }
 
     private static ResourceKey<StructureSet> createSetKey(String name) {
-        return ResourceKey.create(Registry.STRUCTURE_SET_REGISTRY, new ResourceLocation(MowziesMobs.MODID, name));
+        return ResourceKey.create(Registries.STRUCTURE_SET, new ResourceLocation(MowziesMobs.MODID, name));
     }
 
+    /* TODO: Fix structures
     private static Holder<Structure> register(ResourceKey<Structure> key, Structure feature) {
-        return BuiltinRegistries.register(BuiltinRegistries.STRUCTURES, key, feature);
+        return BuiltinRegistries.register(Registries.STRUCTURE, key, feature);
     }
 
     static Holder<StructureSet> register(ResourceKey<StructureSet> key, StructureSet set) {
-        return BuiltinRegistries.register(BuiltinRegistries.STRUCTURE_SETS, key, set);
+        return BuiltinRegistries.register(Registries.STRUCTURE_SET, key, set);
     }
 
     static Holder<StructureSet> register(ResourceKey<StructureSet> key, Holder<Structure> configuredFeature, StructurePlacement placement) {
@@ -92,7 +93,7 @@ public class ConfiguredFeatureHandler {
     
     private static Structure.StructureSettings structure(TagKey<Biome> p_236543_, TerrainAdjustment p_236544_) {
         return structure(p_236543_, Map.of(), GenerationStep.Decoration.SURFACE_STRUCTURES, p_236544_);
-    }
+    }*/
 
     public static void addBiomeSpawns(Holder<Biome> biomeKey) {
         if (FERROUS_WROUGHTNAUT_BIOME_CHECKER == null) FERROUS_WROUGHTNAUT_BIOME_CHECKER = new BiomeChecker(ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig.biomeConfig);

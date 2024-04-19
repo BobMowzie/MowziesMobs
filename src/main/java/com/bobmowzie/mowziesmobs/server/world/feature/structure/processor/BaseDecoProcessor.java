@@ -42,16 +42,16 @@ public class BaseDecoProcessor extends StructureProcessor {
 
     @Override
     public StructureTemplate.StructureBlockInfo process(LevelReader levelReader, BlockPos jigsawPiecePos, BlockPos jigsawPieceBottomCenterPos, StructureTemplate.StructureBlockInfo blockInfoLocal, StructureTemplate.StructureBlockInfo blockInfoGlobal, StructurePlaceSettings structurePlacementData, StructureTemplate template) {
-        if (blockInfoGlobal.state.is(Blocks.PURPUR_STAIRS)) {
-            if (levelReader instanceof WorldGenRegion worldGenRegion && !worldGenRegion.getCenter().equals(new ChunkPos(blockInfoGlobal.pos))) {
+        if (blockInfoGlobal.state().is(Blocks.PURPUR_STAIRS)) {
+            if (levelReader instanceof WorldGenRegion worldGenRegion && !worldGenRegion.getCenter().equals(new ChunkPos(blockInfoGlobal.pos()))) {
                 return blockInfoGlobal;
             }
 
-            Direction facing = blockInfoGlobal.state.getValue(StairBlock.FACING).getOpposite();
+            Direction facing = blockInfoGlobal.state().getValue(StairBlock.FACING).getOpposite();
             facing = structurePlacementData.getRotation().rotate(facing);
-            RandomSource random = structurePlacementData.getRandom(blockInfoGlobal.pos);
+            RandomSource random = structurePlacementData.getRandom(blockInfoGlobal.pos());
 
-            blockInfoGlobal = new StructureTemplate.StructureBlockInfo(blockInfoGlobal.pos, Blocks.RED_TERRACOTTA.defaultBlockState(), blockInfoGlobal.nbt);
+            blockInfoGlobal = new StructureTemplate.StructureBlockInfo(blockInfoGlobal.pos(), Blocks.RED_TERRACOTTA.defaultBlockState(), blockInfoGlobal.nbt());
             for (int x = 0; x < 7; x++) {
                 for (int y = 0; y < 4; y++) {
                     BlockState state = DECO[y][x];
@@ -60,11 +60,11 @@ public class BaseDecoProcessor extends StructureProcessor {
                         state = chooseRandomState(random);
                     }
 
-                    BlockPos pos = blockInfoGlobal.pos.relative(facing);
+                    BlockPos pos = blockInfoGlobal.pos().relative(facing);
                     pos = pos.relative(facing.getClockWise(), x - 3);
                     pos = pos.relative(Direction.UP, 1 - y);
 
-                    if (levelReader.getBlockState(pos).getMaterial().isSolid()) continue;
+                    if (levelReader.getBlockState(pos).isSolid()) continue;
                     if (levelReader.getBlockState(pos.below()).getBlock() == Blocks.DARK_OAK_PLANKS) continue;
                     if (levelReader.getBlockState(pos.below()).getBlock() == Blocks.STRIPPED_BIRCH_LOG) continue;
                     if (levelReader.getBlockState(pos.below()).getBlock() == Blocks.BIRCH_PLANKS) continue;

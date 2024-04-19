@@ -124,7 +124,7 @@ public class EntityPillar extends EntityGeomancyBase {
 
     @Override
     protected AABB makeBoundingBox() {
-        if (tickTimer() <= 1) return super.makeBoundingBox();
+        if (tickCount <= 1) return super.makeBoundingBox();
         float f = SIZE_MAP.get(getTier()) / 2.0F - 0.05f;
         return new AABB(getX() - (double)f, getY(), getZ() - (double)f, getX() + (double)f, getY() + getHeight() - 0.05f, getZ() + (double)f);
     }
