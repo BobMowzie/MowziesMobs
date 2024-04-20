@@ -16,6 +16,7 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import software.bernie.example.client.renderer.armor.GeckoArmorRenderer;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -160,12 +161,14 @@ public class ItemSolVisage extends MowzieArmorItem implements UmvuthanaMask, Geo
         consumer.accept(new IClientItemExtensions() {
             @Override
             public HumanoidModel<?> getHumanoidArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<?> original) {
+                if (this.armorRenderer == null)
+                    this.armorRenderer = new RenderSolVisageArmor();
                 if (equipmentSlot == EquipmentSlot.HEAD) armorRenderer.prepForRender(entityLiving, itemStack, equipmentSlot, original);
                 return armorRenderer;
             }
 
             private final BlockEntityWithoutLevelRenderer itemRenderer = new RenderSolVisageItem();
-            private final GeoArmorRenderer<?> armorRenderer = new RenderSolVisageArmor();
+            private GeoArmorRenderer<?> armorRenderer;
 
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {

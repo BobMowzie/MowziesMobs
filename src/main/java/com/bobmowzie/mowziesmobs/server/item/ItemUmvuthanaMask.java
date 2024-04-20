@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.render.item.RenderSolVisageArmor;
+import com.bobmowzie.mowziesmobs.client.render.item.RenderUmvuthanaMaskArmor;
 import com.bobmowzie.mowziesmobs.client.render.item.RenderUmvuthanaMaskItem;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
@@ -126,12 +127,14 @@ public class ItemUmvuthanaMask extends MowzieArmorItem implements UmvuthanaMask,
         consumer.accept(new IClientItemExtensions() {
             @Override
             public HumanoidModel<?> getHumanoidArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<?> original) {
+                if (this.armorRenderer == null)
+                    this.armorRenderer = new RenderUmvuthanaMaskArmor();
                 if (equipmentSlot == EquipmentSlot.HEAD) armorRenderer.prepForRender(entityLiving, itemStack, equipmentSlot, original);
                 return armorRenderer;
             }
 
             private final BlockEntityWithoutLevelRenderer itemRenderer = new RenderUmvuthanaMaskItem();
-            private final GeoArmorRenderer<?> armorRenderer = new RenderSolVisageArmor();
+            private GeoArmorRenderer<?> armorRenderer;
 
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {

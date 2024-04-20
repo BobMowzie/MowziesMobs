@@ -58,10 +58,10 @@ public final class MowziesMobs {
 
         PROXY = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
         final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        CreativeTabHandler.register(bus);
-        EntityHandler.REG.register(bus);
-        MMSounds.REG.register(bus);
         BlockHandler.REG.register(bus);
+        EntityHandler.REG.register(bus);
+        ItemHandler.REG.register(bus);
+        MMSounds.REG.register(bus);
         BlockEntityHandler.REG.register(bus);
         ParticleHandler.REG.register(bus);
         FeatureHandler.STRUCTURE_TYPE_REG.register(bus);
@@ -72,6 +72,7 @@ public final class MowziesMobs {
         BiomeModifiersHandler.REG.register(bus);
         LootTableHandler.LOOT_CONDITION_TYPE_REG.register(bus);
         LootTableHandler.LOOT_FUNCTION_TYPE_REG.register(bus);
+        CreativeTabHandler.register(bus);
 
         PROXY.init(bus);
         bus.<FMLCommonSetupEvent>addListener(this::init);
@@ -149,7 +150,7 @@ public final class MowziesMobs {
     private void init(FMLLoadCompleteEvent event) {
         ItemHandler.initializeAttributes();
         ItemHandler.initializeDispenserBehaviors();
-        BlockHandler.init();
+//        BlockHandler.init(); TODO
         final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         PROXY.onLateInit(bus);
     }
