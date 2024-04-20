@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.server.entity.umvuthana.trade.Trade;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerUmvuthanaTrade;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -16,6 +17,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Quaternionf;
 
 @OnlyIn(Dist.CLIENT)
 public final class GuiUmvuthanaTrade extends AbstractContainerScreen<ContainerUmvuthanaTrade> {
@@ -40,47 +42,44 @@ public final class GuiUmvuthanaTrade extends AbstractContainerScreen<ContainerUm
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack, float partialTicks, int x, int y) {
+    protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int x, int y) {
         RenderSystem.colorMask(true, true, true, true);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0,TEXTURE);
-        blit(matrixStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        guiGraphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
         umvuthana.renderingInGUI = true;
-        InventoryScreen.renderEntityInInventory(leftPos + 33, topPos + 64, 20, leftPos + 33 - x, topPos + 21 - y, umvuthana);
+        InventoryScreen.renderEntityInInventory(guiGraphics, leftPos + 33, topPos + 64, 20, new Quaternionf(), new Quaternionf(), umvuthana);
         umvuthana.renderingInGUI = false;
     }
 
     @Override
-    protected void renderLabels(PoseStack matrixStack, int x, int y) {
+    protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
         String title = this.title.getString();
-        font.draw(matrixStack, title, imageWidth / 2f - font.width(title) / 2f + 26, 6, 0x404040);
-        font.draw(matrixStack, I18n.get("container.inventory"), 8, imageHeight - 96 + 2, 0x404040);
+        guiGraphics.drawString(font, title, (int) (imageWidth / 2f - font.width(title) / 2f + 26), 6, 0x404040);
+        guiGraphics.drawString(font, I18n.get("container.inventory"), 8, imageHeight - 96 + 2, 0x404040);
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.renderTooltip(matrixStack, mouseX, mouseY);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+        this.renderTooltip(guiGraphics, mouseX, mouseY);
         if (umvuthana.isOfferingTrade()) {
             Trade trade = umvuthana.getOfferingTrade();
             ItemStack input = trade.getInput();
             ItemStack output = trade.getOutput();
-            matrixStack.pushPose();
+            guiGraphics.pose().pushPose();
 
-            itemRenderer.blitOffset = 100;
-            itemRenderer.renderAndDecorateItem(input, leftPos + 80, topPos + 24);
-            itemRenderer.renderGuiItemDecorations(font, input, leftPos + 80, topPos + 24);
-            itemRenderer.renderAndDecorateItem(output, leftPos + 134, topPos + 24);
-            itemRenderer.renderGuiItemDecorations(font, output, leftPos + 134, topPos + 24);
-            itemRenderer.blitOffset = 0;
+            guiGraphics.pose().translate(0, 0, 100);
+            guiGraphics.renderItem(input, leftPos + 80, topPos + 24);
+            guiGraphics.renderItemDecorations(font, input, leftPos + 80, topPos + 24);
+            guiGraphics.renderItem(output, leftPos + 134, topPos + 24);
+            guiGraphics.renderItemDecorations(font, output, leftPos + 134, topPos + 24);
 
             if (isHovering(80, 24, 16, 16, mouseX, mouseY)) {
-                renderTooltip(matrixStack, input, mouseX, mouseY);
+                guiGraphics.renderTooltip(font, input, mouseX, mouseY);
             } else if (isHovering(134, 24, 16, 16, mouseX, mouseY)) {
-                renderTooltip(matrixStack, output, mouseX, mouseY);
+                guiGraphics.renderTooltip(font, output, mouseX, mouseY);
             }
-            matrixStack.popPose();
+            guiGraphics.pose().popPose();
         }
     }
 }

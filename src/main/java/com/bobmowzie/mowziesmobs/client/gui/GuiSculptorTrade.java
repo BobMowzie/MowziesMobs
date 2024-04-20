@@ -8,8 +8,10 @@ import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.message.MessageSculptorTrade;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.PlainTextButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -23,6 +25,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Quaternionf;
 
 public final class GuiSculptorTrade extends AbstractContainerScreen<ContainerSculptorTrade> implements InventorySculptor.ChangeListener {
     private static final ResourceLocation TEXTURE_TRADE = new ResourceLocation(MowziesMobs.MODID, "textures/gui/container/barako_trade.png");
@@ -48,7 +51,7 @@ public final class GuiSculptorTrade extends AbstractContainerScreen<ContainerScu
     protected void init() {
         super.init();
         String text = I18n.get("entity.mowziesmobs.sculptor.trade.button.text");
-        beginButton = addRenderableWidget(new Button(leftPos + 115, topPos + 52, 56, 20, Component.translatable(text), this::actionPerformed));
+        beginButton = addRenderableWidget(new PlainTextButton(leftPos + 115, topPos + 52, 56, 20, Component.translatable(text), this::actionPerformed, font));
         updateButton();
     }
 
@@ -64,40 +67,39 @@ public final class GuiSculptorTrade extends AbstractContainerScreen<ContainerScu
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         guiGraphics.blit(TEXTURE_TRADE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
-        InventoryScreen.renderEntityInInventory(leftPos + 33, topPos + 56, 14, 0, 0, sculptor);
+        InventoryScreen.renderEntityInInventory(guiGraphics, leftPos + 33, topPos + 56, 14, new Quaternionf(), null, sculptor);
     }
 
     @Override
-    protected void renderLabels(PoseStack matrixStack, int x, int y) {
-        String title = I18n.get("entity.mowziesmobs.sculptor.trade");
-        font.draw(matrixStack, title, (imageWidth / 2f - font.width(title) / 2f) + 30, 6, 0x404040);
-        font.draw(matrixStack, I18n.get("container.inventory"), 8, imageHeight - 96 + 2, 0x404040);
+    protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
+        super.renderLabels(guiGraphics, x, y);
+        guiGraphics.drawString(font, title, (int) (imageWidth / 2f - font.width(title) / 2f) + 30, 6, 0x404040);
+        guiGraphics.drawString(font, I18n.get("container.inventory"), 8, imageHeight - 96 + 2, 0x404040);
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.renderTooltip(matrixStack, mouseX, mouseY);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+        this.renderTooltip(guiGraphics, mouseX, mouseY);
         ItemStack inSlot = inventory.getItem(0);
-        matrixStack.pushPose();
+        guiGraphics.pose().pushPose();
 
-        itemRenderer.blitOffset = 100;
+        guiGraphics.pose().translate(0.0F, 0.0F, 100.0F);
 
-        itemRenderer.renderAndDecorateItem(sculptor.getDesires(), leftPos + 68, topPos + 24);
-        itemRenderer.renderGuiItemDecorations(font, sculptor.getDesires(), leftPos + 68, topPos + 24);
-        itemRenderer.renderAndDecorateItem(output, leftPos + 134, topPos + 24);
-        itemRenderer.renderGuiItemDecorations(font, output, leftPos + 134, topPos + 24);
+        guiGraphics.renderItem(sculptor.getDesires(), leftPos + 68, topPos + 24);
+        guiGraphics.renderItemDecorations(font, sculptor.getDesires(), leftPos + 68, topPos + 24);
+        guiGraphics.renderItem(output, leftPos + 134, topPos + 24);
+        guiGraphics.renderItemDecorations(font, output, leftPos + 134, topPos + 24);
         if (isHovering(68, 24, 16, 16, mouseX, mouseY)) {
-            renderTooltip(matrixStack, sculptor.getDesires(), mouseX, mouseY);
+            guiGraphics.renderTooltip(font, sculptor.getDesires(), mouseX, mouseY);
         } else if (isHovering(134, 24, 16, 16, mouseX, mouseY)) {
-            renderTooltip(matrixStack, output, mouseX, mouseY);
+            guiGraphics.renderTooltip(font, output, mouseX, mouseY);
         }
-        itemRenderer.blitOffset = 0;
 
         if (beginButton.isMouseOver(mouseX, mouseY)) {
-            renderComponentHoverEffect(matrixStack, getHoverText(), mouseX, mouseY);
+            guiGraphics.renderComponentHoverEffect(font, getHoverText(), mouseX, mouseY);
         }
-        matrixStack.popPose();
+        guiGraphics.pose().popPose();
     }
 
     @Override

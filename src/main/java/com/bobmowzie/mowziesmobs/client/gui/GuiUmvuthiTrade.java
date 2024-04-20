@@ -9,7 +9,9 @@ import com.bobmowzie.mowziesmobs.server.message.MessageUmvuthiTrade;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.PlainTextButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -23,6 +25,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Quaternionf;
 
 public final class GuiUmvuthiTrade extends AbstractContainerScreen<ContainerUmvuthiTrade> implements InventoryUmvuthi.ChangeListener {
     private static final ResourceLocation TEXTURE_TRADE = new ResourceLocation(MowziesMobs.MODID, "textures/gui/container/umvuthi_trade.png");
@@ -33,7 +36,7 @@ public final class GuiUmvuthiTrade extends AbstractContainerScreen<ContainerUmvu
 
     private final InventoryUmvuthi inventory;
 
-    private final ItemStack output = new ItemStack(ItemHandler.GRANT_SUNS_BLESSING);
+    private final ItemStack output = new ItemStack(ItemHandler.GRANT_SUNS_BLESSING.get());
 
     private Button grantButton;
 
@@ -52,7 +55,7 @@ public final class GuiUmvuthiTrade extends AbstractContainerScreen<ContainerUmvu
     protected void init() {
         super.init();
         String text = I18n.get(hasTraded ? "entity.mowziesmobs.umvuthi.replenish.button.text" : "entity.mowziesmobs.umvuthi.trade.button.text");
-        grantButton = addRenderableWidget(new Button(leftPos + 115, topPos + 52, 56, 20, Component.translatable(text), this::actionPerformed));
+        grantButton = addRenderableWidget(new PlainTextButton(leftPos + 115, topPos + 52, 56, 20, Component.translatable(text), this::actionPerformed, font));
         grantButton.active = hasTraded;
         updateButton();
     }
@@ -75,57 +78,56 @@ public final class GuiUmvuthiTrade extends AbstractContainerScreen<ContainerUmvu
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack, float partialTicks, int x, int y) {
+    protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int x, int y) {
         RenderSystem.colorMask(true, true, true, true);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0,hasTraded ? TEXTURE_REPLENISH : TEXTURE_TRADE);
         //minecraft.getTextureManager().bindForSetup(hasTraded ? TEXTURE_REPLENISH : TEXTURE_TRADE);
-        blit(matrixStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        guiGraphics.blit(hasTraded ? TEXTURE_REPLENISH : TEXTURE_TRADE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
         umvuthi.renderingInGUI = true;
-        InventoryScreen.renderEntityInInventory(leftPos + 33, topPos + 57, 10, leftPos + 33 - x, topPos + 21 - y, umvuthi);
+        InventoryScreen.renderEntityInInventory(guiGraphics, leftPos + 33, topPos + 57, 10, new Quaternionf(), new Quaternionf(), umvuthi);
         umvuthi.renderingInGUI = false;
     }
 
     @Override
-    protected void renderLabels(PoseStack matrixStack, int x, int y) {
+    protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
         String title = I18n.get("entity.mowziesmobs.umvuthi.trade");
-        font.draw(matrixStack, title, (imageWidth / 2f - font.width(title) / 2f) + 30, 6, 0x404040);
-        font.draw(matrixStack, I18n.get("container.inventory"), 8, imageHeight - 96 + 2, 0x404040);
+        guiGraphics.drawString(font, title, (int) (imageWidth / 2f - font.width(title) / 2f) + 30, 6, 0x404040);
+        guiGraphics.drawString(font, I18n.get("container.inventory"), 8, imageHeight - 96 + 2, 0x404040);
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.renderTooltip(matrixStack, mouseX, mouseY);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+        this.renderTooltip(guiGraphics, mouseX, mouseY);
         ItemStack inSlot = inventory.getItem(0);
-        matrixStack.pushPose();
+        guiGraphics.pose().pushPose();
 
-        itemRenderer.blitOffset = 100;
+        guiGraphics.pose().translate(0, 0, 100);
         if (hasTraded) {
-            itemRenderer.renderAndDecorateItem(output, leftPos + 106, topPos + 24);
-            itemRenderer.renderGuiItemDecorations(font, output, leftPos + 106, topPos + 24);
+            guiGraphics.renderItem(output, leftPos + 106, topPos + 24);
+            guiGraphics.renderItemDecorations(font, output, leftPos + 106, topPos + 24);
             if (isHovering(106, 24, 16, 16, mouseX, mouseY)) {
-                renderTooltip(matrixStack, output, mouseX, mouseY);
+                guiGraphics.renderTooltip(font, output, mouseX, mouseY);
             }
         }
         else {
-            itemRenderer.renderAndDecorateItem(umvuthi.getDesires(), leftPos + 68, topPos + 24);
-            itemRenderer.renderGuiItemDecorations(font, umvuthi.getDesires(), leftPos + 68, topPos + 24);
-            itemRenderer.renderAndDecorateItem(output, leftPos + 134, topPos + 24);
-            itemRenderer.renderGuiItemDecorations(font, output, leftPos + 134, topPos + 24);
+            guiGraphics.renderItem(umvuthi.getDesires(), leftPos + 68, topPos + 24);
+            guiGraphics.renderItemDecorations(font, umvuthi.getDesires(), leftPos + 68, topPos + 24);
+            guiGraphics.renderItem(output, leftPos + 134, topPos + 24);
+            guiGraphics.renderItemDecorations(font, output, leftPos + 134, topPos + 24);
             if (isHovering(68, 24, 16, 16, mouseX, mouseY)) {
-                renderTooltip(matrixStack, umvuthi.getDesires(), mouseX, mouseY);
+                guiGraphics.renderTooltip(font, umvuthi.getDesires(), mouseX, mouseY);
             } else if (isHovering(134, 24, 16, 16, mouseX, mouseY)) {
-                renderTooltip(matrixStack, output, mouseX, mouseY);
+                guiGraphics.renderTooltip(font, output, mouseX, mouseY);
             }
         }
-        itemRenderer.blitOffset = 0;
 
         if (grantButton.isMouseOver(mouseX, mouseY)) {
-            renderComponentHoverEffect(matrixStack, getHoverText(), mouseX, mouseY);
+            guiGraphics.renderComponentHoverEffect(font, getHoverText(), mouseX, mouseY);
         }
-        matrixStack.popPose();
+        guiGraphics.pose().popPose();
     }
 
     @Override
@@ -137,7 +139,7 @@ public final class GuiUmvuthiTrade extends AbstractContainerScreen<ContainerUmvu
         if (hasTraded) {
             grantButton.setMessage(Component.translatable(I18n.get("entity.mowziesmobs.umvuthi.replenish.button.text")));
             grantButton.setWidth(108);
-            grantButton.x = leftPos + 63;
+            grantButton.setPosition(leftPos + 63, grantButton.getY());
         }
         else {
             grantButton.setMessage(Component.translatable(I18n.get("entity.mowziesmobs.umvuthi.trade.button.text")));
