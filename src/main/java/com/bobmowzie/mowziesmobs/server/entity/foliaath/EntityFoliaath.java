@@ -21,6 +21,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
@@ -260,7 +261,7 @@ public class EntityFoliaath extends MowzieLLibraryEntity implements Enemy {
     @Override
     public boolean hurt(DamageSource damageSource, float amount) {
         openMouth.resetTimeRunning();
-        return (damageSource.isBypassInvul() || active) && super.hurt(damageSource, amount);
+        return (damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) || active) && super.hurt(damageSource, amount);
     }
 
     @Override
@@ -312,9 +313,9 @@ public class EntityFoliaath extends MowzieLLibraryEntity implements Enemy {
     }
 
     @Override
-    public boolean wasKilled(ServerLevel world, LivingEntity killedEntity) {
+    public boolean killedEntity(ServerLevel world, LivingEntity killedEntity) {
         this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 300, 1, true, true));
-        return super.wasKilled(world, killedEntity);
+        return super.killedEntity(world, killedEntity);
     }
 
     @Override

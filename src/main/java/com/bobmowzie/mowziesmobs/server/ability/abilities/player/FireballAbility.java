@@ -22,9 +22,9 @@ public class FireballAbility extends PlayerAbility {
         if (getTicksInUse() == 20) {
             LivingEntity user = getUser();
             Vec3 lookVec = user.getLookAngle();
-            SmallFireball smallfireballentity = new SmallFireball(user.level, user, lookVec.x, lookVec.y, lookVec.z);
+            SmallFireball smallfireballentity = new SmallFireball(user.level(), user, lookVec.x, lookVec.y, lookVec.z);
             smallfireballentity.setPos(smallfireballentity.getX(), user.getY(0.5D) + 0.5D, smallfireballentity.getZ());
-            user.level.addFreshEntity(smallfireballentity);
+            user.level().addFreshEntity(smallfireballentity);
         }
     }
 }

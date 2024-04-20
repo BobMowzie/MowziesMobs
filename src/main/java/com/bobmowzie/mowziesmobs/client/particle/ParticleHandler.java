@@ -80,35 +80,35 @@ public class ParticleHandler {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void registerParticles(RegisterParticleProvidersEvent event) {
-        event.register(ParticleHandler.SPARKLE.get(), ParticleSparkle.SparkleFactory::new);
-        event.register(ParticleHandler.VANILLA_CLOUD_EXTENDED.get(), ParticleVanillaCloudExtended.CloudFactory::new);
-        event.register(ParticleHandler.SNOWFLAKE.get(), ParticleSnowFlake.SnowFlakeFactory::new);
-        event.register(ParticleHandler.CLOUD.get(), ParticleCloud.CloudFactory::new);
-        event.register(ParticleHandler.ORB.get(), ParticleOrb.OrbFactory::new);
-        event.register(ParticleHandler.RING.get(), ParticleRing.RingFactory::new);
+        event.registerSpriteSet(ParticleHandler.SPARKLE.get(), ParticleSparkle.SparkleFactory::new);
+        event.registerSpriteSet(ParticleHandler.VANILLA_CLOUD_EXTENDED.get(), ParticleVanillaCloudExtended.CloudFactory::new);
+        event.registerSpriteSet(ParticleHandler.SNOWFLAKE.get(), ParticleSnowFlake.SnowFlakeFactory::new);
+        event.registerSpriteSet(ParticleHandler.CLOUD.get(), ParticleCloud.CloudFactory::new);
+        event.registerSpriteSet(ParticleHandler.ORB.get(), ParticleOrb.OrbFactory::new);
+        event.registerSpriteSet(ParticleHandler.RING.get(), ParticleRing.RingFactory::new);
 
-        event.register(ParticleHandler.RING2.get(), AdvancedParticleBase.Factory::new);
-        event.register(ParticleHandler.RING_BIG.get(), AdvancedParticleBase.Factory::new);
-        event.register(ParticleHandler.PIXEL.get(), AdvancedParticleBase.Factory::new);
-        event.register(ParticleHandler.ORB2.get(), AdvancedParticleBase.Factory::new);
-        event.register(ParticleHandler.EYE.get(), AdvancedParticleBase.Factory::new);
-        event.register(ParticleHandler.BUBBLE.get(), AdvancedParticleBase.Factory::new);
-        event.register(ParticleHandler.SUN.get(), AdvancedParticleBase.Factory::new);
-        event.register(ParticleHandler.SUN_NOVA.get(), AdvancedParticleBase.Factory::new);
-        event.register(ParticleHandler.FLARE.get(), AdvancedParticleBase.Factory::new);
-        event.register(ParticleHandler.FLARE_RADIAL.get(), AdvancedParticleBase.Factory::new);
-        event.register(ParticleHandler.BURST_IN.get(), AdvancedParticleBase.Factory::new);
-        event.register(ParticleHandler.BURST_MESSY.get(), AdvancedParticleBase.Factory::new);
-        event.register(ParticleHandler.RING_SPARKS.get(), AdvancedParticleBase.Factory::new);
-        event.register(ParticleHandler.BURST_OUT.get(), AdvancedParticleBase.Factory::new);
-        event.register(ParticleHandler.GLOW.get(), AdvancedParticleBase.Factory::new);
-        event.register(ParticleHandler.ARROW_HEAD.get(), AdvancedParticleBase.Factory::new);
-        event.register(ParticleHandler.STRIX_FOOTPRINT.get(), ParticleDecal.Factory::new);
+        event.registerSpriteSet(ParticleHandler.RING2.get(), AdvancedParticleBase.Factory::new);
+        event.registerSpriteSet(ParticleHandler.RING_BIG.get(), AdvancedParticleBase.Factory::new);
+        event.registerSpriteSet(ParticleHandler.PIXEL.get(), AdvancedParticleBase.Factory::new);
+        event.registerSpriteSet(ParticleHandler.ORB2.get(), AdvancedParticleBase.Factory::new);
+        event.registerSpriteSet(ParticleHandler.EYE.get(), AdvancedParticleBase.Factory::new);
+        event.registerSpriteSet(ParticleHandler.BUBBLE.get(), AdvancedParticleBase.Factory::new);
+        event.registerSpriteSet(ParticleHandler.SUN.get(), AdvancedParticleBase.Factory::new);
+        event.registerSpriteSet(ParticleHandler.SUN_NOVA.get(), AdvancedParticleBase.Factory::new);
+        event.registerSpriteSet(ParticleHandler.FLARE.get(), AdvancedParticleBase.Factory::new);
+        event.registerSpriteSet(ParticleHandler.FLARE_RADIAL.get(), AdvancedParticleBase.Factory::new);
+        event.registerSpriteSet(ParticleHandler.BURST_IN.get(), AdvancedParticleBase.Factory::new);
+        event.registerSpriteSet(ParticleHandler.BURST_MESSY.get(), AdvancedParticleBase.Factory::new);
+        event.registerSpriteSet(ParticleHandler.RING_SPARKS.get(), AdvancedParticleBase.Factory::new);
+        event.registerSpriteSet(ParticleHandler.BURST_OUT.get(), AdvancedParticleBase.Factory::new);
+        event.registerSpriteSet(ParticleHandler.GLOW.get(), AdvancedParticleBase.Factory::new);
+        event.registerSpriteSet(ParticleHandler.ARROW_HEAD.get(), AdvancedParticleBase.Factory::new);
+        event.registerSpriteSet(ParticleHandler.STRIX_FOOTPRINT.get(), ParticleDecal.Factory::new);
 
-        event.register(ParticleHandler.RIBBON_FLAT.get(), ParticleRibbon.Factory::new);
-        event.register(ParticleHandler.RIBBON_STREAKS.get(), ParticleRibbon.Factory::new);
-        event.register(ParticleHandler.RIBBON_GLOW.get(), ParticleRibbon.Factory::new);
-        event.register(ParticleHandler.RIBBON_SQUIGGLE.get(), ParticleRibbon.Factory::new);
+        event.registerSpriteSet(ParticleHandler.RIBBON_FLAT.get(), ParticleRibbon.Factory::new);
+        event.registerSpriteSet(ParticleHandler.RIBBON_STREAKS.get(), ParticleRibbon.Factory::new);
+        event.registerSpriteSet(ParticleHandler.RIBBON_GLOW.get(), ParticleRibbon.Factory::new);
+        event.registerSpriteSet(ParticleHandler.RIBBON_SQUIGGLE.get(), ParticleRibbon.Factory::new);
     }
 
     private static RegistryObject<SimpleParticleType> register(String key, boolean alwaysShow) {

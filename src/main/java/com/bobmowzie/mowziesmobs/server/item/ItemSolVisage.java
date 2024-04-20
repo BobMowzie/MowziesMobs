@@ -39,7 +39,7 @@ public class ItemSolVisage extends MowzieArmorItem implements UmvuthanaMask, Geo
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     public ItemSolVisage(Item.Properties properties) {
-        super(SOL_VISAGE_MATERIAL, EquipmentSlot.HEAD, properties);
+        super(SOL_VISAGE_MATERIAL, Type.HELMET, properties);
     }
 
     @Override

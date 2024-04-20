@@ -76,7 +76,7 @@ public class MMAIAvoidEntity<U extends PathfinderMob, T extends Entity> extends 
         for (int n = 0; n < numChecks; n++) {
             Vec3 pos = DefaultRandomPos.getPosAway(entity, horizontalEvasion, verticalEvasion, entityEvading.position());
             if (pos != null && !(entityEvading.distanceToSqr(pos.x, pos.y, pos.z) < entityEvading.distanceToSqr(entity))) {
-                entityPathEntity = entity.getNavigation().createPath(new BlockPos(pos), 0);
+                entityPathEntity = entity.getNavigation().createPath(BlockPos.containing(pos), 0);
                 if (entityPathEntity != null) {
                     return true;
                 }

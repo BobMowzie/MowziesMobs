@@ -241,7 +241,7 @@ public class FrozenCapability {
 
         @Override
         public void addFreezeProgress(LivingEntity entity, float amount) {
-            if (!entity.level.isClientSide && !entity.hasEffect(EffectHandler.FROZEN.get())) {
+            if (!entity.level().isClientSide && !entity.hasEffect(EffectHandler.FROZEN.get())) {
                 freezeProgress += amount;
                 freezeDecayDelay = MAX_FREEZE_DECAY_DELAY;
             }
@@ -251,9 +251,9 @@ public class FrozenCapability {
         public void onFreeze(LivingEntity entity) {
             if (entity != null) {
                 frozen = true;
-                frozenController = new EntityFrozenController(EntityHandler.FROZEN_CONTROLLER.get(), entity.level);
+                frozenController = new EntityFrozenController(EntityHandler.FROZEN_CONTROLLER.get(), entity.level());
                 frozenController.absMoveTo(entity.getX(), entity.getY(), entity.getZ(), entity.getYRot(), entity.getXRot());
-                entity.level.addFreshEntity(frozenController);
+                entity.level().addFreshEntity(frozenController);
                 frozenController.setYBodyRot(entity.yBodyRot);
                 frozenYaw = entity.getYRot();
                 frozenPitch = entity.getXRot();
@@ -271,14 +271,14 @@ public class FrozenCapability {
                     mobEntity.setNoAi(true);
                 }
 
-                if (entity.level.isClientSide) {
+                if (entity.level().isClientSide) {
                     int particleCount = (int) (10 + 1 * entity.getBbHeight() * entity.getBbWidth() * entity.getBbWidth());
                     for (int i = 0; i < particleCount; i++) {
                         double snowX = entity.getX() + entity.getBbWidth() * entity.getRandom().nextFloat() - entity.getBbWidth() / 2;
                         double snowZ = entity.getZ() + entity.getBbWidth() * entity.getRandom().nextFloat() - entity.getBbWidth() / 2;
                         double snowY = entity.getY() + entity.getBbHeight() * entity.getRandom().nextFloat();
                         Vec3 motion = new Vec3(snowX - entity.getX(), snowY - (entity.getY() + entity.getBbHeight() / 2), snowZ - entity.getZ()).normalize();
-                        entity.level.addParticle(new ParticleSnowFlake.SnowflakeData(40, false), snowX, snowY, snowZ, 0.1d * motion.x, 0.1d * motion.y, 0.1d * motion.z);
+                        entity.level().addParticle(new ParticleSnowFlake.SnowflakeData(40, false), snowX, snowY, snowZ, 0.1d * motion.x, 0.1d * motion.y, 0.1d * motion.z);
                     }
                 }
                 entity.playSound(MMSounds.ENTITY_FROSTMAW_FROZEN_CRASH.get(), 1, 1);
@@ -299,13 +299,13 @@ public class FrozenCapability {
                         frozenController.discard() ;
                     }
                     entity.playSound(MMSounds.ENTITY_FROSTMAW_FROZEN_CRASH.get(), 1, 0.5f);
-                    if (entity.level.isClientSide) {
+                    if (entity.level().isClientSide) {
                         int particleCount = (int) (10 + 1 * entity.getBbHeight() * entity.getBbWidth() * entity.getBbWidth());
                         for (int i = 0; i < particleCount; i++) {
                             double particleX = entity.getX() + entity.getBbWidth() * entity.getRandom().nextFloat() - entity.getBbWidth() / 2;
                             double particleZ = entity.getZ() + entity.getBbWidth() * entity.getRandom().nextFloat() - entity.getBbWidth() / 2;
                             double particleY = entity.getY() + entity.getBbHeight() * entity.getRandom().nextFloat() + 0.3f;
-                            entity.level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.ICE.defaultBlockState()), particleX, particleY, particleZ, 0, 0, 0);
+                            entity.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.ICE.defaultBlockState()), particleX, particleY, particleZ, 0, 0, 0);
                         }
                     }
                     if (entity instanceof Mob) {
@@ -313,7 +313,7 @@ public class FrozenCapability {
                             ((Mob) entity).setNoAi(false);
                         }
                         if (getPreAttackTarget() != null) {
-                            Player target = entity.level.getPlayerByUUID(getPreAttackTarget());
+                            Player target = entity.level().getPlayerByUUID(getPreAttackTarget());
                             if (target != null) {
                                 ((Mob) entity).setTarget(target);
                             }
@@ -342,20 +342,20 @@ public class FrozenCapability {
                 entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 2, 50, false, false));
                 entity.setShiftKeyDown(false);
 
-                if (entity.level.isClientSide && entity.tickCount % 2 == 0) {
+                if (entity.level().isClientSide && entity.tickCount % 2 == 0) {
                     double cloudX = entity.getX() + entity.getBbWidth() * entity.getRandom().nextFloat() - entity.getBbWidth() / 2;
                     double cloudZ = entity.getZ() + entity.getBbWidth() * entity.getRandom().nextFloat() - entity.getBbWidth() / 2;
                     double cloudY = entity.getY() + entity.getBbHeight() * entity.getRandom().nextFloat();
-                    entity.level.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f, 0.75f, 1f, 15f, 25, ParticleCloud.EnumCloudBehavior.CONSTANT, 1f), cloudX, cloudY, cloudZ, 0f, -0.01f, 0f);
+                    entity.level().addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f, 0.75f, 1f, 15f, 25, ParticleCloud.EnumCloudBehavior.CONSTANT, 1f), cloudX, cloudY, cloudZ, 0f, -0.01f, 0f);
 
                     double snowX = entity.getX() + entity.getBbWidth() * entity.getRandom().nextFloat() - entity.getBbWidth() / 2;
                     double snowZ = entity.getZ() + entity.getBbWidth() * entity.getRandom().nextFloat() - entity.getBbWidth() / 2;
                     double snowY = entity.getY() + entity.getBbHeight() * entity.getRandom().nextFloat();
-                    entity.level.addParticle(new ParticleSnowFlake.SnowflakeData(40, false), snowX, snowY, snowZ, 0d, -0.01d, 0d);
+                    entity.level().addParticle(new ParticleSnowFlake.SnowflakeData(40, false), snowX, snowY, snowZ, 0d, -0.01d, 0d);
                 }
             }
             else {
-                if (!entity.level.isClientSide && getPrevFrozen()) {
+                if (!entity.level().isClientSide && getPrevFrozen()) {
                     onUnfreeze(entity);
                 }
             }

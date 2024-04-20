@@ -23,7 +23,7 @@ public final class BlackPinkRailLine implements Consumer<AbstractMinecart> {
     }
 
     private State next(Level world, AbstractMinecart minecart) {
-        BlockPos pos = getRailPosition(world, new BlockPos(minecart.position()));
+        BlockPos pos = getRailPosition(world, BlockPos.containing(minecart.position()));
         if (BaseRailBlock.isRail(world.getBlockState(pos))) {
             return state.apply(world, minecart, pos);
         }

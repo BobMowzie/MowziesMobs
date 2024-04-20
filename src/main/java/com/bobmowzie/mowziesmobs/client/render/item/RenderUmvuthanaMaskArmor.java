@@ -17,7 +17,7 @@ public class RenderUmvuthanaMaskArmor extends MowzieGeoArmorRenderer<ItemUmvutha
     }
 
     @Override
-    public RenderType getRenderType(ItemUmvuthanaMask animatable, float partialTick, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, ResourceLocation texture) {
+    public RenderType getRenderType(ItemUmvuthanaMask animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
         return RenderType.entityCutoutNoCull(texture);
     }
 }

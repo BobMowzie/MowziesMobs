@@ -54,7 +54,7 @@ public class LegSolver {
         }
 
         private float settle(LivingEntity entity, double x, double y, double z, float height) {
-            BlockPos pos = new BlockPos(x, y + 1e-3, z);
+            BlockPos pos = BlockPos.containing(x, y + 1e-3, z);
             float dist = getDistance(entity.level(), pos);
             if (1 - dist < 1e-3) {
                 dist = getDistance(entity.level(), pos.below()) + (float) y % 1;

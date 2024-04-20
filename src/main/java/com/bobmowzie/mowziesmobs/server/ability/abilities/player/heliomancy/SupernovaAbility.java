@@ -106,9 +106,9 @@ public class SupernovaAbility extends PlayerAbility {
     protected void beginSection(AbilitySection section) {
         super.beginSection(section);
         if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
-            if (!getUser().level.isClientSide) {
-                EntitySuperNova superNova = new EntitySuperNova(EntityHandler.SUPER_NOVA.get(), getUser().level, getUser(), getUser().getX(), getUser().getY() + getUser().getBbHeight()/2f, getUser().getZ());
-                getUser().level.addFreshEntity(superNova);
+            if (!getUser().level().isClientSide) {
+                EntitySuperNova superNova = new EntitySuperNova(EntityHandler.SUPER_NOVA.get(), getUser().level(), getUser(), getUser().getX(), getUser().getY() + getUser().getBbHeight()/2f, getUser().getZ());
+                getUser().level().addFreshEntity(superNova);
                 
                 MobEffectInstance sunsBlessingInstance = getUser().getEffect(EffectHandler.SUNS_BLESSING.get());
                 if (sunsBlessingInstance != null) {

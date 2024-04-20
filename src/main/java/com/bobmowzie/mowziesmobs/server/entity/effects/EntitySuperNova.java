@@ -81,7 +81,7 @@ public class EntitySuperNova extends EntityMagicEffect {
                         damageFire *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier.get() * 0.8;
                         damageMob *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier.get() * 0.8;
                     }
-                    boolean hitWithFire = DamageUtil.dealMixedDamage(entity, DamageSource.indirectMobAttack(this, caster), damageMob, DamageSource.ON_FIRE, damageFire).getRight();
+                    boolean hitWithFire = DamageUtil.dealMixedDamage(entity, damageSources().mobProjectile(this, caster), damageMob, damageSources().onFire(), damageFire).getRight();
                     if (hitWithFire) {
                         Vec3 diff = entity.position().subtract(position());
                         diff = diff.normalize();

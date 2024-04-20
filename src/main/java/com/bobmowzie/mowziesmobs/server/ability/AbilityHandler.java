@@ -80,7 +80,7 @@ public enum AbilityHandler {
     }
 
     public <T extends LivingEntity> void sendAbilityMessage(T entity, AbilityType<?, ?> abilityType) {
-        if (entity.level.isClientSide) {
+        if (entity.level().isClientSide) {
             return;
         }
         AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability(entity);
@@ -94,7 +94,7 @@ public enum AbilityHandler {
     }
 
     public <T extends LivingEntity> void sendInterruptAbilityMessage(T entity, AbilityType<?, ?> abilityType) {
-        if (entity.level.isClientSide) {
+        if (entity.level().isClientSide) {
             return;
         }
         AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability(entity);
@@ -108,7 +108,7 @@ public enum AbilityHandler {
     }
 
     public <T extends Player> void sendPlayerTryAbilityMessage(T entity, AbilityType<?, ?> ability) {
-        if (!(entity.level.isClientSide && entity instanceof LocalPlayer)) {
+        if (!(entity.level().isClientSide && entity instanceof LocalPlayer)) {
             return;
         }
         AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability(entity);
@@ -119,7 +119,7 @@ public enum AbilityHandler {
 
 
     public <T extends LivingEntity> void sendJumpToSectionMessage(T entity, AbilityType<?, ?> abilityType, int sectionIndex) {
-        if (entity.level.isClientSide) {
+        if (entity.level().isClientSide) {
             return;
         }
         AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability(entity);

@@ -81,7 +81,7 @@ public final class ContainerUmvuthanaTrade extends ContainerTradeBase {
 
         @Override
         protected void checkTakeAchievements(ItemStack stack) {
-            stack.onCraftedBy(umvuthanaMinion.level, player, removeCount);
+            stack.onCraftedBy(umvuthanaMinion.level(), player, removeCount);
             removeCount = 0;
         }
 

@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
@@ -21,7 +22,7 @@ public class EntityFallingBlock extends Entity {
     public static float GRAVITY = 0.1f;
     public double prevMotionX, prevMotionY, prevMotionZ;
 
-    private static final EntityDataAccessor<Optional<BlockState>> BLOCK_STATE = SynchedEntityData.defineId(EntityFallingBlock.class, EntityDataSerializers.BLOCK_STATE);
+    private static final EntityDataAccessor<BlockState> BLOCK_STATE = SynchedEntityData.defineId(EntityFallingBlock.class, EntityDataSerializers.BLOCK_STATE);
     private static final EntityDataAccessor<Integer> DURATION = SynchedEntityData.defineId(EntityFallingBlock.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> TICKS_EXISTED = SynchedEntityData.defineId(EntityFallingBlock.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<String> MODE = SynchedEntityData.defineId(EntityFallingBlock.class, EntityDataSerializers.STRING);
@@ -72,7 +73,7 @@ public class EntityFallingBlock extends Entity {
         super.tick();
         if (getMode() == EnumFallingBlockMode.MOBILE) {
             setDeltaMovement(getDeltaMovement().subtract(0, GRAVITY, 0));
-            if (onGround) setDeltaMovement(getDeltaMovement().scale(0.7));
+            if (onGround()) setDeltaMovement(getDeltaMovement().scale(0.7));
             else setXRot(getXRot() + 15);
             this.move(MoverType.SELF, this.getDeltaMovement());
 
@@ -89,7 +90,7 @@ public class EntityFallingBlock extends Entity {
 
     @Override
     protected void defineSynchedData() {
-        getEntityData().define(BLOCK_STATE, Optional.of(Blocks.DIRT.defaultBlockState()));
+        getEntityData().define(BLOCK_STATE, Blocks.DIRT.defaultBlockState());
         getEntityData().define(DURATION, 70);
         getEntityData().define(TICKS_EXISTED, 0);
         getEntityData().define(MODE, EnumFallingBlockMode.MOBILE.toString());
@@ -100,7 +101,7 @@ public class EntityFallingBlock extends Entity {
     protected void readAdditionalSaveData(CompoundTag compound) {
         Tag blockStateCompound = compound.get("block");
         if (blockStateCompound != null) {
-            BlockState blockState = NbtUtils.readBlockState((CompoundTag) blockStateCompound);
+            BlockState blockState = NbtUtils.readBlockState(this.level().holderLookup(Registries.BLOCK), (CompoundTag) blockStateCompound);
             setBlock(blockState);
         }
         setDuration(compound.getInt("duration"));
@@ -120,18 +121,12 @@ public class EntityFallingBlock extends Entity {
         compound.putFloat("vy", getEntityData().get(ANIM_V_Y));
     }
 
-    @Override
-    public Packet<?> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
-
     public BlockState getBlock() {
-        Optional<BlockState> bsOp = getEntityData().get(BLOCK_STATE);
-        return bsOp.orElse(null);
+        return getEntityData().get(BLOCK_STATE);
     }
 
     public void setBlock(BlockState block) {
-        getEntityData().set(BLOCK_STATE, Optional.of(block));
+        getEntityData().set(BLOCK_STATE, block);
     }
 
     public int getDuration() {

@@ -9,6 +9,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import software.bernie.geckolib.core.animation.AnimationState;
 
 @OnlyIn(Dist.CLIENT)
 public class ModelGeckoPlayerFirstPerson extends MowzieGeoModel<GeckoPlayer> {
@@ -43,8 +44,8 @@ public class ModelGeckoPlayerFirstPerson extends MowzieGeoModel<GeckoPlayer> {
 	}
 
 	@Override
-	public void setLivingAnimations(GeckoPlayer entity, Integer uniqueID) {
-		super.setLivingAnimations(entity, uniqueID);
+	public void setCustomAnimations(GeckoPlayer animatable, long instanceId, AnimationState<GeckoPlayer> animationState) {
+		super.setCustomAnimations(animatable, instanceId, animationState);
 		if (isInitialized()) {
 			MowzieGeoBone rightArmLayerClassic = getMowzieBone("RightArmLayerClassic");
 			MowzieGeoBone leftArmLayerClassic = getMowzieBone("LeftArmLayerClassic");

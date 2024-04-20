@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.ability.PlayerAbility;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
+import software.bernie.geckolib.core.animation.Animation;
 
 public class SimplePlayerAnimationAbility extends PlayerAbility {
     private String animationName;
@@ -35,8 +36,8 @@ public class SimplePlayerAnimationAbility extends PlayerAbility {
         super.start();
         if (separateLeftAndRight) {
             boolean handSide = getUser().getMainArm() == HumanoidArm.RIGHT;
-            playAnimation(animationName + "_" + (handSide ? "right" : "left"), GeckoPlayer.Perspective.THIRD_PERSON, false);
-            playAnimation(animationName, GeckoPlayer.Perspective.FIRST_PERSON, false);
+            playAnimation(animationName + "_" + (handSide ? "right" : "left"), GeckoPlayer.Perspective.THIRD_PERSON, Animation.LoopType.PLAY_ONCE);
+            playAnimation(animationName, GeckoPlayer.Perspective.FIRST_PERSON, Animation.LoopType.PLAY_ONCE);
         }
         else {
             playAnimation(animationName, false);

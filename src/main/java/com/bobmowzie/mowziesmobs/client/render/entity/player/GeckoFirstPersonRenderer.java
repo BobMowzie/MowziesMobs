@@ -33,6 +33,7 @@ import org.joml.Vector4f;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.cache.object.GeoCube;
+import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.util.RenderUtils;
@@ -87,7 +88,11 @@ public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements GeoR
 
         if (flag) {
             this.geoModel.setTextureFromPlayer(player);
-            this.geoModel.setLivingAnimations(geckoPlayer, player.getUUID().hashCode());
+            AnimationState<GeckoPlayer> animationState = new AnimationState<>(geckoPlayer, 0, 0, partialTicks, false);
+            long instanceId = getInstanceId(geckoPlayer);
+
+            this.geoModel.addAdditionalStateData(geckoPlayer, instanceId, animationState::setData);
+            this.geoModel.handleAnimations(geckoPlayer, instanceId, animationState);
 
             RenderType rendertype = RenderType.itemEntityTranslucentCull(getTextureLocation(geckoPlayer));
             VertexConsumer ivertexbuilder = bufferIn.getBuffer(rendertype);

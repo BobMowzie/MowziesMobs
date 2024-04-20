@@ -39,13 +39,13 @@ public class SpawnPillarAbility extends PlayerAbility {
     public boolean tryAbility() {
         Vec3 from = getUser().position();
         Vec3 to = from.subtract(0, MAX_RANGE_TO_GROUND, 0);
-        BlockHitResult result = getUser().level.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, getUser()));
+        BlockHitResult result = getUser().level().clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, getUser()));
         if (result.getType() != HitResult.Type.MISS) {
             this.spawnPillarPos = result.getBlockPos();
-            this.spawnPillarBlock = getUser().level.getBlockState(spawnPillarPos);
+            this.spawnPillarBlock = getUser().level().getBlockState(spawnPillarPos);
             if (result.getDirection() != Direction.UP) {
-                BlockState blockAbove = getUser().level.getBlockState(spawnPillarPos.above());
-                if (blockAbove.isSuffocating(getUser().level, spawnPillarPos.above()) || blockAbove.isAir())
+                BlockState blockAbove = getUser().level().getBlockState(spawnPillarPos.above());
+                if (blockAbove.isSuffocating(getUser().level(), spawnPillarPos.above()) || blockAbove.isAir())
                     return false;
             }
             return EffectGeomancy.isBlockDiggable(spawnPillarBlock);
@@ -68,10 +68,10 @@ public class SpawnPillarAbility extends PlayerAbility {
     private void spawnPillar() {
         //playAnimation("spawn_boulder_instant", false);
 
-        pillar = new EntityPillar(EntityHandler.PILLAR.get(), getUser().level, getUser(), spawnPillarBlock, spawnPillarPos);
+        pillar = new EntityPillar(EntityHandler.PILLAR.get(), getUser().level(), getUser(), spawnPillarBlock, spawnPillarPos);
         pillar.setPos(spawnPillarPos.getX() + 0.5F, spawnPillarPos.getY() + 1, spawnPillarPos.getZ() + 0.5F);
-        if (!getUser().level.isClientSide && pillar.checkCanSpawn()) {
-            getUser().level.addFreshEntity(pillar);
+        if (!getUser().level().isClientSide && pillar.checkCanSpawn()) {
+            getUser().level().addFreshEntity(pillar);
         }
     }
 

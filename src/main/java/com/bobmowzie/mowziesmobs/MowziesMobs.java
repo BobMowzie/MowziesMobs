@@ -141,7 +141,7 @@ public final class MowziesMobs {
             JigsawHandler.registerJigsawElements();
             ProcessorHandler.registerStructureProcessors();
             FeatureHandler.registerStructurePieces();
-            ConfiguredFeatureHandler.registerConfiguredFeatures();
+//            ConfiguredFeatureHandler.registerConfiguredFeatures();
         });
     }
 

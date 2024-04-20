@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.entity.effects;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
@@ -161,7 +162,7 @@ public class EntityBlockSwapper extends Entity {
     public void readAdditionalSaveData(CompoundTag compound) {
         Tag blockNBT = compound.get("block");
         if (blockNBT != null) {
-            BlockState blockState = NbtUtils.readBlockState((CompoundTag) blockNBT);
+            BlockState blockState = NbtUtils.readBlockState(this.level().holderLookup(Registries.BLOCK), (CompoundTag) blockNBT);
             setOrigBlock(blockState);
         }
         setRestoreTime(compound.getInt("restoreTime"));
@@ -339,7 +340,7 @@ public class EntityBlockSwapper extends Entity {
                     for (int k = 0; k < height; k++) {
                         Tag blockNBT = compound.get("block_" + i + "_" + j + "_" + k);
                         if (blockNBT != null) {
-                            BlockState blockState = NbtUtils.readBlockState((CompoundTag) blockNBT);
+                            BlockState blockState = NbtUtils.readBlockState(this.level().holderLookup(Registries.BLOCK), (CompoundTag) blockNBT);
                             origStates[k][i][j] = blockState;
                         }
                     }

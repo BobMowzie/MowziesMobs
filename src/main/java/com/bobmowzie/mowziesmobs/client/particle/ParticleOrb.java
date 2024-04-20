@@ -13,6 +13,7 @@ import net.minecraft.client.particle.*;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -224,7 +225,7 @@ public class ParticleOrb extends TextureSheetParticle {
         @SuppressWarnings("deprecation")
         @Override
         public String writeToString() {
-            return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %d", ForgeRegistries.PARTICLE_TYPES.getKey(this.getType()),
+            return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %d", BuiltInRegistries.PARTICLE_TYPE.getKey(this.getType()),
                     this.r, this.g, this.b, this.scale, this.duration);
         }
 

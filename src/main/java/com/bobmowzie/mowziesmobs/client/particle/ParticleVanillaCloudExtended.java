@@ -9,6 +9,7 @@ import net.minecraft.client.particle.*;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -165,7 +166,7 @@ public class ParticleVanillaCloudExtended extends TextureSheetParticle {
         @SuppressWarnings("deprecation")
         @Override
         public String writeToString() {
-            return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %.2f %.2f", ForgeRegistries.PARTICLE_TYPES.getKey(this.getType()),
+            return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %.2f %.2f", BuiltInRegistries.PARTICLE_TYPE.getKey(this.getType()),
                     this.scale, this.red, this.green, this.blue, this.drag, this.duration);
         }
 

@@ -29,11 +29,13 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -326,7 +328,7 @@ public class EntityFrostmaw extends MowzieLLibraryEntity implements Enemy {
                     float slamPosX = (float) (getX() + radius * Math.cos(Math.toRadians(getYRot() + 90)));
                     float slamPosZ = (float) (getZ() + radius * Math.sin(Math.toRadians(getYRot() + 90)));
                     if (level().isClientSide) level().addParticle(new ParticleRing.RingData(0f, (float)Math.PI/2f, 17, 1f, 1f, 1f, 1f, 60f, false, ParticleRing.EnumRingBehavior.GROW), slamPosX, getY() + 0.2f, slamPosZ, 0, 0, 0);
-                    AABB hitBox = new AABB(new BlockPos(slamPosX - 0.5f, getY(), slamPosZ - 0.5f)).inflate(3, 3, 3);
+                    AABB hitBox = new AABB(BlockPos.containing(slamPosX - 0.5f, getY(), slamPosZ - 0.5f)).inflate(3, 3, 3);
                     List<LivingEntity> entitiesHit = level().getEntitiesOfClass(LivingEntity.class, hitBox);
                     for (LivingEntity entity: entitiesHit) {
                         if (entity != this) {
@@ -342,7 +344,7 @@ public class EntityFrostmaw extends MowzieLLibraryEntity implements Enemy {
                 if (getAnimationTick() == 2) {
                     dodgeYaw = (float) Math.toRadians(targetAngle + 90 + random.nextFloat() * 150 - 75);
                 }
-                if (getAnimationTick() == 6 && (onGround || isInLava() || isInWater())) {
+                if (getAnimationTick() == 6 && (onGround() || isInLava() || isInWater())) {
                     float speed = 1.7f;
                     Vec3 m = getDeltaMovement().add(speed * Math.cos(dodgeYaw), 0, speed * Math.sin(dodgeYaw));
                     setDeltaMovement(m.x, 0.6, m.z);
@@ -421,8 +423,8 @@ public class EntityFrostmaw extends MowzieLLibraryEntity implements Enemy {
 
             spawnSwipeParticles();
 
-            if (fallDistance > 0.2 && !onGround && getLastDamageSource() != DamageSource.LAVA) shouldPlayLandAnimation = true;
-            if (onGround && shouldPlayLandAnimation && getAnimation() != DODGE_ANIMATION) {
+            if (fallDistance > 0.2 && !onGround() && getLastDamageSource() != null && !getLastDamageSource().is(DamageTypes.LAVA)) shouldPlayLandAnimation = true;
+            if (onGround() && shouldPlayLandAnimation && getAnimation() != DODGE_ANIMATION) {
                 if (!level().isClientSide && getAnimation() == NO_ANIMATION) {
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, LAND_ANIMATION);
                 }
@@ -467,11 +469,11 @@ public class EntityFrostmaw extends MowzieLLibraryEntity implements Enemy {
                         AnimationHandler.INSTANCE.sendAnimationMessage(this, SWIPE_TWICE_ANIMATION);
                     else AnimationHandler.INSTANCE.sendAnimationMessage(this, SWIPE_ANIMATION);
                 }
-                if (targetDistance <= 13.5 && getAnimation() == NO_ANIMATION && iceBreathCooldown <= 0 && getHasCrystal() && (onGround || wasTouchingWater)) {
+                if (targetDistance <= 13.5 && getAnimation() == NO_ANIMATION && iceBreathCooldown <= 0 && getHasCrystal() && (onGround() || wasTouchingWater)) {
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, ICE_BREATH_ANIMATION);
                     iceBreathCooldown = ICE_BREATH_COOLDOWN;
                 }
-                if (targetDistance >= 14.5 && getAnimation() == NO_ANIMATION && iceBallCooldown <= 0 && getHasCrystal() && (onGround || wasTouchingWater)) {
+                if (targetDistance >= 14.5 && getAnimation() == NO_ANIMATION && iceBallCooldown <= 0 && getHasCrystal() && (onGround() || wasTouchingWater)) {
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, ICE_BALL_ANIMATION);
                     iceBallCooldown = ICE_BALL_COOLDOWN;
                 }
@@ -513,7 +515,7 @@ public class EntityFrostmaw extends MowzieLLibraryEntity implements Enemy {
                 crystalPos = crystalPos.add(position());
                 for (Player player : getPlayersNearby(8, 8, 8, 8)) {
                     if (player.position().distanceTo(crystalPos) <= 1.8 && (player.isCreative() || player.isInvisible()) && !isInventoryFull(player.getInventory())) {
-                        ItemHandlerHelper.giveItemToPlayer(player, new ItemStack(ItemHandler.ICE_CRYSTAL));
+                        ItemHandlerHelper.giveItemToPlayer(player, new ItemStack(ItemHandler.ICE_CRYSTAL.get()));
                         setHasCrystal(false);
                         if (level().getDifficulty() != Difficulty.PEACEFUL) {
                             AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_NO_CRYSTAL_ANIMATION);
@@ -559,7 +561,7 @@ public class EntityFrostmaw extends MowzieLLibraryEntity implements Enemy {
             playSound(MMSounds.ENTITY_FROSTMAW_BREATH.get(i).get(), 1.5F, 1.1F + random.nextFloat() * 0.1f);
         }
 
-//        if (getAnimation() == NO_ANIMATION && onGround) {
+//        if (getAnimation() == NO_ANIMATION && onGround()) {
 //            AnimationHandler.INSTANCE.sendAnimationMessage(this, SLAM_ANIMATION);
 //            setActive(true);
 //        }
@@ -745,12 +747,12 @@ public class EntityFrostmaw extends MowzieLLibraryEntity implements Enemy {
 
     @Override
     public boolean hurt(DamageSource source, float damage) {
-        if (source == DamageSource.FALL) return false;
-        if (source == DamageSource.LAVA && getAnimation() == NO_ANIMATION) {
+        if (source.is(DamageTypeTags.IS_FALL)) return false;
+        if (source.is(DamageTypes.LAVA) && getAnimation() == NO_ANIMATION) {
             AnimationHandler.INSTANCE.sendAnimationMessage(this, DODGE_ANIMATION);
         }
 
-        if (source.isFire()) damage *= 1.25;
+        if (source.is(DamageTypeTags.IS_FIRE)) damage *= 1.25;
 
         if (source.getDirectEntity() instanceof AbstractArrow) {
             playSound(MMSounds.ENTITY_WROUGHT_UNDAMAGED.get(), 0.4F, 2);

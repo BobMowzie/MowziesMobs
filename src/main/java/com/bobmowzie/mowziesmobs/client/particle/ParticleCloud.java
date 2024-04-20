@@ -12,6 +12,7 @@ import net.minecraft.client.particle.*;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -149,7 +150,7 @@ public class ParticleCloud extends TextureSheetParticle {
         @SuppressWarnings("deprecation")
         @Override
         public String writeToString() {
-            return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %d %.2f", ForgeRegistries.PARTICLE_TYPES.getKey(this.getType()),
+            return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %d %.2f", BuiltInRegistries.PARTICLE_TYPE.getKey(this.getType()),
                     this.r, this.g, this.b, this.scale, this.duration, this.airDrag);
         }
 

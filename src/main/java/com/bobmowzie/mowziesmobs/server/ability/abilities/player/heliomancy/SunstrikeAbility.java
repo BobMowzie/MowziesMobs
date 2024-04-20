@@ -32,7 +32,7 @@ public class SunstrikeAbility extends PlayerAbility {
         Vec3 pos = entity.getEyePosition(0);
         Vec3 segment = entity.getLookAngle();
         segment = pos.add(segment.x * reach, segment.y * reach, segment.z * reach);
-        return entity.level.clip(new ClipContext(pos, segment, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity));
+        return entity.level().clip(new ClipContext(pos, segment, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity));
     }
 
     @Override
@@ -51,11 +51,11 @@ public class SunstrikeAbility extends PlayerAbility {
     public void start() {
         super.start();
         LivingEntity user = getUser();
-        if (!user.level.isClientSide()) {
+        if (!user.level().isClientSide()) {
             BlockPos hit = rayTrace.getBlockPos();
-            EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE.get(), user.level, user, hit.getX(), hit.getY(), hit.getZ());
+            EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE.get(), user.level(), user, hit.getX(), hit.getY(), hit.getZ());
             sunstrike.onSummon();
-            user.level.addFreshEntity(sunstrike);
+            user.level().addFreshEntity(sunstrike);
         }
         playAnimation("sunstrike", false);
     }

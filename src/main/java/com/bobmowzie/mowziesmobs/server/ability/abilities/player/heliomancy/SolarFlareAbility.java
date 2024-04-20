@@ -97,7 +97,7 @@ public class SolarFlareAbility extends PlayerAbility {
                 float damage = 2.0f;
                 float knockback = 3.0f;
                 damage *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier.get();
-                if (aHit.hurt(DamageSource.playerAttack(user), damage)) {
+                if (aHit.hurt(user.damageSources().playerAttack(user), damage)) {
                     if (knockback > 0) {
                         Vec3 vec3 = aHit.position().subtract(user.position()).normalize().scale((double)knockback * 0.6D);
                         if (vec3.lengthSqr() > 0.0D) {

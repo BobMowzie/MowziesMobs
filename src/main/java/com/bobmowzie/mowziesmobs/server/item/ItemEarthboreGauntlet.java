@@ -136,7 +136,7 @@ public class ItemEarthboreGauntlet extends MowzieToolItem implements GeoItem {
         if (abilityCapability != null && abilityCapability.getActiveAbility() == null) {
             if (entity.getUseItem() != stack) {
                 if (entity.level() instanceof ServerLevel) {
-                    triggerAnim(entity, GeoItem.getOrAssignId(stack, (ServerLevel) entity.level()), controllerName, ATTACK_ANIM_NAME);
+                    triggerAnim(entity, GeoItem.getOrAssignId(stack, (ServerLevel) entity.level()), CONTROLLER_NAME, ATTACK_ANIM_NAME);
                 }
             }
         }

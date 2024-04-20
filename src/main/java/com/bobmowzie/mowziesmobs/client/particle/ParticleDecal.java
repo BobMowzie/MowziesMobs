@@ -62,7 +62,7 @@ public class ParticleDecal extends AdvancedParticleBase {
         Vec3 minCorner = new Vec3(-particleScale, -particleScale, -particleScale).yRot(decalRot).add(x, y, z);
         Vec3 maxCorner = new Vec3(particleScale, particleScale, particleScale).yRot(decalRot).add(x, y, z);
 
-        for(BlockPos blockpos : BlockPos.betweenClosed(new BlockPos(minCorner), new BlockPos(maxCorner))) {
+        for(BlockPos blockpos : BlockPos.betweenClosed(BlockPos.containing(minCorner), BlockPos.containing(maxCorner))) {
             renderBlockDecal(buffer, renderInfo, level, blockpos, x, y, z, u0, u1, v0, v1, particleScale, spriteScale, this.alpha, decalRot, this.rCol, this.gCol, this.bCol, lightColor);
         }
 

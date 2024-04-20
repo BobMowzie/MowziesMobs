@@ -52,7 +52,7 @@ public class EntityIceBall extends EntityMagicEffect {
             for (LivingEntity entity : entitiesHit) {
                 if (entity == caster) continue;
                 if (entity.getType().is(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES) || entity instanceof EnderDragon) continue;
-                if (entity.hurt(DamageSource.FREEZE, 3f * ConfigHandler.COMMON.MOBS.FROSTMAW.combatConfig.attackMultiplier.get().floatValue())) {
+                if (entity.hurt(damageSources().freeze(), 3f * ConfigHandler.COMMON.MOBS.FROSTMAW.combatConfig.attackMultiplier.get().floatValue())) {
                     IFrozenCapability capability = CapabilityHandler.getCapability(entity, CapabilityHandler.FROZEN_CAPABILITY);
                     if (capability != null) capability.addFreezeProgress(entity, 1);
                 }

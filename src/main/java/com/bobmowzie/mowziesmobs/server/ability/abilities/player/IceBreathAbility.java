@@ -27,10 +27,10 @@ public class IceBreathAbility extends PlayerAbility {
     public void start() {
         super.start();
         LivingEntity user = getUser();
-        if (!getUser().level.isClientSide()) {
-            EntityIceBreath iceBreath = new EntityIceBreath(EntityHandler.ICE_BREATH.get(), user.level, user);
+        if (!getUser().level().isClientSide()) {
+            EntityIceBreath iceBreath = new EntityIceBreath(EntityHandler.ICE_BREATH.get(), user.level(), user);
             iceBreath.absMoveTo(user.getX(), user.getY() + user.getEyeHeight() - 0.5f, user.getZ(), user.getYRot(), user.getXRot());
-            user.level.addFreshEntity(iceBreath);
+            user.level().addFreshEntity(iceBreath);
             this.iceBreath = iceBreath;
         }
         playAnimation("ice_breath_start", false);
@@ -62,7 +62,7 @@ public class IceBreathAbility extends PlayerAbility {
     private boolean checkIceCrystal() {
         ItemStack stack = getUser().getUseItem();
         if (getTicksInUse() <= 1) return true;
-        if (stack.getItem() != ItemHandler.ICE_CRYSTAL) return false;
+        if (stack.getItem() != ItemHandler.ICE_CRYSTAL.get()) return false;
         return stack.getDamageValue() + 5 < stack.getMaxDamage() || ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable.get();
     }
 
