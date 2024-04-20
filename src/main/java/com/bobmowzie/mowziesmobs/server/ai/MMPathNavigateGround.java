@@ -134,9 +134,9 @@ public class MMPathNavigateGround extends GroundPathNavigation {
                         BlockState block = this.level.getBlockState(pos.set(x, y, z));
                         if (!block.isPathfindable(this.level, pos, PathComputationType.LAND)) return false;
                     }
-                    BlockPathTypes below = this.nodeEvaluator.getBlockPathType(this.level, x, y0 - 1, z, this.mob, 1, 1, 1, true, true);
+                    BlockPathTypes below = this.nodeEvaluator.getBlockPathType(this.level, x, y0 - 1, z, this.mob);
                     if (below == BlockPathTypes.WATER || below == BlockPathTypes.LAVA || below == BlockPathTypes.OPEN) return false;
-                    BlockPathTypes in = this.nodeEvaluator.getBlockPathType(this.level, x, y0, z, this.mob, 1, y1 - y0, 1, true, true);
+                    BlockPathTypes in = this.nodeEvaluator.getBlockPathType(this.level, x, y0, z, this.mob);
                     float priority = this.mob.getPathfindingMalus(in);
                     if (priority < 0.0F || priority >= 8.0F) return false;
                     if (in == BlockPathTypes.DAMAGE_FIRE || in == BlockPathTypes.DANGER_FIRE || in == BlockPathTypes.DAMAGE_OTHER) return false;

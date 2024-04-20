@@ -64,11 +64,14 @@ public final class MowziesMobs {
         BlockHandler.REG.register(bus);
         BlockEntityHandler.REG.register(bus);
         ParticleHandler.REG.register(bus);
-        FeatureHandler.REG.register(bus);
+        FeatureHandler.STRUCTURE_TYPE_REG.register(bus);
+        FeatureHandler.STRUCTURE_PIECE_TYPE_REG.register(bus);
         ContainerHandler.REG.register(bus);
         EffectHandler.REG.register(bus);
         PotionTypeHandler.REG.register(bus);
         BiomeModifiersHandler.REG.register(bus);
+        LootTableHandler.LOOT_CONDITION_TYPE_REG.register(bus);
+        LootTableHandler.LOOT_FUNCTION_TYPE_REG.register(bus);
 
         PROXY.init(bus);
         bus.<FMLCommonSetupEvent>addListener(this::init);
@@ -134,13 +137,11 @@ public final class MowziesMobs {
         SpawnHandler.registerSpawnPlacementTypes();
         PROXY.initNetwork();
         AdvancementHandler.preInit();
-        LootTableHandler.init();
         PotionTypeHandler.init();
 
         event.enqueueWork(() -> {
             JigsawHandler.registerJigsawElements();
             ProcessorHandler.registerStructureProcessors();
-            FeatureHandler.registerStructurePieces();
 //            ConfiguredFeatureHandler.registerConfiguredFeatures();
         });
     }

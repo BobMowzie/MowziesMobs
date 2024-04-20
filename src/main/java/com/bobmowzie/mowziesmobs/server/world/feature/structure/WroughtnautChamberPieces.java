@@ -28,11 +28,11 @@ public class WroughtnautChamberPieces {
     public static class Piece extends TemplateStructurePiece {
 
         public Piece(StructureTemplateManager templateManagerIn, ResourceLocation resourceLocationIn, BlockPos pos, Rotation rotationIn) {
-            super(FeatureHandler.WROUGHTNAUT_CHAMBER_PIECE, 0, templateManagerIn, resourceLocationIn, resourceLocationIn.toString(), makeSettings(rotationIn, resourceLocationIn), pos);
+            super(FeatureHandler.WROUGHTNAUT_CHAMBER_PIECE.get(), 0, templateManagerIn, resourceLocationIn, resourceLocationIn.toString(), makeSettings(rotationIn, resourceLocationIn), pos);
         }
 
         public Piece(StructurePieceSerializationContext context, CompoundTag tagCompound) {
-            super(FeatureHandler.WROUGHTNAUT_CHAMBER_PIECE, tagCompound, context.structureTemplateManager(), (resourceLocation) -> makeSettings(Rotation.valueOf(tagCompound.contains("Rot") ? tagCompound.getString("Rot") : Rotation.NONE.name()), resourceLocation));
+            super(FeatureHandler.WROUGHTNAUT_CHAMBER_PIECE.get(), tagCompound, context.structureTemplateManager(), (resourceLocation) -> makeSettings(Rotation.valueOf(tagCompound.contains("Rot") ? tagCompound.getString("Rot") : Rotation.NONE.name()), resourceLocation));
         }
 
         private static StructurePlaceSettings makeSettings(Rotation rotation, ResourceLocation resourceLocation) {

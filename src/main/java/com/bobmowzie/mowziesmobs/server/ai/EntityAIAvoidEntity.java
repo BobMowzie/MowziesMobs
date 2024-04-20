@@ -61,7 +61,7 @@ public final class EntityAIAvoidEntity<T extends Entity> extends Goal {
         if (avoiding.distanceToSqr(pos.x, pos.y, pos.z) < avoiding.distanceToSqr(entity)) {
             return false;
         }
-        path = navigator.createPath(new BlockPos(pos), 0);
+        path = navigator.createPath(BlockPos.containing(pos), 0);
         return path != null;
     }
 

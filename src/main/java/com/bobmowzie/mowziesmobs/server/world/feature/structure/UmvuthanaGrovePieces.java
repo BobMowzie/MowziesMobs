@@ -188,11 +188,11 @@ public class UmvuthanaGrovePieces {
         }
 
         public Piece(StructureTemplateManager manager, ResourceLocation resourceLocationIn, Rotation rotation, BlockPos pos) {
-            this(FeatureHandler.UMVUTHANA_GROVE_PIECE, manager, resourceLocationIn, rotation, pos);
+            this(FeatureHandler.UMVUTHANA_GROVE_PIECE.get(), manager, resourceLocationIn, rotation, pos);
         }
 
         public Piece(StructurePieceSerializationContext context, CompoundTag tagCompound) {
-            this(FeatureHandler.UMVUTHANA_GROVE_PIECE, context, tagCompound);
+            this(FeatureHandler.UMVUTHANA_GROVE_PIECE.get(), context, tagCompound);
         }
 
         private static StructurePlaceSettings makeSettings(Rotation rotation, ResourceLocation resourceLocation) {
@@ -452,11 +452,11 @@ public class UmvuthanaGrovePieces {
     public static class FirepitPiece extends Piece {
 
         public FirepitPiece(StructureTemplateManager manager, Rotation rotation, BlockPos pos) {
-            super(FeatureHandler.UMVUTHANA_FIREPIT, manager, FIREPIT, rotation, pos);
+            super(FeatureHandler.UMVUTHANA_FIREPIT.get(), manager, FIREPIT, rotation, pos);
         }
 
         public FirepitPiece(StructurePieceSerializationContext context, CompoundTag tagCompound) {
-            super(FeatureHandler.UMVUTHANA_FIREPIT, context, tagCompound);
+            super(FeatureHandler.UMVUTHANA_FIREPIT.get(), context, tagCompound);
         }
 
         public BlockPos findGround(LevelAccessor worldIn, int x, int z) {

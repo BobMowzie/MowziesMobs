@@ -253,6 +253,6 @@ public final class MMSounds {
     public static final RegistryObject<SoundEvent> MUSIC_FROSTMAW_THEME = create("music.frostmaw_theme");
 
     private static RegistryObject<SoundEvent> create(String name) {
-        return REG.register(name, () -> new SoundEvent(new ResourceLocation(MowziesMobs.MODID, name)));
+        return REG.register(name, () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(MowziesMobs.MODID, name)));
     }
 }

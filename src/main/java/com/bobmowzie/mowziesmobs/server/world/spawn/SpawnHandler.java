@@ -44,7 +44,7 @@ public class SpawnHandler {
             @Override
             public boolean test(LevelReader t, BlockPos pos, EntityType<? extends Mob> entityType) {
                 BlockState block = t.getBlockState(pos.below());
-                if (block.getBlock() == Blocks.BEDROCK || block.getBlock() == Blocks.BARRIER || !block.getMaterial().blocksMotion())
+                if (block.getBlock() == Blocks.BEDROCK || block.getBlock() == Blocks.BARRIER || !block.blocksMotion())
                     return false;
                 BlockState iblockstateUp = t.getBlockState(pos);
                 BlockState iblockstateUp2 = t.getBlockState(pos.above());

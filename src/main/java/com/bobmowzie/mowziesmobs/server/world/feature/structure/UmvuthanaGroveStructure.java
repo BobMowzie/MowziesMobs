@@ -60,7 +60,7 @@ public class UmvuthanaGroveStructure extends MowzieStructure {
             for (int j = 0; j < 30; j++) {
                 float distance = random.nextInt(8) + 13;
                 int angle = random.nextInt(360);
-                BlockPos housePos = new BlockPos(centerPos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.getZ() + distance * Math.cos(Math.toRadians(angle)));
+                BlockPos housePos = BlockPos.containing(centerPos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.getZ() + distance * Math.cos(Math.toRadians(angle)));
                 housePos = posToSurface(generator, housePos, heightLimitView, context.randomState());
                 int houseOceanFloorY = generator.getBaseHeight(housePos.getX(), housePos.getZ(), Heightmap.Types.OCEAN_FLOOR_WG, heightLimitView, context.randomState());
                 if (houseOceanFloorY < housePos.getY()) continue;
@@ -74,7 +74,7 @@ public class UmvuthanaGroveStructure extends MowzieStructure {
             for (int j = 0; j < 30; j++) {
                 float distance = random.nextInt(14) + 13;
                 int angle = random.nextInt(360);
-                BlockPos treePos = new BlockPos(centerPos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.getZ() + distance * Math.cos(Math.toRadians(angle)));
+                BlockPos treePos = BlockPos.containing(centerPos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.getZ() + distance * Math.cos(Math.toRadians(angle)));
                 treePos = posToSurface(generator, treePos, heightLimitView, context.randomState());
                 int treeOceanFloorY = generator.getBaseHeight(treePos.getX(), treePos.getZ(), Heightmap.Types.OCEAN_FLOOR_WG, heightLimitView, context.randomState());
                 if (treeOceanFloorY < treePos.getY()) continue;
@@ -92,7 +92,7 @@ public class UmvuthanaGroveStructure extends MowzieStructure {
             for (int j = 1; j <= 10; j++) {
                 distance = random.nextInt(15) + 8;
                 angle = random.nextInt(360);
-                BlockPos pitPos = new BlockPos(centerPos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.getZ() + distance * Math.cos(Math.toRadians(angle)));
+                BlockPos pitPos = BlockPos.containing(centerPos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.getZ() + distance * Math.cos(Math.toRadians(angle)));
                 pitPos = posToSurface(generator, pitPos, heightLimitView, context.randomState());
                 int pitOceanFloorY = generator.getBaseHeight(pitPos.getX(), pitPos.getZ(), Heightmap.Types.OCEAN_FLOOR_WG, heightLimitView, context.randomState());
                 if (pitOceanFloorY < pitPos.getY()) continue;
@@ -112,7 +112,7 @@ public class UmvuthanaGroveStructure extends MowzieStructure {
             for (int j = 1; j <= 10; j++) {
                 distance = random.nextInt(15) + 8;
                 angle = random.nextInt(360);
-                BlockPos stakePos = new BlockPos(centerPos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.getZ() + distance * Math.cos(Math.toRadians(angle)));
+                BlockPos stakePos = BlockPos.containing(centerPos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.getZ() + distance * Math.cos(Math.toRadians(angle)));
                 stakePos = posToSurface(generator, stakePos, heightLimitView, context.randomState());
                 int stakeOceanFloorY = generator.getBaseHeight(stakePos.getX(), stakePos.getZ(), Heightmap.Types.OCEAN_FLOOR_WG, heightLimitView, context.randomState());
                 if (stakeOceanFloorY < stakePos.getY()) continue;

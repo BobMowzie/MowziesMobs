@@ -82,7 +82,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
                     float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
                     float entityHitDistance = (float) Math.sqrt((entityHit.getZ() - entity.getZ()) * (entityHit.getZ() - entity.getZ()) + (entityHit.getX() - entity.getX()) * (entityHit.getX() - entity.getX())) - entityHit.getBbWidth() / 2f;
                     if (entityHitDistance <= range && (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2)) {
-                        entityHit.hurt(DamageSource.mobAttack(entity), damage);
+                        entityHit.hurt(entity.damageSources().mobAttack(entity), damage);
                         if (entityHit.isBlocking())
                             entityHit.getUseItem().hurtAndBreak(400, entityHit, player -> player.broadcastBreakEvent(entityHit.getUsedItemHand()));
                         entityHit.setDeltaMovement(entityHit.getDeltaMovement().x * applyKnockback, entityHit.getDeltaMovement().y, entityHit.getDeltaMovement().z * applyKnockback);
@@ -122,7 +122,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
                     float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
                     float entityHitDistance = (float) Math.sqrt((entityHit.getZ() - entity.getZ()) * (entityHit.getZ() - entity.getZ()) + (entityHit.getX() - entity.getX()) * (entityHit.getX() - entity.getX()));
                     if (entityHitDistance <= range - 0.3 && (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2)) {
-                        entityHit.hurt(DamageSource.mobAttack(entity), damage);
+                        entityHit.hurt(entity.damageSources().mobAttack(entity), damage);
                         if (entityHit.isBlocking())
                             entityHit.getUseItem().hurtAndBreak(400, entityHit, player -> player.broadcastBreakEvent(entityHit.getUsedItemHand()));
                         entityHit.setDeltaMovement(entityHit.getDeltaMovement().x * applyKnockback, entityHit.getDeltaMovement().y, entityHit.getDeltaMovement().z * applyKnockback);
@@ -154,7 +154,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
                 for (LivingEntity entityHit : entitiesHit) {
                     float entityHitDistance = (float) Math.sqrt((entityHit.getZ() - entity.getZ()) * (entityHit.getZ() - entity.getZ()) + (entityHit.getX() - entity.getX()) * (entityHit.getX() - entity.getX()));
                     if (entityHitDistance <= range + 0.2) {
-                        entityHit.hurt(DamageSource.mobAttack(entity), damage);
+                        entityHit.hurt(entity.damageSources().mobAttack(entity), damage);
                         if (entityHit.isBlocking())
                             entityHit.getUseItem().hurtAndBreak(400, entityHit, player -> player.broadcastBreakEvent(entityHit.getUsedItemHand()));
                         entityHit.setDeltaMovement(entityHit.getDeltaMovement().x * applyKnockback, entityHit.getDeltaMovement().y, entityHit.getDeltaMovement().z * applyKnockback);

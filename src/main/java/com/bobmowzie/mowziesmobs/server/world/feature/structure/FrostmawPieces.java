@@ -45,12 +45,12 @@ public class FrostmawPieces {
         }
 
         public FrostmawPiece(StructureTemplateManager templateManagerIn, ResourceLocation resourceLocationIn, BlockPos pos, Rotation rotationIn) {
-            super(FeatureHandler.FROSTMAW_PIECE, 0, templateManagerIn, resourceLocationIn, resourceLocationIn.toString(), makeSettings(rotationIn, resourceLocationIn), makePosition(resourceLocationIn, pos));
+            super(FeatureHandler.FROSTMAW_PIECE.get(), 0, templateManagerIn, resourceLocationIn, resourceLocationIn.toString(), makeSettings(rotationIn, resourceLocationIn), makePosition(resourceLocationIn, pos));
         }
 
 
         public FrostmawPiece(StructurePieceSerializationContext context, CompoundTag tag) {
-            super(FeatureHandler.FROSTMAW_PIECE, tag, context.structureTemplateManager(), (resourceLocation) -> makeSettings(Rotation.valueOf(tag.getString("Rot")), resourceLocation));
+            super(FeatureHandler.FROSTMAW_PIECE.get(), tag, context.structureTemplateManager(), (resourceLocation) -> makeSettings(Rotation.valueOf(tag.getString("Rot")), resourceLocation));
         }
 
         /**

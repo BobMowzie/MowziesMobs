@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.world;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
@@ -33,12 +34,12 @@ public class BiomeChecker {
     
     public boolean isBiomeInConfig(Holder<Biome> biome) {
         for (ResourceLocation biomeName : whitelist) {
-            TagKey<Biome> tagKey = TagKey.create(Registry.BIOME_REGISTRY, biomeName);
+            TagKey<Biome> tagKey = TagKey.create(Registries.BIOME, biomeName);
             if (biome.is(tagKey)) return true;
             if (biome.is(biomeName)) return true;
         }
         for (ResourceLocation biomeName : blacklist) {
-            TagKey<Biome> tagKey = TagKey.create(Registry.BIOME_REGISTRY, biomeName);
+            TagKey<Biome> tagKey = TagKey.create(Registries.BIOME, biomeName);
             if (biome.is(tagKey)) return false;
             if (biome.is(biomeName)) return false;
         }
@@ -70,7 +71,7 @@ public class BiomeChecker {
             for (int i = 0; i < neededTags.length; i++) {
                 ResourceLocation neededBiomeName = neededTags[i];
                 if (neededBiomeName == null) continue;
-                TagKey<Biome> neededBiomeTag = TagKey.create(Registry.BIOME_REGISTRY, neededBiomeName);
+                TagKey<Biome> neededBiomeTag = TagKey.create(Registries.BIOME, neededBiomeName);
                 boolean failIfMatches = inverted[i];
                 if (failIfMatches) {
                     if (biome.is(neededBiomeTag) || biome.is(neededBiomeName)) {

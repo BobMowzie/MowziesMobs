@@ -55,7 +55,7 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
                 float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
                 float entityHitDistance = (float) Math.sqrt((entityHit.getZ() - entity.getZ()) * (entityHit.getZ() - entity.getZ()) + (entityHit.getX() - entity.getX()) * (entityHit.getX() - entity.getX()));
                 if (entityHitDistance <= range && (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2)) {
-                    entityHit.hurt(DamageSource.mobAttack(entity), damage * 1.5F);
+                    entityHit.hurt(entity.damageSources().mobAttack(entity), damage * 1.5F);
                     if (entityHit.isBlocking()) entityHit.getUseItem().hurtAndBreak(400, entityHit, player -> player.broadcastBreakEvent(entityHit.getUsedItemHand()));
                     entityHit.setDeltaMovement(entityHit.getDeltaMovement().x * applyKnockbackMultiplier, entityHit.getDeltaMovement().y, entityHit.getDeltaMovement().z * applyKnockbackMultiplier);
                 }

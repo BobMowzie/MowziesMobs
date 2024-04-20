@@ -85,7 +85,7 @@ public class BlockGrottol extends HorizontalDirectionalBlock {
     }*/
 
     private static boolean hasSupport(BlockGetter world, BlockPos pos) {
-        return world.getBlockState(pos.below()).getMaterial().isSolid();
+        return world.getBlockState(pos.below()).isSolid();
     }
 
     public enum Variant implements StringRepresentable {

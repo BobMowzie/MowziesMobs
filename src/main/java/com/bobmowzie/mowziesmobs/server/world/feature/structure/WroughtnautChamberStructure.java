@@ -57,7 +57,7 @@ public class WroughtnautChamberStructure extends MowzieStructure {
                 BlockPos airPos = null;
                 NoiseColumn column = generator.getBaseColumn(x + dx, z + dz, heightAccessor, state);
                 for (int y = heightMax; y > heightMin; y--) {
-                    if (!column.getBlock(y).getMaterial().isSolid()) {
+                    if (!column.getBlock(y).isSolid()) {
                         airPos = new BlockPos(x + dx, y, z + dz);
                         break;
                     }
@@ -67,7 +67,7 @@ public class WroughtnautChamberStructure extends MowzieStructure {
                 if (airPos != null) {
                     BlockPos groundPos = null;
                     for (int y = airPos.getY(); y > heightMin; y--) {
-                        if (column.getBlock(y).getMaterial().isSolid()) {
+                        if (column.getBlock(y).isSolid()) {
                             // Found floor of cave
                             groundPos = airPos.atY(y);
                             break;
@@ -86,7 +86,7 @@ public class WroughtnautChamberStructure extends MowzieStructure {
                                 // Check upwards to see if four blocks up are solid. If not, checkWallPos moves up to the new floor
                                 for (int wallHeightCount = 1; true; wallHeightCount++) {
                                     BlockState wallBlock = wallCheckColumn.getBlock(checkWallPos.getY());
-                                    if (!wallBlock.getMaterial().isSolid()) {
+                                    if (!wallBlock.isSolid()) {
                                         // If not solid, no wall. Move checkWallPos in dir direction and check again
                                         break;
                                     }

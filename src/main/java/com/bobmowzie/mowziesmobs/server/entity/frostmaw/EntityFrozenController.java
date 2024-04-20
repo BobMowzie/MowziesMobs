@@ -59,11 +59,6 @@ public class EntityFrozenController extends Entity {
     public double getPassengersRidingOffset() {
         return 0;
     }
-
-    @Override
-    public Packet<?> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
     
     @Override
     public boolean canBeRiddenUnderFluidType(FluidType type, Entity rider) {
@@ -71,7 +66,7 @@ public class EntityFrozenController extends Entity {
     }
 
     @Override
-    public void positionRider(Entity passenger) {
+    public void positionRider(Entity passenger, MoveFunction moveFunction) {
         if (this.hasPassenger(passenger))
         {
             if (passenger instanceof Player) passenger.setPos(this.getX(), this.getY(), this.getZ());

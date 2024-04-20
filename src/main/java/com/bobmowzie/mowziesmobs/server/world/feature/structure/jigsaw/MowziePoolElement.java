@@ -81,15 +81,15 @@ public class MowziePoolElement extends SinglePoolElement {
     }
 
     public static boolean canAttachTwoWays(StructureTemplate.StructureBlockInfo p_54246_, StructureTemplate.StructureBlockInfo p_54247_) {
-        Direction direction = JigsawBlock.getFrontFacing(p_54246_.state);
-        Direction direction1 = JigsawBlock.getFrontFacing(p_54247_.state);
-        Direction direction2 = JigsawBlock.getTopFacing(p_54246_.state);
-        Direction direction3 = JigsawBlock.getTopFacing(p_54247_.state);
-        JigsawBlockEntity.JointType jigsawblockentity$jointtype = JigsawBlockEntity.JointType.byName(p_54246_.nbt.getString("joint")).orElseGet(() -> {
+        Direction direction = JigsawBlock.getFrontFacing(p_54246_.state());
+        Direction direction1 = JigsawBlock.getFrontFacing(p_54247_.state());
+        Direction direction2 = JigsawBlock.getTopFacing(p_54246_.state());
+        Direction direction3 = JigsawBlock.getTopFacing(p_54247_.state());
+        JigsawBlockEntity.JointType jigsawblockentity$jointtype = JigsawBlockEntity.JointType.byName(p_54246_.nbt().getString("joint")).orElseGet(() -> {
             return direction.getAxis().isHorizontal() ? JigsawBlockEntity.JointType.ALIGNED : JigsawBlockEntity.JointType.ROLLABLE;
         });
         boolean flag = jigsawblockentity$jointtype == JigsawBlockEntity.JointType.ROLLABLE;
-        return direction == direction1 && (flag || direction2 == direction3) && p_54246_.nbt.getString("target").equals(p_54247_.nbt.getString("name"));
+        return direction == direction1 && (flag || direction2 == direction3) && p_54246_.nbt().getString("target").equals(p_54247_.nbt().getString("name"));
     }
 
     public boolean ignoresBounds() {

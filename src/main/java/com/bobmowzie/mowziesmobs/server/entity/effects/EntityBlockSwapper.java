@@ -111,12 +111,11 @@ public class EntityBlockSwapper extends Entity {
 
     @Nullable
     public BlockState getOrigBlock() {
-        Optional<BlockState> opState = getEntityData().get(ORIG_BLOCK_STATE);
-        return opState.orElse(null);
+        return getEntityData().get(ORIG_BLOCK_STATE);
     }
 
     public void setOrigBlock(BlockState block) {
-        getEntityData().set(ORIG_BLOCK_STATE, Optional.of(block));
+        getEntityData().set(ORIG_BLOCK_STATE, block);
     }
 
     public void restoreBlock() {
@@ -171,11 +170,6 @@ public class EntityBlockSwapper extends Entity {
                 compound.getInt("storePosY"),
                 compound.getInt("storePosZ")
         ));
-    }
-
-    @Override
-    public Packet<?> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     // Like the regular block swapper, but clears out a whole cylinder for the sculptor's test
