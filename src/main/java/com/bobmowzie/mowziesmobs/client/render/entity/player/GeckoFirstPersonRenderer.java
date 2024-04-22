@@ -233,24 +233,12 @@ public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements GeoR
         else {
             RenderUtils.translateAwayFromPivotPoint(matrixStack, bone);
         }
-        if (!bone.isHidden()) {
-            Iterator var10 = bone.getChildBones().iterator();
+        renderCubesOfBone(matrixStack, bone, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-            while(var10.hasNext()) {
-                GeoCube cube = (GeoCube)var10.next();
-                matrixStack.pushPose();
-                this.renderCube(matrixStack, cube, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                matrixStack.popPose();
-            }
+        if (!isReRender)
+            applyRenderLayersForBone(matrixStack, animatable, bone, renderType, bufferIn, buffer, partialTick, packedLightIn, packedOverlayIn);
 
-            var10 = bone.getChildBones().iterator();
-
-            while(var10.hasNext()) {
-                GeoBone childBone = (GeoBone)var10.next();
-                this.renderRecursively(matrixStack, animatable, childBone, renderType, bufferIn, buffer, isReRender, partialTick, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            }
-        }
-
+        renderChildBones(matrixStack, animatable, bone, renderType, bufferIn, buffer, isReRender, partialTick, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         matrixStack.popPose();
     }
 }

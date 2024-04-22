@@ -441,26 +441,12 @@ public class GeckoRenderPlayer extends PlayerRenderer implements GeoRenderer<Gec
             }
         }
         RenderUtils.translateAwayFromPivotPoint(poseStack, bone);
-        if (!bone.isHidden()) {
-            Iterator var10 = bone.getChildBones().iterator();
+        renderCubesOfBone(poseStack, bone, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 
-            while(var10.hasNext()) {
-                GeoCube cube = (GeoCube)var10.next();
-                poseStack.pushPose();
-                if (!isInvisible) {
-                    this.renderCube(poseStack, cube, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-                }
-                poseStack.popPose();
-            }
+        if (!isReRender)
+            applyRenderLayersForBone(poseStack, animatable, bone, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay);
 
-            var10 = bone.getChildBones().iterator();
-
-            while(var10.hasNext()) {
-                GeoBone childBone = (GeoBone)var10.next();
-                this.renderRecursively(poseStack, animatable, childBone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
-            }
-        }
-
+        renderChildBones(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
         poseStack.popPose();
 
         for(RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> layerrenderer : this.layers) {

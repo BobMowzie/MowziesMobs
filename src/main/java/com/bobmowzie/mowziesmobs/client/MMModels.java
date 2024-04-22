@@ -27,7 +27,7 @@ public class MMModels {
     public static final String[] HAND_MODEL_ITEMS = new String[] {"wrought_axe", "spear", "earthbore_gauntlet", "sculptor_staff"};
 
     @SubscribeEvent
-    public static void onModelBakeEvent(ModelEvent.BakingCompleted event) {
+    public static void onModelBakeEvent(ModelEvent.ModifyBakingResult event) {
         Map<ResourceLocation, BakedModel> map = event.getModels();
 
         for (String item : HAND_MODEL_ITEMS) {
