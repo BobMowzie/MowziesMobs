@@ -9,6 +9,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.model.data.EntityModelData;
 
@@ -34,7 +36,9 @@ public class ModelUmvuthana extends MowzieGeoModel<EntityUmvuthana> {
     }
 
     @Override
-    public void codeAnimations(EntityUmvuthana entity, Integer uniqueID, AnimationState<?> animationState) {
+    public void setCustomAnimations(EntityUmvuthana entity, long instanceId, AnimationState<EntityUmvuthana> animationState) {
+        AnimatableManager<GeoAnimatable> manager = entity.getAnimatableInstanceCache().getManagerForId(instanceId);
+
         boolean isRaptor = entity.getMaskType() == MaskType.FURY;
         boolean isElite = entity.getMaskType() == MaskType.FAITH || isRaptor;
         getMowzieBone("crestRight").setHidden(!isElite);
@@ -44,7 +48,7 @@ public class ModelUmvuthana extends MowzieGeoModel<EntityUmvuthana> {
         getMowzieBone("leftIndexClaw").setHidden(isRaptor);
         getMowzieBone("rightIndexTalon").setHidden(!isRaptor);
         getMowzieBone("rightIndexClaw").setHidden(isRaptor);
-        MowzieGeoBone root = getMowzieBone("root");
+        MowzieGeoBone root = getAndResetMowzieBone("root", manager);
         if (isElite) {
             root.multiplyScale(0.93f, 0.93f, 0.93f);
         }
@@ -52,15 +56,36 @@ public class ModelUmvuthana extends MowzieGeoModel<EntityUmvuthana> {
             root.multiplyScale(0.83f, 0.83f, 0.83f);
         }
 
-        MowzieGeoBone mask = getMowzieBone("mask");
-        MowzieGeoBone hips = getMowzieBone("hips");
+        MowzieGeoBone mask = getAndResetMowzieBone("mask", manager);
+        MowzieGeoBone hips = getAndResetMowzieBone("hips", manager);
+        MowzieGeoBone head = getAndResetMowzieBone("head", manager);
+        MowzieGeoBone neck = getAndResetMowzieBone("neck", manager);
+        MowzieGeoBone maskHand = getAndResetMowzieBone("maskHand", manager);
+        MowzieGeoBone maskTwitcher = getAndResetMowzieBone("maskTwitcher", manager);
+        getAndResetMowzieBone("stomach", manager);
+        getAndResetMowzieBone("chest", manager);
+        getAndResetMowzieBone("leftThigh", manager);
+        getAndResetMowzieBone("leftShin", manager);
+        getAndResetMowzieBone("leftAnkle", manager);
+        getAndResetMowzieBone("leftFoot", manager);
+        getAndResetMowzieBone("leftToesBack", manager);
+        getAndResetMowzieBone("rightThigh", manager);
+        getAndResetMowzieBone("rightShin", manager);
+        getAndResetMowzieBone("rightAnkle", manager);
+        getAndResetMowzieBone("rightFoot", manager);
+        getAndResetMowzieBone("rightToesBack", manager);
+        getAndResetMowzieBone("leftArm", manager);
+        getAndResetMowzieBone("leftForeArm", manager);
+        getAndResetMowzieBone("leftHand", manager);
+        getAndResetMowzieBone("rightArm", manager);
+        getAndResetMowzieBone("rightForeArm", manager);
+        getAndResetMowzieBone("rightHand", manager);
+
         if (entity.getActiveAbilityType() != EntityUmvuthana.TELEPORT_ABILITY) {
             mask.setScale(1.0f / (float) hips.getScale().x, 1.0f / (float) hips.getScale().y, 1.0f / (float) hips.getScale().z);
         }
 
         if (entity.isAlive() && entity.active) {
-            MowzieGeoBone head = getMowzieBone("head");
-            MowzieGeoBone neck = getMowzieBone("neck");
             EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
             float headYaw = Mth.wrapDegrees(entityData.netHeadYaw());
             float headPitch = Mth.wrapDegrees(entityData.headPitch());
@@ -69,9 +94,6 @@ public class ModelUmvuthana extends MowzieGeoModel<EntityUmvuthana> {
             neck.addRotX(headPitch * ((float) Math.PI / 180F) / 2f);
             neck.addRotY(headYaw * ((float) Math.PI / 180F) / 2f);
         }
-
-        MowzieGeoBone maskHand = getMowzieBone("maskHand");
-        MowzieGeoBone maskTwitcher = getMowzieBone("maskTwitcher");
         float maskPlaceSwitch = getControllerValue("maskPlacementSwitchController");
         if (maskPlaceSwitch == 1.0) {
             maskTwitcher.setHidden(true);
