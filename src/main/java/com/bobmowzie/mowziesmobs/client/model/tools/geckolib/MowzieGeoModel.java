@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.client.model.tools.geckolib;
 
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.core.state.BoneSnapshot;
 import software.bernie.geckolib.model.GeoModel;
@@ -11,12 +11,6 @@ import java.util.Optional;
 
 public abstract class MowzieGeoModel<T extends GeoAnimatable> extends GeoModel<T> {
     public MowzieGeoModel() {
-    }
-
-    public MowzieGeoBone getAndResetMowzieBone(String boneName, AnimatableManager<GeoAnimatable> manager) {
-        MowzieGeoBone bone = getMowzieBone(boneName);
-        if (bone != null && manager != null) resetBoneToSnapshot(bone, manager);
-        return bone;
     }
 
     public MowzieGeoBone getMowzieBone(String boneName) {
@@ -28,20 +22,26 @@ public abstract class MowzieGeoModel<T extends GeoAnimatable> extends GeoModel<T
         return !this.getAnimationProcessor().getRegisteredBones().isEmpty();
     }
 
-    public void resetBoneToSnapshot(GeoBone bone, AnimatableManager<GeoAnimatable> manager) {
-        BoneSnapshot snapshot = manager.getBoneSnapshotCollection().get(bone.getName());
+    public void resetBoneToSnapshot(CoreGeoBone bone) {
+        BoneSnapshot initialSnapshot = bone.getInitialSnapshot();
 
-        bone.setRotX(snapshot.getRotX());
-        bone.setRotY(snapshot.getRotY());
-        bone.setRotZ(snapshot.getRotZ());
+        bone.setRotX(initialSnapshot.getRotX());
+        bone.setRotY(initialSnapshot.getRotY());
+        bone.setRotZ(initialSnapshot.getRotZ());
 
-        bone.setPosX(snapshot.getOffsetX());
-        bone.setPosY(snapshot.getOffsetY());
-        bone.setPosZ(snapshot.getOffsetZ());
+        bone.setPosX(initialSnapshot.getOffsetX());
+        bone.setPosY(initialSnapshot.getOffsetY());
+        bone.setPosZ(initialSnapshot.getOffsetZ());
 
-        bone.setScaleX(snapshot.getScaleX());
-        bone.setScaleY(snapshot.getScaleY());
-        bone.setScaleZ(snapshot.getScaleZ());
+        bone.setScaleX(initialSnapshot.getScaleX());
+        bone.setScaleY(initialSnapshot.getScaleY());
+        bone.setScaleZ(initialSnapshot.getScaleZ());
+    }
+
+    @Override
+    public void applyMolangQueries(T animatable, double animTime) {
+        getAnimationProcessor().getRegisteredBones().forEach(this::resetBoneToSnapshot);
+        super.applyMolangQueries(animatable, animTime);
     }
 
     /* TODO: New function is called handleAnimations, but was made final

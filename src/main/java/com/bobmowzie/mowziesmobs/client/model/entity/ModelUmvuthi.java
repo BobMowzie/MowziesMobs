@@ -9,8 +9,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.apache.commons.lang3.tuple.Triple;
 import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.model.data.EntityModelData;
 
@@ -39,34 +37,10 @@ public class ModelUmvuthi extends MowzieGeoModel<EntityUmvuthi> {
 
     @Override
     public void setCustomAnimations(EntityUmvuthi entity, long instanceId, AnimationState<EntityUmvuthi> animationState) {
-        AnimatableManager<GeoAnimatable> manager = entity.getAnimatableInstanceCache().getManagerForId(instanceId);
-
         float frame = entity.frame + animationState.getPartialTick();
 
-        MowzieGeoBone rightThigh = getAndResetMowzieBone("rightThigh", manager);
-        MowzieGeoBone leftThigh = getAndResetMowzieBone("leftThigh", manager);
-        MowzieGeoBone neck1 = getAndResetMowzieBone("neck", manager);
-        MowzieGeoBone neck2 = getAndResetMowzieBone("neck2", manager);
-        MowzieGeoBone head = getAndResetMowzieBone("head", manager);
-        MowzieGeoBone featherRaiseController = getAndResetMowzieBone("featherRaiseController", manager);
-        MowzieGeoBone rightFoot = getAndResetMowzieBone("rightFoot", manager);
-        MowzieGeoBone rightAnkle = getAndResetMowzieBone("rightAnkle", manager);
-        MowzieGeoBone rightCalf = getAndResetMowzieBone("rightCalf", manager);
-        MowzieGeoBone leftFoot = getAndResetMowzieBone("leftFoot", manager);
-        MowzieGeoBone leftAnkle = getAndResetMowzieBone("leftAnkle", manager);
-        MowzieGeoBone leftCalf = getAndResetMowzieBone("leftCalf", manager);
-        MowzieGeoBone rightHand = getAndResetMowzieBone("rightHand", manager);
-        MowzieGeoBone rightLowerArm = getAndResetMowzieBone("rightLowerArm", manager);
-        MowzieGeoBone rightArmJoint = getAndResetMowzieBone("rightArmJoint", manager);
-        MowzieGeoBone leftHand = getAndResetMowzieBone("leftHand", manager);
-        MowzieGeoBone leftLowerArm = getAndResetMowzieBone("leftLowerArm", manager);
-        MowzieGeoBone leftArmJoint = getAndResetMowzieBone("leftArmJoint", manager);
-        MowzieGeoBone chest = getAndResetMowzieBone("chest", manager);
-        MowzieGeoBone body = getAndResetMowzieBone("body", manager);
-        MowzieGeoBone headJoint = getAndResetMowzieBone("headJoint", manager);
-        MowzieGeoBone stomach = getAndResetMowzieBone("stomach", manager);
-        MowzieGeoBone tail = getAndResetMowzieBone("tail", manager);
-        MowzieGeoBone mask = getAndResetMowzieBone("mask", manager);
+        MowzieGeoBone rightThigh = getMowzieBone("rightThigh");
+        MowzieGeoBone leftThigh = getMowzieBone("leftThigh");
 
         float liftLegs = entity.legsUp.getAnimationProgressSinSqrt(animationState.getPartialTick());
         leftThigh.addRotX(1f * liftLegs);
@@ -77,6 +51,9 @@ public class ModelUmvuthi extends MowzieGeoModel<EntityUmvuthi> {
         rightThigh.addRotY(0.5f * liftLegs);
 
         if (entity.isAlive() && entity.active) {
+            MowzieGeoBone neck1 = getMowzieBone("neck");
+            MowzieGeoBone neck2 = getMowzieBone("neck2");
+            MowzieGeoBone head = getMowzieBone("head");
             MowzieGeoBone[] lookPieces = new MowzieGeoBone[] { neck1, neck2, head };
 
             EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
@@ -89,6 +66,22 @@ public class ModelUmvuthi extends MowzieGeoModel<EntityUmvuthi> {
                 bone.addRotY(headYaw * ((float) Math.PI / 180F) / (float) lookPieces.length);
             }
 
+            MowzieGeoBone featherRaiseController = getMowzieBone("featherRaiseController");
+            MowzieGeoBone rightFoot = getMowzieBone("rightFoot");
+            MowzieGeoBone rightAnkle = getMowzieBone("rightAnkle");
+            MowzieGeoBone rightCalf = getMowzieBone("rightCalf");
+            MowzieGeoBone leftFoot = getMowzieBone("leftFoot");
+            MowzieGeoBone leftAnkle = getMowzieBone("leftAnkle");
+            MowzieGeoBone leftCalf = getMowzieBone("leftCalf");
+            MowzieGeoBone rightHand = getMowzieBone("rightHand");
+            MowzieGeoBone rightLowerArm = getMowzieBone("rightLowerArm");
+            MowzieGeoBone rightArmJoint = getMowzieBone("rightArmJoint");
+            MowzieGeoBone leftHand = getMowzieBone("leftHand");
+            MowzieGeoBone leftLowerArm = getMowzieBone("leftLowerArm");
+            MowzieGeoBone leftArmJoint = getMowzieBone("leftArmJoint");
+            MowzieGeoBone chest = getMowzieBone("chest");
+            MowzieGeoBone body = getMowzieBone("body");
+            MowzieGeoBone headJoint = getMowzieBone("headJoint");
             float idleSpeed = 0.08f;
             featherRaiseController.addPosX((float) (Math.sin((frame - 1.2) * idleSpeed) * 0.1));
             body.addRotX((float) (Math.sin((frame - 0.0) * idleSpeed) * 0.035));
@@ -124,6 +117,9 @@ public class ModelUmvuthi extends MowzieGeoModel<EntityUmvuthi> {
         float bellyBounceControl = getControllerValue("bellyBounceController");
         float jiggleSpeed = 2.5f;
         float jiggleScale = (float) (bellyBounceControl * 0.1 * Math.cos(jiggleSpeed * frame));
+        MowzieGeoBone stomach = getMowzieBone("stomach");
+        MowzieGeoBone chest = getMowzieBone("chest");
+        MowzieGeoBone tail = getMowzieBone("tail");
         stomach.setScale(stomach.getScaleX() + jiggleScale, stomach.getScaleY() + jiggleScale, stomach.getScaleZ() + jiggleScale);
         chest.addPosY(jiggleScale * 3);
         leftThigh.addPosX(-jiggleScale * 5);
@@ -133,51 +129,51 @@ public class ModelUmvuthi extends MowzieGeoModel<EntityUmvuthi> {
         float featherShakeControl = getControllerValue("featherShakeController");
         float featherRaiseControl = getControllerValue("featherRaiseController");
         List<Triple<MowzieGeoBone, Direction.Axis, Boolean>> feathers = new ArrayList<>();
-        feathers.add(Triple.of(getAndResetMowzieBone("neckFeathersFront1", manager), Direction.Axis.X, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("neckFeathersFront2", manager), Direction.Axis.X, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("neckFeathersFront3", manager), Direction.Axis.X, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("neckFeathersFront4", manager), Direction.Axis.X, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("neckFeathersBack1", manager), Direction.Axis.X, true));
-        feathers.add(Triple.of(getAndResetMowzieBone("neckFeathersBack2", manager), Direction.Axis.X, true));
-        feathers.add(Triple.of(getAndResetMowzieBone("neckFeathersBack3", manager), Direction.Axis.X, true));
-        feathers.add(Triple.of(getAndResetMowzieBone("neckFeathersBack4", manager), Direction.Axis.X, true));
-        feathers.add(Triple.of(getAndResetMowzieBone("neckFeathersBack5", manager), Direction.Axis.X, true));
-        feathers.add(Triple.of(getAndResetMowzieBone("neckFeathersLeft1", manager), Direction.Axis.Z, true));
-        feathers.add(Triple.of(getAndResetMowzieBone("neckFeathersLeft2", manager), Direction.Axis.Z, true));
-        feathers.add(Triple.of(getAndResetMowzieBone("neckFeathersLeft3", manager), Direction.Axis.Z, true));
-        feathers.add(Triple.of(getAndResetMowzieBone("neckFeathersLeft4", manager), Direction.Axis.Z, true));
-        feathers.add(Triple.of(getAndResetMowzieBone("neckFeathersLeft5", manager), Direction.Axis.Z, true));
-        feathers.add(Triple.of(getAndResetMowzieBone("neckFeathersRight1", manager), Direction.Axis.Z, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("neckFeathersRight2", manager), Direction.Axis.Z, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("neckFeathersRight3", manager), Direction.Axis.Z, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("neckFeathersRight4", manager), Direction.Axis.Z, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("neckFeathersRight5", manager), Direction.Axis.Z, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("chestFeathersFront1", manager), Direction.Axis.X, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("chestFeathersFront2", manager), Direction.Axis.X, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("chestFeathersFront3", manager), Direction.Axis.X, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("chestFeathersLeft1", manager), Direction.Axis.X, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("chestFeathersLeft2", manager), Direction.Axis.X, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("chestFeathersLeft3", manager), Direction.Axis.X, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("chestFeathersRight1", manager), Direction.Axis.X, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("chestFeathersRight2", manager), Direction.Axis.X, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("chestFeathersRight3", manager), Direction.Axis.X, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("bellyFeathersFront1", manager), Direction.Axis.X, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("bellyFeathersFront2", manager), Direction.Axis.X, true));
-        feathers.add(Triple.of(getAndResetMowzieBone("bellyFeathersFront3", manager), Direction.Axis.X, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("bellyFeathersRight1", manager), Direction.Axis.X, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("bellyFeathersRight2", manager), Direction.Axis.X, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("bellyFeathersRight3", manager), Direction.Axis.X, true));
-        feathers.add(Triple.of(getAndResetMowzieBone("bellyFeathersRight4", manager), Direction.Axis.X, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("bellyFeathersRight5", manager), Direction.Axis.X, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("bellyFeathersLeft1", manager), Direction.Axis.X, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("bellyFeathersLeft2", manager), Direction.Axis.X, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("bellyFeathersLeft3", manager), Direction.Axis.X, true));
-        feathers.add(Triple.of(getAndResetMowzieBone("bellyFeathersLeft4", manager), Direction.Axis.X, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("bellyFeathersLeft5", manager), Direction.Axis.X, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("chestDraperyFront", manager), Direction.Axis.X, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("chestDraperyRight", manager), Direction.Axis.Z, false));
-        feathers.add(Triple.of(getAndResetMowzieBone("chestDraperyLeft", manager), Direction.Axis.Z, true));
-        feathers.add(Triple.of(getAndResetMowzieBone("chestDraperyBack", manager), Direction.Axis.X, true));
+        feathers.add(Triple.of(getMowzieBone("neckFeathersFront1"), Direction.Axis.X, false));
+        feathers.add(Triple.of(getMowzieBone("neckFeathersFront2"), Direction.Axis.X, false));
+        feathers.add(Triple.of(getMowzieBone("neckFeathersFront3"), Direction.Axis.X, false));
+        feathers.add(Triple.of(getMowzieBone("neckFeathersFront4"), Direction.Axis.X, false));
+        feathers.add(Triple.of(getMowzieBone("neckFeathersBack1"), Direction.Axis.X, true));
+        feathers.add(Triple.of(getMowzieBone("neckFeathersBack2"), Direction.Axis.X, true));
+        feathers.add(Triple.of(getMowzieBone("neckFeathersBack3"), Direction.Axis.X, true));
+        feathers.add(Triple.of(getMowzieBone("neckFeathersBack4"), Direction.Axis.X, true));
+        feathers.add(Triple.of(getMowzieBone("neckFeathersBack5"), Direction.Axis.X, true));
+        feathers.add(Triple.of(getMowzieBone("neckFeathersLeft1"), Direction.Axis.Z, true));
+        feathers.add(Triple.of(getMowzieBone("neckFeathersLeft2"), Direction.Axis.Z, true));
+        feathers.add(Triple.of(getMowzieBone("neckFeathersLeft3"), Direction.Axis.Z, true));
+        feathers.add(Triple.of(getMowzieBone("neckFeathersLeft4"), Direction.Axis.Z, true));
+        feathers.add(Triple.of(getMowzieBone("neckFeathersLeft5"), Direction.Axis.Z, true));
+        feathers.add(Triple.of(getMowzieBone("neckFeathersRight1"), Direction.Axis.Z, false));
+        feathers.add(Triple.of(getMowzieBone("neckFeathersRight2"), Direction.Axis.Z, false));
+        feathers.add(Triple.of(getMowzieBone("neckFeathersRight3"), Direction.Axis.Z, false));
+        feathers.add(Triple.of(getMowzieBone("neckFeathersRight4"), Direction.Axis.Z, false));
+        feathers.add(Triple.of(getMowzieBone("neckFeathersRight5"), Direction.Axis.Z, false));
+        feathers.add(Triple.of(getMowzieBone("chestFeathersFront1"), Direction.Axis.X, false));
+        feathers.add(Triple.of(getMowzieBone("chestFeathersFront2"), Direction.Axis.X, false));
+        feathers.add(Triple.of(getMowzieBone("chestFeathersFront3"), Direction.Axis.X, false));
+        feathers.add(Triple.of(getMowzieBone("chestFeathersLeft1"), Direction.Axis.X, false));
+        feathers.add(Triple.of(getMowzieBone("chestFeathersLeft2"), Direction.Axis.X, false));
+        feathers.add(Triple.of(getMowzieBone("chestFeathersLeft3"), Direction.Axis.X, false));
+        feathers.add(Triple.of(getMowzieBone("chestFeathersRight1"), Direction.Axis.X, false));
+        feathers.add(Triple.of(getMowzieBone("chestFeathersRight2"), Direction.Axis.X, false));
+        feathers.add(Triple.of(getMowzieBone("chestFeathersRight3"), Direction.Axis.X, false));
+        feathers.add(Triple.of(getMowzieBone("bellyFeathersFront1"), Direction.Axis.X, false));
+        feathers.add(Triple.of(getMowzieBone("bellyFeathersFront2"), Direction.Axis.X, true));
+        feathers.add(Triple.of(getMowzieBone("bellyFeathersFront3"), Direction.Axis.X, false));
+        feathers.add(Triple.of(getMowzieBone("bellyFeathersRight1"), Direction.Axis.X, false));
+        feathers.add(Triple.of(getMowzieBone("bellyFeathersRight2"), Direction.Axis.X, false));
+        feathers.add(Triple.of(getMowzieBone("bellyFeathersRight3"), Direction.Axis.X, true));
+        feathers.add(Triple.of(getMowzieBone("bellyFeathersRight4"), Direction.Axis.X, false));
+        feathers.add(Triple.of(getMowzieBone("bellyFeathersRight5"), Direction.Axis.X, false));
+        feathers.add(Triple.of(getMowzieBone("bellyFeathersLeft1"), Direction.Axis.X, false));
+        feathers.add(Triple.of(getMowzieBone("bellyFeathersLeft2"), Direction.Axis.X, false));
+        feathers.add(Triple.of(getMowzieBone("bellyFeathersLeft3"), Direction.Axis.X, true));
+        feathers.add(Triple.of(getMowzieBone("bellyFeathersLeft4"), Direction.Axis.X, false));
+        feathers.add(Triple.of(getMowzieBone("bellyFeathersLeft5"), Direction.Axis.X, false));
+        feathers.add(Triple.of(getMowzieBone("chestDraperyFront"), Direction.Axis.X, false));
+        feathers.add(Triple.of(getMowzieBone("chestDraperyRight"), Direction.Axis.Z, false));
+        feathers.add(Triple.of(getMowzieBone("chestDraperyLeft"), Direction.Axis.Z, true));
+        feathers.add(Triple.of(getMowzieBone("chestDraperyBack"), Direction.Axis.X, true));
 
         for (Triple<MowzieGeoBone, Direction.Axis, Boolean> feather : feathers) {
             MowzieGeoBone bone = feather.getLeft();
@@ -194,6 +190,9 @@ public class ModelUmvuthi extends MowzieGeoModel<EntityUmvuthi> {
                 bone.addRotZ(oscillation);
             }
         }
+
+        MowzieGeoBone mask = getMowzieBone("mask");
+        MowzieGeoBone body = getMowzieBone("body");
         mask.setScale(1.0f / (float) body.getScale().x, 1.0f / (float) body.getScale().y, 1.0f / (float) body.getScale().z);
 
     }
