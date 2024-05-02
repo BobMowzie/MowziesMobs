@@ -19,24 +19,27 @@ public class MowzieAnimationController<T extends GeoAnimatable> extends Animatio
         setAnimation(animation);
         currentAnimation = this.animationQueue.poll();
         isJustStarting = true;
-        adjustTick(animatable.getTick(animatable));
+//        adjustTick(animatable.getTick(animatable));
         transitionLength = 0;
     }
 
     @Override
     protected double adjustTick(double tick) {
-        if (this.shouldResetTick) {
-            if (getAnimationState() == State.TRANSITIONING) {
-                this.tickOffset = tick;
-            }
-            else if (getAnimationState() == State.RUNNING) {
-                this.tickOffset += transitionLength;
-            }
-            this.shouldResetTick = false;
-        }
-        double adjustedTick = Math.max(tick - this.tickOffset, 0.0D) + timingOffset;
-        if (this.currentAnimation != null && this.currentAnimation.loopType().shouldPlayAgain(animatable, this, currentAnimation.animation())) adjustedTick = adjustedTick % this.currentAnimation.animation().length();
-        if (adjustedTick == timingOffset) isJustStarting = true;
-        return adjustedTick;
+        return super.adjustTick(tick);
+// TODO: Fix timing when game is paused mid-animation
+
+//        if (this.shouldResetTick) {
+//            if (getAnimationState() == State.TRANSITIONING) {
+//                this.tickOffset = tick;
+//            }
+//            else if (getAnimationState() == State.RUNNING) {
+//                this.tickOffset += transitionLength;
+//            }
+//            this.shouldResetTick = false;
+//        }
+//        double adjustedTick = Math.max(tick - this.tickOffset, 0.0D) + timingOffset;
+//        if (this.currentAnimation != null && this.currentAnimation.loopType().shouldPlayAgain(animatable, this, currentAnimation.animation())) adjustedTick = adjustedTick % this.currentAnimation.animation().length();
+//        if (adjustedTick == timingOffset) isJustStarting = true;
+//        return adjustedTick;
     }
 }

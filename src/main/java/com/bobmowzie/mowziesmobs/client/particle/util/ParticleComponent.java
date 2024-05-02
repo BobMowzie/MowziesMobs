@@ -361,7 +361,8 @@ public abstract class ParticleComponent {
             float r = radius.evaluate(t);
             Vector3f axis;
             if (faceCamera && Minecraft.getInstance().player != null) {
-                axis = new Vector3f((Vector3fc) Minecraft.getInstance().player.getLookAngle());
+                Vec3 lookAngle = Minecraft.getInstance().player.getLookAngle();
+                axis = new Vector3f((float) lookAngle.x(), (float) lookAngle.y(), (float) lookAngle.z());
                 axis.normalize();
             }
             else {
