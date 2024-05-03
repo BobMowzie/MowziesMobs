@@ -20,6 +20,7 @@ import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
+import software.bernie.geckolib.util.RenderUtils;
 
 import java.util.Optional;
 
@@ -32,15 +33,14 @@ public class UmvuthanaSunLayer extends GeoRenderLayer<EntityUmvuthana> {
     }
 
     @Override
-    public void render(PoseStack poseStack, EntityUmvuthana entityLivingBaseIn, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferIn, VertexConsumer buffer, float partialTicks, int packedLightIn, int packedOverlay) {
-        if (entityLivingBaseIn.deathTime < 27 && entityLivingBaseIn.active && !(entityLivingBaseIn.getActiveAbilityType() == EntityUmvuthana.TELEPORT_ABILITY && entityLivingBaseIn.getActiveAbility().getCurrentSection().sectionType != AbilitySection.AbilitySectionType.RECOVERY)) {
+    public void renderForBone(PoseStack poseStack, EntityUmvuthana animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+        super.renderForBone(poseStack, animatable, bone, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay);
+        if (animatable.deathTime < 27 && animatable.active && !(animatable.getActiveAbilityType() == EntityUmvuthana.TELEPORT_ABILITY && animatable.getActiveAbility().getCurrentSection().sectionType != AbilitySection.AbilitySectionType.RECOVERY)) {
+            if (bone.isHidden()) return;
             poseStack.pushPose();
-            GeoModel<EntityUmvuthana> model = this.renderer.getGeoModel();
+            RenderUtils.translateToPivotPoint(poseStack, bone);
             String boneName = "head";
-            Optional<GeoBone> bone = model.getBone(boneName);
-            if (bone.isPresent() && !bone.get().isHidden()) {
-                Matrix4f boneMatrix = bone.get().getModelSpaceMatrix();
-                poseStack.mulPoseMatrix(boneMatrix);
+            if (bone.getName().equals(boneName)) {
                 PoseStack.Pose matrixstack$entry = poseStack.last();
                 Matrix4f matrix4f = matrixstack$entry.pose();
                 Vector4f vecTranslation = new Vector4f(0, 0, 0, 1);
@@ -51,12 +51,13 @@ public class UmvuthanaSunLayer extends GeoRenderLayer<EntityUmvuthana> {
                 vecScale.mul(matrix4f);
                 float scale = (float) new Vec3(vecScale.x() - vecTranslation.x(), vecScale.y() - vecTranslation.y(), vecScale.z() - vecTranslation.z()).length();
                 newPoseStack.scale(scale, scale, scale);
-                VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(new ResourceLocation(MowziesMobs.MODID, "textures/particle/sun_no_glow.png"),true));
+                VertexConsumer ivertexbuilder = bufferSource.getBuffer(RenderType.entityTranslucent(new ResourceLocation(MowziesMobs.MODID, "textures/particle/sun_no_glow.png"),true));
                 PoseStack.Pose matrixstack$entry2 = newPoseStack.last();
                 Matrix4f matrix4f2 = matrixstack$entry2.pose();
                 Matrix3f matrix3f = matrixstack$entry.normal();
-                drawSun(matrix4f2, matrix3f, ivertexbuilder, packedLightIn, entityLivingBaseIn.tickCount + partialTicks);
+                drawSun(matrix4f2, matrix3f, ivertexbuilder, packedLight, animatable.tickCount + partialTick);
             }
+            bufferSource.getBuffer(renderType);
             poseStack.popPose();
         }
     }

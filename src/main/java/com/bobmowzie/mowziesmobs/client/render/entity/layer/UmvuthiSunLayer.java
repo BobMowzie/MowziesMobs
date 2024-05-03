@@ -17,6 +17,7 @@ import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
+import software.bernie.geckolib.util.RenderUtils;
 
 import java.util.Optional;
 
@@ -143,33 +144,37 @@ public class UmvuthiSunLayer extends GeoRenderLayer<EntityUmvuthi> {
     }
 
     @Override
-    public void render(PoseStack poseStack, EntityUmvuthi entityLivingBaseIn, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferIn, VertexConsumer buffer, float partialTicks, int packedLight, int packedOverlay) {
-        if (entityLivingBaseIn.shouldRenderSun()) {
+    public void renderForBone(PoseStack poseStack, EntityUmvuthi umvuthi, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTicks, int packedLight, int packedOverlay) {
+        super.renderForBone(poseStack, umvuthi, bone, renderType, bufferSource, buffer, partialTicks, packedLight, packedOverlay);
+        if (umvuthi.shouldRenderSun()) {
+            if (bone.isHidden()) return;
             poseStack.pushPose();
-            GeoModel<EntityUmvuthi> model = this.renderer.getGeoModel();
-            String boneName = "sun_render";
-            Optional<GeoBone> bone = model.getBone(boneName);
-            if (bone.isPresent() && !bone.get().isHidden()) {
-                Matrix4f boneMatrix = bone.get().getModelSpaceMatrix();
-                poseStack.mulPoseMatrix(boneMatrix);
+            RenderUtils.translateToPivotPoint(poseStack, bone);
+            if (bone.getName().equals("sun_render")) {
                 poseStack.translate(0.06d, 0d, -0.0d);
                 poseStack.scale(0.06f, 0.06f, 0.06f);
-                VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(new ResourceLocation(MowziesMobs.MODID, "textures/effects/sun_effect.png"), true));
+                VertexConsumer ivertexbuilder = bufferSource.getBuffer(RenderType.entityTranslucent(new ResourceLocation(MowziesMobs.MODID, "textures/effects/sun_effect.png"), true));
                 PoseStack.Pose matrixstack$entry = poseStack.last();
                 Matrix4f matrix4f = matrixstack$entry.pose();
                 Matrix3f matrix3f = matrixstack$entry.normal();
 
                 // Blend the sun back to full size after supernova
                 float scaleMult = 1f;
-                if (entityLivingBaseIn.getActiveAbilityType() == EntityUmvuthi.SUPERNOVA_ABILITY && entityLivingBaseIn.getActiveAbility().getTicksInUse() > 90) {
-                    scaleMult = (entityLivingBaseIn.getActiveAbility().getTicksInUse() + partialTicks - 90f) / 10f;
+                if (umvuthi.getActiveAbilityType() == EntityUmvuthi.SUPERNOVA_ABILITY && umvuthi.getActiveAbility().getTicksInUse() > 90) {
+                    scaleMult = (umvuthi.getActiveAbility().getTicksInUse() + partialTicks - 90f) / 10f;
                     scaleMult = Mth.clamp(scaleMult, 0f, 1f);
                 }
 
-                drawSun(matrix4f, matrix3f, ivertexbuilder, entityLivingBaseIn.tickCount + partialTicks, scaleMult);
+                drawSun(matrix4f, matrix3f, ivertexbuilder, umvuthi.tickCount + partialTicks, scaleMult);
             }
+            bufferSource.getBuffer(renderType);
             poseStack.popPose();
         }
+    }
+
+    @Override
+    public void render(PoseStack poseStack, EntityUmvuthi entityLivingBaseIn, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferIn, VertexConsumer buffer, float partialTicks, int packedLight, int packedOverlay) {
+
     }
 
     private void drawSun(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer builder, float time, float scaleMultiplier) {

@@ -24,6 +24,7 @@ import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
+import software.bernie.geckolib.util.RenderUtils;
 
 import java.util.Optional;
 
@@ -37,24 +38,17 @@ public class UmvuthanaArmorLayer extends GeoRenderLayer<EntityUmvuthana> {
     }
 
     @Override
-    public void render(PoseStack poseStack, EntityUmvuthana entityLivingBaseIn, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferIn, VertexConsumer buffer, float partialTicks, int packedLightIn, int packedOverlay) {
+    public void renderForBone(PoseStack poseStack, EntityUmvuthana animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+        super.renderForBone(poseStack, animatable, bone, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay);
+        if (bone.isHidden()) return;
         poseStack.pushPose();
-        this.entity = entityLivingBaseIn;
-        GeoModel<EntityUmvuthana> model = this.renderer.getGeoModel();
+        RenderUtils.translateToPivotPoint(poseStack, bone);
         String boneName = "maskTwitcher";
         String handBoneName = "maskHand";
-        Optional<GeoBone> bone = model.getBone(boneName);
-        if (bone.isPresent() && !bone.get().isHidden()) {
-            Matrix4f matrix4f = bone.get().getModelSpaceMatrix();
-            poseStack.mulPoseMatrix(matrix4f);
-            renderArmor(entityLivingBaseIn, bufferIn, poseStack, packedLightIn);
+        if (bone.getName().equals(boneName) || bone.getName().equals(handBoneName)) {
+            renderArmor(animatable, bufferSource, poseStack, packedLight);
         }
-        Optional<GeoBone> handBone = model.getBone(handBoneName);
-        if (handBone.isPresent() && !handBone.get().isHidden()) {
-            Matrix4f matrix4f = handBone.get().getModelSpaceMatrix();
-            poseStack.mulPoseMatrix(matrix4f);
-            renderArmor(entityLivingBaseIn, bufferIn, poseStack, packedLightIn);
-        }
+        bufferSource.getBuffer(renderType);
         poseStack.popPose();
     }
 
@@ -70,8 +64,8 @@ public class UmvuthanaArmorLayer extends GeoRenderLayer<EntityUmvuthana> {
                 if (armorTexture != null) {
                     VertexConsumer ivertexbuilder = ItemRenderer.getFoilBuffer(bufferIn, RenderType.entityCutoutNoCull(new ResourceLocation(armorTexture)), false, glintIn);
                     poseStack.mulPose((new Quaternionf()).rotationXYZ(0.0F, 0.0F, (float) Math.PI));
-                    poseStack.scale(1.111f, 1.111f, 1.111f);
-                    poseStack.translate(0, 0.25, 0.15);
+                    poseStack.scale(1.511f, 1.511f, 1.511f);
+                    poseStack.translate(0, -0.55, 0.15);
                     a.renderToBuffer(poseStack, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
                 }
             }
