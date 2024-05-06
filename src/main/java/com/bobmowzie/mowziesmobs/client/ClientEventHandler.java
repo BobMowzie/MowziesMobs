@@ -230,8 +230,8 @@ public enum ClientEventHandler {
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
         if (playerCapability != null && event.side == LogicalSide.CLIENT) {
             GeckoPlayer geckoPlayer = playerCapability.getGeckoPlayer();
-            if (geckoPlayer != null) geckoPlayer.tick();
-            if (player == Minecraft.getInstance().player) GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON.tick();
+//            if (geckoPlayer != null) geckoPlayer.tick();
+//            if (player == Minecraft.getInstance().player) GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON.tick();
         }
 //        if(player.getInventory().getArmor(3).is(ItemHandler.SOL_VISAGE.asItem())){
 //            int tick = player.tickCount;

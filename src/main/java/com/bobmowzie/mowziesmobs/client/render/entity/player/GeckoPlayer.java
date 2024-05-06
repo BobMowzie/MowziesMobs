@@ -32,13 +32,11 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import javax.annotation.Nullable;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GeckoPlayer implements GeoEntity, IAnimationTickable {
+public abstract class GeckoPlayer implements GeoEntity {
 
 	protected GeoRenderer<GeckoPlayer> renderer;
 	protected MowzieGeoModel<GeckoPlayer> model;
 	protected MowzieAnimationController<GeckoPlayer> controller;
-
-	private int tickTimer = 0;
 
 	private Player player;
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
@@ -70,13 +68,8 @@ public abstract class GeckoPlayer implements GeoEntity, IAnimationTickable {
 	}
 
 	@Override
-	public void tick() {
-		tickTimer++;
-	}
-
-	@Override
-	public int tickTimer() {
-		return tickTimer;
+	public double getTick(Object entity) {
+		return player.tickCount;
 	}
 
 	public <E extends GeoEntity> PlayState predicate(AnimationState<E> e) {
