@@ -294,6 +294,13 @@ public class GeckoRenderPlayer extends PlayerRenderer implements GeoRenderer<Gec
         if (!entity.isInvisibleTo(Minecraft.getInstance().player))
             GeoRenderer.super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
 
+        ModelBipedAnimated.copyFromGeckoModel(this.model, geoModel);
+
+        if (!entity.isSpectator()) {
+            for(RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> layerrenderer : this.layers) {
+                layerrenderer.render(poseStack, bufferSource, packedLight, entity, f5_limbSwing, f8_limbSwingAmount, partialTick, f7, f2_netHeadYaw, f6);
+            }
+        }
     }
 
     public void renderEntity(AbstractClientPlayer entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
@@ -365,12 +372,9 @@ public class GeckoRenderPlayer extends PlayerRenderer implements GeoRenderer<Gec
             matrixStackIn.mulPose(Axis.YP.rotationDegrees(f1));
             matrixStackIn.mulPose(Axis.ZP.rotationDegrees(this.getFlipDegrees(entityLiving)));
             matrixStackIn.mulPose(Axis.YP.rotationDegrees(270.0F));
-        } else if (entityLiving.hasCustomName() || entityLiving instanceof Player) {
-            String s = ChatFormatting.stripFormatting(entityLiving.getName().getString());
-            if (("Dinnerbone".equals(s) || "Grumm".equals(s)) && (!(entityLiving instanceof Player) || ((Player)entityLiving).isModelPartShown(PlayerModelPart.CAPE))) {
-                matrixStackIn.translate(0.0D, (double)(entityLiving.getBbHeight() + 0.1F), 0.0D);
-                matrixStackIn.mulPose(Axis.ZP.rotationDegrees(180.0F));
-            }
+        } else if (isEntityUpsideDown(entityLiving)) {
+            matrixStackIn.translate(0.0F, entityLiving.getBbHeight() + 0.1F, 0.0F);
+            matrixStackIn.mulPose(Axis.ZP.rotationDegrees(180.0F));
         }
     }
 
@@ -493,15 +497,4 @@ public class GeckoRenderPlayer extends PlayerRenderer implements GeoRenderer<Gec
     @Override
     public void firePostRenderEvent(PoseStack poseStack, BakedGeoModel model, MultiBufferSource bufferSource, float partialTick, int packedLight) {
     }
-
-    /* TODO: Is this still needed?
-    @Override
-    public void setCurrentRTB(MultiBufferSource rtb) {
-        this.rtb = rtb;
-    }
-
-    @Override
-    public MultiBufferSource getCurrentRTB() {
-        return this.rtb;
-    }*/
 }
