@@ -51,12 +51,12 @@ public class ItemIceCrystal extends Item {
 
     @Override
     public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
-        if (entityLiving instanceof Player) {
-            Ability iceBreathAbility = AbilityHandler.INSTANCE.getAbility(entityLiving, AbilityHandler.ICE_BREATH_ABILITY);
-            if (iceBreathAbility != null && iceBreathAbility.isUsing()) {
-                iceBreathAbility.end();
-            }
-        }
+//        if (entityLiving instanceof Player) {
+//            Ability iceBreathAbility = AbilityHandler.INSTANCE.getAbility(entityLiving, AbilityHandler.ICE_BREATH_ABILITY);
+//            if (iceBreathAbility != null && iceBreathAbility.isUsing()) {
+//                iceBreathAbility.end();
+//            }
+//        }
         super.releaseUsing(stack, worldIn, entityLiving, timeLeft);
     }
 

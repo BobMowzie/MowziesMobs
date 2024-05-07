@@ -18,6 +18,7 @@ public class CreativeTabHandler {
             .title(Component.translatable("itemGroup.mowziesmobs.creativeTab"))
             .displayItems((displayParams, output) -> {
                 for (RegistryObject<Item> item : ItemHandler.REG.getEntries()) {
+                    if (item == ItemHandler.LOGO) continue;
                     output.accept(item.get());
                 }
             })

@@ -38,6 +38,8 @@ public abstract class GeckoPlayer implements GeoEntity {
 	protected MowzieGeoModel<GeckoPlayer> model;
 	protected MowzieAnimationController<GeckoPlayer> controller;
 
+	private int tickTimer = 0;
+
 	private Player player;
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	public static final String THIRD_PERSON_CONTROLLER_NAME = "thirdPersonAnimation";

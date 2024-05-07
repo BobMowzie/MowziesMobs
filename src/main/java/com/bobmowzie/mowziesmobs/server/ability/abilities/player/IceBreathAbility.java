@@ -48,9 +48,12 @@ public class IceBreathAbility extends PlayerAbility {
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        if (getCurrentSection().sectionType != AbilitySection.AbilitySectionType.RECOVERY && !checkIceCrystal()) jumpToSection(2);
+    public void tickUsing() {
+        super.tickUsing();
+        System.out.println(getUser().getUseItem());
+        if (getCurrentSection().sectionType != AbilitySection.AbilitySectionType.RECOVERY && !checkIceCrystal()) {
+            jumpToSection(2);
+        }
     }
 
     @Override
@@ -83,5 +86,10 @@ public class IceBreathAbility extends PlayerAbility {
         else if (section.sectionType == AbilitySection.AbilitySectionType.RECOVERY) {
             playAnimation("ice_breath_end", false);
         }
+    }
+
+    @Override
+    public boolean preventsItemUse(ItemStack stack) {
+        return stack.getItem() != ItemHandler.ICE_CRYSTAL.get();
     }
 }
