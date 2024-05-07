@@ -12,6 +12,9 @@ public class ModelPartMatrix extends ModelPart {
     private boolean resetUseMatrixMode;
     private boolean useMatrixMode;
 
+    // For debugging
+    private String name;
+
     public ModelPartMatrix(ModelPart original) {
         this(original, true);
     }
@@ -27,6 +30,10 @@ public class ModelPartMatrix extends ModelPart {
 
         useMatrixMode = true;
         this.resetUseMatrixMode = resetUseMatrixMode;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

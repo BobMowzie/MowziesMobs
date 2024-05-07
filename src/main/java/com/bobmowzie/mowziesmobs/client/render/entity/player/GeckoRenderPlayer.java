@@ -87,6 +87,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements GeoRenderer<Gec
         this.addLayer(new BeeStingerLayer<>(this));
         this.addLayer(new FrozenRenderHandler.LayerFrozen<>(this));
         this.addLayer(new SolarFlareLayer(this));
+        this.addLayer(new SunblockLayer<>(this));
 
 
         this.geoModel = geoModel;
@@ -294,7 +295,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements GeoRenderer<Gec
         if (!entity.isInvisibleTo(Minecraft.getInstance().player))
             GeoRenderer.super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
 
-        ModelBipedAnimated.copyFromGeckoModel(this.model, geoModel);
+        ModelPlayerAnimated.copyFromGeckoModel(this.model, geoModel);
 
         if (!entity.isSpectator()) {
             for(RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> layerrenderer : this.layers) {
@@ -426,6 +427,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements GeoRenderer<Gec
                     mowzieBone.getName().equals("LeftHeldItem") || mowzieBone.getName().equals("RightHeldItem") ||
                     mowzieBone.getName().equals("Head") ||
                     mowzieBone.getName().equals("Body") ||
+                    mowzieBone.getName().equals("BodyLayer") ||
                     mowzieBone.getName().equals("LeftArm") ||
                     mowzieBone.getName().equals("RightArm") ||
                     mowzieBone.getName().equals("RightLeg") ||

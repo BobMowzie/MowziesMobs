@@ -120,4 +120,38 @@ public class ModelPlayerAnimated<T extends LivingEntity> extends PlayerModel<T> 
         }
         ModelBipedAnimated.setUseMatrixMode(bipedModel, useMatrixMode);
     }
+
+    public static void copyFromGeckoModel(PlayerModel<?> playerModel, ModelGeckoPlayerThirdPerson geckoModel) {
+        ModelBipedAnimated.copyFromGeckoModel(playerModel, geckoModel);
+
+        if (playerModel.jacket instanceof ModelPartMatrix) {
+            ((ModelPartMatrix) playerModel.jacket).setWorldXform(geckoModel.bipedBody().getWorldSpaceMatrix());
+            ((ModelPartMatrix) playerModel.jacket).setWorldNormal(geckoModel.bipedBody().getWorldSpaceNormal());
+        }
+
+        if (playerModel.leftPants instanceof ModelPartMatrix) {
+            ((ModelPartMatrix) playerModel.leftPants).setWorldXform(geckoModel.bipedLeftLeg().getWorldSpaceMatrix());
+            ((ModelPartMatrix) playerModel.leftPants).setWorldNormal(geckoModel.bipedLeftLeg().getWorldSpaceNormal());
+        }
+
+        if (playerModel.rightPants instanceof ModelPartMatrix) {
+            ((ModelPartMatrix) playerModel.rightPants).setWorldXform(geckoModel.bipedRightLeg().getWorldSpaceMatrix());
+            ((ModelPartMatrix) playerModel.rightPants).setWorldNormal(geckoModel.bipedRightLeg().getWorldSpaceNormal());
+        }
+
+        if (playerModel.rightSleeve instanceof ModelPartMatrix) {
+            ((ModelPartMatrix) playerModel.rightSleeve).setWorldXform(geckoModel.bipedRightArm().getWorldSpaceMatrix());
+            ((ModelPartMatrix) playerModel.rightSleeve).setWorldNormal(geckoModel.bipedRightArm().getWorldSpaceNormal());
+        }
+
+        if (playerModel.leftSleeve instanceof ModelPartMatrix) {
+            ((ModelPartMatrix) playerModel.leftSleeve).setWorldXform(geckoModel.bipedLeftArm().getWorldSpaceMatrix());
+            ((ModelPartMatrix) playerModel.leftSleeve).setWorldNormal(geckoModel.bipedLeftArm().getWorldSpaceNormal());
+        }
+
+        if (playerModel.ear instanceof ModelPartMatrix) {
+            ((ModelPartMatrix) playerModel.ear).setWorldXform(geckoModel.bipedHead().getWorldSpaceMatrix());
+            ((ModelPartMatrix) playerModel.ear).setWorldNormal(geckoModel.bipedHead().getWorldSpaceNormal());
+        }
+    }
 }
