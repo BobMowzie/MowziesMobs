@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.LivingCapability;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -11,6 +12,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
@@ -21,15 +23,16 @@ public class GeckoSunblockLayer<T extends LivingEntity & GeoEntity> extends GeoR
         super(entityRendererIn);
     }
 
-    public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        LivingCapability.ILivingCapability livingCapability = CapabilityHandler.getCapability(entitylivingbaseIn, CapabilityHandler.LIVING_CAPABILITY);
+    @Override
+    public void render(PoseStack poseStack, T animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+        LivingCapability.ILivingCapability livingCapability = CapabilityHandler.getCapability(animatable, CapabilityHandler.LIVING_CAPABILITY);
         if (livingCapability != null && livingCapability.getHasSunblock()) {
-            float f = (float) entitylivingbaseIn.tickCount + partialTicks;
-            RenderType renderType = RenderType.energySwirl(this.getTextureLocation(), this.xOffset(f), f * 0.01F);
+            float f = (float) animatable.tickCount + partialTick;
+            RenderType renderTypeSwirl = RenderType.energySwirl(this.getTextureLocation(), this.xOffset(f), f * 0.01F);
 
-            getRenderer().reRender(getDefaultBakedModel(entitylivingbaseIn),
-                    matrixStackIn, bufferIn, entitylivingbaseIn, renderType, bufferIn.getBuffer(renderType), partialTicks,
-                    packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 0.1F, 1.0F);
+            getRenderer().reRender(getDefaultBakedModel(animatable),
+                    poseStack, bufferSource, animatable, renderTypeSwirl, bufferSource.getBuffer(renderTypeSwirl), partialTick,
+                    packedLight, OverlayTexture.NO_OVERLAY, 1F, 1F, 0.1F, 1.0F);
         }
     }
 
