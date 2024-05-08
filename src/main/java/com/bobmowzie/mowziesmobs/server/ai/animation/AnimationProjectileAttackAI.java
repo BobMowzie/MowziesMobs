@@ -30,7 +30,9 @@ public class AnimationProjectileAttackAI<T extends MowzieEntity & IAnimatedEntit
             entity.getLookControl().setLookAt(entityTarget, 30F, 30F);
             if (entity.getAnimationTick() == attackFrame) {
                 entity.performRangedAttack(entityTarget, 0);
-                entity.playSound(attackSound, 1, 1);
+                if (attackSound != null) {
+                    entity.playSound(attackSound, 1, 1);
+                }
             }
         }
     }

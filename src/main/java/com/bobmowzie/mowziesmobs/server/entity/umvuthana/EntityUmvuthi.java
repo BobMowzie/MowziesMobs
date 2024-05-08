@@ -543,9 +543,9 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             timeUntilRoar--;
         }
 
-//        if (getActiveAbility() == null && tickCount % 60 == 0) {
-//            sendAbilityMessage(SUPERNOVA_ABILITY);
-//        }
+        if (getActiveAbility() == null && tickCount % 60 == 0) {
+            sendAbilityMessage(SUPERNOVA_ABILITY);
+        }
     }
 
     @Override
