@@ -69,7 +69,7 @@ public class TunnelingAbility extends PlayerAbility {
     }
 
     public void playGauntletAnimation() {
-        if (getUser() != null) {
+        if (getUser() != null && !getLevel().isClientSide()) {
             if (gauntletStack != null && gauntletStack.getItem() == ItemHandler.EARTHBORE_GAUNTLET.get()) {
                 Player player = (Player) getUser();
                 ItemHandler.EARTHBORE_GAUNTLET.get().triggerAnim(player, GeoItem.getOrAssignId(gauntletStack, (ServerLevel) player.level()), ItemEarthboreGauntlet.CONTROLLER_NAME, ItemEarthboreGauntlet.OPEN_ANIM_NAME);
@@ -78,7 +78,7 @@ public class TunnelingAbility extends PlayerAbility {
     }
 
     public void stopGauntletAnimation() {
-        if (getUser() != null) {
+        if (getUser() != null && !getLevel().isClientSide()) {
             if (gauntletStack != null && gauntletStack.getItem() == ItemHandler.EARTHBORE_GAUNTLET.get()) {
                 Player player = (Player) getUser();
                 ItemHandler.EARTHBORE_GAUNTLET.get().triggerAnim(player, GeoItem.getOrAssignId(gauntletStack, (ServerLevel) player.level()), ItemEarthboreGauntlet.CONTROLLER_NAME, ItemEarthboreGauntlet.IDLE_ANIM_NAME);
@@ -271,6 +271,7 @@ public class TunnelingAbility extends PlayerAbility {
             else {
                 e.getController().setAnimation(DRILL_ANIM);
             }
+            System.out.println(e.getController().getCurrentAnimation());
         }
         return PlayState.CONTINUE;
     }
