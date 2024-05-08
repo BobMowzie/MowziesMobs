@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.PlainTextButton;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -55,7 +56,7 @@ public final class GuiUmvuthiTrade extends AbstractContainerScreen<ContainerUmvu
     protected void init() {
         super.init();
         String text = I18n.get(hasTraded ? "entity.mowziesmobs.umvuthi.replenish.button.text" : "entity.mowziesmobs.umvuthi.trade.button.text");
-        grantButton = addRenderableWidget(new PlainTextButton(leftPos + 115, topPos + 52, 56, 20, Component.translatable(text), this::actionPerformed, font));
+        grantButton = addRenderableWidget(Button.builder(Component.translatable(text), this::actionPerformed).width(204).pos(leftPos + 115, topPos + 52).size(56, 20).build());
         grantButton.active = hasTraded;
         updateButton();
     }
@@ -86,15 +87,15 @@ public final class GuiUmvuthiTrade extends AbstractContainerScreen<ContainerUmvu
         //minecraft.getTextureManager().bindForSetup(hasTraded ? TEXTURE_REPLENISH : TEXTURE_TRADE);
         guiGraphics.blit(hasTraded ? TEXTURE_REPLENISH : TEXTURE_TRADE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
         umvuthi.renderingInGUI = true;
-        InventoryScreen.renderEntityInInventory(guiGraphics, leftPos + 33, topPos + 57, 10, new Quaternionf(), new Quaternionf(), umvuthi);
+        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, leftPos + 33, topPos + 57, 10, leftPos + 33 - x, topPos + 21 - y, umvuthi);
         umvuthi.renderingInGUI = false;
     }
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
         String title = I18n.get("entity.mowziesmobs.umvuthi.trade");
-        guiGraphics.drawString(font, title, (int) (imageWidth / 2f - font.width(title) / 2f) + 30, 6, 0x404040);
-        guiGraphics.drawString(font, I18n.get("container.inventory"), 8, imageHeight - 96 + 2, 0x404040);
+        guiGraphics.drawString(font, title, (int) (imageWidth / 2f - font.width(title) / 2f) + 30, 6, 0x404040, false);
+        guiGraphics.drawString(font, I18n.get("container.inventory"), 8, imageHeight - 96 + 2, 0x404040, false);
     }
 
     @Override

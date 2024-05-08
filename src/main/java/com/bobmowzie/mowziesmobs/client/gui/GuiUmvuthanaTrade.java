@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.server.entity.umvuthana.trade.Trade;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerUmvuthanaTrade;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -47,15 +48,15 @@ public final class GuiUmvuthanaTrade extends AbstractContainerScreen<ContainerUm
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         guiGraphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
         umvuthana.renderingInGUI = true;
-        InventoryScreen.renderEntityInInventory(guiGraphics, leftPos + 33, topPos + 64, 20, new Quaternionf(), new Quaternionf(), umvuthana);
+        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, leftPos + 33, topPos + 64, 20, leftPos + 33 - x, topPos + 21 - y, umvuthana);
         umvuthana.renderingInGUI = false;
     }
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
         String title = this.title.getString();
-        guiGraphics.drawString(font, title, (int) (imageWidth / 2f - font.width(title) / 2f + 26), 6, 0x404040);
-        guiGraphics.drawString(font, I18n.get("container.inventory"), 8, imageHeight - 96 + 2, 0x404040);
+        guiGraphics.drawString(font, title, (int) (imageWidth / 2f - font.width(title) / 2f + 26), 6, 4210752, false);
+        guiGraphics.drawString(font, I18n.get("container.inventory"), 8, imageHeight - 96 + 2, 4210752, false);
     }
 
     @Override
