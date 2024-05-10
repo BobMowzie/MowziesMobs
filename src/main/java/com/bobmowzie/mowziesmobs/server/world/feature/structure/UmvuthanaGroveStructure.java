@@ -1,8 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.world.feature.ConfiguredFeatureHandler;
-import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
+import com.bobmowzie.mowziesmobs.datagen.StructureSetHandler;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -24,7 +23,7 @@ public class UmvuthanaGroveStructure extends MowzieStructure {
 	public static final Codec<UmvuthanaGroveStructure> CODEC = simpleCodec(UmvuthanaGroveStructure::new);
 	
     public UmvuthanaGroveStructure(Structure.StructureSettings settings) {
-        super(settings, ConfigHandler.COMMON.MOBS.UMVUTHI.generationConfig, ConfiguredFeatureHandler.UMVUTHI_BIOMES);
+        super(settings, ConfigHandler.COMMON.MOBS.UMVUTHI.generationConfig, StructureTypeHandler.UMVUTHI_BIOMES);
     }
 
     @Override
@@ -138,6 +137,6 @@ public class UmvuthanaGroveStructure extends MowzieStructure {
 
 	@Override
 	public StructureType<?> type() {
-		return FeatureHandler.UMVUTHANA_GROVE.get();
+		return StructureTypeHandler.UMVUTHANA_GROVE.get();
 	}
 }

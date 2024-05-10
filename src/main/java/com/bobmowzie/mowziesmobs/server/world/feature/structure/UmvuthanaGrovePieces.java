@@ -9,7 +9,6 @@ import com.bobmowzie.mowziesmobs.server.entity.umvuthana.MaskType;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemUmvuthanaMask;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
-import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
@@ -188,11 +187,11 @@ public class UmvuthanaGrovePieces {
         }
 
         public Piece(StructureTemplateManager manager, ResourceLocation resourceLocationIn, Rotation rotation, BlockPos pos) {
-            this(FeatureHandler.UMVUTHANA_GROVE_PIECE.get(), manager, resourceLocationIn, rotation, pos);
+            this(StructureTypeHandler.UMVUTHANA_GROVE_PIECE.get(), manager, resourceLocationIn, rotation, pos);
         }
 
         public Piece(StructurePieceSerializationContext context, CompoundTag tagCompound) {
-            this(FeatureHandler.UMVUTHANA_GROVE_PIECE.get(), context, tagCompound);
+            this(StructureTypeHandler.UMVUTHANA_GROVE_PIECE.get(), context, tagCompound);
         }
 
         private static StructurePlaceSettings makeSettings(Rotation rotation, ResourceLocation resourceLocation) {
@@ -452,11 +451,11 @@ public class UmvuthanaGrovePieces {
     public static class FirepitPiece extends Piece {
 
         public FirepitPiece(StructureTemplateManager manager, Rotation rotation, BlockPos pos) {
-            super(FeatureHandler.UMVUTHANA_FIREPIT.get(), manager, FIREPIT, rotation, pos);
+            super(StructureTypeHandler.UMVUTHANA_FIREPIT.get(), manager, FIREPIT, rotation, pos);
         }
 
         public FirepitPiece(StructurePieceSerializationContext context, CompoundTag tagCompound) {
-            super(FeatureHandler.UMVUTHANA_FIREPIT.get(), context, tagCompound);
+            super(StructureTypeHandler.UMVUTHANA_FIREPIT.get(), context, tagCompound);
         }
 
         public BlockPos findGround(LevelAccessor worldIn, int x, int z) {

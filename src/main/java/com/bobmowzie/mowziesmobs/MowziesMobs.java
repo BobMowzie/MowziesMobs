@@ -20,11 +20,11 @@ import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.potion.PotionTypeHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.bobmowzie.mowziesmobs.server.world.BiomeModifiersHandler;
-import com.bobmowzie.mowziesmobs.server.world.feature.ConfiguredFeatureHandler;
-import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
+import com.bobmowzie.mowziesmobs.server.world.feature.structure.StructureTypeHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.structure.jigsaw.JigsawHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.structure.processor.ProcessorHandler;
 import com.bobmowzie.mowziesmobs.server.world.spawn.SpawnHandler;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -40,7 +40,6 @@ import net.minecraftforge.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import software.bernie.geckolib.GeckoLib;
-import software.bernie.geckolib.loading.object.BakedModelFactory;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 @Mod(MowziesMobs.MODID)
@@ -64,8 +63,8 @@ public final class MowziesMobs {
         MMSounds.REG.register(bus);
         BlockEntityHandler.REG.register(bus);
         ParticleHandler.REG.register(bus);
-        FeatureHandler.STRUCTURE_TYPE_REG.register(bus);
-        FeatureHandler.STRUCTURE_PIECE_TYPE_REG.register(bus);
+        StructureTypeHandler.STRUCTURE_TYPE_REG.register(bus);
+        StructureTypeHandler.STRUCTURE_PIECE_TYPE_REG.register(bus);
         ContainerHandler.REG.register(bus);
         EffectHandler.REG.register(bus);
         PotionTypeHandler.REG.register(bus);
@@ -143,7 +142,6 @@ public final class MowziesMobs {
         event.enqueueWork(() -> {
             JigsawHandler.registerJigsawElements();
             ProcessorHandler.registerStructureProcessors();
-//            ConfiguredFeatureHandler.registerConfiguredFeatures();
         });
     }
 

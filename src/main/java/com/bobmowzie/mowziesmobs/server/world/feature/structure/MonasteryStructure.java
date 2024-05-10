@@ -2,13 +2,11 @@ package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.world.feature.ConfiguredFeatureHandler;
+import com.bobmowzie.mowziesmobs.datagen.StructureSetHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.structure.jigsaw.MowzieJigsawManager;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -33,7 +31,7 @@ public class MonasteryStructure extends MowzieStructure {
 
     public MonasteryStructure(StructureSettings settings) {
         // Create the pieces layout of the structure and give it to the game
-        super(settings, ConfigHandler.COMMON.MOBS.SCULPTOR.generationConfig, ConfiguredFeatureHandler.SCULPTOR_BIOMES, true, true, true);
+        super(settings, ConfigHandler.COMMON.MOBS.SCULPTOR.generationConfig, StructureTypeHandler.SCULPTOR_BIOMES, true, true, true);
     }
 
     @Override

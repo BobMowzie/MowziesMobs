@@ -159,10 +159,10 @@ public final class ConfigHandler {
         GenerationConfig(final ForgeConfigSpec.Builder builder, int generationDistance, int generationSeparation, BiomeConfig biomeConfig, float heightMin, float heightMax, List<String> avoidStructures) {
             builder.comment("Controls for spawning structure/mob with world generation");
             builder.push("generation_config");
-            this.generationDistance = builder.comment("Smaller number causes more generation, -1 to disable generation", "Maximum number of chunks between placements of this mob/structure")
+            this.generationDistance = builder.comment("Smaller number causes more generation, -1 to disable generation", "Maximum number of chunks between placements of this mob/structure.", "NO LONGER USED! USE DATAPACK INSTEAD")
                     .translation(LANG_PREFIX + "generation_distance")
                     .defineInRange("generation_distance", generationDistance, -1, Integer.MAX_VALUE);
-            this.generationSeparation = builder.comment("Smaller number causes more generation, -1 to disable generation", "Minimum number of chunks between placements of this mob/structure")
+            this.generationSeparation = builder.comment("Smaller number causes more generation, -1 to disable generation", "Minimum number of chunks between placements of this mob/structure.", "NO LONGER USED! USE DATAPACK INSTEAD")
                     .translation(LANG_PREFIX + "generation_separation")
                     .defineInRange("generation_separation", generationSeparation, -1, Integer.MAX_VALUE);
             this.biomeConfig = biomeConfig;
@@ -172,7 +172,7 @@ public final class ConfigHandler {
             this.heightMin = builder.comment("Minimum height for generation placement. -65 to ignore")
                     .translation(LANG_PREFIX + "height_min")
                     .defineInRange("height_min", heightMin, -65, 256);
-            this.avoidStructures = builder.comment("Names of structures this mob/structure will avoid when generating")
+            this.avoidStructures = builder.comment("Names of structures this mob/structure will avoid when generating.", "NO LONGER USED! USE DATAPACK INSTEAD")
                     .translation(LANG_PREFIX + "avoid_structures")
                     .defineList("avoid_structures", avoidStructures, STRING_PREDICATE);
             builder.pop();

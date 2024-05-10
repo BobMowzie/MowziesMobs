@@ -1,8 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.world.feature.ConfiguredFeatureHandler;
-import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
+import com.bobmowzie.mowziesmobs.datagen.StructureSetHandler;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -25,7 +24,7 @@ public class WroughtnautChamberStructure extends MowzieStructure {
 	public static final Codec<WroughtnautChamberStructure> CODEC = simpleCodec(WroughtnautChamberStructure::new);
 	
     public WroughtnautChamberStructure(Structure.StructureSettings settings) {
-        super(settings, ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig, ConfiguredFeatureHandler.FERROUS_WROUGHTNAUT_BIOMES, false, false, true);
+        super(settings, ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig, StructureTypeHandler.FERROUS_WROUGHTNAUT_BIOMES, false, false, true);
     }
 
     @Override
@@ -118,6 +117,6 @@ public class WroughtnautChamberStructure extends MowzieStructure {
 
 	@Override
 	public StructureType<?> type() {
-		return FeatureHandler.WROUGHTNAUT_CHAMBER.get();
+		return StructureTypeHandler.WROUGHTNAUT_CHAMBER.get();
 	}
 }
