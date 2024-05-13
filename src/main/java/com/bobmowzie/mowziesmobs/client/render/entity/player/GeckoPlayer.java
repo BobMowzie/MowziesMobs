@@ -69,9 +69,13 @@ public abstract class GeckoPlayer implements GeoEntity {
 		return player;
 	}
 
+	public void tick() {
+		tickTimer++;
+	}
+
 	@Override
 	public double getTick(Object entity) {
-		return player.tickCount;
+		return ((GeckoPlayer)entity).tickTimer;
 	}
 
 	public <E extends GeoEntity> PlayState predicate(AnimationState<E> e) {

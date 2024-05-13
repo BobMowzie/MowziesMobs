@@ -33,8 +33,11 @@ import org.joml.Vector4f;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.cache.object.GeoCube;
+import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.model.data.EntityModelData;
 import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.util.RenderUtils;
 
@@ -59,22 +62,6 @@ public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements GeoR
         this.geoModel = geoModel;
     }
 
-    /* TODO: Not sure what this did. Still need it for new geckolib?
-    static {
-        AnimationController.addModelFetcher((GeoEntity object) -> {
-            if (object instanceof GeckoPlayer.GeckoPlayerFirstPerson) {
-                GeckoFirstPersonRenderer render = modelsToLoad.get(object.getClass());
-                return (GeoEntityModel<Object>) render.getGeoModelProvider();
-            } else {
-                return null;
-            }
-        });
-    }*/
-
-    public GeckoFirstPersonRenderer getModelProvider(Class<? extends GeckoPlayer> animatable) {
-        return modelsToLoad.get(animatable);
-    }
-
     public HashMap<Class<? extends GeckoPlayer>, GeckoFirstPersonRenderer> getModelsToLoad() {
         return modelsToLoad;
     }
@@ -91,6 +78,9 @@ public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements GeoR
             AnimationState<GeckoPlayer> animationState = new AnimationState<>(geckoPlayer, 0, 0, partialTicks, false);
             long instanceId = getInstanceId(geckoPlayer);
 
+            animationState.setData(DataTickets.TICK, geckoPlayer.getTick(geckoPlayer) + partialTicks);
+            AbstractClientPlayer entity = (AbstractClientPlayer) geckoPlayer.getPlayer();
+            animationState.setData(DataTickets.ENTITY, entity);
             this.geoModel.addAdditionalStateData(geckoPlayer, instanceId, animationState::setData);
             this.geoModel.handleAnimations(geckoPlayer, instanceId, animationState);
 

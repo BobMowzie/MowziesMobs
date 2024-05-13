@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.capability;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoFirstPersonRenderer;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
+import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoRenderPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.PlayerAbility;
@@ -36,6 +37,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.fml.LogicalSide;
+import software.bernie.geckolib.core.animation.AnimatableManager;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -246,7 +248,16 @@ public class PlayerCapability {
             if (event.getLevel().isClientSide()) {
                 Player player = (Player) event.getEntity();
                 geckoPlayer = new GeckoPlayer.GeckoPlayerThirdPerson(player);
-                if (event.getEntity() == Minecraft.getInstance().player) GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON = new GeckoPlayer.GeckoPlayerFirstPerson(player);
+                GeckoRenderPlayer animatedPlayerRenderer = (GeckoRenderPlayer) geckoPlayer.getPlayerRenderer();
+                geckoPlayer.getAnimatableInstanceCache().getManagerForId(animatedPlayerRenderer.getInstanceId(geckoPlayer));
+                geckoPlayer.getController().setLastModel(geckoPlayer.getModel());
+                if (event.getEntity() == Minecraft.getInstance().player) {
+                    GeckoPlayer.GeckoPlayerFirstPerson geckoPlayerFirstPerson = new GeckoPlayer.GeckoPlayerFirstPerson(player);
+                    GeckoFirstPersonRenderer firstPersonPlayerRenderer = (GeckoFirstPersonRenderer)geckoPlayerFirstPerson.getPlayerRenderer();
+                    geckoPlayerFirstPerson.getAnimatableInstanceCache().getManagerForId(firstPersonPlayerRenderer.getInstanceId(geckoPlayerFirstPerson));
+                    geckoPlayerFirstPerson.getController().setLastModel(geckoPlayerFirstPerson.getModel());
+                    GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON = geckoPlayerFirstPerson;
+                }
             }
         }
 

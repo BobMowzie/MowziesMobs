@@ -14,6 +14,7 @@ import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
 import com.bobmowzie.mowziesmobs.server.item.ItemBlowgun;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -106,6 +107,33 @@ public enum ClientEventHandler {
                 }
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onPlayerTick(TickEvent.PlayerTickEvent event) {
+        if (event.phase == TickEvent.Phase.START || event.player == null) {
+            return;
+        }
+        Player player = event.player;
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
+        if (playerCapability != null && event.side == LogicalSide.CLIENT) {
+            GeckoPlayer geckoPlayer = playerCapability.getGeckoPlayer();
+            if (geckoPlayer != null) geckoPlayer.tick();
+            if (player == Minecraft.getInstance().player) GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON.tick();
+        }
+//        if(player.getInventory().getArmor(3).is(ItemHandler.SOL_VISAGE.asItem())){
+//            int tick = player.tickCount;
+//            double orbitSpeed = 50;
+//            double orbitSize = 0.6;
+//            double xOffset = (Math.sin(tick * orbitSpeed) * orbitSize);
+//            double zOffset= (Math.cos(tick * orbitSpeed) * orbitSize);
+//            Vec3 particleVec = Vec3.ZERO.add(xOffset, 2.2f, zOffset).yRot((float)Math.toRadians(-player.getYHeadRot())).xRot((float) Math.toRadians(0f)).add(player.position());
+//            Vec3 particleVec2 = Vec3.ZERO.add(-xOffset, 2.2f, -zOffset).yRot((float)Math.toRadians(-player.getYHeadRot())).xRot((float) Math.toRadians(0f)).add(player.position());
+//
+//            player.level.addParticle(ParticleTypes.SMALL_FLAME, particleVec.x, particleVec.y, particleVec.z, 0d, 0d, 0d);
+//            player.level.addParticle(ParticleTypes.SMALL_FLAME, particleVec2.x, particleVec2.y, particleVec2.z, 0d, 0d, 0d);
+//
+//        }
     }
 
     @SubscribeEvent

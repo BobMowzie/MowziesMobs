@@ -1,16 +1,18 @@
 package com.bobmowzie.mowziesmobs.client.model.tools.geckolib;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.entity.Entity;
+import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.animatable.model.CoreGeoModel;
+import software.bernie.geckolib.core.animation.*;
+import software.bernie.geckolib.util.RenderUtils;
 
 public class MowzieAnimationController<T extends GeoAnimatable> extends AnimationController<T> {
-    private double tickOffset;
     private double timingOffset;
 
     public MowzieAnimationController(T animatable, String name, int transitionLength, AnimationStateHandler<T> animationHandler, double timingOffset) {
         super(animatable, name, transitionLength, animationHandler);
-        tickOffset = 0.0d;
         this.timingOffset = timingOffset;
     }
 
@@ -19,27 +21,29 @@ public class MowzieAnimationController<T extends GeoAnimatable> extends Animatio
         setAnimation(animation);
         currentAnimation = this.animationQueue.poll();
         isJustStarting = true;
-//        adjustTick(animatable.getTick(animatable));
+        adjustTick(animatable.getTick(animatable) + Minecraft.getInstance().getPartialTick());
         transitionLength = 0;
     }
 
     @Override
     protected double adjustTick(double tick) {
-        return super.adjustTick(tick);
-// TODO: Fix timing when game is paused mid-animation
+        if (this.shouldResetTick) {
+            if (getAnimationState() == State.TRANSITIONING) {
+                this.tickOffset = tick;
+            }
+            else if (getAnimationState() != State.STOPPED) {
+                this.tickOffset += transitionLength;
+            }
+            this.shouldResetTick = false;
+        }
 
-//        if (this.shouldResetTick) {
-//            if (getAnimationState() == State.TRANSITIONING) {
-//                this.tickOffset = tick;
-//            }
-//            else if (getAnimationState() == State.RUNNING) {
-//                this.tickOffset += transitionLength;
-//            }
-//            this.shouldResetTick = false;
-//        }
-//        double adjustedTick = Math.max(tick - this.tickOffset, 0.0D) + timingOffset;
-//        if (this.currentAnimation != null && this.currentAnimation.loopType().shouldPlayAgain(animatable, this, currentAnimation.animation())) adjustedTick = adjustedTick % this.currentAnimation.animation().length();
-//        if (adjustedTick == timingOffset) isJustStarting = true;
-//        return adjustedTick;
+        double adjustedTick = this.animationSpeedModifier.apply(this.animatable) * Math.max(tick - this.tickOffset, 0) + timingOffset;
+        if (this.currentAnimation != null && this.currentAnimation.loopType().shouldPlayAgain(animatable, this, currentAnimation.animation())) adjustedTick = adjustedTick % this.currentAnimation.animation().length();
+        if (adjustedTick == timingOffset) isJustStarting = true;
+        return adjustedTick;
+    }
+
+    public void setLastModel(CoreGeoModel<T> coreGeoModel) {
+        this.lastModel = coreGeoModel;
     }
 }

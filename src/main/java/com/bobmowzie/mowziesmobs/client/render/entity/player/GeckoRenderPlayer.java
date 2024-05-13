@@ -244,7 +244,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements GeoRenderer<Gec
             AnimationState<GeckoPlayer> animationState = new AnimationState<GeckoPlayer>(animatable, f5_limbSwing, f8_limbSwingAmount, partialTick, avgVelocity >= motionThreshold && f8_limbSwingAmount != 0);
             long instanceId = getInstanceId(animatable);
 
-            animationState.setData(DataTickets.TICK, animatable.getTick(entity) + partialTick);
+            animationState.setData(DataTickets.TICK, animatable.getTick(animatable) + partialTick);
             animationState.setData(DataTickets.ENTITY, entity);
             animationState.setData(DataTickets.ENTITY_MODEL_DATA, new EntityModelData(shouldSit, entity.isBaby(), -f2_netHeadYaw, -headPitch));
             this.getGeckoModel().addAdditionalStateData(animatable, instanceId, animationState::setData);

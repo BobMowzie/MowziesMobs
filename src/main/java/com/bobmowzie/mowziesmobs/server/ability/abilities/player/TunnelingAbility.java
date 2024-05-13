@@ -271,7 +271,6 @@ public class TunnelingAbility extends PlayerAbility {
             else {
                 e.getController().setAnimation(DRILL_ANIM);
             }
-            System.out.println(e.getController().getCurrentAnimation());
         }
         return PlayState.CONTINUE;
     }

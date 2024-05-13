@@ -3,10 +3,14 @@ buildscript {
         maven {
             url "https://files.minecraftforge.net/maven"
         }
+        maven {
+            url = "https://repo.spongepowered.org/repository/maven-public/"
+        }
         mavenCentral()
     }
     dependencies {
         classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "5.1.+", changing: true
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 
@@ -14,6 +18,7 @@ apply plugin: "java"
 apply plugin: "eclipse"
 apply plugin: "maven-publish"
 apply plugin: "net.minecraftforge.gradle"
+apply plugin: "org.spongepowered.mixin"
 
 version = "1.6.3"
 group = "com.bobmowzie.mowziesmobs"
@@ -31,6 +36,7 @@ minecraft {
             property 'forge.logging.markers', 'SCAN'
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            arg "-mixin.config="+"mowziesmobs.mixins.json"
 
             property "forge.logging.console.level", "debug"
             mods {
@@ -72,6 +78,11 @@ processResources {
                 'version': "${project.version}"
         ])
     }
+}
+
+mixin {
+    add sourceSets.main, "mowziesmobs.refmap.json"
+    config 'mowziesmobs.mixins.json'
 }
 
 jar {
