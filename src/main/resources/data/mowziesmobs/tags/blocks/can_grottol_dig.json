@@ -1,5 +1,5 @@
 {
-  "__comment": "These blocks allow grottols to dig and disappear.",
+  "__comment": "These blocks allow grottols to dig and disappear. Blocks that copy their properties from these tagged blocks will also be allowed.",
   "replace": false,
   "values": [
     "#minecraft:dirt",

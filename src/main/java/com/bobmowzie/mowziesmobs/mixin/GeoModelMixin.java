@@ -15,7 +15,7 @@ import software.bernie.geckolib.model.GeoModel;
 @Mixin(GeoModel.class)
 public class GeoModelMixin {
 
-    @ModifyVariable(method = "handleAnimations", at = @At("STORE"), ordinal = 0)
+    @ModifyVariable(method = "handleAnimations", at = @At("STORE"), ordinal = 0, remap=false)
     private <T extends GeoAnimatable> double currentTimeInjected(double x, T animatable, long instanceId, AnimationState<T> animationState) {
         Minecraft mc = Minecraft.getInstance();
         AnimatableManager<T> animatableManager = animatable.getAnimatableInstanceCache().getManagerForId(instanceId);

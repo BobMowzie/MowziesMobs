@@ -20,7 +20,7 @@ apply plugin: "maven-publish"
 apply plugin: "net.minecraftforge.gradle"
 apply plugin: "org.spongepowered.mixin"
 
-version = "1.6.3"
+version = "1.6.4_BETA_5_13"
 group = "com.bobmowzie.mowziesmobs"
 archivesBaseName = "mowziesmobs"
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -52,6 +52,7 @@ minecraft {
             property 'forge.logging.markers', ''
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            arg "-mixin.config="+"mowziesmobs.mixins.json"
 
             property "forge.logging.console.level", "debug"
             mods {
@@ -108,4 +109,6 @@ dependencies {
     minecraft "net.minecraftforge:forge:1.20.1-47.2.0"
     implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.20.1:4.4.2')
     implementation fg.deobf("curse.maven:worldedit-225608:4586218")
+    // Apply Mixin AP
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }

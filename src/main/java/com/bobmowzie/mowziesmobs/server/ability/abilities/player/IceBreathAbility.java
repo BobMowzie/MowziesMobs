@@ -50,7 +50,6 @@ public class IceBreathAbility extends PlayerAbility {
     @Override
     public void tickUsing() {
         super.tickUsing();
-        System.out.println(getUser().getUseItem());
         if (getCurrentSection().sectionType != AbilitySection.AbilitySectionType.RECOVERY && !checkIceCrystal()) {
             jumpToSection(2);
         }

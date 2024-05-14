@@ -1,5 +1,5 @@
 {
-  "__comment": "These blocks can be used with Geomancy abilities.",
+  "__comment": "These blocks can be used with Geomancy abilities. Blocks that copy their properties from these tagged blocks will also be useable.",
   "replace": false,
   "values": [
     "#minecraft:dirt",
