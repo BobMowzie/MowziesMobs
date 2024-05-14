@@ -5,6 +5,9 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleCloud;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleRing;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleSnowFlake;
+import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
+import com.bobmowzie.mowziesmobs.server.ability.abilities.player.IceBreathAbility;
+import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
@@ -54,6 +57,10 @@ public class EntityIceBreath extends EntityMagicEffect {
         if (caster instanceof Player) {
             Player player = (Player) caster;
             absMoveTo(player.getX(), player.getY() + player.getStandingEyeHeight(player.getPose(), player.getDimensions(player.getPose())) - 0.5f, player.getZ(), player.getYRot(), player.getXRot());
+            AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+            if (abilityCapability != null && !abilityCapability.getAbilityFromType(AbilityHandler.ICE_BREATH_ABILITY).isUsing()) {
+                this.discard();
+            }
         }
 
         float yaw = (float) Math.toRadians(-getYRot());

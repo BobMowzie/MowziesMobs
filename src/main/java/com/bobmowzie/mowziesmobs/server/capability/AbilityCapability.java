@@ -41,6 +41,8 @@ public class AbilityCapability {
 
         Map<AbilityType<?, ?>, Ability> getAbilityMap();
 
+        Ability getAbilityFromType(AbilityType<?, ?> abilityType);
+
         Collection<Ability> getAbilities();
 
         Ability getActiveAbility();
@@ -106,6 +108,11 @@ public class AbilityCapability {
         @Override
         public Map<AbilityType<?, ?>, Ability> getAbilityMap() {
             return abilityInstances;
+        }
+
+        @Override
+        public Ability getAbilityFromType(AbilityType<?, ?> abilityType) {
+            return abilityInstances.get(abilityType);
         }
 
         @Override
