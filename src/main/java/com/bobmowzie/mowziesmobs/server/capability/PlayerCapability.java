@@ -245,12 +245,15 @@ public class PlayerCapability {
 
         @Override
         public void addedToWorld(EntityJoinLevelEvent event) {
+            // Create the geckoplayer instances when an entity joins the world
+            // Normally, the animation controllers and lastModel field are only set when rendered for the first time, but this won't work for player animations
             if (event.getLevel().isClientSide()) {
                 Player player = (Player) event.getEntity();
                 geckoPlayer = new GeckoPlayer.GeckoPlayerThirdPerson(player);
                 GeckoRenderPlayer animatedPlayerRenderer = (GeckoRenderPlayer) geckoPlayer.getPlayerRenderer();
                 geckoPlayer.getAnimatableInstanceCache().getManagerForId(animatedPlayerRenderer.getInstanceId(geckoPlayer));
                 geckoPlayer.getController().setLastModel(geckoPlayer.getModel());
+                // Only create 1st person instance if the player joining is this client's player
                 if (event.getEntity() == Minecraft.getInstance().player) {
                     GeckoPlayer.GeckoPlayerFirstPerson geckoPlayerFirstPerson = new GeckoPlayer.GeckoPlayerFirstPerson(player);
                     GeckoFirstPersonRenderer firstPersonPlayerRenderer = (GeckoFirstPersonRenderer)geckoPlayerFirstPerson.getPlayerRenderer();

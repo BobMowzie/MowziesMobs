@@ -16,6 +16,9 @@ public class MowzieAnimationController<T extends GeoAnimatable> extends Animatio
         this.timingOffset = timingOffset;
     }
 
+    // Normally, mobs won't start playing an animation until they are rendering on screen, even if the behavior starts off-screen
+    // This combination of playAnimation and the overridden adjustTick fixes this issue
+
     public void playAnimation(T animatable, RawAnimation animation) {
         forceAnimationReset();
         setAnimation(animation);
@@ -41,6 +44,7 @@ public class MowzieAnimationController<T extends GeoAnimatable> extends Animatio
         if (this.currentAnimation != null && this.currentAnimation.loopType().shouldPlayAgain(animatable, this, currentAnimation.animation())) adjustedTick = adjustedTick % this.currentAnimation.animation().length();
         if (adjustedTick == timingOffset) isJustStarting = true;
         return adjustedTick;
+        // I did this in a fugue state and I have no idea why it works
     }
 
     public void setLastModel(CoreGeoModel<T> coreGeoModel) {
