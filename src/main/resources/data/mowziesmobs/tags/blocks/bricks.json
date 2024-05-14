@@ -1,0 +1,24 @@
+{
+  "__comment": "These blocks are considered bricks.",
+  "replace": false,
+  "values": [
+    "#minecraft:stone_bricks",
+    "minecraft:bricks",
+    "minecraft:deepslate_bricks",
+    "minecraft:cracked_deepslate_bricks",
+    "minecraft:mud_bricks",
+    "minecraft:prismarine_bricks",
+    "minecraft:nether_bricks",
+    "minecraft:cracked_nether_bricks",
+    "minecraft:chiseled_nether_bricks",
+    "minecraft:red_nether_bricks",
+    "minecraft:polished_blackstone_bricks",
+    "minecraft:cracked_polished_blackstone_bricks",
+    "minecraft:end_stone_bricks",
+    "minecraft:quartz_bricks",
+    "minecraft:infested_stone_bricks",
+    "minecraft:infested_mossy_stone_bricks",
+    "minecraft:infested_cracked_stone_bricks",
+    "minecraft:infested_chiseled_stone_bricks"
+  ]
+}

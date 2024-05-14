@@ -48,7 +48,7 @@ public class SpawnPillarAbility extends PlayerAbility {
                 if (blockAbove.isSuffocating(getUser().level(), spawnPillarPos.above()) || blockAbove.isAir())
                     return false;
             }
-            return EffectGeomancy.isBlockDiggable(spawnPillarBlock);
+            return EffectGeomancy.isBlockUseable(spawnPillarBlock);
         }
         return false;
     }

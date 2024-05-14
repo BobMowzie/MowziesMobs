@@ -1,0 +1,77 @@
+{
+  "__comment": "These blocks can be used with Geomancy abilities.",
+  "replace": false,
+  "values": [
+    "#minecraft:dirt",
+    "#minecraft:terracotta",
+    "minecraft:blackstone",
+    "minecraft:basalt",
+    "minecraft:smooth_basalt",
+    "minecraft:soul_sand",
+    "minecraft:soul_soil",
+    "minecraft:smooth_stone",
+    "minecraft:quartz_block",
+    "minecraft:chiseled_quartz_block",
+    "minecraft:quartz_pillar",
+    "minecraft:smooth_quartz",
+    "minecraft:purpur_block",
+    "minecraft:purpur_pillar",
+    "minecraft:prismarine",
+    "minecraft:dark_prismarine",
+    "minecraft:suspicious_sand",
+    "minecraft:suspicious_gravel",
+    "#minecraft:nylium",
+    "minecraft:crying_obsidian",
+    "minecraft:magma_block",
+    "minecraft:dripstone_block",
+    "minecraft:clay",
+    {
+      "id": "#minecraft:concrete_powder",
+      "required": false
+    },
+    {
+      "id": "#mowziesmobs:bricks",
+      "required": false
+    },
+    {
+      "id": "#forge:cobblestone",
+      "required": false
+    },
+    {
+      "id": "#forge:end_stones",
+      "required": false
+    },
+    {
+      "id": "#forge:gravel",
+      "required": false
+    },
+    {
+      "id": "#forge:netherrack",
+      "required": false
+    },
+    {
+      "id": "#forge:obsidian",
+      "required": false
+    },
+    {
+      "id": "#forge:ores",
+      "required": false
+    },
+    {
+      "id": "#forge:sand",
+      "required": false
+    },
+    {
+      "id": "#forge:sandstone",
+      "required": false
+    },
+    {
+      "id": "#forge:stone",
+      "required": false
+    },
+    {
+      "id": "#forge:concrete",
+      "required": false
+    }
+  ]
+}

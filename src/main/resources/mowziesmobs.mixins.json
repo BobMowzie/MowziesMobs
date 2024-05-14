@@ -5,7 +5,8 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "mowziesmobs.refmap.json",
   "mixins": [
-    "GeoModelMixin"
+    "GeoModelMixin",
+    "BlockBehaviourMixin"
   ],
   "injectors": {
     "defaultRequire": 1

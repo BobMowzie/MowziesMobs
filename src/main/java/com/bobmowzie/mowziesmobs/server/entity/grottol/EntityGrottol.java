@@ -9,6 +9,7 @@ import com.bobmowzie.mowziesmobs.server.ai.MMPathNavigateGround;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.ai.animation.SimpleAnimationAI;
+import com.bobmowzie.mowziesmobs.server.block.ICopiedBlockProperties;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieLLibraryEntity;
@@ -341,7 +342,7 @@ public class EntityGrottol extends MowzieLLibraryEntity {
             if (getAnimationTick() % 4 == 3) {
                 playSound(MMSounds.ENTITY_GROTTOL_BURROW.get(), 1, 0.8f + random.nextFloat() * 0.4f);
                 BlockState blockBeneath = level().getBlockState(blockPosition().below());
-                if (blockBeneath.is(BlockTags.DIRT)) { // TODO: Make new tag for this
+                if (isBlockDiggable(blockBeneath)) {
                     Vec3 pos = new Vec3(0.5D, 0.05D, 0.0D).yRot((float) Math.toRadians(-yBodyRot - 90));
                     if (level() instanceof ServerLevel) {
                         ((ServerLevel) level()).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, blockBeneath),
@@ -453,26 +454,15 @@ public class EntityGrottol extends MowzieLLibraryEntity {
     }
 
     public boolean isBlockDiggable(BlockState blockState) {
-        /* TODO: Change to custom block tag
-        if (mat != Material.GRASS
-                && mat != Material.DIRT
-                && mat != Material.STONE
-                && mat != Material.CLAY
-                && mat != Material.SAND
-        ) {
-            return false;
-        }*/
-        return blockState.getBlock() != Blocks.HAY_BLOCK
-                && blockState.getBlock() != Blocks.NETHER_WART_BLOCK
-                && !(blockState.getBlock() instanceof FenceBlock)
-                && blockState.getBlock() != Blocks.SPAWNER
-                && blockState.getBlock() != Blocks.BONE_BLOCK
-                && blockState.getBlock() != Blocks.ENCHANTING_TABLE
-                && blockState.getBlock() != Blocks.END_PORTAL_FRAME
-                && blockState.getBlock() != Blocks.ENDER_CHEST
-                && blockState.getBlock() != Blocks.SLIME_BLOCK
-                && blockState.getBlock() != Blocks.HOPPER
-                && !blockState.hasBlockEntity();
+        if (blockState.is(TagHandler.CAN_GROTTOL_DIG)) return true;
+
+        ICopiedBlockProperties properties = (ICopiedBlockProperties) blockState.getBlock().properties;
+        Block baseBlock = properties.getBaseBlock();
+        if (baseBlock != null) {
+            return baseBlock.defaultBlockState().is(TagHandler.CAN_GROTTOL_DIG);
+        }
+
+        return false;
     }
 
     public boolean getDeepslate() {

@@ -187,7 +187,7 @@ public class TunnelingAbility extends PlayerAbility {
                             posVec = posVec.add(motionScaled);
                             BlockPos pos = new BlockPos((int) posVec.x, (int) posVec.y, (int) posVec.z);
                             BlockState blockState = getUser().level().getBlockState(pos);
-                            if (EffectGeomancy.isBlockDiggable(blockState) && blockState.getBlock() != Blocks.BEDROCK) {
+                            if (EffectGeomancy.isBlockUseable(blockState) && blockState.getBlock() != Blocks.BEDROCK) {
                                 justDug = blockState;
                                 EntityBlockSwapper.swapBlock(getUser().level(), pos, Blocks.AIR.defaultBlockState(), 15, false, false);
                             }

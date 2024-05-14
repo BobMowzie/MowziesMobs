@@ -62,12 +62,11 @@ public class SpawnBoulderAbility extends PlayerAbility {
 
         this.spawnBoulderPos = result.getBlockPos();
         this.spawnBoulderBlock = getUser().level().getBlockState(spawnBoulderPos);
-        if (result.getDirection() != Direction.UP) {
-            BlockState blockAbove = getUser().level().getBlockState(spawnBoulderPos.above());
-            if (blockAbove.isSuffocating(getUser().level(), spawnBoulderPos.above()) || blockAbove.isAir())
-                return false;
-        }
-        return EffectGeomancy.isBlockDiggable(spawnBoulderBlock);
+        if (result.getDirection() == Direction.DOWN) return false;
+        BlockState blockAbove = getUser().level().getBlockState(spawnBoulderPos.above());
+        if (blockAbove.blocksMotion())
+            return false;
+        return EffectGeomancy.isBlockUseable(spawnBoulderBlock);
     }
 
     @Override

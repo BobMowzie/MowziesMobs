@@ -1,11 +1,13 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects.geomancy;
 
+import com.bobmowzie.mowziesmobs.server.block.ICopiedBlockProperties;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
-import com.bobmowzie.mowziesmobs.server.entity.IAnimationTickable;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityFallingBlock;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityMagicEffect;
+import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import com.bobmowzie.mowziesmobs.server.tag.TagHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -17,6 +19,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -25,13 +28,11 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.common.Tags;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
-
-import java.util.Optional;
 
 public abstract class EntityGeomancyBase extends EntityMagicEffect implements GeoEntity {
     private static final byte EXPLOSION_PARTICLES_ID = 69;
@@ -58,8 +59,12 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements Ge
 
     public EntityGeomancyBase(EntityType<? extends EntityMagicEffect> type, Level worldIn, LivingEntity caster, BlockState blockState, BlockPos pos) {
         super(type, worldIn, caster);
+        if (!worldIn.isClientSide && blockState != null && EffectGeomancy.isBlockUseable(blockState)) {
+            BlockState newBlock = changeBlock(blockState);
+            setBlock(newBlock);
+
         /* TODO: Update to use block tags
-        if (!worldIn.isClientSide && blockState != null) {
+
             Block block = blockState.getBlock();
             BlockState newBlock = blockState;
             Material mat = blockState.getMaterial();
@@ -85,8 +90,30 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements Ge
             if (!newBlock.isRedstoneConductor(worldIn, pos)) {
                 newBlock = Blocks.STONE.defaultBlockState();
             }
-            setBlock(newBlock);
-        }*/
+            setBlock(newBlock);*/
+        }
+    }
+
+    // Change the specified block to its geomancy version. I.E. Grass blocks turn to dirt, stairs and slabs turn to base versions.
+    public BlockState changeBlock(BlockState blockState) {
+        if (!blockState.is(TagHandler.GEOMANCY_USEABLE)) {
+            ICopiedBlockProperties properties = (ICopiedBlockProperties) blockState.getBlock().properties;
+            Block baseBlock = properties.getBaseBlock();
+            if (baseBlock != null) {
+                blockState = baseBlock.defaultBlockState();
+            }
+        }
+
+        if (blockState.getBlock() == Blocks.GRASS_BLOCK || blockState.getBlock() == Blocks.MYCELIUM || blockState.getBlock() == Blocks.PODZOL) blockState = Blocks.DIRT.defaultBlockState();
+        else if (blockState.is(Tags.Blocks.ORES_IN_GROUND_DEEPSLATE)) blockState = Blocks.DEEPSLATE.defaultBlockState();
+        else if (blockState.is(BlockTags.NYLIUM)) blockState = Blocks.NETHERRACK.defaultBlockState();
+        else if (blockState.is(Tags.Blocks.ORES_IN_GROUND_NETHERRACK)) blockState = Blocks.NETHERRACK.defaultBlockState();
+        else if (blockState.is(Tags.Blocks.ORES_IN_GROUND_STONE)) blockState = Blocks.STONE.defaultBlockState();
+        else if (blockState.is(Tags.Blocks.SAND_RED)) blockState = Blocks.RED_SANDSTONE.defaultBlockState();
+        else if (blockState.is(Tags.Blocks.SAND_COLORLESS)) blockState = Blocks.SANDSTONE.defaultBlockState();
+        else if (blockState.getBlock() == Blocks.SOUL_SAND) blockState = Blocks.SOUL_SOIL.defaultBlockState();
+
+        return blockState;
     }
 
     @Override
