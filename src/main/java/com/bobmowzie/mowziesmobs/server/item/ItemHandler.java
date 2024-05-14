@@ -55,7 +55,7 @@ public class ItemHandler {
 //    public static final ItemSculptorStaff SCULPTOR_STAFF = REG.register(new ItemSculptorStaff(new Item.Properties().defaultDurability(1000).rarity(Rarity.RARE)));
 //    public static final ItemSandRake SAND_RAKE = REG..register("sand_rake", new ItemSandRake(new Item.Properties().defaultDurability(64)));
     public static final RegistryObject<Item> LOGO = REG.register("logo", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<RecordItem> PETIOLE_MUSIC_DISC = REG.register("music_disc_petiole", () -> new RecordItem(14, MMSounds.MUSIC_PETIOLE, new Item.Properties().stacksTo(1).rarity(Rarity.RARE), 0));
+    public static final RegistryObject<RecordItem> PETIOLE_MUSIC_DISC = REG.register("music_disc_petiole", () -> new RecordItem(14, MMSounds.MUSIC_PETIOLE, new Item.Properties().stacksTo(1).rarity(Rarity.RARE), 2800));
 
     public static final RegistryObject<ForgeSpawnEggItem> FOLIAATH_SPAWN_EGG = REG.register("foliaath_spawn_egg", () -> new ForgeSpawnEggItem(EntityHandler.FOLIAATH, 0x47CC3B, 0xC03BCC, new Item.Properties()));
     public static final RegistryObject<ForgeSpawnEggItem> WROUGHTNAUT_SPAWN_EGG = REG.register("wroughtnaut_spawn_egg", () -> new ForgeSpawnEggItem(EntityHandler.WROUGHTNAUT, 0x8C8C8C, 0xFFFFFF, new Item.Properties()));
