@@ -31,7 +31,7 @@ public class ModelGeckoBiped extends MowzieGeoModel<GeckoPlayer> {
 	public HumanoidModel.ArmPose leftArmPose = HumanoidModel.ArmPose.EMPTY;
 	public HumanoidModel.ArmPose rightArmPose = HumanoidModel.ArmPose.EMPTY;
 
-	protected boolean useSmallArms;
+	protected boolean useSmallArms = false;
 	
 	@Override
 	public ResourceLocation getAnimationResource(GeckoPlayer animatable) {
