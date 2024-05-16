@@ -13,7 +13,7 @@ issueTrackerURL="https://github.com/BobMowzie/MowziesMobs/issues"
 [[dependencies.mowziesmobs]]
     modId="forge"
     mandatory=true
-    versionRange="[47.2.0,)"
+    versionRange="[47.1.3,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.mowziesmobs]]
