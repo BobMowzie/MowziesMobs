@@ -13,7 +13,6 @@ import net.minecraft.world.level.block.Block;
 public class TagHandler {
     public static final TagKey<Item> CAN_HIT_GROTTOL = TagKey.create(Registries.ITEM, new ResourceLocation(MowziesMobs.MODID, "can_hit_grottol"));
 
-    public static final TagKey<Block> BRICKS = TagKey.create(Registries.BLOCK, new ResourceLocation(MowziesMobs.MODID, "bricks"));
     public static final TagKey<Block> CAN_GROTTOL_DIG = TagKey.create(Registries.BLOCK, new ResourceLocation(MowziesMobs.MODID, "can_grottol_dig"));
     public static final TagKey<Block> GEOMANCY_USEABLE = TagKey.create(Registries.BLOCK, new ResourceLocation(MowziesMobs.MODID, "geomancy_useable"));
 

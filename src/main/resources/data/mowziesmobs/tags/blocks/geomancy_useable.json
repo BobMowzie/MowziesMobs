@@ -25,8 +25,38 @@
     "minecraft:magma_block",
     "minecraft:dripstone_block",
     "minecraft:clay",
+    "minecraft:deepslate_tiles",
+    "minecraft:polished_basalt",
+    "minecraft:dirt_path",
+    "minecraft:chiseled_polished_blackstone",
+    "minecraft:cracked_deepslate_bricks",
+    "minecraft:stone_slab",
+    "minecraft:cobblestone_slab",
+    "minecraft:smooth_stone_slab",
+    "minecraft:stone_brick_slab",
+    "minecraft:deepslate_tile_slab",
+    "minecraft:cut_red_sandstone_slab",
+    "minecraft:brick_slab",
+    "minecraft:prismarine_slab",
+    "minecraft:prismarine_brick_slab",
+    "minecraft:mud_brick_slab",
+    "minecraft:dark_prismarine_slab",
+    "minecraft:sandstone_slab",
+    "minecraft:nether_brick_slab",
+    "minecraft:cut_sandstone_slab",
+    "minecraft:red_sandstone_slab",
+    "minecraft:quartz_slab",
+    "minecraft:polished_blackstone_slab",
     {
-      "id": "#minecraft:concrete_powder",
+      "id": "#mowziesmobs:concrete_powder",
+      "required": false
+    },
+    {
+      "id": "#minecraft:concrete",
+      "required": false
+    },
+    {
+      "id": "#minecraft:glazed_terracotta",
       "required": false
     },
     {

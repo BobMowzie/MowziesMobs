@@ -104,7 +104,14 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements Ge
             }
         }
 
-        if (blockState.getBlock() == Blocks.GRASS_BLOCK || blockState.getBlock() == Blocks.MYCELIUM || blockState.getBlock() == Blocks.PODZOL) blockState = Blocks.DIRT.defaultBlockState();
+        if (
+                blockState.getBlock() == Blocks.GRASS_BLOCK ||
+                blockState.getBlock() == Blocks.MYCELIUM ||
+                blockState.getBlock() == Blocks.PODZOL ||
+                blockState.getBlock() == Blocks.DIRT_PATH
+        ) {
+            blockState = Blocks.DIRT.defaultBlockState();
+        }
         else if (blockState.is(Tags.Blocks.ORES_IN_GROUND_DEEPSLATE)) blockState = Blocks.DEEPSLATE.defaultBlockState();
         else if (blockState.is(BlockTags.NYLIUM)) blockState = Blocks.NETHERRACK.defaultBlockState();
         else if (blockState.is(Tags.Blocks.ORES_IN_GROUND_NETHERRACK)) blockState = Blocks.NETHERRACK.defaultBlockState();
