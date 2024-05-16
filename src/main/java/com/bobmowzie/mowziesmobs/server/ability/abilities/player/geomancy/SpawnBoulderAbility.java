@@ -48,7 +48,9 @@ public class SpawnBoulderAbility extends PlayerAbility {
     @Override
     public void start() {
         super.start();
+        System.out.println("Start ability");
         playAnimation("spawn_boulder_start", false);
+        if (!Minecraft.getInstance().options.keyUse.isDown()) nextSection();
     }
 
     @Override
@@ -146,6 +148,7 @@ public class SpawnBoulderAbility extends PlayerAbility {
     @Override
     public void onRightMouseUp(Player player) {
         super.onRightMouseUp(player);
+        System.out.println("Right mouse up");
         if (isUsing() && getCurrentSection().sectionType == AbilitySection.AbilitySectionType.STARTUP) {
             if (player.distanceToSqr(spawnBoulderPos.getX(), spawnBoulderPos.getY(), spawnBoulderPos.getZ()) < 36) {
                 nextSection();
@@ -175,12 +178,14 @@ public class SpawnBoulderAbility extends PlayerAbility {
     @Override
     public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         super.onRightClickBlock(event);
+        System.out.println("Click block");
         if (!event.getLevel().isClientSide()) AbilityHandler.INSTANCE.sendAbilityMessage(event.getEntity(), AbilityHandler.SPAWN_BOULDER_ABILITY);
     }
 
     @Override
     public void onRightClickEmpty(PlayerInteractEvent.RightClickEmpty event) {
         super.onRightClickEmpty(event);
+        System.out.println("Click empty");
         AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getEntity(), AbilityHandler.SPAWN_BOULDER_ABILITY);
     }
 
