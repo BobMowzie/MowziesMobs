@@ -100,6 +100,7 @@ public class EntityFrostmaw extends MowzieLLibraryEntity implements Enemy {
     private int dodgeCooldown = 0;
     private boolean shouldDodge;
     private float dodgeYaw = 0;
+    private boolean wantsToIceBreathAfterDodging = false;
 
     private Vec3 prevTargetPos = new Vec3(0, 0, 0);
 
@@ -356,6 +357,8 @@ public class EntityFrostmaw extends MowzieLLibraryEntity implements Enemy {
                 if (getTarget() != null) {
                     lookControl.setLookAt(getTarget(), 30, 30);
                     lookAt(getTarget(), 30, 30);
+                    yHeadRot = yBodyRot = getYRot();
+
                 }
                 Vec3 mouthPos = new Vec3(2.3, 2.65, 0);
                 mouthPos = mouthPos.yRot((float)Math.toRadians(-getYRot() - 90));
@@ -447,11 +450,13 @@ public class EntityFrostmaw extends MowzieLLibraryEntity implements Enemy {
                     getNavigation().moveTo(getTarget(), 0.85);
                 }
 
-                if (shouldDodgeMeasure >= 12) shouldDodge = true;
+                if (shouldDodgeMeasure >= 16) shouldDodge = true;
                 if (targetDistance < 4 && shouldDodge && getAnimation() == NO_ANIMATION) {
                     shouldDodge = false;
                     dodgeCooldown = DODGE_COOLDOWN;
                     shouldDodgeMeasure = 0;
+                    wantsToIceBreathAfterDodging = true;
+                    iceBreathCooldown = 0;
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, DODGE_ANIMATION);
                 }
 
@@ -464,7 +469,7 @@ public class EntityFrostmaw extends MowzieLLibraryEntity implements Enemy {
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, SLAM_ANIMATION);
                     slamCooldown = SLAM_COOLDOWN;
                 }
-                if (targetDistance <= 6.5 && getAnimation() == NO_ANIMATION) {
+                if (targetDistance <= 6.5 && getAnimation() == NO_ANIMATION && !wantsToIceBreathAfterDodging) {
                     if (random.nextInt(4) == 0)
                         AnimationHandler.INSTANCE.sendAnimationMessage(this, SWIPE_TWICE_ANIMATION);
                     else AnimationHandler.INSTANCE.sendAnimationMessage(this, SWIPE_ANIMATION);
@@ -472,6 +477,7 @@ public class EntityFrostmaw extends MowzieLLibraryEntity implements Enemy {
                 if (targetDistance <= 13.5 && getAnimation() == NO_ANIMATION && iceBreathCooldown <= 0 && getHasCrystal() && (onGround() || wasTouchingWater)) {
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, ICE_BREATH_ANIMATION);
                     iceBreathCooldown = ICE_BREATH_COOLDOWN;
+                    wantsToIceBreathAfterDodging = false;
                 }
                 if (targetDistance >= 14.5 && getAnimation() == NO_ANIMATION && iceBallCooldown <= 0 && getHasCrystal() && (onGround() || wasTouchingWater)) {
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, ICE_BALL_ANIMATION);
