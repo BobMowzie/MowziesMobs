@@ -18,6 +18,8 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBall;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
+import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
+import com.bobmowzie.mowziesmobs.server.potion.PotionTypeHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
@@ -358,7 +360,6 @@ public class EntityFrostmaw extends MowzieLLibraryEntity implements Enemy {
                     lookControl.setLookAt(getTarget(), 30, 30);
                     lookAt(getTarget(), 30, 30);
                     yHeadRot = yBodyRot = getYRot();
-
                 }
                 Vec3 mouthPos = new Vec3(2.3, 2.65, 0);
                 mouthPos = mouthPos.yRot((float)Math.toRadians(-getYRot() - 90));
@@ -451,6 +452,7 @@ public class EntityFrostmaw extends MowzieLLibraryEntity implements Enemy {
                 }
 
                 if (shouldDodgeMeasure >= 16) shouldDodge = true;
+                if (getTarget().hasEffect(EffectHandler.FROZEN.get())) shouldDodge = false;
                 if (targetDistance < 4 && shouldDodge && getAnimation() == NO_ANIMATION) {
                     shouldDodge = false;
                     dodgeCooldown = DODGE_COOLDOWN;
