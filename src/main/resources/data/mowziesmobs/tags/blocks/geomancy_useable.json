@@ -28,6 +28,7 @@
     "minecraft:deepslate_tiles",
     "minecraft:polished_basalt",
     "minecraft:dirt_path",
+    "minecraft:farmland",
     "minecraft:chiseled_polished_blackstone",
     "minecraft:cracked_deepslate_bricks",
     "minecraft:stone_slab",
@@ -47,16 +48,20 @@
     "minecraft:red_sandstone_slab",
     "minecraft:quartz_slab",
     "minecraft:polished_blackstone_slab",
+    "minecraft:nether_brick_fence",
+    "minecraft:polished_blackstone_stairs",
+    "minecraft:polished_blackstone_wall",
+    "minecraft:purpur_slab",
     {
       "id": "#mowziesmobs:concrete_powder",
       "required": false
     },
     {
-      "id": "#minecraft:concrete",
+      "id": "#mowziesmobs:concrete",
       "required": false
     },
     {
-      "id": "#minecraft:glazed_terracotta",
+      "id": "#mowziesmobs:glazed_terracotta",
       "required": false
     },
     {
