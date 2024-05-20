@@ -5,6 +5,7 @@ import com.bobmowzie.mowziesmobs.client.model.tools.ModelPartMatrix;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -52,63 +53,58 @@ public class MowzieGeoArmorRenderer<T extends ArmorItem & GeoItem> extends GeoAr
         poseStack.popPose();
     }
 
-    /* TODO: Use new per-bone geckolib armor renderer
-    public void copyFrom(GeoBone geoBone, ModelPart modelRendererIn) {
-        if (usingCustomPlayerAnimations && modelRendererIn instanceof ModelPartMatrix && geoBone instanceof MowzieGeoBone) {
+    public void copyFrom(ModelPart modelPart, GeoBone geoBone, float offsetX, float offsetY, float offsetZ) {
+        if (usingCustomPlayerAnimations && modelPart instanceof ModelPartMatrix && geoBone instanceof MowzieGeoBone) {
             MowzieGeoBone thisBone = (MowzieGeoBone) geoBone;
-            ModelPartMatrix other = (ModelPartMatrix) modelRendererIn;
+            ModelPartMatrix other = (ModelPartMatrix) modelPart;
             thisBone.setWorldSpaceNormal(other.getWorldNormal());
             thisBone.setWorldSpaceMatrix(other.getWorldXform());
             thisBone.setForceMatrixTransform(true);
         }
         else {
-            GeoUtils.copyRotations(modelRendererIn, geoBone);
-            geoBone.setPosX(this.head.x);
-            geoBone.setPosY(-this.head.y);
-            geoBone.setPosZ(this.head.z);
+            RenderUtils.matchModelPartRot(modelPart, geoBone);
+            this.head.updatePosition(modelPart.x + offsetX, -modelPart.y + offsetY, modelPart.z + offsetZ);
         }
     }
 
     @Override
-    protected void fitToBiped() {
-        if (this.headBone != null) {
-            IBone headBone = this.getGeoModelProvider().getBone(this.headBone);
-            copyFrom(headBone, head);
+    protected void applyBaseTransformations(HumanoidModel<?> baseModel) {
+        if (this.head != null) {
+            ModelPart headPart = baseModel.head;
+            copyFrom(headPart, head, 0, 0, 0);
         }
 
-        if (this.bodyBone != null) {
-            IBone bodyBone = this.getGeoModelProvider().getBone(this.bodyBone);
-            copyFrom(bodyBone, body);
+        if (this.body != null) {
+            ModelPart bodyPart = baseModel.body;
+            copyFrom(bodyPart, body, 0, 0, 0);
         }
 
-        if (this.rightArmBone != null) {
-            IBone rightArmBone = this.getGeoModelProvider().getBone(this.rightArmBone);
-            copyFrom(rightArmBone, rightArm);
+        if (this.rightArm != null) {
+            ModelPart rightArmPart = baseModel.rightArm;
+            copyFrom(rightArmPart, rightArm, 5, 2, 0);
         }
 
-        if (this.leftArmBone != null) {
-            IBone leftArmBone = this.getGeoModelProvider().getBone(this.leftArmBone);
-            copyFrom(leftArmBone, leftArm);
+        if (this.leftArm != null) {
+            ModelPart leftArmPart = baseModel.leftArm;
+            copyFrom(leftArmPart, leftArm,  -5, 2, 0);
         }
 
-        if (this.rightLegBone != null) {
-            IBone rightLegBone = this.getGeoModelProvider().getBone(this.rightLegBone);
-            copyFrom(rightLegBone, rightLeg);
+        if (this.rightLeg != null) {
+            ModelPart rightLegPart = baseModel.rightLeg;
+            copyFrom(rightLegPart, rightLeg, 2, 12, 0);
 
-            if (this.rightBootBone != null) {
-                IBone rightBootBone = this.getGeoModelProvider().getBone(this.rightBootBone);
-                copyFrom(rightBootBone, rightLeg);
+            if (this.rightBoot != null) {
+                copyFrom(rightLegPart, rightBoot, 2, 12, 0);
             }
         }
 
-        if (this.leftLegBone != null) {
-            IBone leftLegBone = this.getGeoModelProvider().getBone(this.leftLegBone);
-            copyFrom(leftLegBone, leftLeg);
+        if (this.leftLeg != null) {
+            ModelPart leftLegPart = baseModel.leftLeg;
+            copyFrom(leftLegPart, leftLeg, -2, 12, 0);
 
-            if (this.leftBootBone != null) {
-                IBone leftBootBone = this.getGeoModelProvider().getBone(this.leftBootBone);
-                copyFrom(leftBootBone, leftLeg);
+            if (this.leftBoot != null) {
+                copyFrom(leftLegPart, leftBoot, -2, 12, 0);
             }
         }
-    }*/
+    }
 }

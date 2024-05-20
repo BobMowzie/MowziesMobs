@@ -37,13 +37,13 @@ public class GeckoArmorLayer<T extends LivingEntity, M extends HumanoidModel<T>,
                     this.setPartVisibility((A) humanoidModel, equipmentSlot);
                     boolean flag = this.usesInnerModel(equipmentSlot);
                     boolean flag1 = itemstack.hasFoil();
+                    ModelBipedAnimated.setUseMatrixMode(humanoidModel, true);
                     if (armoritem instanceof net.minecraft.world.item.DyeableLeatherItem) {
                         int i = ((net.minecraft.world.item.DyeableLeatherItem) armoritem).getColor(itemstack);
                         float f = (float) (i >> 16 & 255) / 255.0F;
                         float f1 = (float) (i >> 8 & 255) / 255.0F;
                         float f2 = (float) (i & 255) / 255.0F;
                         this.renderModel(poseStack, bufferSource, p_117123_, flag1, model, f, f1, f2, this.getArmorResource(entity, itemstack, equipmentSlot, null));
-                        ModelBipedAnimated.setUseMatrixMode(humanoidModel, true);
                         this.renderModel(poseStack, bufferSource, p_117123_, flag1, model, 1.0F, 1.0F, 1.0F, this.getArmorResource(entity, itemstack, equipmentSlot, "overlay"));
                     } else {
                         this.renderModel(poseStack, bufferSource, p_117123_, flag1, model, 1.0F, 1.0F, 1.0F, this.getArmorResource(entity, itemstack, equipmentSlot, null));
