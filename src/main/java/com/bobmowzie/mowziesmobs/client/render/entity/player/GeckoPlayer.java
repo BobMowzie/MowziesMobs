@@ -164,6 +164,10 @@ public abstract class GeckoPlayer implements GeoEntity {
 			if (!geckoRenderer.getModelsToLoad().containsKey(this.getClass())) {
 				geckoRenderer.getModelsToLoad().put(this.getClass(), geckoRenderer);
 			}
+
+			getAnimatableInstanceCache().getManagerForId(renderer.getInstanceId(this));
+			getController().setLastModel(model);
+			GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON = this;
 		}
 	}
 
@@ -172,6 +176,9 @@ public abstract class GeckoPlayer implements GeoEntity {
 		public static ModelGeckoPlayerThirdPerson GECKO_MODEL_THIRD_PERSON_NORMAL;
 		public static GeckoRenderPlayer GECKO_RENDERER_THIRD_PERSON_SLIM;
 		public static ModelGeckoPlayerThirdPerson GECKO_MODEL_THIRD_PERSON_SLIM;
+
+		protected GeoRenderer<GeckoPlayer> rendererSlim;
+		protected MowzieGeoModel<GeckoPlayer> modelSlim;
 
 		public GeckoPlayerThirdPerson(Player player) {
 			super(player);
@@ -189,14 +196,27 @@ public abstract class GeckoPlayer implements GeoEntity {
 
 		@Override
 		public void setup(Player player) {
-			if (((AbstractClientPlayer) player).getModelName().equals("slim")) {
-				model = GECKO_MODEL_THIRD_PERSON_SLIM;
-				renderer = GECKO_RENDERER_THIRD_PERSON_SLIM;
-			}
-			else {
-				model = GECKO_MODEL_THIRD_PERSON_NORMAL;
-				renderer = GECKO_RENDERER_THIRD_PERSON_NORMAL;
-			}
+			model = GECKO_MODEL_THIRD_PERSON_NORMAL;
+			renderer = GECKO_RENDERER_THIRD_PERSON_NORMAL;
+			modelSlim = GECKO_MODEL_THIRD_PERSON_SLIM;
+			rendererSlim = GECKO_RENDERER_THIRD_PERSON_SLIM;
+
+			getAnimatableInstanceCache().getManagerForId(renderer.getInstanceId(this));
+			getController().setLastModel(model);
+		}
+
+		public boolean isPlayerSlim() {
+			return ((AbstractClientPlayer) getPlayer()).getModelName().equals("slim");
+		}
+
+		@Override
+		public MowzieGeoModel<GeckoPlayer> getModel() {
+			return isPlayerSlim() ? modelSlim : model;
+		}
+
+		@Override
+		public GeoRenderer<GeckoPlayer> getPlayerRenderer() {
+			return isPlayerSlim() ? rendererSlim : renderer;
 		}
 
 		public static void initRenderer() {

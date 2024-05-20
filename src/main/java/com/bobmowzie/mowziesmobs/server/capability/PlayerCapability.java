@@ -250,16 +250,9 @@ public class PlayerCapability {
             if (event.getLevel().isClientSide()) {
                 Player player = (Player) event.getEntity();
                 geckoPlayer = new GeckoPlayer.GeckoPlayerThirdPerson(player);
-                GeckoRenderPlayer animatedPlayerRenderer = (GeckoRenderPlayer) geckoPlayer.getPlayerRenderer();
-                geckoPlayer.getAnimatableInstanceCache().getManagerForId(animatedPlayerRenderer.getInstanceId(geckoPlayer));
-                geckoPlayer.getController().setLastModel(geckoPlayer.getModel());
                 // Only create 1st person instance if the player joining is this client's player
                 if (event.getEntity() == Minecraft.getInstance().player) {
                     GeckoPlayer.GeckoPlayerFirstPerson geckoPlayerFirstPerson = new GeckoPlayer.GeckoPlayerFirstPerson(player);
-                    GeckoFirstPersonRenderer firstPersonPlayerRenderer = (GeckoFirstPersonRenderer)geckoPlayerFirstPerson.getPlayerRenderer();
-                    geckoPlayerFirstPerson.getAnimatableInstanceCache().getManagerForId(firstPersonPlayerRenderer.getInstanceId(geckoPlayerFirstPerson));
-                    geckoPlayerFirstPerson.getController().setLastModel(geckoPlayerFirstPerson.getModel());
-                    GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON = geckoPlayerFirstPerson;
                 }
             }
         }
