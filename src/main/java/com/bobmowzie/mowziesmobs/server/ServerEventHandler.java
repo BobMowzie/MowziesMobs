@@ -488,7 +488,7 @@ public final class ServerEventHandler {
                     AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getEntity(), AbilityHandler.SUNSTRIKE_ABILITY);
                 }
             }
-            if (player.level().getBlockState(event.getPos()).getMenuProvider(player.level(), event.getPos()) != null) {
+            if (player.getMainHandItem().is(ItemHandler.WROUGHT_AXE.get()) && player.level().getBlockState(event.getPos()).getMenuProvider(player.level(), event.getPos()) != null) {
                 player.resetAttackStrengthTicker();
                 return;
             }
