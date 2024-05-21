@@ -1,9 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.capability;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoFirstPersonRenderer;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
-import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoRenderPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.PlayerAbility;
@@ -38,7 +36,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.fml.LogicalSide;
-import software.bernie.geckolib.core.animation.AnimatableManager;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -87,9 +84,9 @@ public class PlayerCapability {
 
         void setTribeCircleTick(int tribeCircleTick);
 
-        List<EntityUmvuthanaFollowerToPlayer> getTribePack();
+        List<EntityUmvuthanaFollowerToPlayer> getUmvuthanaPack();
 
-        void setTribePack(List<EntityUmvuthanaFollowerToPlayer> tribePack);
+        void setUmvuthanaPack(List<EntityUmvuthanaFollowerToPlayer> umvuthanaPack);
 
         int getTribePackRadius();
 
@@ -127,7 +124,7 @@ public class PlayerCapability {
         private float prevCooledAttackStrength;
 
         public int tribeCircleTick;
-        public List<EntityUmvuthanaFollowerToPlayer> tribePack = new ArrayList<>();
+        public List<EntityUmvuthanaFollowerToPlayer> umvuthanaPack = new ArrayList<>();
         public int tribePackRadius = 3;
 
         @OnlyIn(Dist.CLIENT)
@@ -197,12 +194,12 @@ public class PlayerCapability {
             this.tribeCircleTick = tribeCircleTick;
         }
 
-        public List<EntityUmvuthanaFollowerToPlayer> getTribePack() {
-            return tribePack;
+        public List<EntityUmvuthanaFollowerToPlayer> getUmvuthanaPack() {
+            return umvuthanaPack;
         }
 
-        public void setTribePack(List<EntityUmvuthanaFollowerToPlayer> tribePack) {
-            this.tribePack = tribePack;
+        public void setUmvuthanaPack(List<EntityUmvuthanaFollowerToPlayer> umvuthanaPack) {
+            this.umvuthanaPack = umvuthanaPack;
         }
 
         public int getTribePackRadius() {
@@ -280,7 +277,7 @@ public class PlayerCapability {
                 if (player.getOffhandItem().getItem() instanceof ItemEarthTalisman)
                     player.addEffect(new MobEffectInstance(EffectHandler.GEOMANCY.get(), 20, 0, false, false));
 
-                List<EntityUmvuthanaFollowerToPlayer> pack = tribePack;
+                List<EntityUmvuthanaFollowerToPlayer> pack = umvuthanaPack;
                 float theta = (2 * (float) Math.PI / pack.size());
                 for (int i = 0; i < pack.size(); i++) {
                     EntityUmvuthanaFollowerToPlayer barakoan = pack.get(i);
@@ -454,16 +451,16 @@ public class PlayerCapability {
         }
 
         public int getPackSize() {
-            tribePack.removeIf(Entity::isRemoved);
-            return tribePack.size();
+            umvuthanaPack.removeIf(Entity::isRemoved);
+            return umvuthanaPack.size();
         }
 
-        public void removePackMember(EntityUmvuthanaFollowerToPlayer tribePlayer) {
-            tribePack.remove(tribePlayer);
+        public void removePackMember(EntityUmvuthanaFollowerToPlayer followerToPlayer) {
+            umvuthanaPack.remove(followerToPlayer);
         }
 
-        public void addPackMember(EntityUmvuthanaFollowerToPlayer tribePlayer) {
-            tribePack.add(tribePlayer);
+        public void addPackMember(EntityUmvuthanaFollowerToPlayer followerToPlayer) {
+            umvuthanaPack.add(followerToPlayer);
         }
 
         public Power[] getPowers() {

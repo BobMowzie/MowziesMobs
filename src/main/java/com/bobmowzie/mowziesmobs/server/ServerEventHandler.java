@@ -36,7 +36,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -59,7 +58,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
@@ -633,10 +631,10 @@ public final class ServerEventHandler {
                 if (event.getTarget() instanceof EntityUmvuthanaFollowerToPlayer) return;
                 if (!event.getEntity().level().isClientSide()) {
                     for (int i = 0; i < playerCapability.getPackSize(); i++) {
-                        EntityUmvuthanaFollowerToPlayer barakoa = playerCapability.getTribePack().get(i);
+                        EntityUmvuthanaFollowerToPlayer umvuthana = playerCapability.getUmvuthanaPack().get(i);
                         LivingEntity living = (LivingEntity) event.getTarget();
-                        if (barakoa.getMaskType() != MaskType.FAITH) {
-                            if (!living.isInvulnerable()) barakoa.setTarget(living);
+                        if (umvuthana.getMaskType() != MaskType.FAITH) {
+                            if (!living.isInvulnerable()) umvuthana.setTarget(living);
                         }
                     }
                 }
