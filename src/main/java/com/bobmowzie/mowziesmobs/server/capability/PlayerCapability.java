@@ -24,6 +24,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -453,6 +454,7 @@ public class PlayerCapability {
         }
 
         public int getPackSize() {
+            tribePack.removeIf(Entity::isRemoved);
             return tribePack.size();
         }
 
