@@ -81,7 +81,7 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
         }
         if (travelling){
             for (Entity entity : ridingEntities) {
-                entity.move(MoverType.SHULKER_BOX, getDeltaMovement());
+                entity.move(MoverType.SHULKER_BOX, getDeltaMovement().add(0, 0.1, 0));
             }
         }
         
