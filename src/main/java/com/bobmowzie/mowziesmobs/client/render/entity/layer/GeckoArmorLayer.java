@@ -24,16 +24,16 @@ public class GeckoArmorLayer<T extends LivingEntity, M extends HumanoidModel<T>,
     }
 
     @Override
-    protected void renderArmorPiece(PoseStack poseStack, MultiBufferSource bufferSource, T entity, EquipmentSlot equipmentSlot, int p_117123_, A p_117124_) {
+    protected void renderArmorPiece(PoseStack poseStack, MultiBufferSource bufferSource, T entity, EquipmentSlot equipmentSlot, int p_117123_, A baseModel) {
         ItemStack itemstack = entity.getItemBySlot(equipmentSlot);
         if (itemstack.getItem() instanceof ArmorItem) {
             ArmorItem armoritem = (ArmorItem)itemstack.getItem();
             if (armoritem.getType().getSlot() == equipmentSlot) {
-                net.minecraft.client.model.Model model = getArmorModelHook(entity, itemstack, equipmentSlot, p_117124_);
+                net.minecraft.client.model.Model model = getArmorModelHook(entity, itemstack, equipmentSlot, baseModel);
                 if (model instanceof HumanoidModel<?>) {
                     HumanoidModel<T> humanoidModel = (HumanoidModel<T>) model;
-                    this.getParentModel().copyPropertiesTo(humanoidModel);
-                    this.setPartVisibility(p_117124_, equipmentSlot);
+                    this.getParentModel().copyPropertiesTo(baseModel);
+                    this.setPartVisibility(baseModel, equipmentSlot);
                     this.setPartVisibility((A) humanoidModel, equipmentSlot);
                     boolean flag = this.usesInnerModel(equipmentSlot);
                     boolean flag1 = itemstack.hasFoil();
