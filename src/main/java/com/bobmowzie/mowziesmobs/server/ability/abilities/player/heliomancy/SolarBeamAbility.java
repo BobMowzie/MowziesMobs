@@ -28,13 +28,12 @@ public class SolarBeamAbility extends PlayerAbility {
     public void start() {
         super.start();
         LivingEntity user = getUser();
+        EntitySolarBeam solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM.get(), user.level(), user, user.getX(), user.getY() + 1.2f, user.getZ(), (float) ((user.yHeadRot + 90) * Math.PI / 180), (float) (-user.getXRot() * Math.PI / 180), 55);
+        this.solarBeam = solarBeam;
         if (!getUser().level().isClientSide()) {
-            EntitySolarBeam solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM.get(), user.level(), user, user.getX(), user.getY() + 1.2f, user.getZ(), (float) ((user.yHeadRot + 90) * Math.PI / 180), (float) (-user.getXRot() * Math.PI / 180), 55);
             solarBeam.setHasPlayer(true);
             user.level().addFreshEntity(solarBeam);
             user.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 2, false, false));
-
-            this.solarBeam = solarBeam;
         }
         else {
             heldItemMainHandVisualOverride = ItemStack.EMPTY;
@@ -66,7 +65,9 @@ public class SolarBeamAbility extends PlayerAbility {
     @Override
     public void end() {
         super.end();
-        if (solarBeam != null) solarBeam.discard() ;
+        if (solarBeam != null) {
+            solarBeam.discard();
+        }
     }
 
     @Override

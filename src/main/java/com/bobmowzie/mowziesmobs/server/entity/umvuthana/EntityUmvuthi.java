@@ -546,7 +546,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         }
 
         if (getActiveAbility() == null && tickCount % 60 == 0) {
-            sendAbilityMessage(SUPERNOVA_ABILITY);
+            sendAbilityMessage(SOLAR_BEAM_ABILITY);
         }
     }
 

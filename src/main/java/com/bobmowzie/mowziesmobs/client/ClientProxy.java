@@ -5,6 +5,7 @@ import com.bobmowzie.mowziesmobs.client.sound.*;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityClientEventHandler;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
@@ -97,6 +98,12 @@ public class ClientProxy extends ServerProxy {
 
             }
         }
+    }
+
+    @Override
+    public void playSolarBeamSound(EntitySolarBeam entity) {
+        Minecraft.getInstance().getSoundManager().play(new SolarBeamSound(entity, false));
+        Minecraft.getInstance().getSoundManager().play(new SolarBeamSound(entity, true));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleOrb;
@@ -74,6 +75,8 @@ public class EntitySolarBeam extends Entity {
     @OnlyIn(Dist.CLIENT)
     private Vec3[] attractorPos;
 
+    private boolean didRaytrace;
+
     public EntitySolarBeam(EntityType<? extends EntitySolarBeam> type, Level world) {
         super(type, world);
         noCulling = true;
@@ -90,7 +93,7 @@ public class EntitySolarBeam extends Entity {
         this.setDuration(duration);
         this.setPos(x, y, z);
         this.calculateEndPos();
-        this.playSound(MMSounds.LASER.get(), 2f, 1);
+        MowziesMobs.PROXY.playSolarBeamSound(this);
         if (!world.isClientSide) {
             this.setCasterID(caster.getId());
         }
@@ -333,7 +336,12 @@ public class EntitySolarBeam extends Entity {
         }
     }
 
+    public boolean hasDoneRaytrace() {
+        return didRaytrace;
+    }
+
     public SolarbeamHitResult raytraceEntities(Level world, Vec3 from, Vec3 to, boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock) {
+        didRaytrace = true;
         SolarbeamHitResult result = new SolarbeamHitResult();
         result.setBlockHit(world.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this)));
         if (result.blockHit != null) {

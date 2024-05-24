@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.trade.Trade;
@@ -91,6 +92,8 @@ public class ServerProxy {
     public void playBlackPinkSound(AbstractMinecart entity) {}
 
     public void playSunblockSound(LivingEntity entity) {}
+
+    public void playSolarBeamSound(EntitySolarBeam entity) {}
 
     public void minecartParticles(ClientLevel world, AbstractMinecart minecart, float scale, double x, double y, double z, BlockState state, BlockPos pos) {}
 
