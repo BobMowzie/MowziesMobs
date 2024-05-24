@@ -41,10 +41,9 @@ public class MowzieAnimationController<T extends GeoAnimatable> extends Animatio
         }
 
         double adjustedTick = this.animationSpeedModifier.apply(this.animatable) * Math.max(tick - this.tickOffset, 0) + timingOffset;
-        if (this.currentAnimation != null && this.currentAnimation.loopType().shouldPlayAgain(animatable, this, currentAnimation.animation())) adjustedTick = adjustedTick % this.currentAnimation.animation().length();
         if (adjustedTick == timingOffset) isJustStarting = true;
         return adjustedTick;
-        // I did this in a fugue state and I have no idea why it works
+//        // I did this in a fugue state and I have no idea why it works
     }
 
     public void setLastModel(CoreGeoModel<T> coreGeoModel) {
