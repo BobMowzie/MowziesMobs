@@ -78,7 +78,7 @@ public class GeckoFirstPersonRenderer extends ItemInHandRenderer implements GeoR
             AnimationState<GeckoPlayer> animationState = new AnimationState<>(geckoPlayer, 0, 0, partialTicks, false);
             long instanceId = getInstanceId(geckoPlayer);
 
-            animationState.setData(DataTickets.TICK, geckoPlayer.getTick(geckoPlayer) + partialTicks);
+            animationState.setData(DataTickets.TICK, geckoPlayer.getTick(geckoPlayer));
             AbstractClientPlayer entity = (AbstractClientPlayer) geckoPlayer.getPlayer();
             animationState.setData(DataTickets.ENTITY, entity);
             this.geoModel.addAdditionalStateData(geckoPlayer, instanceId, animationState::setData);
