@@ -19,7 +19,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.armortrim.ArmorTrim;
 
@@ -31,42 +30,44 @@ public class GeckoArmorLayer<T extends LivingEntity, M extends HumanoidModel<T>,
     @Override
     protected void renderArmorPiece(PoseStack poseStack, MultiBufferSource bufferSource, T entity, EquipmentSlot equipmentSlot, int p_117123_, A baseModel) {
         ItemStack itemstack = entity.getItemBySlot(equipmentSlot);
-        Item item = itemstack.getItem();
-        if (item instanceof ArmorItem armorItem) {
+        if (itemstack.getItem() instanceof ArmorItem) {
             ArmorItem armoritem = (ArmorItem)itemstack.getItem();
             if (armoritem.getType().getSlot() == equipmentSlot) {
-                this.getParentModel().copyPropertiesTo(baseModel);
-                this.setPartVisibility(baseModel, equipmentSlot);
                 net.minecraft.client.model.Model model = getArmorModelHook(entity, itemstack, equipmentSlot, baseModel);
-                HumanoidModel<T> humanoidModel = (HumanoidModel<T>) model;
-                this.setPartVisibility((A) humanoidModel, equipmentSlot);
-                boolean flag = this.usesInnerModel(equipmentSlot);
-                ModelBipedAnimated.setUseMatrixMode(humanoidModel, true);
-                if (armoritem instanceof net.minecraft.world.item.DyeableLeatherItem) {
-                    int i = ((net.minecraft.world.item.DyeableLeatherItem) armoritem).getColor(itemstack);
-                    float f = (float) (i >> 16 & 255) / 255.0F;
-                    float f1 = (float) (i >> 8 & 255) / 255.0F;
-                    float f2 = (float) (i & 255) / 255.0F;
-                    if (model instanceof MowzieGeoArmorRenderer<?>) ((MowzieGeoArmorRenderer<?>) model).usingCustomPlayerAnimations = true;
-                    this.renderModel(poseStack, bufferSource, p_117123_, armorItem, model, flag, f, f1, f2, this.getArmorResource(entity, itemstack, equipmentSlot, null));
-                    this.renderModel(poseStack, bufferSource, p_117123_, armorItem, model, flag, 1.0F, 1.0F, 1.0F, this.getArmorResource(entity, itemstack, equipmentSlot, "overlay"));
-                } else {
-                    this.renderModel(poseStack, bufferSource, p_117123_, armorItem, model, flag, 1.0F, 1.0F, 1.0F, this.getArmorResource(entity, itemstack, equipmentSlot, null));
-                }
+                if (model instanceof HumanoidModel<?>) {
+                    HumanoidModel<T> humanoidModel = (HumanoidModel<T>) model;
+                    this.getParentModel().copyPropertiesTo(baseModel);
+                    this.setPartVisibility(baseModel, equipmentSlot);
+                    this.setPartVisibility((A) humanoidModel, equipmentSlot);
+                    boolean flag = this.usesInnerModel(equipmentSlot);
+                    boolean flag1 = itemstack.hasFoil();
+                    ModelBipedAnimated.setUseMatrixMode(humanoidModel, true);
+                    if (armoritem instanceof net.minecraft.world.item.DyeableLeatherItem) {
+                        int i = ((net.minecraft.world.item.DyeableLeatherItem) armoritem).getColor(itemstack);
+                        float f = (float) (i >> 16 & 255) / 255.0F;
+                        float f1 = (float) (i >> 8 & 255) / 255.0F;
+                        float f2 = (float) (i & 255) / 255.0F;
+                        this.renderModel(poseStack, bufferSource, p_117123_, model, f, f1, f2, this.getArmorResource(entity, itemstack, equipmentSlot, null));
+                        this.renderModel(poseStack, bufferSource, p_117123_, model, 1.0F, 1.0F, 1.0F, this.getArmorResource(entity, itemstack, equipmentSlot, "overlay"));
+                    } else {
+                        this.renderModel(poseStack, bufferSource, p_117123_, model, 1.0F, 1.0F, 1.0F, this.getArmorResource(entity, itemstack, equipmentSlot, null));
+                    }
 
-                ArmorTrim.getTrim(entity.level().registryAccess(), itemstack).ifPresent((p_289638_) -> {
-                    this.renderTrim(armoritem.getMaterial(), poseStack, bufferSource, p_117123_, p_289638_, model, flag);
-                });
-                if (itemstack.hasFoil()) {
-                    this.renderGlint(poseStack, bufferSource, p_117123_, model);
+                    ArmorTrim.getTrim(entity.level().registryAccess(), itemstack).ifPresent((p_289638_) -> {
+                        this.renderTrim(armoritem.getMaterial(), poseStack, bufferSource, p_117123_, p_289638_, model, flag);
+                    });
+                    if (itemstack.hasFoil()) {
+                        this.renderGlint(poseStack, bufferSource, p_117123_, model);
+                    }
                 }
             }
         }
     }
 
-    private void renderModel(PoseStack p_289664_, MultiBufferSource p_289689_, int p_289681_, ArmorItem p_289650_, net.minecraft.client.model.Model p_289658_, boolean p_289668_, float p_289678_, float p_289674_, float p_289693_, ResourceLocation armorResource) {
-        VertexConsumer vertexconsumer = p_289689_.getBuffer(RenderType.armorCutoutNoCull(armorResource));
-        p_289658_.renderToBuffer(p_289664_, vertexconsumer, p_289681_, OverlayTexture.NO_OVERLAY, p_289678_, p_289674_, p_289693_, 1.0F);
+    private void renderModel(PoseStack p_117107_, MultiBufferSource p_117108_, int p_117109_, net.minecraft.client.model.Model p_117112_, float p_117114_, float p_117115_, float p_117116_, ResourceLocation armorResource) {
+        VertexConsumer vertexconsumer = p_117108_.getBuffer(RenderType.armorCutoutNoCull(armorResource));
+        if (p_117112_ instanceof MowzieGeoArmorRenderer<?>) ((MowzieGeoArmorRenderer<?>) p_117112_).usingCustomPlayerAnimations = true;
+        p_117112_.renderToBuffer(p_117107_, vertexconsumer, p_117109_, OverlayTexture.NO_OVERLAY, p_117114_, p_117115_, p_117116_, 1.0F);
     }
 
     private void renderTrim(ArmorMaterial p_289690_, PoseStack p_289687_, MultiBufferSource p_289643_, int p_289683_, ArmorTrim p_289692_, net.minecraft.client.model.Model p_289663_, boolean p_289651_) {
