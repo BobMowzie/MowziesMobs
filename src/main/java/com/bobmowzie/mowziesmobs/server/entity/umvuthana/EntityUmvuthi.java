@@ -57,6 +57,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -1220,6 +1222,10 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
 
                     if (inRange.getY() < getUser().getY() + 3) inRange.setDeltaMovement(inRange.getDeltaMovement().add(0, 0.075, 0));
                 }
+            }
+
+            if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.STARTUP) {
+                getUser().addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 2, 1, false, false));
             }
 
             if (getTicksInUse() == 40) {

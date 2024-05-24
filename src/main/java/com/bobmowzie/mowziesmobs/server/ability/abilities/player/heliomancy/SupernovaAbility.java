@@ -59,6 +59,10 @@ public class SupernovaAbility extends PlayerAbility {
             getUser().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 2, 4, false, false));
         }
 
+        if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.STARTUP) {
+            getUser().addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 2, 1, false, false));
+        }
+
         if (getTicksInUse() == 30) {
             getUser().playSound(MMSounds.ENTITY_SUPERNOVA_BLACKHOLE.get(), 2f, 1.2f);
         }
