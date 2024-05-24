@@ -902,22 +902,21 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
         }
 
         @Override
-        public void start() {
-            super.start();
+        public String getAnimationName() {
             if (getUser().isAggressive()) {
                 if (getUser().random.nextBoolean()) {
-                    playAnimation("hurt_right_aggressive", false);
+                    return "hurt_right_aggressive";
                 }
                 else {
-                    playAnimation("hurt_left_aggressive", false);
+                    return "hurt_left_aggressive";
                 }
             }
             else {
                 if (getUser().random.nextBoolean()) {
-                    playAnimation("hurt_right_neutral", false);
+                    return "hurt_right_neutral";
                 }
                 else {
-                    playAnimation("hurt_left_neutral", false);
+                    return "hurt_left_neutral";
                 }
             }
         }

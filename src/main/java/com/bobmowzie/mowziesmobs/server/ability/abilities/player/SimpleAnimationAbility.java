@@ -26,7 +26,11 @@ public class SimpleAnimationAbility<T extends LivingEntity> extends Ability<T> {
     @Override
     public void start() {
         super.start();
-        playAnimation(animationName, false);
+        playAnimation(getAnimationName(), false);
+    }
+
+    public String getAnimationName() {
+        return animationName;
     }
 
     public int getDuration() {
