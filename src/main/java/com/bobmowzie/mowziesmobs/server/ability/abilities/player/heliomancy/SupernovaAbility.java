@@ -24,6 +24,9 @@ import java.util.List;
 public class SupernovaAbility extends HeliomancyAbilityBase {
     private boolean leftClickDown;
     private boolean rightClickDown;
+    private int timeSinceLeftUp;
+    private int timeSinceRightUp;
+    private static final int BUFFER = 5;
     private Vec3[] particleEmitter;
 
     public SupernovaAbility(AbilityType<Player, SupernovaAbility> abilityType, Player user) {
@@ -130,7 +133,10 @@ public class SupernovaAbility extends HeliomancyAbilityBase {
     @Override
     public void onLeftMouseUp(Player player) {
         super.onLeftMouseUp(player);
-        if (player == getUser()) leftClickDown = false;
+        if (player == getUser()) {
+            leftClickDown = false;
+            timeSinceLeftUp = BUFFER;
+        }
     }
 
     @Override
@@ -142,15 +148,28 @@ public class SupernovaAbility extends HeliomancyAbilityBase {
     @Override
     public void onRightMouseUp(Player player) {
         super.onRightMouseUp(player);
-        if (player == getUser()) rightClickDown = false;
+        if (player == getUser()) {
+            rightClickDown = false;
+            timeSinceRightUp = BUFFER;
+        }
+    }
+
+    public boolean isRightClickDown() {
+        return rightClickDown || timeSinceRightUp > 0;
+    }
+
+    public boolean isLeftClickDown() {
+        return leftClickDown || timeSinceLeftUp > 0;
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (getUser().isShiftKeyDown() && rightClickDown && leftClickDown) {
+        if (getUser().isShiftKeyDown() && isLeftClickDown() && isRightClickDown()) {
             AbilityHandler.INSTANCE.sendAbilityMessage(getUser(), AbilityHandler.SUPERNOVA_ABILITY);
         }
+        if (timeSinceRightUp > 0) timeSinceRightUp--;
+        if (timeSinceLeftUp > 0) timeSinceLeftUp--;
     }
 
     @Override
