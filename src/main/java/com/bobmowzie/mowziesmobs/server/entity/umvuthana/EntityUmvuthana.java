@@ -377,6 +377,7 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
 
     @Override
     public void tick() {
+        setNoAi(true);
         super.tick();
 
         if (level().isClientSide()) {

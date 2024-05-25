@@ -41,6 +41,7 @@ public class MowzieAnimationController<T extends GeoAnimatable> extends Animatio
         }
 
         double adjustedTick = this.animationSpeedModifier.apply(this.animatable) * Math.max(tick - this.tickOffset, 0) + timingOffset;
+        if (this.currentAnimation != null && this.currentAnimation.loopType() == Animation.LoopType.LOOP) adjustedTick = adjustedTick % this.currentAnimation.animation().length();
         if (adjustedTick == timingOffset) isJustStarting = true;
         return adjustedTick;
 //        // I did this in a fugue state and I have no idea why it works
