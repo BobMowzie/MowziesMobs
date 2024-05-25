@@ -63,9 +63,13 @@ public class FrozenCapability {
 
         void setFrozenSwingProgress(float frozenSwingProgress);
 
-        float getFrozenLimbSwingAmount();
+        float getFrozenWalkAnimSpeed();
 
-        void setFrozenLimbSwingAmount(float frozenLimbSwingAmount);
+        void setFrozenWalkAnimSpeed(float frozenWalkAnimSpeed);
+
+        float getFrozenWalkAnimPosition();
+
+        void setFrozenWalkAnimPosition(float frozenWalkAnimPosition);
 
         boolean prevHasAI();
 
@@ -104,7 +108,8 @@ public class FrozenCapability {
         public float frozenYawHead;
         public float frozenRenderYawOffset;
         public float frozenSwingProgress;
-        public float frozenLimbSwingAmount;
+        public float frozenWalkAnimSpeed;
+        public float frozenWalkAnimPosition;
         public boolean prevHasAI = true;
         public UUID prevAttackTarget;
 
@@ -180,13 +185,23 @@ public class FrozenCapability {
         }
 
         @Override
-        public float getFrozenLimbSwingAmount() {
-            return frozenLimbSwingAmount;
+        public float getFrozenWalkAnimSpeed() {
+            return frozenWalkAnimSpeed;
         }
 
         @Override
-        public void setFrozenLimbSwingAmount(float frozenLimbSwingAmount) {
-            this.frozenLimbSwingAmount = frozenLimbSwingAmount;
+        public void setFrozenWalkAnimSpeed(float frozenWalkAnimPosition) {
+            this.frozenWalkAnimSpeed = frozenWalkAnimPosition;
+        }
+
+        @Override
+        public float getFrozenWalkAnimPosition() {
+            return frozenWalkAnimPosition;
+        }
+
+        @Override
+        public void setFrozenWalkAnimPosition(float frozenWalkAnimPosition) {
+            this.frozenWalkAnimPosition = frozenWalkAnimPosition;
         }
 
         @Override
@@ -258,7 +273,8 @@ public class FrozenCapability {
                 frozenYaw = entity.getYRot();
                 frozenPitch = entity.getXRot();
                 frozenYawHead = entity.yHeadRot;
-                frozenLimbSwingAmount = 0;//entity.limbSwingAmount;
+                frozenWalkAnimSpeed = entity.walkAnimation.speed();
+                frozenWalkAnimPosition = entity.walkAnimation.position();
                 frozenRenderYawOffset = entity.yBodyRot;
                 frozenSwingProgress = entity.attackAnim;
                 entity.startRiding(frozenController, true);
@@ -375,7 +391,8 @@ public class FrozenCapability {
             CompoundTag compound = new CompoundTag();
             compound.putFloat("freezeProgress", getFreezeProgress());
             compound.putInt("freezeDecayDelay", getFreezeDecayDelay());
-            compound.putFloat("frozenLimbSwingAmount", getFrozenLimbSwingAmount());
+            compound.putFloat("frozenWalkAnimSpeed", getFrozenWalkAnimSpeed());
+            compound.putFloat("frozenWalkAnimPosition", getFrozenWalkAnimPosition());
             compound.putFloat("frozenRenderYawOffset", getFrozenRenderYawOffset());
             compound.putFloat("frozenSwingProgress", getFrozenSwingProgress());
             compound.putFloat("frozenPitch", getFrozenPitch());
@@ -394,7 +411,8 @@ public class FrozenCapability {
         public void deserializeNBT(CompoundTag compound) {
             setFreezeProgress(compound.getFloat("freezeProgress"));
             setFreezeDecayDelay(compound.getInt("freezeDecayDelay"));
-            setFrozenLimbSwingAmount(compound.getFloat("frozenLimbSwingAmount"));
+            setFrozenWalkAnimSpeed(compound.getFloat("frozenWalkAnimSpeed"));
+            setFrozenWalkAnimPosition(compound.getFloat("frozenWalkAnimPosition"));
             setFrozenRenderYawOffset(compound.getFloat("frozenRenderYawOffset"));
             setFrozenSwingProgress(compound.getFloat("frozenSwingProgress"));
             setFrozenPitch(compound.getFloat("frozenPitch"));

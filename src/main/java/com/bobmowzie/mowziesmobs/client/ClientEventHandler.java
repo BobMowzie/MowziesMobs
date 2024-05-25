@@ -14,11 +14,8 @@ import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
 import com.bobmowzie.mowziesmobs.server.item.ItemBlowgun;
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
@@ -27,7 +24,6 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
@@ -175,7 +171,8 @@ public enum ClientEventHandler {
             entity.yHeadRot = entity.yHeadRotO = frozenCapability.getFrozenYawHead();
             entity.yBodyRot = entity.yBodyRotO = frozenCapability.getFrozenRenderYawOffset();
             entity.attackAnim = entity.oAttackAnim = frozenCapability.getFrozenSwingProgress();
-//            entity.animationSpeed = entity.animationSpeedOld = frozenCapability.getFrozenLimbSwingAmount();   TODO: Update to use WalkAnimationState
+            entity.walkAnimation.setSpeed(frozenCapability.getFrozenWalkAnimSpeed());
+            entity.walkAnimation.position = frozenCapability.getFrozenWalkAnimPosition();
             entity.setShiftKeyDown(false);
         }
     }
