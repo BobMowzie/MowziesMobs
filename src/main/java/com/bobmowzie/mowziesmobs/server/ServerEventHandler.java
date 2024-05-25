@@ -479,7 +479,7 @@ public final class ServerEventHandler {
                 aggroUmvuthana(player);
             }
 
-            if (event.getSide() == LogicalSide.CLIENT && player.getInventory().getSelected().isEmpty() && player.hasEffect(EffectHandler.SUNS_BLESSING.get())) {
+            if (event.getSide() == LogicalSide.CLIENT && player.getInventory().getSelected().isEmpty() && player.hasEffect(EffectHandler.SUNS_BLESSING.get()) && player.level().getBlockState(event.getPos()).getMenuProvider(player.level(), event.getPos()) == null) {
                 if (player.isShiftKeyDown()) {
                     AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getEntity(), AbilityHandler.SOLAR_BEAM_ABILITY);
                 } else {
