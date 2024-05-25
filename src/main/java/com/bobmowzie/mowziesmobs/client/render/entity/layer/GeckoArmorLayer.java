@@ -37,6 +37,7 @@ public class GeckoArmorLayer<T extends LivingEntity, M extends HumanoidModel<T>,
                 if (model instanceof HumanoidModel<?>) {
                     HumanoidModel<T> humanoidModel = (HumanoidModel<T>) model;
                     this.getParentModel().copyPropertiesTo(baseModel);
+                    this.getParentModel().copyPropertiesTo(humanoidModel);
                     this.setPartVisibility(baseModel, equipmentSlot);
                     this.setPartVisibility((A) humanoidModel, equipmentSlot);
                     boolean flag = this.usesInnerModel(equipmentSlot);
@@ -54,9 +55,11 @@ public class GeckoArmorLayer<T extends LivingEntity, M extends HumanoidModel<T>,
                     }
 
                     ArmorTrim.getTrim(entity.level().registryAccess(), itemstack).ifPresent((p_289638_) -> {
+                        ModelBipedAnimated.setUseMatrixMode(humanoidModel, true);
                         this.renderTrim(armoritem.getMaterial(), poseStack, bufferSource, p_117123_, p_289638_, model, flag);
                     });
                     if (itemstack.hasFoil()) {
+                        ModelBipedAnimated.setUseMatrixMode(humanoidModel, true);
                         this.renderGlint(poseStack, bufferSource, p_117123_, model);
                     }
                 }
