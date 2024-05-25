@@ -78,6 +78,7 @@ public abstract class GeckoPlayer implements GeoEntity {
 		return ((GeckoPlayer)entity).tickTimer;
 	}
 
+	private static RawAnimation IDLE_ANIMATION = RawAnimation.begin().thenLoop("idle");
 	public <E extends GeoEntity> PlayState predicate(AnimationState<E> e) {
 		e.getController().transitionLength(0);
 		Player player = getPlayer();
@@ -93,7 +94,7 @@ public abstract class GeckoPlayer implements GeoEntity {
 			return abilityCapability.animationPredicate(e, getPerspective());
 		}
 		else {
-			e.getController().setAnimation(RawAnimation.begin().thenLoop("idle"));
+			e.getController().setAnimation(IDLE_ANIMATION);
 			return PlayState.CONTINUE;
 		}
 	}

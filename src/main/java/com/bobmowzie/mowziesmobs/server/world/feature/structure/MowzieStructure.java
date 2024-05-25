@@ -101,24 +101,6 @@ public abstract class MowzieStructure extends Structure {
             if (!topBlock.getFluidState().isEmpty()) return false;
         }
 
-        /* TODO: Fix this later
-        if (avoidStructures) {
-            List<? extends String> structuresToAvoid = config.avoidStructures.get();
-            ChunkGeneratorStructureState generatorState = serverLevel.getChunkSource().getGeneratorState();
-            Registry<StructureSet> structureSetRegistry = context.registryAccess().registryOrThrow(Registries.STRUCTURE_SET);
-            for (String structureName : structuresToAvoid) {
-                Optional<StructureSet> structureSetOptional = structureSetRegistry.getOptional(new ResourceLocation(structureName));
-                if (structureSetOptional.isEmpty()) continue;
-                Optional<ResourceKey<StructureSet>> resourceKeyOptional = structureSetRegistry.getResourceKey(structureSetOptional.get());
-                if (resourceKeyOptional.isEmpty()) continue;
-                Optional<Holder.Reference<StructureSet>> holderOptional = structureSetRegistry.getHolder(resourceKeyOptional.get());
-                if (holderOptional.isEmpty()) continue;
-                if (generatorState.hasStructureChunkInRange(holderOptional.get(), chunkPos.x, chunkPos.z, 3)) {
-                    return false;
-                }
-            }
-        }*/
-
         return true;
     }
 

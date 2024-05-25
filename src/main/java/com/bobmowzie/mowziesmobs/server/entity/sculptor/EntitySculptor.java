@@ -50,6 +50,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.Animation;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.keyframe.event.CustomInstructionKeyframeEvent;
@@ -122,6 +123,8 @@ public class EntitySculptor extends MowzieGeckoEntity {
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1);
     }
 
+    private static RawAnimation TEST_FAIL_START_ANIM = RawAnimation.begin().thenLoop("test_fail_start");
+
     protected <E extends GeoEntity> PlayState predicate(AnimationState<E> event)
     {
         getController().transitionLength(0);
@@ -134,7 +137,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
             return abilityCapability.animationPredicate(event, null);
         }
         else {
-            event.getController().setAnimation(RawAnimation.begin().thenLoop("test_fail_start"));
+            event.getController().setAnimation(TEST_FAIL_START_ANIM);
             return PlayState.CONTINUE;
         }
     }
@@ -421,10 +424,11 @@ public class EntitySculptor extends MowzieGeckoEntity {
             return false;
         }
 
+        private static final RawAnimation TEST_START_ANIM = RawAnimation.begin().then("testStart", Animation.LoopType.PLAY_ONCE);
         @Override
         public void start() {
             super.start();
-            playAnimation("testStart");
+            playAnimation(TEST_START_ANIM);
             getUser().testing = true;
             getUser().setTestingPlayer(getUser().getCustomer());
         }
@@ -506,10 +510,11 @@ public class EntitySculptor extends MowzieGeckoEntity {
             return getUser().pillar != null;
         }
 
+        private static final RawAnimation TEST_FAIL_START_ANIM = RawAnimation.begin().then("test_fail_start", Animation.LoopType.PLAY_ONCE);
         @Override
         public void start() {
             super.start();
-            playAnimation("test_fail_start", false);
+            playAnimation(TEST_FAIL_START_ANIM);
             if (getUser().pillar != null) getUser().pillar.startFalling();
         }
 

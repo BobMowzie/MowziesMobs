@@ -110,13 +110,6 @@ public class MowzieRenderUtils {
 
     }
 
-    public static void rotateMirror(GeoCube bone, PoseStack stack) {
-        Vec3 rotation = bone.rotation();
-        stack.mulPose(MathUtils.quatFromRotationXYZ(0.0F, 0.0F, (float) -rotation.z(), false));
-        stack.mulPose(MathUtils.quatFromRotationXYZ(0.0F, (float) -rotation.y(), 0.0F, false));
-        stack.mulPose(MathUtils.quatFromRotationXYZ((float) rotation.x(), 0.0F, 0.0F, false));
-    }
-
     // Used for elytra layer, parrot layer, cape layer
     public static void transformStackToModelPart(PoseStack stack, ModelPartMatrix part) {
         stack.last().pose().identity();
@@ -125,24 +118,4 @@ public class MowzieRenderUtils {
         stack.last().pose().mul(part.getWorldXform());
         stack.last().normal().mul(part.getWorldNormal());
     }
-
-    /* TODO: See if minecraft's new math library actually inverts matrices correctly
-    public static Matrix4f invertAndMultiplyMatrices(Matrix4f baseMatrix, Matrix4f inputMatrix) {
-        inputMatrix = new Matrix4f(inputMatrix);
-
-        invertFixed(inputMatrix);
-        inputMatrix.mul(baseMatrix);
-
-        return inputMatrix;
-    }
-
-    public static boolean invertFixed(Matrix4f mat) {
-        float f = mat.adjugateAndDet();
-        if (Math.abs(f) > 1.0E-6F) {
-            mat.multiply(1.0f / f);
-            return true;
-        } else {
-            return false;
-        }
-    }*/
 }

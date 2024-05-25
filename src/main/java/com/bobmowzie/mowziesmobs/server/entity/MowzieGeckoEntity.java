@@ -78,8 +78,10 @@ public abstract class MowzieGeckoEntity extends MowzieEntity implements GeoEntit
         }
     }
 
+    private static RawAnimation IDLE_ANIM = RawAnimation.begin().thenLoop("idle");
+
     protected <E extends GeoEntity> void loopingAnimations(AnimationState<E> event) {
-        event.getController().setAnimation(RawAnimation.begin().thenLoop("idle"));
+        event.getController().setAnimation(IDLE_ANIM);
     }
 
     @Override

@@ -66,21 +66,20 @@ public class Ability<T extends LivingEntity> {
     }
 
     public void playAnimation(String animationName) {
-        playAnimation(animationName, Animation.LoopType.DEFAULT);
+        playAnimation(RawAnimation.begin().then(animationName, Animation.LoopType.DEFAULT));
     }
 
     public void playAnimation(String animationName, boolean shouldLoop) {
-        playAnimation(animationName, shouldLoop ? Animation.LoopType.LOOP : Animation.LoopType.PLAY_ONCE);
+        playAnimation(RawAnimation.begin().then(animationName, shouldLoop ? Animation.LoopType.LOOP : Animation.LoopType.PLAY_ONCE));
     }
 
-    public void playAnimation(String animationName, Animation.LoopType loopType) {
+    public void playAnimation(RawAnimation animation) {
         if (getUser() instanceof MowzieGeckoEntity && getUser().level().isClientSide()) {
             MowzieGeckoEntity entity = (MowzieGeckoEntity) getUser();
-            RawAnimation newActiveAnimation = RawAnimation.begin().then(animationName, loopType);
-            activeAnimation = newActiveAnimation;
+            activeAnimation = animation;
             MowzieAnimationController<MowzieGeckoEntity> controller = entity.getController();
             if (controller != null) {
-                controller.playAnimation(entity, newActiveAnimation);
+                controller.playAnimation(entity, animation);
             }
         }
     }

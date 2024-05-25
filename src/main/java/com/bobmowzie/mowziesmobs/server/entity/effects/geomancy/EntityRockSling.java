@@ -39,13 +39,15 @@ public class EntityRockSling extends EntityBoulderProjectile implements GeoEntit
         this.launchVec = vec;
     }
 
+    private static RawAnimation ROLL_ANIM = RawAnimation.begin().thenLoop("roll");
+
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         super.registerControllers(controllers);
         AnimationController<EntityRockSling> controller = new AnimationController<>(this, "controller", 0,
                 event -> {
                     event.getController()
-                            .setAnimation(RawAnimation.begin().thenLoop("roll"));
+                            .setAnimation(ROLL_ANIM);
                     return PlayState.CONTINUE;
                 });
         controllers.add(controller);

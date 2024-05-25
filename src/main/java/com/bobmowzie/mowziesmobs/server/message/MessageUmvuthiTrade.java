@@ -51,28 +51,27 @@ public class MessageUmvuthiTrade {
                     if (!(entity instanceof EntityUmvuthi)) {
                         return;
                     }
-                    EntityUmvuthi barako = (EntityUmvuthi) entity;
-                    if (barako.getCustomer() != player) {
+                    EntityUmvuthi umvuthi = (EntityUmvuthi) entity;
+                    if (umvuthi.getCustomer() != player) {
                         return;
                     }
                     AbstractContainerMenu container = player.containerMenu;
                     if (!(container instanceof ContainerUmvuthiTrade)) {
                         return;
                     }
-                    boolean satisfied = barako.hasTradedWith(player);
+                    boolean satisfied = umvuthi.hasTradedWith(player);
                     if (!satisfied) {
-                        if (satisfied = barako.fulfillDesire(container.getSlot(0))) {
-                            barako.rememberTrade(player);
+                        if (satisfied = umvuthi.fulfillDesire(container.getSlot(0))) {
+                            umvuthi.rememberTrade(player);
                             ((ContainerUmvuthiTrade) container).returnItems();
                             container.broadcastChanges();
                         }
                     }
                     if (satisfied) {
                         player.addEffect(new MobEffectInstance(EffectHandler.SUNS_BLESSING.get(), -1, 0, false, false));
-                        if (barako.getActiveAbilityType() != EntityUmvuthi.BLESS_ABILITY) {
-//                            barako.setAnimationTick(0); TODO
-                            barako.sendAbilityMessage(EntityUmvuthi.BLESS_ABILITY);
-                            barako.playSound(MMSounds.ENTITY_UMVUTHI_BLESS.get(), 2, 1);
+                        if (umvuthi.getActiveAbilityType() != EntityUmvuthi.BLESS_ABILITY) {
+                            umvuthi.sendAbilityMessage(EntityUmvuthi.BLESS_ABILITY);
+                            umvuthi.playSound(MMSounds.ENTITY_UMVUTHI_BLESS.get(), 2, 1);
                         }
                     }
                 }

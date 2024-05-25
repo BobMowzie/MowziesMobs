@@ -31,10 +31,12 @@ public class PlayerAbility extends Ability<Player> {
     protected HandDisplay firstPersonMainHandDisplay;
     protected HandDisplay firstPersonOffHandDisplay;
 
+    private static RawAnimation IDLE_ANIM = RawAnimation.begin().thenLoop("idle");
+
     public PlayerAbility(AbilityType<Player, ? extends Ability> abilityType, Player user, AbilitySection[] sectionTrack, int cooldownMax) {
         super(abilityType, user, sectionTrack, cooldownMax);
         if (user.level().isClientSide) {
-            this.activeAnimation = RawAnimation.begin().thenLoop("idle");
+            this.activeAnimation = IDLE_ANIM;
             heldItemMainHandVisualOverride = null;
             heldItemOffHandVisualOverride = null;
             firstPersonMainHandDisplay = HandDisplay.DEFAULT;
@@ -46,26 +48,29 @@ public class PlayerAbility extends Ability<Player> {
         this(abilityType, user, sectionTrack, 0);
     }
 
-    public void playAnimation(String animationName, GeckoPlayer.Perspective perspective, Animation.LoopType loopType) {
+    public void playAnimation(RawAnimation animation, GeckoPlayer.Perspective perspective) {
         if (getUser() != null && getUser().level().isClientSide()) {
-            RawAnimation newActiveAnimation = RawAnimation.begin().then(animationName, loopType);
             if (perspective == GeckoPlayer.Perspective.FIRST_PERSON) {
-                activeFirstPersonAnimation = newActiveAnimation;
+                activeFirstPersonAnimation = animation;
             }
             else {
-                activeAnimation = newActiveAnimation;
+                activeAnimation = animation;
             }
             MowzieAnimationController<GeckoPlayer> controller = GeckoPlayer.getAnimationController(getUser(), perspective);
             GeckoPlayer geckoPlayer = GeckoPlayer.getGeckoPlayer(getUser(), perspective);
             if (controller != null && geckoPlayer != null) {
-                controller.playAnimation(geckoPlayer, newActiveAnimation);
+                controller.playAnimation(geckoPlayer, animation);
             }
         }
     }
 
-    public void playAnimation(String animationName, Animation.LoopType loopType) {
-        playAnimation(animationName, GeckoPlayer.Perspective.FIRST_PERSON, loopType);
-        playAnimation(animationName, GeckoPlayer.Perspective.THIRD_PERSON, loopType);
+    public void playAnimation(String animationName, GeckoPlayer.Perspective perspective, Animation.LoopType loopType) {
+        playAnimation(RawAnimation.begin().then(animationName, loopType), perspective);
+    }
+
+        public void playAnimation(RawAnimation animation) {
+        playAnimation(animation, GeckoPlayer.Perspective.FIRST_PERSON);
+        playAnimation(animation, GeckoPlayer.Perspective.THIRD_PERSON);
     }
 
     @Override

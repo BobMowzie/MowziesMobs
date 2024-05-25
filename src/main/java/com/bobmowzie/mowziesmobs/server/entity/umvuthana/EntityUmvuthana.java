@@ -248,15 +248,18 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
         controllers.add(walkRunController);
     }
 
+    private static RawAnimation MASK_TWITCH_ANIM = RawAnimation.begin().thenLoop("mask_twitch");
     protected <E extends GeoEntity> PlayState predicateMask(AnimationState<E> event)
     {
         if (isAlive() && active && getActiveAbilityType() != HEAL_ABILITY) {
-            event.getController().setAnimation(RawAnimation.begin().thenLoop("mask_twitch"));
+            event.getController().setAnimation(MASK_TWITCH_ANIM);
             return PlayState.CONTINUE;
         }
         return PlayState.STOP;
     }
 
+    private static RawAnimation RUN_SWITCH_ANIM = RawAnimation.begin().thenLoop("run_switch");
+    private static RawAnimation WALK_SWITCH_ANIM = RawAnimation.begin().thenLoop("walk_switch");
     protected <E extends GeoEntity> PlayState predicateWalkRun(AnimationState<E> event)
     {
         float threshold = 0.9f;
@@ -266,13 +269,19 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
         }
 
         if (event.getLimbSwingAmount() > threshold && !isStrafing()) {
-            event.getController().setAnimation(RawAnimation.begin().thenLoop("run_switch"));
+            event.getController().setAnimation(RUN_SWITCH_ANIM);
         }
         else {
-            event.getController().setAnimation(RawAnimation.begin().thenLoop("walk_switch"));
+            event.getController().setAnimation(WALK_SWITCH_ANIM);
         }
         return PlayState.CONTINUE;
     }
+    private static final RawAnimation WALK_AGGRESSIVE_ANIM = RawAnimation.begin().thenLoop("walk_aggressive");
+    private static final RawAnimation IDLE_AGGRESSIVE_ANIM = RawAnimation.begin().thenLoop("idle_aggressive");
+    private static final RawAnimation WALK_NEUTRAL_ANIM = RawAnimation.begin().thenLoop("walk_neutral");
+    private static final RawAnimation IDLE_NEUTRAL_ANIM = RawAnimation.begin().thenLoop("idle_neutral");
+    private static final RawAnimation TUMBLE_ANIM = RawAnimation.begin().thenLoop("tumble");
+    private static final RawAnimation INACTIVE_ANIM = RawAnimation.begin().thenLoop("inactive");
 
     @Override
     protected <E extends GeoEntity> void loopingAnimations(AnimationState<E> event) {
@@ -280,26 +289,26 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
             if (isAggressive()) {
                 event.getController().transitionLength(4);
                 if (event.isMoving()) {
-                    event.getController().setAnimation(RawAnimation.begin().thenLoop("walk_aggressive"));
+                    event.getController().setAnimation(WALK_AGGRESSIVE_ANIM);
                 } else {
-                    event.getController().setAnimation(RawAnimation.begin().thenLoop("idle_aggressive"));
+                    event.getController().setAnimation(IDLE_AGGRESSIVE_ANIM);
                 }
             } else {
                 event.getController().transitionLength(4);
                 if (event.isMoving()) {
-                    event.getController().setAnimation(RawAnimation.begin().thenLoop("walk_neutral"));
+                    event.getController().setAnimation(WALK_NEUTRAL_ANIM);
                 } else {
-                    event.getController().setAnimation(RawAnimation.begin().thenLoop("idle_neutral"));
+                    event.getController().setAnimation(IDLE_NEUTRAL_ANIM);
                 }
             }
         }
         else {
             event.getController().transitionLength(0);
             if (!onGround() && !isInLava() && !isInWater()) {
-                event.getController().setAnimation(RawAnimation.begin().thenLoop("tumble"));
+                event.getController().setAnimation(TUMBLE_ANIM);
             }
             else {
-                event.getController().setAnimation(RawAnimation.begin().thenLoop("inactive"));
+                event.getController().setAnimation(INACTIVE_ANIM);
             }
         }
     }
@@ -934,18 +943,22 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
             });
         }
 
+        private static final RawAnimation TELEPORT_START_ANIM = RawAnimation.begin().then("teleport_start", Animation.LoopType.PLAY_ONCE);
+        private static final RawAnimation TELEPORT_LOOP_ANIM = RawAnimation.begin().thenLoop("teleport_loop");
+        private static final RawAnimation TELEPORT_END_ANIM = RawAnimation.begin().then("teleport_end", Animation.LoopType.PLAY_ONCE);
+
         @Override
         protected void beginSection(AbilitySection section) {
             super.beginSection(section);
             if (section.sectionType == AbilitySection.AbilitySectionType.STARTUP) {
-                playAnimation("teleport_start", false);
+                playAnimation(TELEPORT_START_ANIM);
             }
             if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
                 teleportStart = getUser().position();
-                playAnimation("teleport_loop", true);
+                playAnimation(TELEPORT_LOOP_ANIM);
             }
             if (section.sectionType == AbilitySection.AbilitySectionType.RECOVERY) {
-                playAnimation("teleport_end", false);
+                playAnimation(TELEPORT_END_ANIM);
             }
         }
 

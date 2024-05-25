@@ -261,20 +261,24 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
         controllers.add(blinkController);
     }
 
+    private static RawAnimation MASK_TWITCH_ANIM = RawAnimation.begin().thenLoop("mask_twitch");
+
     protected <E extends GeoEntity> PlayState predicateMask(AnimationState<E> state)
     {
         if (isAlive() && getActiveAbilityType() != SOLAR_BEAM_ABILITY && getActiveAbilityType() != SUPERNOVA_ABILITY && getActiveAbilityType() != SPAWN_ABILITY && getActiveAbilityType() != SPAWN_SUNBLOCKERS_ABILITY) {
             //TODO: create animations in static fields. DO FOR ALL CLASSES, not just Umvuthi
-            state.getController().setAnimation(RawAnimation.begin().thenLoop("mask_twitch"));
+            state.getController().setAnimation(MASK_TWITCH_ANIM);
             return PlayState.CONTINUE;
         }
         return PlayState.STOP;
     }
 
+    private static RawAnimation BLINK_ANIM = RawAnimation.begin().thenLoop("blink");
+
     protected <E extends GeoEntity> PlayState predicateBlink(AnimationState<E> event)
     {
         if (isAlive() && getActiveAbilityType() != SOLAR_BEAM_ABILITY) {
-            event.getController().setAnimation(RawAnimation.begin().thenLoop("blink"));
+            event.getController().setAnimation(BLINK_ANIM);
             return PlayState.CONTINUE;
         }
         return PlayState.STOP;

@@ -69,7 +69,7 @@ public class ParticleSnowFlake extends TextureSheetParticle {
             float yaw = (float) Math.atan2(motionVec.x(), motionVec.z());
             float pitch = (float) Math.atan2(motionVec.y(), 1);
             float swirlRadius = 4f * (age / (float) lifetime) * spread;
-            Quaternionf quatSpin = new Quaternionf(new AxisAngle4f(swirlTick * 0.2f, motionVec)); //TODO: Test this math!
+            Quaternionf quatSpin = new Quaternionf(new AxisAngle4f(swirlTick * 0.2f, motionVec));
             Quaternionf quatOrient = MathUtils.quatFromRotationXYZ(pitch, yaw, 0, false);
             Vector3f vec = new Vector3f(swirlRadius, 0, 0);
             quatOrient.transform(vec);

@@ -166,13 +166,15 @@ public class ItemUmvuthanaMask extends MowzieArmorItem implements UmvuthanaMask,
         return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.UMVUTHANA_MASK.armorConfig;
     }
 
+    private static final RawAnimation UMVUTHANA_ANIM = RawAnimation.begin().thenLoop("umvuthana");
+    private static final RawAnimation PLAYER_ANIM = RawAnimation.begin().thenLoop("player");
     public <P extends Item & GeoItem> PlayState predicate(AnimationState<P> event) {
         Entity entity = event.getData(DataTickets.ENTITY);
         if (entity instanceof EntityUmvuthana) {
-            event.getController().setAnimation(RawAnimation.begin().thenLoop("umvuthana"));
+            event.getController().setAnimation(UMVUTHANA_ANIM);
         }
         else {
-            event.getController().setAnimation(RawAnimation.begin().thenLoop("player"));
+            event.getController().setAnimation(PLAYER_ANIM);
         }
         return PlayState.CONTINUE;
     }

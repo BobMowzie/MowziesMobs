@@ -62,35 +62,6 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements Ge
         if (!worldIn.isClientSide && blockState != null && EffectGeomancy.isBlockUseable(blockState)) {
             BlockState newBlock = changeBlock(blockState);
             setBlock(newBlock);
-
-        /* TODO: Update to use block tags
-
-            Block block = blockState.getBlock();
-            BlockState newBlock = blockState;
-            Material mat = blockState.getMaterial();
-            if (blockState.getBlock() == Blocks.GRASS_BLOCK || blockState.getBlock() == Blocks.MYCELIUM || mat == Material.DIRT) newBlock = Blocks.DIRT.defaultBlockState();
-            else if (mat == Material.STONE) {
-                if (ForgeRegistries.BLOCKS.getKey(block) != null && ForgeRegistries.BLOCKS.getKey(block).getPath().contains("ore")) newBlock = Blocks.STONE.defaultBlockState();
-                if (blockState.getBlock() == Blocks.NETHER_QUARTZ_ORE) newBlock = Blocks.NETHERRACK.defaultBlockState();
-                if (blockState.getBlock() == Blocks.FURNACE
-                        || blockState.getBlock() == Blocks.DISPENSER
-                        || blockState.getBlock() == Blocks.DROPPER
-                ) newBlock = Blocks.COBBLESTONE.defaultBlockState();
-            }
-            else if (mat == Material.CLAY) {
-                if (blockState.getBlock() == Blocks.CLAY) newBlock = Blocks.TERRACOTTA.defaultBlockState();
-            }
-            else if (mat == Material.SAND) {
-                if (blockState.getBlock() == Blocks.SAND) newBlock = Blocks.SANDSTONE.defaultBlockState();
-                else if (blockState.getBlock() == Blocks.RED_SAND) newBlock = Blocks.RED_SANDSTONE.defaultBlockState();
-                else if (blockState.getBlock() == Blocks.GRAVEL) newBlock = Blocks.COBBLESTONE.defaultBlockState();
-                else if (blockState.getBlock() == Blocks.SOUL_SAND) newBlock = Blocks.NETHERRACK.defaultBlockState();
-            }
-
-            if (!newBlock.isRedstoneConductor(worldIn, pos)) {
-                newBlock = Blocks.STONE.defaultBlockState();
-            }
-            setBlock(newBlock);*/
         }
     }
 
