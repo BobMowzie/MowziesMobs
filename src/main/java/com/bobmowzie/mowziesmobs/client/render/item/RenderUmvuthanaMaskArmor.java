@@ -9,15 +9,11 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.renderer.layer.AutoGlowingGeoLayer;
 
 public class RenderUmvuthanaMaskArmor extends MowzieGeoArmorRenderer<ItemUmvuthanaMask> {
 
     public RenderUmvuthanaMaskArmor() {
         super(new UmvuthanaMaskModel());
-    }
-
-    @Override
-    public RenderType getRenderType(ItemUmvuthanaMask animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
-        return RenderType.entityCutoutNoCull(texture);
     }
 }
