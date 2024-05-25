@@ -24,7 +24,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import java.util.List;
 
-public class SolarFlareAbility extends PlayerAbility {
+public class SolarFlareAbility extends HeliomancyAbilityBase {
 
     public SolarFlareAbility(AbilityType<Player, SolarFlareAbility> abilityType, Player user) {
         super(abilityType, user, EntityUmvuthi.SolarFlareAbility.SECTION_TRACK);
@@ -45,7 +45,7 @@ public class SolarFlareAbility extends PlayerAbility {
 
     @Override
     public boolean canUse() {
-        if (getUser() != null && !(getUser().getInventory().getSelected().isEmpty())) return false;
+        if (getUser() == null || !getUser().getInventory().getSelected().isEmpty()) return false;
         return getUser().hasEffect(EffectHandler.SUNS_BLESSING.get()) && super.canUse();
     }
 

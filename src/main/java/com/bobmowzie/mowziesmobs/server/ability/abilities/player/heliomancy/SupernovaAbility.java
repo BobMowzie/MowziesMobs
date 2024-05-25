@@ -21,7 +21,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
-public class SupernovaAbility extends PlayerAbility {
+public class SupernovaAbility extends HeliomancyAbilityBase {
     private boolean leftClickDown;
     private boolean rightClickDown;
     private Vec3[] particleEmitter;
@@ -43,12 +43,6 @@ public class SupernovaAbility extends PlayerAbility {
             firstPersonOffHandDisplay = HandDisplay.FORCE_RENDER;
             firstPersonMainHandDisplay = HandDisplay.FORCE_RENDER;
         }
-    }
-
-    @Override
-    public boolean canUse() {
-        if (getUser() != null && !(getUser().getInventory().getSelected().isEmpty())) return false;
-        return getUser().hasEffect(EffectHandler.SUNS_BLESSING.get()) && super.canUse();
     }
 
     @Override

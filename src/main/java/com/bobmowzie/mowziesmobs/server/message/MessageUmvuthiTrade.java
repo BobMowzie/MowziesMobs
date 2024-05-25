@@ -68,7 +68,7 @@ public class MessageUmvuthiTrade {
                         }
                     }
                     if (satisfied) {
-                        player.addEffect(new MobEffectInstance(EffectHandler.SUNS_BLESSING.get(), ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.effectDuration.get() * 60 * 20, 0, false, false));
+                        player.addEffect(new MobEffectInstance(EffectHandler.SUNS_BLESSING.get(), -1, 0, false, false));
                         if (barako.getActiveAbilityType() != EntityUmvuthi.BLESS_ABILITY) {
 //                            barako.setAnimationTick(0); TODO
                             barako.sendAbilityMessage(EntityUmvuthi.BLESS_ABILITY);

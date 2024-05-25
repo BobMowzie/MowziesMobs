@@ -13,7 +13,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-public class SolarBeamAbility extends PlayerAbility {
+public class SolarBeamAbility extends HeliomancyAbilityBase {
     protected EntitySolarBeam solarBeam;
 
     public SolarBeamAbility(AbilityType<Player, SolarBeamAbility> abilityType, Player user) {
@@ -68,11 +68,5 @@ public class SolarBeamAbility extends PlayerAbility {
         if (solarBeam != null) {
             solarBeam.discard();
         }
-    }
-
-    @Override
-    public boolean canUse() {
-        if (getUser() instanceof Player && !((Player)getUser()).getInventory().getSelected().isEmpty()) return false;
-        return getUser().hasEffect(EffectHandler.SUNS_BLESSING.get()) && super.canUse();
     }
 }

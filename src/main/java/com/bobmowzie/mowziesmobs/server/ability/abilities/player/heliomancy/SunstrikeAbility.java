@@ -15,7 +15,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
-public class SunstrikeAbility extends PlayerAbility {
+public class SunstrikeAbility extends HeliomancyAbilityBase {
     private static final double REACH = 15;
     private final static int SUNSTRIKE_RECOVERY = 15;
 
@@ -58,12 +58,6 @@ public class SunstrikeAbility extends PlayerAbility {
             user.level().addFreshEntity(sunstrike);
         }
         playAnimation("sunstrike", false);
-    }
-
-    @Override
-    public boolean canUse() {
-        if (getUser() instanceof Player && !((Player)getUser()).getInventory().getSelected().isEmpty()) return false;
-        return getUser().hasEffect(EffectHandler.SUNS_BLESSING.get()) && super.canUse();
     }
 
     @Override
