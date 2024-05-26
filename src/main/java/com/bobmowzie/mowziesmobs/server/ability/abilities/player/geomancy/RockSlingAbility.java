@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import software.bernie.geckolib.core.animation.RawAnimation;
 
 
 public class RockSlingAbility extends PlayerAbility {
@@ -35,6 +36,8 @@ public class RockSlingAbility extends PlayerAbility {
         });
     }
 
+    private static final RawAnimation ROCK_SLING_ANIM = RawAnimation.begin().thenPlay("rock_sling_right");
+
     @Override
     public void start() {
         super.start();
@@ -47,7 +50,7 @@ public class RockSlingAbility extends PlayerAbility {
 
         spawnBoulderPos = result.getBlockPos();
         this.spawnBoulderBlock = getUser().level().getBlockState(spawnBoulderPos);
-        playAnimation("rock_sling_right", false);
+        playAnimation(ROCK_SLING_ANIM);
 
         if(getUser().level().isClientSide()){
             AdvancedParticleBase.spawnParticle(getUser().level(), ParticleHandler.RING2.get(), (float) getUser().getX(), (float) getUser().getY() + 0.01f, (float) getUser().getZ(), 0, 0, 0, false, 0, Math.PI / 2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, true, new ParticleComponent[]{

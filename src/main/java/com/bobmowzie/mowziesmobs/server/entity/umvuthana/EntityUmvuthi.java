@@ -86,17 +86,15 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.*;
 import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
 public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeImmune, Enemy {
-    public static final AbilityType<EntityUmvuthi, DieAbility<EntityUmvuthi>> DIE_ABILITY = new AbilityType<>("umvuthi_die", (type, entity) -> new DieAbility<>(type, entity,"death", 115) {
+    public static final AbilityType<EntityUmvuthi, DieAbility<EntityUmvuthi>> DIE_ABILITY = new AbilityType<>("umvuthi_die", (type, entity) -> new DieAbility<>(type, entity, RawAnimation.begin().thenPlay("death"), 115) {
         @Override
         public void tickUsing() {
             super.tickUsing();
@@ -105,8 +103,8 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             if (getTicksInUse() == 80) getUser().playSound(MMSounds.MISC_METAL_IMPACT.get(), getUser().getSoundVolume(), 1);
         }
     });
-    public static final AbilityType<EntityUmvuthi, HurtAbility<EntityUmvuthi>> HURT_ABILITY = new AbilityType<>("umvuthi_hurt", (type, entity) -> new HurtAbility<>(type, entity,"hurt", 13));
-    public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> BELLY_ABILITY = new AbilityType<>("umvuthi_belly", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"belly_drum", 40, true) {
+    public static final AbilityType<EntityUmvuthi, HurtAbility<EntityUmvuthi>> HURT_ABILITY = new AbilityType<>("umvuthi_hurt", (type, entity) -> new HurtAbility<>(type, entity,RawAnimation.begin().thenPlay("hurt"), 13));
+    public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> BELLY_ABILITY = new AbilityType<>("umvuthi_belly", (type, entity) -> new SimpleAnimationAbility<>(type, entity,RawAnimation.begin().thenPlay("belly_drum"), 40, true) {
         @Override
         public void tickUsing() {
             super.tickUsing();
@@ -115,8 +113,8 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             }
         }
     });
-    public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> TALK_ABILITY = new AbilityType<>("umvuthi_talk", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"talk", 23, true));
-    public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> ROAR_ABILITY = new AbilityType<>("umvuthi_roar", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"roar", 70, false) {
+    public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> TALK_ABILITY = new AbilityType<>("umvuthi_talk", (type, entity) -> new SimpleAnimationAbility<>(type, entity,RawAnimation.begin().thenPlay("talk"), 23, true));
+    public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> ROAR_ABILITY = new AbilityType<>("umvuthi_roar", (type, entity) -> new SimpleAnimationAbility<>(type, entity,RawAnimation.begin().thenPlay("roar"), 70, false) {
         @Override
         public void tickUsing() {
             super.tickUsing();
@@ -130,7 +128,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
     public static final AbilityType<EntityUmvuthi, SpawnFollowersAbility> SPAWN_ABILITY = new AbilityType<>("umvuthi_spawn", (type, entity) -> new SpawnFollowersAbility(type, entity, false));
     public static final AbilityType<EntityUmvuthi, SpawnFollowersAbility> SPAWN_SUNBLOCKERS_ABILITY = new AbilityType<>("umvuthi_spawn_healers", (type, entity) -> new SpawnFollowersAbility(type, entity, true));
     public static final AbilityType<EntityUmvuthi, SolarBeamAbility> SOLAR_BEAM_ABILITY = new AbilityType<>("umvuthi_solar_beam", SolarBeamAbility::new);
-    public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> BLESS_ABILITY = new AbilityType<>("umvuthi_bless", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"bless", 84) {
+    public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> BLESS_ABILITY = new AbilityType<>("umvuthi_bless", (type, entity) -> new SimpleAnimationAbility<>(type, entity,RawAnimation.begin().thenPlay("bless"), 84) {
         @Override
         public boolean canCancelActiveAbility() {
             return getUser().getActiveAbilityType() == ROAR_ABILITY || getUser().getActiveAbilityType() == TALK_ABILITY || getUser().getActiveAbilityType() == BELLY_ABILITY;
@@ -266,7 +264,6 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
     protected <E extends GeoEntity> PlayState predicateMask(AnimationState<E> state)
     {
         if (isAlive() && getActiveAbilityType() != SOLAR_BEAM_ABILITY && getActiveAbilityType() != SUPERNOVA_ABILITY && getActiveAbilityType() != SPAWN_ABILITY && getActiveAbilityType() != SPAWN_SUNBLOCKERS_ABILITY) {
-            //TODO: create animations in static fields. DO FOR ALL CLASSES, not just Umvuthi
             state.getController().setAnimation(MASK_TWITCH_ANIM);
             return PlayState.CONTINUE;
         }
@@ -958,6 +955,8 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             });
         }
 
+        private static final RawAnimation SUN_STRIKE_ANIM = RawAnimation.begin().then("sun_strike", Animation.LoopType.PLAY_ONCE);
+
         @Override
         public void start() {
             super.start();
@@ -966,7 +965,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
                 prevX = entityTarget.getX();
                 prevZ = entityTarget.getZ();
             }
-            playAnimation("sun_strike", false);
+            playAnimation(SUN_STRIKE_ANIM);
         }
 
         @Override
@@ -1037,11 +1036,13 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             });
         }
 
+        private static final RawAnimation SOLAR_BEAM_ANIM = RawAnimation.begin().then("solar_beam", Animation.LoopType.PLAY_ONCE);
+
         @Override
         public void start() {
             super.start();
             entityTarget = getUser().getTarget();
-            playAnimation("solar_beam", false);
+            playAnimation(SOLAR_BEAM_ANIM);
         }
 
         @Override
@@ -1072,11 +1073,13 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             super(abilityType, user, SECTION_TRACK);
         }
 
+        private static final RawAnimation FLARE_ANIM = RawAnimation.begin().then("flare", Animation.LoopType.PLAY_ONCE);
+
         @Override
         public void start() {
             super.start();
             getUser().playSound(MMSounds.ENTITY_UMVUTHI_BURST.get(), 1.7f, 1.5f);
-            playAnimation("flare", false);
+            playAnimation(FLARE_ANIM);
         }
 
         @Override
@@ -1125,12 +1128,14 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             this.spawnSunblockers = spawnSunblockers;
         }
 
+        private static final RawAnimation SPAWN_STRIX_ANIM = RawAnimation.begin().then("spawn_strix", Animation.LoopType.PLAY_ONCE);
+
         @Override
         public void start() {
             super.start();
             getUser().umvuthanaSpawnCount++;
             getUser().playSound(MMSounds.ENTITY_UMVUTHANA_INHALE.get(), 1.2f, 0.5f);
-            playAnimation("spawn_strix", false);
+            playAnimation(SPAWN_STRIX_ANIM);
         }
 
         @Override
@@ -1139,7 +1144,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             EntityUmvuthi entity = getUser();
             if (section.sectionType == AbilitySection.AbilitySectionType.STARTUP) {
                 getUser().playSound(MMSounds.ENTITY_UMVUTHANA_INHALE.get(), 1.2f, 0.5f);
-                playAnimation("spawn_strix", false);
+                playAnimation(SPAWN_STRIX_ANIM);
             }
             if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
                 if (!getUser().level().isClientSide()) {
@@ -1201,11 +1206,13 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             super(abilityType, user, SECTION_TRACK);
         }
 
+        private static final RawAnimation SUPERNOVA_ANIM = RawAnimation.begin().then("supernova", Animation.LoopType.PLAY_ONCE);
+
         @Override
         public void start() {
             super.start();
             getUser().playSound(MMSounds.ENTITY_SUPERNOVA_START.get(), 3f, 1f);
-            playAnimation("supernova", false);
+            playAnimation(SUPERNOVA_ANIM);
         }
 
         @Override

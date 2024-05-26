@@ -12,6 +12,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import software.bernie.geckolib.core.animation.RawAnimation;
 
 public class SolarBeamAbility extends HeliomancyAbilityBase {
     protected EntitySolarBeam solarBeam;
@@ -23,6 +24,8 @@ public class SolarBeamAbility extends HeliomancyAbilityBase {
                 new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 20)
         });
     }
+
+    private static final RawAnimation SOLAR_BEAM_CHARGE_ANIM = RawAnimation.begin().thenPlay("solar_beam_charge");
 
     @Override
     public void start() {
@@ -41,7 +44,7 @@ public class SolarBeamAbility extends HeliomancyAbilityBase {
             firstPersonOffHandDisplay = HandDisplay.FORCE_RENDER;
             firstPersonMainHandDisplay = HandDisplay.FORCE_RENDER;
         }
-        playAnimation("solar_beam_charge", false);
+        playAnimation(SOLAR_BEAM_CHARGE_ANIM);
     }
     
     @Override

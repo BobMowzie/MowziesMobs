@@ -27,6 +27,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import software.bernie.geckolib.core.animation.RawAnimation;
 
 public class SpawnBoulderAbility extends PlayerAbility {
     private static int MAX_CHARGE = 60;
@@ -45,10 +46,12 @@ public class SpawnBoulderAbility extends PlayerAbility {
         });
     }
 
+    private static final RawAnimation SPAWN_BOULDER_START_ANIM = RawAnimation.begin().thenPlay("spawn_boulder_start");
+
     @Override
     public void start() {
         super.start();
-        playAnimation("spawn_boulder_start", false);
+        playAnimation(SPAWN_BOULDER_START_ANIM);
         if (!Minecraft.getInstance().options.keyUse.isDown()) nextSection();
     }
 
@@ -117,12 +120,15 @@ public class SpawnBoulderAbility extends PlayerAbility {
         return (int) Math.min(Math.max(0, Math.floor(spawnBoulderCharge/10.f) - 1), 2);
     }
 
+    private static final RawAnimation SPAWN_BOULDER_INSTANT_ANIM = RawAnimation.begin().thenPlay("spawn_boulder_instant");
+    private static final RawAnimation SPAWN_BOULDER_END_ANIM = RawAnimation.begin().thenPlay("spawn_boulder_end");
+
     private void spawnBoulder() {
         if (spawnBoulderCharge <= 2) {
-            playAnimation("spawn_boulder_instant", false);
+            playAnimation(SPAWN_BOULDER_INSTANT_ANIM);
         }
         else {
-            playAnimation("spawn_boulder_end", false);
+            playAnimation(SPAWN_BOULDER_END_ANIM);
         }
 
         int size = getBoulderSize();

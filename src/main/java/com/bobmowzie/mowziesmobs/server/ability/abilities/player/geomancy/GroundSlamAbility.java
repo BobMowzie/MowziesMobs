@@ -14,6 +14,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import software.bernie.geckolib.core.animation.RawAnimation;
 
 public class GroundSlamAbility extends PlayerAbility {
     public GroundSlamAbility(AbilityType<Player, ? extends Ability> abilityType, Player user) {
@@ -24,10 +25,13 @@ public class GroundSlamAbility extends PlayerAbility {
         });
     }
 
+    private static final RawAnimation GROUND_POUND_LOOP_ANIM = RawAnimation.begin().thenLoop("ground_pound_loop");
+    private static final RawAnimation GROUND_POUND_LAND_ANIM = RawAnimation.begin().thenPlay("ground_pound_land");
+
     @Override
     public void start() {
         super.start();
-        playAnimation("ground_pound_loop", true);
+        playAnimation(GROUND_POUND_LOOP_ANIM);
 
     }
 
@@ -80,7 +84,7 @@ public class GroundSlamAbility extends PlayerAbility {
             //playAnimation("ground_pound_loop", true);
         }
         if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.RECOVERY) {
-            playAnimation("ground_pound_land", false);
+            playAnimation(GROUND_POUND_LAND_ANIM);
         }
     }
 

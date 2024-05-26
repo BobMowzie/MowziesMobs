@@ -13,6 +13,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import software.bernie.geckolib.core.animation.RawAnimation;
 
 public class SpawnPillarAbility extends PlayerAbility {
     private static int MAX_DURATION = 120;
@@ -28,10 +29,12 @@ public class SpawnPillarAbility extends PlayerAbility {
         });
     }
 
+    private static final RawAnimation PILLAR_SPAWN_ANIM = RawAnimation.begin().thenPlay("pillar_spawn");
+
     @Override
     public void start() {
         super.start();
-        playAnimation("pillar_spawn", false);
+        playAnimation(PILLAR_SPAWN_ANIM);
         getUser().setDeltaMovement(getUser().getDeltaMovement().add(0d,-2d,0d));
     }
 

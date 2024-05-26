@@ -21,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import software.bernie.geckolib.core.animation.RawAnimation;
 
 import java.util.List;
 
@@ -30,11 +31,13 @@ public class SolarFlareAbility extends HeliomancyAbilityBase {
         super(abilityType, user, EntityUmvuthi.SolarFlareAbility.SECTION_TRACK);
     }
 
+    private static final RawAnimation SOLAR_FLARE_ANIM = RawAnimation.begin().thenPlay("solar_flare");
+
     @Override
     public void start() {
         super.start();
         getUser().playSound(MMSounds.ENTITY_UMVUTHI_BURST.get(), 1.7f, 1.5f);
-        playAnimation("solar_flare", false);
+        playAnimation(SOLAR_FLARE_ANIM);
         if (getLevel().isClientSide) {
             heldItemMainHandVisualOverride = ItemStack.EMPTY;
             heldItemOffHandVisualOverride = ItemStack.EMPTY;

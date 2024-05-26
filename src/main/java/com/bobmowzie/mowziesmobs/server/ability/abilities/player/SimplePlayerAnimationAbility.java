@@ -7,6 +7,7 @@ import com.bobmowzie.mowziesmobs.server.ability.PlayerAbility;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import software.bernie.geckolib.core.animation.Animation;
+import software.bernie.geckolib.core.animation.RawAnimation;
 
 public class SimplePlayerAnimationAbility extends PlayerAbility {
     private String animationName;
@@ -40,7 +41,7 @@ public class SimplePlayerAnimationAbility extends PlayerAbility {
             playAnimation(animationName, GeckoPlayer.Perspective.FIRST_PERSON, Animation.LoopType.PLAY_ONCE);
         }
         else {
-            playAnimation(animationName, false);
+            playAnimation(RawAnimation.begin().thenPlay(animationName));
         }
         if (lockHeldItemMainHand)
             heldItemMainHandVisualOverride = getUser().getMainHandItem();

@@ -14,6 +14,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import software.bernie.geckolib.core.animation.RawAnimation;
 
 public class SunstrikeAbility extends HeliomancyAbilityBase {
     private static final double REACH = 15;
@@ -47,6 +48,8 @@ public class SunstrikeAbility extends HeliomancyAbilityBase {
         return false;
     }
 
+    private static final RawAnimation SUNSTRIKE_ANIM = RawAnimation.begin().thenPlay("sunstrike");
+
     @Override
     public void start() {
         super.start();
@@ -57,7 +60,7 @@ public class SunstrikeAbility extends HeliomancyAbilityBase {
             sunstrike.onSummon();
             user.level().addFreshEntity(sunstrike);
         }
-        playAnimation("sunstrike", false);
+        playAnimation(SUNSTRIKE_ANIM);
     }
 
     @Override

@@ -18,6 +18,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import software.bernie.geckolib.core.animation.RawAnimation;
 
 import java.util.List;
 
@@ -34,11 +35,13 @@ public class SupernovaAbility extends HeliomancyAbilityBase {
         particleEmitter = new Vec3[1];
     }
 
+    private static final RawAnimation SUPERNOVA_ANIM = RawAnimation.begin().thenPlay("supernova");
+
     @Override
     public void start() {
         super.start();
         getUser().playSound(MMSounds.ENTITY_SUPERNOVA_START.get(), 3f, 1f);
-        playAnimation("supernova", false);
+        playAnimation(SUPERNOVA_ANIM);
 
         if (getLevel().isClientSide) {
             heldItemMainHandVisualOverride = ItemStack.EMPTY;

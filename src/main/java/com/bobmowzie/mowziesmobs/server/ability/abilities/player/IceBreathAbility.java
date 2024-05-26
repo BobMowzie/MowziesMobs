@@ -11,6 +11,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import software.bernie.geckolib.core.animation.RawAnimation;
 
 public class IceBreathAbility extends PlayerAbility {
     protected EntityIceBreath iceBreath;
@@ -23,6 +24,10 @@ public class IceBreathAbility extends PlayerAbility {
         });
     }
 
+    private static final RawAnimation ICE_BREATH_START_ANIM = RawAnimation.begin().thenPlay("ice_breath_start");
+    private static final RawAnimation ICE_BREATH_LOOP_ANIM = RawAnimation.begin().thenLoop("ice_breath_loop");
+    private static final RawAnimation ICE_BREATH_END_ANIM = RawAnimation.begin().thenPlay("ice_breath_end");
+
     @Override
     public void start() {
         super.start();
@@ -33,7 +38,7 @@ public class IceBreathAbility extends PlayerAbility {
             user.level().addFreshEntity(iceBreath);
             this.iceBreath = iceBreath;
         }
-        playAnimation("ice_breath_start", false);
+        playAnimation(ICE_BREATH_START_ANIM);
 
         if (getUser().getUsedItemHand() == InteractionHand.MAIN_HAND) {
             heldItemMainHandVisualOverride = getUser().getMainHandItem();
@@ -77,13 +82,13 @@ public class IceBreathAbility extends PlayerAbility {
     protected void beginSection(AbilitySection section) {
         super.beginSection(section);
         if (section.sectionType == AbilitySection.AbilitySectionType.STARTUP) {
-            playAnimation("ice_breath_start", false);
+            playAnimation(ICE_BREATH_START_ANIM);
         }
         else if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
-            playAnimation("ice_breath_loop", true);
+            playAnimation(ICE_BREATH_LOOP_ANIM);
         }
         else if (section.sectionType == AbilitySection.AbilitySectionType.RECOVERY) {
-            playAnimation("ice_breath_end", false);
+            playAnimation(ICE_BREATH_END_ANIM);
         }
     }
 

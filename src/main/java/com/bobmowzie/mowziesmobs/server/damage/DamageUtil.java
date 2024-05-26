@@ -15,7 +15,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class DamageUtil {
     // TODO: Works for current use cases, but possibly not for future edge cases. Use reflection to get hurt sound for onHit2?
-    // TODO: Check new 1.20 damage code and make sure this matches
     public static Pair<Boolean, Boolean> dealMixedDamage(LivingEntity target, DamageSource source1, float amount1, DamageSource source2, float amount2) {
         if (target.level().isClientSide()) return Pair.of(false, false);
         boolean flag1 = source1.getEntity() != null && target.isAlliedTo(source1.getEntity());

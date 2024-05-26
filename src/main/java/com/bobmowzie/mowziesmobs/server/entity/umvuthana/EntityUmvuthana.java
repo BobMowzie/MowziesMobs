@@ -68,7 +68,7 @@ import software.bernie.geckolib.core.object.PlayState;
 import java.util.EnumSet;
 
 public abstract class EntityUmvuthana extends MowzieGeckoEntity {
-    public static final AbilityType<EntityUmvuthana, DieAbility<EntityUmvuthana>> DIE_ABILITY = new AbilityType<>("umvuthana_die", (type, entity) -> new DieAbility<>(type, entity,"die", 70) {
+    public static final AbilityType<EntityUmvuthana, DieAbility<EntityUmvuthana>> DIE_ABILITY = new AbilityType<>("umvuthana_die", (type, entity) -> new DieAbility<>(type, entity, RawAnimation.begin().thenPlay("die"), 70) {
         @Override
         public void tickUsing() {
             super.tickUsing();
@@ -78,7 +78,7 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
     });
     public static final AbilityType<EntityUmvuthana, UmvuthanaHurtAbility> HURT_ABILITY = new AbilityType<>("umvuthana_hurt", UmvuthanaHurtAbility::new);
     public static final AbilityType<EntityUmvuthana, UmvuthanaAttackAbility> ATTACK_ABILITY = new AbilityType<>("umvuthana_attack", UmvuthanaAttackAbility::new);
-    public static final AbilityType<EntityUmvuthana, SimpleAnimationAbility<EntityUmvuthana>> ALERT_ABILITY = new AbilityType<>("umvuthana_alert", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"alert", 15, true) {
+    public static final AbilityType<EntityUmvuthana, SimpleAnimationAbility<EntityUmvuthana>> ALERT_ABILITY = new AbilityType<>("umvuthana_alert", (type, entity) -> new SimpleAnimationAbility<>(type, entity,RawAnimation.begin().thenPlay("alert"), 15, true) {
         int soundFrame;
 
         @Override
@@ -103,14 +103,14 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
             if (rand.nextFloat() < 0.2) getUser().sendAbilityMessage(ROAR_ABILITY);
         }
     });
-    public static final AbilityType<EntityUmvuthana, SimpleAnimationAbility<EntityUmvuthana>> ROAR_ABILITY = new AbilityType<>("umvuthana_roar", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"roar", 35, true) {
+    public static final AbilityType<EntityUmvuthana, SimpleAnimationAbility<EntityUmvuthana>> ROAR_ABILITY = new AbilityType<>("umvuthana_roar", (type, entity) -> new SimpleAnimationAbility<>(type, entity,RawAnimation.begin().thenPlay("roar"), 35, true) {
         @Override
         public void tickUsing() {
             super.tickUsing();
             if (getTicksInUse() == 2) getUser().playSound(MMSounds.ENTITY_UMVUTHANA_ROAR.get(), getUser().getSoundVolume() + 0.5f, getUser().getVoicePitch());
         }
     });
-    public static final AbilityType<EntityUmvuthana, SimpleAnimationAbility<EntityUmvuthana>> ACTIVATE_ABILITY = new AbilityType<>("umvuthana_activate", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"emerge", 21) {
+    public static final AbilityType<EntityUmvuthana, SimpleAnimationAbility<EntityUmvuthana>> ACTIVATE_ABILITY = new AbilityType<>("umvuthana_activate", (type, entity) -> new SimpleAnimationAbility<>(type, entity,RawAnimation.begin().thenPlay("emerge"), 21) {
         @Override
         public void tickUsing() {
             super.tickUsing();
@@ -118,7 +118,7 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
             if (getTicksInUse() == 10) getUser().active = true;
         }
     });
-    public static final AbilityType<EntityUmvuthana, SimpleAnimationAbility<EntityUmvuthana>> DEACTIVATE_ABILITY = new AbilityType<>("umvuthana_deactivate", (type, entity) -> new SimpleAnimationAbility<>(type, entity,"retract", 11) {
+    public static final AbilityType<EntityUmvuthana, SimpleAnimationAbility<EntityUmvuthana>> DEACTIVATE_ABILITY = new AbilityType<>("umvuthana_deactivate", (type, entity) -> new SimpleAnimationAbility<>(type, entity,RawAnimation.begin().thenPlay("retract"), 11) {
         @Override
         public void end() {
             super.end();
@@ -134,7 +134,7 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
             }
         }
     });
-    public static final AbilityType<EntityUmvuthana, BlockAbility<EntityUmvuthana>> BLOCK_ABILITY = new AbilityType<>("umvuthana_block", (type, entity) -> new BlockAbility<>(type, entity,"block", 10));
+    public static final AbilityType<EntityUmvuthana, BlockAbility<EntityUmvuthana>> BLOCK_ABILITY = new AbilityType<>("umvuthana_block", (type, entity) -> new BlockAbility<>(type, entity,RawAnimation.begin().thenPlay("block"), 10));
     public static final AbilityType<EntityUmvuthana, UmvuthanaBlockCounterAbility> BLOCK_COUNTER_ABILITY = new AbilityType<>("umvuthana_block_counter", UmvuthanaBlockCounterAbility::new);
 
     public static final AbilityType<EntityUmvuthana, UmvuthanaTeleportAbility> TELEPORT_ABILITY = new AbilityType<>("umvuthana_teleport", UmvuthanaTeleportAbility::new);
@@ -853,7 +853,7 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
     private static class UmvuthanaAttackAbility extends MeleeAttackAbility<EntityUmvuthana> {
 
         public UmvuthanaAttackAbility(AbilityType<EntityUmvuthana, ? extends MeleeAttackAbility<EntityUmvuthana>> abilityType, EntityUmvuthana user) {
-            super(abilityType, user, new String[]{"attack_slash_left", "attack_slash_right"}, null, null, 1, 3.0f, 1, 13, 9, true);
+            super(abilityType, user, new RawAnimation[]{RawAnimation.begin().thenPlay("attack_slash_left"), RawAnimation.begin().thenPlay("attack_slash_right")}, null, null, 1, 3.0f, 1, 13, 9, true);
         }
 
         @Override
@@ -870,7 +870,7 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
     private static class UmvuthanaBlockCounterAbility extends MeleeAttackAbility<EntityUmvuthana> {
 
         public UmvuthanaBlockCounterAbility(AbilityType<EntityUmvuthana, UmvuthanaBlockCounterAbility> abilityType, EntityUmvuthana user) {
-            super(abilityType, user, new String[]{"block_counter"}, null, null, 3, 2.2f, 1.2f, 7, 11, false);
+            super(abilityType, user, new RawAnimation[]{RawAnimation.begin().thenPlay("block_counter")}, null, null, 3, 2.2f, 1.2f, 7, 11, false);
         }
 
         @Override
@@ -907,25 +907,30 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
     private static class UmvuthanaHurtAbility extends HurtAbility<EntityUmvuthana> {
 
         public UmvuthanaHurtAbility(AbilityType<EntityUmvuthana, UmvuthanaHurtAbility> abilityType, EntityUmvuthana user) {
-            super(abilityType, user, "", 12);
+            super(abilityType, user, RawAnimation.begin(), 12);
         }
 
+        private static final RawAnimation HURT_RIGHT_AGGRESSIVE_ANIM = RawAnimation.begin().thenPlay("hurt_right_aggressive");
+        private static final RawAnimation HURT_LEFT_AGGRESSIVE_ANIM = RawAnimation.begin().thenPlay("hurt_left_aggressive");
+        private static final RawAnimation HURT_RIGHT_NEUTRAL_ANIM = RawAnimation.begin().thenPlay("hurt_right_neutral");
+        private static final RawAnimation HURT_LEFT_NEUTRAL_ANIM = RawAnimation.begin().thenPlay("hurt_left_neutral");
+
         @Override
-        public String getAnimationName() {
+        public RawAnimation getAnimation() {
             if (getUser().isAggressive()) {
                 if (getUser().random.nextBoolean()) {
-                    return "hurt_right_aggressive";
+                    return HURT_RIGHT_AGGRESSIVE_ANIM;
                 }
                 else {
-                    return "hurt_left_aggressive";
+                    return HURT_LEFT_AGGRESSIVE_ANIM;
                 }
             }
             else {
                 if (getUser().random.nextBoolean()) {
-                    return "hurt_right_neutral";
+                    return HURT_RIGHT_NEUTRAL_ANIM;
                 }
                 else {
-                    return "hurt_left_neutral";
+                    return HURT_LEFT_NEUTRAL_ANIM;
                 }
             }
         }
@@ -1040,15 +1045,19 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
             });
         }
 
+        private static final RawAnimation HEAL_START_ANIM = RawAnimation.begin().thenPlay("heal_start");
+        private static final RawAnimation HEAL_LOOP_ANIM = RawAnimation.begin().thenLoop("heal_loop");
+        private static final RawAnimation HEAL_END_ANIM = RawAnimation.begin().thenPlay("heal_end");
+
         @Override
         protected void beginSection(AbilitySection section) {
             if (section.sectionType == AbilitySection.AbilitySectionType.STARTUP) {
-                playAnimation("heal_start", false);
+                playAnimation(HEAL_START_ANIM);
             }
             else if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
             }
             else {
-                playAnimation("heal_end", false);
+                playAnimation(HEAL_END_ANIM);
             }
         }
 
@@ -1072,7 +1081,7 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
                 getUser().headPos[0] = getUser().position().add(0, getUser().getEyeHeight(), 0);
 
             if (getTicksInUse() == 12) {
-                playAnimation("heal_loop", true);
+                playAnimation(HEAL_LOOP_ANIM);
             }
 
             if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE) {

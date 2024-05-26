@@ -23,7 +23,7 @@ public final class BlockHandler {
     public static final RegistryObject<Block> GONG_PART = REG.register("gong_part", () -> new GongBlock.GongPartBlock(BlockBehaviour.Properties.copy(Blocks.GOLD_BLOCK).requiresCorrectToolForDrops().strength(3.0F).sound(SoundType.ANVIL)));
     public static final RegistryObject<Block> RAKED_SAND = REG.register("raked_sand", () -> new RakedSandBlock(14406560, BlockBehaviour.Properties.copy(Blocks.SAND), Blocks.SAND.defaultBlockState()));
     public static final RegistryObject<Block> RED_RAKED_SAND = REG.register("red_raked_sand", () -> new RakedSandBlock(11098145, BlockBehaviour.Properties.copy(Blocks.RED_SAND), Blocks.RED_SAND.defaultBlockState()));
-    public static final RegistryObject<Block> CLAWED_LOG = registerBlockAndItem("clawed_log", () -> new Block(Block.Properties.copy(Blocks.ACACIA_PLANKS))); // TODO: Fix this
+    public static final RegistryObject<Block> CLAWED_LOG = registerBlockAndItem("clawed_log", () -> new Block(Block.Properties.copy(Blocks.ACACIA_PLANKS)));
     //public static final RegistryObject<BlockGrottol> GROTTOL = REG.register("grottol", () -> new BlockGrottol(Block.Properties.copy(Material.STONE).noDrops()));
 
     public static RegistryObject<Block> registerBlockAndItem(String name, Supplier<Block> block){

@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.server.ability.PlayerAbility;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import net.minecraft.world.entity.player.Player;
+import software.bernie.geckolib.core.animation.RawAnimation;
 
 import static com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack.SWING_DURATION_VER;
 
@@ -20,6 +21,8 @@ public class WroughtAxeSlamAbility extends PlayerAbility {
         });
     }
 
+    private static final RawAnimation AXE_SWING_VERTICAL_ANIM = RawAnimation.begin().thenPlay("axe_swing_vertical");
+
     @Override
     public void start() {
         super.start();
@@ -30,7 +33,7 @@ public class WroughtAxeSlamAbility extends PlayerAbility {
             this.axeAttack = axeAttack;
         }
         else {
-            playAnimation("axe_swing_vertical", false);
+            playAnimation(AXE_SWING_VERTICAL_ANIM);
             heldItemMainHandVisualOverride = getUser().getMainHandItem();
         }
     }

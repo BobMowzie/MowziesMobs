@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieGeckoEntity;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
+import software.bernie.geckolib.core.animation.RawAnimation;
 
 public class MeleeAttackAbility<T extends MowzieGeckoEntity> extends Ability<T> {
     protected SoundEvent attackSound;
@@ -14,9 +15,9 @@ public class MeleeAttackAbility<T extends MowzieGeckoEntity> extends Ability<T> 
     protected float damageMultiplier;
     protected SoundEvent hitSound;
     protected boolean hurtInterrupts;
-    protected String[] animationNames;
+    protected RawAnimation[] animations;
 
-    public MeleeAttackAbility(AbilityType<T, ? extends MeleeAttackAbility<T>> abilityType, T user, String[] animationNames, SoundEvent attackSound, SoundEvent hitSound, float knockBackMultiplier, float range, float damageMultiplier, int startup, int recovery, boolean hurtInterrupts) {
+    public MeleeAttackAbility(AbilityType<T, ? extends MeleeAttackAbility<T>> abilityType, T user, RawAnimation[] animations, SoundEvent attackSound, SoundEvent hitSound, float knockBackMultiplier, float range, float damageMultiplier, int startup, int recovery, boolean hurtInterrupts) {
         super(abilityType, user, new AbilitySection[] {
                 new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, startup),
                 new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
@@ -28,7 +29,7 @@ public class MeleeAttackAbility<T extends MowzieGeckoEntity> extends Ability<T> 
         this.damageMultiplier = damageMultiplier;
         this.range = range;
         this.hurtInterrupts = hurtInterrupts;
-        this.animationNames = animationNames;
+        this.animations = animations;
     }
 
     @Override
@@ -46,8 +47,8 @@ public class MeleeAttackAbility<T extends MowzieGeckoEntity> extends Ability<T> 
     @Override
     public void start() {
         super.start();
-        String animationName = this.animationNames[getUser().getRandom().nextInt(animationNames.length)];
-        playAnimation(animationName, false);
+        RawAnimation animation = this.animations[getUser().getRandom().nextInt(animations.length)];
+        playAnimation(animation);
     }
 
     @Override

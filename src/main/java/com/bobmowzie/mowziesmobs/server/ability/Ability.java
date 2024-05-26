@@ -65,14 +65,6 @@ public class Ability<T extends LivingEntity> {
         beginSection(getSectionTrack()[0]);
     }
 
-    public void playAnimation(String animationName) {
-        playAnimation(RawAnimation.begin().then(animationName, Animation.LoopType.DEFAULT));
-    }
-
-    public void playAnimation(String animationName, boolean shouldLoop) {
-        playAnimation(RawAnimation.begin().then(animationName, shouldLoop ? Animation.LoopType.LOOP : Animation.LoopType.PLAY_ONCE));
-    }
-
     public void playAnimation(RawAnimation animation) {
         if (getUser() instanceof MowzieGeckoEntity && getUser().level().isClientSide()) {
             MowzieGeckoEntity entity = (MowzieGeckoEntity) getUser();
