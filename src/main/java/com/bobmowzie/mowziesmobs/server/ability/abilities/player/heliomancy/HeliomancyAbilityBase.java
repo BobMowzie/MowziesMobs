@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.ability.PlayerAbility;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
+import net.minecraft.client.renderer.EffectInstance;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 
@@ -21,8 +22,11 @@ public abstract class HeliomancyAbilityBase extends PlayerAbility {
     @Override
     public void start() {
         super.start();
-        getUser().removeEffect(EffectHandler.SUNS_BLESSING.get());
-        getUser().addEffect(new MobEffectInstance(EffectHandler.SUNS_BLESSING.get(), ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.effectDuration.get() * 60 * 20, 0, false, false));
+        MobEffectInstance effectInstance = getUser().getEffect(EffectHandler.SUNS_BLESSING.get());
+        if (effectInstance != null && effectInstance.isInfiniteDuration()) {
+            getUser().removeEffect(EffectHandler.SUNS_BLESSING.get());
+            getUser().addEffect(new MobEffectInstance(EffectHandler.SUNS_BLESSING.get(), ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.effectDuration.get() * 60 * 20, 0, false, false));
+        }
     }
 
     @Override
