@@ -303,7 +303,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
 
     public void updateRattleSound(float maskRot) {
         if (!rattling) {
-            if (Math.abs(maskRot - prevMaskRot) > 0.06) {
+            if (Math.abs(maskRot - prevMaskRot) > 0.05) {
                 level().playLocalSound(getX(), getY(), getZ(), MMSounds.ENTITY_UMVUTHANA_RATTLE.get(), SoundSource.HOSTILE, 0.04f, getVoicePitch() * 0.75f, false);
             }
         }

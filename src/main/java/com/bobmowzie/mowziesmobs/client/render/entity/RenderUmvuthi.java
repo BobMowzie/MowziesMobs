@@ -98,12 +98,12 @@ public class RenderUmvuthi extends MowzieGeoEntityRenderer<EntityUmvuthi> {
                 Vec3 newPos = novaRenderPosVec3.add(sunRenderPosVec3.subtract(novaRenderPosVec3).scale(1.0 - alpha));
                 novaRenderPos.set(newPos.x, newPos.y, newPos.z);
             }
-            animatable.betweenHandPos[0] = new Vec3(novaRenderPos.x, novaRenderPos.y, novaRenderPos.z);
+            umvuthi.betweenHandPos[0] = new Vec3(novaRenderPos.x, novaRenderPos.y, novaRenderPos.z);
         }
 
         if (!Minecraft.getInstance().isPaused()) {
             MowzieGeoBone mask = getMowzieGeoModel().getMowzieBone("maskTwitcher");
-            animatable.updateRattleSound(mask.getRotZ());
+            umvuthi.updateRattleSound(mask.getRotZ());
         }
     }
 

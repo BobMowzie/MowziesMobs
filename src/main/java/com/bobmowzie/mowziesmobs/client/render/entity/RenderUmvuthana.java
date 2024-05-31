@@ -34,12 +34,12 @@ public class RenderUmvuthana extends MowzieGeoEntityRenderer<EntityUmvuthana> {
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
         MowzieGeoBone head = getMowzieGeoModel().getMowzieBone("head");
         Vector3d worldPos = head.getWorldPosition();
-        if (animatable.headPos != null && animatable.headPos.length > 0)
-            animatable.headPos[0] = new Vec3(worldPos.x, worldPos.y, worldPos.z);
+        if (entity.headPos != null && entity.headPos.length > 0)
+            entity.headPos[0] = new Vec3(worldPos.x, worldPos.y, worldPos.z);
 
         if (!Minecraft.getInstance().isPaused()) {
             MowzieGeoBone mask = getMowzieGeoModel().getMowzieBone("maskTwitcher");
-            animatable.updateRattleSound(mask.getRotZ());
+            entity.updateRattleSound(mask.getRotZ());
         }
     }
 
