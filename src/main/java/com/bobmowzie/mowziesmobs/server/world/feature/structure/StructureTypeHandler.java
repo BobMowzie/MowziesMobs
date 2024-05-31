@@ -31,7 +31,7 @@ public class StructureTypeHandler {
     public static RegistryObject<StructureType<FrostmawStructure>> FROSTMAW = registerStructureType("frostmaw_spawn", () -> () -> FrostmawStructure.CODEC);
     public static RegistryObject<StructurePieceType> FROSTMAW_PIECE = registerStructurePieceType("frostmaw_template", FrostmawPieces.FrostmawPiece::new);
 
-    //    public static RegistryObject<StructureFeature<JigsawConfiguration>> MONASTERY = registerStructure("monastery", () -> (new MonasteryStructure(JigsawConfiguration.CODEC)));
+    public static RegistryObject<StructureType<MonasteryStructure>> MONASTERY = registerStructureType("monastery", () -> () -> MonasteryStructure.CODEC);
 
     public static BiomeChecker FERROUS_WROUGHTNAUT_BIOME_CHECKER;
     public static final Set<Holder<Biome>> FERROUS_WROUGHTNAUT_BIOMES = new HashSet<>();

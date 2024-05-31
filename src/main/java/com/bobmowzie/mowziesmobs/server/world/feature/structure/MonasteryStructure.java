@@ -5,6 +5,8 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.datagen.StructureSetHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.structure.jigsaw.MowzieJigsawManager;
 import com.google.common.collect.ImmutableList;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -12,8 +14,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
+import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraftforge.common.util.Lazy;
 import org.apache.logging.log4j.Level;
 
@@ -29,7 +34,10 @@ public class MonasteryStructure extends MowzieStructure {
     public static final Set<String> REPLACE_POOLS = Set.of(MowziesMobs.MODID + ":monastery/path_pool");
     public static final String STRAIGHT_POOL = MowziesMobs.MODID + ":monastery/dead_end_connect_pool";
 
-    public MonasteryStructure(StructureSettings settings) {
+    public static final Codec<MonasteryStructure> CODEC = simpleCodec(MonasteryStructure::new);
+
+    public MonasteryStructure(StructureSettings settings)
+    {
         // Create the pieces layout of the structure and give it to the game
         super(settings, ConfigHandler.COMMON.MOBS.SCULPTOR.generationConfig, StructureTypeHandler.SCULPTOR_BIOMES, true, true, true);
     }
@@ -117,7 +125,6 @@ public class MonasteryStructure extends MowzieStructure {
 
 	@Override
 	public StructureType<?> type() {
-		//TODO
-		return null;
+		return StructureTypeHandler.MONASTERY.get();
 	}
 }
