@@ -755,6 +755,9 @@ public final class ConfigHandler {
             this.customPlayerAnims = builder.comment("Use custom player animations.")
                     .translation(LANG_PREFIX + "custom_player_anims")
                     .define("custom_player_anims", true);
+            this.doUmvuthanaCraneHealSound = builder.comment("Play Umvuthana Crane heal sounds. Turn this off if you are experiencing crashes when Cranes appear during Umvuthi's boss battle.")
+                    .translation(LANG_PREFIX + "crane_heal_sounds")
+                    .define("crane_heal_sounds", true);
             builder.pop();
         }
 
@@ -767,6 +770,8 @@ public final class ConfigHandler {
         public final BooleanValue customBossBars;
 
         public final BooleanValue customPlayerAnims;
+
+        public final BooleanValue doUmvuthanaCraneHealSound;
     }
 
     public static class Common {

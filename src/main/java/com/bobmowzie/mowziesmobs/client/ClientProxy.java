@@ -87,15 +87,16 @@ public class ClientProxy extends ServerProxy {
 
     @Override
     public void playSunblockSound(LivingEntity entity) {
-        sunblockSounds.removeIf(AbstractTickableSoundInstance::isStopped);
-        if (sunblockSounds.size() < 10) {
-            SunblockSound sunblockSound = new SunblockSound(entity);
-            sunblockSounds.add(sunblockSound);
-            try {
-                Minecraft.getInstance().getSoundManager().play(sunblockSound);
-            }
-            catch (ConcurrentModificationException ignored) {
+        if (ConfigHandler.CLIENT.doUmvuthanaCraneHealSound.get()) {
+            sunblockSounds.removeIf(AbstractTickableSoundInstance::isStopped);
+            if (sunblockSounds.size() < 10) {
+                SunblockSound sunblockSound = new SunblockSound(entity);
+                sunblockSounds.add(sunblockSound);
+                try {
+                    Minecraft.getInstance().getSoundManager().play(sunblockSound);
+                } catch (ConcurrentModificationException ignored) {
 
+                }
             }
         }
     }
