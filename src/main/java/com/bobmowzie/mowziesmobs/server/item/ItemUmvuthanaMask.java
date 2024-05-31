@@ -84,7 +84,7 @@ public class ItemUmvuthanaMask extends MowzieArmorItem implements UmvuthanaMask,
 
     private boolean spawnUmvuthana(MaskType mask, ItemStack stack, Player player, float durability) {
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
-        if (playerCapability != null && playerCapability.getPackSize() < 10) {
+        if (playerCapability != null && playerCapability.getPackSize() < ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.maxFollowers.get()) {
             player.playSound(MMSounds.ENTITY_UMVUTHI_BELLY.get(), 1.5f, 1);
             player.playSound(MMSounds.ENTITY_UMVUTHANA_BLOWDART.get(), 1.5f, 0.5f);
             double angle = player.getYHeadRot();

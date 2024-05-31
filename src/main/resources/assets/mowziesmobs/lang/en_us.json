@@ -228,6 +228,7 @@
   "config.mowziesmobs.umvuthana_mask.tooltip": "",
   "config.mowziesmobs.sol_visage": "Sol Visage",
   "config.mowziesmobs.sol_visage.tooltip": "",
+  "config.mowziesmobs.max_followers": "Maximum Followers",
   "config.mowziesmobs.blow_gun": "Blowgun",
   "config.mowziesmobs.blow_gun.tooltip": "",
   "config.mowziesmobs.poison_duration": "Poison Duration",

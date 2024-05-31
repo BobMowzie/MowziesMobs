@@ -521,12 +521,17 @@ public final class ConfigHandler {
             breakable = builder.comment("Set to true for the Sol Visage to have limited durability.")
                     .translation(LANG_PREFIX + "breakable")
                     .define("breakable", false);
+            maxFollowers = builder.comment("Maximum number of Umvuthana followers a player can summon at once using the Sol Visage")
+                    .translation(LANG_PREFIX + "max_followers")
+                    .defineInRange("max_followers", 10, 0, 300);
             builder.pop();
         }
 
         public final ArmorConfig armorConfig;
 
         public final BooleanValue breakable;
+
+        public final IntValue maxFollowers;
     }
 
     public static class UmvuthanaMask {
