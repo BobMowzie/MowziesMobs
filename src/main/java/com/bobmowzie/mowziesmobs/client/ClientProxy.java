@@ -88,7 +88,7 @@ public class ClientProxy extends ServerProxy {
     @Override
     public void playSunblockSound(LivingEntity entity) {
         if (ConfigHandler.CLIENT.doUmvuthanaCraneHealSound.get()) {
-            sunblockSounds.removeIf(AbstractTickableSoundInstance::isStopped);
+            sunblockSounds.removeIf(e -> e == null || e.isStopped());
             if (sunblockSounds.size() < 10) {
                 SunblockSound sunblockSound = new SunblockSound(entity);
                 sunblockSounds.add(sunblockSound);

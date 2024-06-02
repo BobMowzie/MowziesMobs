@@ -65,7 +65,7 @@ public class StructureTypeHandler {
 
         if (FROSTMAW_BIOME_CHECKER == null) FROSTMAW_BIOME_CHECKER = new BiomeChecker(ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig.biomeConfig);
         if (ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig.generationDistance.get() >= 0 && FROSTMAW_BIOME_CHECKER.isBiomeInConfig(biomeKey)) {
-            //System.out.println("Added frostmaw biome: " + biomeName.toString());
+            System.out.println("Added frostmaw biome: " + biomeKey.toString());
             FROSTMAW_BIOMES.add(biomeKey);
         }
 

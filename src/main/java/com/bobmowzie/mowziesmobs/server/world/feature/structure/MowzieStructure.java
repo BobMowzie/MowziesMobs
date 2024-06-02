@@ -76,21 +76,21 @@ public abstract class MowzieStructure extends Structure {
         ChunkPos chunkPos = context.chunkPos();
         BlockPos centerOfChunk = new BlockPos((chunkPos.x << 4) + 7, 0, (chunkPos.z << 4) + 7);
 
-//        int i = chunkPos.getMiddleBlockX();
-//        int j = chunkPos.getMiddleBlockZ();
-//        int k = context.chunkGenerator().getFirstOccupiedHeight(i, j, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor(), context.randomState());
-//        Holder<Biome> biome = context.chunkGenerator().getBiomeSource().getNoiseBiome(QuartPos.fromBlock(i), QuartPos.fromBlock(k), QuartPos.fromBlock(j), context.randomState().sampler());
-//        if (!allowedBiomes.contains(biome)) {
-//            return false;
-//        }
-//
-//        if (checkHeight) {
-//        	double minHeight = config.heightMin.get();
-//            double maxHeight = config.heightMax.get();
-//            int landHeight = getLowestY(context, 16, 16);
-//            if (minHeight != -65 && landHeight < minHeight) return false;
-//            if (maxHeight != -65 && landHeight > maxHeight) return false;
-//        }
+        int i = chunkPos.getMiddleBlockX();
+        int j = chunkPos.getMiddleBlockZ();
+        int k = context.chunkGenerator().getFirstOccupiedHeight(i, j, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor(), context.randomState());
+        Holder<Biome> biome = context.chunkGenerator().getBiomeSource().getNoiseBiome(QuartPos.fromBlock(i), QuartPos.fromBlock(k), QuartPos.fromBlock(j), context.randomState().sampler());
+        if (!allowedBiomes.contains(biome)) {
+            return false;
+        }
+
+        if (checkHeight) {
+        	double minHeight = config.heightMin.get();
+            double maxHeight = config.heightMax.get();
+            int landHeight = getLowestY(context, 16, 16);
+            if (minHeight != -65 && landHeight < minHeight) return false;
+            if (maxHeight != -65 && landHeight > maxHeight) return false;
+        }
 
         if (avoidWater) {
             ChunkGenerator chunkGenerator = context.chunkGenerator();
