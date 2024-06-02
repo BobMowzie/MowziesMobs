@@ -477,7 +477,7 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
 
     @Override
     public void handleEntityEvent(byte id) {
-        if (id == FOOTSTEP_ID) {
+        if (id == FOOTSTEP_ID && ConfigHandler.CLIENT.umvuthanaFootprints.get()) {
             footstepCounter++;
             float rotation = (float) Math.toRadians(yBodyRot + 180f);
             Vec3 offset = new Vec3(0, 0, footstepCounter % 2 == 0 ? 0.3 : -0.3).yRot(rotation);

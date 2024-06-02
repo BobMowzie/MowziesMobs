@@ -748,6 +748,9 @@ public final class ConfigHandler {
             this.glowEffect = builder.comment("Toggles the lantern glow effect, which may look bad with certain shaders.")
                     .translation(LANG_PREFIX + "glow_effect")
                     .define("glow_effect", true);
+            this.umvuthanaFootprints = builder.comment("Toggles the Umvuthana footprint effects, which may decrease performance.")
+                    .translation(LANG_PREFIX + "umvuthana_footprints")
+                    .define("umvuthana_footprints", true);
             this.doCameraShakes = builder.comment("Enable camera shaking during certain mob attacks and abilities.")
                     .translation(LANG_PREFIX + "do_camera_shake")
                     .define("do_camera_shake", true);
@@ -767,6 +770,8 @@ public final class ConfigHandler {
         }
 
         public final BooleanValue glowEffect;
+
+        public final BooleanValue umvuthanaFootprints;
 
         public final BooleanValue doCameraShakes;
 
