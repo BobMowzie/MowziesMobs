@@ -40,6 +40,7 @@ import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.cache.object.GeoCube;
 import software.bernie.geckolib.cache.texture.AnimatableTexture;
 import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.event.GeoRenderEvent;
 import software.bernie.geckolib.model.GeoModel;
@@ -244,7 +245,8 @@ public class GeckoRenderPlayer extends PlayerRenderer implements GeoRenderer<Gec
             AnimationState<GeckoPlayer> animationState = new AnimationState<GeckoPlayer>(animatable, f5_limbSwing, f8_limbSwingAmount, partialTick, avgVelocity >= motionThreshold && f8_limbSwingAmount != 0);
             long instanceId = getInstanceId(animatable);
 
-            animationState.setData(DataTickets.TICK, animatable.getTick(animatable));
+            AnimatableManager<GeckoPlayer> animatableManager = animatable.getAnimatableInstanceCache().getManagerForId(instanceId);
+            animationState.setData(DataTickets.TICK, animatable.getTick(animatable) + animatableManager.getFirstTickTime() + Minecraft.getInstance().getFrameTime());
             animationState.setData(DataTickets.ENTITY, entity);
             animationState.setData(DataTickets.ENTITY_MODEL_DATA, new EntityModelData(shouldSit, entity.isBaby(), -f2_netHeadYaw, -headPitch));
             this.getGeckoModel().addAdditionalStateData(animatable, instanceId, animationState::setData);
