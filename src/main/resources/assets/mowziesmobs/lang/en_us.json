@@ -112,7 +112,7 @@
   "item.mowziesmobs.glowing_jelly.text.0": "Eat to briefly gain night vision",
 
   "item.mowziesmobs.naga_fang": "Naga Fang",
-  "item.mowziesmobs.naga_fang.text.0": "Used to brew Potion of Poison Resistance or craft a Naga Fang Dagger",
+  "item.mowziesmobs.naga_fang.text.0": "Used to brew Potion of Poison Resistance, craft a Naga Fang Dagger, or craft darts.",
 
   "item.mowziesmobs.naga_fang_dagger": "Naga Fang Dagger",
   "item.mowziesmobs.naga_fang_dagger.text.0": "Poisons targets",
@@ -149,6 +149,10 @@
   "item.minecraft.splash_potion.effect.poison_resist": "Splash Potion of Poison Resistance",
   "item.minecraft.lingering_potion.effect.poison_resist": "Lingering Potion of Poison Resistance",
   "item.minecraft.tipped_arrow.effect.poison_resist": "Arrow of Poison Resistance",
+  "item.minecraft.potion.effect.long_poison_resist": "Potion of Poison Resistance",
+  "item.minecraft.splash_potion.effect.long_poison_resist": "Splash Potion of Poison Resistance",
+  "item.minecraft.lingering_potion.effect.long_poison_resist": "Lingering Potion of Poison Resistance",
+  "item.minecraft.tipped_arrow.effect.long_poison_resist": "Arrow of Poison Resistance",
 
   "_comment": "Tile Entities",
 
