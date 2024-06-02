@@ -457,7 +457,9 @@ public class EntityFrostmaw extends MowzieLLibraryEntity implements Enemy {
                     shouldDodge = false;
                     dodgeCooldown = DODGE_COOLDOWN;
                     shouldDodgeMeasure = 0;
-                    wantsToIceBreathAfterDodging = true;
+                    if (getHasCrystal()) {
+                        wantsToIceBreathAfterDodging = true;
+                    }
                     iceBreathCooldown = 0;
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, DODGE_ANIMATION);
                 }
