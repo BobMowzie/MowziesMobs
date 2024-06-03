@@ -203,7 +203,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        hurtByTargetAI = new UmvuthanaHurtByTargetAI(this);
+        hurtByTargetAI = new UmvuthanaHurtByTargetAI(this, false);
         this.targetSelector.addGoal(3, hurtByTargetAI);
         this.targetSelector.addGoal(4, new NearestAttackableTargetPredicateGoal<Player>(this, Player.class, 0, false, true, (TargetingConditions.forCombat().range(getAttributeValue(Attributes.FOLLOW_RANGE)).selector(target -> {
             if (target instanceof Player) {

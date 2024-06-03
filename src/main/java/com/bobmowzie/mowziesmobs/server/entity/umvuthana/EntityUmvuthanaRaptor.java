@@ -39,7 +39,7 @@ public class EntityUmvuthanaRaptor extends EntityUmvuthana implements LeaderSuns
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(3, new UmvuthanaHurtByTargetAI(this));
+        this.goalSelector.addGoal(3, new UmvuthanaHurtByTargetAI(this, true));
     }
 
     @Override

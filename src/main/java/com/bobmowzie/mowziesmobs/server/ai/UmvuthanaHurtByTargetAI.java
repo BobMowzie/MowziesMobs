@@ -2,12 +2,10 @@ package com.bobmowzie.mowziesmobs.server.ai;
 
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthana;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
-import net.minecraft.world.entity.EntitySelector;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.scores.Team;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,9 +13,13 @@ import java.util.List;
 
 public class UmvuthanaHurtByTargetAI extends HurtByTargetGoal
 {
-    public UmvuthanaHurtByTargetAI(PathfinderMob entity, Class<?>... p_26040_) {
+    private boolean checkSight;
+    private int unseenTicks;
+
+    public UmvuthanaHurtByTargetAI(PathfinderMob entity, boolean checkSight, Class<?>... p_26040_) {
         super(entity, p_26040_);
         setAlertOthers();
+        this.checkSight = checkSight;
     }
 
     @Override
@@ -68,5 +70,45 @@ public class UmvuthanaHurtByTargetAI extends HurtByTargetGoal
     @Override
     protected double getFollowDistance() {
         return super.getFollowDistance() * 1.7;
+    }
+
+    public boolean canContinueToUse() {
+        LivingEntity livingentity = this.mob.getTarget();
+        if (livingentity == null) {
+            livingentity = this.targetMob;
+        }
+
+        if (livingentity == null) {
+            return false;
+        } else if (!this.mob.canAttack(livingentity)) {
+            return false;
+        } else {
+            Team team = this.mob.getTeam();
+            Team team1 = livingentity.getTeam();
+            if (team != null && team1 == team) {
+                return false;
+            } else {
+                double d0 = this.getFollowDistance();
+                if (this.mob.distanceToSqr(livingentity) > d0 * d0) {
+                    return false;
+                } else {
+                    if (this.checkSight) {
+                        if (this.mob.getSensing().hasLineOfSight(livingentity)) {
+                            this.unseenTicks = 0;
+                        } else if (++this.unseenTicks > reducedTickDelay(this.unseenMemoryTicks)) {
+                            return false;
+                        }
+                    }
+
+                    this.mob.setTarget(livingentity);
+                    return true;
+                }
+            }
+        }
+    }
+
+    public void start() {
+        super.start();
+        this.unseenTicks = 0;
     }
 }

@@ -75,7 +75,7 @@ public class EntityUmvuthanaCrane extends EntityUmvuthanaMinion {
 
     @Override
     protected void registerTargetGoals() {
-        this.targetSelector.addGoal(3, new UmvuthanaHurtByTargetAI(this));
+        this.targetSelector.addGoal(3, new UmvuthanaHurtByTargetAI(this, true));
         this.targetSelector.addGoal(2, new NearestAttackableTargetPredicateGoal<EntityUmvuthi>(this, EntityUmvuthi.class, 0, false, false, TargetingConditions.forNonCombat().range(getAttributeValue(Attributes.FOLLOW_RANGE) * 2).selector(target -> {
             if (!active) return false;
             if (target instanceof Mob) {
