@@ -25,7 +25,7 @@ public class LootConditionFrostmawHasCrystal implements LootItemCondition {
 
     @Override
     public LootItemConditionType getType() {
-        return LootItemConditions.KILLED_BY_PLAYER;
+        return LootTableHandler.FROSTMAW_HAS_CRYSTAL.get();
     }
 
     public Set<LootContextParam<?>> getReferencedContextParams() {

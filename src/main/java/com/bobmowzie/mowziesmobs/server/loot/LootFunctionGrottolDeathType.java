@@ -34,7 +34,7 @@ public class LootFunctionGrottolDeathType extends LootItemConditionalFunction {
 
     @Override
     public LootItemFunctionType getType() {
-        return null;
+        return LootTableHandler.GROTTOL_DEATH_TYPE.get();
     }
 
     public static class FunctionSerializer extends LootItemConditionalFunction.Serializer<LootFunctionGrottolDeathType> {
