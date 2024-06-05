@@ -19,7 +19,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Parrot;
@@ -113,13 +112,13 @@ public class EntityAxeAttack extends EntityMagicEffect {
                             }
                             float applyKnockbackResistance = 0;
                             boolean hitEntity = false;
-                            if (entity instanceof LivingEntity) {
-                                if (!raytraceCheckEntity(entity)) continue;
+                            if (!raytraceCheckEntity(entity)) continue;
 
-                                if (caster instanceof Player)
-                                    hitEntity = entity.hurt(damageSources().playerAttack((Player) caster), (factor * 5 + 1) * (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f));
-                                else
-                                    hitEntity = entity.hurt(damageSources().mobAttack(caster), (factor * 5 + 1) * (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f));
+                            if (caster instanceof Player)
+                                hitEntity = entity.hurt(damageSources().playerAttack((Player) caster), (factor * 5 + 1) * (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f));
+                            else
+                                hitEntity = entity.hurt(damageSources().mobAttack(caster), (factor * 5 + 1) * (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f));
+                            if (entity instanceof LivingEntity) {
                                 applyKnockbackResistance = (float) ((LivingEntity) entity).getAttribute(Attributes.KNOCKBACK_RESISTANCE).getValue();
                             }
                             if (hitEntity) {
@@ -158,8 +157,8 @@ public class EntityAxeAttack extends EntityMagicEffect {
 
     private void dealDamage(float damage, float range, float arc, float applyKnockback) {
         boolean hit = false;
-        List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(range, 2, range, range);
-        for (LivingEntity entityHit : entitiesHit) {
+        List<Entity> entitiesHit = getEntitiesNearby(range, 2, range, range);
+        for (Entity entityHit : entitiesHit) {
             float entityHitAngle = (float) ((Math.atan2(entityHit.getZ() - getZ(), entityHit.getX() - getX()) * (180 / Math.PI) - 90) % 360);
             float entityAttackingAngle = getYRot() % 360;
             if (entityHitAngle < 0) {
@@ -200,9 +199,9 @@ public class EntityAxeAttack extends EntityMagicEffect {
         return getEntityData().get(VERTICAL);
     }
 
-    private List<LivingEntity> getEntityLivingBaseNearby(double distanceX, double distanceY, double distanceZ, double radius) {
+    private List<Entity> getEntitiesNearby(double distanceX, double distanceY, double distanceZ, double radius) {
         List<Entity> list = level().getEntities(this, getBoundingBox().inflate(distanceX, distanceY, distanceZ));
-        ArrayList<LivingEntity> nearEntities = list.stream().filter(entityNeighbor -> entityNeighbor instanceof LivingEntity && distanceTo(entityNeighbor) <= radius + entityNeighbor.getBbWidth() / 2f).map(entityNeighbor -> (LivingEntity) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Entity> nearEntities = list.stream().filter(entityNeighbor -> entityNeighbor != null && distanceTo(entityNeighbor) <= radius + entityNeighbor.getBbWidth() / 2f).collect(Collectors.toCollection(ArrayList::new));
         return nearEntities;
     }
 

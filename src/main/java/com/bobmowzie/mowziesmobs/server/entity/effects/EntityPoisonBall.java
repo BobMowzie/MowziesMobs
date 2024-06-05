@@ -7,9 +7,9 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
@@ -52,13 +52,13 @@ public class EntityPoisonBall extends EntityMagicEffect {
 
         setYRot(-((float) Mth.atan2(getDeltaMovement().x, getDeltaMovement().z)) * (180F / (float)Math.PI));
 
-        List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(1);
+        List<Entity> entitiesHit = getEntitiesNearby(1);
         if (!entitiesHit.isEmpty()) {
-            for (LivingEntity entity : entitiesHit) {
+            for (Entity entity : entitiesHit) {
                 if (entity == caster) continue;
                 if (entity instanceof EntityNaga) continue;
-                if (entity.hurt(damageSources().indirectMagic(this, caster), 3 * ConfigHandler.COMMON.MOBS.NAGA.combatConfig.attackMultiplier.get().floatValue())) {
-                    entity.addEffect(new MobEffectInstance(MobEffects.POISON, 80, 1, false, true));
+                if (entity.hurt(damageSources().indirectMagic(this, caster), 3 * ConfigHandler.COMMON.MOBS.NAGA.combatConfig.attackMultiplier.get().floatValue()) && entity instanceof LivingEntity) {
+                    ((LivingEntity)entity).addEffect(new MobEffectInstance(MobEffects.POISON, 80, 1, false, true));
                 }
             }
         }
@@ -111,13 +111,13 @@ public class EntityPoisonBall extends EntityMagicEffect {
 
         playSound(MMSounds.ENTITY_NAGA_ACID_HIT.get(), 1, 1);
 
-        List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(2);
+        List<Entity> entitiesHit = getEntitiesNearby(2);
         if (!entitiesHit.isEmpty()) {
-            for (LivingEntity entity : entitiesHit) {
+            for (Entity entity : entitiesHit) {
                 if (entity == caster) continue;
                 if (entity instanceof EntityNaga) continue;
-                if (entity.hurt(damageSources().indirectMagic(this, caster), 3 * ConfigHandler.COMMON.MOBS.NAGA.combatConfig.attackMultiplier.get().floatValue())) {
-                    entity.addEffect(new MobEffectInstance(MobEffects.POISON, 80, 0, false, true));
+                if (entity.hurt(damageSources().indirectMagic(this, caster), 3 * ConfigHandler.COMMON.MOBS.NAGA.combatConfig.attackMultiplier.get().floatValue()) && entity instanceof LivingEntity livingEntity) {
+                    livingEntity.addEffect(new MobEffectInstance(MobEffects.POISON, 80, 0, false, true));
                 }
             }
         }

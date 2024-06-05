@@ -110,8 +110,8 @@ public abstract class EntityMagicEffect extends Entity implements ILinkedEntity 
         }
     }
 
-    public List<LivingEntity> getEntityLivingBaseNearby(double radius) {
-        return getEntitiesNearby(LivingEntity.class, radius);
+    public List<Entity> getEntitiesNearby(double radius) {
+        return getEntitiesNearby(Entity.class, radius);
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double r) {

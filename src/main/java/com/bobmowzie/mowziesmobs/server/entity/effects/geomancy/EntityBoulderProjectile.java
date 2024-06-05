@@ -11,7 +11,6 @@ import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.google.common.collect.Iterables;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -86,7 +85,7 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
         }
         
         // Hit entities
-        List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(1.7);
+        List<Entity> entitiesHit = getEntitiesNearby(1.7);
         if (travelling && !entitiesHit.isEmpty()) {
             for (Entity entity : entitiesHit) {
                 if (level().isClientSide) continue;

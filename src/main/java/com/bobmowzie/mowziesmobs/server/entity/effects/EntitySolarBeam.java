@@ -196,12 +196,12 @@ public class EntitySolarBeam extends Entity {
         }
         if (tickCount > 20) {
             this.calculateEndPos();
-            List<LivingEntity> hit = raytraceEntities(level(), new Vec3(getX(), getY(), getZ()), new Vec3(endPosX, endPosY, endPosZ), false, true, true).entities;
+            List<Entity> hit = raytraceEntities(level(), new Vec3(getX(), getY(), getZ()), new Vec3(endPosX, endPosY, endPosZ), false, true, true).entities;
             if (blockSide != null) {
                 spawnExplosionParticles(2);
             }
             if (!level().isClientSide) {
-                for (LivingEntity target : hit) {
+                for (Entity target : hit) {
                     if (caster instanceof EntityUmvuthi && target instanceof LeaderSunstrikeImmune) {
                         continue;
                     }
@@ -215,7 +215,12 @@ public class EntitySolarBeam extends Entity {
                         damageFire *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier.get() * 0.75;
                         damageMob *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier.get() * 0.75;
                     }
-                    DamageUtil.dealMixedDamage(target, damageSources().mobProjectile(this, caster), damageMob, damageSources().onFire(), damageFire);
+                    if (target instanceof LivingEntity) {
+                        DamageUtil.dealMixedDamage((LivingEntity) target, damageSources().mobProjectile(this, caster), damageMob, damageSources().onFire(), damageFire);
+                    }
+                    else {
+                        target.hurt(damageSources().mobProjectile(this, caster), damageMob);
+                    }
                 }
             } else {
                 if (tickCount - 15 < getDuration()) {
@@ -356,8 +361,8 @@ public class EntitySolarBeam extends Entity {
             collidePosZ = endPosZ;
             blockSide = null;
         }
-        List<LivingEntity> entities = world.getEntitiesOfClass(LivingEntity.class, new AABB(Math.min(getX(), collidePosX), Math.min(getY(), collidePosY), Math.min(getZ(), collidePosZ), Math.max(getX(), collidePosX), Math.max(getY(), collidePosY), Math.max(getZ(), collidePosZ)).inflate(1, 1, 1));
-        for (LivingEntity entity : entities) {
+        List<Entity> entities = world.getEntitiesOfClass(Entity.class, new AABB(Math.min(getX(), collidePosX), Math.min(getY(), collidePosY), Math.min(getZ(), collidePosZ), Math.max(getX(), collidePosX), Math.max(getY(), collidePosY), Math.max(getZ(), collidePosZ)).inflate(1, 1, 1));
+        for (Entity entity : entities) {
             if (entity == caster) {
                 continue;
             }
@@ -421,7 +426,7 @@ public class EntitySolarBeam extends Entity {
     public static class SolarbeamHitResult {
         private BlockHitResult blockHit;
 
-        private final List<LivingEntity> entities = new ArrayList<>();
+        private final List<Entity> entities = new ArrayList<>();
 
         public BlockHitResult getBlockHit() {
             return blockHit;
@@ -432,7 +437,7 @@ public class EntitySolarBeam extends Entity {
                 this.blockHit = (BlockHitResult) rayTraceResult;
         }
 
-        public void addEntityHit(LivingEntity entity) {
+        public void addEntityHit(Entity entity) {
             entities.add(entity);
         }
     }

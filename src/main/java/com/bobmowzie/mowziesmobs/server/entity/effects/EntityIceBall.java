@@ -10,7 +10,7 @@ import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability.IFrozenCapab
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import net.minecraft.tags.EntityTypeTags;
-import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
@@ -47,14 +47,14 @@ public class EntityIceBall extends EntityMagicEffect {
             }
         }
 
-        List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(2);
+        List<Entity> entitiesHit = getEntitiesNearby(2);
         if (!entitiesHit.isEmpty()) {
-            for (LivingEntity entity : entitiesHit) {
+            for (Entity entity : entitiesHit) {
                 if (entity == caster) continue;
                 if (entity.getType().is(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES) || entity instanceof EnderDragon) continue;
                 if (entity.hurt(damageSources().freeze(), 3f * ConfigHandler.COMMON.MOBS.FROSTMAW.combatConfig.attackMultiplier.get().floatValue())) {
                     IFrozenCapability capability = CapabilityHandler.getCapability(entity, CapabilityHandler.FROZEN_CAPABILITY);
-                    if (capability != null) capability.addFreezeProgress(entity, 1);
+                    if (capability != null && entity instanceof LivingEntity) capability.addFreezeProgress((LivingEntity) entity, 1);
                 }
             }
         }

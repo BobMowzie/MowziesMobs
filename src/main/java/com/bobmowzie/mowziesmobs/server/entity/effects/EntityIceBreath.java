@@ -96,11 +96,11 @@ public class EntityIceBreath extends EntityMagicEffect {
     }
 
     public void hitEntities() {
-        List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(RANGE, RANGE, RANGE, RANGE);
+        List<Entity> entitiesHit = getEntityLivingBaseNearby(RANGE, RANGE, RANGE, RANGE);
         float damage = DAMAGE_PER_HIT;
         if (caster instanceof EntityFrostmaw) damage *= ConfigHandler.COMMON.MOBS.FROSTMAW.combatConfig.attackMultiplier.get();
         if (caster instanceof Player) damage *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.attackMultiplier.get();
-        for (LivingEntity entityHit : entitiesHit) {
+        for (Entity entityHit : entitiesHit) {
             if (entityHit == caster) continue;
 
             if (entityHit.getType().is(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES) || entityHit instanceof EnderDragon) continue;
@@ -137,10 +137,10 @@ public class EntityIceBreath extends EntityMagicEffect {
                 // Do raycast check to prevent damaging through walls
                 if (!raytraceCheckEntity(entityHit)) continue;
 
-                if (entityHit.hurt(damageSources().freeze(), damage)) {
+                if (entityHit.hurt(damageSources().freeze(), damage) && entityHit instanceof LivingEntity) {
                     entityHit.setDeltaMovement(entityHit.getDeltaMovement().multiply(0.25, 1, 0.25));
                     FrozenCapability.IFrozenCapability capability = CapabilityHandler.getCapability(entityHit, CapabilityHandler.FROZEN_CAPABILITY);
-                    if (capability != null) capability.addFreezeProgress(entityHit, 0.23f);
+                    if (capability != null) capability.addFreezeProgress((LivingEntity) entityHit, 0.23f);
                 }
             }
         }
@@ -193,8 +193,8 @@ public class EntityIceBreath extends EntityMagicEffect {
         }
     }
 
-    public  List<LivingEntity> getEntityLivingBaseNearby(double distanceX, double distanceY, double distanceZ, double radius) {
-        return getEntitiesNearby(LivingEntity.class, distanceX, distanceY, distanceZ, radius);
+    public  List<Entity> getEntityLivingBaseNearby(double distanceX, double distanceY, double distanceZ, double radius) {
+        return getEntitiesNearby(Entity.class, distanceX, distanceY, distanceZ, radius);
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double dX, double dY, double dZ, double r) {

@@ -13,6 +13,7 @@ import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -66,28 +67,33 @@ public class EntitySuperNova extends EntityMagicEffect {
             float scale = (float) Math.pow(ageFrac, 0.5) * 5f;
             setBoundingBox(getBoundingBox().inflate(scale));
             setPos(xo, yo, zo);
-            List<LivingEntity> hitList = getEntitiesNearbyCube(LivingEntity.class, scale);
-            for (LivingEntity entity : hitList) {
+            List<Entity> hitList = getEntitiesNearbyCube(Entity.class, scale);
+            for (Entity entity : hitList) {
             	if (caster == entity) continue;
                 if (caster instanceof EntityUmvuthi && entity instanceof LeaderSunstrikeImmune) continue;
-                if (caster.canAttack(entity)) {
-                    float damageFire = 4f;
-                    float damageMob = 4f;
-                    if (caster instanceof EntityUmvuthi) {
-                        damageFire *= ConfigHandler.COMMON.MOBS.UMVUTHI.combatConfig.attackMultiplier.get();
-                        damageMob *= ConfigHandler.COMMON.MOBS.UMVUTHI.combatConfig.attackMultiplier.get();
+                if (entity instanceof LivingEntity livingEntity) {
+                    if (caster.canAttack(livingEntity)) {
+                        float damageFire = 4f;
+                        float damageMob = 4f;
+                        if (caster instanceof EntityUmvuthi) {
+                            damageFire *= ConfigHandler.COMMON.MOBS.UMVUTHI.combatConfig.attackMultiplier.get();
+                            damageMob *= ConfigHandler.COMMON.MOBS.UMVUTHI.combatConfig.attackMultiplier.get();
+                        }
+                        if (caster instanceof Player) {
+                            damageFire *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier.get() * 0.8;
+                            damageMob *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier.get() * 0.8;
+                        }
+                        boolean hitWithFire = DamageUtil.dealMixedDamage(livingEntity, damageSources().mobProjectile(this, caster), damageMob, damageSources().onFire(), damageFire).getRight();
+                        if (hitWithFire) {
+                            Vec3 diff = livingEntity.position().subtract(position());
+                            diff = diff.normalize();
+                            livingEntity.knockback(0.4f, -diff.x, -diff.z);
+                            livingEntity.setSecondsOnFire(5);
+                        }
                     }
-                    if (caster instanceof Player) {
-                        damageFire *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier.get() * 0.8;
-                        damageMob *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier.get() * 0.8;
-                    }
-                    boolean hitWithFire = DamageUtil.dealMixedDamage(entity, damageSources().mobProjectile(this, caster), damageMob, damageSources().onFire(), damageFire).getRight();
-                    if (hitWithFire) {
-                        Vec3 diff = entity.position().subtract(position());
-                        diff = diff.normalize();
-                        entity.knockback(0.4f, -diff.x, -diff.z);
-                        entity.setSecondsOnFire(5);
-                    }
+                }
+                else {
+                    entity.hurt(damageSources().mobProjectile(this, caster), 4);
                 }
             }
         }
