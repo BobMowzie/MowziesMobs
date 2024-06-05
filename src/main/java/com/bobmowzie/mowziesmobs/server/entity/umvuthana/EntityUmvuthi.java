@@ -103,7 +103,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
             if (getTicksInUse() == 80) getUser().playSound(MMSounds.MISC_METAL_IMPACT.get(), getUser().getSoundVolume(), 1);
         }
     });
-    public static final AbilityType<EntityUmvuthi, HurtAbility<EntityUmvuthi>> HURT_ABILITY = new AbilityType<>("umvuthi_hurt", (type, entity) -> new HurtAbility<>(type, entity,RawAnimation.begin().thenPlay("hurt"), 13));
+    public static final AbilityType<EntityUmvuthi, HurtAbility<EntityUmvuthi>> HURT_ABILITY = new AbilityType<>("umvuthi_hurt", (type, entity) -> new HurtAbility<>(type, entity,RawAnimation.begin().thenPlay("hurt"), 13, 10));
     public static final AbilityType<EntityUmvuthi, SimpleAnimationAbility<EntityUmvuthi>> BELLY_ABILITY = new AbilityType<>("umvuthi_belly", (type, entity) -> new SimpleAnimationAbility<>(type, entity,RawAnimation.begin().thenPlay("belly_drum"), 40, true) {
         @Override
         public void tickUsing() {

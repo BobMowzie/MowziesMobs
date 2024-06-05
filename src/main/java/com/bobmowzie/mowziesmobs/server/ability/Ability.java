@@ -28,7 +28,7 @@ import java.util.Random;
 
 public class Ability<T extends LivingEntity> {
     private final AbilitySection[] sectionTrack;
-    private final int cooldownMax;
+    protected int cooldownMax;
     private final AbilityType<T, ? extends Ability> abilityType;
     private final T user;
     private final AbilityCapability.IAbilityCapability abilityCapability;

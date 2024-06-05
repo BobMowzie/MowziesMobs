@@ -10,6 +10,11 @@ public class HurtAbility<T extends MowzieGeckoEntity> extends SimpleAnimationAbi
         super(abilityType, user, animation, duration);
     }
 
+    public HurtAbility(AbilityType<T, ? extends HurtAbility<T>> abilityType, T user, RawAnimation animation, int duration, int cooldown) {
+        this(abilityType, user, animation, duration);
+        this.cooldownMax = cooldown;
+    }
+
     @Override
     public boolean damageInterrupts() {
         return true;
