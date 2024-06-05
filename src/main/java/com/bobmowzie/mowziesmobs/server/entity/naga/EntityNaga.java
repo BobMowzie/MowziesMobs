@@ -404,8 +404,8 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
 
         if (hasEffect(MobEffects.POISON)) removeEffectNoUpdate(MobEffects.POISON);
 
-//        if (ticksExisted == 1) {
-//            System.out.println("Naga at " + getPosition());
+//        if (tickCount == 1) {
+//            System.out.println("Naga at " + position());
 //        }
 
         if (!level().isClientSide) {

@@ -295,7 +295,7 @@ public final class ConfigHandler {
         Naga(final ForgeConfigSpec.Builder builder) {
             builder.push("naga");
             spawnConfig = new SpawnConfig(builder,
-                    15, 2, 4, 1,
+                    13, 2, 3, 1,
                     new BiomeConfig(builder, Arrays.asList("minecraft:is_beach,minecraft:is_mountain", "minecraft:is_beach,minecraft:is_hill"), Collections.singletonList("minecraft:stony_shore"), Collections.emptyList()),
                     Collections.emptyList(),
                     Collections.emptyList(),
