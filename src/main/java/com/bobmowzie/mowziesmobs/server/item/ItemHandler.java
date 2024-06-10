@@ -52,8 +52,8 @@ public class ItemHandler {
     public static final RegistryObject<ItemNagaFang> NAGA_FANG = REG.register("naga_fang", () -> new ItemNagaFang(new Item.Properties()));
     public static final RegistryObject<ItemNagaFangDagger> NAGA_FANG_DAGGER = REG.register("naga_fang_dagger", () -> new ItemNagaFangDagger(new Item.Properties()));
     public static final RegistryObject<ItemEarthboreGauntlet> EARTHBORE_GAUNTLET = REG.register("earthbore_gauntlet", () -> new ItemEarthboreGauntlet(new Item.Properties().defaultDurability(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.durabilityValue).rarity(Rarity.RARE)));
-//    public static final ItemSculptorStaff SCULPTOR_STAFF = REG.register(new ItemSculptorStaff(new Item.Properties().defaultDurability(1000).rarity(Rarity.RARE)));
-//    public static final ItemSandRake SAND_RAKE = REG..register("sand_rake", new ItemSandRake(new Item.Properties().defaultDurability(64)));
+    public static final RegistryObject<ItemSculptorStaff> SCULPTOR_STAFF = REG.register("sculptor_staff", () -> new ItemSculptorStaff(new Item.Properties().defaultDurability(1000).rarity(Rarity.RARE)));
+    public static final RegistryObject<ItemSandRake> SAND_RAKE = REG.register("sand_rake", () -> new ItemSandRake(new Item.Properties().defaultDurability(64)));
     public static final RegistryObject<Item> LOGO = REG.register("logo", () -> new Item(new Item.Properties()));
     public static final RegistryObject<RecordItem> PETIOLE_MUSIC_DISC = REG.register("music_disc_petiole", () -> new RecordItem(14, MMSounds.MUSIC_PETIOLE, new Item.Properties().stacksTo(1).rarity(Rarity.RARE), 2800));
 
@@ -67,7 +67,7 @@ public class ItemHandler {
     public static final RegistryObject<ForgeSpawnEggItem> GROTTOL_SPAWN_EGG = REG.register("grottol_spawn_egg", () -> new ForgeSpawnEggItem(EntityHandler.GROTTOL, 0x777777, 0xbce0ff, new Item.Properties()));
     public static final RegistryObject<ForgeSpawnEggItem> LANTERN_SPAWN_EGG = REG.register("lantern_spawn_egg", () -> new ForgeSpawnEggItem(EntityHandler.LANTERN, 0x6dea00, 0x235a10, new Item.Properties()));
     public static final RegistryObject<ForgeSpawnEggItem> NAGA_SPAWN_EGG = REG.register("naga_spawn_egg", () -> new ForgeSpawnEggItem(EntityHandler.NAGA, 0x154850, 0x8dd759, new Item.Properties()));
-//    public static final ForgeSpawnEggItem SCULPTOR_SPAWN_EGG = REG.register("sculptor_spawn_egg", new ForgeSpawnEggItem(EntityHandler.SCULPTOR, 0xc4a137, 0xfff5e7, new Item.Properties()));
+    public static final RegistryObject<ForgeSpawnEggItem> SCULPTOR_SPAWN_EGG = REG.register("sculptor_spawn_egg", () -> new ForgeSpawnEggItem(EntityHandler.SCULPTOR, 0xc4a137, 0xfff5e7, new Item.Properties()));
 
     public static void initializeAttributes() {
         WROUGHT_AXE.get().getAttributesFromConfig();

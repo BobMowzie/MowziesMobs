@@ -28,7 +28,7 @@ import net.minecraft.world.item.ItemStack;
 import org.joml.Quaternionf;
 
 public final class GuiSculptorTrade extends AbstractContainerScreen<ContainerSculptorTrade> implements InventorySculptor.ChangeListener {
-    private static final ResourceLocation TEXTURE_TRADE = new ResourceLocation(MowziesMobs.MODID, "textures/gui/container/barako_trade.png");
+    private static final ResourceLocation TEXTURE_TRADE = new ResourceLocation(MowziesMobs.MODID, "textures/gui/container/umvuthi_trade.png");
 
     private final EntitySculptor sculptor;
     private final Player player;
