@@ -146,9 +146,9 @@ public class MowzieGeoBone extends GeoBone {
     }
 
     public static void removeMatrixTranslation(Matrix4f matrix) {
-        matrix.m03(0);
-        matrix.m13(0);
-        matrix.m23(0);
+        matrix.m30(0);
+        matrix.m31(0);
+        matrix.m32(0);
     }
 
     public void setModelRotationMat(Matrix4f mat) {

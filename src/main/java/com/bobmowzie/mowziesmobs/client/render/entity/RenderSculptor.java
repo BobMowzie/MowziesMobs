@@ -5,9 +5,11 @@ import com.bobmowzie.mowziesmobs.client.model.entity.ModelSculptor;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoSunblockLayer;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
 
 public class RenderSculptor extends MowzieGeoEntityRenderer<EntitySculptor> {
     public final ResourceLocation staff_geo_location = new ResourceLocation(MowziesMobs.MODID, "geo/sculptor_staff.geo.json");
@@ -23,6 +25,13 @@ public class RenderSculptor extends MowzieGeoEntityRenderer<EntitySculptor> {
 //        this.addRenderLayer(new GeckoItemlayer<>(this,"itemHandRight", new ItemStack(ItemHandler.SCULPTOR_STAFF, 1)));
         this.shadowRadius = 0.7f;
 
+    }
+
+    @Override
+    public void preRender(PoseStack poseStack, EntitySculptor animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+        model.getBone("gauntletRotator").get().setHidden(true);
+        model.getBone("gauntletUnparented").get().setHidden(true);
     }
 
     @Override

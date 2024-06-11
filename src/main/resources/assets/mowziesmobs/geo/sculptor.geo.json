@@ -250,14 +250,14 @@
 					]
 				},
 				{
-					"name": "head_joint",
+					"name": "headJoint",
 					"parent": "chest",
 					"pivot": [0, 30.141, 0.80892],
 					"rotation": [-25, 0, 0]
 				},
 				{
 					"name": "head",
-					"parent": "head_joint",
+					"parent": "headJoint",
 					"pivot": [0, 30.891, -0.94108],
 					"cubes": [
 						{"origin": [-3.5, 28.641, -5.94108], "size": [7, 8, 7], "uv": [0, 13]}
@@ -984,6 +984,10 @@
 				{
 					"name": "handControllerRight",
 					"pivot": [-24, 0, 1.5]
+				},
+				{
+					"name": "idleAnimController",
+					"pivot": [0, 0, 0]
 				}
 			]
 		}
