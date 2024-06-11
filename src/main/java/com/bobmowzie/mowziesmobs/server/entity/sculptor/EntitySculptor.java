@@ -2,8 +2,11 @@ package com.bobmowzie.mowziesmobs.server.entity.sculptor;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
+import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
+import com.bobmowzie.mowziesmobs.server.ability.abilities.mob.DieAbility;
+import com.bobmowzie.mowziesmobs.server.ability.abilities.mob.HurtAbility;
 import com.bobmowzie.mowziesmobs.server.ai.UseAbilityAI;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
@@ -67,8 +70,10 @@ public class EntitySculptor extends MowzieGeckoEntity {
     public static int TEST_MAX_RADIUS_HEIGHT = 10;
     public static double TEST_RADIUS_FALLOFF = 5;
 
+    public static final AbilityType<EntitySculptor, HurtAbility<EntitySculptor>> HURT_ABILITY = new AbilityType<>("sculptor_hurt", (type, entity) -> new HurtAbility<>(type, entity,RawAnimation.begin().thenPlay("hurt"), 13, 10));
+    public static final AbilityType<EntitySculptor, DieAbility<EntitySculptor>> DIE_ABILITY = new AbilityType<>("sculptor_die", (type, entity) -> new DieAbility<>(type, entity, RawAnimation.begin().thenPlay("die"), 70));
     public static final AbilityType<EntitySculptor, StartTestAbility> START_TEST = new AbilityType<>("testStart", StartTestAbility::new);
-    public static final AbilityType<EntitySculptor, EndTestAbility> END_TEST = new AbilityType<>("testEnd", EndTestAbility::new);
+    public static final AbilityType<EntitySculptor, FailTestAbility> FAIL_TEST = new AbilityType<>("testFail", FailTestAbility::new);
     public static final AbilityType<EntitySculptor, PassTestAbility> PASS_TEST = new AbilityType<>("testPass", PassTestAbility::new);
 
     private static final EntityDataAccessor<ItemStack> DESIRES = SynchedEntityData.defineId(EntitySculptor.class, EntityDataSerializers.ITEM_STACK);
@@ -91,14 +96,16 @@ public class EntitySculptor extends MowzieGeckoEntity {
         super(type, world);
     }
 
+    private static RawAnimation HURT = RawAnimation.begin().thenPlay("hurt");
+
     @Override
     public AbilityType getHurtAbility() {
-        return null;
+        return HURT_ABILITY;
     }
 
     @Override
     public AbilityType getDeathAbility() {
-        return null;
+        return DIE_ABILITY;
     }
 
     @Override
@@ -106,6 +113,8 @@ public class EntitySculptor extends MowzieGeckoEntity {
         super.registerGoals();
         goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         goalSelector.addGoal(2, new UseAbilityAI<>(this, START_TEST));
+        this.goalSelector.addGoal(1, new UseAbilityAI<>(this, DIE_ABILITY));
+        this.goalSelector.addGoal(2, new UseAbilityAI<>(this, HURT_ABILITY, false));
     }
 
     @Override
@@ -123,7 +132,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1);
     }
 
-    private static RawAnimation TEST_FAIL_START_ANIM = RawAnimation.begin().thenLoop("test_fail_start");
+    private static RawAnimation IDLE = RawAnimation.begin().thenLoop("idle");
 
     protected <E extends GeoEntity> PlayState predicate(AnimationState<E> event)
     {
@@ -137,7 +146,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
             return abilityCapability.animationPredicate(event, null);
         }
         else {
-            event.getController().setAnimation(TEST_FAIL_START_ANIM);
+            event.getController().setAnimation(IDLE);
             return PlayState.CONTINUE;
         }
     }
@@ -201,7 +210,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
         if (testing && !level().isClientSide()) {
             if (testingPlayer == null) {
-                sendAbilityMessage(END_TEST);
+                sendAbilityMessage(FAIL_TEST);
                 prevPlayerPosition = Optional.empty();
                 prevPlayerVelY = Optional.empty();
             }
@@ -253,7 +262,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     public void playerCheated() {
         if (isTesting() && testingPlayer != null) {
-            sendAbilityMessage(END_TEST);
+            sendAbilityMessage(FAIL_TEST);
         }
     }
 
@@ -371,7 +380,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     @Override
     public AbilityType<?, ?>[] getAbilities() {
-        return new AbilityType[] {START_TEST, END_TEST, PASS_TEST};
+        return new AbilityType[] {START_TEST, FAIL_TEST, PASS_TEST, HURT_ABILITY, DIE_ABILITY};
     }
 
     @Override
@@ -496,12 +505,12 @@ public class EntitySculptor extends MowzieGeckoEntity {
         }
     }
 
-    public static class EndTestAbility extends Ability<EntitySculptor> {
+    public static abstract class EndTestAbility extends Ability<EntitySculptor> {
 
-        public EndTestAbility(AbilityType<EntitySculptor, ? extends EndTestAbility> abilityType, EntitySculptor user) {
+        public EndTestAbility(AbilityType<EntitySculptor, ? extends EndTestAbility> abilityType, EntitySculptor user, int recoveryDuration) {
             super(abilityType, user, new AbilitySection[] {
                     new AbilitySection.AbilitySectionInfinite(AbilitySection.AbilitySectionType.ACTIVE),
-                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 20)
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, recoveryDuration)
             });
         }
 
@@ -525,7 +534,9 @@ public class EntitySculptor extends MowzieGeckoEntity {
                 if (!getUser().level().isClientSide() && getUser().pillar != null) {
                     getUser().setPos(getUser().pillar.position().add(0, getUser().pillar.getHeight(), 0));
                 }
-                if (getUser().pillar == null || getUser().pillar.isRemoved()) nextSection();
+                if (getUser().pillar == null || getUser().pillar.isRemoved()) {
+                    AbilityHandler.INSTANCE.sendJumpToSectionMessage(getUser(), this.getAbilityType(), 1);
+                }
             }
         }
 
@@ -544,12 +555,35 @@ public class EntitySculptor extends MowzieGeckoEntity {
         public boolean canCancelActiveAbility() {
             return true;
         }
+
+        @Override
+        protected void beginSection(AbilitySection section) {
+            super.beginSection(section);
+            if (section.sectionType == AbilitySection.AbilitySectionType.RECOVERY) {
+                playFinishingAnimation();
+            }
+        }
+
+        protected abstract void playFinishingAnimation();
+    }
+
+    public static class FailTestAbility extends EndTestAbility {
+        public FailTestAbility(AbilityType<EntitySculptor, ? extends EndTestAbility> abilityType, EntitySculptor user) {
+            super(abilityType, user, 30);
+        }
+
+        private static RawAnimation TEST_FAIL_END = RawAnimation.begin().thenLoop("test_fail_end");
+
+        @Override
+        protected void playFinishingAnimation() {
+            playAnimation(TEST_FAIL_END);
+        }
     }
 
     public static class PassTestAbility extends EndTestAbility {
 
         public PassTestAbility(AbilityType<EntitySculptor, PassTestAbility> abilityType, EntitySculptor user) {
-            super(abilityType, user);
+            super(abilityType, user, 120);
         }
 
         @Override
@@ -571,6 +605,13 @@ public class EntitySculptor extends MowzieGeckoEntity {
         @Override
         public boolean canCancelActiveAbility() {
             return false;
+        }
+
+        private static RawAnimation TEST_PASS_END = RawAnimation.begin().thenLoop("test_pass_end");
+
+        @Override
+        protected void playFinishingAnimation() {
+            playAnimation(TEST_PASS_END);
         }
     }
 }
