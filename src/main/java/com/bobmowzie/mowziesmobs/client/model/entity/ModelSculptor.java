@@ -57,10 +57,15 @@ public class ModelSculptor extends MowzieGeoModel<EntitySculptor> {
             idleAnim(entity, animationState);
         }
 
-        handClosedL.setHidden(entity.handLOpen);
-        handClosedR.setHidden(entity.handROpen);
-        handOpenL.setHidden(!entity.handLOpen);
-        handOpenR.setHidden(!entity.handROpen);
+        float handControllerLeft = getControllerValue("handControllerLeft");
+        float handControllerRight = getControllerValue("handControllerRight");
+        boolean handLOpen = handControllerLeft == 0;
+        boolean handROpen = handControllerRight == 0;
+
+        handClosedL.setHidden(handLOpen);
+        handClosedR.setHidden(handROpen);
+        handOpenL.setHidden(!handLOpen);
+        handOpenR.setHidden(!handROpen);
 
         backCloth.setHidden(false);
 
