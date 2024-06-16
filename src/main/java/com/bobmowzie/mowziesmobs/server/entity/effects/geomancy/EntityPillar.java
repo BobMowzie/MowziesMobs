@@ -187,13 +187,13 @@ public class EntityPillar extends EntityGeomancyBase {
         return !(caster instanceof EntitySculptor);
     }
 
-    public static class EntitySculptorPillar extends EntityPillar {
+    public static class EntityPillarSculptor extends EntityPillar {
 
-        public EntitySculptorPillar(EntityType<? extends EntityMagicEffect> type, Level worldIn) {
+        public EntityPillarSculptor(EntityType<? extends EntityPillarSculptor> type, Level worldIn) {
             super(type, worldIn);
         }
 
-        public EntitySculptorPillar(EntityType<? extends EntityPillar> type, Level world, LivingEntity caster, BlockState blockState, BlockPos pos) {
+        public EntityPillarSculptor(EntityType<? extends EntityPillarSculptor> type, Level world, LivingEntity caster, BlockState blockState, BlockPos pos) {
             super(type, world, caster, blockState, pos);
             setDeathTime(300);
         }

@@ -14,7 +14,7 @@ import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieGeckoEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBlockSwapper;
-import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderPlatform;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderSculptor;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityGeomancyBase;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityPillar;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerSculptorTrade;
@@ -93,7 +93,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
     private int ticksAcceleratingUpward;
     private boolean testing;
 
-    private EntityPillar.EntitySculptorPillar pillar;
+    private EntityPillar.EntityPillarSculptor pillar;
     public int numLivePaths = 0;
     private HurtByTargetGoal hurtByTargetAI;
 
@@ -392,11 +392,11 @@ public class EntitySculptor extends MowzieGeckoEntity {
         return stack.getItem() == worth.getItem() && stack.getCount() >= worth.getCount();
     }
 
-    public EntityPillar.EntitySculptorPillar getPillar() {
+    public EntityPillar.EntityPillarSculptor getPillar() {
         return pillar;
     }
 
-    public void setPillar(EntityPillar.EntitySculptorPillar pillar) {
+    public void setPillar(EntityPillar.EntityPillarSculptor pillar) {
         this.pillar = pillar;
     }
 
@@ -477,7 +477,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
                 }
 
                 if (spawnPillarBlock == null || !EffectGeomancy.isBlockUseable(spawnPillarBlock)) spawnPillarBlock = Blocks.STONE.defaultBlockState();
-                getUser().pillar = new EntityPillar.EntitySculptorPillar(EntityHandler.PILLAR_SCULPTOR.get(), getUser().level(), getUser(), Blocks.STONE.defaultBlockState(), spawnPillarPos);
+                getUser().pillar = new EntityPillar.EntityPillarSculptor(EntityHandler.PILLAR_SCULPTOR.get(), getUser().level(), getUser(), Blocks.STONE.defaultBlockState(), spawnPillarPos);
                 getUser().pillar.setTier(EntityGeomancyBase.GeomancyTier.SMALL);
                 getUser().pillar.setPos(spawnPillarPos.getX() + 0.5F, spawnPillarPos.getY() + 1, spawnPillarPos.getZ() + 0.5F);
                 getUser().pillar.setDoRemoveTimer(false);
@@ -491,7 +491,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
                     float angleInc = (float) (2f * Math.PI) / ((float) numStartBoulders * 2f);
                     float angle = angleOffset + angleInc * (i * 2) + rand.nextFloat(angleInc);
                     Vec3 spawnBoulderPos = getUser().pillar.position().add(new Vec3(rand.nextFloat(3, 6), 0, 0).yRot(angle));
-                    EntityBoulderPlatform boulderPlatform = new EntityBoulderPlatform(EntityHandler.BOULDER_PLATFORM.get(), getUser().level(), getUser(), Blocks.STONE.defaultBlockState(), BlockPos.ZERO, EntityGeomancyBase.GeomancyTier.MEDIUM);
+                    EntityBoulderSculptor boulderPlatform = new EntityBoulderSculptor(EntityHandler.BOULDER_PLATFORM.get(), getUser().level(), getUser(), Blocks.STONE.defaultBlockState(), BlockPos.ZERO, EntityGeomancyBase.GeomancyTier.MEDIUM);
                     boulderPlatform.setPos(spawnBoulderPos.add(0, 1, 0));
                     if (i == 0) boulderPlatform.setMainPath();
                     getUser().level().addFreshEntity(boulderPlatform);
@@ -612,8 +612,8 @@ public class EntitySculptor extends MowzieGeckoEntity {
         @Override
         public void start() {
             if (getUser().testingPlayer != null) {
-                List<EntityBoulderPlatform> platforms = getUser().level().getEntitiesOfClass(EntityBoulderPlatform.class, getUser().testingPlayer.getBoundingBox().expandTowards(0, -6, 0));
-                EntityBoulderPlatform platformBelowPlayer = platforms.get(0);
+                List<EntityBoulderSculptor> platforms = getUser().level().getEntitiesOfClass(EntityBoulderSculptor.class, getUser().testingPlayer.getBoundingBox().expandTowards(0, -6, 0));
+                EntityBoulderSculptor platformBelowPlayer = platforms.get(0);
                 platformBelowPlayer.descend();
             }
             super.start();
