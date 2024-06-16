@@ -76,6 +76,10 @@ public class EntityHandler {
         return EntityType.Builder.of(EntityPillar::new, MobCategory.MISC);
     }
     public static final RegistryObject<EntityType<EntityPillar>> PILLAR = REG.register("pillar", () -> pillarBuilder().sized(1f, 1f).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "pillar").toString()));
+    private static EntityType.Builder<EntityPillar.EntitySculptorPillar> sculptorPillarBuilder() {
+        return EntityType.Builder.of(EntityPillar.EntitySculptorPillar::new, MobCategory.MISC);
+    }
+    public static final RegistryObject<EntityType<EntityPillar.EntitySculptorPillar>> PILLAR_SCULPTOR = REG.register("pillar_sculptor", () -> sculptorPillarBuilder().sized(1f, 1f).setUpdateInterval(1).build(new ResourceLocation(MowziesMobs.MODID, "pillar_sculptor").toString()));
     private static EntityType.Builder<EntityPillarPiece> pillarPieceBuilder() {
         return EntityType.Builder.of(EntityPillarPiece::new, MobCategory.MISC);
     }

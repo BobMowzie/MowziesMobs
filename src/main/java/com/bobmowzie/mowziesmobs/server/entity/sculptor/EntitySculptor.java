@@ -477,7 +477,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
                 }
 
                 if (spawnPillarBlock == null || !EffectGeomancy.isBlockUseable(spawnPillarBlock)) spawnPillarBlock = Blocks.STONE.defaultBlockState();
-                getUser().pillar = new EntityPillar.EntitySculptorPillar(EntityHandler.PILLAR.get(), getUser().level(), getUser(), Blocks.STONE.defaultBlockState(), spawnPillarPos);
+                getUser().pillar = new EntityPillar.EntitySculptorPillar(EntityHandler.PILLAR_SCULPTOR.get(), getUser().level(), getUser(), Blocks.STONE.defaultBlockState(), spawnPillarPos);
                 getUser().pillar.setTier(EntityGeomancyBase.GeomancyTier.SMALL);
                 getUser().pillar.setPos(spawnPillarPos.getX() + 0.5F, spawnPillarPos.getY() + 1, spawnPillarPos.getZ() + 0.5F);
                 getUser().pillar.setDoRemoveTimer(false);
