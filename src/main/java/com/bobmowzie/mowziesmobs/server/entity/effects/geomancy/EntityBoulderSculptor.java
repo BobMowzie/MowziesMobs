@@ -4,13 +4,12 @@ import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import com.google.common.collect.Iterables;
+import com.mojang.math.Axis;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -20,12 +19,12 @@ import net.royawesome.jlibnoise.MathHelper;
 
 import java.util.List;
 
-public class EntityBoulderPlatform extends EntityBoulderBase {
+public class EntityBoulderSculptor extends EntityBoulderProjectile {
     private static final float MAX_DIST_HORIZONTAL = 4.0f;
     private static final float MAX_DIST_VERTICAL = 2.4f;
     private static final int MAX_TRIES = 10;
 
-    private EntityBoulderPlatform nextBoulder;
+    private EntityBoulderSculptor nextBoulder;
     private EntitySculptor sculptor;
     private EntityPillar pillar;
 
@@ -35,11 +34,11 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
 
     private boolean spawnedNextBoulders = false;
 
-    public EntityBoulderPlatform(EntityType<? extends EntityBoulderBase> type, Level world) {
+    public EntityBoulderSculptor(EntityType<? extends EntityBoulderSculptor> type, Level world) {
         super(type, world);
     }
 
-    public EntityBoulderPlatform(EntityType<? extends EntityBoulderBase> type, Level world, LivingEntity caster, BlockState blockState, BlockPos pos, GeomancyTier tier) {
+    public EntityBoulderSculptor(EntityType<? extends EntityBoulderSculptor> type, Level world, LivingEntity caster, BlockState blockState, BlockPos pos, GeomancyTier tier) {
         super(type, world, caster, blockState, pos, tier);
     }
 
@@ -58,9 +57,18 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
         if (sculptor == null || pillar == null) {
             if (caster instanceof EntitySculptor) {
                 sculptor = (EntitySculptor) caster;
+                sculptor.boulders.add(this);
                 pillar = sculptor.getPillar();
             }
         }
+
+//        Orbit around sculptor pillar! Re-enable later
+//        if (!isTravelling() && sculptor != null && sculptor.getTarget() != null) {
+//            Vec3 between = this.position().subtract(sculptor.position());
+//            between = between.yRot(0.02f);
+//            setPos(between.add(sculptor.position()));
+//        }
+
         if (tickCount > 2 && hasSyncedCaster && (sculptor == null || sculptor.isRemoved() || pillar == null || pillar.isRemoved() || (pillar.isFalling() && !descending))) {
             explode();
             return;
@@ -71,7 +79,7 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
         }
 
         if (pillar != null && !level().isClientSide()) {
-            if (pillar.getY() + pillar.getHeight() >= this.getY()) activate();
+            if (pillar.getY() + pillar.getHeight() >= this.getY() && !active) activate();
         }
 
         if (descending) {
@@ -111,7 +119,7 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
     public boolean nextSingleBoulder() {
         int whichTierIndex = (int) (Math.pow(random.nextFloat(), 2) * (GeomancyTier.values().length - 2) + 1);
         GeomancyTier nextTier = GeomancyTier.values()[whichTierIndex];
-        EntityBoulderPlatform nextBoulder = new EntityBoulderPlatform(EntityHandler.BOULDER_PLATFORM.get(), level(), caster, getBlock(), blockPosition(), nextTier);
+        EntityBoulderSculptor nextBoulder = new EntityBoulderSculptor(EntityHandler.BOULDER_SCULPTOR.get(), level(), caster, getBlock(), blockPosition(), nextTier);
 
         // Try many times to find a good placement for the next boulder
         for (int j = 0; j < MAX_TRIES; j++) {
@@ -127,15 +135,15 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
 
             // Make sure boulder has no collision, even with the future fully-grown pillar
             if (
-                    level().getEntitiesOfClass(EntityBoulderPlatform.class, nextBoulder.getBoundingBox(), (b) -> b != this).isEmpty()
+                    level().getEntitiesOfClass(EntityBoulderSculptor.class, nextBoulder.getBoundingBox(), (b) -> b != this).isEmpty()
                     && Iterables.size(level().getBlockCollisions(nextBoulder, nextBoulder.getBoundingBox())) == 0
                     && !pillar.getBoundingBox().setMaxY(pillar.getY() + EntitySculptor.TEST_HEIGHT).intersects(nextBoulder.getBoundingBox())
             ) {
                 // Check nearby boulders below to make sure this boulder doesn't block jumping path
                 AABB toCheck = nextBoulder.getBoundingBox().inflate(MAX_DIST_HORIZONTAL, MAX_DIST_VERTICAL / 2f + 1.5f, MAX_DIST_HORIZONTAL).move(0, -MAX_DIST_VERTICAL / 2f - 1.5f, 0);
-                List<EntityBoulderPlatform> platforms = level().getEntitiesOfClass(EntityBoulderPlatform.class, toCheck);
+                List<EntityBoulderSculptor> platforms = level().getEntitiesOfClass(EntityBoulderSculptor.class, toCheck);
                 boolean obstructsPath = false;
-                for (EntityBoulderPlatform platform : platforms) {
+                for (EntityBoulderSculptor platform : platforms) {
                     if (platform != nextBoulder && !nextBoulder.checkJumpPath(platform)) {
                         obstructsPath = true;
                         break;
@@ -156,7 +164,7 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
         return false;
     }
 
-    protected Vec3 chooseRandomLocation(EntityBoulderPlatform nextBoulder) {
+    protected Vec3 chooseRandomLocation(EntityBoulderSculptor nextBoulder) {
         EntityDimensions thisDims = SIZE_MAP.get(this.getTier());
         EntityDimensions nextDims = SIZE_MAP.get(nextBoulder.getTier());
         Vec3 startLocation = position();
@@ -185,7 +193,7 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
     }
 
     // For when the platforms have reached max height and just need to head towards sculptor
-    protected Vec3 chooseTowardsSculptorLocation(EntityBoulderPlatform nextBoulder) {
+    protected Vec3 chooseTowardsSculptorLocation(EntityBoulderSculptor nextBoulder) {
         EntityDimensions thisDims = SIZE_MAP.get(this.getTier());
         EntityDimensions nextDims = SIZE_MAP.get(nextBoulder.getTier());
         Vec3 startLocation = position();
@@ -200,12 +208,12 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
         return startLocation.add(offset);
     }
 
-    public EntityBoulderPlatform getNextBoulder() {
+    public EntityBoulderSculptor getNextBoulder() {
         return nextBoulder;
     }
 
-    public boolean checkJumpPath(EntityBoulderPlatform platform) {
-        EntityBoulderPlatform next = platform.getNextBoulder();
+    public boolean checkJumpPath(EntityBoulderSculptor platform) {
+        EntityBoulderSculptor next = platform.getNextBoulder();
         if (next == null) return true;
         EntityDimensions platDims = SIZE_MAP.get(platform.getTier());
         EntityDimensions nextDims = SIZE_MAP.get(next.getTier());
@@ -249,6 +257,16 @@ public class EntityBoulderPlatform extends EntityBoulderBase {
             }
         }
         return -1;
+    }
+
+    @Override
+    protected boolean travellingBlockedBy(Entity entity) {
+        return super.travellingBlockedBy(entity) && !(entity instanceof EntityBoulderSculptor);
+    }
+
+    @Override
+    public boolean canCollideWith(Entity entity) {
+        return super.canCollideWith(entity) && !(entity instanceof EntityBoulderSculptor);
     }
 
     @Override

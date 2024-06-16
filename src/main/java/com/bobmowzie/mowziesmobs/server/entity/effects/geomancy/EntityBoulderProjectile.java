@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleRotation;
+import com.bobmowzie.mowziesmobs.client.sound.BossMusicPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
@@ -29,10 +30,14 @@ import java.util.List;
  * Created by BobMowzie on 4/14/2017.
  */
 public class EntityBoulderProjectile extends EntityBoulderBase {
-    private final List<Entity> ridingEntities = new ArrayList<Entity>();
-    private boolean travelling = false;
-    private float speed = 1.5f;
-    private int damage = 8;
+    private static final byte SHOOT_ID = 68;
+
+    protected final List<Entity> ridingEntities = new ArrayList<Entity>();
+    protected boolean travelling = false;
+    protected float speed = 1.5f;
+    protected int damage = 8;
+
+    boolean doShootParticles = false;
 
     public EntityBoulderProjectile(EntityType<? extends EntityBoulderProjectile> type, Level world) {
         super(type, world);
@@ -59,6 +64,10 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
         }
 
         if (caster instanceof Player) damage *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.geomancyAttackMultiplier.get();
+    }
+
+    public float getSpeed() {
+        return speed;
     }
 
     @Override
@@ -90,6 +99,7 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
             for (Entity entity : entitiesHit) {
                 if (level().isClientSide) continue;
                 if (entity == caster) continue;
+                if (!travellingBlockedBy(entity)) continue;
                 if (ridingEntities.contains(entity)) continue;
                 if (caster != null) entity.hurt(damageSources().mobProjectile(this, caster), damage);
                 else entity.hurt(damageSources().generic(), damage);
@@ -98,23 +108,31 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
         }
 
         // Hit other boulders
-        List<EntityBoulderProjectile> bouldersHit = level().getEntitiesOfClass(EntityBoulderProjectile.class, getBoundingBox().inflate(0.2, 0.2, 0.2).move(getDeltaMovement().normalize().scale(0.5)));
-        if (travelling && !bouldersHit.isEmpty()) {
-            for (EntityBoulderProjectile entity : bouldersHit) {
-                if (!entity.travelling) {
-                    entity.skipAttackInteraction(this);
-                    explode();
-                }
-            }
-        }
+        handleHitOtherBoulders();
 
         // Hit blocks
         if (travelling) {
             if (
-                    !level().getEntities(this, getBoundingBox().inflate(0.1), (e)->!ridingEntities.contains(e) && e.canBeCollidedWith()).isEmpty() ||
+                    !level().getEntities(this, getBoundingBox().inflate(0.1), (e)->!ridingEntities.contains(e) && e.canBeCollidedWith() && this.travellingBlockedBy(e)).isEmpty() ||
                             Iterables.size(level().getBlockCollisions(this, getBoundingBox().inflate(0.1))) > 0
             ) {
                 this.explode();
+            }
+        }
+    }
+
+    protected boolean travellingBlockedBy(Entity entity) {
+        return true;
+    }
+
+    protected void handleHitOtherBoulders() {
+        List<EntityBoulderProjectile> bouldersHit = level().getEntitiesOfClass(EntityBoulderProjectile.class, getBoundingBox().inflate(0.2, 0.2, 0.2).move(getDeltaMovement().normalize().scale(0.5)));
+        if (travelling && !bouldersHit.isEmpty()) {
+            for (EntityBoulderProjectile entity : bouldersHit) {
+                if (!entity.travelling && this.travellingBlockedBy(entity)) {
+                    entity.skipAttackInteraction(this);
+                    explode();
+                }
             }
         }
     }
@@ -124,60 +142,64 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
         return true;
     }
 
+    public void shoot(Vec3 shootDirection) {
+        setDeltaMovement(shootDirection);
+        if (!travelling) setDeathTime(60);
+        travelling = true;
+        setBoundingBox(getType().getAABB(getX(), getY(), getZ()));
+
+        if (boulderSize == GeomancyTier.SMALL) {
+            playSound(MMSounds.EFFECT_GEOMANCY_HIT_SMALL.get(), 1.5f, 1.3f);
+            playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL.get(), 1.5f, 0.9f);
+        }
+        else if (boulderSize == GeomancyTier.MEDIUM) {
+            playSound(MMSounds.EFFECT_GEOMANCY_HIT_SMALL.get(), 1.5f, 0.9f);
+            playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL.get(), 1.5f, 0.5f);
+        }
+        else if (boulderSize == GeomancyTier.LARGE) {
+            playSound(MMSounds.EFFECT_GEOMANCY_HIT_SMALL.get(), 1.5f, 0.5f);
+            playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG.get(), 1.5f, 1.3f);
+            EntityCameraShake.cameraShake(level(), position(), 10, 0.05f, 0, 20);
+        }
+        else if (boulderSize == GeomancyTier.HUGE) {
+            playSound(MMSounds.EFFECT_GEOMANCY_HIT_MEDIUM_1.get(), 1.5f, 1f);
+            playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG.get(), 1.5f, 0.9f);
+            EntityCameraShake.cameraShake(level(), position(), 15, 0.05f, 0, 20);
+        }
+
+        this.level().broadcastEntityEvent(this, SHOOT_ID);
+    }
+
+    @Override
+    public void handleEntityEvent(byte id) {
+        super.handleEntityEvent(id);
+        if (id == SHOOT_ID) {
+            Vec3 ringOffset = getDeltaMovement().scale(-1).normalize();
+            ParticleRotation.OrientVector rotation = new ParticleRotation.OrientVector(ringOffset);
+            AdvancedParticleBase.spawnParticle(level(), ParticleHandler.RING2.get(), (float) getX() + (float) ringOffset.x, (float) getY() + 0.5f + (float) ringOffset.y, (float) getZ() + (float) ringOffset.z, 0, 0, 0, rotation, 3.5F, 0.83f, 1, 0.39f, 1, 1, (int) (5 + 2 * getBbWidth()), true, true, new ParticleComponent[]{
+                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0.7f, 0f), false),
+                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0f, (1.0f + 0.5f * getBbWidth()) * 8f), false)
+            });
+        }
+    }
+
     @Override
     public boolean skipAttackInteraction(Entity entityIn) {
         if (risingTick > finishedRisingTick - 1 && !travelling) {
-            if (entityIn instanceof Player
-                    && EffectGeomancy.canUse((Player)entityIn)) {
-                Player player = (Player) entityIn;
+            if (entityIn instanceof Player player && EffectGeomancy.canUse((Player)entityIn)) {
                 if (ridingEntities.contains(player)) {
                     Vec3 lateralLookVec = Vec3.directionFromRotation(0, player.getYRot()).normalize();
-                    setDeltaMovement(speed * 0.5 * lateralLookVec.x, getDeltaMovement().y, speed * 0.5 * lateralLookVec.z);
+                    shoot(new Vec3(speed * 0.5 * lateralLookVec.x, getDeltaMovement().y, speed * 0.5 * lateralLookVec.z));
                 } else {
-                    setDeltaMovement(player.getLookAngle().scale(speed * 0.5));
+                    shoot(player.getLookAngle().scale(speed * 0.5));
                 }
                 AbilityHandler.INSTANCE.sendAbilityMessage(player, AbilityHandler.HIT_BOULDER_ABILITY);
             }
-            else if (entityIn instanceof EntityBoulderProjectile && ((EntityBoulderProjectile) entityIn).travelling) {
-                EntityBoulderProjectile boulder = (EntityBoulderProjectile)entityIn;
+            else if (entityIn instanceof EntityBoulderProjectile boulder && ((EntityBoulderProjectile) entityIn).travelling) {
                 Vec3 thisPos = position();
                 Vec3 boulderPos = boulder.position();
                 Vec3 velVec = thisPos.subtract(boulderPos).normalize();
-                setDeltaMovement(velVec.scale(speed * 0.5));
-            }
-            else {
-                return super.skipAttackInteraction(entityIn);
-            }
-            if (!travelling) setDeathTime(60);
-            travelling = true;
-            setBoundingBox(getType().getAABB(getX(), getY(), getZ()));
-
-            if (boulderSize == GeomancyTier.SMALL) {
-                playSound(MMSounds.EFFECT_GEOMANCY_HIT_SMALL.get(), 1.5f, 1.3f);
-                playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL.get(), 1.5f, 0.9f);
-            }
-            else if (boulderSize == GeomancyTier.MEDIUM) {
-                playSound(MMSounds.EFFECT_GEOMANCY_HIT_SMALL.get(), 1.5f, 0.9f);
-                playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL.get(), 1.5f, 0.5f);
-            }
-            else if (boulderSize == GeomancyTier.LARGE) {
-                playSound(MMSounds.EFFECT_GEOMANCY_HIT_SMALL.get(), 1.5f, 0.5f);
-                playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG.get(), 1.5f, 1.3f);
-                EntityCameraShake.cameraShake(level(), position(), 10, 0.05f, 0, 20);
-            }
-            else if (boulderSize == GeomancyTier.HUGE) {
-                playSound(MMSounds.EFFECT_GEOMANCY_HIT_MEDIUM_1.get(), 1.5f, 1f);
-                playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG.get(), 1.5f, 0.9f);
-                EntityCameraShake.cameraShake(level(), position(), 15, 0.05f, 0, 20);
-            }
-
-            if (level().isClientSide) {
-                Vec3 ringOffset = getDeltaMovement().scale(-1).normalize();
-                ParticleRotation.OrientVector rotation = new ParticleRotation.OrientVector(ringOffset);
-                AdvancedParticleBase.spawnParticle(level(), ParticleHandler.RING2.get(), (float) getX() + (float) ringOffset.x, (float) getY() + 0.5f + (float) ringOffset.y, (float) getZ() + (float) ringOffset.z, 0, 0, 0, rotation, 3.5F, 0.83f, 1, 0.39f, 1, 1, (int) (5 + 2 * getBbWidth()), true, true, new ParticleComponent[]{
-                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0.7f, 0f), false),
-                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0f, (1.0f + 0.5f * getBbWidth()) * 8f), false)
-                });
+                shoot(velVec.scale(speed * 0.5));
             }
         }
         return super.skipAttackInteraction(entityIn);

@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
+import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -101,6 +102,10 @@ public class EntityBoulderBase extends EntityGeomancyBase implements IEntityAddi
         }
     }
 
+    public boolean isFinishedRising() {
+        return risingTick >= finishedRisingTick;
+    }
+
     @Override
     public void tick() {
         if (firstTick) {
@@ -184,6 +189,14 @@ public class EntityBoulderBase extends EntityGeomancyBase implements IEntityAddi
     protected void explode() {
         if (active) super.explode();
         else discard();
+    }
+
+    @Override
+    public void remove(RemovalReason p_146834_) {
+        super.remove(p_146834_);
+        if (caster instanceof EntitySculptor sculptor) {
+            sculptor.boulders.remove(this);
+        }
     }
 
     @Override

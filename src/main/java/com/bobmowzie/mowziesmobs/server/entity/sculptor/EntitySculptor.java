@@ -62,10 +62,7 @@ import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class EntitySculptor extends MowzieGeckoEntity {
     public static int TEST_HEIGHT = 50;
@@ -79,6 +76,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
     public static final AbilityType<EntitySculptor, StartTestAbility> START_TEST = new AbilityType<>("testStart", StartTestAbility::new);
     public static final AbilityType<EntitySculptor, FailTestAbility> FAIL_TEST = new AbilityType<>("testFail", FailTestAbility::new);
     public static final AbilityType<EntitySculptor, PassTestAbility> PASS_TEST = new AbilityType<>("testPass", PassTestAbility::new);
+    public static final AbilityType<EntitySculptor, AttackAbility> ATTACK_ABILITY = new AbilityType<>("attack", AttackAbility::new);
 
     private static final EntityDataAccessor<ItemStack> DESIRES = SynchedEntityData.defineId(EntitySculptor.class, EntityDataSerializers.ITEM_STACK);
     private static final EntityDataAccessor<Boolean> IS_TRADING = SynchedEntityData.defineId(EntitySculptor.class, EntityDataSerializers.BOOLEAN);
@@ -96,6 +94,8 @@ public class EntitySculptor extends MowzieGeckoEntity {
     private EntityPillar.EntityPillarSculptor pillar;
     public int numLivePaths = 0;
     private HurtByTargetGoal hurtByTargetAI;
+
+    public List<EntityBoulderSculptor> boulders = new ArrayList<>();
 
     public EntitySculptor(EntityType<? extends MowzieEntity> type, Level world) {
         super(type, world);
@@ -407,7 +407,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     @Override
     public AbilityType<?, ?>[] getAbilities() {
-        return new AbilityType[] {START_TEST, FAIL_TEST, PASS_TEST, HURT_ABILITY, DIE_ABILITY};
+        return new AbilityType[] {START_TEST, FAIL_TEST, PASS_TEST, HURT_ABILITY, DIE_ABILITY, ATTACK_ABILITY};
     }
 
     @Override
@@ -491,7 +491,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
                     float angleInc = (float) (2f * Math.PI) / ((float) numStartBoulders * 2f);
                     float angle = angleOffset + angleInc * (i * 2) + rand.nextFloat(angleInc);
                     Vec3 spawnBoulderPos = getUser().pillar.position().add(new Vec3(rand.nextFloat(3, 6), 0, 0).yRot(angle));
-                    EntityBoulderSculptor boulderPlatform = new EntityBoulderSculptor(EntityHandler.BOULDER_PLATFORM.get(), getUser().level(), getUser(), Blocks.STONE.defaultBlockState(), BlockPos.ZERO, EntityGeomancyBase.GeomancyTier.MEDIUM);
+                    EntityBoulderSculptor boulderPlatform = new EntityBoulderSculptor(EntityHandler.BOULDER_SCULPTOR.get(), getUser().level(), getUser(), Blocks.STONE.defaultBlockState(), BlockPos.ZERO, EntityGeomancyBase.GeomancyTier.MEDIUM);
                     boulderPlatform.setPos(spawnBoulderPos.add(0, 1, 0));
                     if (i == 0) boulderPlatform.setMainPath();
                     getUser().level().addFreshEntity(boulderPlatform);
@@ -638,6 +638,44 @@ public class EntitySculptor extends MowzieGeckoEntity {
         }
     }
 
+    public static class AttackAbility extends Ability<EntitySculptor> {
+        private EntityBoulderSculptor boulderToFire;
+
+        public AttackAbility(AbilityType abilityType, EntitySculptor user) {
+            super(abilityType, user, new AbilitySection[] {
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 4),
+                    new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 10)
+            });
+        }
+
+        @Override
+        protected void beginSection(AbilitySection section) {
+            super.beginSection(section);
+            if (!getUser().level().isClientSide() && getUser().getTarget() != null) {
+                Collections.shuffle(getUser().boulders);
+                if (section.sectionType == AbilitySection.AbilitySectionType.STARTUP) {
+                    for (EntityBoulderSculptor boulder : getUser().boulders) {
+                        if (boulder.isRemoved()) continue;
+                        if (!boulder.isFinishedRising()) continue;
+                        Vec3 vecBetweenSculptorAndTarget = getUser().getTarget().position().subtract(getUser().position()).normalize();
+                        Vec3 vecBetweenSculptorAndBoulder = boulder.position().subtract(getUser().position()).normalize();
+                        if (vecBetweenSculptorAndBoulder.dot(vecBetweenSculptorAndTarget) > 0.5) {
+                            boulderToFire = boulder;
+                            break;
+                        }
+                    }
+                    if (boulderToFire == null) AbilityHandler.INSTANCE.sendInterruptAbilityMessage(getUser(), ATTACK_ABILITY);
+                }
+                if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
+                    Vec3 vecBetweenBoulderAndTarget = getUser().getTarget().position().subtract(boulderToFire.position()).normalize();
+                    boulderToFire.shoot(vecBetweenBoulderAndTarget.scale(boulderToFire.getSpeed()));
+                    getUser().boulders.remove(boulderToFire);
+                }
+            }
+        }
+    }
+
     public static class RunTestGoal extends Goal {
 
         private final EntitySculptor sculptor;
@@ -662,7 +700,6 @@ public class EntitySculptor extends MowzieGeckoEntity {
         @Override
         public void tick() {
             super.tick();
-            System.out.println("Testing");
             if (sculptor.testingPlayer == null) {
                 sculptor.sendAbilityMessage(FAIL_TEST);
                 sculptor.prevPlayerPosition = Optional.empty();
@@ -671,10 +708,6 @@ public class EntitySculptor extends MowzieGeckoEntity {
             else {
                 sculptor.checkIfPlayerCheats();
             }
-        }
-
-        public void finishedRising() {
-
         }
 
         @Override
@@ -713,7 +746,9 @@ public class EntitySculptor extends MowzieGeckoEntity {
         @Override
         public void tick() {
             super.tick();
-            System.out.println("Combat");
+            if (sculptor.getActiveAbility() == null) {
+                AbilityHandler.INSTANCE.sendAbilityMessage(sculptor, ATTACK_ABILITY);
+            }
         }
 
         @Override
