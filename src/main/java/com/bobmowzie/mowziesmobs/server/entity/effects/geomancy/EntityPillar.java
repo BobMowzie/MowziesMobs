@@ -66,10 +66,6 @@ public class EntityPillar extends EntityGeomancyBase {
 
     @Override
     public void tick() {
-        if (caster instanceof EntitySculptor) {
-            EntitySculptor sculptor = (EntitySculptor)caster;
-            if (sculptor.getPillar() == null) sculptor.setPillar(this);
-        }
         prevPrevHeight = prevHeight;
         prevHeight = getHeight();
 
@@ -161,6 +157,11 @@ public class EntityPillar extends EntityGeomancyBase {
         getEntityData().set(FALLING, true);
     }
 
+    public void startRising() {
+        getEntityData().set(RISING, true);
+        getEntityData().set(FALLING, false);
+    }
+
     public boolean isFalling() {
         return getEntityData().get(FALLING);
     }
@@ -184,5 +185,41 @@ public class EntityPillar extends EntityGeomancyBase {
     @Override
     public boolean doRemoveTimer() {
         return !(caster instanceof EntitySculptor);
+    }
+
+    public static class EntitySculptorPillar extends EntityPillar {
+
+        public EntitySculptorPillar(EntityType<? extends EntityMagicEffect> type, Level worldIn) {
+            super(type, worldIn);
+        }
+
+        public EntitySculptorPillar(EntityType<? extends EntityPillar> type, Level world, LivingEntity caster, BlockState blockState, BlockPos pos) {
+            super(type, world, caster, blockState, pos);
+            setDeathTime(300);
+        }
+
+        public double getDesiredHeight() {
+            return EntitySculptor.TEST_HEIGHT;
+        }
+
+        @Override
+        public void tick() {
+            if (caster instanceof EntitySculptor) {
+                EntitySculptor sculptor = (EntitySculptor)caster;
+                if (sculptor.getPillar() == null) sculptor.setPillar(this);
+            }
+            super.tick();
+            if (getHeight() >= getDesiredHeight()) {
+                stopRising();
+            }
+        }
+
+        @Override
+        public void stopRising() {
+            super.stopRising();
+            if (caster instanceof EntitySculptor sculptor) {
+                sculptor.numLivePaths = 0;
+            }
+        }
     }
 }

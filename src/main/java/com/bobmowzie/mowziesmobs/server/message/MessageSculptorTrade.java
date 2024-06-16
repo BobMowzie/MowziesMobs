@@ -59,7 +59,7 @@ public class MessageSculptorTrade {
                     if (satisfied) {
                         ((ContainerSculptorTrade) container).returnItems();
                         container.broadcastChanges();
-                        sculptor.sendAbilityMessage(EntitySculptor.START_TEST);
+                        sculptor.setTestingPlayer(player);
                     }
                 }
             });
