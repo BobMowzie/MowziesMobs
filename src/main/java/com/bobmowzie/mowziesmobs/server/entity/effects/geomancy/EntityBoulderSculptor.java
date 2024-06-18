@@ -4,9 +4,7 @@ import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import com.google.common.collect.Iterables;
-import com.mojang.math.Axis;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.*;
@@ -32,7 +30,12 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
 
     protected boolean descending = false;
 
+    private boolean replacementBoulder = false;
     private boolean spawnedNextBoulders = false;
+
+    private int timeUntilActivation = -1;
+
+    private float orbitSpeed = 0.0f;
 
     public EntityBoulderSculptor(EntityType<? extends EntityBoulderSculptor> type, Level world) {
         super(type, world);
@@ -42,6 +45,10 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
         super(type, world, caster, blockState, pos, tier);
     }
 
+    public EntityBoulderSculptor(EntityType<? extends EntityBoulderSculptor> type, EntityBoulderSculptor other) {
+        super(type, other.level(), other.caster, other.storedBlock, other.blockPosition(), other.getTier());
+    }
+
     public void descend() {
         this.descending = true;
     }
@@ -49,6 +56,11 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
     @Override
     public boolean doRemoveTimer() {
         return false;
+    }
+
+    // When a boulder is fired, it replaces itself with a delayed boulder
+    public void delayActivation(int delay) {
+        timeUntilActivation = delay;
     }
 
     @Override
@@ -62,23 +74,27 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
             }
         }
 
-//        Orbit around sculptor pillar! Re-enable later
-//        if (!isTravelling() && sculptor != null && sculptor.getTarget() != null) {
-//            Vec3 between = this.position().subtract(sculptor.position());
-//            between = between.yRot(0.02f);
-//            setPos(between.add(sculptor.position()));
-//        }
+        // Orbit around sculptor pillar
+        if (!isTravelling() && sculptor != null && sculptor.getTarget() != null) {
+            if (orbitSpeed < 0.02) orbitSpeed += 0.001;
+            Vec3 between = this.position().subtract(sculptor.position());
+            between = between.yRot(orbitSpeed);
+            setPos(between.add(sculptor.position()));
+        }
+        else {
+            if (orbitSpeed > 0) orbitSpeed -= 0.001;
+        }
 
-        if (tickCount > 2 && hasSyncedCaster && (sculptor == null || sculptor.isRemoved() || pillar == null || pillar.isRemoved() || (pillar.isFalling() && !descending))) {
+        if (!level().isClientSide() && tickCount > 2 && hasSyncedCaster && (sculptor == null || sculptor.isRemoved() || pillar == null || pillar.isRemoved() || (pillar.isFalling() && !descending))) {
             explode();
             return;
         }
 
-        if (tickCount >= 2 && !spawnedNextBoulders && hasSyncedCaster) {
+        if (!replacementBoulder && tickCount >= 2 && !spawnedNextBoulders && hasSyncedCaster) {
             nextBoulders();
         }
 
-        if (pillar != null && !level().isClientSide()) {
+        if (!replacementBoulder && pillar != null && !level().isClientSide()) {
             if (pillar.getY() + pillar.getHeight() >= this.getY() && !active) activate();
         }
 
@@ -87,6 +103,14 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
             if (Iterables.size(level().getBlockCollisions(this, getBoundingBox().inflate(0.1))) > 0) {
                 discard();
                 return;
+            }
+        }
+
+        if (!level().isClientSide() && replacementBoulder) {
+            if (timeUntilActivation > 0) {
+                timeUntilActivation--;
+            } else if (timeUntilActivation == 0) {
+                activate();
             }
         }
     }
@@ -114,6 +138,13 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
             boolean success = nextSingleBoulder();
             if (success && i > 0) sculptor.numLivePaths++;
         }
+
+//        this.activate();
+    }
+
+    @Override
+    protected boolean startActive() {
+        return false;
     }
 
     public boolean nextSingleBoulder() {
@@ -260,6 +291,14 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
     }
 
     @Override
+    public void remove(RemovalReason p_146834_) {
+        super.remove(p_146834_);
+        if (sculptor != null) {
+            sculptor.boulders.remove(this);
+        }
+    }
+
+    @Override
     protected boolean travellingBlockedBy(Entity entity) {
         return super.travellingBlockedBy(entity) && !(entity instanceof EntityBoulderSculptor);
     }
@@ -272,6 +311,16 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
     @Override
     protected float getShootRingParticleScale() {
         return super.getShootRingParticleScale() * 2;
+    }
+
+    @Override
+    public void shoot(Vec3 shootDirection) {
+        super.shoot(shootDirection);
+        EntityBoulderSculptor boulderSculptor = new EntityBoulderSculptor(EntityHandler.BOULDER_SCULPTOR.get(), this);
+        boulderSculptor.setPos(this.position());
+        boulderSculptor.replacementBoulder = true;
+        boulderSculptor.delayActivation(40);
+        level().addFreshEntity(boulderSculptor);
     }
 
     @Override

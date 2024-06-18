@@ -83,7 +83,7 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
 
     @Override
     public void tick() {
-        if (tickCount == 1) activate();
+        if (startActive() && tickCount == 1) activate();
         super.tick();
         if (caster == null || caster.isRemoved()) explode();
         if (ridingEntities != null) ridingEntities.clear();
@@ -103,9 +103,10 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
             for (Entity entity : entitiesHit) {
                 if (level().isClientSide) continue;
                 if (entity == caster) continue;
-                if (!entity.canBeCollidedWith()) continue;
+                if (entity.noPhysics) continue;
+                if (!entity.canBeHitByProjectile()) continue;
                 if (!travellingBlockedBy(entity)) continue;
-                if (ridingEntities.contains(entity)) continue;
+                if (ridingEntities != null && ridingEntities.contains(entity)) continue;
                 if (caster != null) entity.hurt(damageSources().mobProjectile(this, caster), damage);
                 else entity.hurt(damageSources().generic(), damage);
                 if (isAlive() && boulderSize != GeomancyTier.HUGE) this.explode();
@@ -118,7 +119,7 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
         // Hit blocks
         if (travelling) {
             if (
-                    !level().getEntities(this, getBoundingBox().inflate(0.1), (e)->!ridingEntities.contains(e) && e.canBeCollidedWith() && this.travellingBlockedBy(e)).isEmpty() ||
+                    !level().getEntities(this, getBoundingBox().inflate(0.1), (e) -> (ridingEntities == null || !ridingEntities.contains(e)) && e.canBeCollidedWith() && this.travellingBlockedBy(e)).isEmpty() ||
                             Iterables.size(level().getBlockCollisions(this, getBoundingBox().inflate(0.1))) > 0
             ) {
                 this.explode();
@@ -134,6 +135,10 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
             });
             didShootParticles = true;
         }
+    }
+
+    protected boolean startActive() {
+        return true;
     }
 
     protected boolean travellingBlockedBy(Entity entity) {

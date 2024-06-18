@@ -28,6 +28,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -124,6 +125,16 @@ public class EntitySculptor extends MowzieGeckoEntity {
         this.goalSelector.addGoal(4, new RunTestGoal(this));
         this.goalSelector.addGoal(3, new CombatBehaviorGoal(this));
         hurtByTargetAI = new HurtByTargetGoal(this) {
+
+            @Override
+            public void start() {
+                super.start();
+                if (mob instanceof EntitySculptor sculptor) {
+                    sculptor.setTestingPlayer(null);
+                    sculptor.setCustomer(null);
+                }
+            }
+
             @Override
             public boolean canUse() {
                 return super.canUse() && getHealthRatio() < 0.7;
@@ -467,6 +478,22 @@ public class EntitySculptor extends MowzieGeckoEntity {
             playAnimation(TEST_START_ANIM);
         }
 
+        public static void placeStartingBoulders(EntitySculptor sculptor) {
+            RandomSource rand = sculptor.getRandom();
+            int numStartBoulders = rand.nextInt(2, 5);
+            float angleOffset = rand.nextFloat() * (float) (2f * Math.PI);
+            for (int i = 0; i < numStartBoulders; i++) {
+                float angleInc = (float) (2f * Math.PI) / ((float) numStartBoulders * 2f);
+                float angle = angleOffset + angleInc * (i * 2) + rand.nextFloat() * angleInc;
+                Vec3 spawnBoulderPos = sculptor.pillar.position().add(new Vec3(rand.nextFloat() * 3 + 3, 0, 0).yRot(angle));
+                EntityBoulderSculptor boulderPlatform = new EntityBoulderSculptor(EntityHandler.BOULDER_SCULPTOR.get(), sculptor.level(), sculptor, Blocks.STONE.defaultBlockState(), BlockPos.ZERO, EntityGeomancyBase.GeomancyTier.MEDIUM);
+                boulderPlatform.setPos(spawnBoulderPos.add(0, 1, 0));
+                if (i == 0) boulderPlatform.setMainPath();
+                sculptor.level().addFreshEntity(boulderPlatform);
+            }
+            sculptor.numLivePaths = numStartBoulders;
+        }
+
         @Override
         protected void beginSection(AbilitySection section) {
             super.beginSection(section);
@@ -485,18 +512,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
                     getUser().level().addFreshEntity(getUser().pillar);
                 }
 
-                int numStartBoulders = rand.nextInt(2, 5);
-                float angleOffset = rand.nextFloat((float) (2f * Math.PI));
-                for (int i = 0; i < numStartBoulders; i++) {
-                    float angleInc = (float) (2f * Math.PI) / ((float) numStartBoulders * 2f);
-                    float angle = angleOffset + angleInc * (i * 2) + rand.nextFloat(angleInc);
-                    Vec3 spawnBoulderPos = getUser().pillar.position().add(new Vec3(rand.nextFloat(3, 6), 0, 0).yRot(angle));
-                    EntityBoulderSculptor boulderPlatform = new EntityBoulderSculptor(EntityHandler.BOULDER_SCULPTOR.get(), getUser().level(), getUser(), Blocks.STONE.defaultBlockState(), BlockPos.ZERO, EntityGeomancyBase.GeomancyTier.MEDIUM);
-                    boulderPlatform.setPos(spawnBoulderPos.add(0, 1, 0));
-                    if (i == 0) boulderPlatform.setMainPath();
-                    getUser().level().addFreshEntity(boulderPlatform);
-                }
-                getUser().numLivePaths = numStartBoulders;
+                placeStartingBoulders(getUser());
             }
         }
 
@@ -561,6 +577,11 @@ public class EntitySculptor extends MowzieGeckoEntity {
                     AbilityHandler.INSTANCE.sendJumpToSectionMessage(getUser(), this.getAbilityType(), 1);
                 }
             }
+        }
+
+        @Override
+        protected boolean canContinueUsing() {
+            return super.canContinueUsing() && getUser().getTarget() == null;
         }
 
         @Override
@@ -640,12 +661,14 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     public static class AttackAbility extends Ability<EntitySculptor> {
         private EntityBoulderSculptor boulderToFire;
+        private Vec3 prevTargetPos;
+        private static final int STARTUP_TIME = 3;
 
         public AttackAbility(AbilityType abilityType, EntitySculptor user) {
             super(abilityType, user, new AbilitySection[] {
-                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 4),
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, STARTUP_TIME),
                     new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
-                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 10)
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 5)
             });
         }
 
@@ -653,11 +676,13 @@ public class EntitySculptor extends MowzieGeckoEntity {
         protected void beginSection(AbilitySection section) {
             super.beginSection(section);
             if (!getUser().level().isClientSide() && getUser().getTarget() != null) {
+                LivingEntity target = getUser().getTarget();
                 Collections.shuffle(getUser().boulders);
                 if (section.sectionType == AbilitySection.AbilitySectionType.STARTUP) {
                     for (EntityBoulderSculptor boulder : getUser().boulders) {
                         if (boulder.isRemoved()) continue;
                         if (!boulder.isFinishedRising()) continue;
+                        if (!boulder.active) continue;
                         Vec3 vecBetweenSculptorAndTarget = getUser().getTarget().position().subtract(getUser().position()).normalize();
                         Vec3 vecBetweenSculptorAndBoulder = boulder.position().subtract(getUser().position()).normalize();
                         if (vecBetweenSculptorAndBoulder.dot(vecBetweenSculptorAndTarget) > 0.5) {
@@ -666,10 +691,17 @@ public class EntitySculptor extends MowzieGeckoEntity {
                         }
                     }
                     if (boulderToFire == null) AbilityHandler.INSTANCE.sendInterruptAbilityMessage(getUser(), ATTACK_ABILITY);
+                    prevTargetPos = target.position().add(0, target.getBbHeight() / 2.0, 0);
                 }
                 if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
-                    Vec3 vecBetweenBoulderAndTarget = getUser().getTarget().position().subtract(boulderToFire.position()).normalize();
-                    boulderToFire.shoot(vecBetweenBoulderAndTarget.scale(boulderToFire.getSpeed()));
+                    Vec3 targetPos = target.position().add(0, target.getBbHeight() / 2.0, 0);
+                    double timeToReach = boulderToFire.position().subtract(targetPos).length() / boulderToFire.getSpeed();
+                    Vec3 targetMovement = targetPos.subtract(prevTargetPos).scale(timeToReach * 0.93 * 1.0/4.0);
+                    targetMovement = targetMovement.multiply(1, 0, 1);
+                    Vec3 futureTargetPos = targetPos.add(targetMovement);
+                    Vec3 projectileMid = boulderToFire.position().add(0, boulderToFire.getBbHeight() / 2.0, 0);
+                    Vec3 shootVec = futureTargetPos.subtract(projectileMid).normalize();
+                    boulderToFire.shoot(shootVec.scale(boulderToFire.getSpeed()));
                     getUser().boulders.remove(boulderToFire);
                     boulderToFire = null;
                 }
@@ -749,6 +781,9 @@ public class EntitySculptor extends MowzieGeckoEntity {
             super.tick();
             if (sculptor.getActiveAbility() == null) {
                 AbilityHandler.INSTANCE.sendAbilityMessage(sculptor, ATTACK_ABILITY);
+            }
+            if (sculptor.boulders.isEmpty() && sculptor.getActiveAbilityType() != START_TEST) {
+                StartTestAbility.placeStartingBoulders(sculptor);
             }
         }
 
