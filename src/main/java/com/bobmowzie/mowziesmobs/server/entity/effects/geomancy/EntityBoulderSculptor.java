@@ -270,6 +270,11 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
     }
 
     @Override
+    protected float getShootRingParticleScale() {
+        return super.getShootRingParticleScale() * 2;
+    }
+
+    @Override
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("SpawnedNext", spawnedNextBoulders);

@@ -7,11 +7,15 @@ import com.bobmowzie.mowziesmobs.client.particle.util.ParticleRotation;
 import com.bobmowzie.mowziesmobs.client.sound.BossMusicPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
 import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.google.common.collect.Iterables;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,6 +26,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,14 +35,13 @@ import java.util.List;
  * Created by BobMowzie on 4/14/2017.
  */
 public class EntityBoulderProjectile extends EntityBoulderBase {
-    private static final byte SHOOT_ID = 68;
-
     protected final List<Entity> ridingEntities = new ArrayList<Entity>();
     protected boolean travelling = false;
     protected float speed = 1.5f;
     protected int damage = 8;
 
-    boolean doShootParticles = false;
+    private boolean didShootParticles = false;
+    private static final EntityDataAccessor<Vector3f> SHOOT_DIRECTION = SynchedEntityData.defineId(EntityBoulderProjectile.class, EntityDataSerializers.VECTOR3);
 
     public EntityBoulderProjectile(EntityType<? extends EntityBoulderProjectile> type, Level world) {
         super(type, world);
@@ -99,6 +103,7 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
             for (Entity entity : entitiesHit) {
                 if (level().isClientSide) continue;
                 if (entity == caster) continue;
+                if (!entity.canBeCollidedWith()) continue;
                 if (!travellingBlockedBy(entity)) continue;
                 if (ridingEntities.contains(entity)) continue;
                 if (caster != null) entity.hurt(damageSources().mobProjectile(this, caster), damage);
@@ -118,6 +123,16 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
             ) {
                 this.explode();
             }
+        }
+
+        if (level().isClientSide() && getEntityData().get(SHOOT_DIRECTION).length() > 0 && !didShootParticles) {
+            Vec3 ringOffset = new Vec3(getEntityData().get(SHOOT_DIRECTION)).scale(-1).normalize();
+            ParticleRotation.OrientVector rotation = new ParticleRotation.OrientVector(ringOffset);
+            AdvancedParticleBase.spawnParticle(level(), ParticleHandler.RING2.get(), (float) getX() + (float) ringOffset.x, (float) getY() + 0.5f + (float) ringOffset.y, (float) getZ() + (float) ringOffset.z, 0, 0, 0, rotation, 3.5F, 0.83f, 1, 0.39f, 1, 1, (int) (5 + 2 * getBbWidth()), true, true, new ParticleComponent[]{
+                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0.7f, 0f), false),
+                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0f, (1.0f + 0.5f * getBbWidth()) * 8f), false)
+            });
+            didShootParticles = true;
         }
     }
 
@@ -167,20 +182,22 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
             EntityCameraShake.cameraShake(level(), position(), 15, 0.05f, 0, 20);
         }
 
-        this.level().broadcastEntityEvent(this, SHOOT_ID);
+        getEntityData().set(SHOOT_DIRECTION, shootDirection.toVector3f());
+    }
+
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        getEntityData().define(SHOOT_DIRECTION, new Vector3f(0, 0, 0));
     }
 
     @Override
     public void handleEntityEvent(byte id) {
         super.handleEntityEvent(id);
-        if (id == SHOOT_ID) {
-            Vec3 ringOffset = getDeltaMovement().scale(-1).normalize();
-            ParticleRotation.OrientVector rotation = new ParticleRotation.OrientVector(ringOffset);
-            AdvancedParticleBase.spawnParticle(level(), ParticleHandler.RING2.get(), (float) getX() + (float) ringOffset.x, (float) getY() + 0.5f + (float) ringOffset.y, (float) getZ() + (float) ringOffset.z, 0, 0, 0, rotation, 3.5F, 0.83f, 1, 0.39f, 1, 1, (int) (5 + 2 * getBbWidth()), true, true, new ParticleComponent[]{
-                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0.7f, 0f), false),
-                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0f, (1.0f + 0.5f * getBbWidth()) * 8f), false)
-            });
-        }
+    }
+
+    protected float getShootRingParticleScale() {
+        return 1.0f;
     }
 
     @Override

@@ -671,6 +671,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
                     Vec3 vecBetweenBoulderAndTarget = getUser().getTarget().position().subtract(boulderToFire.position()).normalize();
                     boulderToFire.shoot(vecBetweenBoulderAndTarget.scale(boulderToFire.getSpeed()));
                     getUser().boulders.remove(boulderToFire);
+                    boulderToFire = null;
                 }
             }
         }

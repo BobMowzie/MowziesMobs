@@ -69,10 +69,10 @@ public class StructureTypeHandler {
             FROSTMAW_BIOMES.add(biomeKey);
         }
 
-        /*if (SCULPTOR_BIOME_CHECKER == null) SCULPTOR_BIOME_CHECKER = new BiomeChecker(ConfigHandler.COMMON.MOBS.SCULPTOR.generationConfig.biomeConfig);
-        if (ConfigHandler.COMMON.MOBS.SCULPTOR.generationConfig.generationDistance.get() >= 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.SCULPTOR.generationConfig.biomeConfig, biomeKey)) {
+        if (SCULPTOR_BIOME_CHECKER == null) SCULPTOR_BIOME_CHECKER = new BiomeChecker(ConfigHandler.COMMON.MOBS.SCULPTOR.generationConfig.biomeConfig);
+        if (ConfigHandler.COMMON.MOBS.SCULPTOR.generationConfig.generationDistance.get() >= 0 && SCULPTOR_BIOME_CHECKER.isBiomeInConfig(biomeKey)) {
             //System.out.println("Added frostmaw biome: " + biomeName.toString());
-            SCULPTOR_BIOMES.add(biomeKey.get());
-        }*/
+            SCULPTOR_BIOMES.add(biomeKey);
+        }
     }
 }
