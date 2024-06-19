@@ -2,11 +2,15 @@ package com.bobmowzie.mowziesmobs.client.model.tools.geckolib;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
+import org.jetbrains.annotations.TestOnly;
+import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.core.animatable.model.CoreGeoModel;
 import software.bernie.geckolib.core.animation.*;
 import software.bernie.geckolib.util.RenderUtils;
+
+import java.util.Queue;
 
 public class MowzieAnimationController<T extends GeoAnimatable> extends AnimationController<T> {
     private double timingOffset;
@@ -49,5 +53,24 @@ public class MowzieAnimationController<T extends GeoAnimatable> extends Animatio
 
     public void setLastModel(CoreGeoModel<T> coreGeoModel) {
         this.lastModel = coreGeoModel;
+    }
+
+    @TestOnly
+    public <E extends GeoEntity> void checkAndReloadAnims() {
+        if (
+                this.lastModel != null &&
+                getCurrentAnimation() != null &&
+                getCurrentAnimation().animation() != null
+        ) {
+            String currentAnimationName = getCurrentAnimation().animation().name();
+            Animation animation = this.lastModel.getAnimation(this.animatable, currentAnimationName);
+            if (!animation.equals(getCurrentAnimation().animation())) {
+                forceAnimationReset();
+                currentAnimation = this.animationQueue.poll();
+                isJustStarting = true;
+                adjustTick(animatable.getTick(animatable) + Minecraft.getInstance().getPartialTick());
+                transitionLength = 0;
+            }
+        }
     }
 }

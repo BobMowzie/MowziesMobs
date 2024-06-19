@@ -120,6 +120,10 @@ public class MowzieGeoBone extends GeoBone {
         setScaleZ(z);
     }
 
+    public void setScale(float scale) {
+        setScale(scale, scale, scale);
+    }
+
     public Vector3d getScale() {
         return new Vector3d(getScaleX(), getScaleY(), getScaleZ());
     }

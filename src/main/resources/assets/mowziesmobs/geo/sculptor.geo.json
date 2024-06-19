@@ -7,8 +7,8 @@
 				"texture_width": 128,
 				"texture_height": 64,
 				"visible_bounds_width": 7,
-				"visible_bounds_height": 5,
-				"visible_bounds_offset": [0, 1.5, 0]
+				"visible_bounds_height": 6,
+				"visible_bounds_offset": [0, 2, 0]
 			},
 			"bones": [
 				{
@@ -493,9 +493,14 @@
 					]
 				},
 				{
-					"name": "itemHandRight",
+					"name": "itemHandRightJoint",
 					"parent": "handRight",
-					"pivot": [-32, 28, -1]
+					"pivot": [-32, 28, 0]
+				},
+				{
+					"name": "itemHandRight",
+					"parent": "itemHandRightJoint",
+					"pivot": [-32, 28, 0]
 				},
 				{
 					"name": "handClosedRight",
@@ -600,9 +605,14 @@
 					]
 				},
 				{
-					"name": "itemHandLeft",
+					"name": "itemHandLeftJoint",
 					"parent": "handLeft",
-					"pivot": [32, 28, -2]
+					"pivot": [32, 28, 0]
+				},
+				{
+					"name": "itemHandLeft",
+					"parent": "itemHandLeftJoint",
+					"pivot": [32, 28, 0]
 				},
 				{
 					"name": "handClosedLeft",
@@ -708,10 +718,15 @@
 					]
 				},
 				{
-					"name": "backItem",
+					"name": "backItemJoint",
 					"parent": "chest",
-					"pivot": [0, 27.2773, 4.41953],
-					"rotation": [0, 90, -130]
+					"pivot": [1, 25, 6.5],
+					"rotation": [-90, 79.5, -40]
+				},
+				{
+					"name": "backItem",
+					"parent": "backItemJoint",
+					"pivot": [1, 25, 6.5]
 				},
 				{
 					"name": "thighJointRight",

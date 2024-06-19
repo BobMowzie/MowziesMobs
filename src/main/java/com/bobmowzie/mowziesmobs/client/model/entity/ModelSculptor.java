@@ -205,6 +205,10 @@ public class ModelSculptor extends MowzieGeoModel<EntitySculptor> {
                 itemHandLeft.setHidden(false);
                 break;
         }
+
+        itemHandLeft.setScale(1.2f);
+        itemHandRight.setScale(1.2f);
+        backItem.setScale(1.2f);
     }
 
     private void idleAnim(EntitySculptor entity, AnimationState<?> animationState) {
@@ -248,7 +252,7 @@ public class ModelSculptor extends MowzieGeoModel<EntitySculptor> {
         calfRight.addRotZ(idleAnim * (float) (0.567 - Math.sin((frame * idleSpeed+0.5)) * 0.035));
         thighRight.addRotZ(idleAnim * (float) (-0.297 + Math.sin((frame * idleSpeed+1.5)) * 0.035));
         mouth.addPosY(idleAnim * (float) (-Math.sin((frame * idleSpeed+0.5)) * 0.1f));
-        mouth.setScaleZ((float) (mouth.getScaleZ() + idleAnim * Math.sin((frame * idleSpeed+0.5)) * 0.05f));
+        mouth.setScaleY((float) (mouth.getScaleZ() + idleAnim * Math.sin((frame * idleSpeed+0.5)) * 0.05f));
         handLeft.addRotY(idleAnim * (float) (-Math.sin((frame * idleSpeed+1)) * 0.05));
         lowerArmLeft.addRotX(idleAnim * (float) (-Math.sin((frame * idleSpeed+0.5)) * 0.05));
         lowerArmLeft.addRotY(idleAnim * (float) (-Math.sin((frame * idleSpeed+0.5)) * 0.05));

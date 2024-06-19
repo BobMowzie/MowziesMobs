@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.entity.sculptor;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
@@ -199,21 +200,14 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     private static RawAnimation IDLE = RawAnimation.begin().thenLoop("idle");
 
-    protected <E extends GeoEntity> PlayState predicate(AnimationState<E> event)
-    {
-        getController().transitionLength(0);
-        AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability();
-        if (abilityCapability == null) {
-            return PlayState.STOP;
-        }
-
-        if (abilityCapability.getActiveAbility() != null) {
-            return abilityCapability.animationPredicate(event, null);
-        }
-        else {
-            event.getController().setAnimation(IDLE);
-            return PlayState.CONTINUE;
-        }
+    @Override
+    protected <E extends GeoEntity> void loopingAnimations(AnimationState<E> event) {
+        super.loopingAnimations(event);
+//        if (event.getController() instanceof MowzieAnimationController mowzieAnimationController) {
+//            mowzieAnimationController.checkAndReloadAnims();
+//        }
+//        event.getController().setAnimation(RawAnimation.begin().thenLoop("testStart"));
+//        event.getController().setAnimationSpeed(0.5);
     }
 
     @Override
@@ -670,6 +664,14 @@ public class EntitySculptor extends MowzieGeckoEntity {
                     new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
                     new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 5)
             });
+        }
+
+        private static RawAnimation ATTACK_START = RawAnimation.begin().thenLoop("attack_1");
+
+        @Override
+        public void start() {
+            super.start();
+            playAnimation(ATTACK_START);
         }
 
         @Override
