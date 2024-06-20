@@ -143,8 +143,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
             @Override
             public boolean canContinueToUse() {
-                return true;
-                /*LivingEntity livingentity = this.mob.getTarget();
+                LivingEntity livingentity = this.mob.getTarget();
                 if (livingentity == null) {
                     livingentity = this.targetMob;
                 }
@@ -177,7 +176,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
                             return true;
                         }
                     }
-                }*/
+                }
             }
         };
         this.targetSelector.addGoal(3, hurtByTargetAI);
