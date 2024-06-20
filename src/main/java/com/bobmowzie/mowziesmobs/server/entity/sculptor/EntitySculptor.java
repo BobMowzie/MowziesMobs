@@ -267,14 +267,25 @@ public class EntitySculptor extends MowzieGeckoEntity {
     }
 
     private void checkIfPlayerCheats() {
-        if (!isTesting() || testingPlayer == null || testingPlayer.isCreative()) return;
+        if (testingPlayer == null) return;
+        prevPlayerPosition = Optional.of(testingPlayer.position());
+        if (!isTesting() || testingPlayer.isCreative()) return;
 
         // Check if player moved too far away
-        if (testingPlayer != null && testingPlayer.position().multiply(1, 0, 1).distanceTo(position().multiply(1, 0, 1)) > TEST_RADIUS + 3) playerCheated();
-        if (testingPlayer != null && pillar != null && testingPlayer.getY() < pillar.getY() - 10) playerCheated();
+        if (testingPlayer != null && testingPlayer.position().multiply(1, 0, 1).distanceTo(position().multiply(1, 0, 1)) > TEST_RADIUS + 3) {
+            playerCheated();
+            return;
+        }
+        if (testingPlayer != null && pillar != null && testingPlayer.getY() < pillar.getY() - 10) {
+            playerCheated();
+            return;
+        }
 
         // Check if testing player is flying
-        if (testingPlayer != null && testingPlayer.getAbilities().flying) playerCheated();
+        if (testingPlayer != null && testingPlayer.getAbilities().flying) {
+            playerCheated();
+            return;
+        }
         if (testingPlayer != null && !testingPlayer.onGround()) {
             double playerVelY = testingPlayer.getDeltaMovement().y();
             if (prevPlayerVelY != null && prevPlayerVelY.isPresent()) {
@@ -285,7 +296,10 @@ public class EntitySculptor extends MowzieGeckoEntity {
                 else if (ticksAcceleratingUpward > 0) {
                     ticksAcceleratingUpward--;
                 }
-                if (ticksAcceleratingUpward > 5) playerCheated();
+                if (ticksAcceleratingUpward > 5) {
+                    playerCheated();
+                    return;
+                }
             }
             prevPlayerVelY = Optional.of(playerVelY);
         }
@@ -300,9 +314,9 @@ public class EntitySculptor extends MowzieGeckoEntity {
             if (prevPlayerPosition != null && prevPlayerPosition.isPresent()) {
                 if (currPosition.distanceTo(prevPlayerPosition.get()) > 3.0) {
                     playerCheated();
+                    return;
                 }
             }
-            prevPlayerPosition = Optional.of(currPosition);
         }
     }
 
@@ -523,21 +537,21 @@ public class EntitySculptor extends MowzieGeckoEntity {
         public void tickUsing() {
             super.tickUsing();
             if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
-                List<Player> players = getUser().getPlayersNearby(5, 5, 5, 5);
-                for (Player player : players) {
+                List<LivingEntity> livingEntities = getUser().getEntityLivingBaseNearby(5, 5, 5, 5);
+                for (LivingEntity livingEntity : livingEntities) {
                     Vec3 userPos = getUser().position().multiply(1, 0, 1);
-                    Vec3 playerPos = player.position().multiply(1, 0, 1);
-                    Vec3 vec = userPos.subtract(playerPos).normalize().scale(-Math.min(1.0 / userPos.distanceToSqr(playerPos), 2));
-                    player.push(vec.x, vec.y, vec.z);
+                    Vec3 entityPos = livingEntity.position().multiply(1, 0, 1);
+                    Vec3 vec = userPos.subtract(entityPos).normalize().scale(-Math.min(1.0 / userPos.distanceToSqr(entityPos), 2));
+                    livingEntity.push(vec.x, vec.y, vec.z);
                 }
 
-                if (!getUser().level().isClientSide() && getUser().pillar != null) {
-                    getUser().setPos(getUser().pillar.position().add(0, getUser().pillar.getHeight(), 0));
-                }
-
-                if (getUser().pillar != null && getUser().pillar.getHeight() >= TEST_HEIGHT) {
-                    nextSection();
-                }
+//                if (!getUser().level().isClientSide() && getUser().pillar != null) {
+//                    getUser().setPos(getUser().pillar.position().add(0, getUser().pillar.getHeight(), 0));
+//                }
+//
+//                if (getUser().pillar != null && getUser().pillar.getHeight() >= TEST_HEIGHT) {
+//                    nextSection();
+//                }
             }
         }
 
@@ -567,6 +581,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
             super.start();
             playAnimation(TEST_FAIL_START_ANIM);
             if (getUser().pillar != null) getUser().pillar.startFalling();
+            getUser().testing = false;
         }
 
         @Override
@@ -749,7 +764,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
                 sculptor.prevPlayerPosition = Optional.empty();
                 sculptor.prevPlayerVelY = Optional.empty();
             }
-            else {
+            else if (sculptor.testing) {
                 sculptor.checkIfPlayerCheats();
             }
         }
