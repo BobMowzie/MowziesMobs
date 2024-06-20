@@ -143,7 +143,8 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
             @Override
             public boolean canContinueToUse() {
-                LivingEntity livingentity = this.mob.getTarget();
+                return true;
+                /*LivingEntity livingentity = this.mob.getTarget();
                 if (livingentity == null) {
                     livingentity = this.targetMob;
                 }
@@ -176,7 +177,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
                             return true;
                         }
                     }
-                }
+                }*/
             }
         };
         this.targetSelector.addGoal(3, hurtByTargetAI);
@@ -197,8 +198,6 @@ public class EntitySculptor extends MowzieGeckoEntity {
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1)
                 .add(Attributes.FOLLOW_RANGE, 40);
     }
-
-    private static RawAnimation IDLE = RawAnimation.begin().thenLoop("idle");
 
     @Override
     protected <E extends GeoEntity> void loopingAnimations(AnimationState<E> event) {
@@ -432,6 +431,17 @@ public class EntitySculptor extends MowzieGeckoEntity {
             setTestingPlayerID(compound.getUUID("TestingPlayer"));
             numLivePaths = compound.getInt("NumLivePaths");
         }
+    }
+
+    public boolean isPlayerInTestZone(Player player) {
+        double yDistMax = 12;
+        double yBase = getY();
+        if (getPillar() != null) {
+            yBase = getPillar().getY();
+        }
+        return player.position().multiply(1, 0, 1).distanceToSqr(this.position().multiply(1, 0, 1)) < (TEST_RADIUS * TEST_RADIUS + 9) &&
+                player.getY() > yBase - yDistMax &&
+                player.getY() < yBase + TEST_HEIGHT + yDistMax;
     }
 
     public static class StartTestAbility extends Ability<EntitySculptor> {

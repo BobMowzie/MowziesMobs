@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.ParticleType;
@@ -215,6 +216,11 @@ public class AdvancedParticleBase extends TextureSheetParticle {
         }
     }
 
+    @Override
+    public boolean shouldCull() {
+        return super.shouldCull();
+    }
+
     public float getAge() {
         return age;
     }
@@ -315,5 +321,18 @@ public class AdvancedParticleBase extends TextureSheetParticle {
 
     public static void spawnParticle(Level world, ParticleType<AdvancedParticleData> particle, double x, double y, double z, double motionX, double motionY, double motionZ, ParticleRotation rotation, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, boolean canCollide, ParticleComponent[] components) {
         world.addParticle(new AdvancedParticleData(particle, rotation, scale, r, g, b, a, drag, duration, emissive, canCollide, components), x, y, z, motionX, motionY, motionZ);
+    }
+
+    public static void spawnAlwaysVisibleParticle(Level world, ParticleType<AdvancedParticleData> particle, double distanceLimit, double x, double y, double z, double motionX, double motionY, double motionZ, ParticleRotation rotation, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, boolean canCollide, ParticleComponent[] components) {
+        Camera camera = Minecraft.getInstance().gameRenderer.getMainCamera();
+        boolean overrideLimiter = camera.getPosition().distanceToSqr(x, y, z) < distanceLimit * distanceLimit;
+        world.addAlwaysVisibleParticle(new AdvancedParticleData(particle, rotation, scale, r, g, b, a, drag, duration, emissive, canCollide, components), overrideLimiter, x, y, z, motionX, motionY, motionZ);
+    }
+
+    public static void spawnAlwaysVisibleParticle(Level world, ParticleType<AdvancedParticleData> particle, double distanceLimit, double x, double y, double z, double motionX, double motionY, double motionZ, boolean faceCamera, double yaw, double pitch, double roll, double faceCameraAngle, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, boolean canCollide, ParticleComponent[] components) {
+        Camera camera = Minecraft.getInstance().gameRenderer.getMainCamera();
+        boolean overrideLimiter = camera.getPosition().distanceToSqr(x, y, z) < distanceLimit * distanceLimit;
+        ParticleRotation rotation = faceCamera ? new ParticleRotation.FaceCamera((float) faceCameraAngle) : new ParticleRotation.EulerAngles((float)yaw, (float)pitch, (float)roll);
+        world.addAlwaysVisibleParticle(new AdvancedParticleData(particle, rotation, scale, r, g, b, a, drag, duration, emissive, canCollide, components), overrideLimiter, x, y, z, motionX, motionY, motionZ);
     }
 }

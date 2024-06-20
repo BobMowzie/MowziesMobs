@@ -8,6 +8,8 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntityMagicEffect;
 import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.bobmowzie.mowziesmobs.server.tag.TagHandler;
+import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -193,7 +195,10 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements Ge
             Vec3 particlePos = new Vec3(random.nextFloat() * 0.7 * getBbWidth(), 0, 0);
             particlePos = particlePos.yRot((float) (random.nextFloat() * 2 * Math.PI));
             particlePos = particlePos.xRot((float) (random.nextFloat() * 2 * Math.PI));
-            level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, getBlock()), getX() + particlePos.x, getY() + 0.5 + particlePos.y, getZ() + particlePos.z, particlePos.x, particlePos.y, particlePos.z);
+            particlePos.add(0, getBbHeight() / 2.0, 0);
+            Camera camera = Minecraft.getInstance().gameRenderer.getMainCamera();
+            boolean overrideLimiter = camera.getPosition().distanceToSqr(getX(), getY(), getZ()) < 64 * 64;
+            level().addAlwaysVisibleParticle(new BlockParticleOption(ParticleTypes.BLOCK, getBlock()), overrideLimiter, getX() + particlePos.x, getY() + 0.5 + particlePos.y, getZ() + particlePos.z, particlePos.x, particlePos.y, particlePos.z);
         }
     }
 

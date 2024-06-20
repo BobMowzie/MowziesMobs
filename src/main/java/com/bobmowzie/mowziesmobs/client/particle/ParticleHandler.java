@@ -130,4 +130,8 @@ public class ParticleHandler {
             }
         });
     }
+
+    public static void addParticleCustomLimiter() {
+
+    }
 }

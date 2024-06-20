@@ -86,11 +86,14 @@ public class EntityPillar extends EntityGeomancyBase {
                     level().addFreshEntity(currentPiece);
                 }
 
-                List<EntityBoulderProjectile> boulders = level().getEntitiesOfClass(EntityBoulderProjectile.class, getBoundingBox().deflate(0.1f));
-                for (EntityBoulderProjectile boulder : boulders) {
-                    if (!boulder.isTravelling() && boulder.getTier().ordinal() > this.getTier().ordinal()) {
-                        this.setTier(boulder.getTier());
-                        boulder.explode();
+                // If this pillar is not owned by a sculptor, check nearby boulders for tier upgrades
+                if (!(caster instanceof EntitySculptor)) {
+                    List<EntityBoulderProjectile> boulders = level().getEntitiesOfClass(EntityBoulderProjectile.class, getBoundingBox().deflate(0.1f));
+                    for (EntityBoulderProjectile boulder : boulders) {
+                        if (!boulder.isTravelling() && boulder.getTier().ordinal() > this.getTier().ordinal()) {
+                            this.setTier(boulder.getTier());
+                            boulder.explode();
+                        }
                     }
                 }
             }

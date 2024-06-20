@@ -310,7 +310,7 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
 
     @Override
     protected float getShootRingParticleScale() {
-        return super.getShootRingParticleScale() * 2;
+        return super.getShootRingParticleScale() * 4;
     }
 
     @Override

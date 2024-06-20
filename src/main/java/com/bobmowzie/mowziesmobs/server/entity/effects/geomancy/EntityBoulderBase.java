@@ -86,6 +86,7 @@ public class EntityBoulderBase extends EntityGeomancyBase implements IEntityAddi
     @Override
     protected @NotNull AABB makeBoundingBox() {
         EntityDimensions dim = EntityBoulderBase.SIZE_MAP.get(getTier());
+        dimensions = dim;
         return dim.makeBoundingBox(this.position());
     }
 
@@ -156,7 +157,7 @@ public class EntityBoulderBase extends EntityGeomancyBase implements IEntityAddi
                 EntityCameraShake.cameraShake(level(), position(), 15, 0.05f, 50, 30);
             }
             if (level().isClientSide) {
-                AdvancedParticleBase.spawnParticle(level(), ParticleHandler.RING2.get(), getX(), getY() - 0.9f, getZ(), 0, 0, 0, false, 0, Math.PI / 2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, (int) (5 + 2 * getBbWidth()), true, true, new ParticleComponent[]{
+                AdvancedParticleBase.spawnAlwaysVisibleParticle(level(), ParticleHandler.RING2.get(), 64, getX(), getY() - 0.9f, getZ(), 0, 0, 0, false, 0, Math.PI / 2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, (int) (5 + 2 * getBbWidth()), true, true, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0f, (1.0f + 0.5f * getBbWidth()) * 10f), false)
                 });
