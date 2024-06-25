@@ -331,10 +331,10 @@ public class EntityFrostmaw extends MowzieLLibraryEntity implements Enemy {
                     float slamPosX = (float) (getX() + radius * Math.cos(Math.toRadians(getYRot() + 90)));
                     float slamPosZ = (float) (getZ() + radius * Math.sin(Math.toRadians(getYRot() + 90)));
                     if (level().isClientSide) level().addParticle(new ParticleRing.RingData(0f, (float)Math.PI/2f, 17, 1f, 1f, 1f, 1f, 60f, false, ParticleRing.EnumRingBehavior.GROW), slamPosX, getY() + 0.2f, slamPosZ, 0, 0, 0);
-                    AABB hitBox = new AABB(BlockPos.containing(slamPosX - 0.5f, getY(), slamPosZ - 0.5f)).inflate(3, 3, 3);
+                    AABB hitBox = new AABB(slamPosX - 0.5f, getY() - 0.5f,  slamPosZ - 0.5f,slamPosX + 0.5f, getY() + 0.5f, slamPosZ + 0.5f).inflate(3, 3, 3);
                     List<LivingEntity> entitiesHit = level().getEntitiesOfClass(LivingEntity.class, hitBox);
                     for (LivingEntity entity: entitiesHit) {
-                        if (entity != this) {
+                        if (entity != this && entity.position().distanceToSqr(slamPosX, getY(), slamPosZ) <= 9) {
                             doHurtTarget(entity, 4f, 1);
                             if (entity.isBlocking()) entity.getUseItem().hurtAndBreak(400, entity, p -> p.broadcastBreakEvent(entity.getUsedItemHand()));
                         }
