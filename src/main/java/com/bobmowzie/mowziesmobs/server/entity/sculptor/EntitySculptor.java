@@ -297,15 +297,16 @@ public class EntitySculptor extends MowzieGeckoEntity {
         for (int i = -radius; i < radius; i++) {
             for (int j = -radius; j < radius; j++) {
                 Vec2 offset = new Vec2(i, j);
-                BlockPos thisPos = pos.offset((int) offset.x, height, (int) offset.y);
+                BlockPos checkPos = pos.offset((int) offset.x, height, (int) offset.y);
                 double testRadius = testRadiusAtHeight(height);
                 if (offset.lengthSquared() < testRadius * testRadius) {
-                    if (!level().getBlockState(thisPos).isAir()) {
+                    if (!level().getBlockState(checkPos).isAir()) {
                         isTestObstructed = true;
                         isTestObstructedSoFar = true;
-                        if (level().isClientSide() && isPlayerInTestZone(Minecraft.getInstance().player) && blockHasExposedSide(thisPos)) {
+                        if (level().isClientSide() && isPlayerInTestZone(Minecraft.getInstance().player) && blockHasExposedSide(checkPos)) {
+                            MowziesMobs.PROXY.sculptorMarkBlock(this.getId(), checkPos);
                             ParticleRotation.FaceCamera faceCamera = new ParticleRotation.FaceCamera(0);
-                            AdvancedParticleBase.spawnAlwaysVisibleParticle(level(), ParticleHandler.RING2.get(), 64, thisPos.getX() + 0.5, thisPos.getY() + 0.5, thisPos.getZ() + 0.5, 0, 0, 0, faceCamera, 3.5F, 0.83f, 1, 0.39f, 1, 1, 20, true, false, new ParticleComponent[]{
+                            AdvancedParticleBase.spawnAlwaysVisibleParticle(level(), ParticleHandler.RING2.get(), 64, checkPos.getX() + 0.5, checkPos.getY() + 0.5, checkPos.getZ() + 0.5, 0, 0, 0, faceCamera, 3.5F, 0.83f, 1, 0.39f, 1, 1, 20, true, false, new ParticleComponent[]{
                                     new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0.7f, 0f), false),
                                     new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0f, 16.0f), false)
                             });

@@ -1,8 +1,10 @@
 package com.bobmowzie.mowziesmobs.client;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.gui.CustomBossBar;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerFirstPerson;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerThirdPerson;
+import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoFirstPersonRenderer;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoRenderPlayer;
@@ -16,16 +18,33 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.item.ItemBlowgun;
 import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.BlockDestructionProgress;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
@@ -34,6 +53,8 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
+
+import java.util.SortedSet;
 
 @OnlyIn(Dist.CLIENT)
 public enum ClientEventHandler {
@@ -254,5 +275,48 @@ public enum ClientEventHandler {
 
         event.setCanceled(true);
         customBossBar.renderBossBar(event);
+    }
+
+    private static ResourceLocation SCULPTOR_BLOCK_GLOW = new ResourceLocation(MowziesMobs.MODID, "textures/entity/sculptor_highlight.png");
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void onRenderLevelStage(RenderLevelStageEvent event) {
+        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) {
+            ClientLevel level = Minecraft.getInstance().level;
+            Vec3 cameraPos = event.getCamera().getPosition();
+            double d0 = cameraPos.x();
+            double d1 = cameraPos.y();
+            double d2 = cameraPos.z();
+            for(Long2ObjectMap.Entry<SortedSet<BlockDestructionProgress>> entry : ClientProxy.sculptorMarkedBlocks.long2ObjectEntrySet()) {
+                BlockPos blockpos2 = BlockPos.of(entry.getLongKey());
+                double d3 = (double)blockpos2.getX() - d0;
+                double d4 = (double)blockpos2.getY() - d1;
+                double d5 = (double)blockpos2.getZ() - d2;
+                if (!(d3 * d3 + d4 * d4 + d5 * d5 > 1024.0D)) {
+                    SortedSet<BlockDestructionProgress> sortedset1 = entry.getValue();
+                    if (sortedset1 != null && !sortedset1.isEmpty()) {
+                        int k = sortedset1.last().getProgress();
+                        event.getPoseStack().pushPose();
+                        event.getPoseStack().translate((double)blockpos2.getX() - d0, (double)blockpos2.getY() - d1, (double)blockpos2.getZ() - d2);
+                        PoseStack.Pose posestack$pose1 = event.getPoseStack().last();
+                        float f = (float) Minecraft.getInstance().player.tickCount + Minecraft.getInstance().getPartialTick();
+                        VertexConsumer vertexconsumer1 = new SheetedDecalTextureGenerator(Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(MMRenderType.highlight(SCULPTOR_BLOCK_GLOW, f * 0.02f, f * 0.01f)), posestack$pose1.pose(), posestack$pose1.normal(), 1.0F);
+                        net.minecraftforge.client.model.data.ModelData modelData = level.getModelDataManager().getAt(blockpos2);
+                        renderBreakingTexture(level.getBlockState(blockpos2), blockpos2, level, event.getPoseStack(), level.random, vertexconsumer1, modelData == null ? net.minecraftforge.client.model.data.ModelData.EMPTY : modelData);
+
+                        event.getPoseStack().popPose();
+                    }
+                }
+            }
+        }
+    }
+
+    private void renderBreakingTexture(BlockState state, BlockPos pos, BlockAndTintGetter blockAndTintGetter, PoseStack poseStack, RandomSource random, VertexConsumer vertexConsumer, net.minecraftforge.client.model.data.ModelData modelData) {
+        if (state.getRenderShape() == RenderShape.MODEL) {
+            BlockRenderDispatcher blockRenderDispatcher = Minecraft.getInstance().getBlockRenderer();
+            BakedModel bakedmodel = blockRenderDispatcher.getBlockModel(state);
+            long i = state.getSeed(pos);
+            blockRenderDispatcher.getModelRenderer().tesselateBlock(blockAndTintGetter, bakedmodel, state, pos, poseStack, vertexConsumer, true, random, i, OverlayTexture.NO_OVERLAY, modelData, null);
+        }
     }
 }

@@ -138,4 +138,6 @@ public class ServerProxy {
     }
 
     public void setReferencedMob(Entity referencedMob) {}
+
+    public void sculptorMarkBlock(int id, BlockPos pos) {}
 }
