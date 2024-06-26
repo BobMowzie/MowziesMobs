@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.entity.umvuthana;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleDecal;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleRibbon;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
@@ -479,9 +480,9 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
     public void handleEntityEvent(byte id) {
         if (id == FOOTSTEP_ID && ConfigHandler.CLIENT.umvuthanaFootprints.get()) {
             footstepCounter++;
-            float rotation = (float) Math.toRadians(yBodyRot + 180f);
-            Vec3 offset = new Vec3(0, 0, footstepCounter % 2 == 0 ? 0.3 : -0.3).yRot(rotation);
-            AdvancedParticleBase.spawnParticle(level(), ParticleHandler.STRIX_FOOTPRINT.get(), getX() + offset.x(), getY() + 0.01, getZ() + offset.z(), 0, 0, 0, false, rotation, Math.PI/2f, 0, 0, 1F, 1, 0.95, 0.1, 1, 1, 200, true, false, new ParticleComponent[]{
+            double rotation = Math.toRadians(yBodyRot + 180f);
+            Vec3 offset = new Vec3(0, 0, footstepCounter % 2 == 0 ? 0.3 : -0.3).yRot((float) rotation);
+            ParticleDecal.spawnDecal(level(), ParticleHandler.STRIX_FOOTPRINT.get(), getX() + offset.x(), getY() + 0.01, getZ() + offset.z(), 0, 0, 0, rotation,1F, 1, 0.95, 0.1, 1, 1, 200, true, 8, 32, new ParticleComponent[]{
                     new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.RED, new ParticleComponent.KeyTrack(
                             new float[]{0.995f, 0.05f},
                             new float[]{0, 0.3f}

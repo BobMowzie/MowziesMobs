@@ -40,6 +40,7 @@ public enum AbilityHandler {
     public static final AbilityType<Player, SpawnPillarAbility> SPAWN_PILLAR_ABILITY = new AbilityType<>("spawn_pillar", SpawnPillarAbility::new);
     public static final AbilityType<Player, GroundSlamAbility> GROUND_SLAM_ABILITY = new AbilityType<>("ground_slam", GroundSlamAbility::new);
     public static final AbilityType<Player, BoulderRollAbility> BOULDER_ROLL_ABILITY = new AbilityType<>("boulder_roll", BoulderRollAbility::new);
+    public static final AbilityType<Player, FissureAbility> FISSURE_ABILITY = new AbilityType<>("fissure", FissureAbility::new);
 
     public static final AbilityType<Player, SimplePlayerAnimationAbility> BACKSTAB_ABILITY = new AbilityType<>("backstab", (type, player) ->
             new SimplePlayerAnimationAbility(type, (Player) player, "backstab", 12, true, true)
@@ -56,13 +57,14 @@ public enum AbilityHandler {
             WROUGHT_AXE_SLAM_ABILITY,
             ICE_BREATH_ABILITY,
             SPAWN_BOULDER_ABILITY,
-//            SPAWN_PILLAR_ABILITY,
+            SPAWN_PILLAR_ABILITY,
             TUNNELING_ABILITY,
             HIT_BOULDER_ABILITY,
-            BACKSTAB_ABILITY,
-//            BOULDER_ROLL_ABILITY,
-//            ROCK_SLING,
-//            GROUND_SLAM_ABILITY
+            BOULDER_ROLL_ABILITY,
+            ROCK_SLING,
+            GROUND_SLAM_ABILITY,
+            FISSURE_ABILITY,
+            BACKSTAB_ABILITY
     };
 
     @Nullable

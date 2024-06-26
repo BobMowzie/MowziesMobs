@@ -419,4 +419,8 @@ public abstract class ParticleComponent {
             }
         }
     }
+
+    public static class AnimatedTexture extends ParticleComponent {
+
+    }
 }

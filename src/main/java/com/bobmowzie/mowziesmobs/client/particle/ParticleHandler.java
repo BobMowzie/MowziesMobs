@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.client.particle;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleData;
+import com.bobmowzie.mowziesmobs.client.particle.util.DecalParticleData;
 import com.bobmowzie.mowziesmobs.client.particle.util.RibbonParticleData;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.particles.ParticleOptions;
@@ -71,7 +72,9 @@ public class ParticleHandler {
     public static final RegistryObject<ParticleType<AdvancedParticleData>> BURST_OUT = register("ring2", AdvancedParticleData.DESERIALIZER);
     public static final RegistryObject<ParticleType<AdvancedParticleData>> GLOW = register("glow", AdvancedParticleData.DESERIALIZER);
     public static final RegistryObject<ParticleType<AdvancedParticleData>> ARROW_HEAD = register("arrow_head", AdvancedParticleData.DESERIALIZER);
-    public static final RegistryObject<ParticleType<AdvancedParticleData>> STRIX_FOOTPRINT = register("strix_footprint", AdvancedParticleData.DESERIALIZER);
+
+    public static final RegistryObject<ParticleType<DecalParticleData>> STRIX_FOOTPRINT = registerDecal("strix_footprint", DecalParticleData.DESERIALIZER);
+    public static final RegistryObject<ParticleType<DecalParticleData>> GROUND_CRACK = registerDecal("crack", DecalParticleData.DESERIALIZER);
 
     public static final RegistryObject<ParticleType<RibbonParticleData>> RIBBON_FLAT = registerRibbon("ribbon_flat", RibbonParticleData.DESERIALIZER);
     public static final RegistryObject<ParticleType<RibbonParticleData>> RIBBON_STREAKS = registerRibbon("ribbon_streaks", RibbonParticleData.DESERIALIZER);
@@ -104,6 +107,7 @@ public class ParticleHandler {
         event.registerSpriteSet(ParticleHandler.GLOW.get(), AdvancedParticleBase.Factory::new);
         event.registerSpriteSet(ParticleHandler.ARROW_HEAD.get(), AdvancedParticleBase.Factory::new);
         event.registerSpriteSet(ParticleHandler.STRIX_FOOTPRINT.get(), ParticleDecal.Factory::new);
+        event.registerSpriteSet(ParticleHandler.GROUND_CRACK.get(), ParticleDecal.Factory::new);
 
         event.registerSpriteSet(ParticleHandler.RIBBON_FLAT.get(), ParticleRibbon.Factory::new);
         event.registerSpriteSet(ParticleHandler.RIBBON_STREAKS.get(), ParticleRibbon.Factory::new);
@@ -123,15 +127,19 @@ public class ParticleHandler {
         });
     }
 
+    private static RegistryObject<ParticleType<DecalParticleData>> registerDecal(String key, ParticleOptions.Deserializer<DecalParticleData> deserializer) {
+        return REG.register(key, () -> new ParticleType<DecalParticleData>(false, deserializer) {
+            public Codec<DecalParticleData> codec() {
+                return DecalParticleData.CODEC_RIBBON(this);
+            }
+        });
+    }
+
     private static RegistryObject<ParticleType<RibbonParticleData>> registerRibbon(String key, ParticleOptions.Deserializer<RibbonParticleData> deserializer) {
         return REG.register(key, () -> new ParticleType<RibbonParticleData>(false, deserializer) {
             public Codec<RibbonParticleData> codec() {
                 return RibbonParticleData.CODEC_RIBBON(this);
             }
         });
-    }
-
-    public static void addParticleCustomLimiter() {
-
     }
 }
