@@ -55,6 +55,9 @@ public class MessageSculptorTrade {
                     if (!(container instanceof ContainerSculptorTrade)) {
                         return;
                     }
+                    if (sculptor.checkTestObstructed()) {
+                        return;
+                    }
                     boolean satisfied = sculptor.fulfillDesire(container.getSlot(0));
                     if (satisfied) {
                         ((ContainerSculptorTrade) container).returnItems();

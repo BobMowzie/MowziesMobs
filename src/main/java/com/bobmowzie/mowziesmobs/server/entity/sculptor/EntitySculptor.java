@@ -1,7 +1,10 @@
 package com.bobmowzie.mowziesmobs.server.entity.sculptor;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
+import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
+import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
+import com.bobmowzie.mowziesmobs.client.particle.util.ParticleRotation;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
@@ -9,18 +12,17 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.mob.DieAbility;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.mob.HurtAbility;
 import com.bobmowzie.mowziesmobs.server.ai.UseAbilityAI;
-import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieGeckoEntity;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBlockSwapper;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderSculptor;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityGeomancyBase;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityPillar;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerSculptorTrade;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -54,6 +56,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.Team;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -62,7 +65,6 @@ import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.Animation;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
 
 import java.util.*;
 
@@ -92,6 +94,9 @@ public class EntitySculptor extends MowzieGeckoEntity {
     private Optional<Vec3> prevPlayerPosition;
     private int ticksAcceleratingUpward;
     private boolean testing;
+    private boolean isTestObstructed;
+    private boolean isTestObstructedSoFar;
+    private int obstructionTestHeight;
 
     private EntityPillar.EntityPillarSculptor pillar;
     public int numLivePaths = 0;
@@ -264,6 +269,59 @@ public class EntitySculptor extends MowzieGeckoEntity {
         else if (customer != null) {
             getLookControl().setLookAt(customer);
         }
+
+        if (!testing) {
+            checkTestObstructedAtHeight(obstructionTestHeight);
+
+            int height = EntitySculptor.TEST_HEIGHT + 3;
+            obstructionTestHeight = (obstructionTestHeight + 1) % height;
+            if (obstructionTestHeight == 0) {
+                isTestObstructed = isTestObstructedSoFar;
+                isTestObstructedSoFar = false;
+            }
+        }
+    }
+
+    public boolean checkTestObstructed() {
+        int height = EntitySculptor.TEST_HEIGHT + 3;
+        for (int i = 0; i < height; i++) {
+            checkTestObstructedAtHeight(i);
+            if (isTestObstructed) return true;
+        }
+        return false;
+    }
+
+    private void checkTestObstructedAtHeight(int height) {
+        BlockPos pos = blockPosition();
+        int radius = EntitySculptor.TEST_RADIUS;
+        for (int i = -radius; i < radius; i++) {
+            for (int j = -radius; j < radius; j++) {
+                Vec2 offset = new Vec2(i, j);
+                BlockPos thisPos = pos.offset((int) offset.x, height, (int) offset.y);
+                if (offset.lengthSquared() < radius * radius) {
+                    if (!level().getBlockState(thisPos).isAir()) {
+                        isTestObstructed = true;
+                        isTestObstructedSoFar = true;
+                        if (level().isClientSide() && isPlayerInTestZone(Minecraft.getInstance().player) && blockHasExposedSide(thisPos)) {
+                            ParticleRotation.FaceCamera faceCamera = new ParticleRotation.FaceCamera(0);
+                            AdvancedParticleBase.spawnAlwaysVisibleParticle(level(), ParticleHandler.RING2.get(), 64, thisPos.getX() + 0.5, thisPos.getY() + 0.5, thisPos.getZ() + 0.5, 0, 0, 0, faceCamera, 3.5F, 0.83f, 1, 0.39f, 1, 1, 20, true, false, new ParticleComponent[]{
+                                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0.7f, 0f), false),
+                                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0f, 16.0f), false)
+                            });
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean blockHasExposedSide(BlockPos pos) {
+        return !level().getBlockState(pos.north()).canOcclude() ||
+                !level().getBlockState(pos.south()).canOcclude() ||
+                !level().getBlockState(pos.east()).canOcclude() ||
+                !level().getBlockState(pos.west()).canOcclude() ||
+                !level().getBlockState(pos.above()).canOcclude() ||
+                !level().getBlockState(pos.below()).canOcclude();
     }
 
     private void checkIfPlayerCheats() {
@@ -515,10 +573,10 @@ public class EntitySculptor extends MowzieGeckoEntity {
         protected void beginSection(AbilitySection section) {
             super.beginSection(section);
             if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE && spawnPillarPos != null) {
-                if (!getUser().level().isClientSide()) {
-                    EntityBlockSwapper.EntityBlockSwapperSculptor swapper = new EntityBlockSwapper.EntityBlockSwapperSculptor(EntityHandler.BLOCK_SWAPPER_SCULPTOR.get(), getUser().level(), getUser().blockPosition(), Blocks.AIR.defaultBlockState(), 60, false, false);
-                    getUser().level().addFreshEntity(swapper);
-                }
+//                if (!getUser().level().isClientSide()) {
+//                    EntityBlockSwapper.EntityBlockSwapperSculptor swapper = new EntityBlockSwapper.EntityBlockSwapperSculptor(EntityHandler.BLOCK_SWAPPER_SCULPTOR.get(), getUser().level(), getUser().blockPosition(), Blocks.AIR.defaultBlockState(), 60, false, false);
+//                    getUser().level().addFreshEntity(swapper);
+//                }
 
                 if (spawnPillarBlock == null || !EffectGeomancy.isBlockUseable(spawnPillarBlock)) spawnPillarBlock = Blocks.STONE.defaultBlockState();
                 getUser().pillar = new EntityPillar.EntityPillarSculptor(EntityHandler.PILLAR_SCULPTOR.get(), getUser().level(), getUser(), Blocks.STONE.defaultBlockState(), spawnPillarPos);
