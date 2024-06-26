@@ -298,7 +298,8 @@ public class EntitySculptor extends MowzieGeckoEntity {
             for (int j = -radius; j < radius; j++) {
                 Vec2 offset = new Vec2(i, j);
                 BlockPos thisPos = pos.offset((int) offset.x, height, (int) offset.y);
-                if (offset.lengthSquared() < radius * radius) {
+                double testRadius = testRadiusAtHeight(height);
+                if (offset.lengthSquared() < testRadius * testRadius) {
                     if (!level().getBlockState(thisPos).isAir()) {
                         isTestObstructed = true;
                         isTestObstructedSoFar = true;
