@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client;
 
+import com.bobmowzie.mowziesmobs.client.render.block.SculptorBlockMarking;
 import com.bobmowzie.mowziesmobs.client.render.entity.FrozenRenderHandler;
 import com.bobmowzie.mowziesmobs.client.sound.*;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
@@ -44,9 +45,7 @@ public class ClientProxy extends ServerProxy {
     private static final List<SunblockSound> sunblockSounds = new ArrayList<>();
     public static final Map<UUID, ResourceLocation> bossBarRegistryNames = new HashMap<>();
 
-    public static final Long2ObjectMap<SortedSet<BlockDestructionProgress>> sculptorMarkedBlocks = new Long2ObjectOpenHashMap<>();
-    public static final Int2ObjectMap<BlockDestructionProgress> sculptorMarkedBlocks2 = new Int2ObjectOpenHashMap<>();
-
+    public static final Long2ObjectMap<SculptorBlockMarking> sculptorMarkedBlocks = new Long2ObjectOpenHashMap<>();
 
     private Entity referencedMob = null;
 
@@ -152,29 +151,26 @@ public class ClientProxy extends ServerProxy {
     }
 
     public void sculptorMarkBlock(int id, BlockPos pos) {
-        BlockDestructionProgress blockdestructionprogress1 = sculptorMarkedBlocks2.get(id);
-        if (blockdestructionprogress1 != null) {
-            this.removeProgress(blockdestructionprogress1);
+        SculptorBlockMarking blockMarking = sculptorMarkedBlocks.get(pos.asLong());
+        if (blockMarking == null) {
+            blockMarking = new SculptorBlockMarking(pos);
+            sculptorMarkedBlocks.put(pos.asLong(), blockMarking);
         }
-
-        if (blockdestructionprogress1 == null || blockdestructionprogress1.getPos().getX() != pos.getX() || blockdestructionprogress1.getPos().getY() != pos.getY() || blockdestructionprogress1.getPos().getZ() != pos.getZ()) {
-            blockdestructionprogress1 = new BlockDestructionProgress(id, pos);
-            sculptorMarkedBlocks2.put(id, blockdestructionprogress1);
+        else {
+            blockMarking.resetTick();
         }
-
-        blockdestructionprogress1.setProgress(9);
-        sculptorMarkedBlocks.computeIfAbsent(blockdestructionprogress1.getPos().asLong(), (p_234254_) -> {
-            return Sets.newTreeSet();
-        }).add(blockdestructionprogress1);
     }
 
-    private void removeProgress(BlockDestructionProgress p_109766_) {
-        long i = p_109766_.getPos().asLong();
-        Set<BlockDestructionProgress> set = sculptorMarkedBlocks.get(i);
-        set.remove(p_109766_);
-        if (set.isEmpty()) {
-            sculptorMarkedBlocks.remove(i);
-        }
+    public void updateMarkedBlocks() {
+        Iterator<SculptorBlockMarking> iterator = sculptorMarkedBlocks.values().iterator();
 
+        while(iterator.hasNext()) {
+            SculptorBlockMarking blockMarking = iterator.next();
+            int i = blockMarking.getTicks();
+            if (i > blockMarking.getDuration()) {
+                iterator.remove();
+            }
+            blockMarking.tick();
+        }
     }
 }

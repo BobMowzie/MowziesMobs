@@ -68,34 +68,43 @@ public class ServerProxy {
         @Override
         public Optional<Trade> copy(Optional<Trade> value) {
             if (value.isPresent()) {
-            	return Optional.of(new Trade(value.get()));
+                return Optional.of(new Trade(value.get()));
             }
             return Optional.empty();
         }
     };
-    
+
     public void init(final IEventBus modbus) {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.COMMON_CONFIG);
         EntityDataSerializers.registerSerializer(OPTIONAL_TRADE);
     }
 
-    public void onLateInit(final IEventBus modbus) {}
+    public void onLateInit(final IEventBus modbus) {
+    }
 
-    public void playSunstrikeSound(EntitySunstrike strike) {}
+    public void playSunstrikeSound(EntitySunstrike strike) {
+    }
 
-    public void playIceBreathSound(Entity entity) {}
+    public void playIceBreathSound(Entity entity) {
+    }
 
-    public void playBoulderChargeSound(LivingEntity player) {}
+    public void playBoulderChargeSound(LivingEntity player) {
+    }
 
-    public void playNagaSwoopSound(EntityNaga naga) {}
+    public void playNagaSwoopSound(EntityNaga naga) {
+    }
 
-    public void playBlackPinkSound(AbstractMinecart entity) {}
+    public void playBlackPinkSound(AbstractMinecart entity) {
+    }
 
-    public void playSunblockSound(LivingEntity entity) {}
+    public void playSunblockSound(LivingEntity entity) {
+    }
 
-    public void playSolarBeamSound(EntitySolarBeam entity) {}
+    public void playSolarBeamSound(EntitySolarBeam entity) {
+    }
 
-    public void minecartParticles(ClientLevel world, AbstractMinecart minecart, float scale, double x, double y, double z, BlockState state, BlockPos pos) {}
+    public void minecartParticles(ClientLevel world, AbstractMinecart minecart, float scale, double x, double y, double z, BlockState state, BlockPos pos) {
+    }
 
     public void initNetwork() {
         final String version = "1";
@@ -137,7 +146,12 @@ public class ServerProxy {
         return null;
     }
 
-    public void setReferencedMob(Entity referencedMob) {}
+    public void setReferencedMob(Entity referencedMob) {
+    }
 
-    public void sculptorMarkBlock(int id, BlockPos pos) {}
+    public void sculptorMarkBlock(int id, BlockPos pos) {
+    }
+
+    public void updateMarkedBlocks() {
+    }
 }

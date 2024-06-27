@@ -1,63 +1,32 @@
 package com.bobmowzie.mowziesmobs.client.render.block;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.BlockDestructionProgress;
 
-public class SculptorBlockMarking implements Comparable<SculptorBlockMarking> {
-    private final int id;
+public class SculptorBlockMarking {
     private final BlockPos pos;
-    private int progress;
-    private int updatedRenderTick;
+    private int ticks;
 
-    public SculptorBlockMarking(int p_139979_, BlockPos p_139980_) {
-        this.id = p_139979_;
-        this.pos = p_139980_;
-    }
-
-    public int getId() {
-        return this.id;
+    public SculptorBlockMarking(BlockPos pos) {
+        this.pos = pos;
     }
 
     public BlockPos getPos() {
         return this.pos;
     }
 
-    public void setProgress(int p_139982_) {
-        if (p_139982_ > 10) {
-            p_139982_ = 10;
-        }
-
-        this.progress = p_139982_;
+    public void resetTick() {
+        this.ticks = 0;
     }
 
-    public int getProgress() {
-        return this.progress;
+    public int getTicks() {
+        return this.ticks;
     }
 
-    public void updateTick(int p_139987_) {
-        this.updatedRenderTick = p_139987_;
+    public void tick() {
+        this.ticks++;
     }
 
-    public int getUpdatedRenderTick() {
-        return this.updatedRenderTick;
-    }
-
-    public boolean equals(Object p_139993_) {
-        if (this == p_139993_) {
-            return true;
-        } else if (p_139993_ != null && this.getClass() == p_139993_.getClass()) {
-            SculptorBlockMarking blockdestructionprogress = (SculptorBlockMarking)p_139993_;
-            return this.id == blockdestructionprogress.id;
-        } else {
-            return false;
-        }
-    }
-
-    public int hashCode() {
-        return Integer.hashCode(this.id);
-    }
-
-    public int compareTo(SculptorBlockMarking p_139984_) {
-        return this.progress != p_139984_.progress ? Integer.compare(this.progress, p_139984_.progress) : Integer.compare(this.id, p_139984_.id);
+    public int getDuration() {
+        return 160;
     }
 }
