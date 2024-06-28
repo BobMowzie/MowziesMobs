@@ -1,17 +1,17 @@
 package com.bobmowzie.mowziesmobs.client.render.item;
 
-import com.bobmowzie.mowziesmobs.client.model.item.ModelEarthboreGauntlet;
-import com.bobmowzie.mowziesmobs.server.item.ItemEarthboreGauntlet;
+import com.bobmowzie.mowziesmobs.client.model.item.ModelEarthrendGauntlet;
+import com.bobmowzie.mowziesmobs.server.item.ItemEarthrendGauntlet;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
 
-public class RenderEarthboreGauntlet extends GeoItemRenderer<ItemEarthboreGauntlet> {
+public class RenderEarthrendGauntlet extends GeoItemRenderer<ItemEarthrendGauntlet> {
 
-    public RenderEarthboreGauntlet() {
-        super(new ModelEarthboreGauntlet());
+    public RenderEarthrendGauntlet() {
+        super(new ModelEarthrendGauntlet());
     }
 
     @Override

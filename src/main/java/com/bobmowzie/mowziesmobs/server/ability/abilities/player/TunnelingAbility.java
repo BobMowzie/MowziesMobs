@@ -14,7 +14,7 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBlockSwapper;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityFallingBlock;
-import com.bobmowzie.mowziesmobs.server.item.ItemEarthboreGauntlet;
+import com.bobmowzie.mowziesmobs.server.item.ItemEarthrendGauntlet;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
@@ -70,18 +70,18 @@ public class TunnelingAbility extends PlayerAbility {
 
     public void playGauntletAnimation() {
         if (getUser() != null && !getLevel().isClientSide()) {
-            if (gauntletStack != null && gauntletStack.getItem() == ItemHandler.EARTHBORE_GAUNTLET.get()) {
+            if (gauntletStack != null && gauntletStack.getItem() == ItemHandler.EARTHREND_GAUNTLET.get()) {
                 Player player = (Player) getUser();
-                ItemHandler.EARTHBORE_GAUNTLET.get().triggerAnim(player, GeoItem.getOrAssignId(gauntletStack, (ServerLevel) player.level()), ItemEarthboreGauntlet.CONTROLLER_NAME, ItemEarthboreGauntlet.OPEN_ANIM_NAME);
+                ItemHandler.EARTHREND_GAUNTLET.get().triggerAnim(player, GeoItem.getOrAssignId(gauntletStack, (ServerLevel) player.level()), ItemEarthrendGauntlet.CONTROLLER_NAME, ItemEarthrendGauntlet.OPEN_ANIM_NAME);
             }
         }
     }
 
     public void stopGauntletAnimation() {
         if (getUser() != null && !getLevel().isClientSide()) {
-            if (gauntletStack != null && gauntletStack.getItem() == ItemHandler.EARTHBORE_GAUNTLET.get()) {
+            if (gauntletStack != null && gauntletStack.getItem() == ItemHandler.EARTHREND_GAUNTLET.get()) {
                 Player player = (Player) getUser();
-                ItemHandler.EARTHBORE_GAUNTLET.get().triggerAnim(player, GeoItem.getOrAssignId(gauntletStack, (ServerLevel) player.level()), ItemEarthboreGauntlet.CONTROLLER_NAME, ItemEarthboreGauntlet.IDLE_ANIM_NAME);
+                ItemHandler.EARTHREND_GAUNTLET.get().triggerAnim(player, GeoItem.getOrAssignId(gauntletStack, (ServerLevel) player.level()), ItemEarthrendGauntlet.CONTROLLER_NAME, ItemEarthrendGauntlet.IDLE_ANIM_NAME);
             }
         }
     }
@@ -102,14 +102,14 @@ public class TunnelingAbility extends PlayerAbility {
 
     public boolean damageGauntlet() {
         ItemStack stack = getUser().getUseItem();
-        if (stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET.get()) {
+        if (stack.getItem() == ItemHandler.EARTHREND_GAUNTLET.get()) {
             InteractionHand handIn = getUser().getUsedItemHand();
             if (stack.getDamageValue() + 5 < stack.getMaxDamage()) {
                 stack.hurtAndBreak(5, getUser(), p -> p.broadcastBreakEvent(handIn));
                 return true;
             }
             else {
-                if (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.breakable.get()) {
+                if (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHREND_GAUNTLET.breakable.get()) {
                     stack.hurtAndBreak(5, getUser(), p -> p.broadcastBreakEvent(handIn));
                 }
                 return false;
@@ -119,8 +119,8 @@ public class TunnelingAbility extends PlayerAbility {
     }
 
     public void restoreGauntlet(ItemStack stack) {
-        if (stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET.get()) {
-            if (!ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.breakable.get()) {
+        if (stack.getItem() == ItemHandler.EARTHREND_GAUNTLET.get()) {
+            if (!ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHREND_GAUNTLET.breakable.get()) {
                 stack.setDamageValue(Math.max(stack.getDamageValue() - 1, 0));
             }
         }
@@ -149,7 +149,7 @@ public class TunnelingAbility extends PlayerAbility {
         Vec3 lookVec = getUser().getLookAngle();
         float tunnelSpeed = 0.3f;
         ItemStack stack = getUser().getUseItem();
-        boolean usingGauntlet = stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET.get();
+        boolean usingGauntlet = stack.getItem() == ItemHandler.EARTHREND_GAUNTLET.get();
         if (underground) {
             timeUnderground++;
             if (usingGauntlet && damageGauntlet()) {
@@ -162,7 +162,7 @@ public class TunnelingAbility extends PlayerAbility {
             List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(getUser(),2, 2, 2, 2);
             for (LivingEntity entityHit : entitiesHit) {
                 DamageSource damageSource = getUser().damageSources().playerAttack(getUser());
-                entityHit.hurt(damageSource, 6 * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.geomancyAttackMultiplier.get().floatValue());
+                entityHit.hurt(damageSource, 6 * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHREND_GAUNTLET.attackMultiplier.get().floatValue());
             }
         }
         else {
@@ -245,15 +245,15 @@ public class TunnelingAbility extends PlayerAbility {
     @Override
     protected boolean canContinueUsing() {
         ItemStack stack = getUser().getUseItem();
-        boolean usingGauntlet = stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET.get();
+        boolean usingGauntlet = stack.getItem() == ItemHandler.EARTHREND_GAUNTLET.get();
         if (whichHand == null) return false;
-        boolean canContinueUsing = (getTicksInUse() <= 1 || !(getUser().onGround() || (getUser().isInWater() && !usingGauntlet)) || underground) && getUser().getItemInHand(whichHand).getItem() == ItemHandler.EARTHBORE_GAUNTLET.get() && super.canContinueUsing();
+        boolean canContinueUsing = (getTicksInUse() <= 1 || !(getUser().onGround() || (getUser().isInWater() && !usingGauntlet)) || underground) && getUser().getItemInHand(whichHand).getItem() == ItemHandler.EARTHREND_GAUNTLET.get() && super.canContinueUsing();
         return canContinueUsing;
     }
 
     @Override
     public boolean preventsItemUse(ItemStack stack) {
-        if (stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET.get()) return false;
+        if (stack.getItem() == ItemHandler.EARTHREND_GAUNTLET.get()) return false;
         return super.preventsItemUse(stack);
     }
 
@@ -265,7 +265,7 @@ public class TunnelingAbility extends PlayerAbility {
         e.getController().transitionLength(4);
         if (perspective == GeckoPlayer.Perspective.THIRD_PERSON) {
             float yMotionThreshold = getUser() == Minecraft.getInstance().player ? 1 : 2;
-            if (!underground && getUser().getUseItem().getItem() != ItemHandler.EARTHBORE_GAUNTLET.get() && getUser().getDeltaMovement().y() < yMotionThreshold) {
+            if (!underground && getUser().getUseItem().getItem() != ItemHandler.EARTHREND_GAUNTLET.get() && getUser().getDeltaMovement().y() < yMotionThreshold) {
                 e.getController().setAnimation(FALL_ANIM);
             }
             else {

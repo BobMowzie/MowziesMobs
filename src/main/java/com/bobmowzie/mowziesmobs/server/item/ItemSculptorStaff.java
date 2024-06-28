@@ -78,7 +78,7 @@ public class ItemSculptorStaff extends MowzieToolItem implements GeoItem {
 
     @Override
     public ConfigHandler.ToolConfig getConfig() {
-        return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.toolConfig;
+        return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHREND_GAUNTLET.toolConfig;
     }
 
     @Override

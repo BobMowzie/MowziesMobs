@@ -46,12 +46,11 @@ public class ItemHandler {
     public static final RegistryObject<ItemBlowgun> BLOWGUN = REG.register("blowgun", () -> new ItemBlowgun(new Item.Properties().stacksTo(1).durability(300)));
     public static final RegistryObject<ItemGrantSunsBlessing> GRANT_SUNS_BLESSING = REG.register("grant_suns_blessing", () -> new ItemGrantSunsBlessing(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
     public static final RegistryObject<ItemIceCrystal> ICE_CRYSTAL = REG.register("ice_crystal", () -> new ItemIceCrystal(new Item.Properties().defaultDurability(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.durabilityValue).rarity(Rarity.RARE)));
-    public static final RegistryObject<ItemEarthTalisman> EARTH_TALISMAN = REG.register("earth_talisman", () -> new ItemEarthTalisman(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
     public static final RegistryObject<ItemCapturedGrottol> CAPTURED_GROTTOL = REG.register("captured_grottol", () -> new ItemCapturedGrottol(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<ItemGlowingJelly> GLOWING_JELLY = REG.register("glowing_jelly", () -> new ItemGlowingJelly(new Item.Properties().food(ItemGlowingJelly.GLOWING_JELLY_FOOD)));
     public static final RegistryObject<ItemNagaFang> NAGA_FANG = REG.register("naga_fang", () -> new ItemNagaFang(new Item.Properties()));
     public static final RegistryObject<ItemNagaFangDagger> NAGA_FANG_DAGGER = REG.register("naga_fang_dagger", () -> new ItemNagaFangDagger(new Item.Properties()));
-    public static final RegistryObject<ItemEarthboreGauntlet> EARTHBORE_GAUNTLET = REG.register("earthbore_gauntlet", () -> new ItemEarthboreGauntlet(new Item.Properties().defaultDurability(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.durabilityValue).rarity(Rarity.RARE)));
+    public static final RegistryObject<ItemEarthrendGauntlet> EARTHREND_GAUNTLET = REG.register("earthrend_gauntlet", () -> new ItemEarthrendGauntlet(new Item.Properties().defaultDurability(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHREND_GAUNTLET.durabilityValue).rarity(Rarity.RARE)));
     public static final RegistryObject<ItemSculptorStaff> SCULPTOR_STAFF = REG.register("sculptor_staff", () -> new ItemSculptorStaff(new Item.Properties().defaultDurability(1000).rarity(Rarity.RARE)));
     public static final RegistryObject<ItemSandRake> SAND_RAKE = REG.register("sand_rake", () -> new ItemSandRake(new Item.Properties().defaultDurability(64)));
     public static final RegistryObject<Item> LOGO = REG.register("logo", () -> new Item(new Item.Properties()));
@@ -81,7 +80,7 @@ public class ItemHandler {
         SOL_VISAGE.get().getAttributesFromConfig();
         SPEAR.get().getAttributesFromConfig();
         NAGA_FANG_DAGGER.get().getAttributesFromConfig();
-        EARTHBORE_GAUNTLET.get().getAttributesFromConfig();
+        EARTHREND_GAUNTLET.get().getAttributesFromConfig();
     }
 
     public static void initializeDispenserBehaviors() {

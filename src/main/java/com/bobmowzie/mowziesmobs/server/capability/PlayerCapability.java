@@ -7,7 +7,7 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.PlayerAbility;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthanaFollowerToPlayer;
-import com.bobmowzie.mowziesmobs.server.item.ItemEarthTalisman;
+import com.bobmowzie.mowziesmobs.server.item.ItemEarthrendGauntlet;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseDown;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseUp;
@@ -270,12 +270,9 @@ public class PlayerCapability {
             }
 
             if (event.side == LogicalSide.SERVER) {
-                for (ItemStack itemStack : event.player.getInventory().items) {
-                    if (itemStack.getItem() instanceof ItemEarthTalisman)
-                        player.addEffect(new MobEffectInstance(EffectHandler.GEOMANCY.get(), 20, 0, false, false));
-                }
-                if (player.getOffhandItem().getItem() instanceof ItemEarthTalisman)
+                if (player.getMainHandItem().getItem() instanceof ItemEarthrendGauntlet || player.getOffhandItem().getItem() instanceof ItemEarthrendGauntlet) {
                     player.addEffect(new MobEffectInstance(EffectHandler.GEOMANCY.get(), 20, 0, false, false));
+                }
 
                 List<EntityUmvuthanaFollowerToPlayer> pack = umvuthanaPack;
                 float theta = (2 * (float) Math.PI / pack.size());

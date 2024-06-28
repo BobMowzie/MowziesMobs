@@ -567,18 +567,21 @@ public final class ConfigHandler {
         public int durabilityValue;
     }
 
-    public static class EarthboreGauntlet {
-        EarthboreGauntlet(final ForgeConfigSpec.Builder builder) {
-            builder.push("earthbore_gauntlet");
-            attackMultiplier = builder.comment("Multiply all damage done with the Earthbore Gauntlet by this amount.")
+    public static class EarthrendGauntlet {
+        EarthrendGauntlet(final ForgeConfigSpec.Builder builder) {
+            builder.push("earthrend_gauntlet");
+            attackMultiplier = builder.comment("Multiply all damage done with the Earthrend Gauntlet by this amount.")
                     .translation(LANG_PREFIX + "attack_multiplier")
                     .defineInRange("attack_multiplier", 1f, 0d, Double.MAX_VALUE);
-            breakable = builder.comment("Set to true for the Earthbore Gauntlet to have limited durability.", "Prevents regeneration in inventory.")
+            breakable = builder.comment("Set to true for the Earthrend Gauntlet to have limited durability.", "Prevents regeneration in inventory.")
                     .translation(LANG_PREFIX + "breakable")
                     .define("breakable", false);
-            durability = builder.comment("Earthbore Gauntlet durability")
+            durability = builder.comment("Earthrend Gauntlet durability")
                     .translation(LANG_PREFIX + "durability")
                     .defineInRange("durability", 400, 1, Integer.MAX_VALUE);
+            enableTunneling = builder.comment("Set to false to disable the Earthrend Gauntlet's tunneling ability.")
+                    .translation(LANG_PREFIX + "enable_tunneling")
+                    .define("enable_tunneling", false);
             toolConfig = new ToolConfig(builder, 6, 1.2f);
             builder.pop();
         }
@@ -591,6 +594,8 @@ public final class ConfigHandler {
         public int durabilityValue;
 
         public final ToolConfig toolConfig;
+
+        public final BooleanValue enableTunneling;
     }
 
     public static class Spear {
@@ -704,8 +709,6 @@ public final class ConfigHandler {
     public static class ToolsAndAbilities {
         ToolsAndAbilities(final ForgeConfigSpec.Builder builder) {
             builder.push("tools_and_abilities");
-            geomancyAttackMultiplier = builder.translation(LANG_PREFIX + "geomancy_attack_multiplier")
-                    .defineInRange("geomancy_attack_multiplier", 1f, 0, Double.MAX_VALUE);
             SUNS_BLESSING = new SunsBlessing(builder);
             WROUGHT_HELM = new WroughtHelm(builder);
             AXE_OF_A_THOUSAND_METALS = new AxeOfAThousandMetals(builder);
@@ -715,11 +718,9 @@ public final class ConfigHandler {
             SPEAR = new Spear(builder);
             NAGA_FANG_DAGGER = new NagaFangDagger(builder);
             BLOW_GUN = new Blowgun(builder);
-            EARTHBORE_GAUNTLET = new EarthboreGauntlet(builder);
+            EARTHREND_GAUNTLET = new EarthrendGauntlet(builder);
             builder.pop();
         }
-
-        public final DoubleValue geomancyAttackMultiplier;
 
         public final SunsBlessing SUNS_BLESSING;
 
@@ -739,7 +740,7 @@ public final class ConfigHandler {
 
         public final Blowgun BLOW_GUN;
 
-        public final EarthboreGauntlet EARTHBORE_GAUNTLET;
+        public final EarthrendGauntlet EARTHREND_GAUNTLET;
     }
 
     public static class Client {

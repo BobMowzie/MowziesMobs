@@ -35,7 +35,7 @@ public final class GuiSculptorTrade extends AbstractContainerScreen<ContainerScu
 
     private final InventorySculptor inventory;
 
-    private final ItemStack output = new ItemStack(ItemHandler.EARTHBORE_GAUNTLET.get());
+    private final ItemStack output = new ItemStack(ItemHandler.EARTHREND_GAUNTLET.get());
 
     private Button beginButton;
 

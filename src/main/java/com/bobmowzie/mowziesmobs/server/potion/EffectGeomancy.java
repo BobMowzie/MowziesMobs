@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.potion;
 
 import com.bobmowzie.mowziesmobs.server.block.ICopiedBlockProperties;
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.tag.TagHandler;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,6 +26,9 @@ public class EffectGeomancy extends MowzieEffect {
     }
 
     public static boolean canUse(LivingEntity entity) {
-        return entity.getMainHandItem().isEmpty() && entity.hasEffect(EffectHandler.GEOMANCY.get())	;
+        return (entity.getMainHandItem().is(ItemHandler.EARTHREND_GAUNTLET.get()) ||
+                entity.getMainHandItem().isEmpty() ||
+                entity.getOffhandItem().is(ItemHandler.EARTHREND_GAUNTLET.get()))
+                && entity.hasEffect(EffectHandler.GEOMANCY.get());
     }
 }

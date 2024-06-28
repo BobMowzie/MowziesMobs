@@ -721,7 +721,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
         @Override
         public void end() {
             super.end();
-            getUser().spawnAtLocation(ItemHandler.EARTHBORE_GAUNTLET.get().getDefaultInstance());
+            getUser().spawnAtLocation(ItemHandler.EARTHREND_GAUNTLET.get().getDefaultInstance());
         }
 
         @Override

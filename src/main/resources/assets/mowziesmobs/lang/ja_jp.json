@@ -41,7 +41,7 @@
   "item.mowziesmobs.earth_talisman": "大地のタリスマン",
   "item.mowziesmobs.captured_grottol": "捕まったグロットル",
   "item.mowziesmobs.glowing_jelly": "輝くジェル",
-  "item.mowziesmobs.earthbore_gauntlet": "大地のガントレット",
+  "item.mowziesmobs.earthrend_gauntlet": "大地のガントレット",
 
   "item.mowziesmobs.blowgun.text.0": "チャージ速度が速い",
   "item.mowziesmobs.blowgun.text.1": "飛距離は長くない",
@@ -90,11 +90,11 @@
   "item.mowziesmobs.earth_talisman.text.3": "土をパンチする事で弾き飛ばす",
   "item.mowziesmobs.earth_talisman.text.4": "右クリック長押しで大きな土塊が現れる",
 
-  "item.mowziesmobs.earthbore_gauntlet.text.0": "クリエイティブモードのみ",
-  "item.mowziesmobs.earthbore_gauntlet.text.1": "空中で、Shiftを2回押して更に押し続けると回転を始める",
-  "item.mowziesmobs.earthbore_gauntlet.text.2": "採掘したいものに向かって方向を転換する",
-  "item.mowziesmobs.earthbore_gauntlet.text.3": "採掘したいものに向かって方向を転換する",
-  "item.mowziesmobs.earthbore_gauntlet.text.4": "インベントリにある間回復する",
+  "item.mowziesmobs.earthrend_gauntlet.text.0": "クリエイティブモードのみ",
+  "item.mowziesmobs.earthrend_gauntlet.text.1": "空中で、Shiftを2回押して更に押し続けると回転を始める",
+  "item.mowziesmobs.earthrend_gauntlet.text.2": "採掘したいものに向かって方向を転換する",
+  "item.mowziesmobs.earthrend_gauntlet.text.3": "採掘したいものに向かって方向を転換する",
+  "item.mowziesmobs.earthrend_gauntlet.text.4": "インベントリにある間回復する",
 
   "item.mowziesmobs.mob_remover.text.0": "左クリックで当MODのモブを削除",
 
@@ -240,8 +240,8 @@
   "config.mowziesmobs.suns_blessing_attack_multiplier": "太陽の祝福のダメージ倍率",
   "config.mowziesmobs.suns_blessing_duration": "太陽の祝福の長さ",
   "config.mowziesmobs.solar_beam_cost": "ソーラービームのコスト",
-  "config.mowziesmobs.earthbore_gauntlet": "大地のガントレット",
-  "config.mowziesmobs.earthbore_gauntlet.tooltip": "",
+  "config.mowziesmobs.earthrend_gauntlet": "大地のガントレット",
+  "config.mowziesmobs.earthrend_gauntlet.tooltip": "",
 
   "config.mowziesmobs.tool_data": "道具の設定",
   "config.mowziesmobs.tool_data.tooltip": "",

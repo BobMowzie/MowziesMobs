@@ -38,7 +38,7 @@
   "item.mowziesmobs.test_structure": "Test Structures",
   "item.mowziesmobs.ice_crystal": "Ice Crystal",
   "item.mowziesmobs.earth_talisman": "Earth Talisman",
-  "item.mowziesmobs.earthbore_gauntlet": "Earthbore Gauntlet",
+  "item.mowziesmobs.earthrend_gauntlet": "Earthrend Gauntlet",
 
   "item.mowziesmobs.blowgun.text.0": "Charges quickly",
   "item.mowziesmobs.blowgun.text.1": "Short range",
@@ -84,17 +84,10 @@
   "item.mowziesmobs.grant_suns_blessing.text.8": " entire blessing",
   "item.mowziesmobs.grant_suns_blessing.text.9": ")",
 
-  "item.mowziesmobs.earth_talisman.text.0": "Creative mode only",
-  "item.mowziesmobs.earth_talisman.text.1": "Place in inventory to wield geomancy",
-  "item.mowziesmobs.earth_talisman.text.2": "Right-click earthen ground with empty hand to spawn boulder",
-  "item.mowziesmobs.earth_talisman.text.3": "Punch boulder to fire it as projectile",
-  "item.mowziesmobs.earth_talisman.text.4": "Charge right-click to spawn bigger boulders",
+  "item.mowziesmobs.earthrend_gauntlet.text.0": "§lBoulder Lift§r§7\nRight-click earthen ground to lift a boulder\nPunch boulder to fire it as projectile\nCharge right-click to lift bigger boulders\n",
 
-  "item.mowziesmobs.earthbore_gauntlet.text.0": "Creative mode only",
-  "item.mowziesmobs.earthbore_gauntlet.text.1": "Hold right-click to tunnel through the ground",
-  "item.mowziesmobs.earthbore_gauntlet.text.2": "Look in the direction you'd like to dig",
-  "item.mowziesmobs.earthbore_gauntlet.text.3": "Release right-click to surface and stop tunneling",
-  "item.mowziesmobs.earthbore_gauntlet.text.4": "Recharges while in inventory",
+  "item.mowziesmobs.earthrend_gauntlet.text.1": "§lTunnel§r§7\nRight-click the air to start tunneling through the ground\nHold right-click and look in the direction you'd like to dig\nRelease right-click to surface and stop tunneling",
+  "item.mowziesmobs.earthrend_gauntlet.text.2": "Recharges while in inventory",
 
   "item.mowziesmobs.mob_remover.text.0": "Left-click to remove a Mowzie's Mobs mob",
 
@@ -249,8 +242,8 @@
   "config.mowziesmobs.suns_blessing_duration": "Sun's Blessing Duration",
   "config.mowziesmobs.solar_beam_cost": "Solar Beam Cost",
   "config.mowziesmobs.supernova_cost": "Supernova Cost",
-  "config.mowziesmobs.earthbore_gauntlet": "Earthbore Gauntlet",
-  "config.mowziesmobs.earthbore_gauntlet.tooltip": "",
+  "config.mowziesmobs.earthrend_gauntlet": "Earthrend Gauntlet",
+  "config.mowziesmobs.earthrend_gauntlet.tooltip": "",
 
   "config.mowziesmobs.tool_data": "Tool Controls",
   "config.mowziesmobs.tool_data.tooltip": "",

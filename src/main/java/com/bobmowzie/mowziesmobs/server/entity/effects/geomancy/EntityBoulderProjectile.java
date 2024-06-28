@@ -67,7 +67,7 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
             speed = 0.65f;
         }
 
-        if (caster instanceof Player) damage *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.geomancyAttackMultiplier.get();
+        if (caster instanceof Player) damage *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHREND_GAUNTLET.attackMultiplier.get();
     }
 
     public float getSpeed() {
