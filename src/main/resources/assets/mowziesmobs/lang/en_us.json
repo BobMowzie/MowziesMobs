@@ -75,12 +75,12 @@
 
   "item.mowziesmobs.grant_suns_blessing.text.0": "Grants Sun's Blessing for",
   "item.mowziesmobs.grant_suns_blessing.text.1": "minutes",
-  "item.mowziesmobs.grant_suns_blessing.text.2": "Countdown only begins once you use an ability",
-  "item.mowziesmobs.grant_suns_blessing.text.3": "With empty hand, right-click the ground to call a Sunstrike",
-  "item.mowziesmobs.grant_suns_blessing.text.4": "With empty hand, sneak-left-click to do a Solar Flare",
-  "item.mowziesmobs.grant_suns_blessing.text.5": "With empty hand, sneak-right-click to fire a Solar Beam (costs",
-  "item.mowziesmobs.grant_suns_blessing.text.6": "minutes)",
-  "item.mowziesmobs.grant_suns_blessing.text.7": "With empty hand, sneak, then left and right click at the same time to call a Supernova (costs",
+  "item.mowziesmobs.grant_suns_blessing.text.2": "Countdown only begins once you use an ability\n",
+  "item.mowziesmobs.grant_suns_blessing.text.3": "§lSunstrike§r§7\nWith empty hand, right-click the ground to call a strike from the sky\n",
+  "item.mowziesmobs.grant_suns_blessing.text.4": "§lSolar Flare§r§7\nWith empty hand, sneak-left-click to knock opponents away\n",
+  "item.mowziesmobs.grant_suns_blessing.text.5": "§lSolar Beam§r§7\nWith empty hand, sneak-right-click to fire a beam in the direction you are looking (costs",
+  "item.mowziesmobs.grant_suns_blessing.text.6": "minutes)\n",
+  "item.mowziesmobs.grant_suns_blessing.text.7": "§lSupernova§r§7\nWith empty hand, sneak, then left and right click at the same time to create a massive explosion around you (costs",
   "item.mowziesmobs.grant_suns_blessing.text.8": " entire blessing",
   "item.mowziesmobs.grant_suns_blessing.text.9": ")",
 
