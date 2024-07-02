@@ -76,7 +76,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
     public static int TEST_MAX_RADIUS_HEIGHT = 10;
     public static double TEST_RADIUS_FALLOFF = 5;
 
-    public static final AbilityType<EntitySculptor, HurtAbility<EntitySculptor>> HURT_ABILITY = new AbilityType<>("sculptor_hurt", (type, entity) -> new HurtAbility<>(type, entity,RawAnimation.begin().thenPlay("hurt"), 13, 10));
+    public static final AbilityType<EntitySculptor, HurtAbility<EntitySculptor>> HURT_ABILITY = new AbilityType<>("sculptor_hurt", (type, entity) -> new HurtAbility<>(type, entity,RawAnimation.begin().thenPlay("hurt"), 17, 0));
     public static final AbilityType<EntitySculptor, DieAbility<EntitySculptor>> DIE_ABILITY = new AbilityType<>("sculptor_die", (type, entity) -> new DieAbility<>(type, entity, RawAnimation.begin().thenPlay("die"), 70));
     public static final AbilityType<EntitySculptor, StartTestAbility> START_TEST = new AbilityType<>("testStart", StartTestAbility::new);
     public static final AbilityType<EntitySculptor, FailTestAbility> FAIL_TEST = new AbilityType<>("testFail", FailTestAbility::new);
@@ -207,11 +207,10 @@ public class EntitySculptor extends MowzieGeckoEntity {
     @Override
     protected <E extends GeoEntity> void loopingAnimations(AnimationState<E> event) {
         super.loopingAnimations(event);
-//        if (event.getController() instanceof MowzieAnimationController mowzieAnimationController) {
-//            mowzieAnimationController.checkAndReloadAnims();
-//        }
+        if (event.getController() instanceof MowzieAnimationController mowzieAnimationController) {
+            mowzieAnimationController.checkAndReloadAnims();
+        }
 //        event.getController().setAnimation(RawAnimation.begin().thenLoop("testStart"));
-//        event.getController().setAnimationSpeed(0.5);
     }
 
     @Override
