@@ -62,10 +62,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.Team;
 import net.minecraftforge.registries.ForgeRegistries;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.Animation;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.animation.*;
 
 import java.util.*;
 
@@ -210,7 +207,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
     protected <E extends GeoEntity> void loopingAnimations(AnimationState<E> event) {
         event.getController().transitionLength(10);
         if (isTestObstructed) {
-            event.getController().setAnimation(TEST_OBSTRUCTED);
+            controller.setAnimation(TEST_OBSTRUCTED);
         }
         else {
             super.loopingAnimations(event);

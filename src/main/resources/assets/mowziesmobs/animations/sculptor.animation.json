@@ -756,7 +756,7 @@
 					"position": {
 						"0.0": [0, 0.02, -0.05],
 						"0.0417": [0, "Math.cos((query.anim_time - 0.0) * 2360) * 0.04", "Math.sin((query.anim_time - 0.0) * 2360) * 0.06"],
-						"0.0833": [0, -0.03626, 0.01289],
+						"0.0833": [0, 0.03726, 0],
 						"0.25": [0, 0, 0]
 					}
 				},
@@ -775,10 +775,10 @@
 					},
 					"position": {
 						"0.0": [0, 0, 0],
-						"0.0417": [0, 0.01191, -0.01963],
-						"0.0833": [0, -0.03096, 0.00718],
+						"0.0417": [0, 0.02004, -0.02105],
+						"0.0833": [0, 0.03983, -0.00523],
 						"0.125": [0, "Math.cos((query.anim_time - 0.0) * 2360) * 0.04", "Math.sin((query.anim_time - 0.0) * 2360) * 0.06"],
-						"0.1667": [0, -0.03626, 0.01289],
+						"0.1667": [0, 0.03726, 0],
 						"0.3333": [0, 0, 0]
 					}
 				},
@@ -796,10 +796,10 @@
 					"position": {
 						"0.0": [0, 0.04, -0.08],
 						"0.0417": [0, "Math.cos((query.anim_time - 0.0) * 2360) * 0.1", "Math.sin((query.anim_time - 0.0) * 2360) * 0.1"],
-						"0.0833": [0, -0.09064, 0.02148],
-						"0.125": [0, -0.06665, 0.0158],
-						"0.1667": [0, -0.03066, 0.00727],
-						"0.2083": [0, -0.00666, 0.00158],
+						"0.0833": [0, 0.09315, 0],
+						"0.125": [0, 0.06849, 0],
+						"0.1667": [0, 0.03151, 0],
+						"0.2083": [0, 0.00685, 0],
 						"0.25": [0, 0, 0]
 					}
 				},
@@ -2629,9 +2629,52 @@
 			"animation_length": 8,
 			"bones": {
 				"idleAnimController": {
-					"position": {
-						"vector": [1, 0, 0]
-					}
+					"position": [1, 0, 0]
+				},
+				"chest": {
+					"rotation": [0, 0, 0]
+				},
+				"head": {
+					"rotation": [0, 0, 0]
+				},
+				"eyebrowLeft": {
+					"rotation": [0, 0, 0],
+					"position": [0, 0, 0]
+				},
+				"eyebrowRight": {
+					"rotation": [0, 0, 0],
+					"position": [0, 0, 0]
+				},
+				"beard3": {
+					"rotation": [0, 0, 0],
+					"position": [0, 0, 0]
+				},
+				"shoulderRight": {
+					"rotation": [0, 0, 0]
+				},
+				"lowerArmRight": {
+					"rotation": [0, 0, 0]
+				},
+				"handRight": {
+					"rotation": [0, 0, 0]
+				},
+				"shoulderLeft": {
+					"rotation": [0, 0, 0]
+				},
+				"lowerArmLeft": {
+					"rotation": [0, 0, 0]
+				},
+				"handLeft": {
+					"rotation": [0, 0, 0]
+				},
+				"staffController": {
+					"position": [0, 0, 0]
+				},
+				"handControllerLeft": {
+					"position": [0, 0, 0]
+				},
+				"handControllerRight": {
+					"position": [0, 0, 0]
 				}
 			}
 		},
@@ -21868,7 +21911,6 @@
 			}
 		},
 		"attack_1": {
-			"loop": true,
 			"animation_length": 0.75,
 			"bones": {
 				"body": {
@@ -21877,7 +21919,7 @@
 							"vector": [0, 0, 0]
 						},
 						"0.125": {
-							"vector": [-7.5, -7.5, 0]
+							"vector": [-9.89895, -28.84487, 7.54905]
 						},
 						"0.5": {
 							"vector": [12.5, 5, 0],
@@ -21938,8 +21980,7 @@
 				},
 				"eyebrowLeft": {
 					"rotation": {
-						"vector": [0, 0, -25],
-						"easing": "easeInOutQuad"
+						"vector": ["easeInOutQuad", "easeInOutQuad", "easeInOutQuad"]
 					},
 					"position": {
 						"0.0": {
@@ -21961,8 +22002,7 @@
 				},
 				"eyebrowRight": {
 					"rotation": {
-						"vector": [0, 0, 25],
-						"easing": "easeInOutQuad"
+						"vector": ["easeInOutQuad", "easeInOutQuad", "easeInOutQuad"]
 					},
 					"position": {
 						"0.0": {
@@ -22258,10 +22298,10 @@
 					"position": [1, 0.5, 0]
 				},
 				"shoulderRight": {
-					"rotation": [-14.77616, -20.60773, -7.31338]
+					"rotation": [35.16256, -24.63368, -22.26198]
 				},
 				"lowerArmRight": {
-					"rotation": [216.64199, 45.79656, -112.56863]
+					"rotation": [216.62387, 33.29798, -112.37899]
 				},
 				"handRight": {
 					"rotation": [0, -57.5, 0],
