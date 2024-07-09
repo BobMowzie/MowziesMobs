@@ -361,10 +361,6 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
         return super.finalizeSpawn(world, difficulty, reason, livingData, compound);
     }
 
-    public int getAnimationTick() {
-        return 0;
-    }
-
     protected boolean canHoldVaryingWeapons() {
         return true;
     }

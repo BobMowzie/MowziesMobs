@@ -268,13 +268,13 @@ public class EntityUmvuthanaCrane extends EntityUmvuthanaMinion {
     
     @Override
     public boolean isInvulnerableTo(DamageSource source) {
-        boolean teleporting = getActiveAbilityType() == TELEPORT_ABILITY && getAnimationTick() <= 16;
+        boolean teleporting = getActiveAbilityType() == TELEPORT_ABILITY && getActiveAbility().getTicksInUse() <= 16;
         return super.isInvulnerableTo(source) || ((!active || teleporting || !hasTriedOrSucceededTeleport) && !source.is(DamageTypes.FELL_OUT_OF_WORLD) && timeUntilDeath != 0);
     }
 
     @Override
     public void setSecondsOnFire(int seconds) {
-        boolean teleporting = getActiveAbilityType() == TELEPORT_ABILITY && getAnimationTick() <= 16;
+        boolean teleporting = getActiveAbilityType() == TELEPORT_ABILITY && getActiveAbility().getTicksInUse() <= 16;
         if (!active || teleporting || !hasTriedOrSucceededTeleport) return;
         super.setSecondsOnFire(seconds);
     }
