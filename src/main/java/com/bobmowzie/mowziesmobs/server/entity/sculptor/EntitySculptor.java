@@ -204,12 +204,20 @@ public class EntitySculptor extends MowzieGeckoEntity {
                 .add(Attributes.FOLLOW_RANGE, 40);
     }
 
+    private static RawAnimation TEST_OBSTRUCTED = RawAnimation.begin().thenLoop("test_obstructed");
+
     @Override
     protected <E extends GeoEntity> void loopingAnimations(AnimationState<E> event) {
-        super.loopingAnimations(event);
-        if (event.getController() instanceof MowzieAnimationController mowzieAnimationController) {
-            mowzieAnimationController.checkAndReloadAnims();
+        event.getController().transitionLength(10);
+        if (isTestObstructed) {
+            event.getController().setAnimation(TEST_OBSTRUCTED);
         }
+        else {
+            super.loopingAnimations(event);
+        }
+//        if (event.getController() instanceof MowzieAnimationController mowzieAnimationController) {
+//            mowzieAnimationController.checkAndReloadAnims();
+//        }
 //        event.getController().setAnimation(RawAnimation.begin().thenLoop("testStart"));
     }
 
