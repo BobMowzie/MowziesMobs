@@ -215,7 +215,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 //        if (event.getController() instanceof MowzieAnimationController mowzieAnimationController) {
 //            mowzieAnimationController.checkAndReloadAnims();
 //        }
-//        event.getController().setAnimation(RawAnimation.begin().thenLoop("testStart"));
+//        event.getController().setAnimation(RawAnimation.begin().thenLoop("attack_1"));
     }
 
     @Override

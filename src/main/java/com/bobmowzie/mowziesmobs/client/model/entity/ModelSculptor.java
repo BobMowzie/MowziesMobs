@@ -43,6 +43,7 @@ public class ModelSculptor extends MowzieGeoModel<EntitySculptor> {
     @Override
     public void setCustomAnimations(EntitySculptor entity, long instanceId, AnimationState<EntitySculptor> animationState) {
         GeoBone head = this.getBone("head").get();
+        GeoBone chestJoint = this.getBone("chestJoint").get();
         GeoBone handClosedL = this.getBone("handClosedLeft").get();
         GeoBone handClosedR = this.getBone("handClosedRight").get();
         GeoBone handOpenL = this.getBone("handOpenLeft").get();
@@ -50,8 +51,11 @@ public class ModelSculptor extends MowzieGeoModel<EntitySculptor> {
         GeoBone backCloth = this.getBone("clothBack").get();
 
         EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
-        head.setRotX(head.getRotX() + entityData.headPitch() * ((float) Math.PI / 180F));
-        head.setRotY(head.getRotY() + entityData.netHeadYaw() * ((float) Math.PI / 180F));
+        float torsoAimController = getControllerValue("torsoAimController");
+        head.setRotX(head.getRotX() + entityData.headPitch() * ((float) Math.PI / 180F) * (1.0f - torsoAimController));
+        head.setRotY(head.getRotY() + entityData.netHeadYaw() * ((float) Math.PI / 180F) * (1.0f - torsoAimController));
+        chestJoint.setRotX(chestJoint.getRotX() + entityData.headPitch() * ((float) Math.PI / 180F) * torsoAimController);
+        chestJoint.setRotY(chestJoint.getRotY() + entityData.netHeadYaw() * ((float) Math.PI / 180F) * torsoAimController);
 
         if (entity.isAlive()) {
             idleAnim(entity, animationState);
