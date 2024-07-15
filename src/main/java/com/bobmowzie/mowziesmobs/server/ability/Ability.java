@@ -218,6 +218,10 @@ public class Ability<T extends LivingEntity> {
         return getSectionTrack()[currentSectionIndex];
     }
 
+    public int getCurrentSectionIndex() {
+        return currentSectionIndex;
+    }
+
     public boolean damageInterrupts() {
         return false;
     }

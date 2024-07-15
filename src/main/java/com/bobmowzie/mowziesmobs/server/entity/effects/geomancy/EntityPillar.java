@@ -118,7 +118,7 @@ public class EntityPillar extends EntityGeomancyBase {
             }
         }
         super.tick();
-        if (hasSyncedCaster && (caster == null || caster.isRemoved())) explode();
+        if (hasSyncedCaster && (caster == null || caster.isRemoved() || caster.getHealth() <= 0.0)) explode();
     }
 
     @Override

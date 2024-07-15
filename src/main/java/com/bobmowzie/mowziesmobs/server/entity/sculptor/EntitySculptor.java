@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.sculptor;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
@@ -12,6 +11,7 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.mob.DieAbility;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.mob.HurtAbility;
+import com.bobmowzie.mowziesmobs.server.ability.abilities.player.SimpleAnimationAbility;
 import com.bobmowzie.mowziesmobs.server.ai.UseAbilityAI;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
@@ -73,8 +73,8 @@ public class EntitySculptor extends MowzieGeckoEntity {
     public static int TEST_MAX_RADIUS_HEIGHT = 10;
     public static double TEST_RADIUS_FALLOFF = 5;
 
-    public static final AbilityType<EntitySculptor, HurtAbility<EntitySculptor>> HURT_ABILITY = new AbilityType<>("sculptor_hurt", (type, entity) -> new HurtAbility<>(type, entity,RawAnimation.begin().thenPlay("hurt"), 17, 0));
-    public static final AbilityType<EntitySculptor, DieAbility<EntitySculptor>> DIE_ABILITY = new AbilityType<>("sculptor_die", (type, entity) -> new DieAbility<>(type, entity, RawAnimation.begin().thenPlay("die"), 70));
+    public static final AbilityType<EntitySculptor, HurtAbility<EntitySculptor>> HURT_ABILITY = new AbilityType<>("sculptor_hurt", (type, entity) -> new HurtAbility<>(type, entity,RawAnimation.begin().thenPlay("hurt"), 16, 0));
+    public static final AbilityType<EntitySculptor, SculptorDieAbility> DIE_ABILITY = new AbilityType<>("sculptor_die", SculptorDieAbility::new);
     public static final AbilityType<EntitySculptor, StartTestAbility> START_TEST = new AbilityType<>("testStart", StartTestAbility::new);
     public static final AbilityType<EntitySculptor, FailTestAbility> FAIL_TEST = new AbilityType<>("testFail", FailTestAbility::new);
     public static final AbilityType<EntitySculptor, PassTestAbility> PASS_TEST = new AbilityType<>("testPass", PassTestAbility::new);
@@ -522,6 +522,13 @@ public class EntitySculptor extends MowzieGeckoEntity {
                 player.getY() < yBase + TEST_HEIGHT + yDistMax;
     }
 
+    @Override
+    protected int getDeathDuration() {
+        Ability deathAbility = getActiveAbility();
+        if (deathAbility == null || !deathAbility.isUsing()) return 9;
+        return 120;
+    }
+
     public static class StartTestAbility extends Ability<EntitySculptor> {
         private static int MAX_RANGE_TO_GROUND = 12;
 
@@ -796,6 +803,43 @@ public class EntitySculptor extends MowzieGeckoEntity {
                     getUser().boulders.remove(boulderToFire);
                     boulderToFire = null;
                 }
+            }
+        }
+    }
+
+    public static class SculptorDieAbility extends Ability<EntitySculptor> {
+        private static AbilitySection.AbilitySectionDuration END_SECTION = new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 76);
+
+        public SculptorDieAbility(AbilityType abilityType, EntitySculptor user) {
+            super(abilityType, user, new AbilitySection[] {
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 9),
+                    new AbilitySection.AbilitySectionInfinite(AbilitySection.AbilitySectionType.ACTIVE),
+                    END_SECTION
+            });
+        }
+
+        private static final RawAnimation DEATH_START = RawAnimation.begin().thenPlayAndHold("death_start");
+        private static final RawAnimation DEATH_END = RawAnimation.begin().thenPlayAndHold("death_end");
+
+        @Override
+        public void start() {
+            super.start();
+            playAnimation(DEATH_START);
+        }
+
+        @Override
+        public void tickUsing() {
+            super.tickUsing();
+            if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
+                if (getUser().onGround()) nextSection();
+            }
+        }
+
+        @Override
+        protected void beginSection(AbilitySection section) {
+            super.beginSection(section);
+            if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.RECOVERY) {
+                playAnimation(DEATH_END);
             }
         }
     }

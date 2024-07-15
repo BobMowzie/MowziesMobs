@@ -66,7 +66,7 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
     @Override
     public void tick() {
         super.tick();
-        if (sculptor == null || pillar == null) {
+        if (sculptor == null || pillar == null || sculptor.getHealth() <= 0.0) {
             if (caster instanceof EntitySculptor) {
                 sculptor = (EntitySculptor) caster;
                 sculptor.boulders.add(this);
