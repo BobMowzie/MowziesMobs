@@ -69,7 +69,7 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
         if (sculptor == null || pillar == null || sculptor.getHealth() <= 0.0) {
             if (caster instanceof EntitySculptor) {
                 sculptor = (EntitySculptor) caster;
-                sculptor.boulders.add(this);
+                if (!level().isClientSide()) sculptor.boulders.add(this);
                 pillar = sculptor.getPillar();
             }
         }
@@ -96,6 +96,7 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
 
         if (!replacementBoulder && pillar != null && !level().isClientSide()) {
             if (pillar.getY() + pillar.getHeight() >= this.getY() && !active) activate();
+            else if (!pillar.isRising() && !active && this.getY() - pillar.getY() < pillar.tickCount) activate();
         }
 
         if (descending) {
@@ -139,7 +140,7 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
             if (success && i > 0) sculptor.numLivePaths++;
         }
 
-//        this.activate();
+        this.activate();
     }
 
     @Override
@@ -296,6 +297,11 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
         if (sculptor != null) {
             sculptor.boulders.remove(this);
         }
+    }
+
+    @Override
+    protected float fallingBlockCountMultiplier() {
+        return 0.2f;
     }
 
     @Override

@@ -210,6 +210,10 @@ public class EntityPillar extends EntityGeomancyBase {
             if (caster instanceof EntitySculptor) {
                 EntitySculptor sculptor = (EntitySculptor)caster;
                 if (sculptor.getPillar() == null) sculptor.setPillar(this);
+
+                if (level().getBlockState(caster.blockPosition().above((int) (caster.getBbHeight() + 1))).blocksMotion()) {
+                    stopRising();
+                }
             }
             super.tick();
             if (getHeight() >= getDesiredHeight()) {
@@ -220,9 +224,9 @@ public class EntityPillar extends EntityGeomancyBase {
         @Override
         public void stopRising() {
             super.stopRising();
-            if (caster instanceof EntitySculptor sculptor) {
-                sculptor.numLivePaths = 0;
-            }
+//            if (caster instanceof EntitySculptor sculptor) {
+//                sculptor.numLivePaths = 0;
+//            }
         }
     }
 }

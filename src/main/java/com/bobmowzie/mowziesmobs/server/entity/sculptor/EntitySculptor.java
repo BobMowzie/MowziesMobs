@@ -586,11 +586,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
         @Override
         protected void beginSection(AbilitySection section) {
             super.beginSection(section);
-            if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE && spawnPillarPos != null) {
-//                if (!getUser().level().isClientSide()) {
-//                    EntityBlockSwapper.EntityBlockSwapperSculptor swapper = new EntityBlockSwapper.EntityBlockSwapperSculptor(EntityHandler.BLOCK_SWAPPER_SCULPTOR.get(), getUser().level(), getUser().blockPosition(), Blocks.AIR.defaultBlockState(), 60, false, false);
-//                    getUser().level().addFreshEntity(swapper);
-//                }
+            if (!getUser().level().isClientSide() && section.sectionType == AbilitySection.AbilitySectionType.ACTIVE && spawnPillarPos != null) {
 
                 if (spawnPillarBlock == null || !EffectGeomancy.isBlockUseable(spawnPillarBlock)) spawnPillarBlock = Blocks.STONE.defaultBlockState();
                 getUser().pillar = new EntityPillar.EntityPillarSculptor(EntityHandler.PILLAR_SCULPTOR.get(), getUser().level(), getUser(), Blocks.STONE.defaultBlockState(), spawnPillarPos);
@@ -616,14 +612,6 @@ public class EntitySculptor extends MowzieGeckoEntity {
                     Vec3 vec = userPos.subtract(entityPos).normalize().scale(-Math.min(1.0 / userPos.distanceToSqr(entityPos), 2));
                     livingEntity.push(vec.x, vec.y, vec.z);
                 }
-
-//                if (!getUser().level().isClientSide() && getUser().pillar != null) {
-//                    getUser().setPos(getUser().pillar.position().add(0, getUser().pillar.getHeight(), 0));
-//                }
-//
-//                if (getUser().pillar != null && getUser().pillar.getHeight() >= TEST_HEIGHT) {
-//                    nextSection();
-//                }
             }
         }
 
@@ -661,7 +649,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
             super.tickUsing();
             if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
                 if (!getUser().level().isClientSide() && getUser().pillar != null) {
-                    getUser().setPos(getUser().pillar.position().add(0, getUser().pillar.getHeight(), 0));
+                    getUser().setPos(getUser().pillar.position().add(0, getUser().pillar.getHeight()+0.2, 0));
                 }
                 if (getUser().pillar == null || getUser().pillar.isRemoved()) {
                     AbilityHandler.INSTANCE.sendJumpToSectionMessage(getUser(), this.getAbilityType(), 1);
@@ -762,12 +750,11 @@ public class EntitySculptor extends MowzieGeckoEntity {
             });
         }
 
-        private static RawAnimation ATTACK_START = RawAnimation.begin().thenLoop("attack_1");
+        private static RawAnimation ATTACK_START = RawAnimation.begin().thenPlayAndHold("attack_1");
 
         @Override
         public void start() {
             super.start();
-            playAnimation(ATTACK_START);
         }
 
         @Override
@@ -789,6 +776,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
                         }
                     }
                     if (boulderToFire == null) AbilityHandler.INSTANCE.sendInterruptAbilityMessage(getUser(), ATTACK_ABILITY);
+                    else playAnimation(ATTACK_START);
                     prevTargetPos = target.position().add(0, target.getBbHeight() / 2.0, 0);
                 }
                 if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
@@ -919,6 +907,10 @@ public class EntitySculptor extends MowzieGeckoEntity {
             }
             if (sculptor.boulders.isEmpty() && sculptor.getActiveAbilityType() != START_TEST) {
                 StartTestAbility.placeStartingBoulders(sculptor);
+            }
+
+            if (sculptor.getTarget() != null) {
+                sculptor.getLookControl().setLookAt(sculptor.getTarget(), 30f, 30f);
             }
         }
 

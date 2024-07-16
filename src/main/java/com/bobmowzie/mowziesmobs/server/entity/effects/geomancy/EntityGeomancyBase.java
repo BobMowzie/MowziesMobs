@@ -176,7 +176,7 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements Ge
             playSound(MMSounds.EFFECT_GEOMANCY_BREAK_LARGE_1.get(), 1.5f, 0.5f);
             EntityCameraShake.cameraShake(level(), position(), 20, 0.05f, 0, 20);
 
-            for (int i = 0; i < 7; i++) {
+            for (int i = 0; i < 7 * fallingBlockCountMultiplier(); i++) {
                 Vec3 particlePos = new Vec3(random.nextFloat() * 2.5f, 0, 0);
                 particlePos = particlePos.yRot((float) (random.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.xRot((float) (random.nextFloat() * 2 * Math.PI));
@@ -188,6 +188,10 @@ public abstract class EntityGeomancyBase extends EntityMagicEffect implements Ge
             }
         }
         discard();
+    }
+
+    protected float fallingBlockCountMultiplier() {
+        return 1;
     }
 
     private void spawnExplosionParticles() {
