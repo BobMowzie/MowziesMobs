@@ -125,7 +125,7 @@ public class EntityBoulderBase extends EntityGeomancyBase implements IEntityAddi
             setBoundingBox(aabb);
         }
 
-        if (risingTick < finishedRisingTick + 2) {
+        if (active && risingTick < finishedRisingTick + 2) {
             List<Entity> popUpEntities = level().getEntities(this, getBoundingBox());
             for (Entity entity:popUpEntities) {
                 if (entity.isPickable() && !(entity instanceof EntityBoulderBase)) {

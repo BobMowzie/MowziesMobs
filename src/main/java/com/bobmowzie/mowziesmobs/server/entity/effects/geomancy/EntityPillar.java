@@ -214,6 +214,8 @@ public class EntityPillar extends EntityGeomancyBase {
                 if (level().getBlockState(caster.blockPosition().above((int) (caster.getBbHeight() + 1))).blocksMotion()) {
                     stopRising();
                 }
+
+                if (!level().isClientSide() && !sculptor.isFighting() && !sculptor.isTesting()) startFalling();
             }
             super.tick();
             if (getHeight() >= getDesiredHeight()) {

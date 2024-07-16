@@ -81,16 +81,20 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
         return boundingBox;
     }
 
-    @Override
-    public void tick() {
-        if (startActive() && tickCount == 1) activate();
-        super.tick();
-        if (caster == null || caster.isRemoved()) explode();
+    protected void findRidingEntities() {
         if (ridingEntities != null) ridingEntities.clear();
         List<Entity> onTopOfEntities = level().getEntities(this, getBoundingBox().contract(0, getBbHeight() - 1, 0).move(new Vec3(0, getBbHeight() - 0.5, 0)).inflate(0.6,0.5,0.6));
         for (Entity entity : onTopOfEntities) {
             if (entity != null && entity.isPickable() && !(entity instanceof EntityBoulderProjectile) && entity.getY() >= this.getY() + 0.2) ridingEntities.add(entity);
         }
+    }
+
+    @Override
+    public void tick() {
+        if (startActive() && tickCount == 1) activate();
+        super.tick();
+        if (caster == null || caster.isRemoved()) explode();
+        findRidingEntities();
         if (travelling){
             for (Entity entity : ridingEntities) {
                 entity.move(MoverType.SHULKER_BOX, getDeltaMovement().add(0, 0.1, 0));
@@ -135,6 +139,10 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
             });
             didShootParticles = true;
         }
+    }
+
+    public List<Entity> getRidingEntities() {
+        return ridingEntities;
     }
 
     protected boolean startActive() {

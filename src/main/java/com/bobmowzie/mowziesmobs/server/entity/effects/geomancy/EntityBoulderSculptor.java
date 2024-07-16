@@ -71,6 +71,8 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
                 sculptor = (EntitySculptor) caster;
                 if (!level().isClientSide()) sculptor.boulders.add(this);
                 pillar = sculptor.getPillar();
+
+                if (!sculptor.isFighting() && !sculptor.isTesting()) explode();
             }
         }
 
@@ -140,7 +142,7 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
             if (success && i > 0) sculptor.numLivePaths++;
         }
 
-        this.activate();
+//        this.activate();
     }
 
     @Override
@@ -328,6 +330,9 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
         boulderSculptor.delayActivation(40);
         level().addFreshEntity(boulderSculptor);
     }
+
+    @Override
+    protected void findRidingEntities() {}
 
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
