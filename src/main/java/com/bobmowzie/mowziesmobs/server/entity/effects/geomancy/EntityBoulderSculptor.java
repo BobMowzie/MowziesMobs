@@ -46,7 +46,7 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
     }
 
     public EntityBoulderSculptor(EntityType<? extends EntityBoulderSculptor> type, EntityBoulderSculptor other) {
-        super(type, other.level(), other.caster, other.storedBlock, other.blockPosition(), other.getTier());
+        super(type, other.level(), other.getCaster(), other.storedBlock, other.blockPosition(), other.getTier());
     }
 
     public void descend() {
@@ -67,8 +67,8 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
     public void tick() {
         super.tick();
         if (sculptor == null || pillar == null || sculptor.getHealth() <= 0.0) {
-            if (caster instanceof EntitySculptor) {
-                sculptor = (EntitySculptor) caster;
+            if (getCaster() instanceof EntitySculptor) {
+                sculptor = (EntitySculptor) getCaster();
                 if (!level().isClientSide()) sculptor.boulders.add(this);
                 pillar = sculptor.getPillar();
 
@@ -87,12 +87,12 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
             if (orbitSpeed > 0) orbitSpeed -= 0.001;
         }
 
-        if (!level().isClientSide() && tickCount > 2 && hasSyncedCaster && (sculptor == null || sculptor.isRemoved() || pillar == null || pillar.isRemoved() || (pillar.isFalling() && !descending))) {
+        if (!level().isClientSide() && tickCount > 2 && (sculptor == null || sculptor.isRemoved() || pillar == null || pillar.isRemoved() || (pillar.isFalling() && !descending))) {
             explode();
             return;
         }
 
-        if (!replacementBoulder && tickCount >= 2 && !spawnedNextBoulders && hasSyncedCaster) {
+        if (!replacementBoulder && tickCount >= 2 && !spawnedNextBoulders) {
             nextBoulders();
         }
 
@@ -119,7 +119,7 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
     }
 
     public void nextBoulders() {
-        if (caster == null || sculptor == null || pillar == null) return;
+        if (getCaster() == null || sculptor == null || pillar == null) return;
         spawnedNextBoulders = true;
         if (level().isClientSide()) return;
 
@@ -153,7 +153,7 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
     public boolean nextSingleBoulder() {
         int whichTierIndex = (int) (Math.pow(random.nextFloat(), 2) * (GeomancyTier.values().length - 2) + 1);
         GeomancyTier nextTier = GeomancyTier.values()[whichTierIndex];
-        EntityBoulderSculptor nextBoulder = new EntityBoulderSculptor(EntityHandler.BOULDER_SCULPTOR.get(), level(), caster, getBlock(), blockPosition(), nextTier);
+        EntityBoulderSculptor nextBoulder = new EntityBoulderSculptor(EntityHandler.BOULDER_SCULPTOR.get(), level(), getCaster(), getBlock(), blockPosition(), nextTier);
 
         // Try many times to find a good placement for the next boulder
         for (int j = 0; j < MAX_TRIES; j++) {
@@ -202,7 +202,7 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
         EntityDimensions thisDims = SIZE_MAP.get(this.getTier());
         EntityDimensions nextDims = SIZE_MAP.get(nextBoulder.getTier());
         Vec3 startLocation = position();
-        Vec2 fromPillarPos = new Vec2((float) (caster.getX() - startLocation.x), (float) (caster.getZ() - startLocation.z));
+        Vec2 fromPillarPos = new Vec2((float) (getCaster().getX() - startLocation.x), (float) (getCaster().getZ() - startLocation.z));
         float horizontalOffset = Mth.nextFloat(this.random, 1, MAX_DIST_HORIZONTAL) + thisDims.width/2f + nextDims.width/2f;
         float verticalOffset = Mth.nextFloat(this.random, 0, MAX_DIST_VERTICAL) - (nextDims.height - thisDims.height);
 
@@ -231,7 +231,7 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
         EntityDimensions thisDims = SIZE_MAP.get(this.getTier());
         EntityDimensions nextDims = SIZE_MAP.get(nextBoulder.getTier());
         Vec3 startLocation = position();
-        Vec2 fromPillarPos = new Vec2((float) (caster.getX() - startLocation.x), (float) (caster.getZ() - startLocation.z));
+        Vec2 fromPillarPos = new Vec2((float) (getCaster().getX() - startLocation.x), (float) (getCaster().getZ() - startLocation.z));
         float horizontalOffset = Mth.nextFloat(this.random, 1, MAX_DIST_HORIZONTAL) + thisDims.width/2f + nextDims.width/2f;
 
         float baseAngle = (float) -Math.toDegrees(Math.atan2(fromPillarPos.y, fromPillarPos.x));
@@ -283,8 +283,8 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
     }
 
     public float getHeightFrac() {
-        if (caster instanceof EntitySculptor) {
-            EntitySculptor sculptor = (EntitySculptor) caster;
+        if (getCaster() instanceof EntitySculptor) {
+            EntitySculptor sculptor = (EntitySculptor) getCaster();
             EntityPillar pillar = sculptor.getPillar();
             if (pillar != null) {
                 return (float) (position().y() + getBbHeight() - pillar.getY()) / EntitySculptor.TEST_HEIGHT;
@@ -330,9 +330,6 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
         boulderSculptor.delayActivation(40);
         level().addFreshEntity(boulderSculptor);
     }
-
-    @Override
-    protected void findRidingEntities() {}
 
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {

@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.server.message.MessageLinkEntities;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -19,7 +20,6 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.util.List;
@@ -30,7 +30,7 @@ import java.util.UUID;
  * Created by BobMowzie on 9/2/2018.
  */
 public abstract class EntityMagicEffect extends Entity implements ILinkedEntity {
-    public LivingEntity caster;
+    private LivingEntity cachedCaster;
     protected boolean hasSyncedCaster = false;
     private static final EntityDataAccessor<Optional<UUID>> CASTER = SynchedEntityData.defineId(EntityMagicEffect.class, EntityDataSerializers.OPTIONAL_UUID);
 
@@ -63,6 +63,21 @@ public abstract class EntityMagicEffect extends Entity implements ILinkedEntity 
         getEntityData().set(CASTER, Optional.of(id));
     }
 
+    public LivingEntity getCaster() {
+        if (this.cachedCaster != null && !this.cachedCaster.isRemoved()) {
+            return this.cachedCaster;
+        } else if (this.getCasterID().isPresent() && this.level() instanceof ServerLevel) {
+            Entity entity = ((ServerLevel)this.level()).getEntity(this.getCasterID().get());
+            if (entity instanceof LivingEntity) {
+                cachedCaster = (LivingEntity) entity;
+                MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> this), new MessageLinkEntities(this, cachedCaster));
+            }
+            return this.cachedCaster;
+        } else {
+            return null;
+        }
+    }
+
     @Override
     public boolean isPickable() {
         return false;
@@ -80,22 +95,21 @@ public abstract class EntityMagicEffect extends Entity implements ILinkedEntity 
     @Override
     public void onAddedToWorld() {
         super.onAddedToWorld();
-        if (!level().isClientSide() && getCasterID().isPresent() && caster == null) {
-            Entity casterEntity = ((ServerLevel)this.level()).getEntity(getCasterID().get());
-            if (casterEntity instanceof LivingEntity) {
-                caster = (LivingEntity) casterEntity;
-                MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> this), new MessageLinkEntities(this, caster));
-            }
-            hasSyncedCaster = true;
-        }
+//        if (!level().isClientSide() && getCasterID().isPresent() && cachedCaster == null) {
+//            Entity casterEntity = ((ServerLevel)this.level()).getEntity(getCasterID().get());
+//            if (casterEntity instanceof LivingEntity) {
+//                cachedCaster = (LivingEntity) casterEntity;
+//                MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> this), new MessageLinkEntities(this, cachedCaster));
+//            }
+//            hasSyncedCaster = true;
+//        }
     }
 
     @Override
     public void link(Entity entity) {
         if (entity instanceof LivingEntity) {
-            caster = (LivingEntity) entity;
+            cachedCaster = (LivingEntity) entity;
         }
-        hasSyncedCaster = true;
     }
 
     @Override
@@ -138,6 +152,16 @@ public abstract class EntityMagicEffect extends Entity implements ILinkedEntity 
 
     @Override
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
+        LivingEntity entity = this.cachedCaster;
+        return new ClientboundAddEntityPacket(this, entity == null ? 0 : entity.getId());
+    }
+
+    @Override
+    public void recreateFromPacket(ClientboundAddEntityPacket packet) {
+        super.recreateFromPacket(packet);
+        Entity entity = this.level().getEntity(packet.getData());
+        if (entity instanceof LivingEntity) {
+            cachedCaster = (LivingEntity) entity;
+        }
     }
 }

@@ -4,11 +4,10 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleRotation;
-import com.bobmowzie.mowziesmobs.client.sound.BossMusicPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
+import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.google.common.collect.Iterables;
@@ -67,7 +66,7 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
             speed = 0.65f;
         }
 
-        if (caster instanceof Player) damage *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHREND_GAUNTLET.attackMultiplier.get();
+        if (getCaster() instanceof Player) damage *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHREND_GAUNTLET.attackMultiplier.get();
     }
 
     public float getSpeed() {
@@ -82,10 +81,13 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
     }
 
     protected void findRidingEntities() {
-        if (ridingEntities != null) ridingEntities.clear();
-        List<Entity> onTopOfEntities = level().getEntities(this, getBoundingBox().contract(0, getBbHeight() - 1, 0).move(new Vec3(0, getBbHeight() - 0.5, 0)).inflate(0.6,0.5,0.6));
-        for (Entity entity : onTopOfEntities) {
-            if (entity != null && entity.isPickable() && !(entity instanceof EntityBoulderProjectile) && entity.getY() >= this.getY() + 0.2) ridingEntities.add(entity);
+        if (!(getCaster() instanceof EntitySculptor)) {
+            if (ridingEntities != null) ridingEntities.clear();
+            List<Entity> onTopOfEntities = level().getEntities(this, getBoundingBox().contract(0, getBbHeight() - 1, 0).move(new Vec3(0, getBbHeight() - 0.5, 0)).inflate(0.6, 0.5, 0.6));
+            for (Entity entity : onTopOfEntities) {
+                if (entity != null && entity.isPickable() && !(entity instanceof EntityBoulderProjectile) && entity.getY() >= this.getY() + 0.2)
+                    ridingEntities.add(entity);
+            }
         }
     }
 
@@ -93,7 +95,7 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
     public void tick() {
         if (startActive() && tickCount == 1) activate();
         super.tick();
-        if (caster == null || caster.isRemoved()) explode();
+        if (getCaster() == null || getCaster().isRemoved()) explode();
         findRidingEntities();
         if (travelling){
             for (Entity entity : ridingEntities) {
@@ -106,12 +108,12 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
         if (travelling && !entitiesHit.isEmpty()) {
             for (Entity entity : entitiesHit) {
                 if (level().isClientSide) continue;
-                if (entity == caster) continue;
+                if (entity == getCaster()) continue;
                 if (entity.noPhysics) continue;
                 if (!entity.canBeHitByProjectile()) continue;
                 if (!travellingBlockedBy(entity)) continue;
                 if (ridingEntities != null && ridingEntities.contains(entity)) continue;
-                if (caster != null) entity.hurt(damageSources().mobProjectile(this, caster), damage);
+                if (getCaster() != null) entity.hurt(damageSources().mobProjectile(this, getCaster()), damage);
                 else entity.hurt(damageSources().generic(), damage);
                 if (isAlive() && boulderSize != GeomancyTier.HUGE) this.explode();
             }

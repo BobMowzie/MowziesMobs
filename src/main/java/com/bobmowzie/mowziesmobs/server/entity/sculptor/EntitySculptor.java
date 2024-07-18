@@ -9,29 +9,31 @@ import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
-import com.bobmowzie.mowziesmobs.server.ability.abilities.mob.DieAbility;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.mob.HurtAbility;
-import com.bobmowzie.mowziesmobs.server.ability.abilities.player.SimpleAnimationAbility;
 import com.bobmowzie.mowziesmobs.server.ai.UseAbilityAI;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieGeckoEntity;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderProjectile;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderSculptor;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityGeomancyBase;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityPillar;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerSculptorTrade;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
+import com.bobmowzie.mowziesmobs.server.message.MessageLinkEntities;
 import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -47,6 +49,7 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
@@ -55,16 +58,16 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec2;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.*;
 import net.minecraft.world.scores.Team;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animation.*;
 
+import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Predicate;
 
 public class EntitySculptor extends MowzieGeckoEntity {
     public static int TEST_HEIGHT = 50;
@@ -73,12 +76,15 @@ public class EntitySculptor extends MowzieGeckoEntity {
     public static int TEST_MAX_RADIUS_HEIGHT = 10;
     public static double TEST_RADIUS_FALLOFF = 5;
 
+    public static float DEFENSE_HEALTH_THRESHOLD = 0.85f;
+
     public static final AbilityType<EntitySculptor, HurtAbility<EntitySculptor>> HURT_ABILITY = new AbilityType<>("sculptor_hurt", (type, entity) -> new HurtAbility<>(type, entity,RawAnimation.begin().thenPlay("hurt"), 16, 0));
     public static final AbilityType<EntitySculptor, SculptorDieAbility> DIE_ABILITY = new AbilityType<>("sculptor_die", SculptorDieAbility::new);
     public static final AbilityType<EntitySculptor, StartTestAbility> START_TEST = new AbilityType<>("testStart", StartTestAbility::new);
     public static final AbilityType<EntitySculptor, FailTestAbility> FAIL_TEST = new AbilityType<>("testFail", FailTestAbility::new);
     public static final AbilityType<EntitySculptor, PassTestAbility> PASS_TEST = new AbilityType<>("testPass", PassTestAbility::new);
     public static final AbilityType<EntitySculptor, AttackAbility> ATTACK_ABILITY = new AbilityType<>("attack", AttackAbility::new);
+    public static final AbilityType<EntitySculptor, GuardAbility> GUARD_ABILITY = new AbilityType<>("guard", GuardAbility::new);
 
     private static final EntityDataAccessor<ItemStack> DESIRES = SynchedEntityData.defineId(EntitySculptor.class, EntityDataSerializers.ITEM_STACK);
     private static final EntityDataAccessor<Boolean> IS_TRADING = SynchedEntityData.defineId(EntitySculptor.class, EntityDataSerializers.BOOLEAN);
@@ -100,6 +106,8 @@ public class EntitySculptor extends MowzieGeckoEntity {
     private EntityPillar.EntityPillarSculptor pillar;
     public int numLivePaths = 0;
     private HurtByTargetGoal hurtByTargetAI;
+
+    protected Projectile guardProjectileTarget;
 
     public List<EntityBoulderSculptor> boulders = new ArrayList<>();
 
@@ -142,7 +150,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
             @Override
             public boolean canUse() {
-                return super.canUse() && getHealthRatio() < 0.7;
+                return super.canUse() && getHealthRatio() < DEFENSE_HEALTH_THRESHOLD;
             }
 
             @Override
@@ -287,6 +295,10 @@ public class EntitySculptor extends MowzieGeckoEntity {
                 isTestObstructedSoFar = false;
             }
         }
+
+//        if (getActiveAbility() == null && tickCount % 60 == 0) {
+//            sendAbilityMessage(GUARD_ABILITY);
+//        }
     }
 
     public boolean checkTestObstructed() {
@@ -423,7 +435,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
     }
 
     public boolean isTesting() {
-        return testing;
+        return getTestingPlayerID().isPresent();
     }
 
     public Optional<UUID> getTestingPlayerID() {
@@ -499,7 +511,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     @Override
     public AbilityType<?, ?>[] getAbilities() {
-        return new AbilityType[] {START_TEST, FAIL_TEST, PASS_TEST, HURT_ABILITY, DIE_ABILITY, ATTACK_ABILITY};
+        return new AbilityType[] {START_TEST, FAIL_TEST, PASS_TEST, HURT_ABILITY, DIE_ABILITY, ATTACK_ABILITY, GUARD_ABILITY};
     }
 
     @Override
@@ -578,6 +590,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
         }
 
         public static void placeStartingBoulders(EntitySculptor sculptor) {
+            if (sculptor.pillar == null) return;
             RandomSource rand = sculptor.getRandom();
             int numStartBoulders = rand.nextInt(2, 5);
             float angleOffset = rand.nextFloat() * (float) (2f * Math.PI);
@@ -658,7 +671,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
         public void tickUsing() {
             super.tickUsing();
             if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
-                if (!getUser().level().isClientSide() && getUser().pillar != null) {
+                if (!getUser().level().isClientSide() && getUser().pillar != null && getUser().pillar.getHeight() > 1) {
                     getUser().setPos(getUser().pillar.position().add(0, getUser().pillar.getHeight()+0.2, 0));
                 }
                 if (getUser().pillar == null || getUser().pillar.isRemoved()) {
@@ -798,18 +811,21 @@ public class EntitySculptor extends MowzieGeckoEntity {
             if (!getUser().level().isClientSide() && getUser().getTarget() != null) {
                 LivingEntity target = getUser().getTarget();
                 if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
-                    Vec3 targetPos = target.position().add(0, target.getBbHeight() / 2.0, 0);
-                    double timeToReach = boulderToFire.position().subtract(targetPos).length() / boulderToFire.getSpeed();
-                    Vec3 targetMovement = targetPos.subtract(prevTargetPos).scale(timeToReach * 0.93 * 1.0/4.0);
-                    targetMovement = targetMovement.multiply(1, 0, 1);
-                    Vec3 futureTargetPos = targetPos.add(targetMovement);
-                    Vec3 projectileMid = boulderToFire.position().add(0, boulderToFire.getBbHeight() / 2.0, 0);
-                    Vec3 shootVec = futureTargetPos.subtract(projectileMid).normalize();
-                    boulderToFire.shoot(shootVec.scale(boulderToFire.getSpeed()));
-                    getUser().boulders.remove(boulderToFire);
+                    shootBoulderAtTarget(target, prevTargetPos, boulderToFire, 0.93f);
                     boulderToFire = null;
                 }
             }
+        }
+
+        public static void shootBoulderAtTarget(LivingEntity target, Vec3 prevTargetPos, EntityBoulderProjectile boulderToFire, float timeScale) {
+            Vec3 targetPos = target.position().add(0, target.getBbHeight() / 2.0, 0);
+            double timeToReach = boulderToFire.position().subtract(targetPos).length() / boulderToFire.getSpeed();
+            Vec3 targetMovement = targetPos.subtract(prevTargetPos).scale(timeToReach * timeScale * 1.0/4.0);
+            targetMovement = targetMovement.multiply(1, 0, 1);
+            Vec3 futureTargetPos = targetPos.add(targetMovement);
+            Vec3 projectileMid = boulderToFire.position().add(0, boulderToFire.getBbHeight() / 2.0, 0);
+            Vec3 shootVec = futureTargetPos.subtract(projectileMid).normalize();
+            boulderToFire.shoot(shootVec.scale(boulderToFire.getSpeed()));
         }
     }
 
@@ -846,6 +862,112 @@ public class EntitySculptor extends MowzieGeckoEntity {
             super.beginSection(section);
             if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.RECOVERY) {
                 playAnimation(DEATH_END);
+            }
+        }
+    }
+
+    public static class GuardAbility extends Ability<EntitySculptor> {
+        private EntityBoulderProjectile boulder;
+        private UUID boulderID;
+        private Entity target;
+        private Vec3 prevTargetPos;
+
+        public GuardAbility(AbilityType abilityType, EntitySculptor user) {
+            super(abilityType, user, new AbilitySection[] {
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 11),
+                    new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 17)
+            });
+        }
+
+        private static final RawAnimation BLOCK = RawAnimation.begin().thenPlay("guard");
+
+        @Override
+        public void start() {
+            super.start();
+            playAnimation(BLOCK);
+            if (!getUser().level().isClientSide()) {
+                target = getUser().guardProjectileTarget.getOwner();
+                if (target != null) {
+                    prevTargetPos = target.position().add(0, target.getBbHeight() / 2.0, 0);
+                }
+            }
+        }
+
+        @Override
+        public void tickUsing() {
+            super.tickUsing();
+            if (getBoulder() != null && getBoulder().getCaster() != null) {
+                getUser().getLookControl().setLookAt(getBoulder().getCaster(), 60f, 60f);
+            }
+        }
+
+        @Override
+        protected void beginSection(AbilitySection section) {
+            super.beginSection(section);
+            if (!getUser().level().isClientSide()) {
+                if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.STARTUP) {
+                    boulder = new EntityBoulderProjectile(EntityHandler.BOULDER_PROJECTILE.get(), getUser().level(), getUser(), Blocks.STONE.defaultBlockState(), BlockPos.ZERO, EntityGeomancyBase.GeomancyTier.SMALL);
+
+                    Vec3 betweenSculptorAndProjectile = getUser().guardProjectileTarget.position().subtract(getUser().position()).normalize();
+                    boulder.setPos(getUser().position().add(0, getUser().getBbHeight() / 2f, 0).add(betweenSculptorAndProjectile.scale(2.0f).subtract(0, boulder.getBbHeight()/2.0f, 0)));
+
+                    boulder.activate();
+                    getUser().level().addFreshEntity(boulder);
+                    boulderID = boulder.getUUID();
+                } else if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE && getBoulder() != null) {
+                    if (getUser().getTarget() != null) {
+                        AttackAbility.shootBoulderAtTarget(getUser().getTarget(), prevTargetPos, getBoulder(), 0.45f);
+                    }
+                    else {
+                        getBoulder().explode();
+                    }
+                }
+            }
+        }
+
+        @Override
+        public CompoundTag writeNBT() {
+            CompoundTag nbt = super.writeNBT();
+            if (boulderID != null) {
+                nbt.putUUID("boulder_guard", boulderID);
+            }
+            return nbt;
+        }
+
+        @Override
+        public void readNBT(Tag nbt) {
+            super.readNBT(nbt);
+            CompoundTag compound = (CompoundTag) nbt;
+            if (compound.hasUUID("boulder_guard")) {
+                boulderID = compound.getUUID("boulder_guard");
+            }
+        }
+
+        public EntityBoulderProjectile getBoulder() {
+            if (boulder != null && !boulder.isRemoved()) {
+                return boulder;
+            }
+            else if (boulderID != null && getUser().level() instanceof ServerLevel) {
+                Entity entity = ((ServerLevel) getUser().level()).getEntity(boulderID);
+                if (entity instanceof EntityBoulderProjectile) {
+                    boulder = (EntityBoulderProjectile) entity;
+                }
+                return boulder;
+            }
+            return null;
+        }
+
+        @Override
+        public boolean canCancelActiveAbility() {
+            return getUser().getActiveAbilityType() == ATTACK_ABILITY || getUser().getActiveAbilityType() == HURT_ABILITY;
+        }
+
+        @Override
+        public void end() {
+            super.end();
+            if (getBoulder() != null) {
+                getBoulder().explode();
             }
         }
     }
@@ -894,10 +1016,23 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     public static class CombatBehaviorGoal extends Goal {
         private final EntitySculptor sculptor;
+        protected final Predicate<Projectile> guardTargetSelector;
+
+        private static final float GUARD_DISTANCE = 8;
 
         public CombatBehaviorGoal(EntitySculptor sculptor) {
             this.sculptor = sculptor;
             this.setFlags(EnumSet.of(Goal.Flag.MOVE, Flag.LOOK));
+
+            this.guardTargetSelector = target -> {
+                Vec3 aActualMotion = new Vec3(target.getX() - target.xo, target.getY() - target.yo, target.getZ() - target.zo);
+                if (aActualMotion.length() < 0.1 || target.tickCount < 0) {
+                    return false;
+                }
+                if (!sculptor.getSensing().hasLineOfSight(target)) return false;
+                float dot = (float) target.getDeltaMovement().normalize().dot(sculptor.position().subtract(target.position()).normalize());
+                return !(dot < 0.8);
+            };
         }
 
         @Override
@@ -911,6 +1046,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
             super.start();
             sculptor.setFighting(true);
             if (sculptor.getPillar() != null && sculptor.getPillar().getHeight() < TEST_HEIGHT) {
+                // TODO: When game quits while sculptor is fighting, pillar is removed but sculptor still thinks its there. So it will do this branch instead of making a new pillar
                 sculptor.getPillar().startRising();
             }
             else {
@@ -928,9 +1064,34 @@ public class EntitySculptor extends MowzieGeckoEntity {
                 StartTestAbility.placeStartingBoulders(sculptor);
             }
 
-            if (sculptor.getTarget() != null) {
+            sculptor.guardProjectileTarget = this.getMostMovingTowardsMeEntity(Projectile.class, this.guardTargetSelector, this.sculptor, this.sculptor.getBoundingBox().inflate(GUARD_DISTANCE, GUARD_DISTANCE, GUARD_DISTANCE));
+            if (sculptor.guardProjectileTarget != null) {
+                AbilityHandler.INSTANCE.sendAbilityMessage(sculptor, GUARD_ABILITY);
+            }
+
+            if (sculptor.getTarget() != null && sculptor.getActiveAbilityType() != GUARD_ABILITY) {
                 sculptor.getLookControl().setLookAt(sculptor.getTarget(), 30f, 30f);
             }
+        }
+
+        @Nullable
+        private <T extends Projectile> T getMostMovingTowardsMeEntity(Class<? extends T> entityClazz, Predicate<? super T> predicate, LivingEntity entity, AABB p_225318_10_) {
+            return this.getMostMovingTowardsMeEntityFromList(entity.level().getEntitiesOfClass(entityClazz, p_225318_10_, predicate), entity);
+        }
+
+        private <T extends Projectile> T getMostMovingTowardsMeEntityFromList(List<? extends T> entities, LivingEntity target) {
+            double d0 = -2.0D;
+            T t = null;
+
+            for(T t1 : entities) {
+                double d1 = t1.getDeltaMovement().normalize().dot(target.position().subtract(t1.position()).normalize());
+                if (d1 > d0) {
+                    d0 = d1;
+                    t = t1;
+                }
+            }
+
+            return t;
         }
 
         @Override

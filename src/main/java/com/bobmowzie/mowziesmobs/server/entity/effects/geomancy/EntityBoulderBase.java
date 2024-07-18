@@ -187,7 +187,7 @@ public class EntityBoulderBase extends EntityGeomancyBase implements IEntityAddi
     }
 
     @Override
-    protected void explode() {
+    public void explode() {
         if (active) super.explode();
         else discard();
     }
@@ -195,7 +195,7 @@ public class EntityBoulderBase extends EntityGeomancyBase implements IEntityAddi
     @Override
     public void remove(RemovalReason p_146834_) {
         super.remove(p_146834_);
-        if (caster instanceof EntitySculptor sculptor) {
+        if (getCaster() instanceof EntitySculptor sculptor) {
             sculptor.boulders.remove(this);
         }
     }

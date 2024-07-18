@@ -6,7 +6,6 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleRing;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleSnowFlake;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
-import com.bobmowzie.mowziesmobs.server.ability.abilities.player.IceBreathAbility;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
@@ -17,7 +16,6 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.EntityTypeTags;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -53,11 +51,11 @@ public class EntityIceBreath extends EntityMagicEffect {
                 MowziesMobs.PROXY.playIceBreathSound(this);
             }
         }
-        if (caster == null) this.discard() ;
-        if (caster != null && !caster.isAlive()) this.discard() ;
+        if (getCaster() == null) this.discard() ;
+        if (getCaster() != null && !getCaster().isAlive()) this.discard() ;
         if (tickCount == 1) playSound(MMSounds.ENTITY_FROSTMAW_ICEBREATH_START.get(), 1, 0.6f);
-        if (caster instanceof Player) {
-            Player player = (Player) caster;
+        if (getCaster() instanceof Player) {
+            Player player = (Player) getCaster();
             absMoveTo(player.getX(), player.getY() + player.getStandingEyeHeight(player.getPose(), player.getDimensions(player.getPose())) - 0.5f, player.getZ(), player.getYRot(), player.getXRot());
             AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
             if (abilityCapability != null && !abilityCapability.getAbilityFromType(AbilityHandler.ICE_BREATH_ABILITY).isUsing()) {
@@ -96,16 +94,16 @@ public class EntityIceBreath extends EntityMagicEffect {
         if (tickCount > 10) hitEntities();
         if (tickCount > 10) freezeBlocks();
 
-        if (tickCount > 65 && !(caster instanceof Player)) discard() ;
+        if (tickCount > 65 && !(getCaster() instanceof Player)) discard() ;
     }
 
     public void hitEntities() {
         List<Entity> entitiesHit = getEntityLivingBaseNearby(RANGE, RANGE, RANGE, RANGE);
         float damage = DAMAGE_PER_HIT;
-        if (caster instanceof EntityFrostmaw) damage *= ConfigHandler.COMMON.MOBS.FROSTMAW.combatConfig.attackMultiplier.get();
-        if (caster instanceof Player) damage *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.attackMultiplier.get();
+        if (getCaster() instanceof EntityFrostmaw) damage *= ConfigHandler.COMMON.MOBS.FROSTMAW.combatConfig.attackMultiplier.get();
+        if (getCaster() instanceof Player) damage *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.attackMultiplier.get();
         for (Entity entityHit : entitiesHit) {
-            if (entityHit == caster) continue;
+            if (entityHit == getCaster()) continue;
 
             if (entityHit.getType().is(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES) || entityHit instanceof EnderDragon) continue;
 
@@ -136,7 +134,7 @@ public class EntityIceBreath extends EntityMagicEffect {
             boolean inRange = entityHitDistance <= RANGE;
             boolean yawCheck = (entityRelativeYaw <= ARC / 2f && entityRelativeYaw >= -ARC / 2f) || (entityRelativeYaw >= 360 - ARC / 2f || entityRelativeYaw <= -360 + ARC / 2f);
             boolean pitchCheck = (entityRelativePitch <= ARC / 2f && entityRelativePitch >= -ARC / 2f) || (entityRelativePitch >= 360 - ARC / 2f || entityRelativePitch <= -360 + ARC / 2f);
-            boolean frostmawCloseCheck = caster instanceof EntityFrostmaw && entityHitDistance <= 2;
+            boolean frostmawCloseCheck = getCaster() instanceof EntityFrostmaw && entityHitDistance <= 2;
             if (inRange && yawCheck && pitchCheck || frostmawCloseCheck) {
                 // Do raycast check to prevent damaging through walls
                 if (!raytraceCheckEntity(entityHit)) continue;

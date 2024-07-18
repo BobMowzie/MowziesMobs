@@ -66,17 +66,17 @@ public class EntityAxeAttack extends EntityMagicEffect {
     @Override
     public void tick() {
         super.tick();
-        if (caster != null) {
-            if (!caster.isAlive()) discard();
-            absMoveTo(caster.getX(), caster.getY() + caster.getEyeHeight(), caster.getZ(), caster.getYRot(), caster.getXRot());
+        if (getCaster() != null) {
+            if (!getCaster().isAlive()) discard();
+            absMoveTo(getCaster().getX(), getCaster().getY() + getCaster().getEyeHeight(), getCaster().getZ(), getCaster().getYRot(), getCaster().getXRot());
         }
         if (!level().isClientSide && tickCount == 7) playSound(MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 0.7F, 1.1f);
-        if (!level().isClientSide && caster != null) {
+        if (!level().isClientSide && getCaster() != null) {
             if (!getVertical() && tickCount == SWING_DURATION_HOR /2 - 1) dealDamage(7.0f * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f, 4f, 160, 1.2f);
             else if (getVertical() && tickCount == SWING_DURATION_VER /2 - 1) {
                 dealDamage(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue(), 4.5f, 40, 0.8f);
                 quakeAngle = getYRot();
-                quakeBB = getBoundingBox().move(0, -caster.getEyeHeight(), 0);
+                quakeBB = getBoundingBox().move(0, -getCaster().getEyeHeight(), 0);
                 playSound(MMSounds.ENTITY_WROUGHT_AXE_LAND.get(), 0.3F, 0.5F);
                 playSound(SoundEvents.GENERIC_EXPLODE, 2, 0.9F + random.nextFloat() * 0.1F);
             }
@@ -85,7 +85,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
             }
         }
 
-        if (getVertical() && caster != null) {
+        if (getVertical() && getCaster() != null) {
             if (tickCount >= SWING_DURATION_VER /2) {
                 int maxDistance = 16;
                 double perpFacing = quakeAngle * (Math.PI / 180);
@@ -107,17 +107,17 @@ public class EntityAxeAttack extends EntityMagicEffect {
                     List<Entity> hit = level().getEntitiesOfClass(Entity.class, selection);
                     for (Entity entity : hit) {
                         if (entity.onGround()) {
-                            if (entity == this || entity instanceof FallingBlockEntity || entity == caster) {
+                            if (entity == this || entity instanceof FallingBlockEntity || entity == getCaster()) {
                                 continue;
                             }
                             float applyKnockbackResistance = 0;
                             boolean hitEntity = false;
                             if (!raytraceCheckEntity(entity)) continue;
 
-                            if (caster instanceof Player)
-                                hitEntity = entity.hurt(damageSources().playerAttack((Player) caster), (factor * 5 + 1) * (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f));
+                            if (getCaster() instanceof Player)
+                                hitEntity = entity.hurt(damageSources().playerAttack((Player) getCaster()), (factor * 5 + 1) * (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f));
                             else
-                                hitEntity = entity.hurt(damageSources().mobAttack(caster), (factor * 5 + 1) * (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f));
+                                hitEntity = entity.hurt(damageSources().mobAttack(getCaster()), (factor * 5 + 1) * (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f));
                             if (entity instanceof LivingEntity) {
                                 applyKnockbackResistance = (float) ((LivingEntity) entity).getAttribute(Attributes.KNOCKBACK_RESISTANCE).getValue();
                             }
@@ -169,18 +169,18 @@ public class EntityAxeAttack extends EntityMagicEffect {
             }
             float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
             float entityHitDistance = (float) Math.sqrt((entityHit.getZ() - getZ()) * (entityHit.getZ() - getZ()) + (entityHit.getX() - getX()) * (entityHit.getX() - getX())) - entityHit.getBbWidth() / 2f;
-            if (entityHit != caster && (!(entityHit instanceof Parrot) || entityHit.getVehicle() != caster) && entityHitDistance <= range && entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2 || entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2) {
+            if (entityHit != getCaster() && (!(entityHit instanceof Parrot) || entityHit.getVehicle() != getCaster()) && entityHitDistance <= range && entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2 || entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2) {
                 // Do raycast check to prevent damaging through walls
                 if (!raytraceCheckEntity(entityHit)) continue;
 
-                PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(caster, CapabilityHandler.PLAYER_CAPABILITY);
+                PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(getCaster(), CapabilityHandler.PLAYER_CAPABILITY);
                 if (playerCapability != null) {
                     playerCapability.setAxeCanAttack(true);
-                    if (caster instanceof Player) attackTargetEntityWithCurrentItem(entityHit, (Player)caster, damage / ItemHandler.WROUGHT_AXE.get().getAttackDamage(), applyKnockback);
+                    if (getCaster() instanceof Player) attackTargetEntityWithCurrentItem(entityHit, (Player) getCaster(), damage / ItemHandler.WROUGHT_AXE.get().getAttackDamage(), applyKnockback);
                     playerCapability.setAxeCanAttack(false);
                 }
                 else {
-                    entityHit.hurt(damageSources().mobAttack(caster), damage);
+                    entityHit.hurt(damageSources().mobAttack(getCaster()), damage);
                     entityHit.setDeltaMovement(entityHit.getDeltaMovement().x * applyKnockback, entityHit.getDeltaMovement().y, entityHit.getDeltaMovement().z * applyKnockback);
                 }
                 hit = true;
@@ -203,10 +203,6 @@ public class EntityAxeAttack extends EntityMagicEffect {
         List<Entity> list = level().getEntities(this, getBoundingBox().inflate(distanceX, distanceY, distanceZ));
         ArrayList<Entity> nearEntities = list.stream().filter(entityNeighbor -> entityNeighbor != null && distanceTo(entityNeighbor) <= radius + entityNeighbor.getBbWidth() / 2f).collect(Collectors.toCollection(ArrayList::new));
         return nearEntities;
-    }
-
-    public LivingEntity getCaster() {
-        return caster;
     }
 
     public void setAxeStack(ItemStack axeStack) {

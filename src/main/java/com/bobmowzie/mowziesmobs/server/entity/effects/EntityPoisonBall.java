@@ -55,9 +55,9 @@ public class EntityPoisonBall extends EntityMagicEffect {
         List<Entity> entitiesHit = getEntitiesNearby(1);
         if (!entitiesHit.isEmpty()) {
             for (Entity entity : entitiesHit) {
-                if (entity == caster) continue;
+                if (entity == getCaster()) continue;
                 if (entity instanceof EntityNaga) continue;
-                if (entity.hurt(damageSources().indirectMagic(this, caster), 3 * ConfigHandler.COMMON.MOBS.NAGA.combatConfig.attackMultiplier.get().floatValue()) && entity instanceof LivingEntity) {
+                if (entity.hurt(damageSources().indirectMagic(this, getCaster()), 3 * ConfigHandler.COMMON.MOBS.NAGA.combatConfig.attackMultiplier.get().floatValue()) && entity instanceof LivingEntity) {
                     ((LivingEntity)entity).addEffect(new MobEffectInstance(MobEffects.POISON, 80, 1, false, true));
                 }
             }
@@ -114,9 +114,9 @@ public class EntityPoisonBall extends EntityMagicEffect {
         List<Entity> entitiesHit = getEntitiesNearby(2);
         if (!entitiesHit.isEmpty()) {
             for (Entity entity : entitiesHit) {
-                if (entity == caster) continue;
+                if (entity == getCaster()) continue;
                 if (entity instanceof EntityNaga) continue;
-                if (entity.hurt(damageSources().indirectMagic(this, caster), 3 * ConfigHandler.COMMON.MOBS.NAGA.combatConfig.attackMultiplier.get().floatValue()) && entity instanceof LivingEntity livingEntity) {
+                if (entity.hurt(damageSources().indirectMagic(this, getCaster()), 3 * ConfigHandler.COMMON.MOBS.NAGA.combatConfig.attackMultiplier.get().floatValue()) && entity instanceof LivingEntity livingEntity) {
                     livingEntity.addEffect(new MobEffectInstance(MobEffects.POISON, 80, 0, false, true));
                 }
             }

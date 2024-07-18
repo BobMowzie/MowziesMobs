@@ -87,7 +87,7 @@ public class EntityPillar extends EntityGeomancyBase {
                 }
 
                 // If this pillar is not owned by a sculptor, check nearby boulders for tier upgrades
-                if (!(caster instanceof EntitySculptor)) {
+                if (!(getCaster() instanceof EntitySculptor)) {
                     List<EntityBoulderProjectile> boulders = level().getEntitiesOfClass(EntityBoulderProjectile.class, getBoundingBox().deflate(0.1f));
                     for (EntityBoulderProjectile boulder : boulders) {
                         if (!boulder.isTravelling() && boulder.getTier().ordinal() > this.getTier().ordinal()) {
@@ -118,7 +118,7 @@ public class EntityPillar extends EntityGeomancyBase {
             }
         }
         super.tick();
-        if (hasSyncedCaster && (caster == null || caster.isRemoved() || caster.getHealth() <= 0.0)) explode();
+        if (!level().isClientSide() && (getCaster() == null || getCaster().isRemoved() || getCaster().getHealth() <= 0.0)) explode();
     }
 
     @Override
@@ -187,7 +187,7 @@ public class EntityPillar extends EntityGeomancyBase {
 
     @Override
     public boolean doRemoveTimer() {
-        return !(caster instanceof EntitySculptor);
+        return !(getCaster() instanceof EntitySculptor);
     }
 
     public static class EntityPillarSculptor extends EntityPillar {
@@ -207,11 +207,11 @@ public class EntityPillar extends EntityGeomancyBase {
 
         @Override
         public void tick() {
-            if (caster instanceof EntitySculptor) {
-                EntitySculptor sculptor = (EntitySculptor)caster;
+            if (getCaster() instanceof EntitySculptor) {
+                EntitySculptor sculptor = (EntitySculptor) getCaster();
                 if (sculptor.getPillar() == null) sculptor.setPillar(this);
 
-                if (level().getBlockState(caster.blockPosition().above((int) (caster.getBbHeight() + 1))).blocksMotion()) {
+                if (level().getBlockState(getCaster().blockPosition().above((int) (getCaster().getBbHeight() + 1))).blocksMotion()) {
                     stopRising();
                 }
 
