@@ -735,8 +735,10 @@ public class EntitySculptor extends MowzieGeckoEntity {
         public void start() {
             if (getUser().testingPlayer != null) {
                 List<EntityBoulderSculptor> platforms = getUser().level().getEntitiesOfClass(EntityBoulderSculptor.class, getUser().testingPlayer.getBoundingBox().expandTowards(0, -6, 0));
-                EntityBoulderSculptor platformBelowPlayer = platforms.get(0);
-                platformBelowPlayer.descend();
+                if (!platforms.isEmpty()) {
+                    EntityBoulderSculptor platformBelowPlayer = platforms.get(0);
+                    platformBelowPlayer.descend();
+                }
             }
             super.start();
         }
@@ -787,6 +789,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
             if (target != null) {
                 Collections.shuffle(getUser().boulders);
                 for (EntityBoulderSculptor boulder : getUser().boulders) {
+                    if (boulder.isTravelling()) continue;
                     if (boulder.isRemoved()) continue;
                     if (!boulder.isFinishedRising()) continue;
                     if (!boulder.active) continue;
@@ -1045,8 +1048,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
         public void start() {
             super.start();
             sculptor.setFighting(true);
-            if (sculptor.getPillar() != null && sculptor.getPillar().getHeight() < TEST_HEIGHT) {
-                // TODO: When game quits while sculptor is fighting, pillar is removed but sculptor still thinks its there. So it will do this branch instead of making a new pillar
+            if (sculptor.getPillar() != null && !sculptor.getPillar().isRemoved() && sculptor.getPillar().getHeight() < TEST_HEIGHT) {
                 sculptor.getPillar().startRising();
             }
             else {
