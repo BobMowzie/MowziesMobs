@@ -13,7 +13,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import net.royawesome.jlibnoise.MathHelper;
 
 import java.util.List;
 
@@ -216,7 +215,7 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
         // random angle tends towards center as the platforms reach higher up
         randomAngle *= 1f - Math.pow(getHeightFrac(), 5f) * 0.75;
         Vec3 offset = new Vec3(horizontalOffset, verticalOffset, 0);
-        float finalAngle = (float) Math.toRadians(MathHelper.wrapAngle(baseAngle + randomAngle));
+        float finalAngle = (float) Math.toRadians(Mth.wrapDegrees(baseAngle + randomAngle));
         offset = offset.yRot(finalAngle);
         Vec3 nextLocation = startLocation.add(offset);
         if (nextLocation.y() + nextDims.height > pillar.getY() + EntitySculptor.TEST_HEIGHT) {
@@ -236,7 +235,7 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
 
         float baseAngle = (float) -Math.toDegrees(Math.atan2(fromPillarPos.y, fromPillarPos.x));
         Vec3 offset = new Vec3(horizontalOffset, 0, 0);
-        float finalAngle = (float) Math.toRadians(MathHelper.wrapAngle(baseAngle));
+        float finalAngle = (float) Math.toRadians(Mth.wrapDegrees(baseAngle));
         offset = offset.yRot(finalAngle);
 
         return startLocation.add(offset);

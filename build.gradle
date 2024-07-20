@@ -20,7 +20,7 @@ apply plugin: "maven-publish"
 apply plugin: "net.minecraftforge.gradle"
 apply plugin: "org.spongepowered.mixin"
 
-version = "1.6.5"
+version = "1.7.0_BETA_7_19"
 group = "com.bobmowzie.mowziesmobs"
 archivesBaseName = "mowziesmobs"
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
