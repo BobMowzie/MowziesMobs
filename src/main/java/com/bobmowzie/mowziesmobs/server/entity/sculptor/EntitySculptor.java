@@ -208,7 +208,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
         return MowzieEntity.createAttributes().add(Attributes.ATTACK_DAMAGE, 10)
                 .add(Attributes.MAX_HEALTH, 130)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1)
-                .add(Attributes.FOLLOW_RANGE, 40);
+                .add(Attributes.FOLLOW_RANGE, 60);
     }
 
     private static RawAnimation TEST_OBSTRUCTED = RawAnimation.begin().thenLoop("test_obstructed");
@@ -640,7 +640,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
         @Override
         public boolean canCancelActiveAbility() {
-            return getUser().getActiveAbilityType() == HURT_ABILITY;
+            return true;
         }
     }
 
@@ -744,9 +744,11 @@ public class EntitySculptor extends MowzieGeckoEntity {
         }
 
         @Override
-        public void end() {
-            super.end();
-            getUser().spawnAtLocation(ItemHandler.EARTHREND_GAUNTLET.get().getDefaultInstance());
+        public void tickUsing() {
+            super.tickUsing();
+            if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.RECOVERY && getTicksInSection() == 120) {
+                getUser().spawnAtLocation(ItemHandler.EARTHREND_GAUNTLET.get().getDefaultInstance());
+            }
         }
 
         @Override

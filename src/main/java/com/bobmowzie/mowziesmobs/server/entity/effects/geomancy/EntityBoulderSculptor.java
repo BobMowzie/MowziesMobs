@@ -50,6 +50,9 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
 
     public void descend() {
         this.descending = true;
+        if (sculptor != null) {
+            sculptor.boulders.remove(this);
+        }
     }
 
     @Override
