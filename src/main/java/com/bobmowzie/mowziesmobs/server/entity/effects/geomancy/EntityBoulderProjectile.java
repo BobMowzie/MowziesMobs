@@ -152,7 +152,18 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
     }
 
     protected boolean travellingBlockedBy(Entity entity) {
+        if (this.getCaster() instanceof EntitySculptor) {
+            return !(entity instanceof EntityBoulderBase && ((EntityBoulderProjectile)entity).getCaster() == getCaster());
+        }
         return true;
+    }
+
+    @Override
+    public boolean canCollideWith(Entity entity) {
+        if (this.getCaster() instanceof EntitySculptor) {
+            return super.canCollideWith(entity) && !(entity instanceof EntityBoulderBase && ((EntityBoulderProjectile)entity).getCaster() == getCaster());
+        }
+        return super.canCollideWith(entity);
     }
 
     protected void handleHitOtherBoulders() {

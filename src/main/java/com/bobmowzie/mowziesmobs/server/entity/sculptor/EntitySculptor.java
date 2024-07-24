@@ -23,6 +23,8 @@ import com.bobmowzie.mowziesmobs.server.inventory.ContainerSculptorTrade;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.message.MessageLinkEntities;
 import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
+import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,6 +36,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.InteractionHand;
@@ -143,6 +146,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, HURT_ABILITY, false));
         this.goalSelector.addGoal(4, new RunTestGoal(this));
         this.goalSelector.addGoal(3, new CombatBehaviorGoal(this));
+        this.goalSelector.addGoal(2, new GuardBehaviorGoal(this));
         hurtByTargetAI = new HurtByTargetGoal(this) {
 
             @Override
@@ -323,6 +327,12 @@ public class EntitySculptor extends MowzieGeckoEntity {
 //        if (getActiveAbility() == null && tickCount % 60 == 0) {
 //            sendAbilityMessage(GUARD_ABILITY);
 //        }
+    }
+
+    @Override
+    public boolean hurt(DamageSource source, float damage) {
+        timeUntilHeal = HEAL_PAUSE;
+        return super.hurt(source, damage);
     }
 
     public boolean checkTestObstructed() {
@@ -893,6 +903,11 @@ public class EntitySculptor extends MowzieGeckoEntity {
                 playAnimation(DEATH_END);
             }
         }
+
+        @Override
+        public boolean canCancelActiveAbility() {
+            return true;
+        }
     }
 
     public static class GuardAbility extends Ability<EntitySculptor> {
@@ -926,8 +941,8 @@ public class EntitySculptor extends MowzieGeckoEntity {
         @Override
         public void tickUsing() {
             super.tickUsing();
-            if (getBoulder() != null && getBoulder().getCaster() != null) {
-                getUser().getLookControl().setLookAt(getBoulder().getCaster(), 60f, 60f);
+            if (getBoulder() != null && target != null) {
+                getUser().getLookControl().setLookAt(target, 60f, 60f);
             }
         }
 
@@ -945,8 +960,8 @@ public class EntitySculptor extends MowzieGeckoEntity {
                     getUser().level().addFreshEntity(boulder);
                     boulderID = boulder.getUUID();
                 } else if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE && getBoulder() != null) {
-                    if (getUser().getTarget() != null) {
-                        AttackAbility.shootBoulderAtTarget(getUser().getTarget(), prevTargetPos, getBoulder(), 0.45f);
+                    if (target != null && !target.isRemoved() && target instanceof LivingEntity) {
+                        AttackAbility.shootBoulderAtTarget((LivingEntity) target, prevTargetPos, getBoulder(), 0.45f);
                     }
                     else {
                         getBoulder().explode();
@@ -1043,15 +1058,14 @@ public class EntitySculptor extends MowzieGeckoEntity {
         }
     }
 
-    public static class CombatBehaviorGoal extends Goal {
+    public static class GuardBehaviorGoal extends Goal {
         private final EntitySculptor sculptor;
         protected final Predicate<Projectile> guardTargetSelector;
 
         private static final float GUARD_DISTANCE = 8;
 
-        public CombatBehaviorGoal(EntitySculptor sculptor) {
+        public GuardBehaviorGoal(EntitySculptor sculptor) {
             this.sculptor = sculptor;
-            this.setFlags(EnumSet.of(Goal.Flag.MOVE, Flag.LOOK));
 
             this.guardTargetSelector = target -> {
                 Vec3 aActualMotion = new Vec3(target.getX() - target.xo, target.getY() - target.yo, target.getZ() - target.zo);
@@ -1062,6 +1076,60 @@ public class EntitySculptor extends MowzieGeckoEntity {
                 float dot = (float) target.getDeltaMovement().normalize().dot(sculptor.position().subtract(target.position()).normalize());
                 return !(dot < 0.8);
             };
+        }
+
+        @Override
+        public boolean canUse() {
+            sculptor.guardProjectileTarget = this.getMostMovingTowardsMeEntity(Projectile.class, this.guardTargetSelector, this.sculptor, this.sculptor.getBoundingBox().inflate(GUARD_DISTANCE, GUARD_DISTANCE, GUARD_DISTANCE));
+            return sculptor.guardProjectileTarget != null;
+        }
+
+        @Override
+        public void start() {
+            super.start();
+            if (sculptor.guardProjectileTarget != null) {
+                AbilityHandler.INSTANCE.sendAbilityMessage(sculptor, GUARD_ABILITY);
+            }
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return sculptor.getActiveAbilityType() == GUARD_ABILITY;
+        }
+
+        @Override
+        public void stop() {
+            super.stop();
+            AbilityHandler.INSTANCE.sendInterruptAbilityMessage(sculptor, GUARD_ABILITY);
+        }
+
+        @Nullable
+        private <T extends Projectile> T getMostMovingTowardsMeEntity(Class<? extends T> entityClazz, Predicate<? super T> predicate, LivingEntity entity, AABB p_225318_10_) {
+            return this.getMostMovingTowardsMeEntityFromList(entity.level().getEntitiesOfClass(entityClazz, p_225318_10_, predicate), entity);
+        }
+
+        private <T extends Projectile> T getMostMovingTowardsMeEntityFromList(List<? extends T> entities, LivingEntity target) {
+            double d0 = -2.0D;
+            T t = null;
+
+            for(T t1 : entities) {
+                double d1 = t1.getDeltaMovement().normalize().dot(target.position().subtract(t1.position()).normalize());
+                if (d1 > d0) {
+                    d0 = d1;
+                    t = t1;
+                }
+            }
+
+            return t;
+        }
+    }
+
+    public static class CombatBehaviorGoal extends Goal {
+        private final EntitySculptor sculptor;
+
+        public CombatBehaviorGoal(EntitySculptor sculptor) {
+            this.sculptor = sculptor;
+            this.setFlags(EnumSet.of(Goal.Flag.MOVE, Flag.LOOK));
         }
 
         @Override
@@ -1092,34 +1160,9 @@ public class EntitySculptor extends MowzieGeckoEntity {
                 StartTestAbility.placeStartingBoulders(sculptor);
             }
 
-            sculptor.guardProjectileTarget = this.getMostMovingTowardsMeEntity(Projectile.class, this.guardTargetSelector, this.sculptor, this.sculptor.getBoundingBox().inflate(GUARD_DISTANCE, GUARD_DISTANCE, GUARD_DISTANCE));
-            if (sculptor.guardProjectileTarget != null) {
-                AbilityHandler.INSTANCE.sendAbilityMessage(sculptor, GUARD_ABILITY);
-            }
-
             if (sculptor.getTarget() != null && sculptor.getActiveAbilityType() != GUARD_ABILITY) {
                 sculptor.getLookControl().setLookAt(sculptor.getTarget(), 30f, 30f);
             }
-        }
-
-        @Nullable
-        private <T extends Projectile> T getMostMovingTowardsMeEntity(Class<? extends T> entityClazz, Predicate<? super T> predicate, LivingEntity entity, AABB p_225318_10_) {
-            return this.getMostMovingTowardsMeEntityFromList(entity.level().getEntitiesOfClass(entityClazz, p_225318_10_, predicate), entity);
-        }
-
-        private <T extends Projectile> T getMostMovingTowardsMeEntityFromList(List<? extends T> entities, LivingEntity target) {
-            double d0 = -2.0D;
-            T t = null;
-
-            for(T t1 : entities) {
-                double d1 = t1.getDeltaMovement().normalize().dot(target.position().subtract(t1.position()).normalize());
-                if (d1 > d0) {
-                    d0 = d1;
-                    t = t1;
-                }
-            }
-
-            return t;
         }
 
         @Override

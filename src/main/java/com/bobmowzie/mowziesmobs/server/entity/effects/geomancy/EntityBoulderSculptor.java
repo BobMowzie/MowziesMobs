@@ -308,15 +308,15 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
         return 0.2f;
     }
 
-    @Override
-    protected boolean travellingBlockedBy(Entity entity) {
-        return super.travellingBlockedBy(entity) && !(entity instanceof EntityBoulderSculptor);
-    }
-
-    @Override
-    public boolean canCollideWith(Entity entity) {
-        return super.canCollideWith(entity) && !(entity instanceof EntityBoulderSculptor);
-    }
+//    @Override
+//    protected boolean travellingBlockedBy(Entity entity) {
+//        return super.travellingBlockedBy(entity) && !(entity instanceof EntityBoulderProjectile && ((EntityBoulderProjectile)entity).getCaster() == getCaster());
+//    }
+//
+//    @Override
+//    public boolean canCollideWith(Entity entity) {
+//        return super.canCollideWith(entity) && !(entity instanceof EntityBoulderProjectile && ((EntityBoulderProjectile)entity).getCaster() == getCaster());
+//    }
 
     @Override
     protected float getShootRingParticleScale() {

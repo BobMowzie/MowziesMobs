@@ -46,35 +46,6 @@ public class MonasteryStructure extends MowzieStructure {
     public GenerationStep.Decoration step() {
         return GenerationStep.Decoration.UNDERGROUND_DECORATION;
     }
-
-    /**
-     * The StructureSpawnListGatherEvent event allows us to have mobs that spawn naturally over time in our structure.
-     * No other mobs will spawn in the structure of the same entity classification.
-     * The reason you want to match the classifications is so that your structure's mob
-     * will contribute to that classification's cap. Otherwise, it may cause a runaway
-     * spawning of the mob that will never stop.
-     *
-     * We use Lazy so that if you classload this class before you register your entities, you will not crash.
-     * Instead, the field and the entities inside will only be referenced when StructureSpawnListGatherEvent
-     * fires much later after entity registration.
-     */
-    private static final Lazy<List<MobSpawnSettings.SpawnerData>> STRUCTURE_MONSTERS = Lazy.of(() -> ImmutableList.of(
-            new MobSpawnSettings.SpawnerData(EntityType.ILLUSIONER, 100, 4, 9),
-            new MobSpawnSettings.SpawnerData(EntityType.VINDICATOR, 100, 4, 9)
-    ));
-    private static final Lazy<List<MobSpawnSettings.SpawnerData>> STRUCTURE_CREATURES = Lazy.of(() -> ImmutableList.of(
-            new MobSpawnSettings.SpawnerData(EntityType.SHEEP, 30, 10, 15),
-            new MobSpawnSettings.SpawnerData(EntityType.RABBIT, 100, 1, 2)
-    ));
-
-    // Hooked up in StructureTutorialMain. You can move this elsewhere or change it up.
-    /*public static void setupStructureSpawns(final StructureSpawnListGatherEvent event) {
-        // TODO
-//        if(event.getStructure() == FeatureHandler.MONASTERY.get()) {
-//            event.addEntitySpawns(MobCategory.MONSTER, STRUCTURE_MONSTERS.get());
-//            event.addEntitySpawns(MobCategory.CREATURE, STRUCTURE_CREATURES.get());
-//        }
-    }*/
     
     public static Optional<Structure.GenerationStub> createPiecesGenerator(Predicate<Structure.GenerationContext> canGeneratePredicate, Structure.GenerationContext context) {
 

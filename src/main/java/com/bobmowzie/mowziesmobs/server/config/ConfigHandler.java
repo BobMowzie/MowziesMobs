@@ -482,7 +482,7 @@ public final class ConfigHandler {
                     .define("has_boss_bar", true);
             this.whichItem = builder.comment("Which item the Sculptor desires in exchange for a chance to try his challenge")
                     .translation(LANG_PREFIX + "trade_which_item")
-                    .define("trade_which_item", "minecraft:amethyst_shard", ITEM_NAME_PREDICATE);
+                    .define("trade_which_item", "minecraft:crossbow", ITEM_NAME_PREDICATE);
             this.howMany = builder.comment("How many of the item the Sculptor desires in exchange for a chance to try his challenge")
                     .translation(LANG_PREFIX + "trade_how_many")
                     .defineInRange("trade_how_many", 1, 0, 64);
