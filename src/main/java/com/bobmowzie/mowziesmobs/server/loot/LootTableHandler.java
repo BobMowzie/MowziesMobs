@@ -27,6 +27,7 @@ public class LootTableHandler {
     public static final ResourceLocation UMVUTHANA_FAITH = register("entities/umvuthana_faith");
     public static final ResourceLocation UMVUTHI = register("entities/umvuthi");
     public static final ResourceLocation UMVUTHANA_GROVE_CHEST = register("chests/umvuthana_grove_chest");
+    public static final ResourceLocation MONASTERY_CHEST = register("chests/monastery_chest");
 
     public static final DeferredRegister<LootItemFunctionType> LOOT_FUNCTION_TYPE_REG = DeferredRegister.create(Registries.LOOT_FUNCTION_TYPE, MowziesMobs.MODID);
     public static final DeferredRegister<LootItemConditionType> LOOT_CONDITION_TYPE_REG = DeferredRegister.create(Registries.LOOT_CONDITION_TYPE, MowziesMobs.MODID);
