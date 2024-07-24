@@ -471,6 +471,9 @@ public final class ConfigHandler {
                     Collections.emptyList()
             );
             combatConfig = new CombatConfig(builder, 1, 1);
+            this.testHeight = builder.comment("How tall the Sculptor's test will be")
+                    .translation(LANG_PREFIX + "test_height")
+                    .defineInRange("test_height", 50, 1, 500);
             this.healsOutOfBattle = builder.comment("Disable/enable the Sculptor healing while not in combat")
                     .translation(LANG_PREFIX + "heals_out_of_battle")
                     .define("heals_out_of_battle", true);
@@ -489,6 +492,8 @@ public final class ConfigHandler {
         public final GenerationConfig generationConfig;
 
         public final CombatConfig combatConfig;
+
+        public final IntValue testHeight;
 
         public final BooleanValue healsOutOfBattle;
 

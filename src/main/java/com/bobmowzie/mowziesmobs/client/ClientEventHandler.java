@@ -295,23 +295,18 @@ public enum ClientEventHandler {
                 double d2 = cameraPos.z();
                 for (Long2ObjectMap.Entry<SculptorBlockMarking> entry : ClientProxy.sculptorMarkedBlocks.long2ObjectEntrySet()) {
                     BlockPos blockpos2 = BlockPos.of(entry.getLongKey());
-                    double d3 = (double) blockpos2.getX() - d0;
-                    double d4 = (double) blockpos2.getY() - d1;
-                    double d5 = (double) blockpos2.getZ() - d2;
-                    if (!(d3 * d3 + d4 * d4 + d5 * d5 > 1024.0D)) {
-                        SculptorBlockMarking blockMarking = entry.getValue();
-                        float alpha = 1f - (float) blockMarking.getTicks() / (float) blockMarking.getDuration();
-                        event.getPoseStack().pushPose();
-                        event.getPoseStack().translate((double) blockpos2.getX() - d0, (double) blockpos2.getY() - d1, (double) blockpos2.getZ() - d2);
-                        PoseStack.Pose posestack$pose1 = event.getPoseStack().last();
-                        float f = (float) Minecraft.getInstance().player.tickCount + Minecraft.getInstance().getPartialTick();
-                        float blockOffset = (blockpos2.getX() + blockpos2.getY() + blockpos2.getZ()) * 0.25f;
-                        VertexConsumer vertexconsumer1 = new SheetedDecalTextureGenerator(Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(MMRenderType.highlight(SCULPTOR_BLOCK_GLOW, f * 0.02f + blockOffset, f * 0.01f + blockOffset)), posestack$pose1.pose(), posestack$pose1.normal(), 0.25F);
-                        net.minecraftforge.client.model.data.ModelData modelData = level.getModelDataManager().getAt(blockpos2);
-                        renderBreakingTexture(level.getBlockState(blockpos2), blockpos2, level, event.getPoseStack(), level.random, vertexconsumer1, modelData == null ? net.minecraftforge.client.model.data.ModelData.EMPTY : modelData);
+                    SculptorBlockMarking blockMarking = entry.getValue();
+                    float alpha = 1f - (float) blockMarking.getTicks() / (float) blockMarking.getDuration();
+                    event.getPoseStack().pushPose();
+                    event.getPoseStack().translate((double) blockpos2.getX() - d0, (double) blockpos2.getY() - d1, (double) blockpos2.getZ() - d2);
+                    PoseStack.Pose posestack$pose1 = event.getPoseStack().last();
+                    float f = (float) Minecraft.getInstance().player.tickCount + Minecraft.getInstance().getPartialTick();
+                    float blockOffset = (blockpos2.getX() + blockpos2.getY() + blockpos2.getZ()) * 0.25f;
+                    VertexConsumer vertexconsumer1 = new SheetedDecalTextureGenerator(Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(MMRenderType.highlight(SCULPTOR_BLOCK_GLOW, f * 0.02f + blockOffset, f * 0.01f + blockOffset)), posestack$pose1.pose(), posestack$pose1.normal(), 0.25F);
+                    net.minecraftforge.client.model.data.ModelData modelData = level.getModelDataManager().getAt(blockpos2);
+                    renderBreakingTexture(level.getBlockState(blockpos2), blockpos2, level, event.getPoseStack(), level.random, vertexconsumer1, modelData == null ? net.minecraftforge.client.model.data.ModelData.EMPTY : modelData);
 
-                        event.getPoseStack().popPose();
-                    }
+                    event.getPoseStack().popPose();
                 }
             }
         }

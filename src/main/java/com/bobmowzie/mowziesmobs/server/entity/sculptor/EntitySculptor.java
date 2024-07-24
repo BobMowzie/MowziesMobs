@@ -118,6 +118,8 @@ public class EntitySculptor extends MowzieGeckoEntity {
     public EntitySculptor(EntityType<? extends MowzieEntity> type, Level world) {
         super(type, world);
         xpReward = 30;
+
+        TEST_HEIGHT = ConfigHandler.COMMON.MOBS.SCULPTOR.testHeight.get();
     }
 
     private static RawAnimation HURT = RawAnimation.begin().thenPlay("hurt");
