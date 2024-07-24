@@ -474,6 +474,15 @@ public final class ConfigHandler {
             this.healsOutOfBattle = builder.comment("Disable/enable the Sculptor healing while not in combat")
                     .translation(LANG_PREFIX + "heals_out_of_battle")
                     .define("heals_out_of_battle", true);
+            this.hasBossBar = builder.comment("Disable/enable the Sculptor's boss health bar")
+                    .translation(LANG_PREFIX + "has_boss_bar")
+                    .define("has_boss_bar", true);
+            this.whichItem = builder.comment("Which item the Sculptor desires in exchange for a chance to try his challenge")
+                    .translation(LANG_PREFIX + "trade_which_item")
+                    .define("trade_which_item", "minecraft:amethyst_shard", ITEM_NAME_PREDICATE);
+            this.howMany = builder.comment("How many of the item the Sculptor desires in exchange for a chance to try his challenge")
+                    .translation(LANG_PREFIX + "trade_how_many")
+                    .defineInRange("trade_how_many", 1, 0, 64);
             builder.pop();
         }
 
@@ -482,6 +491,12 @@ public final class ConfigHandler {
         public final CombatConfig combatConfig;
 
         public final BooleanValue healsOutOfBattle;
+
+        public final BooleanValue hasBossBar;
+
+        public final ConfigValue<? extends String> whichItem;
+
+        public final IntValue howMany;
     }
 
     public static class WroughtHelm {

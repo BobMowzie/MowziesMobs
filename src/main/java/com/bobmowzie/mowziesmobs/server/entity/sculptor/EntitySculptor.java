@@ -35,6 +35,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.BossEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -73,8 +74,9 @@ public class EntitySculptor extends MowzieGeckoEntity {
     public static int TEST_HEIGHT = 50;
     public static int TEST_RADIUS_BOTTOM = 6;
     public static int TEST_RADIUS = 16;
-    public static int TEST_MAX_RADIUS_HEIGHT = 10;
+    public static int TEST_MAX_RADIUS_HEIGHT = 20;
     public static double TEST_RADIUS_FALLOFF = 5;
+    private static final int HEAL_PAUSE = 75;
 
     public static float DEFENSE_HEALTH_THRESHOLD = 0.85f;
 
@@ -102,6 +104,8 @@ public class EntitySculptor extends MowzieGeckoEntity {
     private boolean isTestObstructed;
     private boolean isTestObstructedSoFar;
     private int obstructionTestHeight;
+
+    private int timeUntilHeal = 0;
 
     private EntityPillar.EntityPillarSculptor pillar;
     public int numLivePaths = 0;
@@ -197,8 +201,8 @@ public class EntitySculptor extends MowzieGeckoEntity {
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        Item tradeItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(ConfigHandler.COMMON.MOBS.UMVUTHI.whichItem.get()));
-        getEntityData().define(DESIRES, new ItemStack(tradeItem, ConfigHandler.COMMON.MOBS.UMVUTHI.howMany.get()));
+        Item tradeItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(ConfigHandler.COMMON.MOBS.SCULPTOR.whichItem.get()));
+        getEntityData().define(DESIRES, new ItemStack(tradeItem, ConfigHandler.COMMON.MOBS.SCULPTOR.howMany.get()));
         getEntityData().define(IS_TRADING, false);
         getEntityData().define(IS_FIGHTING, false);
         getEntityData().define(TESTING_PLAYER, Optional.empty());
@@ -271,6 +275,16 @@ public class EntitySculptor extends MowzieGeckoEntity {
     }
 
     @Override
+    public boolean hasBossBar() {
+        return ConfigHandler.COMMON.MOBS.SCULPTOR.hasBossBar.get();
+    }
+
+    @Override
+    protected BossEvent.BossBarColor bossBarColor() {
+        return BossEvent.BossBarColor.GREEN;
+    }
+
+    @Override
     public void tick() {
         setDeltaMovement(0, getDeltaMovement().y, 0);
         super.tick();
@@ -286,7 +300,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
         }
 
         if (!testing && !isFighting()) {
-            checkTestObstructedAtHeight(obstructionTestHeight);
+            checkTestObstructedAtHeight(obstructionTestHeight + 1);
 
             int height = EntitySculptor.TEST_HEIGHT + 3;
             obstructionTestHeight = (obstructionTestHeight + 1) % height;
@@ -294,6 +308,14 @@ public class EntitySculptor extends MowzieGeckoEntity {
                 isTestObstructed = isTestObstructedSoFar;
                 isTestObstructedSoFar = false;
             }
+        }
+
+        if (!level().isClientSide && getTarget() == null) {
+            timeUntilHeal--;
+            if (ConfigHandler.COMMON.MOBS.SCULPTOR.healsOutOfBattle.get() && timeUntilHeal <= 0) heal(0.3f);
+        }
+        else {
+            timeUntilHeal = HEAL_PAUSE;
         }
 
 //        if (getActiveAbility() == null && tickCount % 60 == 0) {
