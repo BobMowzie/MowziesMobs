@@ -30,6 +30,10 @@ import com.bobmowzie.mowziesmobs.server.message.MessageSunblockEffect;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.power.Power;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import com.bobmowzie.mowziesmobs.server.world.feature.structure.MowzieStructure;
+import com.bobmowzie.mowziesmobs.server.world.feature.structure.StructureTypeHandler;
+import com.sk89q.worldedit.world.entity.EntityTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
@@ -56,10 +60,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.BuiltinStructures;
+import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
@@ -743,6 +751,23 @@ public final class ServerEventHandler {
         for (MowzieEntity mob : mobs) {
             if (mob.resetHealthOnPlayerRespawn()) {
                 mob.setHealth(mob.getMaxHealth());
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onSpawnPlacementCheck(MobSpawnEvent.SpawnPlacementCheck event) {
+        StructureManager structureManager = event.getLevel().getLevel().structureManager();
+        Structure structure = structureManager.registryAccess().registryOrThrow(Registries.STRUCTURE).get(StructureTypeHandler.MONASTERY.getId());
+        if (event.getEntityType().getCategory() == MobCategory.MONSTER && structure != null && structureManager.getStructureAt(event.getPos(), structure).isValid()) {
+            BlockState ground = event.getLevel().getBlockState(event.getPos().below());
+            if (
+                    event.getLevel().canSeeSky(event.getPos()) &&
+                    (ground.is(Blocks.DARK_OAK_PLANKS) ||
+                    ground.is(Blocks.DARK_OAK_SLAB) ||
+                    ground.is(Blocks.DARK_OAK_STAIRS))
+            ) {
+                event.setResult(Event.Result.DENY);
             }
         }
     }

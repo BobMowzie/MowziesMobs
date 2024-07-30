@@ -14,3 +14,4 @@ run-server/
 .classpath
 .project
 src/api/
+/data/
