@@ -727,8 +727,14 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onRideEntity(EntityMountEvent event) {
-        if (event.getEntityMounting() instanceof EntityUmvuthi || event.getEntityMounting() instanceof EntityFrostmaw || event.getEntityMounting() instanceof EntityWroughtnaut)
+        if (
+                event.getEntityMounting() instanceof EntityUmvuthi ||
+                event.getEntityMounting() instanceof EntityFrostmaw ||
+                event.getEntityMounting() instanceof EntityWroughtnaut ||
+                event.getEntityMounting() instanceof EntitySculptor
+        ) {
             event.setCanceled(true);
+        }
     }
 
     @SubscribeEvent
