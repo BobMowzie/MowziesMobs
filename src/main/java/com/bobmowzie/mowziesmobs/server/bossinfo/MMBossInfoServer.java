@@ -1,6 +1,7 @@
-package com.bobmowzie.mowziesmobs.server.entity;
+package com.bobmowzie.mowziesmobs.server.bossinfo;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.message.MessageUpdateBossBar;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
@@ -11,7 +12,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 public class MMBossInfoServer extends ServerBossEvent {
-    private final MowzieEntity entity;
+    protected final MowzieEntity entity;
 
     private final Set<ServerPlayer> unseen = new HashSet<>();
 

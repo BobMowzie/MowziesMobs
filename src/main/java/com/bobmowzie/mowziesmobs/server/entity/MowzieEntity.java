@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
 import com.bobmowzie.mowziesmobs.client.sound.BossMusicPlayer;
+import com.bobmowzie.mowziesmobs.server.bossinfo.MMBossInfoServer;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.world.spawn.SpawnHandler;
 import net.minecraft.core.BlockPos;
@@ -84,7 +85,7 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
     private DamageSource killDataCause;
     private Player killDataAttackingPlayer;
 
-    private final MMBossInfoServer bossInfo= new MMBossInfoServer(this);
+    protected final MMBossInfoServer bossInfo = initBossInfo();
 
     private static final UUID HEALTH_CONFIG_MODIFIER_UUID = UUID.fromString("eff1c400-910c-11ec-b909-0242ac120002");
     private static final UUID ATTACK_CONFIG_MODIFIER_UUID = UUID.fromString("f76a7c90-910c-11ec-b909-0242ac120002");
@@ -469,11 +470,15 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
         return false;
     }
 
+    protected MMBossInfoServer initBossInfo() {
+        return new MMBossInfoServer(this);
+    }
+
     public boolean resetHealthOnPlayerRespawn() {
         return false;
     }
 
-    protected BossEvent.BossBarColor bossBarColor() {
+    public BossEvent.BossBarColor bossBarColor() {
         return BossEvent.BossBarColor.PURPLE;
     }
 

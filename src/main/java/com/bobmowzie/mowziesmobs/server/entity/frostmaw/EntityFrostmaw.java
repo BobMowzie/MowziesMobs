@@ -877,7 +877,7 @@ public class EntityFrostmaw extends MowzieLLibraryEntity implements Enemy {
     }
 
     @Override
-    protected BossEvent.BossBarColor bossBarColor() {
+    public BossEvent.BossBarColor bossBarColor() {
         return BossEvent.BossBarColor.WHITE;
     }
 

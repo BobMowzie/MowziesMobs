@@ -11,6 +11,8 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.mob.HurtAbility;
 import com.bobmowzie.mowziesmobs.server.ai.UseAbilityAI;
+import com.bobmowzie.mowziesmobs.server.bossinfo.BossInfoSculptor;
+import com.bobmowzie.mowziesmobs.server.bossinfo.MMBossInfoServer;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
@@ -31,6 +33,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundBossEventPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -104,6 +107,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
     private Optional<Vec3> prevPlayerPosition;
     private int ticksAcceleratingUpward;
     private boolean testing;
+    private int testTimePassed;
     private boolean isTestObstructed;
     private boolean isTestObstructedSoFar;
     private int obstructionTestHeight;
@@ -117,6 +121,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
     protected Projectile guardProjectileTarget;
 
     public List<EntityBoulderSculptor> boulders = new ArrayList<>();
+
 
     public EntitySculptor(EntityType<? extends MowzieEntity> type, Level world) {
         super(type, world);
@@ -286,8 +291,13 @@ public class EntitySculptor extends MowzieGeckoEntity {
     }
 
     @Override
-    protected BossEvent.BossBarColor bossBarColor() {
+    public BossEvent.BossBarColor bossBarColor() {
         return BossEvent.BossBarColor.GREEN;
+    }
+
+    @Override
+    protected MMBossInfoServer initBossInfo() {
+        return new BossInfoSculptor(this);
     }
 
     @Override
@@ -324,6 +334,13 @@ public class EntitySculptor extends MowzieGeckoEntity {
             timeUntilHeal = HEAL_PAUSE;
         }
 
+        if (isTesting()) {
+            testTimePassed++;
+        }
+        else {
+            testTimePassed = 0;
+        }
+
 //        if (getActiveAbility() == null && tickCount % 60 == 0) {
 //            sendAbilityMessage(GUARD_ABILITY);
 //        }
@@ -337,7 +354,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     public boolean checkTestObstructed() {
         int height = EntitySculptor.TEST_HEIGHT + 3;
-        for (int i = 0; i < height; i++) {
+        for (int i = 1; i < height; i++) {
             checkTestObstructedAtHeight(i);
             if (isTestObstructed) return true;
         }
@@ -486,6 +503,10 @@ public class EntitySculptor extends MowzieGeckoEntity {
         setTestingPlayerID(testingPlayer == null ? null : testingPlayer.getUUID());
     }
 
+    public Player getTestingPlayer() {
+        return this.testingPlayer;
+    }
+
     public void openGUI(Player playerEntity) {
         setCustomer(playerEntity);
         MowziesMobs.PROXY.setReferencedMob(this);
@@ -583,6 +604,14 @@ public class EntitySculptor extends MowzieGeckoEntity {
         Ability deathAbility = getActiveAbility();
         if (deathAbility == null || !deathAbility.isUsing()) return 9;
         return 120;
+    }
+
+    public int getTestTimePassed() {
+        return testTimePassed;
+    }
+
+    public int getMaxTestTime() {
+        return ConfigHandler.COMMON.MOBS.SCULPTOR.testTimeLimit.get() * 20;
     }
 
     public static class StartTestAbility extends Ability<EntitySculptor> {
@@ -1047,6 +1076,10 @@ public class EntitySculptor extends MowzieGeckoEntity {
             }
             else if (sculptor.testing) {
                 sculptor.checkIfPlayerCheats();
+            }
+
+            if (sculptor.getTestTimePassed() > sculptor.getMaxTestTime()) {
+                sculptor.sendAbilityMessage(FAIL_TEST);
             }
         }
 

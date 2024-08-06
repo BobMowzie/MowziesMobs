@@ -872,7 +872,7 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
     }
 
     @Override
-    protected BossEvent.BossBarColor bossBarColor() {
+    public BossEvent.BossBarColor bossBarColor() {
         return BossEvent.BossBarColor.YELLOW;
     }
 

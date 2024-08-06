@@ -616,7 +616,7 @@ public class EntityWroughtnaut extends MowzieLLibraryEntity implements Enemy {
     }
 
     @Override
-    protected BossEvent.BossBarColor bossBarColor() {
+    public BossEvent.BossBarColor bossBarColor() {
         return BossEvent.BossBarColor.RED;
     }
 

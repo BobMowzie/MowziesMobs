@@ -159,6 +159,7 @@
   "entity.mowziesmobs.umvuthi.replenish.button.hover": "Replenish your blessing for free",
   "entity.mowziesmobs.sculptor.trade": "Sculptor",
   "entity.mowziesmobs.sculptor.trade.button.text": "Begin Test",
+  "entity.mowziesmobs.sculptor.boss_info.timer.text": "Time Remaining",
 
   "_comment": "Death Messages",
   "death.attack.dart": "%1$s was shot by %2$s",
