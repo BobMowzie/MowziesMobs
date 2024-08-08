@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.entity.sculptor;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
@@ -230,17 +231,17 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     @Override
     protected <E extends GeoEntity> void loopingAnimations(AnimationState<E> event) {
-        event.getController().transitionLength(10);
-        if (isTestObstructed && !isFighting()) {
-            controller.setAnimation(TEST_OBSTRUCTED);
-        }
-        else {
-            super.loopingAnimations(event);
-        }
-//        if (event.getController() instanceof MowzieAnimationController mowzieAnimationController) {
-//            mowzieAnimationController.checkAndReloadAnims();
+//        event.getController().transitionLength(10);
+//        if (isTestObstructed && !isFighting()) {
+//            controller.setAnimation(TEST_OBSTRUCTED);
 //        }
-//        event.getController().setAnimation(RawAnimation.begin().thenLoop("attack_1"));
+//        else {
+//            super.loopingAnimations(event);
+//        }
+        if (event.getController() instanceof MowzieAnimationController mowzieAnimationController) {
+            mowzieAnimationController.checkAndReloadAnims();
+        }
+        event.getController().setAnimation(RawAnimation.begin().thenLoop("test_pass_end"));
     }
 
     @Override
@@ -721,11 +722,10 @@ public class EntitySculptor extends MowzieGeckoEntity {
             return getUser().pillar != null;
         }
 
-        private static final RawAnimation TEST_FAIL_START_ANIM = RawAnimation.begin().then("test_fail_start", Animation.LoopType.PLAY_ONCE);
         @Override
         public void start() {
             super.start();
-            playAnimation(TEST_FAIL_START_ANIM);
+            playStartingAnimation();
             if (getUser().pillar != null) getUser().pillar.startFalling();
             getUser().testing = false;
         }
@@ -773,6 +773,9 @@ public class EntitySculptor extends MowzieGeckoEntity {
         }
 
         protected abstract void playFinishingAnimation();
+
+        protected abstract void playStartingAnimation();
+
     }
 
     public static class FailTestAbility extends EndTestAbility {
@@ -780,7 +783,13 @@ public class EntitySculptor extends MowzieGeckoEntity {
             super(abilityType, user, 30);
         }
 
+        private static final RawAnimation TEST_FAIL_START = RawAnimation.begin().then("test_fail_start", Animation.LoopType.HOLD_ON_LAST_FRAME);
         private static RawAnimation TEST_FAIL_END = RawAnimation.begin().thenLoop("test_fail_end");
+
+        @Override
+        protected void playStartingAnimation() {
+            playAnimation(TEST_FAIL_START);
+        }
 
         @Override
         protected void playFinishingAnimation() {
@@ -819,7 +828,13 @@ public class EntitySculptor extends MowzieGeckoEntity {
             return false;
         }
 
+        private static final RawAnimation TEST_PASS_START = RawAnimation.begin().then("test_pass_start", Animation.LoopType.HOLD_ON_LAST_FRAME);
         private static RawAnimation TEST_PASS_END = RawAnimation.begin().thenLoop("test_pass_end");
+
+        @Override
+        protected void playStartingAnimation() {
+            playAnimation(TEST_PASS_START);
+        }
 
         @Override
         protected void playFinishingAnimation() {
