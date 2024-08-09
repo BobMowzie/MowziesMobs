@@ -13,7 +13,10 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.renderer.layer.BlockAndItemGeoLayer;
+
+import java.util.Optional;
 
 public class RenderSculptor extends MowzieGeoEntityRenderer<EntitySculptor> {
     public final ResourceLocation staff_geo_location = new ResourceLocation(MowziesMobs.MODID, "geo/sculptor_staff.geo.json");
@@ -34,13 +37,12 @@ public class RenderSculptor extends MowzieGeoEntityRenderer<EntitySculptor> {
     @Override
     public void preRender(PoseStack poseStack, EntitySculptor animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
-        model.getBone("gauntletRotator").get().setHidden(true);
-        model.getBone("gauntletUnparented").get().setHidden(true);
     }
 
     @Override
     public void render(EntitySculptor entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
-        staffController = (int) model.getBone("staffController").get().getPosX();
+        Optional<GeoBone> staffControllerBone = model.getBone("staffController");
+        staffControllerBone.ifPresent(geoBone -> staffController = (int) geoBone.getPosX());
     }
 }

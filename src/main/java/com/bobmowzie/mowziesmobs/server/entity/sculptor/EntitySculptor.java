@@ -231,17 +231,17 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     @Override
     protected <E extends GeoEntity> void loopingAnimations(AnimationState<E> event) {
-//        event.getController().transitionLength(10);
-//        if (isTestObstructed && !isFighting()) {
-//            controller.setAnimation(TEST_OBSTRUCTED);
-//        }
-//        else {
-//            super.loopingAnimations(event);
-//        }
-        if (event.getController() instanceof MowzieAnimationController mowzieAnimationController) {
-            mowzieAnimationController.checkAndReloadAnims();
+        event.getController().transitionLength(10);
+        if (isTestObstructed && !isFighting()) {
+            controller.setAnimation(TEST_OBSTRUCTED);
         }
-        event.getController().setAnimation(RawAnimation.begin().thenLoop("test_pass_end"));
+        else {
+            super.loopingAnimations(event);
+        }
+//        if (event.getController() instanceof MowzieAnimationController mowzieAnimationController) {
+//            mowzieAnimationController.checkAndReloadAnims();
+//        }
+//        event.getController().setAnimation(RawAnimation.begin().thenLoop("test_pass_end"));
     }
 
     @Override
@@ -342,9 +342,9 @@ public class EntitySculptor extends MowzieGeckoEntity {
             testTimePassed = 0;
         }
 
-//        if (getActiveAbility() == null && tickCount % 60 == 0) {
-//            sendAbilityMessage(GUARD_ABILITY);
-//        }
+        if (getActiveAbility() == null && tickCount % 60 == 0) {
+            sendAbilityMessage(PASS_TEST);
+        }
     }
 
     @Override
@@ -719,7 +719,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
         @Override
         public boolean tryAbility() {
-            return getUser().pillar != null;
+            return true;//getUser().pillar != null;
         }
 
         @Override

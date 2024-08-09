@@ -19,6 +19,7 @@ import software.bernie.geckolib.model.data.EntityModelData;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class ModelSculptor extends MowzieGeoModel<EntitySculptor> {
     public ModelSculptor() {
@@ -77,6 +78,7 @@ public class ModelSculptor extends MowzieGeoModel<EntitySculptor> {
         skirtCorrections(entity);
 
         staffRendering(entity);
+        gauntletVisibility();
     }
 
     private void beadsCorrections(EntitySculptor entity) {
@@ -240,6 +242,7 @@ public class ModelSculptor extends MowzieGeoModel<EntitySculptor> {
         MowzieGeoBone body = this.getMowzieBone("body");
 
         float idleAnim = getControllerValue("idleAnimController");
+        float idleAnimDisableArms = getControllerValueInverted("idleAnimDisableArmsController");
         float idleSpeed = 0.08f;
 
         eyebrowRight.addPosY(idleAnim * (float) (Math.sin((frame * idleSpeed + 0.4)) * 0.1));
@@ -257,16 +260,57 @@ public class ModelSculptor extends MowzieGeoModel<EntitySculptor> {
         thighRight.addRotZ(idleAnim * (float) (-0.297 + Math.sin((frame * idleSpeed+1.5)) * 0.035));
         mouth.addPosY(idleAnim * (float) (-Math.sin((frame * idleSpeed+0.5)) * 0.1f));
         mouth.setScaleY((float) (mouth.getScaleZ() + idleAnim * Math.sin((frame * idleSpeed+0.5)) * 0.05f));
-        handLeft.addRotY(idleAnim * (float) (-Math.sin((frame * idleSpeed+1)) * 0.05));
-        lowerArmLeft.addRotX(idleAnim * (float) (-Math.sin((frame * idleSpeed+0.5)) * 0.05));
-        lowerArmLeft.addRotY(idleAnim * (float) (-Math.sin((frame * idleSpeed+0.5)) * 0.05));
-        shoulderLeft.addRotZ(idleAnim * (float) (Math.sin((frame * idleSpeed - 0.5)) * 0.05));
-        handRight.addRotY(idleAnim * (float) (Math.sin((frame * idleSpeed+1)) * 0.05));
-        lowerArmRight.addRotX(idleAnim * (float) (-Math.sin((frame * idleSpeed+0.5)) * 0.05));
-        lowerArmRight.addRotY(idleAnim * (float) (Math.sin((frame * idleSpeed+0.5)) * 0.05));
-        shoulderRight.addRotZ(idleAnim * (float) (-Math.sin((frame * idleSpeed - 0.5)) * 0.05));
+        handLeft.addRotY(idleAnim * idleAnimDisableArms * (float) (-Math.sin((frame * idleSpeed+1)) * 0.05));
+        lowerArmLeft.addRotX(idleAnim * idleAnimDisableArms * (float) (-Math.sin((frame * idleSpeed+0.5)) * 0.05));
+        lowerArmLeft.addRotY(idleAnim * idleAnimDisableArms * (float) (-Math.sin((frame * idleSpeed+0.5)) * 0.05));
+        shoulderLeft.addRotZ(idleAnim * idleAnimDisableArms * (float) (Math.sin((frame * idleSpeed - 0.5)) * 0.05));
+        handRight.addRotY(idleAnim * idleAnimDisableArms * (float) (Math.sin((frame * idleSpeed+1)) * 0.05));
+        lowerArmRight.addRotX(idleAnim * idleAnimDisableArms * (float) (-Math.sin((frame * idleSpeed+0.5)) * 0.05));
+        lowerArmRight.addRotY(idleAnim * idleAnimDisableArms * (float) (Math.sin((frame * idleSpeed+0.5)) * 0.05));
+        shoulderRight.addRotZ(idleAnim * idleAnimDisableArms * (float) (-Math.sin((frame * idleSpeed - 0.5)) * 0.05));
         body.addRotX(idleAnim * (float) (-Math.cos((frame * idleSpeed+0.5)) * 0.017));
         body.addPosY(idleAnim * (float) (Math.sin(frame * idleSpeed) * 1));
+    }
+
+    private static final String[] GAUNTLET_ASSEMBLE_ORDER = new String[] {
+            "centerRock",
+            "sleeve",
+            "wrist",
+            "pinky",
+            "index",
+            "thumb",
+            "leftRock1",
+            "rightRock1",
+            "leftRock2",
+            "rightRock2"
+    };
+
+    private void gauntletVisibility() {
+        float gauntletProgress = getControllerValue("gauntletProgressController");
+
+        MowzieGeoBone gauntlet = getMowzieBone("gauntlet");
+        MowzieGeoBone gauntletUnparented = getMowzieBone("gauntletUnparented");
+
+        if (gauntletProgress <= 0.0) {
+            gauntlet.setHidden(true);
+            gauntletUnparented.setHidden(true);
+        }
+        else {
+            gauntlet.setHidden(false);
+//            gauntletUnparented.setHidden(false);
+
+            for (int i = 0; i < GAUNTLET_ASSEMBLE_ORDER.length; i++) {
+                String boneName = GAUNTLET_ASSEMBLE_ORDER[i];
+                Optional<GeoBone> bone = getBone(boneName);
+                float waitForControllerValue = (float) i / (float) GAUNTLET_ASSEMBLE_ORDER.length + 0.2f;
+                if (bone.isPresent()) {
+                    bone.get().setHidden(gauntletProgress < waitForControllerValue);
+                }
+                else {
+                    System.out.println("Missing bone " + boneName);
+                }
+            }
+        }
     }
 
     private static Vec3 Vec3(Vector3d vec) {
