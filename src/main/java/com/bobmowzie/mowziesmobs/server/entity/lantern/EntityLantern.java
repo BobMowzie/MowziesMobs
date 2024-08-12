@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.lantern;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleCloud;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleOrb;
@@ -95,10 +96,10 @@ public class EntityLantern extends MowzieLLibraryEntity {
             setDeltaMovement(getDeltaMovement().add(0, 0.2d + 0.2d / groundDist, 0));
             if (level().isClientSide) {
                 for (int i = 0; i < 5; i++) {
-                    ParticleVanillaCloudExtended.spawnVanillaCloud(level(), getX(), getY() + 0.3, getZ(), -getDeltaMovement().x() * 0.2 + 0.1 * (random.nextFloat() - 0.5), -getDeltaMovement().y() * 0.2 + 0.1 * (random.nextFloat() - 0.5), -getDeltaMovement().z() * 0.2 + 0.1 * (random.nextFloat() - 0.5), 0.8d + random.nextDouble() * 1d, 163d / 256d, 247d / 256d, 74d / 256d, 0.95, 30);
+                    ParticleVanillaCloudExtended.spawnVanillaCloud(level(), getX(), getY() + 0.3, getZ(), -getDeltaMovement().x() * 0.2 + 0.1 * (random.nextFloat() - 0.5), -getDeltaMovement().y() * 0.2 + 0.1 * (random.nextFloat() - 0.5), -getDeltaMovement().z() * 0.2 + 0.1 * (random.nextFloat() - 0.5), 0.8d + random.nextDouble() * 1d, MowziesMobs.PROXY.getLanternParticleRED() / 256d, MowziesMobs.PROXY.getLanternParticleGREEN() / 256d, MowziesMobs.PROXY.getLanternParticleBLUE() / 256d, 0.95, 30);
                 }
                 for (int i = 0; i < 8; i++) {
-                    AdvancedParticleBase.spawnParticle(level(), ParticleHandler.PIXEL.get(), getX(), getY() + 0.3, getZ(), -getDeltaMovement().x() * 0.2 + 0.2 * (random.nextFloat() - 0.5), -getDeltaMovement().y() * 0.2 + 0.1 * (random.nextFloat() - 0.5), -getDeltaMovement().z() * 0.2 + 0.2 * (random.nextFloat() - 0.5), true, 0, 0, 0, 0, 4f, 163d / 256d, 247d / 256d, 74d / 256d, 1, 0.9, 17 + random.nextFloat() * 10, true, true, new ParticleComponent[] {
+                    AdvancedParticleBase.spawnParticle(level(), ParticleHandler.PIXEL.get(), getX(), getY() + 0.3, getZ(), -getDeltaMovement().x() * 0.2 + 0.2 * (random.nextFloat() - 0.5), -getDeltaMovement().y() * 0.2 + 0.1 * (random.nextFloat() - 0.5), -getDeltaMovement().z() * 0.2 + 0.2 * (random.nextFloat() - 0.5), true, 0, 0, 0, 0, 4f, MowziesMobs.PROXY.getLanternParticleRED() / 256d, MowziesMobs.PROXY.getLanternParticleGREEN() / 256d, MowziesMobs.PROXY.getLanternParticleBLUE() / 256d, 1, 0.9, 17 + random.nextFloat() * 10, true, true, new ParticleComponent[] {
                             new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
                                     new float[] {4f, 0},
                                     new float[] {0.8f, 1}
@@ -140,7 +141,7 @@ public class EntityLantern extends MowzieLLibraryEntity {
         if (level().isClientSide && ConfigHandler.CLIENT.glowEffect.get()) {
             pos[0] = position().add(0, getBbHeight() * 0.8, 0);
             if (tickCount % 70 == 0) {
-                AdvancedParticleBase.spawnParticle(level(), ParticleHandler.GLOW.get(), pos[0].x, pos[0].y, pos[0].z, 0, 0, 0, true, 0, 0, 0, 0, 20F, 0.8, 0.95, 0.35, 1, 1, 70, true, true, new ParticleComponent[]{
+                AdvancedParticleBase.spawnParticle(level(), ParticleHandler.GLOW.get(), pos[0].x, pos[0].y, pos[0].z, 0, 0, 0, true, 0, 0, 0, 0, 20F, MowziesMobs.PROXY.getLanternGlowRED(), MowziesMobs.PROXY.getLanternGlowGREEN(), MowziesMobs.PROXY.getLanternGlowBLUE(), 1, 1, 70, true, true, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, new ParticleComponent.KeyTrack(
                                 new float[]{0.0f, 0.8f, 0},
                                 new float[]{0, 0.5f, 1}
@@ -159,8 +160,8 @@ public class EntityLantern extends MowzieLLibraryEntity {
         if (getAnimationTick() == 1 && level().isClientSide) {
             for (int i = 0; i < 8; i++) {
                 level().addParticle(ParticleTypes.ITEM_SLIME, getX(), getY(), getZ(), 0.2 * (random.nextFloat() - 0.5), 0.2 * (random.nextFloat() - 0.5), 0.2 * (random.nextFloat() - 0.5));
-                level().addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 163f / 256f, 247f / 256f, 74f / 256f, 10f + random.nextFloat() * 20f, 30, ParticleCloud.EnumCloudBehavior.GROW, 0.9f), getX(), getY() + 0.3, getZ(), 0.25 * (random.nextFloat() - 0.5), 0.25 * (random.nextFloat() - 0.5), 0.25 * (random.nextFloat() - 0.5));
-                level().addParticle(new ParticleOrb.OrbData(163f / 256f, 247f / 256f, 74f / 256f, 1.5f, 25), getX(), getY() + 0.3, getZ(), 0.2f * (random.nextFloat() - 0.5f), 0.2f * (random.nextFloat() - 0.5f), 0.2f * (random.nextFloat() - 0.5f));
+                level().addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), (float)MowziesMobs.PROXY.getLanternParticleRED() / 256f, (float)MowziesMobs.PROXY.getLanternParticleGREEN() / 256f, (float)MowziesMobs.PROXY.getLanternParticleBLUE() / 256f, 10f + random.nextFloat() * 20f, 30, ParticleCloud.EnumCloudBehavior.GROW, 0.9f), getX(), getY() + 0.3, getZ(), 0.25 * (random.nextFloat() - 0.5), 0.25 * (random.nextFloat() - 0.5), 0.25 * (random.nextFloat() - 0.5));
+                level().addParticle(new ParticleOrb.OrbData((float)MowziesMobs.PROXY.getLanternParticleRED() / 256f, (float)MowziesMobs.PROXY.getLanternParticleGREEN() / 256f, (float)MowziesMobs.PROXY.getLanternParticleBLUE() / 256f, 1.5f, 25), getX(), getY() + 0.3, getZ(), 0.2f * (random.nextFloat() - 0.5f), 0.2f * (random.nextFloat() - 0.5f), 0.2f * (random.nextFloat() - 0.5f));
             }
         }
         if (getAnimationTick() == 2) playSound(MMSounds.ENTITY_LANTERN_POP.get(), 1f, 0.8f + random.nextFloat() * 0.4f);
