@@ -115,6 +115,36 @@ public class ClientProxy extends ServerProxy {
         Minecraft.getInstance().getSoundManager().play(new SolarBeamSound(entity, false));
         Minecraft.getInstance().getSoundManager().play(new SolarBeamSound(entity, true));
     }
+    
+    @Override
+    public double getLanternParticleRED() {
+    	return (double)ConfigHandler.CLIENT.lanternParticleColorRED.get();
+    }
+    
+    @Override
+    public double getLanternParticleGREEN() {
+    	return (double)ConfigHandler.CLIENT.lanternParticleColorGREEN.get();
+    }
+    
+    @Override
+    public double getLanternParticleBLUE() {
+    	return (double)ConfigHandler.CLIENT.lanternParticleColorBLUE.get();
+    }
+    
+    @Override
+    public double getLanternGlowRED() {
+    	return (double)ConfigHandler.CLIENT.lanternGlowColorRED.get();
+    }
+    
+    @Override
+    public double getLanternGlowGREEN() {
+    	return (double)ConfigHandler.CLIENT.lanternGlowColorGREEN.get();
+    }
+    
+    @Override
+    public double getLanternGlowBLUE() {
+    	return (double)ConfigHandler.CLIENT.lanternGlowColorBLUE.get();
+    }
 
     @Override
     public void minecartParticles(ClientLevel world, AbstractMinecart minecart, float scale, double x, double y, double z, BlockState state, BlockPos pos) {
