@@ -792,6 +792,24 @@ public final class ConfigHandler {
             this.doUmvuthanaCraneHealSound = builder.comment("Play Umvuthana Crane heal sounds. Turn this off if you are experiencing crashes when Cranes appear during Umvuthi's boss battle.")
                     .translation(LANG_PREFIX + "crane_heal_sounds")
                     .define("crane_heal_sounds", true);
+            this.lanternParticleColorRED = builder.comment("Red RGB value of the Lantern's particles.")
+                    .translation(LANG_PREFIX + "lantern_particle_color_red")
+                    .defineInRange("lantern_particle_color_red", 163.0, 0.0, 255.0);
+            this.lanternParticleColorGREEN = builder.comment("Green RGB value of the Lantern's particles..")
+                    .translation(LANG_PREFIX + "lantern_particle_color_green")
+                    .defineInRange("lantern_particle_color_green", 247.0, 0.0, 255.0);
+            this.lanternParticleColorBLUE = builder.comment("Blue RGB value of the Lantern's particles.")
+                    .translation(LANG_PREFIX + "lantern_particle_color_blue")
+                    .defineInRange("lantern_particle_color_blue", 74.0, 0.0, 255.0);
+            this.lanternGlowColorRED = builder.comment("Red RGB value of the Lantern's glow.")
+            		.translation(LANG_PREFIX + "lantern_glow_color_red")
+                    .defineInRange("lantern_glow_color_red", 0.8, 0.0, 1.0);
+            this.lanternGlowColorGREEN = builder.comment("Green RGB value of the Lantern's glow.")
+            		.translation(LANG_PREFIX + "lantern_glow_color_green")
+                    .defineInRange("lantern_glow_color_green", 0.95, 0.0, 1.0);
+            this.lanternGlowColorBLUE = builder.comment("Blue RGB value of the Lantern's glow.")
+            		.translation(LANG_PREFIX + "lantern_glow_color_blue")
+                    .defineInRange("lantern_glow_color_blue", 0.35, 0.0, 1.0);
             builder.pop();
         }
 
@@ -808,6 +826,18 @@ public final class ConfigHandler {
         public final BooleanValue customPlayerAnims;
 
         public final BooleanValue doUmvuthanaCraneHealSound;
+
+        public final DoubleValue lanternParticleColorRED;
+
+        public final DoubleValue lanternParticleColorGREEN;
+
+        public final DoubleValue lanternParticleColorBLUE;
+
+        public final DoubleValue lanternGlowColorRED;
+
+        public final DoubleValue lanternGlowColorGREEN;
+
+        public final DoubleValue lanternGlowColorBLUE;
     }
 
     public static class Common {
