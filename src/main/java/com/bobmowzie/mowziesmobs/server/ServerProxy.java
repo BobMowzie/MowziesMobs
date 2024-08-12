@@ -102,6 +102,30 @@ public class ServerProxy {
 
     public void playSolarBeamSound(EntitySolarBeam entity) {
     }
+    
+    public double getLanternParticleRED() {
+    	return 1.0;
+    }
+    
+    public double getLanternParticleGREEN() {
+    	return 1.0;
+    }
+    
+    public double getLanternParticleBLUE() {
+    	return 1.0;
+    }
+    
+    public double getLanternGlowRED() {
+    	return 1.0;
+    }
+    
+    public double getLanternGlowGREEN() {
+    	return 1.0;
+    }
+    
+    public double getLanternGlowBLUE() {
+    	return 1.0;
+    }
 
     public void minecartParticles(ClientLevel world, AbstractMinecart minecart, float scale, double x, double y, double z, BlockState state, BlockPos pos) {
     }
