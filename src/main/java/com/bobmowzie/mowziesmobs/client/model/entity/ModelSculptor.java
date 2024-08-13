@@ -275,12 +275,12 @@ public class ModelSculptor extends MowzieGeoModel<EntitySculptor> {
     private static final String[] GAUNTLET_ASSEMBLE_ORDER = new String[] {
             "centerRock",
             "sleeve",
+            "rightRock1",
             "wrist",
             "pinky",
             "index",
             "thumb",
             "leftRock1",
-            "rightRock1",
             "leftRock2",
             "rightRock2"
     };
@@ -291,13 +291,13 @@ public class ModelSculptor extends MowzieGeoModel<EntitySculptor> {
         MowzieGeoBone gauntlet = getMowzieBone("gauntlet");
         MowzieGeoBone gauntletUnparented = getMowzieBone("gauntletUnparented");
 
-        if (gauntletProgress <= 0.0) {
+        if (gauntletProgress <= 0.0 || gauntletProgress > 1.15) {
             gauntlet.setHidden(true);
             gauntletUnparented.setHidden(true);
         }
         else {
             gauntlet.setHidden(false);
-//            gauntletUnparented.setHidden(false);
+            gauntletUnparented.setHidden(false);
 
             for (int i = 0; i < GAUNTLET_ASSEMBLE_ORDER.length; i++) {
                 String boneName = GAUNTLET_ASSEMBLE_ORDER[i];
@@ -308,6 +308,14 @@ public class ModelSculptor extends MowzieGeoModel<EntitySculptor> {
                 }
                 else {
                     System.out.println("Missing bone " + boneName);
+                }
+
+                Optional<GeoBone> boneUnparented = getBone(boneName + "Unparented");
+                if (boneUnparented.isPresent()) {
+                    boneUnparented.get().setHidden(gauntletProgress >= waitForControllerValue || gauntletProgress < waitForControllerValue - 0.1);
+                }
+                else {
+                    System.out.println("Missing bone " + boneName + "Unparented");
                 }
             }
         }

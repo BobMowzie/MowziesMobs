@@ -14,6 +14,7 @@ public class BossInfoSculptor extends MMBossInfoServer {
     public BossInfoSculptor(EntitySculptor entity) {
         super(entity);
         sculptor = entity;
+        displayName = name;
     }
 
     public void update() {

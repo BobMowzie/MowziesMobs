@@ -55,6 +55,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -242,6 +243,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 //            mowzieAnimationController.checkAndReloadAnims();
 //        }
 //        event.getController().setAnimation(RawAnimation.begin().thenLoop("test_pass_end"));
+//        event.getController().setAnimationSpeed(1.0f);
     }
 
     @Override
@@ -342,9 +344,9 @@ public class EntitySculptor extends MowzieGeckoEntity {
             testTimePassed = 0;
         }
 
-        if (getActiveAbility() == null && tickCount % 60 == 0) {
-            sendAbilityMessage(PASS_TEST);
-        }
+//        if (getActiveAbility() == null && tickCount % 60 == 0) {
+//            sendAbilityMessage(PASS_TEST);
+//        }
     }
 
     @Override
@@ -800,7 +802,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
     public static class PassTestAbility extends EndTestAbility {
 
         public PassTestAbility(AbilityType<EntitySculptor, PassTestAbility> abilityType, EntitySculptor user) {
-            super(abilityType, user, 120);
+            super(abilityType, user, 150);
         }
 
         @Override
@@ -818,8 +820,18 @@ public class EntitySculptor extends MowzieGeckoEntity {
         @Override
         public void tickUsing() {
             super.tickUsing();
-            if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.RECOVERY && getTicksInSection() == 120) {
-                getUser().spawnAtLocation(ItemHandler.EARTHREND_GAUNTLET.get().getDefaultInstance());
+            if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.RECOVERY && getTicksInSection() == 134 && !getUser().level().isClientSide()) {
+                Vec3 polarOffset = new Vec3(1.2, 0, 0).yRot((float)Math.toRadians(-getUser().yBodyRot - 90));
+                Vec3 itemPos = getUser().position().add(0, 1.2, 0).add(polarOffset);
+                Vec3 itemVelocity = new Vec3(0.1f, 0.1f, 0).yRot((float)Math.toRadians(-getUser().yBodyRot - 90));
+                ItemEntity itementity = new ItemEntity(getUser().level(), itemPos.x, itemPos.y, itemPos.z, ItemHandler.EARTHREND_GAUNTLET.get().getDefaultInstance(), itemVelocity.x, itemVelocity.y, itemVelocity.z);
+                itementity.setDefaultPickUpDelay();
+                if (getUser().captureDrops() != null) {
+                    getUser().captureDrops().add(itementity);
+                }
+                else {
+                    getUser().level().addFreshEntity(itementity);
+                }
             }
         }
 
