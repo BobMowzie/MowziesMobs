@@ -32,24 +32,24 @@ public class GongRenderer implements BlockEntityRenderer<GongBlockEntity> {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
 
-        PartDefinition root = partdefinition.addOrReplaceChild("root", CubeListBuilder.create().texOffs(69, 68).addBox(-35.75F, -23.25F, 5.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F))
-                .texOffs(35, 65).addBox(0.25F, -57.25F, 7.0F, 4.0F, 34.0F, 4.0F, new CubeDeformation(0.0F))
-                .texOffs(69, 85).addBox(-1.75F, -59.25F, 5.0F, 8.0F, 2.0F, 8.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 69).addBox(-1.75F, -23.25F, 5.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F))
-                .texOffs(52, 68).addBox(-33.75F, -57.25F, 7.0F, 4.0F, 34.0F, 4.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 86).addBox(-35.75F, -59.25F, 5.0F, 8.0F, 2.0F, 8.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 17).addBox(-37.75F, -56.25F, 7.5F, 46.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
+        PartDefinition root = partdefinition.addOrReplaceChild("root", CubeListBuilder.create().texOffs(88, 46).addBox(-35.75F, -23.25F, 5.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F))
+                .texOffs(112, 16).addBox(0.25F, -57.25F, 7.0F, 4.0F, 34.0F, 4.0F, new CubeDeformation(0.0F))
+                .texOffs(48, 32).addBox(-1.75F, -59.25F, 5.0F, 8.0F, 2.0F, 8.0F, new CubeDeformation(0.0F))
+                .texOffs(88, 46).addBox(-1.75F, -23.25F, 5.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F))
+                .texOffs(112, 16).addBox(-33.75F, -57.25F, 7.0F, 4.0F, 34.0F, 4.0F, new CubeDeformation(0.0F))
+                .texOffs(48, 32).addBox(-35.75F, -59.25F, 5.0F, 8.0F, 2.0F, 8.0F, new CubeDeformation(0.0F))
+                .texOffs(0, 16).addBox(-37.75F, -56.25F, 7.5F, 46.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
                 .texOffs(0, 0).addBox(-38.75F, -63.25F, 3.0F, 48.0F, 4.0F, 12.0F, new CubeDeformation(0.0F))
-                .texOffs(51, 23).addBox(-27.75F, -59.25F, 8.5F, 26.0F, 3.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offset(14.75F, 39.25F, -8.5F));
+                .texOffs(48, 21).addBox(-27.75F, -59.25F, 8.5F, 26.0F, 3.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offset(14.75F, 39.25F, -8.5F));
 
-        PartDefinition chain = root.addOrReplaceChild("chain", CubeListBuilder.create().texOffs(51, 27).addBox(-11.0F, 0.0F, 0.0F, 22.0F, 8.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offset(-14.75F, -54.25F, 8.5F));
+        PartDefinition chain = root.addOrReplaceChild("chain", CubeListBuilder.create().texOffs(48, 24).addBox(-11.0F, 0.0F, 0.0F, 22.0F, 8.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offset(-14.75F, -54.25F, 8.5F));
 
-        PartDefinition gong = chain.addOrReplaceChild("gong", CubeListBuilder.create().texOffs(1, 24).addBox(-11.75F, -11.75F, -1.0F, 22.0F, 22.0F, 2.0F, new CubeDeformation(0.0F))
-                .texOffs(51, 36).addBox(-3.75F, -3.75F, -1.0F, 6.0F, 6.0F, 2.0F, new CubeDeformation(0.0F))
-                .texOffs(49, 47).addBox(-9.75F, -9.75F, -1.0F, 18.0F, 18.0F, 2.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 49).addBox(-9.75F, -9.75F, -0.5F, 18.0F, 18.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.75F, 18.75F, 0.0F));
+        PartDefinition gong = chain.addOrReplaceChild("gong", CubeListBuilder.create().texOffs(0, 21).addBox(-11.75F, -11.75F, -1.0F, 22.0F, 22.0F, 2.0F, new CubeDeformation(0.0F))
+                .texOffs(108, 4).addBox(-3.75F, -3.75F, -1.0F, 6.0F, 6.0F, 2.0F, new CubeDeformation(0.0F))
+                .texOffs(48, 42).addBox(-9.75F, -9.75F, -1.0F, 18.0F, 18.0F, 2.0F, new CubeDeformation(0.0F))
+                .texOffs(0, 45).addBox(-9.75F, -9.75F, -0.5F, 18.0F, 18.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.75F, 19.75F, 0.0F));
 
-        return LayerDefinition.create(meshdefinition, 128, 128);
+        return LayerDefinition.create(meshdefinition, 128, 64);
     }
 
     @Override
