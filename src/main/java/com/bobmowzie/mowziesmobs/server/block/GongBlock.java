@@ -160,19 +160,36 @@ public class GongBlock extends BaseEntityBlock {
         return PushReaction.DESTROY;
     }
 
+    private boolean doesGongFitInDirection(BlockPos pos, Direction direction, Level level) {
+        for (int i = 0; i <= 2; i++) {
+            BlockPos abovePos = pos.above(i);
+            BlockPos blockpos1 = abovePos.relative(direction.getClockWise());
+            BlockPos blockpos2 = abovePos;
+            BlockPos blockpos3 = abovePos.relative(direction.getCounterClockWise());
+            BlockPos[] toBreakPoses = {blockpos1, blockpos2, blockpos3};
+            for (BlockPos toBreakPos : toBreakPoses) {
+                BlockState blockstate = level.getBlockState(toBreakPos);
+                if (!blockstate.canBeReplaced()) return false;
+            }
+        }
+        return true;
+    }
+
     @javax.annotation.Nullable
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         Direction direction = context.getClickedFace();
         BlockPos blockpos = context.getClickedPos();
         Direction.Axis direction$axis = direction.getAxis();
         if (direction$axis == Direction.Axis.Y) {
-            BlockState blockstate = this.defaultBlockState().setValue(FACING, context.getHorizontalDirection());
-            if (blockstate.canSurvive(context.getLevel(), blockpos)) {
+            Direction dir = context.getHorizontalDirection();
+            BlockState blockstate = this.defaultBlockState().setValue(FACING, dir);
+            if (blockstate.canSurvive(context.getLevel(), blockpos) && doesGongFitInDirection(blockpos, dir, context.getLevel())) {
                 return blockstate;
             }
         } else {
-            BlockState blockstate1 = this.defaultBlockState().setValue(FACING, direction.getOpposite());
-            if (blockstate1.canSurvive(context.getLevel(), context.getClickedPos())) {
+            Direction dir = direction.getOpposite();
+            BlockState blockstate1 = this.defaultBlockState().setValue(FACING, dir);
+            if (blockstate1.canSurvive(context.getLevel(), context.getClickedPos()) && doesGongFitInDirection(context.getClickedPos(), dir, context.getLevel())) {
                 return blockstate1;
             }
         }
@@ -203,7 +220,7 @@ public class GongBlock extends BaseEntityBlock {
 
     public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
         if (!level.isClientSide && player.isCreative()) {
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i <= 2; i++) {
                 BlockPos abovePos = pos.above(i);
                 BlockPos blockpos1 = abovePos.relative(state.getValue(FACING).getClockWise());
                 BlockPos blockpos2 = abovePos;
