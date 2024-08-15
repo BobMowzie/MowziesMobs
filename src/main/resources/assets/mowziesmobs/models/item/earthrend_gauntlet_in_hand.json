@@ -10,34 +10,34 @@
       "rotation": [
         90,
         0,
-        0
+        -7.5
       ],
       "translation": [
         0,
         -2,
-        -1
+        -0.5
       ],
       "scale": [
-        1.15,
-        1.15,
-        1.15
+        1.05,
+        1.05,
+        1.05
       ]
     },
     "thirdperson_lefthand": {
       "rotation": [
         90,
         0,
-        0
+        -7.5
       ],
       "translation": [
         0,
         -2,
-        -1
+        -0.5
       ],
       "scale": [
-        1.15,
-        1.15,
-        1.15
+        1.05,
+        1.05,
+        1.05
       ]
     },
     "firstperson_righthand": {

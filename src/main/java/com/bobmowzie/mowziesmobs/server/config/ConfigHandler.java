@@ -569,6 +569,16 @@ public final class ConfigHandler {
         public final ArmorConfig armorConfig;
     }
 
+    public static class GeomancerArmor {
+        GeomancerArmor(final ForgeConfigSpec.Builder builder) {
+            builder.push("geomancerArmor");
+            armorConfig = new ArmorConfig(builder, ArmorMaterials.DIAMOND.getDefenseForType(ArmorItem.Type.HELMET), ArmorMaterials.DIAMOND.getToughness());
+            builder.pop();
+        }
+
+        public final ArmorConfig armorConfig;
+    }
+
     public static class IceCrystal {
         IceCrystal(final ForgeConfigSpec.Builder builder) {
             builder.push("ice_crystal");
@@ -740,6 +750,7 @@ public final class ConfigHandler {
             SOL_VISAGE = new SolVisage(builder);
             ICE_CRYSTAL = new IceCrystal(builder);
             UMVUTHANA_MASK = new UmvuthanaMask(builder);
+            GEOMANCER_ARMOR = new GeomancerArmor(builder);
             SPEAR = new Spear(builder);
             NAGA_FANG_DAGGER = new NagaFangDagger(builder);
             BLOW_GUN = new Blowgun(builder);
@@ -758,6 +769,8 @@ public final class ConfigHandler {
         public final IceCrystal ICE_CRYSTAL;
 
         public final UmvuthanaMask UMVUTHANA_MASK;
+
+        public final GeomancerArmor GEOMANCER_ARMOR;
 
         public final Spear SPEAR;
 

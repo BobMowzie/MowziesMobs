@@ -9,6 +9,7 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -27,8 +28,10 @@ public class MowzieGeoArmorRenderer<T extends ArmorItem & GeoItem> extends GeoAr
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        super.renderToBuffer(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-        usingCustomPlayerAnimations = false;
+        if (currentEntity != null) {
+            super.renderToBuffer(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+            usingCustomPlayerAnimations = false;
+        }
     }
 
     @Override

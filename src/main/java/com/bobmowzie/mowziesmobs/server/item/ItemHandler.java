@@ -13,10 +13,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.RecordItem;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraftforge.common.ForgeSpawnEggItem;
@@ -53,6 +50,11 @@ public class ItemHandler {
     public static final RegistryObject<ItemEarthrendGauntlet> EARTHREND_GAUNTLET = REG.register("earthrend_gauntlet", () -> new ItemEarthrendGauntlet(new Item.Properties().defaultDurability(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHREND_GAUNTLET.durabilityValue).rarity(Rarity.RARE)));
     public static final RegistryObject<ItemSculptorStaff> SCULPTOR_STAFF = REG.register("sculptor_staff", () -> new ItemSculptorStaff(new Item.Properties().defaultDurability(1000).rarity(Rarity.RARE)));
     public static final RegistryObject<ItemSandRake> SAND_RAKE = REG.register("sand_rake", () -> new ItemSandRake(new Item.Properties().defaultDurability(64)));
+    public static final RegistryObject<MowzieArmorItem> GEOMANCER_BEADS = REG.register("geomancer_beads", () -> new ItemGeomancerArmor(ArmorItem.Type.HELMET, new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<MowzieArmorItem> GEOMANCER_ROBE = REG.register("geomancer_robe", () -> new ItemGeomancerArmor(ArmorItem.Type.CHESTPLATE, new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<MowzieArmorItem> GEOMANCER_BELT = REG.register("geomancer_belt", () -> new ItemGeomancerArmor(ArmorItem.Type.LEGGINGS, new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<MowzieArmorItem> GEOMANCER_SANDALS = REG.register("geomancer_sandals", () -> new ItemGeomancerArmor(ArmorItem.Type.BOOTS, new Item.Properties().rarity(Rarity.UNCOMMON)));
+
     public static final RegistryObject<Item> LOGO = REG.register("logo", () -> new Item(new Item.Properties()));
     public static final RegistryObject<RecordItem> PETIOLE_MUSIC_DISC = REG.register("music_disc_petiole", () -> new RecordItem(14, MMSounds.MUSIC_PETIOLE, new Item.Properties().stacksTo(1).rarity(Rarity.RARE), 2800));
 
