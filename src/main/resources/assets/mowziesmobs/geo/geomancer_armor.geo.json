@@ -57,7 +57,7 @@
 				{
 					"name": "backCloth",
 					"parent": "belt",
-					"pivot": [0, 24, 0],
+					"pivot": [0, 12, 2],
 					"cubes": [
 						{"origin": [-3, 4.875, 2.125], "size": [6, 7, 0], "pivot": [0, 11.875, 2.125], "rotation": [10, 0, 0], "uv": [24, 22], "mirror": true}
 					]
