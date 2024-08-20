@@ -105,7 +105,7 @@ public enum ClientEventHandler {
             if (player == null) return;
             float delta = event.getPartialTick();
             AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
-//        shouldAnimate = (player.ticksExisted / 20) % 2 == 0;
+//            if ((player.tickCount / 20) % 2 == 0) {
             if (abilityCapability != null && abilityCapability.getActiveAbility() != null) {
                 PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), CapabilityHandler.PLAYER_CAPABILITY);
                 if (playerCapability != null) {

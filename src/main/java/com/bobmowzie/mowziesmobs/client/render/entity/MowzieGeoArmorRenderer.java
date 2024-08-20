@@ -9,10 +9,8 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
 import org.joml.Matrix4f;
-import org.joml.Quaternionf;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
@@ -58,11 +56,13 @@ public class MowzieGeoArmorRenderer<T extends ArmorItem & GeoItem> extends GeoAr
     }
 
     public void copyFrom(ModelPart modelPart, GeoBone geoBone, float offsetX, float offsetY, float offsetZ) {
-        if (usingCustomPlayerAnimations && modelPart instanceof ModelPartMatrix && geoBone instanceof MowzieGeoBone) {
-            MowzieGeoBone thisBone = (MowzieGeoBone) geoBone;
-            ModelPartMatrix other = (ModelPartMatrix) modelPart;
+        if (usingCustomPlayerAnimations && modelPart instanceof ModelPartMatrix other && geoBone instanceof MowzieGeoBone thisBone) {
             thisBone.setWorldSpaceNormal(other.getWorldNormal());
-            thisBone.setWorldSpaceMatrix(other.getWorldXform());
+            Matrix4f newMatrix = new Matrix4f();
+            newMatrix.translate(offsetX / 16f, -offsetY / 16f, offsetZ / 16f);
+            Matrix4f worldXform = new Matrix4f(other.getWorldXform());
+            Matrix4f offsetMatrix = worldXform.mul(newMatrix);
+            thisBone.setWorldSpaceMatrix(offsetMatrix);
             thisBone.setForceMatrixTransform(true);
         }
         else {

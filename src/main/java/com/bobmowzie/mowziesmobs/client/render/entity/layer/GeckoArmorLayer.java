@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.render.entity.layer;
 
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBipedAnimated;
+import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerThirdPerson;
 import com.bobmowzie.mowziesmobs.client.render.entity.MowzieGeoArmorRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -69,7 +70,9 @@ public class GeckoArmorLayer<T extends LivingEntity, M extends HumanoidModel<T>,
 
     private void renderModel(PoseStack p_117107_, MultiBufferSource p_117108_, int p_117109_, net.minecraft.client.model.Model p_117112_, float p_117114_, float p_117115_, float p_117116_, ResourceLocation armorResource) {
         VertexConsumer vertexconsumer = p_117108_.getBuffer(RenderType.armorCutoutNoCull(armorResource));
-        if (p_117112_ instanceof MowzieGeoArmorRenderer<?>) ((MowzieGeoArmorRenderer<?>) p_117112_).usingCustomPlayerAnimations = true;
+        if (p_117112_ instanceof MowzieGeoArmorRenderer<?> mowzieGeoArmorRenderer) {
+            mowzieGeoArmorRenderer.usingCustomPlayerAnimations = true;
+        }
         p_117112_.renderToBuffer(p_117107_, vertexconsumer, p_117109_, OverlayTexture.NO_OVERLAY, p_117114_, p_117115_, p_117116_, 1.0F);
     }
 
