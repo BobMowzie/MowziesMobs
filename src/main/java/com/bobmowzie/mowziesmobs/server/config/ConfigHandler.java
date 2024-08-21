@@ -2,7 +2,6 @@ package com.bobmowzie.mowziesmobs.server.config;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterials;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -229,23 +228,22 @@ public final class ConfigHandler {
     }
 
     public static class ArmorConfig {
-        ArmorConfig(final ForgeConfigSpec.Builder builder, int damageReduction, float toughness) {
+        ArmorConfig(final ForgeConfigSpec.Builder builder) {
             builder.push("armor_config");
-            this.damageReduction = builder.comment("See official Minecraft Wiki for an explanation of how armor damage reduction works.")
-                    .translation(LANG_PREFIX + "damage_reduction")
-                    .defineInRange("damage_reduction", damageReduction, 0, Integer.MAX_VALUE);
-            this.toughness = builder.comment("See official Minecraft Wiki for an explanation of how armor toughness works.")
-                    .translation(LANG_PREFIX + "toughness")
-                    .defineInRange("toughness", toughness, 0d, Double.MAX_VALUE);
+            this.damageReductionMultiplier = builder.comment("Multiply armor damage reduction by this amount. See official Minecraft Wiki for an explanation of how armor damage reduction works.")
+                    .translation(LANG_PREFIX + "damage_reduction_multiplier")
+                    .defineInRange("damage_reduction_multiplier", 1.0f, 0d, Double.MAX_VALUE);
+            this.toughnessMultiplier = builder.comment("Multiply armor toughness by this amount. See official Minecraft Wiki for an explanation of how armor toughness works.")
+                    .translation(LANG_PREFIX + "toughness_multiplier")
+                    .defineInRange("toughness_multiplier", 1.0f, 0d, Double.MAX_VALUE);
             builder.pop();
         }
 
-        public final IntValue damageReduction;
-        
-        public int damageReductionValue = ArmorMaterials.IRON.getDefenseForType(ArmorItem.Type.HELMET);
-        public float toughnessValue = ArmorMaterials.IRON.getToughness();
+        public final DoubleValue damageReductionMultiplier;
+        public final DoubleValue toughnessMultiplier;
 
-        public final DoubleValue toughness;
+        public float damageReductionMultiplierValue = ArmorMaterials.IRON.getDefenseForType(ArmorItem.Type.HELMET);
+        public float toughnessMultiplierValue = ArmorMaterials.IRON.getToughness();
     }
 
     // Mob configuration
@@ -512,7 +510,7 @@ public final class ConfigHandler {
     public static class WroughtHelm {
         WroughtHelm(final ForgeConfigSpec.Builder builder) {
             builder.push("wrought_helm");
-            armorConfig = new ArmorConfig(builder, ArmorMaterials.IRON.getDefenseForType(ArmorItem.Type.HELMET), ArmorMaterials.IRON.getToughness());
+            armorConfig = new ArmorConfig(builder);
             breakable = builder.comment("Set to true for the Wrought Helm to have limited durability.")
                     .translation(LANG_PREFIX + "breakable")
                     .define("breakable", false);
@@ -542,7 +540,7 @@ public final class ConfigHandler {
     public static class SolVisage {
         SolVisage(final ForgeConfigSpec.Builder builder) {
             builder.push("sol_visage");
-            armorConfig = new ArmorConfig(builder, ArmorMaterials.GOLD.getDefenseForType(ArmorItem.Type.HELMET), ArmorMaterials.GOLD.getToughness());
+            armorConfig = new ArmorConfig(builder);
             breakable = builder.comment("Set to true for the Sol Visage to have limited durability.")
                     .translation(LANG_PREFIX + "breakable")
                     .define("breakable", false);
@@ -562,7 +560,7 @@ public final class ConfigHandler {
     public static class UmvuthanaMask {
         UmvuthanaMask(final ForgeConfigSpec.Builder builder) {
             builder.push("umvuthana_mask");
-            armorConfig = new ArmorConfig(builder, ArmorMaterials.LEATHER.getDefenseForType(ArmorItem.Type.HELMET), ArmorMaterials.LEATHER.getToughness());
+            armorConfig = new ArmorConfig(builder);
             builder.pop();
         }
 
@@ -572,7 +570,7 @@ public final class ConfigHandler {
     public static class GeomancerArmor {
         GeomancerArmor(final ForgeConfigSpec.Builder builder) {
             builder.push("geomancerArmor");
-            armorConfig = new ArmorConfig(builder, ArmorMaterials.DIAMOND.getDefenseForType(ArmorItem.Type.HELMET), ArmorMaterials.DIAMOND.getToughness());
+            armorConfig = new ArmorConfig(builder);
             builder.pop();
         }
 

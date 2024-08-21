@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.render.item.RenderSolVisageArmor;
 import com.bobmowzie.mowziesmobs.client.render.item.RenderUmvuthanaMaskArmor;
 import com.bobmowzie.mowziesmobs.client.render.item.RenderUmvuthanaMaskItem;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
@@ -198,7 +197,7 @@ public class ItemUmvuthanaMask extends MowzieArmorItem implements UmvuthanaMask,
 
         @Override
         public int getDefenseForType(Type equipmentSlotType) {
-            return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.UMVUTHANA_MASK.armorConfig.damageReductionValue;
+            return (int) (ArmorMaterials.LEATHER.getDefenseForType(Type.HELMET) * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.UMVUTHANA_MASK.armorConfig.damageReductionMultiplierValue);
         }
 
         @Override
@@ -223,7 +222,7 @@ public class ItemUmvuthanaMask extends MowzieArmorItem implements UmvuthanaMask,
 
         @Override
         public float getToughness() {
-            return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.UMVUTHANA_MASK.armorConfig.toughnessValue;
+            return ArmorMaterials.LEATHER.getToughness() * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.UMVUTHANA_MASK.armorConfig.toughnessMultiplierValue;
         }
 
         @Override

@@ -87,7 +87,7 @@ public class ItemWroughtHelm extends MowzieArmorItem {
 
         @Override
         public int getDefenseForType(Type equipmentSlotType) {
-            return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorConfig.damageReductionValue;
+            return (int) (ArmorMaterials.IRON.getDefenseForType(Type.HELMET) * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorConfig.damageReductionMultiplierValue);
         }
 
         @Override
@@ -112,7 +112,7 @@ public class ItemWroughtHelm extends MowzieArmorItem {
 
         @Override
         public float getToughness() {
-            return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorConfig.toughnessValue;
+            return ArmorMaterials.IRON.getToughness() * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorConfig.toughnessMultiplierValue;
         }
 
         @Override

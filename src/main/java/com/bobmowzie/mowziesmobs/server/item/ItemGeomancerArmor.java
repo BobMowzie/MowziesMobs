@@ -1,16 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
-import com.bobmowzie.mowziesmobs.client.model.LayerHandler;
-import com.bobmowzie.mowziesmobs.client.model.armor.WroughtHelmModel;
 import com.bobmowzie.mowziesmobs.client.render.item.RenderGeomancerArmor;
-import com.bobmowzie.mowziesmobs.client.render.item.RenderSolVisageArmor;
-import com.bobmowzie.mowziesmobs.client.render.item.RenderSolVisageItem;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -63,27 +55,27 @@ public class ItemGeomancerArmor extends MowzieArmorItem implements GeoItem {
 
         @Override
         public int getDurabilityForType(Type equipmentSlotType) {
-            return ArmorMaterials.IRON.getDurabilityForType(equipmentSlotType);
+            return ArmorMaterials.DIAMOND.getDurabilityForType(equipmentSlotType);
         }
 
         @Override
         public int getDefenseForType(Type equipmentSlotType) {
-            return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorConfig.damageReductionValue;
+            return (int) (ArmorMaterials.DIAMOND.getDefenseForType(equipmentSlotType) * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.GEOMANCER_ARMOR.armorConfig.damageReductionMultiplierValue);
         }
 
         @Override
         public int getEnchantmentValue() {
-            return ArmorMaterials.IRON.getEnchantmentValue();
+            return ArmorMaterials.DIAMOND.getEnchantmentValue();
         }
 
         @Override
         public SoundEvent getEquipSound() {
-            return ArmorMaterials.IRON.getEquipSound();
+            return ArmorMaterials.DIAMOND.getEquipSound();
         }
 
         @Override
         public Ingredient getRepairIngredient() {
-            return ArmorMaterials.IRON.getRepairIngredient();
+            return ArmorMaterials.DIAMOND.getRepairIngredient();
         }
 
         @Override
@@ -93,7 +85,7 @@ public class ItemGeomancerArmor extends MowzieArmorItem implements GeoItem {
 
         @Override
         public float getToughness() {
-            return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorConfig.toughnessValue;
+            return ArmorMaterials.DIAMOND.getToughness() * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorConfig.toughnessMultiplier.get().floatValue();
         }
 
         @Override

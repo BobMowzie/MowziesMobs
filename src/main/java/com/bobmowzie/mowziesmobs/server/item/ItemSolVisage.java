@@ -16,7 +16,6 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import software.bernie.example.client.renderer.armor.GeckoArmorRenderer;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -121,7 +120,7 @@ public class ItemSolVisage extends MowzieArmorItem implements UmvuthanaMask, Geo
 
         @Override
         public int getDefenseForType(Type equipmentSlotType) {
-            return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.armorConfig.damageReductionValue;
+            return (int) (ArmorMaterials.GOLD.getDefenseForType(Type.HELMET) * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.armorConfig.damageReductionMultiplierValue);
         }
 
         @Override
@@ -146,7 +145,7 @@ public class ItemSolVisage extends MowzieArmorItem implements UmvuthanaMask, Geo
 
         @Override
         public float getToughness() {
-            return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.armorConfig.toughnessValue;
+            return ArmorMaterials.GOLD.getToughness() * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.armorConfig.toughnessMultiplierValue;
         }
 
         @Override
