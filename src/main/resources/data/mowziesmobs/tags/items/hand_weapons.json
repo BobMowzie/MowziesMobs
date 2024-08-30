@@ -1,0 +1,10 @@
+{
+  "__comment": "These items will count as hand weapons for the Geomancer Beads buff.",
+  "replace": false,
+  "values": [
+    {
+      "id": "mowziesmobs:earthrend_gauntlet",
+      "required": false
+    }
+  ]
+}

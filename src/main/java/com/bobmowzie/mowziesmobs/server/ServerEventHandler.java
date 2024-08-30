@@ -30,6 +30,7 @@ import com.bobmowzie.mowziesmobs.server.message.MessageSunblockEffect;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.power.Power;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import com.bobmowzie.mowziesmobs.server.tag.TagHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.structure.MowzieStructure;
 import com.bobmowzie.mowziesmobs.server.world.feature.structure.StructureTypeHandler;
 import com.sk89q.worldedit.world.entity.EntityTypes;
@@ -41,10 +42,14 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
@@ -83,6 +88,7 @@ import net.minecraftforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public final class ServerEventHandler {
@@ -716,6 +722,41 @@ public final class ServerEventHandler {
                 if (target instanceof Animal && target.getMaxHealth() <= 30 && attacker.level().getRandom().nextFloat() <= 0.334) {
                     event.setResult(Event.Result.ALLOW);
                     event.setDamageModifier(400);
+                }
+            }
+        }
+    }
+
+//    @SubscribeEvent
+//    public void onLivingAttack(LivingAttackEvent event) {
+//        Entity attacker = event.getSource().getDirectEntity();
+//        if (!event.getSource().isIndirect() && attacker instanceof LivingEntity livingAttacker) {
+//            ItemStack weapon = livingAttacker.getMainHandItem();
+//            if (livingAttacker.getItemBySlot(EquipmentSlot.HEAD).is(ItemHandler.GEOMANCER_BEADS.get())) {
+//                if (weapon.isEmpty() || weapon.is(TagHandler.HAND_WEAPONS)) {
+//                    event.getSource().;
+//                }
+//            }
+//        }
+//    }
+
+    private static final UUID ATTACK_MODIFIER_BEADS_UUID = UUID.fromString("8320d16d-b0ef-4d42-a425-c619a4760eca");
+    private static final AttributeModifier ATTACK_MODIFIER_BEADS = new AttributeModifier(ATTACK_MODIFIER_BEADS_UUID, "Geomancy Beads attack boost", 3D, AttributeModifier.Operation.ADDITION);
+
+    @SubscribeEvent
+    public void onEquipmentChanged(LivingEquipmentChangeEvent event) {
+        LivingEntity equipper = event.getEntity();
+        ItemStack weapon = equipper.getItemBySlot(EquipmentSlot.MAINHAND);
+        AttributeInstance attributeinstance = equipper.getAttribute(Attributes.ATTACK_DAMAGE);
+        if (attributeinstance != null) {
+            // If the head or hand slot was modified
+            if ((event.getSlot() == EquipmentSlot.HEAD || event.getSlot() == EquipmentSlot.MAINHAND)) {
+                // Start by clearing attack boost
+                attributeinstance.removeModifier(ATTACK_MODIFIER_BEADS);
+                // If wearing beads and unarmed
+                if (equipper.getItemBySlot(EquipmentSlot.HEAD).is(ItemHandler.GEOMANCER_BEADS.get()) && (weapon.is(TagHandler.HAND_WEAPONS) || weapon.isEmpty())) {
+                    // Apply or reapply attack boost
+                    attributeinstance.addTransientModifier(ATTACK_MODIFIER_BEADS);
                 }
             }
         }
