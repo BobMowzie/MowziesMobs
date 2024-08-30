@@ -242,8 +242,8 @@ public final class ConfigHandler {
         public final DoubleValue damageReductionMultiplier;
         public final DoubleValue toughnessMultiplier;
 
-        public float damageReductionMultiplierValue = ArmorMaterials.IRON.getDefenseForType(ArmorItem.Type.HELMET);
-        public float toughnessMultiplierValue = ArmorMaterials.IRON.getToughness();
+        public float damageReductionMultiplierValue = 1.0f;
+        public float toughnessMultiplierValue = 1.0f;
     }
 
     // Mob configuration

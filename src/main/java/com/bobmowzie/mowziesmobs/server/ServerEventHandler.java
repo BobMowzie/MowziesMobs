@@ -142,10 +142,15 @@ public final class ServerEventHandler {
         }
     }
 
+    private static final UUID DEFENSE_MODIFIER_BELT_UUID = UUID.fromString("970ecf8f-aba5-4f40-9092-a8cfaecfb32d");
+    private static final AttributeModifier DEFENSE_MODIFIER_BELT = new AttributeModifier(DEFENSE_MODIFIER_BELT_UUID, "Geomancy Belt defense boost", 4D, AttributeModifier.Operation.ADDITION);
+    private static final UUID KNOCKBACK_MODIFIER_BELT_UUID = UUID.fromString("bfacc1ed-0cf1-4827-9012-4f8554c369f6");
+    private static final AttributeModifier KNOCKBACK_MODIFIER_BELT = new AttributeModifier(KNOCKBACK_MODIFIER_BELT_UUID, "Geomancy Belt knockback resistance boost", 1D, AttributeModifier.Operation.ADDITION);
+
     @SubscribeEvent
     public void onLivingTick(LivingEvent.LivingTickEvent event) {
-        if (event.getEntity() instanceof LivingEntity) {
-            LivingEntity entity = (LivingEntity) event.getEntity();
+        if (event.getEntity() != null) {
+            LivingEntity entity = event.getEntity();
 
             if (entity.getEffect(EffectHandler.POISON_RESIST.get()) != null && entity.getEffect(MobEffects.POISON) != null) {
                 entity.removeEffectNoUpdate(MobEffects.POISON);
@@ -178,6 +183,26 @@ public final class ServerEventHandler {
             AbilityCapability.IAbilityCapability abilityCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.ABILITY_CAPABILITY);
             if (abilityCapability != null) {
                 abilityCapability.tick(entity);
+            }
+
+            // Geomancer Belt mechanics
+            AttributeInstance attributeInstanceArmor = entity.getAttribute(Attributes.ARMOR);
+            AttributeInstance attributeInstanceKnockbackRes = entity.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
+            if (entity.getItemBySlot(EquipmentSlot.LEGS).is(ItemHandler.GEOMANCER_BELT.get()) && entity.hasEffect(MobEffects.MOVEMENT_SLOWDOWN)) {
+                if (attributeInstanceArmor != null && !attributeInstanceArmor.hasModifier(DEFENSE_MODIFIER_BELT)) {
+                    attributeInstanceArmor.addTransientModifier(DEFENSE_MODIFIER_BELT);
+                }
+                if (attributeInstanceKnockbackRes != null && !attributeInstanceKnockbackRes.hasModifier(KNOCKBACK_MODIFIER_BELT)) {
+                    attributeInstanceKnockbackRes.addTransientModifier(KNOCKBACK_MODIFIER_BELT);
+                }
+            }
+            else {
+                if (attributeInstanceArmor != null && attributeInstanceArmor.hasModifier(DEFENSE_MODIFIER_BELT)) {
+                    attributeInstanceArmor.removeModifier(DEFENSE_MODIFIER_BELT);
+                }
+                if (attributeInstanceKnockbackRes != null && attributeInstanceKnockbackRes.hasModifier(KNOCKBACK_MODIFIER_BELT)) {
+                    attributeInstanceKnockbackRes.removeModifier(KNOCKBACK_MODIFIER_BELT);
+                }
             }
         }
     }
