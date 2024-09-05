@@ -7,6 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -162,6 +163,10 @@ public class PlayerAbility extends Ability<Player> {
     }
 
     public void onJump(LivingEvent.LivingJumpEvent event) {
+
+    }
+
+    public void onFall(LivingFallEvent event) {
 
     }
 

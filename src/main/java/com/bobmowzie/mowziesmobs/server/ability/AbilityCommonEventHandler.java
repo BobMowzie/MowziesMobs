@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -120,6 +121,19 @@ public class AbilityCommonEventHandler {
             for (Ability ability : abilityCapability.getAbilities()) {
                 if (ability instanceof PlayerAbility) {
                     ((PlayerAbility)ability).onJump(event);
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onFall(LivingFallEvent event) {
+        LivingEntity player = event.getEntity();
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+        if (abilityCapability != null) {
+            for (Ability ability : abilityCapability.getAbilities()) {
+                if (ability instanceof PlayerAbility) {
+                    ((PlayerAbility)ability).onFall(event);
                 }
             }
         }

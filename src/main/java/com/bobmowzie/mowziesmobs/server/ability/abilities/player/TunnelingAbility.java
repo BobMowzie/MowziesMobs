@@ -23,9 +23,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageSources;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -33,6 +36,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.core.animation.AnimationState;
@@ -143,7 +148,6 @@ public class TunnelingAbility extends PlayerAbility {
     @Override
     public void tickUsing() {
         super.tickUsing();
-        getUser().fallDistance = 0;
         getUser().getAbilities().flying = false;
         underground = !getUser().level().getEntitiesOfClass(EntityBlockSwapper.class, getUser().getBoundingBox().inflate(0.3)).isEmpty();
         Vec3 lookVec = getUser().getLookAngle();
@@ -316,6 +320,14 @@ public class TunnelingAbility extends PlayerAbility {
         if (isUsing()) {
             CompoundTag compound = (CompoundTag) nbt;
             whichHand = InteractionHand.values()[compound.getInt("whichHand")];
+        }
+    }
+
+    @Override
+    public void onFall(LivingFallEvent event) {
+        super.onFall(event);
+        if (event.getEntity() == getUser() && isUsing()) {
+            event.setDamageMultiplier(0);
         }
     }
 }
