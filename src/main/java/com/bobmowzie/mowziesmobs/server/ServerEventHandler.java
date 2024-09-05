@@ -11,9 +11,12 @@ import com.bobmowzie.mowziesmobs.server.ai.AvoidEntityIfNotTamedGoal;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.capability.*;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieGeckoEntity;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderProjectile;
+import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityGeomancyBase;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
@@ -27,6 +30,7 @@ import com.bobmowzie.mowziesmobs.server.item.ItemUmvuthanaMask;
 import com.bobmowzie.mowziesmobs.server.message.MessageFreezeEffect;
 import com.bobmowzie.mowziesmobs.server.message.MessagePlayerAttackMob;
 import com.bobmowzie.mowziesmobs.server.message.MessageSunblockEffect;
+import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.power.Power;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
@@ -34,12 +38,14 @@ import com.bobmowzie.mowziesmobs.server.tag.TagHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.structure.MowzieStructure;
 import com.bobmowzie.mowziesmobs.server.world.feature.structure.StructureTypeHandler;
 import com.sk89q.worldedit.world.entity.EntityTypes;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
@@ -71,6 +77,7 @@ import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BuiltinStructures;
 import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -290,13 +297,17 @@ public final class ServerEventHandler {
                 frozenCapability.onUnfreeze(event.getEntity());
             }
         }
-        if (event.getEntity() instanceof Player) {
+        if (event.getEntity() instanceof Player player) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), CapabilityHandler.PLAYER_CAPABILITY);
             if (playerCapability != null) {
                 Power[] powers = playerCapability.getPowers();
                 for (Power power : powers) {
                     power.onTakeDamage(event);
                 }
+            }
+
+            if (player.getItemBySlot(EquipmentSlot.CHEST).is(ItemHandler.GEOMANCER_ROBE.get())) {
+                spawnBoulderNearPlayer(player);
             }
         }
 
@@ -572,6 +583,12 @@ public final class ServerEventHandler {
             MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageFreezeEffect(event.getEntity(), false));
             if (frozenCapability != null) {
                 frozenCapability.onUnfreeze(entity);
+            }
+        }
+
+        if (event.getAmount() > 0.0 && event.getSource().getEntity() instanceof Player player) {
+            if (player.getItemBySlot(EquipmentSlot.CHEST).is(ItemHandler.GEOMANCER_ROBE.get())) {
+                spawnBoulderNearPlayer(player);
             }
         }
     }
@@ -874,6 +891,48 @@ public final class ServerEventHandler {
         List<EntitySculptor> sculptors = player.level().getEntitiesOfClass(EntitySculptor.class, player.getBoundingBox().inflate(EntitySculptor.TEST_RADIUS + 3, EntitySculptor.TEST_HEIGHT, EntitySculptor.TEST_RADIUS + 3), EntitySculptor::isTesting);
         for (EntitySculptor sculptor : sculptors) {
             sculptor.playerCheated();
+        }
+    }
+
+    private void spawnBoulderNearPlayer(Player player) {
+        if (player.getRandom().nextFloat() > 0.5) return;
+        int i = Mth.floor(player.getX());
+        int j = Mth.floor(player.getY());
+        int k = Mth.floor(player.getZ());
+        for(int l = 0; l < 10; ++l) {
+            double radius = Math.pow(player.getRandom().nextFloat(), 0.5) * 10 + 3;
+            double angle = player.getRandom().nextFloat() * Math.PI * 2;
+            int i1 = i + (int)(Math.cos(angle) * radius);
+            int j1 = j + Mth.nextInt(player.getRandom(), 0, 15) * Mth.nextInt(player.getRandom(), -1, 1);
+            int k1 = k + (int)(Math.sin(angle) * radius);
+            BlockPos spawnBoulderPos = new BlockPos(i1, j1, k1);
+            BlockState state = player.level().getBlockState(spawnBoulderPos);
+            int searchDist = 0;
+            int maxSearchDist = 10;
+            // march down to solid ground
+            while (state.canBeReplaced() && searchDist < maxSearchDist) {
+                spawnBoulderPos = spawnBoulderPos.below();
+                state = player.level().getBlockState(spawnBoulderPos);
+                searchDist++;
+            }
+            // march up to air ground
+            searchDist = 0;
+            while (!state.canBeReplaced() && searchDist < maxSearchDist) {
+                spawnBoulderPos = spawnBoulderPos.above();
+                state = player.level().getBlockState(spawnBoulderPos);
+                searchDist++;
+            }
+            spawnBoulderPos = spawnBoulderPos.below();
+            state = player.level().getBlockState(spawnBoulderPos);
+
+            if (EffectGeomancy.isBlockUseable(state)) {
+                EntityBoulderProjectile boulder = new EntityBoulderProjectile(EntityHandler.BOULDER_PROJECTILE.get(), player.level(), player, state, spawnBoulderPos, EntityGeomancyBase.GeomancyTier.SMALL);
+                boulder.setPos(spawnBoulderPos.getX() + 0.5F, spawnBoulderPos.getY() + 2, spawnBoulderPos.getZ() + 0.5F);
+                if (!player.level().isClientSide && boulder.checkCanSpawn()) {
+                    player.level().addFreshEntity(boulder);
+                    break;
+                }
+            }
         }
     }
 }

@@ -464,7 +464,7 @@ public final class ConfigHandler {
         Sculptor(final ForgeConfigSpec.Builder builder) {
             builder.push("sculptor");
             generationConfig = new GenerationConfig(builder, 25, 8,
-                    new BiomeConfig(builder, Collections.singletonList("minecraft:is_mountain"), Collections.emptyList(), Collections.emptyList()),
+                    new BiomeConfig(builder, Collections.singletonList("forge:is_peak"), Collections.emptyList(), Collections.emptyList()),
                     120, 200,
                     Collections.emptyList()
             );

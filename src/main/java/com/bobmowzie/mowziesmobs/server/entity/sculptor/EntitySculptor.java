@@ -86,7 +86,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
     public static double TEST_RADIUS_FALLOFF = 5;
     private static final int HEAL_PAUSE = 75;
 
-    public static float DEFENSE_HEALTH_THRESHOLD = 0.85f;
+    public static float DEFENSE_HEALTH_THRESHOLD = 0.80f;
 
     public static final AbilityType<EntitySculptor, HurtAbility<EntitySculptor>> HURT_ABILITY = new AbilityType<>("sculptor_hurt", (type, entity) -> new HurtAbility<>(type, entity,RawAnimation.begin().thenPlay("hurt"), 16, 0));
     public static final AbilityType<EntitySculptor, SculptorDieAbility> DIE_ABILITY = new AbilityType<>("sculptor_die", SculptorDieAbility::new);
@@ -223,7 +223,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     public static AttributeSupplier.Builder createAttributes() {
         return MowzieEntity.createAttributes().add(Attributes.ATTACK_DAMAGE, 10)
-                .add(Attributes.MAX_HEALTH, 130)
+                .add(Attributes.MAX_HEALTH, 140)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1)
                 .add(Attributes.FOLLOW_RANGE, 60);
     }

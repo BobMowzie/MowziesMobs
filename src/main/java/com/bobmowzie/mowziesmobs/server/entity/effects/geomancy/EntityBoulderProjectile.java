@@ -229,14 +229,19 @@ public class EntityBoulderProjectile extends EntityBoulderBase {
     @Override
     public boolean skipAttackInteraction(Entity entityIn) {
         if (risingTick > finishedRisingTick - 1 && !travelling) {
-            if (entityIn instanceof Player player && EffectGeomancy.canUse((Player)entityIn)) {
-                if (ridingEntities.contains(player)) {
-                    Vec3 lateralLookVec = Vec3.directionFromRotation(0, player.getYRot()).normalize();
-                    shoot(new Vec3(speed * 0.5 * lateralLookVec.x, getDeltaMovement().y, speed * 0.5 * lateralLookVec.z));
-                } else {
-                    shoot(player.getLookAngle().scale(speed * 0.5));
+            if (entityIn instanceof Player player) {
+                if (EffectGeomancy.canUse((Player) entityIn)) {
+                    if (ridingEntities.contains(player)) {
+                        Vec3 lateralLookVec = Vec3.directionFromRotation(0, player.getYRot()).normalize();
+                        shoot(new Vec3(speed * 0.5 * lateralLookVec.x, getDeltaMovement().y, speed * 0.5 * lateralLookVec.z));
+                    } else {
+                        shoot(player.getLookAngle().scale(speed * 0.5));
+                    }
+                    AbilityHandler.INSTANCE.sendAbilityMessage(player, AbilityHandler.HIT_BOULDER_ABILITY);
                 }
-                AbilityHandler.INSTANCE.sendAbilityMessage(player, AbilityHandler.HIT_BOULDER_ABILITY);
+                else if (!level().isClientSide() && this.getCaster() == player) {
+                    explode();
+                }
             }
             else if (entityIn instanceof EntityBoulderProjectile boulder && ((EntityBoulderProjectile) entityIn).travelling) {
                 Vec3 thisPos = position();
