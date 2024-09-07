@@ -487,6 +487,9 @@ public final class ConfigHandler {
             this.howMany = builder.comment("How many of the item the Sculptor desires in exchange for a chance to try his challenge")
                     .translation(LANG_PREFIX + "trade_how_many")
                     .defineInRange("trade_how_many", 1, 0, 64);
+            this.disappearAfterReward = builder.comment("Set to true for the Sculptor to disappear after a player beats the test and claims the reward.")
+                    .translation(LANG_PREFIX + "disappear_after_reward")
+                    .define("disappear_after_reward", true);
             builder.pop();
         }
 
@@ -505,6 +508,8 @@ public final class ConfigHandler {
         public final ConfigValue<? extends String> whichItem;
 
         public final IntValue howMany;
+
+        public final BooleanValue disappearAfterReward;
     }
 
     public static class WroughtHelm {

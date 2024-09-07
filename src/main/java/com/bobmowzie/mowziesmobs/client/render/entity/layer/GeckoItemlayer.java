@@ -29,7 +29,7 @@ public class GeckoItemlayer<T extends MowzieGeckoEntity> extends BlockAndItemGeo
 
     private MowzieGeckoEntity entity;
     private String boneName;
-    private ItemStack renderedItem;
+    protected ItemStack renderedItem;
 
     public GeckoItemlayer(GeoRenderer<T> rendererIn, String boneName, ItemStack renderedItem) {
         super(rendererIn);
@@ -38,7 +38,7 @@ public class GeckoItemlayer<T extends MowzieGeckoEntity> extends BlockAndItemGeo
     }
 
     @Override
-    protected ItemStack getStackForBone(GeoBone bone, MowzieGeckoEntity animatable) {
+    protected ItemStack getStackForBone(GeoBone bone, T animatable) {
         if (!bone.isHidden() && bone.getName().equals(boneName)) {
             return renderedItem;
         }

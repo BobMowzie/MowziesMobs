@@ -63,7 +63,7 @@ public enum AbilityHandler {
             BOULDER_ROLL_ABILITY,
             ROCK_SLING,
             GROUND_SLAM_ABILITY,
-            FISSURE_ABILITY,
+//            FISSURE_ABILITY,
             BACKSTAB_ABILITY
     };
 

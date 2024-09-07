@@ -19,6 +19,6 @@ public class ModelSculptorStaff extends GeoModel<ItemSculptorStaff> {
 
     @Override
     public ResourceLocation getAnimationResource(ItemSculptorStaff animatable) {
-        return new ResourceLocation(MowziesMobs.MODID, "animations/sculptor_staff.animation.json");
+        return new ResourceLocation(MowziesMobs.MODID, "animations/sculptor.animation.json");
     }
 }

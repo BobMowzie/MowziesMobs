@@ -1026,6 +1026,10 @@
 				{
 					"name": "gauntletProgressController",
 					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "disappearController",
+					"pivot": [0, 0, 0]
 				}
 			]
 		}

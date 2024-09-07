@@ -16,8 +16,12 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
@@ -28,11 +32,15 @@ import java.util.function.Consumer;
  * Created by BobMowzie on 6/6/2017.
  */
 public class ItemSculptorStaff extends MowzieToolItem implements GeoItem {
-    public String controllerName = "controller";
+    public static final String CONTROLLER_NAME = "controller";
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+    private static final RawAnimation DISAPPEAR_ANIM = RawAnimation.begin().thenPlayAndHold("disappear");
+    public static final String DISAPPEAR_ANIM_NAME = "disappear";
 
     public ItemSculptorStaff(Properties properties) {
         super(1f,2f, Tiers.STONE, BlockTags.MINEABLE_WITH_HOE, properties);
+
+        SingletonGeoAnimatable.registerSyncedAnimatable(this);
     }
 
     @Override
@@ -83,7 +91,8 @@ public class ItemSculptorStaff extends MowzieToolItem implements GeoItem {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-
+        controllers.add(new AnimationController<>(this, CONTROLLER_NAME, 0, state -> PlayState.STOP)
+                .triggerableAnim(DISAPPEAR_ANIM_NAME, DISAPPEAR_ANIM));
     }
 
     @Override

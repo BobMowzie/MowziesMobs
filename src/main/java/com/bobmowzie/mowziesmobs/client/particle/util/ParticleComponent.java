@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.particle.util;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.SimplexNoise;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -422,5 +423,69 @@ public abstract class ParticleComponent {
 
     public static class AnimatedTexture extends ParticleComponent {
 
+    }
+
+    public static class ForceOverTime extends ParticleComponent {
+        Vec3 force;
+
+        public ForceOverTime(Vec3 force) {
+            this.force = force;
+        }
+
+        @Override
+        public void preUpdate(AdvancedParticleBase particle) {
+            super.preUpdate(particle);
+            particle.setMotionX(particle.getMotionX() + force.x());
+            particle.setMotionY(particle.getMotionY() + force.y());
+            particle.setMotionZ(particle.getMotionZ() + force.z());
+        }
+    }
+
+    public static class CurlNoise extends ParticleComponent {
+        float strength;
+        float frequency;
+
+        public CurlNoise(float strength, float frequency) {
+            this.strength = strength;
+            this.frequency = frequency;
+        }
+
+        @Override
+        public void preUpdate(AdvancedParticleBase particle) {
+            super.preUpdate(particle);
+            Vec3 curlNoise = curlNoise(particle.getPos().scale(frequency)).scale(strength);
+            particle.setMotionX(particle.getMotionX() + curlNoise.x());
+            particle.setMotionY(particle.getMotionY() + curlNoise.y());
+            particle.setMotionZ(particle.getMotionZ() + curlNoise.z());
+        }
+
+        // From https://github.com/cabbibo/glsl-curl-noise/blob/master/curl.glsl
+        Vec3 snoiseVec3(Vec3 x){
+            double s = SimplexNoise.noise(x.x, x.y, x.z);
+            double s1 = SimplexNoise.noise(x.y - 19.1 , x.z + 33.4 , x.x + 47.2);
+            double s2 = SimplexNoise.noise(x.z + 74.2 , x.x - 124.5 , x.y + 99.4);
+            return new Vec3(s, s1 ,s2 );
+        }
+
+        Vec3 curlNoise(Vec3 p) {
+            float e = 0.1f;
+            Vec3 dx = new Vec3( e   , 0.0 , 0.0 );
+            Vec3 dy = new Vec3( 0.0 , e   , 0.0 );
+            Vec3 dz = new Vec3( 0.0 , 0.0 , e   );
+
+            Vec3 p_x0 = snoiseVec3(p.subtract(dx) );
+            Vec3 p_x1 = snoiseVec3(p.add(dx) );
+            Vec3 p_y0 = snoiseVec3(p.subtract(dy));
+            Vec3 p_y1 = snoiseVec3(p.add(dy));
+            Vec3 p_z0 = snoiseVec3(p.subtract(dz));
+            Vec3 p_z1 = snoiseVec3(p.add(dz));
+
+            double x = p_y1.z - p_y0.z - p_z1.y + p_z0.y;
+            double y = p_z1.x - p_z0.x - p_x1.z + p_x0.z;
+            double z = p_x1.y - p_x0.y - p_y1.x + p_y0.x;
+
+            double divisor = 1.0 / ( 2.0 * e );
+            return new Vec3(x ,y ,z ).scale(divisor).normalize();
+        }
     }
 }

@@ -2,19 +2,19 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelSculptor;
-import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoItemlayer;
+import com.bobmowzie.mowziesmobs.client.render.entity.layer.ItemLayerSculptorStaff;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoSunblockLayer;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
-import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.renderer.layer.BlockAndItemGeoLayer;
+import software.bernie.geckolib.core.object.Color;
 
 import java.util.Optional;
 
@@ -22,14 +22,15 @@ public class RenderSculptor extends MowzieGeoEntityRenderer<EntitySculptor> {
     public final ResourceLocation staff_geo_location = new ResourceLocation(MowziesMobs.MODID, "geo/sculptor_staff.geo.json");
     public final ResourceLocation staff_tex_location = new ResourceLocation(MowziesMobs.MODID, "textures/item/sculptor_staff.png");
     public int staffController = 0;
+    public float disappearController = 0;
 
     public RenderSculptor(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ModelSculptor());
         this.addRenderLayer(new FrozenRenderHandler.GeckoLayerFrozen<>(this, renderManager));
         this.addRenderLayer(new GeckoSunblockLayer<>(this, renderManager));
-        this.addRenderLayer(new GeckoItemlayer<>(this, "backItem", new ItemStack(ItemHandler.SCULPTOR_STAFF.get(), 1)));
-        this.addRenderLayer(new GeckoItemlayer<>(this,"itemHandLeft", new ItemStack(ItemHandler.SCULPTOR_STAFF.get(), 1)));
-        this.addRenderLayer(new GeckoItemlayer<>(this,"itemHandRight", new ItemStack(ItemHandler.SCULPTOR_STAFF.get(), 1)));
+        this.addRenderLayer(new ItemLayerSculptorStaff(this, "backItem"));
+        this.addRenderLayer(new ItemLayerSculptorStaff(this,"itemHandLeft"));
+        this.addRenderLayer(new ItemLayerSculptorStaff(this,"itemHandRight"));
         this.shadowRadius = 0.7f;
 
     }
@@ -42,7 +43,28 @@ public class RenderSculptor extends MowzieGeoEntityRenderer<EntitySculptor> {
     @Override
     public void render(EntitySculptor entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
+
         Optional<GeoBone> staffControllerBone = model.getBone("staffController");
         staffControllerBone.ifPresent(geoBone -> staffController = (int) geoBone.getPosX());
+
+        Optional<GeoBone> disappearControllerBone = model.getBone("disappearController");
+        disappearControllerBone.ifPresent(geoBone -> disappearController = geoBone.getPosX());
+
+        this.shadowRadius = 0.7f * (1.0f - disappearController);
+    }
+
+    @Override
+    public Color getRenderColor(EntitySculptor animatable, float partialTick, int packedLight) {
+        return Color.ofRGBA(1, 1, 1, 1.0f - disappearController);
+    }
+
+    @Override
+    public RenderType getRenderType(EntitySculptor animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
+        if (disappearController > 0) {
+            return RenderType.entityTranslucent(texture);
+        }
+        else {
+            return super.getRenderType(animatable, texture, bufferSource, partialTick);
+        }
     }
 }

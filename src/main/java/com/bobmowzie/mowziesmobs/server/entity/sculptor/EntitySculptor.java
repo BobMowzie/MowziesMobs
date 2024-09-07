@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.sculptor;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
@@ -11,6 +10,7 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.mob.HurtAbility;
+import com.bobmowzie.mowziesmobs.server.ability.abilities.player.SimpleAnimationAbility;
 import com.bobmowzie.mowziesmobs.server.ai.UseAbilityAI;
 import com.bobmowzie.mowziesmobs.server.bossinfo.BossInfoSculptor;
 import com.bobmowzie.mowziesmobs.server.bossinfo.MMBossInfoServer;
@@ -24,23 +24,19 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityGeomancyBa
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityPillar;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerSculptorTrade;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import com.bobmowzie.mowziesmobs.server.message.MessageLinkEntities;
+import com.bobmowzie.mowziesmobs.server.item.ItemSculptorStaff;
 import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
-import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
-import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundBossEventPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.InteractionHand;
@@ -69,9 +65,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.scores.Team;
-import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.core.animation.*;
 
 import javax.annotation.Nullable;
@@ -95,6 +91,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
     public static final AbilityType<EntitySculptor, PassTestAbility> PASS_TEST = new AbilityType<>("testPass", PassTestAbility::new);
     public static final AbilityType<EntitySculptor, AttackAbility> ATTACK_ABILITY = new AbilityType<>("attack", AttackAbility::new);
     public static final AbilityType<EntitySculptor, GuardAbility> GUARD_ABILITY = new AbilityType<>("guard", GuardAbility::new);
+    public static final AbilityType<EntitySculptor, DisappearAbility> DISAPPEAR_ABILITY = new AbilityType<>("disappear", DisappearAbility::new);
 
     private static final EntityDataAccessor<ItemStack> DESIRES = SynchedEntityData.defineId(EntitySculptor.class, EntityDataSerializers.ITEM_STACK);
     private static final EntityDataAccessor<Boolean> IS_TRADING = SynchedEntityData.defineId(EntitySculptor.class, EntityDataSerializers.BOOLEAN);
@@ -124,12 +121,16 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     public List<EntityBoulderSculptor> boulders = new ArrayList<>();
 
+    public ItemStack heldStaff;
+
 
     public EntitySculptor(EntityType<? extends MowzieEntity> type, Level world) {
         super(type, world);
         xpReward = 30;
 
         TEST_HEIGHT = ConfigHandler.COMMON.MOBS.SCULPTOR.testHeight.get();
+
+        heldStaff = new ItemStack(ItemHandler.SCULPTOR_STAFF.get());
     }
 
     private static RawAnimation HURT = RawAnimation.begin().thenPlay("hurt");
@@ -345,14 +346,22 @@ public class EntitySculptor extends MowzieGeckoEntity {
         }
 
 //        if (getActiveAbility() == null && tickCount % 60 == 0) {
-//            sendAbilityMessage(PASS_TEST);
+//            sendAbilityMessage(DISAPPEAR_ABILITY);
 //        }
     }
 
     @Override
     public boolean hurt(DamageSource source, float damage) {
         timeUntilHeal = HEAL_PAUSE;
+        if (getActiveAbilityType() == PASS_TEST || getActiveAbilityType() == DISAPPEAR_ABILITY) {
+            return false;
+        }
         return super.hurt(source, damage);
+    }
+
+    @Override
+    public boolean isInvulnerable() {
+        return super.isInvulnerable();
     }
 
     public boolean checkTestObstructed() {
@@ -569,7 +578,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     @Override
     public AbilityType<?, ?>[] getAbilities() {
-        return new AbilityType[] {START_TEST, FAIL_TEST, PASS_TEST, HURT_ABILITY, DIE_ABILITY, ATTACK_ABILITY, GUARD_ABILITY};
+        return new AbilityType[] {START_TEST, FAIL_TEST, PASS_TEST, HURT_ABILITY, DIE_ABILITY, ATTACK_ABILITY, GUARD_ABILITY, DISAPPEAR_ABILITY};
     }
 
     @Override
@@ -807,6 +816,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
         @Override
         public void start() {
+            getUser().setInvulnerable(true);
             if (getUser().testingPlayer != null) {
                 List<EntityBoulderSculptor> platforms = getUser().level().getEntitiesOfClass(EntityBoulderSculptor.class, getUser().testingPlayer.getBoundingBox().expandTowards(0, -6, 0));
                 if (!platforms.isEmpty()) {
@@ -851,6 +861,14 @@ public class EntitySculptor extends MowzieGeckoEntity {
         @Override
         protected void playFinishingAnimation() {
             playAnimation(TEST_PASS_END);
+        }
+
+        @Override
+        public void end() {
+            super.end();
+            if (ConfigHandler.COMMON.MOBS.SCULPTOR.disappearAfterReward.get()) {
+                AbilityHandler.INSTANCE.sendAbilityMessage(getUser(), DISAPPEAR_ABILITY);
+            }
         }
     }
 
@@ -963,6 +981,62 @@ public class EntitySculptor extends MowzieGeckoEntity {
         @Override
         public boolean canCancelActiveAbility() {
             return true;
+        }
+    }
+
+    public static class DisappearAbility extends SimpleAnimationAbility<EntitySculptor> {
+        private static final RawAnimation DISAPPEAR = RawAnimation.begin().thenPlay("disappear");
+
+        public DisappearAbility(AbilityType abilityType, EntitySculptor user) {
+            super(abilityType, user, DISAPPEAR, 80);
+        }
+
+        @Override
+        public void start() {
+            super.start();
+            if (getUser().level() instanceof ServerLevel) {
+                ItemStack heldStaff = getUser().heldStaff;
+                ItemSculptorStaff staffItem = (ItemSculptorStaff) heldStaff.getItem();
+                staffItem.triggerAnim(getUser(), GeoItem.getOrAssignId(heldStaff, (ServerLevel) getUser().level()), ItemSculptorStaff.CONTROLLER_NAME, ItemSculptorStaff.DISAPPEAR_ANIM_NAME);
+            }
+        }
+
+        @Override
+        public void tickUsing() {
+            super.tickUsing();
+            int start = 1;
+            int end = 70;
+            if (getTicksInUse() > start && getTicksInUse() < end) {
+                float a = (getTicksInUse() - (float) start) / (float)(end - start);
+                float spawnRate = 10.0f * (float) Math.pow(2, -(Math.pow(a - 0.5, 2) / 0.05));
+                Vec3 windForce = new Vec3(1, 0, 0).yRot((float)Math.toRadians(-getUser().yBodyRot));
+                windForce = windForce.add(0, 0.5, 0).normalize().scale(0.01);
+                for (int i = 0; i < (int)spawnRate; i++) {
+                    AABB bounds = getUser().getBoundingBox();
+                    float x = (float) (getUser().getX() + getUser().random.nextGaussian() * (bounds.maxX - bounds.minX)/3.0);
+                    float y = (float) (getUser().getY() + getUser().random.nextGaussian() * (bounds.maxY - bounds.minY)/5.0 + getUser().getBbHeight()/2.0);
+                    float z = (float) (getUser().getZ() + getUser().random.nextGaussian() * (bounds.maxZ - bounds.minZ)/3.0);
+                    AdvancedParticleBase.spawnParticle(getUser().level(), ParticleHandler.PIXEL.get(), x, y, z, 0, 0, 0, true, 0, 0, 0, 0, 4f, 220d / 256d, 220d / 256d, 74d / 256d, 1, 0.9, 27 + getUser().random.nextFloat() * 20, true, true, new ParticleComponent[]{
+                            new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
+                                    new float[]{0, 3f, 0},
+                                    new float[]{0, 0.5f, 1}
+                            ), false),
+                            new ParticleComponent.CurlNoise(0.01f, 4f),
+                            new ParticleComponent.ForceOverTime(windForce)
+                    });
+                }
+            }
+        }
+
+        @Override
+        public void end() {
+            super.end();
+            getUser().remove(RemovalReason.KILLED);
+        }
+
+        @Override
+        public boolean canCancelActiveAbility() {
+            return false;
         }
     }
 
