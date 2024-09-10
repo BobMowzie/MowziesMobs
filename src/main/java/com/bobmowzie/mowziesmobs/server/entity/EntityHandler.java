@@ -121,10 +121,10 @@ public class EntityHandler {
         return EntityType.Builder.of(EntityBlockSwapper::new, MobCategory.MISC);
     }
     public static final RegistryObject<EntityType<EntityBlockSwapper>> BLOCK_SWAPPER = REG.register("block_swapper", () -> blockSwapperBuilder().noSummon().sized(1, 1).setUpdateInterval(Integer.MAX_VALUE).build(new ResourceLocation(MowziesMobs.MODID, "block_swapper").toString()));
-    private static EntityType.Builder<EntityBlockSwapper.EntityBlockSwapperSculptor> blockSwapperSculptorBuilder() {
-        return EntityType.Builder.of(EntityBlockSwapper.EntityBlockSwapperSculptor::new, MobCategory.MISC);
+    private static EntityType.Builder<EntityBlockSwapper.EntityBlockSwapperTunneling> blockSwapperTunnelingBuilder() {
+        return EntityType.Builder.of(EntityBlockSwapper.EntityBlockSwapperTunneling::new, MobCategory.MISC);
     }
-    public static final RegistryObject<EntityType<EntityBlockSwapper.EntityBlockSwapperSculptor>> BLOCK_SWAPPER_SCULPTOR = REG.register("block_swapper_sculptor", () -> blockSwapperSculptorBuilder().noSummon().sized(1, 1).setUpdateInterval(Integer.MAX_VALUE).build(new ResourceLocation(MowziesMobs.MODID, "block_swapper_sculptor").toString()));
+    public static final RegistryObject<EntityType<EntityBlockSwapper.EntityBlockSwapperTunneling>> BLOCK_SWAPPER_TUNNELING = REG.register("block_swapper_tunneling", () -> blockSwapperTunnelingBuilder().noSummon().sized(1, 1).setUpdateInterval(Integer.MAX_VALUE).build(new ResourceLocation(MowziesMobs.MODID, "block_swapper_tunneling").toString()));
     private static EntityType.Builder<EntityCameraShake> cameraShakeBuilder() {
         return EntityType.Builder.of(EntityCameraShake::new, MobCategory.MISC);
     }

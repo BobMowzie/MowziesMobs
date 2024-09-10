@@ -1,19 +1,23 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
+import com.bobmowzie.mowziesmobs.server.entity.ILinkedEntity;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
+import com.bobmowzie.mowziesmobs.server.message.MessageLinkEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -21,11 +25,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Created by BobMowzie on 7/8/2018.
@@ -170,6 +175,109 @@ public class EntityBlockSwapper extends Entity {
                 compound.getInt("storePosY"),
                 compound.getInt("storePosZ")
         ));
+    }
+
+    public static class EntityBlockSwapperTunneling extends EntityBlockSwapper implements ILinkedEntity {
+        private LivingEntity cachedTunneler;
+        private static final EntityDataAccessor<Optional<UUID>> TUNNELER = SynchedEntityData.defineId(EntityBlockSwapper.EntityBlockSwapperTunneling.class, EntityDataSerializers.OPTIONAL_UUID);
+
+        public EntityBlockSwapperTunneling(EntityType<? extends EntityBlockSwapperTunneling> type, Level world) {
+            super(type, world);
+        }
+
+        public EntityBlockSwapperTunneling(EntityType<? extends EntityBlockSwapperTunneling> type, Level world, BlockPos pos, BlockState newBlock, int duration, boolean breakParticlesStart, boolean breakParticlesEnd, LivingEntity tunneler) {
+            super(type, world, pos, newBlock, duration, breakParticlesStart, breakParticlesEnd);
+            cachedTunneler = tunneler;
+            if (!world.isClientSide && tunneler != null) {
+                this.setTunnelerID(tunneler.getUUID());
+            }
+        }
+
+        @Override
+        public boolean isPickable() {
+            return false;
+        }
+
+        @Override
+        protected void defineSynchedData() {
+            super.defineSynchedData();
+            getEntityData().define(TUNNELER, Optional.empty());
+        }
+
+        public Optional<UUID> getTunnelerID() {
+            return getEntityData().get(TUNNELER);
+        }
+
+        public void setTunnelerID(UUID id) {
+            getEntityData().set(TUNNELER, Optional.of(id));
+        }
+
+        public LivingEntity getTunneler() {
+            if (this.cachedTunneler != null && !this.cachedTunneler.isRemoved()) {
+                return this.cachedTunneler;
+            } else if (this.getTunnelerID().isPresent() && this.level() instanceof ServerLevel) {
+                Entity entity = ((ServerLevel)this.level()).getEntity(this.getTunnelerID().get());
+                if (entity instanceof LivingEntity) {
+                    cachedTunneler = (LivingEntity) entity;
+                    MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> this), new MessageLinkEntities(this, cachedTunneler));
+                }
+                return this.cachedTunneler;
+            } else {
+                return null;
+            }
+        }
+
+        @Override
+        public boolean canCollideWith(Entity p_20303_) {
+            return super.canCollideWith(p_20303_);
+        }
+
+        @Override
+        public boolean canBeCollidedWith() {
+            return true;
+        }
+
+        // Hacky solution to prevent tunneler from colliding with the block swapper
+        @Override
+        public Entity getRootVehicle() {
+            return getTunneler();
+        }
+
+        @Override
+        public void link(Entity entity) {
+            if (entity instanceof LivingEntity) {
+                cachedTunneler = (LivingEntity) entity;
+            }
+        }
+
+        @Override
+        public void readAdditionalSaveData(CompoundTag compound) {
+            super.readAdditionalSaveData(compound);
+            setTunnelerID(compound.getUUID("tunneler"));
+        }
+
+        @Override
+        public void addAdditionalSaveData(CompoundTag compound) {
+            super.addAdditionalSaveData(compound);
+            if (getTunnelerID().isPresent()) {
+                compound.putUUID("tunneler", getTunnelerID().get());
+            }
+        }
+
+        @Override
+        public Packet<ClientGamePacketListener> getAddEntityPacket() {
+            LivingEntity entity = this.cachedTunneler;
+            return new ClientboundAddEntityPacket(this, entity == null ? 0 : entity.getId());
+        }
+
+        @Override
+        public void recreateFromPacket(ClientboundAddEntityPacket packet) {
+            super.recreateFromPacket(packet);
+            Entity entity = this.level().getEntity(packet.getData());
+            if (entity instanceof LivingEntity) {
+                cachedTunneler = (LivingEntity) entity;
+            }
+        }
     }
 
     // Like the regular block swapper, but clears out a whole cylinder for the sculptor's test

@@ -149,7 +149,7 @@ public class TunnelingAbility extends PlayerAbility {
     public void tickUsing() {
         super.tickUsing();
         getUser().getAbilities().flying = false;
-        underground = !getUser().level().getEntitiesOfClass(EntityBlockSwapper.class, getUser().getBoundingBox().inflate(0.3)).isEmpty();
+        underground = !getUser().level().getEntitiesOfClass(EntityBlockSwapper.EntityBlockSwapperTunneling.class, getUser().getBoundingBox().inflate(0.3)).isEmpty();
         Vec3 lookVec = getUser().getLookAngle();
         float tunnelSpeed = 0.3f;
         ItemStack stack = getUser().getUseItem();
@@ -166,7 +166,7 @@ public class TunnelingAbility extends PlayerAbility {
             List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(getUser(),2, 2, 2, 2);
             for (LivingEntity entityHit : entitiesHit) {
                 DamageSource damageSource = getUser().damageSources().playerAttack(getUser());
-                entityHit.hurt(damageSource, 6 * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHREND_GAUNTLET.attackMultiplier.get().floatValue());
+//                entityHit.hurt(damageSource, 6 * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHREND_GAUNTLET.attackMultiplier.get().floatValue());
             }
         }
         else {
@@ -193,7 +193,10 @@ public class TunnelingAbility extends PlayerAbility {
                             BlockState blockState = getUser().level().getBlockState(pos);
                             if (EffectGeomancy.isBlockUseable(blockState) && blockState.getBlock() != Blocks.BEDROCK) {
                                 justDug = blockState;
-                                EntityBlockSwapper.swapBlock(getUser().level(), pos, Blocks.AIR.defaultBlockState(), 15, false, false);
+                                if (!getLevel().isClientSide) {
+                                    EntityBlockSwapper.EntityBlockSwapperTunneling swapper = new EntityBlockSwapper.EntityBlockSwapperTunneling(EntityHandler.BLOCK_SWAPPER_TUNNELING.get(), getLevel(), pos, Blocks.AIR.defaultBlockState(), 15, false, false, getUser());
+                                    getLevel().addFreshEntity(swapper);
+                                }
                             }
                         }
                     }
