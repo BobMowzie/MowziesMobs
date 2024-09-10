@@ -72,6 +72,7 @@ public class ParticleHandler {
     public static final RegistryObject<ParticleType<AdvancedParticleData>> BURST_OUT = register("ring2", AdvancedParticleData.DESERIALIZER);
     public static final RegistryObject<ParticleType<AdvancedParticleData>> GLOW = register("glow", AdvancedParticleData.DESERIALIZER);
     public static final RegistryObject<ParticleType<AdvancedParticleData>> ARROW_HEAD = register("arrow_head", AdvancedParticleData.DESERIALIZER);
+    public static final RegistryObject<ParticleType<AdvancedParticleData>> LEAF = register("leaf", AdvancedParticleData.DESERIALIZER);
 
     public static final RegistryObject<ParticleType<DecalParticleData>> STRIX_FOOTPRINT = registerDecal("strix_footprint", DecalParticleData.DESERIALIZER);
     public static final RegistryObject<ParticleType<DecalParticleData>> GROUND_CRACK = registerDecal("crack", DecalParticleData.DESERIALIZER);
@@ -106,6 +107,7 @@ public class ParticleHandler {
         event.registerSpriteSet(ParticleHandler.BURST_OUT.get(), AdvancedParticleBase.Factory::new);
         event.registerSpriteSet(ParticleHandler.GLOW.get(), AdvancedParticleBase.Factory::new);
         event.registerSpriteSet(ParticleHandler.ARROW_HEAD.get(), AdvancedParticleBase.Factory::new);
+        event.registerSpriteSet(ParticleHandler.LEAF.get(), AdvancedParticleBase.Factory::new);
         event.registerSpriteSet(ParticleHandler.STRIX_FOOTPRINT.get(), ParticleDecal.Factory::new);
         event.registerSpriteSet(ParticleHandler.GROUND_CRACK.get(), ParticleDecal.Factory::new);
 

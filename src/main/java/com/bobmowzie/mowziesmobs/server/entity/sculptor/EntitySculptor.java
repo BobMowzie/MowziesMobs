@@ -345,9 +345,9 @@ public class EntitySculptor extends MowzieGeckoEntity {
             testTimePassed = 0;
         }
 
-//        if (getActiveAbility() == null && tickCount % 60 == 0) {
-//            sendAbilityMessage(DISAPPEAR_ABILITY);
-//        }
+        if (getActiveAbility() == null && tickCount % 60 == 0) {
+            sendAbilityMessage(DISAPPEAR_ABILITY);
+        }
     }
 
     @Override
@@ -1008,7 +1008,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
             int end = 70;
             if (getTicksInUse() > start && getTicksInUse() < end) {
                 float a = (getTicksInUse() - (float) start) / (float)(end - start);
-                float spawnRate = 10.0f * (float) Math.pow(2, -(Math.pow(a - 0.5, 2) / 0.05));
+                float spawnRate = 15.0f * (float) Math.pow(2, -(Math.pow(a - 0.5, 2) / 0.05));
                 Vec3 windForce = new Vec3(1, 0, 0).yRot((float)Math.toRadians(-getUser().yBodyRot));
                 windForce = windForce.add(0, 0.5, 0).normalize().scale(0.01);
                 for (int i = 0; i < (int)spawnRate; i++) {
@@ -1016,13 +1016,20 @@ public class EntitySculptor extends MowzieGeckoEntity {
                     float x = (float) (getUser().getX() + getUser().random.nextGaussian() * (bounds.maxX - bounds.minX)/3.0);
                     float y = (float) (getUser().getY() + getUser().random.nextGaussian() * (bounds.maxY - bounds.minY)/5.0 + getUser().getBbHeight()/2.0);
                     float z = (float) (getUser().getZ() + getUser().random.nextGaussian() * (bounds.maxZ - bounds.minZ)/3.0);
-                    AdvancedParticleBase.spawnParticle(getUser().level(), ParticleHandler.PIXEL.get(), x, y, z, 0, 0, 0, true, 0, 0, 0, 0, 4f, 220d / 256d, 220d / 256d, 74d / 256d, 1, 0.9, 27 + getUser().random.nextFloat() * 20, true, true, new ParticleComponent[]{
+                    double colorVariation = getUser().random.nextDouble() * 10;
+                    double yaw = getUser().random.nextDouble() * Math.PI/2d;
+                    double pitch = getUser().random.nextDouble() * Math.PI/2d;
+                    double roll = getUser().random.nextDouble() * Math.PI/2d;
+                    AdvancedParticleBase.spawnParticle(getUser().level(), ParticleHandler.LEAF.get(), x, y, z, 0, 0, 0, false, yaw, pitch, roll, 0, 1f, (247d + colorVariation) / 256d, (185d + colorVariation) / 256d, (220d + colorVariation) / 256d, 1, 0.9, 35 + getUser().random.nextFloat() * 20, false, true, new ParticleComponent[]{
                             new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
-                                    new float[]{0, 3f, 0},
+                                    new float[]{0, 1f, 0},
                                     new float[]{0, 0.5f, 1}
                             ), false),
                             new ParticleComponent.CurlNoise(0.01f, 4f),
-                            new ParticleComponent.ForceOverTime(windForce)
+                            new ParticleComponent.ForceOverTime(windForce),
+                            new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.YAW, new ParticleComponent.Constant(0.04f), true),
+                            new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.PITCH, new ParticleComponent.Constant(0.025f), true),
+                            new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ROLL, new ParticleComponent.Constant(0.01f), true)
                     });
                 }
             }
