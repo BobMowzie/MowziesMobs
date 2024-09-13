@@ -345,9 +345,9 @@ public class EntitySculptor extends MowzieGeckoEntity {
             testTimePassed = 0;
         }
 
-        if (getActiveAbility() == null && tickCount % 60 == 0) {
-            sendAbilityMessage(DISAPPEAR_ABILITY);
-        }
+//        if (getActiveAbility() == null && tickCount % 60 == 0) {
+//            sendAbilityMessage(ATTACK_ABILITY);
+//        }
     }
 
     @Override
@@ -877,20 +877,30 @@ public class EntitySculptor extends MowzieGeckoEntity {
         private Vec3 prevTargetPos;
         private static final int STARTUP_TIME = 5;
 
+        private enum WhichHand {
+            NONE,
+            LEFT,
+            RIGHT
+        }
+        private WhichHand whichHand = WhichHand.NONE;
+
         public AttackAbility(AbilityType abilityType, EntitySculptor user) {
             super(abilityType, user, new AbilitySection[] {
                     new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, STARTUP_TIME),
-                    new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
-                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 5)
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.ACTIVE, 7),
+                    new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 11)
             });
         }
 
-        private static RawAnimation ATTACK_START = RawAnimation.begin().thenPlayAndHold("attack_1");
+        private static RawAnimation ATTACK_START = RawAnimation.begin().thenPlayAndHold("attack_start");
+        private static RawAnimation ATTACK_LEFT = RawAnimation.begin().thenPlayAndHold("attack_left");
+        private static RawAnimation ATTACK_RIGHT = RawAnimation.begin().thenPlayAndHold("attack_right");
+        private static RawAnimation ATTACK_LEFT_END = RawAnimation.begin().thenPlayAndHold("attack_left_end");
+        private static RawAnimation ATTACK_RIGHT_END = RawAnimation.begin().thenPlayAndHold("attack_right_end");
 
         @Override
         public void start() {
             super.start();
-            playAnimation(ATTACK_START);
         }
 
         @Override
@@ -899,6 +909,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
             if (target != null) {
                 Collections.shuffle(getUser().boulders);
                 for (EntityBoulderSculptor boulder : getUser().boulders) {
+                    if (boulder == null) continue;
                     if (boulder.isTravelling()) continue;
                     if (boulder.isRemoved()) continue;
                     if (!boulder.isFinishedRising()) continue;
@@ -919,8 +930,35 @@ public class EntitySculptor extends MowzieGeckoEntity {
         }
 
         @Override
+        public boolean canCancelSelf() {
+            return true;
+        }
+
+        @Override
+        public boolean canCancelActiveAbility() {
+            return getUser().getActiveAbilityType() == ATTACK_ABILITY;
+        }
+
+        @Override
         protected void beginSection(AbilitySection section) {
             super.beginSection(section);
+
+            if (section.sectionType == AbilitySection.AbilitySectionType.STARTUP) {
+                System.out.println(whichHand.toString());
+                if (whichHand == WhichHand.NONE) {
+                    playAnimation(ATTACK_START);
+                    whichHand = WhichHand.LEFT;
+                }
+                else if (whichHand == WhichHand.LEFT) {
+                    playAnimation(ATTACK_RIGHT);
+                    whichHand = WhichHand.RIGHT;
+                }
+                else {
+                    playAnimation(ATTACK_LEFT);
+                    whichHand = WhichHand.LEFT;
+                }
+            }
+
             if (!getUser().level().isClientSide() && getUser().getTarget() != null) {
                 LivingEntity target = getUser().getTarget();
                 if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
@@ -928,9 +966,32 @@ public class EntitySculptor extends MowzieGeckoEntity {
                     boulderToFire = null;
                 }
             }
+
+            if (section.sectionType == AbilitySection.AbilitySectionType.RECOVERY) {
+                if (!getUser().level().isClientSide() && getUser().getTarget() != null && canUse()) {
+                    AbilityHandler.INSTANCE.sendJumpToSectionMessage(getUser(), this.getAbilityType(), 0);
+                }
+                else {
+                    if (whichHand == WhichHand.LEFT) {
+                        playAnimation(ATTACK_LEFT_END);
+                    }
+                    else {
+                        playAnimation(ATTACK_RIGHT_END);
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void end() {
+            super.end();
+            whichHand = WhichHand.NONE;
         }
 
         public static void shootBoulderAtTarget(LivingEntity target, Vec3 prevTargetPos, EntityBoulderProjectile boulderToFire, float timeScale) {
+            if (boulderToFire == null) {
+                return;
+            }
             Vec3 targetPos = target.position().add(0, target.getBbHeight() / 2.0, 0);
             double timeToReach = boulderToFire.position().subtract(targetPos).length() / boulderToFire.getSpeed();
             Vec3 targetMovement = targetPos.subtract(prevTargetPos).scale(timeToReach * timeScale * 1.0/4.0);
@@ -1277,6 +1338,11 @@ public class EntitySculptor extends MowzieGeckoEntity {
         public boolean canUse() {
             LivingEntity target = sculptor.getTarget();
             return target != null && target.isAlive();
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return super.canContinueToUse() || sculptor.getActiveAbilityType() == ATTACK_ABILITY || sculptor.getActiveAbilityType() == GUARD_ABILITY;
         }
 
         @Override
