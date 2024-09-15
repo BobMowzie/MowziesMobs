@@ -39,6 +39,8 @@ public final class GuiSculptorTrade extends AbstractContainerScreen<ContainerScu
 
     private Button beginButton;
 
+    private boolean prevBlocked;
+
     public GuiSculptorTrade(ContainerSculptorTrade screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         this.sculptor = screenContainer.getSculptor();
@@ -51,7 +53,7 @@ public final class GuiSculptorTrade extends AbstractContainerScreen<ContainerScu
     protected void init() {
         super.init();
         String text = I18n.get("entity.mowziesmobs.sculptor.trade.button.text");
-        beginButton = addRenderableWidget(new PlainTextButton(leftPos + 115, topPos + 52, 56, 20, Component.translatable(text), this::actionPerformed, font));
+        beginButton = addRenderableWidget(Button.builder(Component.translatable(text), this::actionPerformed).pos(leftPos + 115, topPos + 52).size(56, 20).build());
         updateButton();
     }
 
@@ -67,14 +69,21 @@ public final class GuiSculptorTrade extends AbstractContainerScreen<ContainerScu
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         guiGraphics.blit(TEXTURE_TRADE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
-        InventoryScreen.renderEntityInInventory(guiGraphics, leftPos + 33, topPos + 56, 14, new Quaternionf(), null, sculptor);
+        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, leftPos + 33, topPos + 56, 14, leftPos + 33 - x, topPos + 21 - y, sculptor);
     }
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
-        super.renderLabels(guiGraphics, x, y);
-        guiGraphics.drawString(font, title, (int) (imageWidth / 2f - font.width(title) / 2f) + 30, 6, 0x404040);
-        guiGraphics.drawString(font, I18n.get("container.inventory"), 8, imageHeight - 96 + 2, 0x404040);
+        guiGraphics.drawString(font, title, (int) (imageWidth / 2f - font.width(title) / 2f) + 30, 6, 0x404040, false);
+        guiGraphics.drawString(font, I18n.get("container.inventory"), 8, imageHeight - 96 + 2, 0x404040, false);
+        if (sculptor.isTestObstructed()) {
+            String blocked = I18n.get("entity.mowziesmobs.sculptor.trade.blocked");
+            guiGraphics.drawString(font, blocked, (int) (imageWidth / 2f - font.width(blocked) / 2f) + 30, 42, 0x404040, false);
+        }
+        if (prevBlocked != sculptor.isTestObstructed()) {
+            onChange(inventory);
+        }
+        prevBlocked = sculptor.isTestObstructed();
     }
 
     @Override
@@ -99,12 +108,13 @@ public final class GuiSculptorTrade extends AbstractContainerScreen<ContainerScu
         if (beginButton.isMouseOver(mouseX, mouseY)) {
             guiGraphics.renderComponentHoverEffect(font, getHoverText(), mouseX, mouseY);
         }
+
         guiGraphics.pose().popPose();
     }
 
     @Override
 	public void onChange(Container inv) {
-        beginButton.active = sculptor.doesItemSatisfyDesire(inv.getItem(0));
+        beginButton.active = sculptor.doesItemSatisfyDesire(inv.getItem(0)) && !sculptor.isTestObstructed();
 	}
 
     private void updateButton() {

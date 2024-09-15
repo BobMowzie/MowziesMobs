@@ -17,6 +17,7 @@
   "entity.mowziesmobs.grottol": "Grottol",
   "entity.mowziesmobs.lantern": "Lantern",
   "entity.mowziesmobs.naga": "Naga",
+  "entity.mowziesmobs.sculptor": "The Sculptor",
   "entity.mowziesmobs.boulder": "Boulder",
 
   "_comment": "Items",
@@ -159,6 +160,8 @@
   "entity.mowziesmobs.sculptor.trade": "Sculptor",
   "entity.mowziesmobs.sculptor.trade.button.text": "Begin Test",
   "entity.mowziesmobs.sculptor.boss_info.timer.text": "Time Remaining",
+  "entity.mowziesmobs.sculptor.trade.button.hover": "Reach the top of the course and right-click The Sculptor to pass!\nPlacing blocks, breaking blocks, teleporting, and flying are not allowed.",
+  "entity.mowziesmobs.sculptor.trade.blocked": "Test is blocked!",
 
   "_comment": "Death Messages",
   "death.attack.dart": "%1$s was shot by %2$s",

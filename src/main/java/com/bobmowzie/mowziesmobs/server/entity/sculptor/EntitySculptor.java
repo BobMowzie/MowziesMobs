@@ -373,6 +373,10 @@ public class EntitySculptor extends MowzieGeckoEntity {
         return false;
     }
 
+    public boolean isTestObstructed() {
+        return isTestObstructed;
+    }
+
     private void checkTestObstructedAtHeight(int height) {
         BlockPos pos = blockPosition();
         int radius = EntitySculptor.TEST_RADIUS;

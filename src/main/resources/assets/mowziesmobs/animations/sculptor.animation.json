@@ -6100,26 +6100,6 @@
 						"3.9583": {
 							"vector": [2.33, -28.09, 2.29]
 						}
-					},
-					"position": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.5": {
-							"vector": [0, 0, 1],
-							"easing": "easeInOutSine"
-						},
-						"0.8333": {
-							"vector": [0, 0, 1.5],
-							"easing": "easeOutElastic",
-							"easingArgs": [0.2]
-						},
-						"1.5": {
-							"vector": [0, 0, 1.5]
-						},
-						"3.9583": {
-							"vector": [0, 0, 1.5]
-						}
 					}
 				},
 				"shoulderLeft": {
@@ -6607,14 +6587,6 @@
 						"1.2917": {
 							"vector": [0, 0, 0],
 							"easing": "easeInOutQuad"
-						}
-					},
-					"position": {
-						"0.0": {
-							"vector": [0, 0, 1.5]
-						},
-						"1.2917": {
-							"vector": [0, 0, 1.5]
 						}
 					}
 				},
