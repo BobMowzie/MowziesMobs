@@ -15754,7 +15754,7 @@
 							"vector": [0, 0, 0]
 						},
 						"1.32": {
-							"vector": [0, 9, 5],
+							"vector": [0, 5, 5],
 							"easing": "easeInOutQuad"
 						},
 						"1.52": {

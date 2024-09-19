@@ -87,7 +87,7 @@ public class ModelSculptor extends MowzieGeoModel<EntitySculptor> {
         gauntletVisibility();
 
         if (beardOriginal == null || beardDynamic == null) {
-            beardOriginal = new MowzieGeoBone[]{getMowzieBone("beard3"), getMowzieBone("beard4"), getMowzieBone("beard5Rot")};
+            beardOriginal = new MowzieGeoBone[]{getMowzieBone("beard3"), getMowzieBone("beard4"), getMowzieBone("beard5Rot"), getMowzieBone("beard6")};
             beardDynamic = new MowzieGeoBone[beardOriginal.length];
         }
 

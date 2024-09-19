@@ -411,6 +411,11 @@
 					]
 				},
 				{
+					"name": "beard6",
+					"parent": "beard5Rot",
+					"pivot": [-1.5, 18.241, -4.69108]
+				},
+				{
 					"name": "beardSideL",
 					"parent": "beard1Rot",
 					"pivot": [3.5481, 30.17298, -5.5328],

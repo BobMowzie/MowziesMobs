@@ -241,18 +241,18 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     @Override
     protected <E extends GeoEntity> void loopingAnimations(AnimationState<E> event) {
-        event.getController().transitionLength(10);
-        if (isTestObstructed && !isFighting()) {
-            controller.setAnimation(TEST_OBSTRUCTED);
-        }
-        else {
-            super.loopingAnimations(event);
-        }
-//        if (event.getController() instanceof MowzieAnimationController mowzieAnimationController) {
-//            mowzieAnimationController.checkAndReloadAnims();
+//        event.getController().transitionLength(10);
+//        if (isTestObstructed && !isFighting()) {
+//            controller.setAnimation(TEST_OBSTRUCTED);
 //        }
-//        event.getController().setAnimation(RawAnimation.begin().thenLoop("dynamicsTest"));
-//        event.getController().setAnimationSpeed(1.0f);
+//        else {
+//            super.loopingAnimations(event);
+//        }
+        if (event.getController() instanceof MowzieAnimationController mowzieAnimationController) {
+            mowzieAnimationController.checkAndReloadAnims();
+        }
+        event.getController().setAnimation(RawAnimation.begin().thenLoop("dynamicsTest"));
+        event.getController().setAnimationSpeed(1.0f);
     }
 
     @Override

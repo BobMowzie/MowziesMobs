@@ -56,17 +56,28 @@ public class RenderSculptor extends MowzieGeoEntityRenderer<EntitySculptor> {
 
     @Override
     public void actuallyRender(PoseStack poseStack, EntitySculptor animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        if (model instanceof ModelSculptor modelSculptor) {
+            if (animatable.dc == null) {
+                for (int i = 0; i < modelSculptor.beardOriginal.length; i++) {
+                    modelSculptor.beardOriginal[i].setHidden(false);
+                }
+            }
+        }
         super.actuallyRender(poseStack, animatable, bakedModel, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
         if (model instanceof ModelSculptor modelSculptor) {
-            animatable.dc.setChain(modelSculptor.beardOriginal, modelSculptor.beardDynamic);
-            animatable.dc.updateChain(Minecraft.getInstance().getFrameTime(), modelSculptor.beardOriginal, modelSculptor.beardDynamic, 0.1f, 0.1f, 0.5f, 0.01f, 30, true);
-            poseStack.pushPose();
+            if (animatable.dc != null) {
+                if (!isReRender) {
+                    animatable.dc.setChain(modelSculptor.beardOriginal, modelSculptor.beardDynamic);
+                    animatable.dc.updateChain(Minecraft.getInstance().getFrameTime(), modelSculptor.beardOriginal, modelSculptor.beardDynamic, 0.1f, 0.1f, 0.5f, 0.015f, 30, true);
+                }
+                poseStack.pushPose();
 //            poseStack.last().pose().set(this.modelRenderTranslations);
-            for (GeoBone group : modelSculptor.beardDynamic) {
-                renderRecursively(poseStack, animatable, group, renderType, bufferSource, buffer, isReRender, partialTick, packedLight,
-                        packedOverlay, red, green, blue, alpha);
+                for (GeoBone group : modelSculptor.beardDynamic) {
+                    renderRecursively(poseStack, animatable, group, renderType, bufferSource, buffer, isReRender, partialTick, packedLight,
+                            packedOverlay, red, green, blue, alpha);
+                }
+                poseStack.popPose();
             }
-            poseStack.popPose();
         }
     }
 

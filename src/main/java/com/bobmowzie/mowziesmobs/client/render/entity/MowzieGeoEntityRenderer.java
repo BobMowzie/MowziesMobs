@@ -55,9 +55,9 @@ public abstract class MowzieGeoEntityRenderer<T extends LivingEntity & GeoEntity
             double d1 = Mth.lerp(partialTick, animatable.yOld, animatable.getY());
             double d2 = Mth.lerp(partialTick, animatable.zOld, animatable.getZ());
             Matrix4f matrix4f = new Matrix4f();
-            matrix4f = matrix4f.mul(bone.getWorldSpaceMatrix());
             matrix4f = matrix4f.translate(0, -0.01f, 0);
             matrix4f = matrix4f.translate((float) -d0, (float) -d1, (float) -d2);
+            matrix4f = matrix4f.mul(bone.getWorldSpaceMatrix());
             matrix4f = matrix4f.rotate(Axis.YP.rotationDegrees(-180f - lerpBodyRot));
             last.pose().mul(matrix4f);
             last.normal().mul(bone.getWorldSpaceNormal());

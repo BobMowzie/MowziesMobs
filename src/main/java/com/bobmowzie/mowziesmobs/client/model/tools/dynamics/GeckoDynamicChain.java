@@ -5,8 +5,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
-import org.joml.Vector3d;
+import org.joml.*;
+
+import java.lang.Math;
 
 /**
  * Created by BobMowzie on 8/30/2018.
@@ -93,8 +94,6 @@ public class GeckoDynamicChain {
                 } else {
                     d[i] = 0f;
                 }
-                chainOrig[i].setHidden(false);
-                chainOrig[i].setForceMatrixTransform(false);
             }
 
             for (int i = 0; i < chainOrig.length; i++) {
@@ -137,28 +136,38 @@ public class GeckoDynamicChain {
         if (Minecraft.getInstance().isPaused()) delta = 0.5f;
         for (int i = chainDynamic.length - 1; i >= 0; i--) {
             if (chainDynamic[i] == null) return;
-            Vec3 renderPosInterp = prevRenderPos[i].add(renderPos[i].subtract(prevRenderPos[i]).scale(delta));
-//            Vec3 renderPos = new Vec3(0, 0 ,0);
-//            Vec3 renderPosInterp = new Vec3(pOrig[i].x, pOrig[i].y, pOrig[i].z);
-            Matrix4f xformOverride = new Matrix4f();
-            xformOverride = xformOverride.translate((float) renderPosInterp.x, (float) renderPosInterp.y, (float) renderPosInterp.z);
-            chainDynamic[i].setWorldSpaceMatrix(xformOverride);
+
             chainDynamic[i].setForceMatrixTransform(true);
             chainDynamic[i].setHidden(false);
             chainOrig[i].setHidden(true);
 
-//            if (i < chainOrig.length - 1) {
-//                Vector3d p1 = chainOrig[i].getWorldPosition();
-//                Vector3d p2 = chainOrig[i+1].getWorldPosition();
-//                if (!Double.isNaN(p1.x) && !Double.isNaN(p2.x)) {
-//                    Vector3d diff = p2.sub(p1);
-//                    float yaw = (float) Math.atan2(diff.x, diff.z);
-//                    float pitch = -(float) Math.asin(diff.y / diff.length());
-////                xformOverride.rotate(0.6f, 0, 0, 1);
-//                    xformOverride.rotateAffineZYX(pitch, yaw, 0);
-//                }
-//                chainOrig[i].setModelXformOverride(xformOverride);
-//            }
+            Matrix4f xformOverride = new Matrix4f();
+
+            Vec3 renderPosInterp = prevRenderPos[i].add(renderPos[i].subtract(prevRenderPos[i]).scale(delta));
+//            Vec3 renderPos = new Vec3(0, 0 ,0);
+//            Vec3 renderPosInterp = new Vec3(pOrig[i].x, pOrig[i].y, pOrig[i].z);
+            xformOverride = xformOverride.translate((float) renderPosInterp.x, (float) renderPosInterp.y, (float) renderPosInterp.z);
+
+            if (i < chainOrig.length - 1) {
+                Quaternionf q;
+                Vector3d p1 = new Vector3d(renderPosInterp.x, renderPosInterp.y, renderPosInterp.z);
+                Vec3 prevRenderPosInterp = prevRenderPos[i +1].add(renderPos[i +1].subtract(prevRenderPos[i +1]).scale(delta));
+                Vector3d p2 = new Vector3d(prevRenderPosInterp.x, prevRenderPosInterp.y, prevRenderPosInterp.z);
+                Vector3d desiredDir = p2.sub(p1, new Vector3d()).normalize();
+                Vector3d startingDir = new Vector3d(0, -1, 0);
+                double dot = desiredDir.dot(startingDir);
+                if (dot > 0.9999999) {
+                    q = new Quaternionf();
+                }
+                else {
+                    Vector3d cross = startingDir.cross(desiredDir);
+                    double w = Math.sqrt(desiredDir.lengthSquared() * startingDir.lengthSquared()) + dot;
+                    q = new Quaternionf(cross.x, cross.y, cross.z, w).normalize();
+                }
+//                xformOverride.rotate(q);
+            }
+
+            chainDynamic[i].setWorldSpaceMatrix(xformOverride);
         }
     }
 
