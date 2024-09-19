@@ -1,6 +1,9 @@
 package com.bobmowzie.mowziesmobs.server.entity.sculptor;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.tools.dynamics.DynamicChain;
+import com.bobmowzie.mowziesmobs.client.model.tools.dynamics.GeckoDynamicChain;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
@@ -123,6 +126,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     public ItemStack heldStaff;
 
+    public GeckoDynamicChain dc;
 
     public EntitySculptor(EntityType<? extends MowzieEntity> type, Level world) {
         super(type, world);
@@ -131,6 +135,10 @@ public class EntitySculptor extends MowzieGeckoEntity {
         TEST_HEIGHT = ConfigHandler.COMMON.MOBS.SCULPTOR.testHeight.get();
 
         heldStaff = new ItemStack(ItemHandler.SCULPTOR_STAFF.get());
+
+        if (world.isClientSide) {
+            dc = new GeckoDynamicChain(this);
+        }
     }
 
     private static RawAnimation HURT = RawAnimation.begin().thenPlay("hurt");
@@ -243,7 +251,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 //        if (event.getController() instanceof MowzieAnimationController mowzieAnimationController) {
 //            mowzieAnimationController.checkAndReloadAnims();
 //        }
-//        event.getController().setAnimation(RawAnimation.begin().thenLoop("test_pass_end"));
+//        event.getController().setAnimation(RawAnimation.begin().thenLoop("dynamicsTest"));
 //        event.getController().setAnimationSpeed(1.0f);
     }
 
@@ -348,6 +356,16 @@ public class EntitySculptor extends MowzieGeckoEntity {
 //        if (getActiveAbility() == null && tickCount % 60 == 0) {
 //            sendAbilityMessage(ATTACK_ABILITY);
 //        }
+
+//        if (level().isClientSide() && dc != null && dc.p.length > 0 && dc.p[0] != null) {
+//            for (int i = 0; i < dc.p.length; i++) {
+//                ParticleRotation.FaceCamera faceCamera = new ParticleRotation.FaceCamera(0);
+//                AdvancedParticleBase.spawnAlwaysVisibleParticle(level(), ParticleHandler.PIXEL.get(), 64, dc.p[i].x, dc.p[i].y, dc.p[i].z, 0, 0, 0, faceCamera, 1, 0.83f, 1, 0.39f, 1, 1, 1, true, false, new ParticleComponent[0]);
+//            }
+//        }
+
+//        yBodyRot += 3;
+//        yHeadRot = yBodyRot;
     }
 
     @Override

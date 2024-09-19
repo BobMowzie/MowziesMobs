@@ -7,6 +7,7 @@ import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoSunblockLayer;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -51,6 +52,22 @@ public class RenderSculptor extends MowzieGeoEntityRenderer<EntitySculptor> {
         disappearControllerBone.ifPresent(geoBone -> disappearController = geoBone.getPosX());
 
         this.shadowRadius = 0.7f * (1.0f - disappearController);
+    }
+
+    @Override
+    public void actuallyRender(PoseStack poseStack, EntitySculptor animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        super.actuallyRender(poseStack, animatable, bakedModel, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+        if (model instanceof ModelSculptor modelSculptor) {
+            animatable.dc.setChain(modelSculptor.beardOriginal, modelSculptor.beardDynamic);
+            animatable.dc.updateChain(Minecraft.getInstance().getFrameTime(), modelSculptor.beardOriginal, modelSculptor.beardDynamic, 0.1f, 0.1f, 0.5f, 0.01f, 30, true);
+            poseStack.pushPose();
+//            poseStack.last().pose().set(this.modelRenderTranslations);
+            for (GeoBone group : modelSculptor.beardDynamic) {
+                renderRecursively(poseStack, animatable, group, renderType, bufferSource, buffer, isReRender, partialTick, packedLight,
+                        packedOverlay, red, green, blue, alpha);
+            }
+            poseStack.popPose();
+        }
     }
 
     @Override

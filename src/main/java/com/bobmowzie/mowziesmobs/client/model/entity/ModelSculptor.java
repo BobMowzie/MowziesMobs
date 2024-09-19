@@ -2,10 +2,11 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.RigUtils;
+import com.bobmowzie.mowziesmobs.client.model.tools.dynamics.GeckoDynamicChain;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoModel;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
@@ -22,6 +23,11 @@ import java.util.Map;
 import java.util.Optional;
 
 public class ModelSculptor extends MowzieGeoModel<EntitySculptor> {
+    private GeckoDynamicChain tail;
+
+    public MowzieGeoBone[] beardOriginal;
+    public MowzieGeoBone[] beardDynamic;
+
     public ModelSculptor() {
         super();
     }
@@ -79,6 +85,14 @@ public class ModelSculptor extends MowzieGeoModel<EntitySculptor> {
 
         staffRendering(entity);
         gauntletVisibility();
+
+        if (beardOriginal == null || beardDynamic == null) {
+            beardOriginal = new MowzieGeoBone[]{getMowzieBone("beard3"), getMowzieBone("beard4"), getMowzieBone("beard5Rot")};
+            beardDynamic = new MowzieGeoBone[beardOriginal.length];
+        }
+
+//        getMowzieBone("beard3").inheritRotation = false;
+//        getMowzieBone("beard3").inheritTranslation = false;
     }
 
     private void beadsCorrections(EntitySculptor entity) {
@@ -157,8 +171,8 @@ public class ModelSculptor extends MowzieGeoModel<EntitySculptor> {
         Quaternionf leftRot = RigUtils.betweenVectors(thighToSkirtEndL, thighToKneeL);
         Matrix4f rightMat = (new Matrix4f()).rotate(rightRot);
         Matrix4f leftMat = (new Matrix4f()).rotate(leftRot);
-        skirtJoint2R.setModelRotationMat(rightMat);
-        skirtJoint2L.setModelRotationMat(leftMat);
+        skirtJoint2R.setModelXformOverride(rightMat);
+        skirtJoint2L.setModelXformOverride(leftMat);
 
         Vec3 average = thighToKneeL.add(thighToKneeR).scale(2).multiply(0, 1, 1).normalize();
         float angleAv = (float) Mth.atan2(average.y(), average.z());
@@ -186,7 +200,7 @@ public class ModelSculptor extends MowzieGeoModel<EntitySculptor> {
         frontCloth.setRot(skirtFront.getRot());
         Matrix4f mat = frontCloth.getModelRotationMat();
         mat.invert();
-        frontCloth2.setModelRotationMat(mat);
+        frontCloth2.setModelXformOverride(mat);
     }
 
     private void staffRendering(EntitySculptor entity) {

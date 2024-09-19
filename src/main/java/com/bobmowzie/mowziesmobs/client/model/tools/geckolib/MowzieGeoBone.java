@@ -1,20 +1,41 @@
 package com.bobmowzie.mowziesmobs.client.model.tools.geckolib;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Vector3d;
+import org.joml.Vector4f;
 import software.bernie.geckolib.cache.object.GeoBone;
 
 import javax.annotation.Nullable;
 
 public class MowzieGeoBone extends GeoBone {
 
-    public Matrix4f rotMat;
+    public Matrix4f rotationOverride;
+    public boolean inheritRotation = true;
+    public boolean inheritTranslation = true;
     protected boolean forceMatrixTransform = false;
 
     public MowzieGeoBone(@Nullable GeoBone parent, String name, Boolean mirror, @Nullable Double inflate, @Nullable Boolean dontRender, @Nullable Boolean reset) {
         super(parent, name, mirror, inflate, dontRender, reset);
-        rotMat = null;
+        rotationOverride = null;
+    }
+
+    public MowzieGeoBone(MowzieGeoBone geoBone) {
+        super(null, geoBone.getName() + "_chain", geoBone.getMirror(), geoBone.getInflate(), geoBone.shouldNeverRender(), geoBone.getReset());
+        this.setPos(geoBone.getPos());
+        this.setRot(geoBone.getRot());
+        this.setPivotX(geoBone.getPivotX());
+        this.setPivotY(geoBone.getPivotY());
+        this.setPivotZ(geoBone.getPivotZ());
+        this.setScale(geoBone.getScale());
+
+        this.getCubes().addAll(geoBone.getCubes());
+        this.saveInitialSnapshot();
+        this.getChildBones().addAll(geoBone.getChildBones());
     }
 
     public MowzieGeoBone getParent() {
@@ -54,8 +75,8 @@ public class MowzieGeoBone extends GeoBone {
         setPosZ(z);
     }
 
-    public Vector3d getPos() {
-        return new Vector3d(getPosX(), getPosY(), getPosZ());
+    public Vec3 getPos() {
+        return new Vec3(getPosX(), getPosY(), getPosZ());
     }
 
     // Rotation utils
@@ -114,6 +135,10 @@ public class MowzieGeoBone extends GeoBone {
         setScale((float) vec.x(), (float) vec.y(), (float) vec.z());
     }
 
+    public void setScale(Vector3d vec) {
+        setScale((float) vec.x(), (float) vec.y(), (float) vec.z());
+    }
+
     public void setScale(float x, float y, float z) {
         setScaleX(x);
         setScaleY(y);
@@ -155,7 +180,28 @@ public class MowzieGeoBone extends GeoBone {
         matrix.m32(0);
     }
 
-    public void setModelRotationMat(Matrix4f mat) {
-        rotMat = mat;
+    public void setModelXformOverride(Matrix4f mat) {
+        rotationOverride = mat;
+    }
+
+    public void setWorldPos(Entity entity, Vec3 worldPos, float delta) {
+        PoseStack matrixStack = new PoseStack();
+        float dx = (float) (entity.xOld + (entity.getX() - entity.xOld) * delta);
+        float dy = (float) (entity.yOld + (entity.getY() - entity.yOld) * delta);
+        float dz = (float) (entity.zOld + (entity.getZ() - entity.zOld) * delta);
+        matrixStack.translate(dx, dy, dz);
+        float dYaw = Mth.rotLerp(delta, entity.yRotO, entity.getYRot());
+        matrixStack.mulPose(MathUtils.quatFromRotationXYZ(0, -dYaw + 180, 0, true));
+        matrixStack.scale(-1, -1, 1);
+        matrixStack.translate(0, -1.5f, 0);
+        PoseStack.Pose matrixEntry = matrixStack.last();
+        Matrix4f matrix4f = matrixEntry.pose();
+        matrix4f.invert();
+
+        Vector4f vec = new Vector4f((float) worldPos.x(), (float) worldPos.y(), (float) worldPos.z(), 1);
+        vec.mul(matrix4f);
+        setPosX(vec.x() * 16);
+        setPosY(vec.y() * 16);
+        setPosZ(vec.z() * 16);
     }
 }
