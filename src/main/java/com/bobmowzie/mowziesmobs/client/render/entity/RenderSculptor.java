@@ -59,6 +59,7 @@ public class RenderSculptor extends MowzieGeoEntityRenderer<EntitySculptor> {
         if (model instanceof ModelSculptor modelSculptor && modelSculptor.beardOriginal != null) {
             for (int i = 0; i < modelSculptor.beardOriginal.length; i++) {
                 modelSculptor.beardOriginal[i].setHidden(animatable.dc != null);
+//                modelSculptor.beardOriginal[i].setHidden(false);
                 modelSculptor.beardOriginal[i].setTrackingMatrices(true);
             }
         }
@@ -67,7 +68,7 @@ public class RenderSculptor extends MowzieGeoEntityRenderer<EntitySculptor> {
             if (animatable.dc != null) {
                 if (!isReRender) {
                     animatable.dc.setChain(modelSculptor.beardOriginal, modelSculptor.beardDynamic);
-                    animatable.dc.updateChain(Minecraft.getInstance().getFrameTime(), modelSculptor.beardOriginal, modelSculptor.beardDynamic, 0.1f, 0.1f, 0.5f, 0.015f, 30, true);
+                    animatable.dc.updateChain(Minecraft.getInstance().getFrameTime(), modelSculptor.beardOriginal, modelSculptor.beardDynamic, 0.1f, 0.1f, 0.5f, 0.02f, 10, true);
                 }
                 poseStack.pushPose();
                 for (GeoBone group : modelSculptor.beardDynamic) {

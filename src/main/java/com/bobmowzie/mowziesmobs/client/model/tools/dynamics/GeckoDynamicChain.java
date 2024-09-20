@@ -28,6 +28,8 @@ public class GeckoDynamicChain {
     public Vec3[] pOrig;
     private int prevUpdateTick;
 
+    private float prevUpdateTime;
+
     public GeckoDynamicChain(Entity entity) {
         this.entity = entity;
         p = new Vec3[0];
@@ -40,12 +42,13 @@ public class GeckoDynamicChain {
         renderPos = new Vec3[0];
         prevRenderPos = new Vec3[0];
         prevUpdateTick = -1;
+        prevUpdateTime = 0;
     }
 
-    public void updateSpringConstraint(float gravityAmount, float dampAmount, float stiffness, float maxForce, boolean doAttract, float attractFalloff, int numUpdates) {
-        float deltaTime = 1f / (float)numUpdates;
-        p[0] = new Vec3(pOrig[0].x, pOrig[0].y, pOrig[0].z);
+    public void updateSpringConstraint(float gravityAmount, float dampAmount, float stiffness, float maxForce, boolean doAttract, float attractFalloff, int numUpdates, float deltaTime) {
+        float deltaTimePerUpdate = deltaTime / (float)numUpdates;
         for (int j = 0; j < numUpdates; j++) {
+            p[0] = p0[0].add(pOrig[0].subtract(p0[0]).scale((double)(j + 1) / (double) (numUpdates)));
             for (int i = 1; i < p.length; i++) {
                 Vec3 prevPosition = new Vec3(p[i].x, p[i].y, p[i].z);
 
@@ -57,7 +60,7 @@ public class GeckoDynamicChain {
                     force = force.add(attract.scale(1 / (1 + i * i * attractFalloff)));
                 }
                 a[i] = force.scale(1 / m[i]);
-                p[i] = p[i].add((p[i].subtract(p0[i])).scale(1.0 - dampAmount)).add(a[i].scale(deltaTime * deltaTime).scale(1.0 - dampAmount));
+                p[i] = p[i].add((p[i].subtract(p0[i])).scale(1.0 - dampAmount)).add(a[i].scale(deltaTimePerUpdate * deltaTimePerUpdate).scale(1.0 - dampAmount));
 
                 Vec3 vectorToPrevious;
                 vectorToPrevious = p[i].subtract(p[i - 1]);
@@ -67,6 +70,8 @@ public class GeckoDynamicChain {
                 p0[i] = new Vec3(prevPosition.x, prevPosition.y, prevPosition.z);
             }
         }
+
+        p0[0] = new Vec3(pOrig[0].x, pOrig[0].y, pOrig[0].z);
     }
 
     public void setChain(MowzieGeoBone[] chainOrig, MowzieGeoBone[] chainDynamic) {
@@ -110,30 +115,32 @@ public class GeckoDynamicChain {
             return;
         }
 
-        if (prevUpdateTick != entity.tickCount) {
-            for (int i = 0; i < chainOrig.length; i++) {
-                prevRenderPos[i] = new Vec3(renderPos[i].x, renderPos[i].y, renderPos[i].z);
-            }
+        float currentTime = entity.tickCount + delta;
 
-            for (int i = 0; i < chainOrig.length; i++) {
-                Vector3d p = chainOrig[i].getWorldPosition();
-                pOrig[i] = new Vec3(p.x, p.y, p.z);
-                if (i > 0) {
-                    d[i] = (float) pOrig[i].distanceTo(pOrig[i - 1]);
-                } else {
-                    d[i] = 0f;
-                }
-            }
-
-            // Run physics update
-            updateSpringConstraint(gravityAmount, damping, stiffness, 1, false, 0, numUpdates);
-
-            for (int i = 0; i < chainOrig.length; i++) {
-                renderPos[i] = new Vec3(p[i].x, p[i].y, p[i].z);
-            }
-
-            prevUpdateTick = entity.tickCount;
+        for (int i = 0; i < chainOrig.length; i++) {
+            prevRenderPos[i] = new Vec3(renderPos[i].x, renderPos[i].y, renderPos[i].z);
         }
+
+        for (int i = 0; i < chainOrig.length; i++) {
+            Vector3d p = chainOrig[i].getWorldPosition();
+            pOrig[i] = new Vec3(p.x, p.y, p.z);
+            if (i > 0) {
+                d[i] = (float) pOrig[i].distanceTo(pOrig[i - 1]);
+            } else {
+                d[i] = 0f;
+            }
+        }
+
+        // Run physics update
+        if (!Minecraft.getInstance().isPaused()) {
+            updateSpringConstraint(gravityAmount, damping, stiffness, 1, false, 0, numUpdates, currentTime - prevUpdateTime);
+        }
+
+        for (int i = 0; i < chainOrig.length; i++) {
+            renderPos[i] = new Vec3(p[i].x, p[i].y, p[i].z);
+        }
+
+        prevUpdateTime = currentTime;
 
         if (Minecraft.getInstance().isPaused()) delta = 0.5f;
         setChainFromRenderPos(chainOrig, chainDynamic, delta);
@@ -152,17 +159,14 @@ public class GeckoDynamicChain {
             Matrix4f xformOverride = new Matrix4f();
 
             // Translation
-            Vec3 renderPosInterp = prevRenderPos[i].add(renderPos[i].subtract(prevRenderPos[i]).scale(delta));
-//            Vec3 renderPos = new Vec3(0, 0 ,0);
-//            Vec3 renderPosInterp = new Vec3(pOrig[i].x, pOrig[i].y, pOrig[i].z);
-            xformOverride = xformOverride.translate((float) renderPosInterp.x, (float) renderPosInterp.y, (float) renderPosInterp.z);
+            xformOverride = xformOverride.translate((float) p[i].x, (float) p[i].y, (float) p[i].z);
+//            xformOverride = xformOverride.translate((float) pOrig[i].x, (float) pOrig[i].y, (float) pOrig[i].z);
 
             // Rotation - based on translations
             if (i < chainOrig.length - 1) {
                 Quaternionf q;
-                Vector3d p1 = new Vector3d(renderPosInterp.x, renderPosInterp.y, renderPosInterp.z);
-                Vec3 prevRenderPosInterp = prevRenderPos[i +1].add(renderPos[i +1].subtract(prevRenderPos[i +1]).scale(delta));
-                Vector3d p2 = new Vector3d(prevRenderPosInterp.x, prevRenderPosInterp.y, prevRenderPosInterp.z);
+                Vector3d p1 = new Vector3d(p[i].x, p[i].y, p[i].z);
+                Vector3d p2 = new Vector3d(p[i + 1].x, p[i + 1].y, p[i + 1].z);
                 Vector3d desiredDir = p2.sub(p1, new Vector3d()).normalize();
                 Vector3d startingDir = new Vector3d(0, -1, 0);
                 double dot = desiredDir.dot(startingDir);

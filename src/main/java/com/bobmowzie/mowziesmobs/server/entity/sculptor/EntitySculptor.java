@@ -156,8 +156,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        setNoAi(true);
-        goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F, 0.06f));
         goalSelector.addGoal(2, new UseAbilityAI<>(this, START_TEST, false));
         this.goalSelector.addGoal(1, new UseAbilityAI<>(this, DIE_ABILITY));
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, HURT_ABILITY, false));

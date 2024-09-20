@@ -51,9 +51,12 @@ public abstract class MowzieGeoEntityRenderer<T extends LivingEntity & GeoEntity
         if (bone instanceof MowzieGeoBone mowzieGeoBone && mowzieGeoBone.isForceMatrixTransform()) {
             PoseStack.Pose last = poseStack.last();
             float lerpBodyRot = animatable == null ? 0 : Mth.rotLerp(partialTick, animatable.yBodyRotO, animatable.yBodyRot);
-            double d0 = Mth.lerp(partialTick, animatable.xOld, animatable.getX());
-            double d1 = Mth.lerp(partialTick, animatable.yOld, animatable.getY());
-            double d2 = Mth.lerp(partialTick, animatable.zOld, animatable.getZ());
+//            double d0 = Mth.lerp(partialTick, animatable.xOld, animatable.getX());
+//            double d1 = Mth.lerp(partialTick, animatable.yOld, animatable.getY());
+//            double d2 = Mth.lerp(partialTick, animatable.zOld, animatable.getZ());
+            double d0 = animatable.getX();
+            double d1 = animatable.getY();
+            double d2 = animatable.getZ();
             Matrix4f matrix4f = new Matrix4f();
             matrix4f = matrix4f.translate(0, -0.01f, 0);
             matrix4f = matrix4f.translate((float) -d0, (float) -d1, (float) -d2);
