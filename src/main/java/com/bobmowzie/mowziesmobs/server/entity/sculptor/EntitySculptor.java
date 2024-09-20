@@ -353,6 +353,10 @@ public class EntitySculptor extends MowzieGeckoEntity {
             testTimePassed = 0;
         }
 
+        if (level().isClientSide()) {
+            dc.setSimulating(pillar == null || pillar.isRemoved() || !getPillar().isFalling() && !getPillar().isRising());
+        }
+
 //        if (getActiveAbility() == null && tickCount % 60 == 0) {
 //            sendAbilityMessage(ATTACK_ABILITY);
 //        }

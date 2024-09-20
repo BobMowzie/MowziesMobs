@@ -30,6 +30,8 @@ public class GeckoDynamicChain {
 
     private float prevUpdateTime;
 
+    private boolean isSimulating;
+
     public GeckoDynamicChain(Entity entity) {
         this.entity = entity;
         p = new Vec3[0];
@@ -43,35 +45,48 @@ public class GeckoDynamicChain {
         prevRenderPos = new Vec3[0];
         prevUpdateTick = -1;
         prevUpdateTime = 0;
+
+        isSimulating = true;
     }
 
-    public void updateSpringConstraint(float gravityAmount, float dampAmount, float stiffness, float maxForce, boolean doAttract, float attractFalloff, int numUpdates, float deltaTime) {
-        float deltaTimePerUpdate = deltaTime / (float)numUpdates;
-        for (int j = 0; j < numUpdates; j++) {
-            p[0] = p0[0].add(pOrig[0].subtract(p0[0]).scale((double)(j + 1) / (double) (numUpdates)));
-            for (int i = 1; i < p.length; i++) {
-                Vec3 prevPosition = new Vec3(p[i].x, p[i].y, p[i].z);
+    public void updateSpringConstraint(float gravityAmount, float dampAmount, float stiffness, boolean doAttract, float attractFalloff, int numUpdates, float deltaTime) {
+        if (isSimulating) {
+            float deltaTimePerUpdate = deltaTime / (float) numUpdates;
+            for (int j = 0; j < numUpdates; j++) {
+                p[0] = p0[0].add(pOrig[0].subtract(p0[0]).scale((double) (j + 1) / (double) (numUpdates)));
+                for (int i = 1; i < p.length; i++) {
+                    Vec3 prevPosition = new Vec3(p[i].x, p[i].y, p[i].z);
 
-                Vec3 force = new Vec3(0, 0, 0);
-                Vec3 gravity = new Vec3(0, -gravityAmount, 0);
-                force = force.add(gravity);
-                if (doAttract) {
-                    Vec3 attract = pOrig[0].subtract(p[i]);
-                    force = force.add(attract.scale(1 / (1 + i * i * attractFalloff)));
+                    Vec3 force = new Vec3(0, 0, 0);
+                    Vec3 gravity = new Vec3(0, -gravityAmount, 0);
+                    force = force.add(gravity);
+                    if (doAttract) {
+                        Vec3 attract = pOrig[i].subtract(p[i]);
+                        force = force.add(attract.scale(1 / (1 + i * i * attractFalloff)));
+                    }
+                    a[i] = force.scale(1 / m[i]);
+                    p[i] = p[i].add((p[i].subtract(p0[i])).scale(1.0 - dampAmount)).add(a[i].scale(deltaTimePerUpdate * deltaTimePerUpdate).scale(1.0 - dampAmount));
+
+                    Vec3 vectorToPrevious;
+                    vectorToPrevious = p[i].subtract(p[i - 1]);
+                    vectorToPrevious = vectorToPrevious.normalize().scale(d[i]);
+                    p[i] = p[i - 1].add(vectorToPrevious);
+
+                    p0[i] = new Vec3(prevPosition.x, prevPosition.y, prevPosition.z);
                 }
-                a[i] = force.scale(1 / m[i]);
-                p[i] = p[i].add((p[i].subtract(p0[i])).scale(1.0 - dampAmount)).add(a[i].scale(deltaTimePerUpdate * deltaTimePerUpdate).scale(1.0 - dampAmount));
-
-                Vec3 vectorToPrevious;
-                vectorToPrevious = p[i].subtract(p[i - 1]);
-                vectorToPrevious = vectorToPrevious.normalize().scale(d[i]);
-                p[i] = p[i - 1].add(vectorToPrevious);
-
-                p0[i] = new Vec3(prevPosition.x, prevPosition.y, prevPosition.z);
             }
-        }
 
-        p0[0] = new Vec3(pOrig[0].x, pOrig[0].y, pOrig[0].z);
+            p0[0] = new Vec3(pOrig[0].x, pOrig[0].y, pOrig[0].z);
+        }
+        else {
+            p[0] = new Vec3(pOrig[0].x, pOrig[0].y, pOrig[0].z);
+            for (int i = 1; i < p.length; i++) {
+                p0[i] = p[0];
+                Vec3 diff = pOrig[i].subtract(p[i]);
+                p[i] = pOrig[i].add(diff.scale(deltaTime * 1));
+            }
+            p0[0] = new Vec3(p[0].x, p[0].y, p[0].z);
+        }
     }
 
     public void setChain(MowzieGeoBone[] chainOrig, MowzieGeoBone[] chainDynamic) {
@@ -133,7 +148,7 @@ public class GeckoDynamicChain {
 
         // Run physics update
         if (!Minecraft.getInstance().isPaused()) {
-            updateSpringConstraint(gravityAmount, damping, stiffness, 1, false, 0, numUpdates, currentTime - prevUpdateTime);
+            updateSpringConstraint(gravityAmount, damping, 1, false, 0, numUpdates, currentTime - prevUpdateTime);
         }
 
         for (int i = 0; i < chainOrig.length; i++) {
@@ -183,6 +198,10 @@ public class GeckoDynamicChain {
 
             chainDynamic[i].setWorldSpaceMatrix(xformOverride);
         }
+    }
+
+    public void setSimulating(boolean simulating) {
+        isSimulating = simulating;
     }
 
     private static Vec3 fromPitchYaw(float pitch, float yaw) {
