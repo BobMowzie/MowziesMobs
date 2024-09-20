@@ -156,6 +156,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
     @Override
     protected void registerGoals() {
         super.registerGoals();
+        setNoAi(true);
         goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         goalSelector.addGoal(2, new UseAbilityAI<>(this, START_TEST, false));
         this.goalSelector.addGoal(1, new UseAbilityAI<>(this, DIE_ABILITY));
@@ -241,18 +242,18 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     @Override
     protected <E extends GeoEntity> void loopingAnimations(AnimationState<E> event) {
-//        event.getController().transitionLength(10);
-//        if (isTestObstructed && !isFighting()) {
-//            controller.setAnimation(TEST_OBSTRUCTED);
-//        }
-//        else {
-//            super.loopingAnimations(event);
-//        }
-        if (event.getController() instanceof MowzieAnimationController mowzieAnimationController) {
-            mowzieAnimationController.checkAndReloadAnims();
+        event.getController().transitionLength(10);
+        if (isTestObstructed && !isFighting()) {
+            controller.setAnimation(TEST_OBSTRUCTED);
         }
-        event.getController().setAnimation(RawAnimation.begin().thenLoop("dynamicsTest"));
-        event.getController().setAnimationSpeed(1.0f);
+        else {
+            super.loopingAnimations(event);
+        }
+//        if (event.getController() instanceof MowzieAnimationController mowzieAnimationController) {
+//            mowzieAnimationController.checkAndReloadAnims();
+//        }
+//        event.getController().setAnimation(RawAnimation.begin().thenLoop("dynamicsTest"));
+//        event.getController().setAnimationSpeed(1.0f);
     }
 
     @Override

@@ -56,11 +56,11 @@ public class RenderSculptor extends MowzieGeoEntityRenderer<EntitySculptor> {
 
     @Override
     public void actuallyRender(PoseStack poseStack, EntitySculptor animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        if (model instanceof ModelSculptor modelSculptor) {
-            if (animatable.dc == null) {
-                for (int i = 0; i < modelSculptor.beardOriginal.length; i++) {
-                    modelSculptor.beardOriginal[i].setHidden(false);
-                }
+        if (model instanceof ModelSculptor modelSculptor && modelSculptor.beardOriginal != null) {
+            for (int i = 0; i < modelSculptor.beardOriginal.length; i++) {
+                modelSculptor.beardOriginal[i].setHidden(animatable.dc != null);
+                modelSculptor.beardOriginal[i].setChildrenHidden(false);
+                modelSculptor.beardOriginal[i].setTrackingMatrices(true);
             }
         }
         super.actuallyRender(poseStack, animatable, bakedModel, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
@@ -71,7 +71,6 @@ public class RenderSculptor extends MowzieGeoEntityRenderer<EntitySculptor> {
                     animatable.dc.updateChain(Minecraft.getInstance().getFrameTime(), modelSculptor.beardOriginal, modelSculptor.beardDynamic, 0.1f, 0.1f, 0.5f, 0.015f, 30, true);
                 }
                 poseStack.pushPose();
-//            poseStack.last().pose().set(this.modelRenderTranslations);
                 for (GeoBone group : modelSculptor.beardDynamic) {
                     renderRecursively(poseStack, animatable, group, renderType, bufferSource, buffer, isReRender, partialTick, packedLight,
                             packedOverlay, red, green, blue, alpha);

@@ -7,6 +7,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import org.joml.*;
 
+import java.beans.FeatureDescriptor;
 import java.lang.Math;
 
 /**
@@ -124,6 +125,7 @@ public class GeckoDynamicChain {
                 }
             }
 
+            // Run physics update
             updateSpringConstraint(gravityAmount, damping, stiffness, 1, false, 0, numUpdates);
 
             for (int i = 0; i < chainOrig.length; i++) {
@@ -134,6 +136,11 @@ public class GeckoDynamicChain {
         }
 
         if (Minecraft.getInstance().isPaused()) delta = 0.5f;
+        setChainFromRenderPos(chainOrig, chainDynamic, delta);
+    }
+
+    // Set the xform matrix of the dynamic chain bones according to the computed render pos
+    private void setChainFromRenderPos(MowzieGeoBone[] chainOrig, MowzieGeoBone[] chainDynamic, float delta) {
         for (int i = chainDynamic.length - 1; i >= 0; i--) {
             if (chainDynamic[i] == null) return;
 
@@ -143,11 +150,13 @@ public class GeckoDynamicChain {
 
             Matrix4f xformOverride = new Matrix4f();
 
+            // Translation
             Vec3 renderPosInterp = prevRenderPos[i].add(renderPos[i].subtract(prevRenderPos[i]).scale(delta));
 //            Vec3 renderPos = new Vec3(0, 0 ,0);
 //            Vec3 renderPosInterp = new Vec3(pOrig[i].x, pOrig[i].y, pOrig[i].z);
             xformOverride = xformOverride.translate((float) renderPosInterp.x, (float) renderPosInterp.y, (float) renderPosInterp.z);
 
+            // Rotation - based on translations
             if (i < chainOrig.length - 1) {
                 Quaternionf q;
                 Vector3d p1 = new Vector3d(renderPosInterp.x, renderPosInterp.y, renderPosInterp.z);
@@ -164,7 +173,7 @@ public class GeckoDynamicChain {
                     double w = Math.sqrt(desiredDir.lengthSquared() * startingDir.lengthSquared()) + dot;
                     q = new Quaternionf(cross.x, cross.y, cross.z, w).normalize();
                 }
-//                xformOverride.rotate(q);
+                xformOverride.rotate(q);
             }
 
             chainDynamic[i].setWorldSpaceMatrix(xformOverride);
