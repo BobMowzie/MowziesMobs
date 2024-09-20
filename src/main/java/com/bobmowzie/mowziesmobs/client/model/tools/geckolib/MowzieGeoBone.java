@@ -19,6 +19,8 @@ public class MowzieGeoBone extends GeoBone {
     public boolean inheritTranslation = true;
     protected boolean forceMatrixTransform = false;
 
+    private boolean isDynamicJoint = false;
+
     public MowzieGeoBone(@Nullable GeoBone parent, String name, Boolean mirror, @Nullable Double inflate, @Nullable Boolean dontRender, @Nullable Boolean reset) {
         super(parent, name, mirror, inflate, dontRender, reset);
         rotationOverride = null;
@@ -203,5 +205,13 @@ public class MowzieGeoBone extends GeoBone {
         setPosX(vec.x() * 16);
         setPosY(vec.y() * 16);
         setPosZ(vec.z() * 16);
+    }
+
+    public void setDynamicJoint(boolean dynamicJoint) {
+        isDynamicJoint = dynamicJoint;
+    }
+
+    public boolean isDynamicJoint() {
+        return isDynamicJoint;
     }
 }

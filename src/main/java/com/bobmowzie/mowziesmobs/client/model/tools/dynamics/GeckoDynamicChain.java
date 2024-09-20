@@ -147,6 +147,7 @@ public class GeckoDynamicChain {
             chainDynamic[i].setForceMatrixTransform(true);
             chainDynamic[i].setHidden(false);
             chainOrig[i].setHidden(true);
+            chainOrig[i].setDynamicJoint(true);
 
             Matrix4f xformOverride = new Matrix4f();
 

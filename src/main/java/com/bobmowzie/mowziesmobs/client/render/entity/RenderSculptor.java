@@ -59,7 +59,6 @@ public class RenderSculptor extends MowzieGeoEntityRenderer<EntitySculptor> {
         if (model instanceof ModelSculptor modelSculptor && modelSculptor.beardOriginal != null) {
             for (int i = 0; i < modelSculptor.beardOriginal.length; i++) {
                 modelSculptor.beardOriginal[i].setHidden(animatable.dc != null);
-                modelSculptor.beardOriginal[i].setChildrenHidden(false);
                 modelSculptor.beardOriginal[i].setTrackingMatrices(true);
             }
         }

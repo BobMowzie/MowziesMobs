@@ -118,4 +118,13 @@ public abstract class MowzieGeoEntityRenderer<T extends LivingEntity & GeoEntity
 
         poseStack.popPose();
     }
+
+    @Override
+    public void renderChildBones(PoseStack poseStack, T animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        for (GeoBone childBone : bone.getChildBones()) {
+            if (!bone.isHidingChildren() || (childBone instanceof MowzieGeoBone mowzieGeoBone && mowzieGeoBone.isDynamicJoint())) {
+                renderRecursively(poseStack, animatable, childBone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+            }
+        }
+    }
 }
