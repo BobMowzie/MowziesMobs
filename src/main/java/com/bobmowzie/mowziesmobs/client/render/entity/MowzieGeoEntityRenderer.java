@@ -1,11 +1,15 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
+import com.bobmowzie.mowziesmobs.client.model.entity.ModelSculptor;
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
+import com.bobmowzie.mowziesmobs.client.model.tools.dynamics.GeckoDynamicChain;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoModel;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieGeckoEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -18,12 +22,13 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.util.RenderUtils;
 
-public abstract class MowzieGeoEntityRenderer<T extends LivingEntity & GeoEntity> extends GeoEntityRenderer<T> {
+public abstract class MowzieGeoEntityRenderer<T extends MowzieGeckoEntity> extends GeoEntityRenderer<T> {
 
     protected MowzieGeoEntityRenderer(EntityRendererProvider.Context renderManager, GeoModel<T> modelProvider) {
         super(renderManager, modelProvider);
@@ -41,6 +46,34 @@ public abstract class MowzieGeoEntityRenderer<T extends LivingEntity & GeoEntity
     @Override
     protected float getDeathMaxRotation(T animatable) {
         return 0;
+    }
+
+    @Override
+    public void actuallyRender(PoseStack poseStack, T animatable, BakedGeoModel model, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        for (GeckoDynamicChain chain : animatable.dynamicChains) {
+            if (chain.chainOrig != null) {
+                for (int i = 0; i < chain.chainOrig.length; i++) {
+                    chain.chainOrig[i].setHidden(true);
+//                chain.chainOrig[i].setHidden(false);
+                    chain.chainOrig[i].setTrackingMatrices(true);
+                }
+            }
+        }
+        super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+        for (GeckoDynamicChain chain : animatable.dynamicChains) {
+            if (!isReRender) {
+                chain.setChain();
+                chain.updateChain(Minecraft.getInstance().getFrameTime(), 0.1f, 0.1f, 0.5f, 0.02f, 10, true);
+            }
+            poseStack.pushPose();
+            if (chain.chainDynamic != null) {
+                for (GeoBone group : chain.chainDynamic) {
+                    renderRecursively(poseStack, animatable, group, renderType, bufferSource, buffer, isReRender, partialTick, packedLight,
+                            packedOverlay, red, green, blue, alpha);
+                }
+            }
+            poseStack.popPose();
+        }
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.dynamics.GeckoDynamicChain;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
@@ -29,6 +30,8 @@ import java.util.Queue;
 public abstract class MowzieGeckoEntity extends MowzieEntity implements GeoEntity {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     protected MowzieAnimationController<MowzieGeckoEntity> controller = new MowzieAnimationController<>(this, "controller", 5, this::predicate, 0);
+
+    public GeckoDynamicChain[] dynamicChains;
 
     public MowzieGeckoEntity(EntityType<? extends MowzieEntity> type, Level world) {
         super(type, world);

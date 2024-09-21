@@ -1,11 +1,17 @@
 package com.bobmowzie.mowziesmobs.client.model.tools.dynamics;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import org.joml.*;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.cache.object.GeoBone;
 
 import java.beans.FeatureDescriptor;
 import java.lang.Math;
@@ -20,6 +26,7 @@ public class GeckoDynamicChain {
     private Vec3[] a;
     private float[] m;
     private float[] d;
+    private Vec3[] startingDirections;
     private final Entity entity;
 
     public Vec3[] renderPos;
@@ -32,6 +39,9 @@ public class GeckoDynamicChain {
 
     private boolean isSimulating;
 
+    public MowzieGeoBone[] chainOrig;
+    public MowzieGeoBone[] chainDynamic;
+
     public GeckoDynamicChain(Entity entity) {
         this.entity = entity;
         p = new Vec3[0];
@@ -40,6 +50,7 @@ public class GeckoDynamicChain {
         a = new Vec3[0];
         m = new float[0];
         d = new float[0];
+        startingDirections = new Vec3[0];
         pOrig = new Vec3[0];
         renderPos = new Vec3[0];
         prevRenderPos = new Vec3[0];
@@ -89,7 +100,20 @@ public class GeckoDynamicChain {
         }
     }
 
+    public void setChainArrays(MowzieGeoBone[] chainOrig, MowzieGeoBone[] chainDynamic) {
+        this.chainOrig = chainOrig;
+        this.chainDynamic = chainDynamic;
+    }
+
     public void setChain(MowzieGeoBone[] chainOrig, MowzieGeoBone[] chainDynamic) {
+        setChainArrays(chainOrig, chainDynamic);
+        setChain();
+    }
+
+    public void setChain() {
+        if (chainOrig == null || chainDynamic == null) {
+            return;
+        }
         if (p.length != chainOrig.length || Double.isNaN(p[0].x)) {
             p = new Vec3[chainOrig.length];
             p0 = new Vec3[chainOrig.length];
@@ -97,6 +121,7 @@ public class GeckoDynamicChain {
             a = new Vec3[chainOrig.length];
             m = new float[chainOrig.length];
             d = new float[chainOrig.length];
+            startingDirections = new Vec3[chainOrig.length];
             pOrig = new Vec3[chainOrig.length];
             renderPos = new Vec3[chainOrig.length];
             prevRenderPos = new Vec3[chainOrig.length];
@@ -112,6 +137,10 @@ public class GeckoDynamicChain {
                 m[i] = 1;//0.5f + 0.5f / (i + 1);
                 if (i > 0) {
                     d[i] = (float) pOrig[i].distanceTo(pOrig[i - 1]);
+                    Vec3 p1 = new Vec3(pOrig[i - 1].x, pOrig[i - 1].y, pOrig[i - 1].z);
+                    Vec3 p2 = new Vec3(pOrig[i].x, pOrig[i].y, pOrig[i].z);
+                    Vec3 startingDir = p2.subtract(p1).normalize();
+                    startingDirections[i - 1] = startingDir;
                 } else {
                     d[i] = 0f;
                 }
@@ -125,8 +154,8 @@ public class GeckoDynamicChain {
         }
     }
 
-    public void updateChain(float delta, MowzieGeoBone[] chainOrig, MowzieGeoBone[] chainDynamic, float gravityAmount, float stiffness, float stiffnessFalloff, float damping, int numUpdates, boolean useFloor) {
-        if (p.length != chainOrig.length || Double.isNaN(p[0].x)) {
+    public void updateChain(float delta, float gravityAmount, float stiffness, float stiffnessFalloff, float damping, int numUpdates, boolean useFloor) {
+        if (chainOrig == null || chainDynamic == null || p.length != chainOrig.length || Double.isNaN(p[0].x)) {
             return;
         }
 
@@ -141,6 +170,10 @@ public class GeckoDynamicChain {
             pOrig[i] = new Vec3(p.x, p.y, p.z);
             if (i > 0) {
                 d[i] = (float) pOrig[i].distanceTo(pOrig[i - 1]);
+//                Vec3 p1 = new Vec3(pOrig[i - 1].x, pOrig[i - 1].y, pOrig[i - 1].z);
+//                Vec3 p2 = new Vec3(pOrig[i].x, pOrig[i].y, pOrig[i].z);
+//                Vec3 startingDir = p2.subtract(p1).normalize();
+//                startingDirections[i - 1] = startingDir;
             } else {
                 d[i] = 0f;
             }
@@ -183,7 +216,7 @@ public class GeckoDynamicChain {
                 Vector3d p1 = new Vector3d(p[i].x, p[i].y, p[i].z);
                 Vector3d p2 = new Vector3d(p[i + 1].x, p[i + 1].y, p[i + 1].z);
                 Vector3d desiredDir = p2.sub(p1, new Vector3d()).normalize();
-                Vector3d startingDir = new Vector3d(0, -1, 0);
+                Vector3d startingDir = new Vector3d(startingDirections[i].x, startingDirections[i].y, startingDirections[i].z);//new Vector3d(0, -1, 0);
                 double dot = desiredDir.dot(startingDir);
                 if (dot > 0.9999999) {
                     q = new Quaternionf();

@@ -1,9 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.entity.sculptor;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.tools.dynamics.DynamicChain;
 import com.bobmowzie.mowziesmobs.client.model.tools.dynamics.GeckoDynamicChain;
-import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
@@ -126,7 +124,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     public ItemStack heldStaff;
 
-    public GeckoDynamicChain dc;
+    public GeckoDynamicChain beardChain;
 
     public EntitySculptor(EntityType<? extends MowzieEntity> type, Level world) {
         super(type, world);
@@ -137,7 +135,10 @@ public class EntitySculptor extends MowzieGeckoEntity {
         heldStaff = new ItemStack(ItemHandler.SCULPTOR_STAFF.get());
 
         if (world.isClientSide) {
-            dc = new GeckoDynamicChain(this);
+            beardChain = new GeckoDynamicChain(this);
+            dynamicChains = new GeckoDynamicChain[] {
+                    beardChain
+            };
         }
     }
 
@@ -354,7 +355,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
         }
 
         if (level().isClientSide()) {
-            dc.setSimulating(pillar == null || pillar.isRemoved() || !getPillar().isFalling() && !getPillar().isRising());
+            beardChain.setSimulating(pillar == null || pillar.isRemoved() || !getPillar().isFalling() && !getPillar().isRising());
         }
 
 //        if (getActiveAbility() == null && tickCount % 60 == 0) {

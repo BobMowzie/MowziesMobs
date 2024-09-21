@@ -6,7 +6,6 @@ import com.bobmowzie.mowziesmobs.client.model.tools.dynamics.GeckoDynamicChain;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoModel;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
@@ -90,6 +89,7 @@ public class ModelSculptor extends MowzieGeoModel<EntitySculptor> {
             beardOriginal = new MowzieGeoBone[]{getMowzieBone("beard3"), getMowzieBone("beard4"), getMowzieBone("beard5Rot"), getMowzieBone("beard6")};
             beardDynamic = new MowzieGeoBone[beardOriginal.length];
         }
+        entity.beardChain.setChainArrays(beardOriginal, beardDynamic);
 
 //        getMowzieBone("beard3").inheritRotation = false;
 //        getMowzieBone("beard3").inheritTranslation = false;
