@@ -26,6 +26,9 @@ public class ModelSculptor extends MowzieGeoModel<EntitySculptor> {
 
     public MowzieGeoBone[] beardOriginal;
     public MowzieGeoBone[] beardDynamic;
+    
+    public MowzieGeoBone[] armOriginal;
+    public MowzieGeoBone[] armDynamic;
 
     public ModelSculptor() {
         super();
@@ -89,10 +92,7 @@ public class ModelSculptor extends MowzieGeoModel<EntitySculptor> {
             beardOriginal = new MowzieGeoBone[]{getMowzieBone("beard3"), getMowzieBone("beard4"), getMowzieBone("beard5Rot"), getMowzieBone("beard6")};
             beardDynamic = new MowzieGeoBone[beardOriginal.length];
         }
-        entity.beardChain.setChainArrays(beardOriginal, beardDynamic);
-
-//        getMowzieBone("beard3").inheritRotation = false;
-//        getMowzieBone("beard3").inheritTranslation = false;
+        if (entity.beardChain != null) entity.beardChain.setChainArrays(beardOriginal, beardDynamic);
     }
 
     private void beadsCorrections(EntitySculptor entity) {

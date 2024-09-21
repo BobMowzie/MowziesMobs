@@ -103,6 +103,9 @@ public class GeckoDynamicChain {
     public void setChainArrays(MowzieGeoBone[] chainOrig, MowzieGeoBone[] chainDynamic) {
         this.chainOrig = chainOrig;
         this.chainDynamic = chainDynamic;
+        for (MowzieGeoBone bone : chainOrig) {
+            bone.setTrackingMatrices(true);
+        }
     }
 
     public void setChain(MowzieGeoBone[] chainOrig, MowzieGeoBone[] chainDynamic) {

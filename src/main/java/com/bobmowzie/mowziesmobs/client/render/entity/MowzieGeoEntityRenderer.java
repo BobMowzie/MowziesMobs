@@ -50,29 +50,36 @@ public abstract class MowzieGeoEntityRenderer<T extends MowzieGeckoEntity> exten
 
     @Override
     public void actuallyRender(PoseStack poseStack, T animatable, BakedGeoModel model, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        for (GeckoDynamicChain chain : animatable.dynamicChains) {
-            if (chain.chainOrig != null) {
-                for (int i = 0; i < chain.chainOrig.length; i++) {
-                    chain.chainOrig[i].setHidden(true);
+        if (animatable.dynamicChains != null) {
+            for (GeckoDynamicChain chain : animatable.dynamicChains) {
+                if (chain.chainOrig != null) {
+                    for (int i = 0; i < chain.chainOrig.length; i++) {
+                        chain.chainOrig[i].setHidden(true);
 //                chain.chainOrig[i].setHidden(false);
-                    chain.chainOrig[i].setTrackingMatrices(true);
+                    }
                 }
             }
         }
         super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
-        for (GeckoDynamicChain chain : animatable.dynamicChains) {
-            if (!isReRender) {
-                chain.setChain();
-                chain.updateChain(Minecraft.getInstance().getFrameTime(), 0.1f, 0.1f, 0.5f, 0.02f, 10, true);
-            }
-            poseStack.pushPose();
-            if (chain.chainDynamic != null) {
-                for (GeoBone group : chain.chainDynamic) {
-                    renderRecursively(poseStack, animatable, group, renderType, bufferSource, buffer, isReRender, partialTick, packedLight,
-                            packedOverlay, red, green, blue, alpha);
+        if (animatable.dynamicChains != null) {
+            for (GeckoDynamicChain chain : animatable.dynamicChains) {
+                if (!isReRender) {
+                    chain.setChain();
+                    chain.updateChain(Minecraft.getInstance().getFrameTime(), 0.1f, 0.1f, 0.5f, 0.02f, 10, true);
+                }
+                poseStack.pushPose();
+                if (chain.chainDynamic != null) {
+                    for (GeoBone group : chain.chainDynamic) {
+                        renderRecursively(poseStack, animatable, group, renderType, bufferSource, buffer, isReRender, partialTick, packedLight,
+                                packedOverlay, red, green, blue, alpha);
+                    }
+                }
+                poseStack.popPose();
+
+                for (int i = 0; i < chain.chainOrig.length; i++) {
+                    chain.chainOrig[i].setHidden(false);
                 }
             }
-            poseStack.popPose();
         }
     }
 
