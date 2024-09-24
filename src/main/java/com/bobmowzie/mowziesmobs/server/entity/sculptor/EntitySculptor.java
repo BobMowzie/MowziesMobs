@@ -27,6 +27,7 @@ import com.bobmowzie.mowziesmobs.server.inventory.ContainerSculptorTrade;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemSculptorStaff;
 import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -38,6 +39,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.InteractionHand;
@@ -254,6 +256,11 @@ public class EntitySculptor extends MowzieGeckoEntity {
 //        }
 //        event.getController().setAnimation(RawAnimation.begin().thenLoop("dynamicsTest"));
 //        event.getController().setAnimationSpeed(1.0f);
+    }
+
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return MMSounds.ENTITY_SCULPTOR_GREETING.get();
     }
 
     @Override

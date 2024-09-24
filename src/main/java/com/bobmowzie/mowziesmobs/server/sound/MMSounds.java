@@ -203,6 +203,11 @@ public final class MMSounds {
             ENTITY_NAGA_GROWL_3::get
     );
 
+    public static final RegistryObject<SoundEvent> ENTITY_SCULPTOR_AH = create("sculptor.ah");
+    public static final RegistryObject<SoundEvent> ENTITY_SCULPTOR_GREETING = create("sculptor.greeting");
+    public static final RegistryObject<SoundEvent> ENTITY_SCULPTOR_HM = create("sculptor.hm");
+    public static final RegistryObject<SoundEvent> ENTITY_SCULPTOR_LAUGH = create("sculptor.laugh");
+
     public static final RegistryObject<SoundEvent> EFFECT_GEOMANCY_SMALL_CRASH = create("geomancy.smallcrash");
     public static final RegistryObject<SoundEvent> EFFECT_GEOMANCY_MAGIC_SMALL = create("geomancy.hitsmall");
     public static final RegistryObject<SoundEvent> EFFECT_GEOMANCY_MAGIC_BIG = create("geomancy.hitbig");

@@ -623,6 +623,39 @@
 		"sounds": [ "minecraft:item/shovel/flatten1" ],
 		"subtitle": "subtitles.mowziesmobs.block.rakesand"
 	},
+	"sculptor.ah": {
+		"sounds": [
+			"mowziesmobs:entity/sculptor/ah1",
+			"mowziesmobs:entity/sculptor/ah2"
+		],
+		"subtitle": "subtitles.mowziesmobs.sculptor.ah"
+	},
+	"sculptor.greeting": {
+		"sounds": [
+			"mowziesmobs:entity/sculptor/greeting1",
+			"mowziesmobs:entity/sculptor/greeting2",
+			"mowziesmobs:entity/sculptor/greeting3",
+			"mowziesmobs:entity/sculptor/greeting4"
+		],
+		"subtitle": "subtitles.mowziesmobs.sculptor.greeting"
+	},
+	"sculptor.hm": {
+		"sounds": [
+			"mowziesmobs:entity/sculptor/hm1",
+			"mowziesmobs:entity/sculptor/hm2",
+			"mowziesmobs:entity/sculptor/hm3",
+			"mowziesmobs:entity/sculptor/hm4",
+			"mowziesmobs:entity/sculptor/hm5"
+		],
+		"subtitle": "subtitles.mowziesmobs.sculptor.hm"
+	},
+	"sculptor.laugh": {
+		"sounds": [
+			"mowziesmobs:entity/sculptor/laugh1",
+			"mowziesmobs:entity/sculptor/laugh2"
+		],
+		"subtitle": "subtitles.mowziesmobs.sculptor.laugh"
+	},
 	"misc.groundhit1": {
 		"sounds": [ "mowziesmobs:entity/misc/ground_hit1" ],
 		"subtitle": "subtitles.mowziesmobs.ground_hit"
