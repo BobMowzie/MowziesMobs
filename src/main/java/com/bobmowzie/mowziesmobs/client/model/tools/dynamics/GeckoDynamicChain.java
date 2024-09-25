@@ -117,7 +117,7 @@ public class GeckoDynamicChain {
         if (chainOrig == null || chainDynamic == null) {
             return;
         }
-        if (p.length != chainOrig.length || Double.isNaN(p[0].x)) {
+        if (p.length != chainOrig.length || Double.isNaN(p[0].x) || chainDynamic[0] == null) {
             p = new Vec3[chainOrig.length];
             p0 = new Vec3[chainOrig.length];
             v = new Vec3[chainOrig.length];
@@ -219,7 +219,8 @@ public class GeckoDynamicChain {
                 Vector3d p1 = new Vector3d(p[i].x, p[i].y, p[i].z);
                 Vector3d p2 = new Vector3d(p[i + 1].x, p[i + 1].y, p[i + 1].z);
                 Vector3d desiredDir = p2.sub(p1, new Vector3d()).normalize();
-                Vector3d startingDir = new Vector3d(startingDirections[i].x, startingDirections[i].y, startingDirections[i].z);//new Vector3d(0, -1, 0);
+//                Vector3d startingDir = new Vector3d(startingDirections[i].x, startingDirections[i].y, startingDirections[i].z);
+                Vector3d startingDir = new Vector3d(0, -1, 0);
                 double dot = desiredDir.dot(startingDir);
                 if (dot > 0.9999999) {
                     q = new Quaternionf();

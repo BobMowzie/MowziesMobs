@@ -55,7 +55,7 @@ public abstract class MowzieGeoEntityRenderer<T extends MowzieGeckoEntity> exten
                 if (chain.chainOrig != null) {
                     for (int i = 0; i < chain.chainOrig.length; i++) {
                         chain.chainOrig[i].setHidden(true);
-//                chain.chainOrig[i].setHidden(false);
+//                        chain.chainOrig[i].setHidden(false);
                     }
                 }
             }

@@ -23,6 +23,7 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderPro
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderSculptor;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityGeomancyBase;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityPillar;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerSculptorTrade;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemSculptorStaff;
@@ -96,6 +97,8 @@ public class EntitySculptor extends MowzieGeckoEntity {
     public static final AbilityType<EntitySculptor, GuardAbility> GUARD_ABILITY = new AbilityType<>("guard", GuardAbility::new);
     public static final AbilityType<EntitySculptor, DisappearAbility> DISAPPEAR_ABILITY = new AbilityType<>("disappear", DisappearAbility::new);
 
+    public static final AbilityType<EntitySculptor, SimpleAnimationAbility<EntitySculptor>> TALK_ABILITY = new AbilityType<>("talk", (type, entity) -> new SimpleAnimationAbility<>(type, entity,RawAnimation.begin().thenPlay("talk"), 27, true));
+
     private static final EntityDataAccessor<ItemStack> DESIRES = SynchedEntityData.defineId(EntitySculptor.class, EntityDataSerializers.ITEM_STACK);
     private static final EntityDataAccessor<Boolean> IS_TRADING = SynchedEntityData.defineId(EntitySculptor.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> IS_FIGHTING = SynchedEntityData.defineId(EntitySculptor.class, EntityDataSerializers.BOOLEAN);
@@ -159,7 +162,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F, 0.06f));
+        goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F, 0.1f));
         goalSelector.addGoal(2, new UseAbilityAI<>(this, START_TEST, false));
         this.goalSelector.addGoal(1, new UseAbilityAI<>(this, DIE_ABILITY));
         this.goalSelector.addGoal(2, new UseAbilityAI<>(this, HURT_ABILITY, false));
@@ -260,7 +263,26 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return MMSounds.ENTITY_SCULPTOR_GREETING.get();
+        if (!isFighting()) {
+            if (isTestObstructed) {
+                return random.nextFloat() > 0.5 ? MMSounds.ENTITY_SCULPTOR_HM.get() : null;
+            }
+            else if (getLookControl().isLookingAtTarget()) {
+                sendAbilityMessage(TALK_ABILITY);
+                return random.nextFloat() > 0.2 ? MMSounds.ENTITY_SCULPTOR_GREETING.get() : MMSounds.ENTITY_SCULPTOR_AH.get();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void playAmbientSound() {
+        super.playAmbientSound();
+    }
+
+    @Override
+    public float getVoicePitch() {
+        return 1;
     }
 
     @Override
@@ -612,7 +634,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     @Override
     public AbilityType<?, ?>[] getAbilities() {
-        return new AbilityType[] {START_TEST, FAIL_TEST, PASS_TEST, HURT_ABILITY, DIE_ABILITY, ATTACK_ABILITY, GUARD_ABILITY, DISAPPEAR_ABILITY};
+        return new AbilityType[] {START_TEST, FAIL_TEST, PASS_TEST, HURT_ABILITY, DIE_ABILITY, ATTACK_ABILITY, GUARD_ABILITY, DISAPPEAR_ABILITY, TALK_ABILITY};
     }
 
     @Override
