@@ -98,6 +98,15 @@ public class EntitySculptor extends MowzieGeckoEntity {
     public static final AbilityType<EntitySculptor, DisappearAbility> DISAPPEAR_ABILITY = new AbilityType<>("disappear", DisappearAbility::new);
 
     public static final AbilityType<EntitySculptor, SimpleAnimationAbility<EntitySculptor>> TALK_ABILITY = new AbilityType<>("talk", (type, entity) -> new SimpleAnimationAbility<>(type, entity,RawAnimation.begin().thenPlay("talk"), 27, true));
+    public static final AbilityType<EntitySculptor, SimpleAnimationAbility<EntitySculptor>> IDLE_ABILITY = new AbilityType<>("idle", (type, entity) -> new SimpleAnimationAbility<>(type, entity,RawAnimation.begin().thenPlay("idle_variation_1"), 88, true) {
+        @Override
+        public void tickUsing() {
+            super.tickUsing();
+            if (getTicksInUse() == 10) {
+                getUser().playSound(MMSounds.ENTITY_SCULPTOR_HM.get(), 1, 1);
+            }
+        }
+    });
 
     private static final EntityDataAccessor<ItemStack> DESIRES = SynchedEntityData.defineId(EntitySculptor.class, EntityDataSerializers.ITEM_STACK);
     private static final EntityDataAccessor<Boolean> IS_TRADING = SynchedEntityData.defineId(EntitySculptor.class, EntityDataSerializers.BOOLEAN);
@@ -263,13 +272,20 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     @Override
     protected SoundEvent getAmbientSound() {
+        if (getActiveAbility() != null) return null;
         if (!isFighting()) {
             if (isTestObstructed) {
                 return random.nextFloat() > 0.5 ? MMSounds.ENTITY_SCULPTOR_HM.get() : null;
             }
-            else if (getLookControl().isLookingAtTarget()) {
-                sendAbilityMessage(TALK_ABILITY);
-                return random.nextFloat() > 0.2 ? MMSounds.ENTITY_SCULPTOR_GREETING.get() : MMSounds.ENTITY_SCULPTOR_AH.get();
+            else {
+                if (random.nextFloat() < 0.1) {
+                    sendAbilityMessage(IDLE_ABILITY);
+                    return null;
+                }
+                else if (getLookControl().isLookingAtTarget()) {
+                    sendAbilityMessage(TALK_ABILITY);
+                    return random.nextFloat() > 0.2 ? MMSounds.ENTITY_SCULPTOR_GREETING.get() : MMSounds.ENTITY_SCULPTOR_AH.get();
+                }
             }
         }
         return null;
@@ -634,7 +650,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     @Override
     public AbilityType<?, ?>[] getAbilities() {
-        return new AbilityType[] {START_TEST, FAIL_TEST, PASS_TEST, HURT_ABILITY, DIE_ABILITY, ATTACK_ABILITY, GUARD_ABILITY, DISAPPEAR_ABILITY, TALK_ABILITY};
+        return new AbilityType[] {START_TEST, FAIL_TEST, PASS_TEST, HURT_ABILITY, DIE_ABILITY, ATTACK_ABILITY, GUARD_ABILITY, DISAPPEAR_ABILITY, TALK_ABILITY, IDLE_ABILITY};
     }
 
     @Override
