@@ -656,6 +656,21 @@
 		],
 		"subtitle": "subtitles.mowziesmobs.sculptor.laugh"
 	},
+	"sculptor.disappoint": {
+		"sounds": [
+			"mowziesmobs:entity/sculptor/disappoint1",
+			"mowziesmobs:entity/sculptor/disappoint2"
+		],
+		"subtitle": "subtitles.mowziesmobs.sculptor.disappoint"
+	},
+	"sculptor.congrats": {
+		"sounds": [ "mowziesmobs:entity/sculptor/congrats" ],
+		"subtitle": "subtitles.mowziesmobs.sculptor.congrats"
+	},
+	"sculptor.death": {
+		"sounds": [ "mowziesmobs:entity/sculptor/death" ],
+		"subtitle": "subtitles.mowziesmobs.sculptor.death"
+	},
 	"misc.groundhit1": {
 		"sounds": [ "mowziesmobs:entity/misc/ground_hit1" ],
 		"subtitle": "subtitles.mowziesmobs.ground_hit"
