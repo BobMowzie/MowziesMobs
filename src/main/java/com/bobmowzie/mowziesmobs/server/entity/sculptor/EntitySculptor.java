@@ -184,7 +184,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F, 0.1f) {
+        goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F, 0.06f) {
             public void start() {
                 this.lookTime = this.adjustedTickDelay(80 + this.mob.getRandom().nextInt(80));
             }
@@ -299,8 +299,10 @@ public class EntitySculptor extends MowzieGeckoEntity {
                     sendAbilityMessage(IDLE_ABILITY);
                 }
                 else if (getLookControl().isLookingAtTarget()) {
-                    if (random.nextFloat() > 0.5 && !isTesting()) {
-                        sendAbilityMessage(TALK_ABILITY);
+                    if (random.nextFloat() > 0.4) {
+                        if (!isTesting()) {
+                            sendAbilityMessage(TALK_ABILITY);
+                        }
                     }
                     else {
                         sendAbilityMessage(LAUGH_ABILITY);
@@ -911,7 +913,6 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
         @Override
         public void start() {
-            getUser().playSound(MMSounds.ENTITY_SCULPTOR_CONGRATS.get());
             getUser().setInvulnerable(true);
             if (getUser().testingPlayer != null) {
                 List<EntityBoulderSculptor> platforms = getUser().level().getEntitiesOfClass(EntityBoulderSculptor.class, getUser().testingPlayer.getBoundingBox().expandTowards(0, -6, 0));
@@ -926,6 +927,9 @@ public class EntitySculptor extends MowzieGeckoEntity {
         @Override
         public void tickUsing() {
             super.tickUsing();
+            if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE && getTicksInSection() == 15) {
+                getUser().playSound(MMSounds.ENTITY_SCULPTOR_CONGRATS.get());
+            }
             if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.RECOVERY && getTicksInSection() == 134 && !getUser().level().isClientSide()) {
                 Vec3 polarOffset = new Vec3(1.2, 0, 0).yRot((float)Math.toRadians(-getUser().yBodyRot - 90));
                 Vec3 itemPos = getUser().position().add(0, 1.2, 0).add(polarOffset);

@@ -111,6 +111,24 @@
   "item.mowziesmobs.naga_fang_dagger.text.0": "Poisons targets",
   "item.mowziesmobs.naga_fang_dagger.text.1": "Deals double damage from behind",
 
+  "item.mowziesmobs.sculptor_staff": "Earth Staff",
+  "item.mowziesmobs.sculptor_staff.text.0": "Spawns three small rocks that fire as projectiles after a delay.",
+
+  "item.mowziesmobs.sand_rake": "Sand Rake",
+  "item.mowziesmobs.sand_rake.text.0": "Use on sand to create raked patterns.",
+
+  "item.mowziesmobs.geomancer_beads": "Geomancer Beads",
+  "item.mowziesmobs.geomancer_beads.text.0": "+3 attack when punching",
+
+  "item.mowziesmobs.geomancer_robe": "Geomancer Robe",
+  "item.mowziesmobs.geomancer_robe.text.0": "Chance to spawn a geomancy boulder nearby when you deal or take damage",
+
+  "item.mowziesmobs.geomancer_belt": "Geomancer Belt",
+  "item.mowziesmobs.geomancer_belt.text.0": "+4 armor and +1 knockback resist while you are inflicted with Slowness",
+
+  "item.mowziesmobs.geomancer_sandals": "Geomancer Sandals",
+  "item.mowziesmobs.geomancer_sandals.text.0": "Gain increased movement speed for 3 seconds after falling more than 4 blocks",
+
   "item.mowziesmobs.music_disc_petiole": "Music Disc",
   "item.mowziesmobs.music_disc_petiole.desc": "LudoCrypt - Petiole",
 
@@ -124,6 +142,7 @@
   "item.mowziesmobs.grottol_spawn_egg": "Grottol Spawn Egg",
   "item.mowziesmobs.lantern_spawn_egg": "Lantern Spawn Egg",
   "item.mowziesmobs.naga_spawn_egg": "Naga Spawn Egg",
+  "item.mowziesmobs.sculptor_spawn_egg": "Sculptor Spawn Egg",
 
   "_comment": "Blocks",
   "block.mowziesmobs.painted_acacia": "Painted Acacia Wood",
@@ -131,6 +150,9 @@
   "block.mowziesmobs.thatch_block": "Thatch",
   "block.mowziesmobs.grottol": "Grottol",
   "block.mowziesmobs.clawed_log": "Clawed Log",
+  "block.mowziesmobs.gong": "Gong",
+  "block.mowziesmobs.raked_sand": "Raked Sand",
+  "block.mowziesmobs.red_raked_sand": "Red Raked Sand",
 
   "_comment": "Potions",
   "effect.mowziesmobs.suns_blessing": "Sun's Blessing",
@@ -388,6 +410,13 @@
   "subtitles.mowziesmobs.naga.grunt": "Naga grunts",
   "subtitles.mowziesmobs.naga.roar": "Naga roars",
   "subtitles.mowziesmobs.naga.swoop": "Naga swoops",
+  "subtitles.mowziesmobs.sculptor.ah": "Sculptor talks",
+  "subtitles.mowziesmobs.sculptor.greeting": "Sculptor talks",
+  "subtitles.mowziesmobs.sculptor.hm": "Sculptor ponders",
+  "subtitles.mowziesmobs.sculptor.laugh": "Sculptor laughs",
+  "subtitles.mowziesmobs.sculptor.disappoint": "Sculptor disapproves",
+  "subtitles.mowziesmobs.sculptor.congrats": "Sculptor cheers",
+  "subtitles.mowziesmobs.sculptor.death": "Sculptor dies",
   "subtitles.mowziesmobs.ground_hit": "Something hits the ground",
   "subtitles.mowziesmobs.clink": "Attack deflects",
   "subtitles.mowziesmobs.metal_impact": "Metal clangs",

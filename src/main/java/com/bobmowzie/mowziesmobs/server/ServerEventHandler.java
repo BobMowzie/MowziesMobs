@@ -341,7 +341,6 @@ public final class ServerEventHandler {
     public void onLivingFall(LivingFallEvent event) {
         if (event.getEntity().getItemBySlot(EquipmentSlot.FEET).is(ItemHandler.GEOMANCER_SANDALS.get())) {
             if (event.getDistance() > 4) {
-                System.out.println(event.getDistance());
                 EffectHandler.addOrCombineEffect(event.getEntity(), MobEffects.MOVEMENT_SPEED, 60, 0, false, false);
             }
         }
