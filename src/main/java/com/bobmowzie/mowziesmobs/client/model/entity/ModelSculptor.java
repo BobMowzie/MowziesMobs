@@ -124,6 +124,20 @@ public class ModelSculptor extends MowzieGeoModel<EntitySculptor> {
     }
 
     private void skirtCorrections(EntitySculptor entity) {
+        if (
+                entity.calfRPos == null ||
+                entity.calfLPos == null ||
+                entity.thighRPos == null ||
+                entity.thighLPos == null ||
+                entity.skirtEndRPos == null ||
+                entity.skirtEndLPos == null ||
+                entity.skirtLocFrontRPos == null ||
+                entity.skirtLocFrontLPos == null ||
+                entity.skirtLocBackRPos == null ||
+                entity.skirtLocBackLPos == null
+        ) {
+            return;
+        }
         MowzieGeoBone headJoint = this.getMowzieBone("headJoint");
         MowzieGeoBone thighR = this.getMowzieBone("thighRight");
         MowzieGeoBone thighJointR = this.getMowzieBone("thighJointRight");
@@ -151,13 +165,13 @@ public class ModelSculptor extends MowzieGeoModel<EntitySculptor> {
 
         headJoint.setHidden(false);
 
-        Vec3 thighToKneeR = Vec3(calfR.getModelPosition()).subtract(Vec3(thighR.getModelPosition())).normalize();
-        Vec3 thighToKneeL = Vec3(calfL.getModelPosition()).subtract(Vec3(thighL.getModelPosition())).normalize();
+        Vec3 thighToKneeR = Vec3(entity.calfRPos).subtract(Vec3(entity.thighRPos)).normalize();
+        Vec3 thighToKneeL = Vec3(entity.calfLPos).subtract(Vec3(entity.thighLPos)).normalize();
 
         skirtEndL.addPos(-0.2f, -1.5f, 0);
         skirtEndR.addPos( 0.2f, -1.5f, 0);
-        Vec3 thighToSkirtEndR = Vec3(skirtEndR.getModelPosition()).subtract(Vec3(thighR.getModelPosition())).normalize();
-        Vec3 thighToSkirtEndL = Vec3(skirtEndL.getModelPosition()).subtract(Vec3(thighL.getModelPosition())).normalize();
+        Vec3 thighToSkirtEndR = Vec3(entity.skirtEndRPos).subtract(Vec3(entity.thighRPos)).normalize();
+        Vec3 thighToSkirtEndL = Vec3(entity.skirtEndLPos).subtract(Vec3(entity.thighLPos)).normalize();
         float rightDot = (float) thighToKneeR.dot(new Vec3(0, -1, 0));
         rightDot = (float) Math.pow(Math.max(rightDot, 0), 3);
         float leftDot = (float) thighToKneeL.dot(new Vec3(0, -1, 0));
@@ -178,17 +192,17 @@ public class ModelSculptor extends MowzieGeoModel<EntitySculptor> {
         float angleAv = (float) Mth.atan2(average.y(), average.z());
         skirtBack.setRotX(skirtBack.getRotX() - angleAv + 3.48f);
         skirtFront.setRotX(skirtFront.getRotX() - Math.min(angleAv, -2) + 3.48f);
-        Vec3 skirtFrontDiff = Vec3(skirtLocFrontL.getModelPosition()).subtract(Vec3(skirtLocFrontR.getModelPosition()));
+        Vec3 skirtFrontDiff = Vec3(entity.skirtLocFrontLPos).subtract(Vec3(entity.skirtLocFrontRPos));
         skirtFront.setScaleX(Math.max((float) (0.3f + 0.15f * skirtFrontDiff.length()), 0.4f));
-        Vec3 skirtBackDiff = Vec3(skirtLocBackL.getModelPosition()).subtract(Vec3(skirtLocBackR.getModelPosition()));
+        Vec3 skirtBackDiff = Vec3(entity.skirtLocBackLPos).subtract(Vec3(entity.skirtLocBackRPos));
         skirtBack.setScaleX((float) (0.15f + 0.1f * skirtBackDiff.length()));
         float angleF = (float) Mth.atan2(skirtFrontDiff.normalize().z(), skirtFrontDiff.normalize().x());
         if (angleF < 0.001 || angleF > 3.141) angleF = 0;
         skirtFront.setRotY(angleF * 0.6f);
-        skirtFront.addPos(0.5f * (float) Vec3(skirtLocFrontR.getModelPosition()).add(skirtFrontDiff.scale(0.5)).x(), 0, 0);
+        skirtFront.addPos(0.5f * (float) Vec3(entity.skirtLocFrontRPos).add(skirtFrontDiff.scale(0.5)).x(), 0, 0);
         float angleB = (float) Mth.atan2(skirtBackDiff.normalize().z(), skirtBackDiff.normalize().x());
         skirtBack.setRotY(angleB * 0.5f);
-        skirtBack.addPos(0.5f * (float) Vec3(skirtLocBackR.getModelPosition()).add(skirtBackDiff.scale(0.5)).x(), 0, 0);
+        skirtBack.addPos(0.5f * (float) Vec3(entity.skirtLocBackRPos).add(skirtBackDiff.scale(0.5)).x(), 0, 0);
         float bothDots = (float) Math.pow(rightDot * leftDot, 1);
         float f = Math.min(1, bothDots * 2);
         skirtR.addRot(0, Mth.clamp(angleF, -0.5f, 0.5f) * (1 - f) - bothDots * 0.4f, 0);

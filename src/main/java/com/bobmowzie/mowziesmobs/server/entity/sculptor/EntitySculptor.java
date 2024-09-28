@@ -70,6 +70,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.scores.Team;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.joml.Vector3d;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.core.animation.*;
@@ -87,6 +88,19 @@ public class EntitySculptor extends MowzieGeckoEntity {
     private static final int HEAL_PAUSE = 75;
 
     public static float DEFENSE_HEALTH_THRESHOLD = 0.80f;
+
+    // Data for the model to use for rigging
+    public Vector3d calfRPos;
+    public Vector3d calfLPos;
+    public Vector3d thighRPos;
+    public Vector3d thighLPos;
+    public Vector3d skirtEndRPos;
+    public Vector3d skirtEndLPos;
+    public Vector3d skirtLocFrontRPos;
+    public Vector3d skirtLocFrontLPos;
+    public Vector3d skirtLocBackRPos;
+    public Vector3d skirtLocBackLPos;
+    public float disappearController = 0;
 
     public static final AbilityType<EntitySculptor, HurtAbility<EntitySculptor>> HURT_ABILITY = new AbilityType<>("sculptor_hurt", (type, entity) -> new HurtAbility<>(type, entity,RawAnimation.begin().thenPlay("hurt"), 16, 0));
     public static final AbilityType<EntitySculptor, SculptorDieAbility> DIE_ABILITY = new AbilityType<>("sculptor_die", SculptorDieAbility::new);

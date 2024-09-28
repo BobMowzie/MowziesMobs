@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.client.render.entity.layer;
 
-import com.bobmowzie.mowziesmobs.client.render.entity.RenderSculptor;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -24,7 +23,7 @@ public class ItemLayerSculptorStaff extends GeckoItemlayer<EntitySculptor> {
     @Override
     protected void renderStackForBone(PoseStack poseStack, GeoBone bone, ItemStack stack, EntitySculptor animatable, MultiBufferSource bufferSource, float partialTick, int packedLight, int packedOverlay) {
         poseStack.pushPose();
-        float disappearProgress = Math.min(((RenderSculptor)getRenderer()).disappearController * 2f, 1f);
+        float disappearProgress = Math.min(animatable.disappearController * 2f, 1f);
         poseStack.scale(1.0f - disappearProgress, 1.0f - disappearProgress, 1.0f - disappearProgress);
         super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight, packedOverlay);
         poseStack.popPose();

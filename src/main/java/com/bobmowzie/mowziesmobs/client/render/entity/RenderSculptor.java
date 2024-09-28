@@ -22,8 +22,6 @@ import java.util.Optional;
 public class RenderSculptor extends MowzieGeoEntityRenderer<EntitySculptor> {
     public final ResourceLocation staff_geo_location = new ResourceLocation(MowziesMobs.MODID, "geo/sculptor_staff.geo.json");
     public final ResourceLocation staff_tex_location = new ResourceLocation(MowziesMobs.MODID, "textures/item/sculptor_staff.png");
-    public int staffController = 0;
-    public float disappearController = 0;
 
     public RenderSculptor(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ModelSculptor());
@@ -45,28 +43,41 @@ public class RenderSculptor extends MowzieGeoEntityRenderer<EntitySculptor> {
     public void render(EntitySculptor entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
 
-        Optional<GeoBone> staffControllerBone = model.getBone("staffController");
-        staffControllerBone.ifPresent(geoBone -> staffController = (int) geoBone.getPosX());
-
         Optional<GeoBone> disappearControllerBone = model.getBone("disappearController");
-        disappearControllerBone.ifPresent(geoBone -> disappearController = geoBone.getPosX());
+        disappearControllerBone.ifPresent(geoBone -> entity.disappearController = geoBone.getPosX());
 
-        this.shadowRadius = 0.7f * (1.0f - disappearController);
-    }
+        Optional<GeoBone> calfRight = model.getBone("calfRight");
+        Optional<GeoBone> calfLeft = model.getBone("calfLeft");
+        Optional<GeoBone> thighRight = model.getBone("thighRight");
+        Optional<GeoBone> thighLeft = model.getBone("thighLeft");
+        Optional<GeoBone> skirtEndRight = model.getBone("skirtEndRight");
+        Optional<GeoBone> skirtEndLeft = model.getBone("skirtEndLeft");
+        Optional<GeoBone> skirtFrontLocRight = model.getBone("skirtFrontLocRight");
+        Optional<GeoBone> skirtFrontLocLeft = model.getBone("skirtFrontLocLeft");
+        Optional<GeoBone> skirtBackLocRight = model.getBone("skirtBackLocRight");
+        Optional<GeoBone> skirtBackLocLeft = model.getBone("skirtBackLocLeft");
+        calfRight.ifPresent(geoBone -> entity.calfRPos = geoBone.getModelPosition());
+        calfLeft.ifPresent(geoBone -> entity.calfLPos = geoBone.getModelPosition());
+        thighRight.ifPresent(geoBone -> entity.thighRPos = geoBone.getModelPosition());
+        thighLeft.ifPresent(geoBone -> entity.thighLPos = geoBone.getModelPosition());
+        skirtEndRight.ifPresent(geoBone -> entity.skirtEndRPos = geoBone.getModelPosition());
+        skirtEndLeft.ifPresent(geoBone -> entity.skirtEndLPos = geoBone.getModelPosition());
+        skirtFrontLocRight.ifPresent(geoBone -> entity.skirtLocFrontRPos = geoBone.getModelPosition());
+        skirtFrontLocLeft.ifPresent(geoBone -> entity.skirtLocFrontLPos = geoBone.getModelPosition());
+        skirtBackLocRight.ifPresent(geoBone -> entity.skirtLocBackRPos = geoBone.getModelPosition());
+        skirtBackLocLeft.ifPresent(geoBone -> entity.skirtLocBackLPos = geoBone.getModelPosition());
 
-    @Override
-    public void actuallyRender(PoseStack poseStack, EntitySculptor animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        super.actuallyRender(poseStack, animatable, bakedModel, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+        this.shadowRadius = 0.7f * (1.0f - entity.disappearController);
     }
 
     @Override
     public Color getRenderColor(EntitySculptor animatable, float partialTick, int packedLight) {
-        return Color.ofRGBA(1, 1, 1, 1.0f - disappearController);
+        return Color.ofRGBA(1, 1, 1, 1.0f - animatable.disappearController);
     }
 
     @Override
     public RenderType getRenderType(EntitySculptor animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
-        if (disappearController > 0) {
+        if (animatable.disappearController > 0) {
             return RenderType.entityTranslucent(texture);
         }
         else {
