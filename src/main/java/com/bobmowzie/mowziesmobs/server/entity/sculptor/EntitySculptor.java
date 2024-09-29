@@ -70,6 +70,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.scores.Team;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.joml.Matrix4f;
 import org.joml.Vector3d;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.GeoItem;
@@ -101,6 +102,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
     public Vector3d skirtLocBackRPos;
     public Vector3d skirtLocBackLPos;
     public float disappearController = 0;
+    public Matrix4f frontClothRot;
 
     public static final AbilityType<EntitySculptor, HurtAbility<EntitySculptor>> HURT_ABILITY = new AbilityType<>("sculptor_hurt", (type, entity) -> new HurtAbility<>(type, entity,RawAnimation.begin().thenPlay("hurt"), 16, 0));
     public static final AbilityType<EntitySculptor, SculptorDieAbility> DIE_ABILITY = new AbilityType<>("sculptor_die", SculptorDieAbility::new);

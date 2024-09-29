@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelSculptor;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.ItemLayerSculptorStaff;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoSunblockLayer;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
@@ -56,6 +57,7 @@ public class RenderSculptor extends MowzieGeoEntityRenderer<EntitySculptor> {
         Optional<GeoBone> skirtFrontLocLeft = model.getBone("skirtFrontLocLeft");
         Optional<GeoBone> skirtBackLocRight = model.getBone("skirtBackLocRight");
         Optional<GeoBone> skirtBackLocLeft = model.getBone("skirtBackLocLeft");
+        Optional<GeoBone> frontCloth = model.getBone("clothFront");
         calfRight.ifPresent(geoBone -> entity.calfRPos = geoBone.getModelPosition());
         calfLeft.ifPresent(geoBone -> entity.calfLPos = geoBone.getModelPosition());
         thighRight.ifPresent(geoBone -> entity.thighRPos = geoBone.getModelPosition());
@@ -66,6 +68,7 @@ public class RenderSculptor extends MowzieGeoEntityRenderer<EntitySculptor> {
         skirtFrontLocLeft.ifPresent(geoBone -> entity.skirtLocFrontLPos = geoBone.getModelPosition());
         skirtBackLocRight.ifPresent(geoBone -> entity.skirtLocBackRPos = geoBone.getModelPosition());
         skirtBackLocLeft.ifPresent(geoBone -> entity.skirtLocBackLPos = geoBone.getModelPosition());
+        frontCloth.ifPresent(geoBone -> entity.frontClothRot = geoBone instanceof MowzieGeoBone ? ((MowzieGeoBone)geoBone).getModelRotationMat() : null);
 
         this.shadowRadius = 0.7f * (1.0f - entity.disappearController);
     }

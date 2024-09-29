@@ -134,7 +134,8 @@ public class ModelSculptor extends MowzieGeoModel<EntitySculptor> {
                 entity.skirtLocFrontRPos == null ||
                 entity.skirtLocFrontLPos == null ||
                 entity.skirtLocBackRPos == null ||
-                entity.skirtLocBackLPos == null
+                entity.skirtLocBackLPos == null ||
+                entity.frontClothRot == null
         ) {
             return;
         }
@@ -212,7 +213,7 @@ public class ModelSculptor extends MowzieGeoModel<EntitySculptor> {
         MowzieGeoBone frontCloth2 = getMowzieBone("clothFront2");
 
         frontCloth.setRot(skirtFront.getRot());
-        Matrix4f mat = frontCloth.getModelRotationMat();
+        Matrix4f mat = entity.frontClothRot;
         mat.invert();
         frontCloth2.setModelXformOverride(mat);
     }
