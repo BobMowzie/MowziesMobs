@@ -304,11 +304,16 @@ public class EntitySculptor extends MowzieGeckoEntity {
     }
 
     @Override
-    protected SoundEvent getAmbientSound() {
-        if (getActiveAbility() != null) return null;
+    protected SoundEvent getHurtSound(DamageSource source) {
+        return MMSounds.ENTITY_SCULPTOR_HURT.get();
+    }
+
+    @Override
+    public void playAmbientSound() {
+        if (getActiveAbility() != null) return;
         if (!isFighting()) {
-            if (isTestObstructed) {
-                return random.nextFloat() > 0.5 ? MMSounds.ENTITY_SCULPTOR_HM.get() : null;
+            if (isTestObstructed && random.nextFloat() > 0.5) {
+                playSound(MMSounds.ENTITY_SCULPTOR_HM.get(), 1, 1);
             }
             else {
                 if (random.nextFloat() < 0.1) {
@@ -324,15 +329,8 @@ public class EntitySculptor extends MowzieGeckoEntity {
                         sendAbilityMessage(LAUGH_ABILITY);
                     }
                 }
-                return null;
             }
         }
-        return null;
-    }
-
-    @Override
-    public void playAmbientSound() {
-        super.playAmbientSound();
     }
 
     @Override
@@ -725,9 +723,15 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     @Override
     protected int getDeathDuration() {
-        Ability deathAbility = getActiveAbility();
-        if (deathAbility == null || !deathAbility.isUsing()) return 9;
-        return 120;
+        AbilityType deathAbilityType = getDeathAbility();
+        Ability deathAbility = getAbility(deathAbilityType);
+        if (deathAbility == null || !deathAbility.isUsing()) {
+            return 9;
+        }
+        else if (deathAbility.getCurrentSection().sectionType == AbilitySection.AbilitySectionType.RECOVERY) {
+            return deathAbility.getTicksInUse() - deathAbility.getTicksInSection() + 84;
+        }
+        return 94;
     }
 
     public int getTestTimePassed() {
@@ -1120,7 +1124,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
     }
 
     public static class SculptorDieAbility extends Ability<EntitySculptor> {
-        private static AbilitySection.AbilitySectionDuration END_SECTION = new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 76);
+        private static AbilitySection.AbilitySectionDuration END_SECTION = new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 85);
 
         public SculptorDieAbility(AbilityType abilityType, EntitySculptor user) {
             super(abilityType, user, new AbilitySection[] {
@@ -1137,6 +1141,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
         public void start() {
             super.start();
             playAnimation(DEATH_START);
+            getUser().playHurtSound(getUser().damageSources().generic());
         }
 
         @Override
@@ -1145,11 +1150,6 @@ public class EntitySculptor extends MowzieGeckoEntity {
             if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
                 if (getUser().onGround()) nextSection();
             }
-            if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.RECOVERY) {
-                if (getTicksInSection() == 30) {
-                    getUser().playSound(MMSounds.ENTITY_SCULPTOR_DEATH.get());
-                }
-            }
         }
 
         @Override
@@ -1157,6 +1157,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
             super.beginSection(section);
             if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.RECOVERY) {
                 playAnimation(DEATH_END);
+                getUser().playSound(MMSounds.ENTITY_SCULPTOR_DEATH.get());
             }
         }
 

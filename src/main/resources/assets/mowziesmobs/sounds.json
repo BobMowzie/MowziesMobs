@@ -671,6 +671,15 @@
 		"sounds": [ "mowziesmobs:entity/sculptor/death" ],
 		"subtitle": "subtitles.mowziesmobs.sculptor.death"
 	},
+	"sculptor.hurt": {
+		"sounds": [
+			"mowziesmobs:entity/sculptor/hurt1",
+			"mowziesmobs:entity/sculptor/hurt2",
+			"mowziesmobs:entity/sculptor/hurt3",
+			"mowziesmobs:entity/sculptor/hurt4"
+		],
+		"subtitle": "subtitles.mowziesmobs.sculptor.hurt"
+	},
 	"misc.groundhit1": {
 		"sounds": [ "mowziesmobs:entity/misc/ground_hit1" ],
 		"subtitle": "subtitles.mowziesmobs.ground_hit"

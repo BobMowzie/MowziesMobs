@@ -210,6 +210,7 @@ public final class MMSounds {
     public static final RegistryObject<SoundEvent> ENTITY_SCULPTOR_DISAPPOINT = create("sculptor.disappoint");
     public static final RegistryObject<SoundEvent> ENTITY_SCULPTOR_CONGRATS = create("sculptor.congrats");
     public static final RegistryObject<SoundEvent> ENTITY_SCULPTOR_DEATH = create("sculptor.death");
+    public static final RegistryObject<SoundEvent> ENTITY_SCULPTOR_HURT = create("sculptor.hurt");
 
     public static final RegistryObject<SoundEvent> EFFECT_GEOMANCY_SMALL_CRASH = create("geomancy.smallcrash");
     public static final RegistryObject<SoundEvent> EFFECT_GEOMANCY_MAGIC_SMALL = create("geomancy.hitsmall");
