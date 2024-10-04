@@ -680,6 +680,29 @@
 		],
 		"subtitle": "subtitles.mowziesmobs.sculptor.hurt"
 	},
+	"sculptor.attack": {
+		"sounds": [
+			"mowziesmobs:entity/sculptor/attack1",
+			"mowziesmobs:entity/sculptor/attack2",
+			"mowziesmobs:entity/sculptor/attack3",
+			"mowziesmobs:entity/sculptor/attack4",
+			"mowziesmobs:entity/sculptor/attack5",
+			"mowziesmobs:entity/sculptor/attack6"
+		],
+		"subtitle": "subtitles.mowziesmobs.sculptor.attack"
+	},
+	"sculptor.make_gauntlet": {
+		"sounds": [ "mowziesmobs:entity/sculptor/make_gauntlet" ],
+		"subtitle": "subtitles.mowziesmobs.sculptor.make_gauntlet"
+	},
+	"sculptor.finish_gauntlet": {
+		"sounds": [ "mowziesmobs:entity/sculptor/finish_gauntlet" ],
+		"subtitle": "subtitles.mowziesmobs.sculptor.finish_gauntlet"
+	},
+	"sculptor.disappear": {
+		"sounds": [ "mowziesmobs:entity/sculptor/disappear" ],
+		"subtitle": "subtitles.mowziesmobs.sculptor.disappear"
+	},
 	"misc.groundhit1": {
 		"sounds": [ "mowziesmobs:entity/misc/ground_hit1" ],
 		"subtitle": "subtitles.mowziesmobs.ground_hit"

@@ -312,8 +312,10 @@ public class EntitySculptor extends MowzieGeckoEntity {
     public void playAmbientSound() {
         if (getActiveAbility() != null) return;
         if (!isFighting()) {
-            if (isTestObstructed && random.nextFloat() > 0.5) {
-                playSound(MMSounds.ENTITY_SCULPTOR_HM.get(), 1, 1);
+            if (isTestObstructed) {
+                if (random.nextFloat() > 0.5) {
+                    playSound(MMSounds.ENTITY_SCULPTOR_HM.get(), 1, 1);
+                }
             }
             else {
                 if (random.nextFloat() < 0.1) {
@@ -440,9 +442,9 @@ public class EntitySculptor extends MowzieGeckoEntity {
             beardChain.setSimulating(pillar == null || pillar.isRemoved() || !getPillar().isFalling() && !getPillar().isRising());
         }
 
-//        if (getActiveAbility() == null && tickCount % 60 == 0) {
-//            sendAbilityMessage(ATTACK_ABILITY);
-//        }
+        if (getActiveAbility() == null && tickCount % 60 == 0) {
+            sendAbilityMessage(PASS_TEST);
+        }
 
 //        if (level().isClientSide() && dc != null && dc.p.length > 0 && dc.p[0] != null) {
 //            for (int i = 0; i < dc.p.length; i++) {
@@ -648,7 +650,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     @Override
     protected InteractionResult mobInteract(Player player, InteractionHand hand) {
-        if (isTesting()) {
+        if (isTesting() && !getPillar().isRising()) {
             if (player == testingPlayer) sendAbilityMessage(PASS_TEST);
         }
         else {
@@ -950,6 +952,12 @@ public class EntitySculptor extends MowzieGeckoEntity {
             if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE && getTicksInSection() == 15) {
                 getUser().playSound(MMSounds.ENTITY_SCULPTOR_CONGRATS.get());
             }
+            if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.RECOVERY && getTicksInSection() == 35) {
+                getUser().playSound(MMSounds.ENTITY_SCULPTOR_MAKE_GAUNTLET.get());
+            }
+            if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.RECOVERY && getTicksInSection() == 103) {
+                getUser().playSound(MMSounds.ENTITY_SCULPTOR_FINISH_GAUNTLET.get());
+            }
             if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.RECOVERY && getTicksInSection() == 134 && !getUser().level().isClientSide()) {
                 Vec3 polarOffset = new Vec3(1.2, 0, 0).yRot((float)Math.toRadians(-getUser().yBodyRot - 90));
                 Vec3 itemPos = getUser().position().add(0, 1.2, 0).add(polarOffset);
@@ -967,7 +975,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
         @Override
         public boolean canCancelActiveAbility() {
-            return false;
+            return true;
         }
 
         private static final RawAnimation TEST_PASS_START = RawAnimation.begin().then("test_pass_start", Animation.LoopType.HOLD_ON_LAST_FRAME);
@@ -1060,11 +1068,20 @@ public class EntitySculptor extends MowzieGeckoEntity {
         }
 
         @Override
+        public void tickUsing() {
+            super.tickUsing();
+            if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.STARTUP && getTicksInSection() == 4) {
+                if (getUser().random.nextFloat() > 0.66) {
+                    getUser().playSound(MMSounds.ENTITY_SCULPTOR_ATTACK.get(), 2, 0.95f + getUser().random.nextFloat() * 0.1f);
+                }
+            }
+        }
+
+        @Override
         protected void beginSection(AbilitySection section) {
             super.beginSection(section);
 
             if (section.sectionType == AbilitySection.AbilitySectionType.STARTUP) {
-                System.out.println(whichHand.toString());
                 if (whichHand == WhichHand.NONE) {
                     playAnimation(ATTACK_START);
                     whichHand = WhichHand.LEFT;
@@ -1216,6 +1233,10 @@ public class EntitySculptor extends MowzieGeckoEntity {
                     });
                 }
             }
+
+            if (getTicksInUse() == 15) {
+                getUser().playSound(MMSounds.ENTITY_SCULPTOR_DISAPPEAR.get());
+            }
         }
 
         @Override
@@ -1282,6 +1303,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
                 } else if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.ACTIVE && getBoulder() != null) {
                     if (target != null && !target.isRemoved() && target instanceof LivingEntity) {
                         AttackAbility.shootBoulderAtTarget((LivingEntity) target, prevTargetPos, getBoulder(), 0.45f);
+                        getUser().playSound(MMSounds.ENTITY_SCULPTOR_ATTACK.get(), 2, 0.95f + getUser().random.nextFloat() * 0.1f);
                     }
                     else {
                         getBoulder().explode();
