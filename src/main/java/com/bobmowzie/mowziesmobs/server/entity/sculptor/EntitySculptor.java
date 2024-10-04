@@ -41,6 +41,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.InteractionHand;
@@ -75,6 +76,7 @@ import org.joml.Vector3d;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.core.animation.*;
+import software.bernie.geckolib.core.keyframe.event.SoundKeyframeEvent;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -442,9 +444,9 @@ public class EntitySculptor extends MowzieGeckoEntity {
             beardChain.setSimulating(pillar == null || pillar.isRemoved() || !getPillar().isFalling() && !getPillar().isRising());
         }
 
-        if (getActiveAbility() == null && tickCount % 60 == 0) {
-            sendAbilityMessage(PASS_TEST);
-        }
+//        if (getActiveAbility() == null && tickCount % 60 == 0) {
+//            sendAbilityMessage(PASS_TEST);
+//        }
 
 //        if (level().isClientSide() && dc != null && dc.p.length > 0 && dc.p[0] != null) {
 //            for (int i = 0; i < dc.p.length; i++) {
@@ -686,6 +688,15 @@ public class EntitySculptor extends MowzieGeckoEntity {
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         super.registerControllers(controllers);
+        controller.setSoundKeyframeHandler(state -> {
+            String sound = state.getKeyframeData().getSound();
+            if (sound.equals("make_gauntlet_effects")) {
+                this.level().playSound(Minecraft.getInstance().player, getX(), getY(), getZ(), MMSounds.ENTITY_SCULPTOR_MAKE_GAUNTLET_EFFECTS.get(), SoundSource.NEUTRAL, 1, 1);
+            }
+            else if (sound.equals("make_gauntlet_piece")) {
+                this.level().playSound(Minecraft.getInstance().player, getX(), getY(), getZ(), MMSounds.ENTITY_SCULPTOR_MAKE_GAUNTLET_PIECE.get(), SoundSource.NEUTRAL, 1, 0.7f + 0.6f * random.nextFloat());
+            }
+        });
     }
 
     @Override

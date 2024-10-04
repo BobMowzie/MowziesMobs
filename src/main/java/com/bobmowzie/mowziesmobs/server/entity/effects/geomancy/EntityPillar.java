@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.entity.effects.geomancy;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityMagicEffect;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -68,6 +69,10 @@ public class EntityPillar extends EntityGeomancyBase {
     public void tick() {
         prevPrevHeight = prevHeight;
         prevHeight = getHeight();
+
+        if (firstTick) {
+            playSound(MMSounds.EFFECT_GEOMANCY_BREAK_LARGE_1.get(), 2, 1);
+        }
 
         if (!level().isClientSide()) {
             if (isRising()) {
@@ -218,7 +223,7 @@ public class EntityPillar extends EntityGeomancyBase {
                 if (!level().isClientSide() && !sculptor.isFighting() && !sculptor.isTesting()) startFalling();
             }
             super.tick();
-            if (getHeight() >= getDesiredHeight()) {
+            if (getHeight() >= getDesiredHeight() && isRising()) {
                 stopRising();
             }
         }

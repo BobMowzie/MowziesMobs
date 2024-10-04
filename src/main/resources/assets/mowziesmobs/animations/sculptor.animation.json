@@ -7408,6 +7408,41 @@
 						}
 					}
 				}
+			},
+			"sound_effects": {
+				"1.625": {
+					"effect": "make_gauntlet_effects"
+				},
+				"2.375": {
+					"effect": "make_gauntlet_piece"
+				},
+				"2.6667": {
+					"effect": "make_gauntlet_piece"
+				},
+				"2.9167": {
+					"effect": "make_gauntlet_piece"
+				},
+				"3.1667": {
+					"effect": "make_gauntlet_piece"
+				},
+				"3.4167": {
+					"effect": "make_gauntlet_piece"
+				},
+				"3.6667": {
+					"effect": "make_gauntlet_piece"
+				},
+				"3.9167": {
+					"effect": "make_gauntlet_piece"
+				},
+				"4.1667": {
+					"effect": "make_gauntlet_piece"
+				},
+				"4.4583": {
+					"effect": "make_gauntlet_piece"
+				},
+				"4.7083": {
+					"effect": "make_gauntlet_piece"
+				}
 			}
 		},
 		"test_fail_start": {

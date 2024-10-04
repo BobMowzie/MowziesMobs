@@ -215,6 +215,8 @@ public final class MMSounds {
     public static final RegistryObject<SoundEvent> ENTITY_SCULPTOR_MAKE_GAUNTLET = create("sculptor.make_gauntlet");
     public static final RegistryObject<SoundEvent> ENTITY_SCULPTOR_FINISH_GAUNTLET = create("sculptor.finish_gauntlet");
     public static final RegistryObject<SoundEvent> ENTITY_SCULPTOR_DISAPPEAR = create("sculptor.disappear");
+    public static final RegistryObject<SoundEvent> ENTITY_SCULPTOR_MAKE_GAUNTLET_EFFECTS = create("sculptor.make_gauntlet_effects");
+    public static final RegistryObject<SoundEvent> ENTITY_SCULPTOR_MAKE_GAUNTLET_PIECE = create("sculptor.make_gauntlet_piece");
 
     public static final RegistryObject<SoundEvent> EFFECT_GEOMANCY_SMALL_CRASH = create("geomancy.smallcrash");
     public static final RegistryObject<SoundEvent> EFFECT_GEOMANCY_MAGIC_SMALL = create("geomancy.hitsmall");

@@ -695,6 +695,14 @@
 		"sounds": [ "mowziesmobs:entity/sculptor/make_gauntlet" ],
 		"subtitle": "subtitles.mowziesmobs.sculptor.make_gauntlet"
 	},
+	"sculptor.make_gauntlet_effects": {
+		"sounds": [ "mowziesmobs:entity/sculptor/make_gauntlet_effects" ],
+		"subtitle": "subtitles.mowziesmobs.sculptor.make_gauntlet_effects"
+	},
+	"sculptor.make_gauntlet_piece": {
+		"sounds": [ "mowziesmobs:entity/sculptor/make_gauntlet_piece" ],
+		"subtitle": "subtitles.mowziesmobs.sculptor.make_gauntlet_piece"
+	},
 	"sculptor.finish_gauntlet": {
 		"sounds": [ "mowziesmobs:entity/sculptor/finish_gauntlet" ],
 		"subtitle": "subtitles.mowziesmobs.sculptor.finish_gauntlet"
