@@ -711,6 +711,10 @@
 		"sounds": [ "mowziesmobs:entity/sculptor/disappear" ],
 		"subtitle": "subtitles.mowziesmobs.sculptor.disappear"
 	},
+	"sculptor.disappear_effects": {
+		"sounds": [ "mowziesmobs:entity/sculptor/disappear_effects" ],
+		"subtitle": "subtitles.mowziesmobs.sculptor.disappear_effects"
+	},
 	"misc.groundhit1": {
 		"sounds": [ "mowziesmobs:entity/misc/ground_hit1" ],
 		"subtitle": "subtitles.mowziesmobs.ground_hit"

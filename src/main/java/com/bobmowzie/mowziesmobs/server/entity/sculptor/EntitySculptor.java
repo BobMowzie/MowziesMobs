@@ -445,7 +445,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
         }
 
 //        if (getActiveAbility() == null && tickCount % 60 == 0) {
-//            sendAbilityMessage(PASS_TEST);
+//            sendAbilityMessage(DISAPPEAR_ABILITY);
 //        }
 
 //        if (level().isClientSide() && dc != null && dc.p.length > 0 && dc.p[0] != null) {
@@ -1186,6 +1186,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
             if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.RECOVERY) {
                 playAnimation(DEATH_END);
                 getUser().playSound(MMSounds.ENTITY_SCULPTOR_DEATH.get());
+                getUser().playSound(MMSounds.MISC_GROUNDHIT_1.get(), 1, 1.2f);
             }
         }
 
@@ -1245,6 +1246,9 @@ public class EntitySculptor extends MowzieGeckoEntity {
                 }
             }
 
+            if (getTicksInUse() == 8) {
+                getUser().playSound(MMSounds.ENTITY_SCULPTOR_DISAPPEAR_EFFECTS.get());
+            }
             if (getTicksInUse() == 15) {
                 getUser().playSound(MMSounds.ENTITY_SCULPTOR_DISAPPEAR.get());
             }
