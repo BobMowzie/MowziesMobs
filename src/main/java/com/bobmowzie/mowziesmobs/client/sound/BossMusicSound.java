@@ -30,8 +30,10 @@ public class BossMusicSound extends AbstractTickableSoundInstance {
         this.z = boss.getZ();
 
         volumeControl = new ControlledAnimation(40);
-        volumeControl.setTimer(20);
-        volume = volumeControl.getAnimationFraction();
+        volumeControl.setTimer(40);
+        volume = volumeControl.getAnimationFraction() * music.volumeControl.getAnimationFraction();
+
+        shouldPlay = true;
     }
 
     public boolean canPlaySound() {
@@ -45,7 +47,12 @@ public class BossMusicSound extends AbstractTickableSoundInstance {
         else {
             volumeControl.decreaseTimer();
         }
-        volume = volumeControl.getAnimationFraction();
+
+        if (music.volumeControl.getAnimationFraction() < 0.025) {
+            stop();
+        }
+
+        volume = volumeControl.getAnimationFraction() * music.volumeControl.getAnimationFraction();
     }
 
     public void setBoss(MowzieEntity boss) {
@@ -80,5 +87,10 @@ public class BossMusicSound extends AbstractTickableSoundInstance {
     public void cutOut() {
         shouldPlay = false;
         volumeControl.setTimer(0);
+    }
+
+    @Override
+    public boolean canStartSilent() {
+        return true;
     }
 }

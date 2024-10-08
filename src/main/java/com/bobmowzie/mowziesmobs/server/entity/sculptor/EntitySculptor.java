@@ -766,6 +766,19 @@ public class EntitySculptor extends MowzieGeckoEntity {
         return BossMusicPlayer.SCULPTOR_MUSIC;
     }
 
+    @Override
+    protected boolean canPlayMusic() {
+        if (isTesting()) return true;
+        return super.canPlayMusic();
+    }
+
+    @Override
+    public boolean canPlayerHearMusic(Player player) {
+        return player != null
+                && (canAttack(player) || isTesting())
+                && distanceTo(player) < 2500;
+    }
+
     public static class StartTestAbility extends Ability<EntitySculptor> {
         private static int MAX_RANGE_TO_GROUND = 12;
 

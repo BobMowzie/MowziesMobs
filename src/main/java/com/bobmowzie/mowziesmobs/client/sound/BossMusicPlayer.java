@@ -13,7 +13,7 @@ public class BossMusicPlayer {
     public static final BossMusic FERROUS_WROUGHTNAUT_MUSIC = new BossMusic(MMSounds.MUSIC_FERROUS_WROUGHTNAUT_THEME.get());
     public static final BossMusic UMVUTHI_MUSIC = new BossMusic(MMSounds.MUSIC_UMVUTHI_THEME.get());
     public static final BossMusic FROSTMAW_MUSIC = new BossMusic(MMSounds.MUSIC_FROSTMAW_THEME.get());
-    public static final BossMusic SCULPTOR_MUSIC = new BossMusic(MMSounds.MUSIC_SCULPTOR_THEME_LEVEL1.get());
+    public static final BossMusic SCULPTOR_MUSIC = new SculptorBossMusic();
     private static final BossMusic[] BOSS_MUSICS = new BossMusic[] {
         FERROUS_WROUGHTNAUT_MUSIC,
         UMVUTHI_MUSIC,
@@ -69,7 +69,7 @@ public class BossMusicPlayer {
         if (!ConfigHandler.CLIENT.playBossMusic.get()) return;
 
         if (currentMusic != null && currentMusic.getBoss() == entity)
-            currentMusic.stop();
+            currentMusic.setBoss(null);
     }
 
     public static void tick() {

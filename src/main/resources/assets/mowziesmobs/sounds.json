@@ -774,6 +774,17 @@
 		],
 		"subtitle": "subtitles.mowziesmobs.frostmaw_theme"
 	},
+	"music.sculptor_theme_intro": {
+		"category": "music",
+		"sounds": [
+			{
+				"name": "mowziesmobs:music/sculptor/intro",
+				"stream": true,
+				"volume": 0.5
+			}
+		],
+		"subtitle": "subtitles.mowziesmobs.sculptor_theme"
+	},
 	"music.sculptor_theme_level1": {
 		"category": "music",
 		"sounds": [
@@ -801,6 +812,50 @@
 		"sounds": [
 			{
 				"name": "mowziesmobs:music/sculptor/level3",
+				"stream": true,
+				"volume": 0.5
+			}
+		],
+		"subtitle": "subtitles.mowziesmobs.sculptor_theme"
+	},
+	"music.sculptor_theme_transition": {
+		"category": "music",
+		"sounds": [
+			{
+				"name": "mowziesmobs:music/sculptor/transition",
+				"stream": true,
+				"volume": 0.5
+			}
+		],
+		"subtitle": "subtitles.mowziesmobs.sculptor_theme"
+	},
+	"music.sculptor_theme_level4": {
+		"category": "music",
+		"sounds": [
+			{
+				"name": "mowziesmobs:music/sculptor/level4",
+				"stream": true,
+				"volume": 0.5
+			}
+		],
+		"subtitle": "subtitles.mowziesmobs.sculptor_theme"
+	},
+	"music.sculptor_theme_ending": {
+		"category": "music",
+		"sounds": [
+			{
+				"name": "mowziesmobs:music/sculptor/ending",
+				"stream": true,
+				"volume": 0.5
+			}
+		],
+		"subtitle": "subtitles.mowziesmobs.sculptor_theme"
+	},
+	"music.sculptor_theme_outro": {
+		"category": "music",
+		"sounds": [
+			{
+				"name": "mowziesmobs:music/sculptor/outro",
 				"stream": true,
 				"volume": 0.5
 			}

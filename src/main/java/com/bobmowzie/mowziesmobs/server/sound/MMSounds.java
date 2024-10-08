@@ -269,12 +269,14 @@ public final class MMSounds {
     public static final RegistryObject<SoundEvent> MUSIC_UMVUTHI_THEME = create("music.umvuthi_theme");
     public static final RegistryObject<SoundEvent> MUSIC_FERROUS_WROUGHTNAUT_THEME = create("music.ferrous_wroughtnaut_theme");
     public static final RegistryObject<SoundEvent> MUSIC_FROSTMAW_THEME = create("music.frostmaw_theme");
-    public static final RegistryObject<SoundEvent> MUSIC_SCULPTOR_THEME_START = create("music.sculptor_theme_start");
+    public static final RegistryObject<SoundEvent> MUSIC_SCULPTOR_THEME_INTRO = create("music.sculptor_theme_intro");
     public static final RegistryObject<SoundEvent> MUSIC_SCULPTOR_THEME_LEVEL1 = create("music.sculptor_theme_level1");
     public static final RegistryObject<SoundEvent> MUSIC_SCULPTOR_THEME_LEVEL2 = create("music.sculptor_theme_level2");
-    public static final RegistryObject<SoundEvent> MUSIC_SCULPTOR_THEME_TRANSITION = create("music.sculptor_theme_transition");
     public static final RegistryObject<SoundEvent> MUSIC_SCULPTOR_THEME_LEVEL3 = create("music.sculptor_theme_level3");
-    public static final RegistryObject<SoundEvent> MUSIC_SCULPTOR_THEME_END = create("music.sculptor_theme_end");
+    public static final RegistryObject<SoundEvent> MUSIC_SCULPTOR_THEME_TRANSITION = create("music.sculptor_theme_transition");
+    public static final RegistryObject<SoundEvent> MUSIC_SCULPTOR_THEME_LEVEL4 = create("music.sculptor_theme_level4");
+    public static final RegistryObject<SoundEvent> MUSIC_SCULPTOR_THEME_ENDING = create("music.sculptor_theme_ending");
+    public static final RegistryObject<SoundEvent> MUSIC_SCULPTOR_THEME_OUTRO = create("music.sculptor_theme_outro");
 
     private static RegistryObject<SoundEvent> create(String name) {
         return REG.register(name, () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(MowziesMobs.MODID, name)));
