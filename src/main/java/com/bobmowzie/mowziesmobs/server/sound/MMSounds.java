@@ -250,6 +250,8 @@ public final class MMSounds {
             EFFECT_GEOMANCY_RUMBLE_2::get,
             EFFECT_GEOMANCY_RUMBLE_3::get
     );
+    public static final RegistryObject<SoundEvent> EFFECT_GEOMANCY_RUMBLE_LOOP = create("geomancy.rumble_loop");
+
     public static final RegistryObject<SoundEvent> EFFECT_GEOMANCY_HIT_SMALL = create("geomancy.smallrockhit");
     public static final RegistryObject<SoundEvent> EFFECT_GEOMANCY_BOULDER_CHARGE = create("geomancy.bouldercharge");
     public static final RegistryObject<SoundEvent> EFFECT_GEOMANCY_MAGIC_CHARGE_SMALL = create("geomancy.magicchargesmall");
@@ -267,6 +269,12 @@ public final class MMSounds {
     public static final RegistryObject<SoundEvent> MUSIC_UMVUTHI_THEME = create("music.umvuthi_theme");
     public static final RegistryObject<SoundEvent> MUSIC_FERROUS_WROUGHTNAUT_THEME = create("music.ferrous_wroughtnaut_theme");
     public static final RegistryObject<SoundEvent> MUSIC_FROSTMAW_THEME = create("music.frostmaw_theme");
+    public static final RegistryObject<SoundEvent> MUSIC_SCULPTOR_THEME_START = create("music.sculptor_theme_start");
+    public static final RegistryObject<SoundEvent> MUSIC_SCULPTOR_THEME_LEVEL1 = create("music.sculptor_theme_level1");
+    public static final RegistryObject<SoundEvent> MUSIC_SCULPTOR_THEME_LEVEL2 = create("music.sculptor_theme_level2");
+    public static final RegistryObject<SoundEvent> MUSIC_SCULPTOR_THEME_TRANSITION = create("music.sculptor_theme_transition");
+    public static final RegistryObject<SoundEvent> MUSIC_SCULPTOR_THEME_LEVEL3 = create("music.sculptor_theme_level3");
+    public static final RegistryObject<SoundEvent> MUSIC_SCULPTOR_THEME_END = create("music.sculptor_theme_end");
 
     private static RegistryObject<SoundEvent> create(String name) {
         return REG.register(name, () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(MowziesMobs.MODID, name)));

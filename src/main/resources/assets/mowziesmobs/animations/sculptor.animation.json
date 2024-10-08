@@ -4231,6 +4231,7 @@
 			}
 		},
 		"test_pass_end": {
+			"loop": true,
 			"animation_length": 8,
 			"bones": {
 				"body": {

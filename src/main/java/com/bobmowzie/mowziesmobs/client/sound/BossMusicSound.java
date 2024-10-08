@@ -10,16 +10,18 @@ import net.minecraft.sounds.SoundSource;
 
 public class BossMusicSound extends AbstractTickableSoundInstance {
     private MowzieEntity boss;
-    private int ticksExisted = 0;
-    private int timeUntilFade;
+    private BossMusic music;
 
     private final SoundEvent soundEvent;
     ControlledAnimation volumeControl;
 
-    public BossMusicSound(SoundEvent sound, MowzieEntity boss) {
+    private boolean shouldPlay;
+
+    public BossMusicSound(SoundEvent sound, MowzieEntity boss, BossMusic music) {
         super(sound, SoundSource.MUSIC, SoundInstance.createUnseededRandom());
-        this.boss = boss;
         this.soundEvent = sound;
+        this.boss = boss;
+        this.music = music;
         this.attenuation = Attenuation.NONE;
         this.looping = true;
         this.delay = 0;
@@ -30,39 +32,20 @@ public class BossMusicSound extends AbstractTickableSoundInstance {
         volumeControl = new ControlledAnimation(40);
         volumeControl.setTimer(20);
         volume = volumeControl.getAnimationFraction();
-        timeUntilFade = 80;
     }
 
     public boolean canPlaySound() {
-        return BossMusicPlayer.bossMusic == this;
+        return true;
     }
 
     public void tick() {
-        // If the music should stop playing
-        if (boss == null || !boss.isAlive() || boss.isSilent()) {
-            // If the boss is dead, skip the fade timer and fade out right away
-            if (boss != null && !boss.isAlive()) timeUntilFade = 0;
-            boss = null;
-            if (timeUntilFade > 0) timeUntilFade--;
-            else volumeControl.decreaseTimer();
-        }
-        // If the music should keep playing
-        else {
+        if (shouldPlay) {
             volumeControl.increaseTimer();
-            timeUntilFade = 60;
         }
-
-        if (volumeControl.getAnimationFraction() < 0.025) {
-            stop();
-            BossMusicPlayer.bossMusic = null;
+        else {
+            volumeControl.decreaseTimer();
         }
-
         volume = volumeControl.getAnimationFraction();
-
-        if (ticksExisted % 100 == 0) {
-            Minecraft.getInstance().getMusicManager().stopPlaying();
-        }
-        ticksExisted++;
     }
 
     public void setBoss(MowzieEntity boss) {
@@ -75,5 +58,27 @@ public class BossMusicSound extends AbstractTickableSoundInstance {
 
     public SoundEvent getSoundEvent() {
         return soundEvent;
+    }
+
+    public void doStop() {
+        stop();
+    }
+
+    public void fadeOut() {
+        shouldPlay = false;
+    }
+
+    public void fadeIn() {
+        shouldPlay = true;
+    }
+
+    public void cutIn() {
+        shouldPlay = true;
+        volumeControl.setTimer(40);
+    }
+
+    public void cutOut() {
+        shouldPlay = false;
+        volumeControl.setTimer(0);
     }
 }

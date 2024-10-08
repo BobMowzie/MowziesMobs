@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
+import com.bobmowzie.mowziesmobs.client.sound.BossMusic;
 import com.bobmowzie.mowziesmobs.client.sound.BossMusicPlayer;
 import com.bobmowzie.mowziesmobs.server.bossinfo.MMBossInfoServer;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
@@ -21,7 +22,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -410,7 +410,7 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
             intermittentAnimations.get(id - START_IA_HEALTH_UPDATE_ID).start();
         }
         else if (id == MUSIC_PLAY_ID) {
-            BossMusicPlayer.playBossMusic(this);
+            BossMusicPlayer.requestBossMusic(this);
         }
         else if (id == MUSIC_STOP_ID) {
             BossMusicPlayer.stopBossMusic(this);
@@ -531,7 +531,7 @@ public abstract class MowzieEntity extends PathfinderMob implements IEntityAddit
         }
     }
 
-    public SoundEvent getBossMusic() {
+    public BossMusic getBossMusic() {
         return null;
     }
 

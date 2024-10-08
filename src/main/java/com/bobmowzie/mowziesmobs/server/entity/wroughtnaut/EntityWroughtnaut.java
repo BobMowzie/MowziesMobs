@@ -1,6 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.entity.wroughtnaut;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
+import com.bobmowzie.mowziesmobs.client.sound.BossMusic;
+import com.bobmowzie.mowziesmobs.client.sound.BossMusicPlayer;
 import com.bobmowzie.mowziesmobs.server.ai.MMPathNavigateGround;
 import com.bobmowzie.mowziesmobs.server.ai.WroughtnautAttackAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.*;
@@ -621,8 +623,8 @@ public class EntityWroughtnaut extends MowzieLLibraryEntity implements Enemy {
     }
 
     @Override
-    public SoundEvent getBossMusic() {
-        return MMSounds.MUSIC_FERROUS_WROUGHTNAUT_THEME.get();
+    public BossMusic getBossMusic() {
+        return BossMusicPlayer.FERROUS_WROUGHTNAUT_MUSIC;
     }
 
     @Override

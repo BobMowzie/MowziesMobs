@@ -9,6 +9,8 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleOrb;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent.PropertyControl.EnumParticleProperty;
+import com.bobmowzie.mowziesmobs.client.sound.BossMusic;
+import com.bobmowzie.mowziesmobs.client.sound.BossMusicPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
@@ -928,8 +930,8 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
     }
 
     @Override
-    public SoundEvent getBossMusic() {
-        return MMSounds.MUSIC_UMVUTHI_THEME.get();
+    public BossMusic getBossMusic() {
+        return BossMusicPlayer.UMVUTHI_MUSIC;
     }
 
     @Override

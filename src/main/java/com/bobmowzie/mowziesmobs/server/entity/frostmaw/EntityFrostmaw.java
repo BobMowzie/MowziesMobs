@@ -4,6 +4,8 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleCloud;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleRing;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleSnowFlake;
+import com.bobmowzie.mowziesmobs.client.sound.BossMusic;
+import com.bobmowzie.mowziesmobs.client.sound.BossMusicPlayer;
 import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
 import com.bobmowzie.mowziesmobs.server.ai.MMEntityMoveHelper;
 import com.bobmowzie.mowziesmobs.server.ai.MMPathNavigateGround;
@@ -898,8 +900,8 @@ public class EntityFrostmaw extends MowzieLLibraryEntity implements Enemy {
     }
 
     @Override
-    public SoundEvent getBossMusic() {
-        return MMSounds.MUSIC_FROSTMAW_THEME.get();
+    public BossMusic getBossMusic() {
+        return BossMusicPlayer.FROSTMAW_MUSIC;
     }
 
     @Override

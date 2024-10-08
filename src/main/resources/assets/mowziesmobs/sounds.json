@@ -773,5 +773,38 @@
 			}
 		],
 		"subtitle": "subtitles.mowziesmobs.frostmaw_theme"
+	},
+	"music.sculptor_theme_level1": {
+		"category": "music",
+		"sounds": [
+			{
+				"name": "mowziesmobs:music/sculptor/level1",
+				"stream": true,
+				"volume": 0.5
+			}
+		],
+		"subtitle": "subtitles.mowziesmobs.sculptor_theme"
+	},
+	"music.sculptor_theme_level2": {
+		"category": "music",
+		"sounds": [
+			{
+				"name": "mowziesmobs:music/sculptor/level2",
+				"stream": true,
+				"volume": 0.5
+			}
+		],
+		"subtitle": "subtitles.mowziesmobs.sculptor_theme"
+	},
+	"music.sculptor_theme_level3": {
+		"category": "music",
+		"sounds": [
+			{
+				"name": "mowziesmobs:music/sculptor/level3",
+				"stream": true,
+				"volume": 0.5
+			}
+		],
+		"subtitle": "subtitles.mowziesmobs.sculptor_theme"
 	}
 }

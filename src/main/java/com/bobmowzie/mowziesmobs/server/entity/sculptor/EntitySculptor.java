@@ -6,6 +6,8 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleRotation;
+import com.bobmowzie.mowziesmobs.client.sound.BossMusic;
+import com.bobmowzie.mowziesmobs.client.sound.BossMusicPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
@@ -23,7 +25,6 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderPro
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderSculptor;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityGeomancyBase;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityPillar;
-import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthi;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerSculptorTrade;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemSculptorStaff;
@@ -42,6 +43,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.InteractionHand;
@@ -76,7 +78,6 @@ import org.joml.Vector3d;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.core.animation.*;
-import software.bernie.geckolib.core.keyframe.event.SoundKeyframeEvent;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -581,6 +582,11 @@ public class EntitySculptor extends MowzieGeckoEntity {
         }
     }
 
+    public float playerProgress() {
+        if (getPillar() == null) return 0;
+        return Mth.clamp((float) (getTestingPlayer().getY() - getPillar().getY()) / (float) TEST_HEIGHT, 0f, 1f);
+    }
+
     public static double testRadiusAtHeight(double height) {
         return TEST_RADIUS_BOTTOM + Math.pow(Math.min(height / (double) TEST_MAX_RADIUS_HEIGHT, 1), TEST_RADIUS_FALLOFF) * (TEST_RADIUS - TEST_RADIUS_BOTTOM);
     }
@@ -653,7 +659,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
     @Override
     protected InteractionResult mobInteract(Player player, InteractionHand hand) {
         if (isTesting() && !getPillar().isRising()) {
-            if (player == testingPlayer) sendAbilityMessage(PASS_TEST);
+            if (player == testingPlayer && getActiveAbilityType() != FAIL_TEST) sendAbilityMessage(PASS_TEST);
         }
         else {
             if (canTradeWith(player) && getTarget() == null && isAlive()) {
@@ -753,6 +759,11 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     public int getMaxTestTime() {
         return ConfigHandler.COMMON.MOBS.SCULPTOR.testTimeLimit.get() * 20;
+    }
+
+    @Override
+    public BossMusic getBossMusic() {
+        return BossMusicPlayer.SCULPTOR_MUSIC;
     }
 
     public static class StartTestAbility extends Ability<EntitySculptor> {
