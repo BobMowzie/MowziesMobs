@@ -18,19 +18,23 @@ public class BossMusicSound extends AbstractTickableSoundInstance {
     private boolean shouldPlay;
 
     public BossMusicSound(SoundEvent sound, MowzieEntity boss, BossMusic music) {
+        this(sound, boss, music, true);
+    }
+
+    public BossMusicSound(SoundEvent sound, MowzieEntity boss, BossMusic music, boolean looping) {
         super(sound, SoundSource.MUSIC, SoundInstance.createUnseededRandom());
         this.soundEvent = sound;
         this.boss = boss;
         this.music = music;
         this.attenuation = Attenuation.NONE;
-        this.looping = true;
+        this.looping = looping;
         this.delay = 0;
         this.x = boss.getX();
         this.y = boss.getY();
         this.z = boss.getZ();
 
-        volumeControl = new ControlledAnimation(40);
-        volumeControl.setTimer(40);
+        volumeControl = new ControlledAnimation(5);
+        volumeControl.setTimer(3);
         volume = volumeControl.getAnimationFraction() * music.volumeControl.getAnimationFraction();
 
         shouldPlay = true;
@@ -48,7 +52,7 @@ public class BossMusicSound extends AbstractTickableSoundInstance {
             volumeControl.decreaseTimer();
         }
 
-        if (music.volumeControl.getAnimationFraction() < 0.025) {
+        if (volume < 0.025) {
             stop();
         }
 

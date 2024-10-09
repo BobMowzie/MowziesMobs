@@ -5,8 +5,8 @@ import com.ilexiconn.llibrary.client.model.tools.ControlledAnimation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.sounds.SoundEvent;
 
-public class BossMusic {
-    protected MowzieEntity boss;
+public class BossMusic<T extends MowzieEntity> {
+    protected T boss;
     protected SoundEvent soundEvent;
     protected BossMusicSound sound;
     protected boolean isPlaying;
@@ -68,11 +68,11 @@ public class BossMusic {
         return isPlaying;
     }
 
-    public MowzieEntity getBoss() {
+    public T getBoss() {
         return boss;
     }
 
-    public void setBoss(MowzieEntity boss) {
+    public void setBoss(T boss) {
         this.boss = boss;
     }
 

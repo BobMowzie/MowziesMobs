@@ -319,7 +319,7 @@ public enum ClientEventHandler {
 
     @SubscribeEvent
     public void onLevelTick(TickEvent.LevelTickEvent event) {
-        if (event.side == LogicalSide.CLIENT) {
+        if (event.side == LogicalSide.CLIENT && event.phase == TickEvent.Phase.END) {
             MowziesMobs.PROXY.updateMarkedBlocks();
             BossMusicPlayer.tick();
         }

@@ -5,94 +5,160 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.sounds.SoundEvent;
 
-public class SculptorBossMusic extends BossMusic {
-    protected SoundEvent soundEventIntro;
-    protected SoundEvent soundEventLevel1;
-    protected SoundEvent soundEventLevel2;
-    protected SoundEvent soundEventLevel3;
-    protected SoundEvent soundEventTransition;
-    protected SoundEvent soundEventLevel4;
-    protected SoundEvent soundEventEnding;
-    protected SoundEvent soundEventOutro;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+public class SculptorBossMusic extends BossMusic<EntitySculptor> {
+    protected static SoundEvent soundEventIntro = MMSounds.MUSIC_SCULPTOR_THEME_INTRO.get();
+    protected static SoundEvent soundEventLevel1 = MMSounds.MUSIC_SCULPTOR_THEME_LEVEL1.get();
+    protected static SoundEvent soundEventLevel2 = MMSounds.MUSIC_SCULPTOR_THEME_LEVEL2.get();
+    protected static SoundEvent soundEventLevel3 = MMSounds.MUSIC_SCULPTOR_THEME_LEVEL3.get();
+    protected static SoundEvent soundEventTransition = MMSounds.MUSIC_SCULPTOR_THEME_TRANSITION.get();
+    protected static SoundEvent soundEventLevel4 = MMSounds.MUSIC_SCULPTOR_THEME_LEVEL4.get();
+    protected static SoundEvent soundEventEnding = MMSounds.MUSIC_SCULPTOR_THEME_ENDING.get();
+    protected static SoundEvent soundEventOutro = MMSounds.MUSIC_SCULPTOR_THEME_OUTRO.get();
 
     protected BossMusicSound soundIntro;
-    protected BossMusicSound soundLevel1;
-    protected BossMusicSound soundLevel2;
-    protected BossMusicSound soundLevel3;
     protected BossMusicSound soundTransition;
-    protected BossMusicSound soundLevel4;
     protected BossMusicSound soundEnding;
     protected BossMusicSound soundOutro;
+    protected BossMusicSound currentSound;
+
+    private int mainTracksTick;
 
     private enum SculptorMusicSection {
         INTRO,
         LEVEL1,
         LEVEL2,
-        TRANSITION,
         LEVEL3,
+        TRANSITION,
+        LEVEL4,
         ENDING,
         OUTRO
     }
 
-    private SculptorMusicSection section;
+    private static final SortedMap<SculptorMusicSection, Float> SECTION_HEIGHTS = new TreeMap<>();
+    static {
+        SECTION_HEIGHTS.put(SculptorMusicSection.LEVEL1, 0.0f);
+        SECTION_HEIGHTS.put(SculptorMusicSection.LEVEL2, 0.1f);
+        SECTION_HEIGHTS.put(SculptorMusicSection.LEVEL3, 0.35f);
+        SECTION_HEIGHTS.put(SculptorMusicSection.LEVEL4, 0.65f);
+    }
+    private static final Map<SculptorMusicSection, SoundEvent> SECTION_SOUNDS = new HashMap<>();
+    static {
+        SECTION_SOUNDS.put(SculptorMusicSection.INTRO, soundEventIntro);
+        SECTION_SOUNDS.put(SculptorMusicSection.LEVEL1, soundEventLevel1);
+        SECTION_SOUNDS.put(SculptorMusicSection.LEVEL2, soundEventLevel2);
+        SECTION_SOUNDS.put(SculptorMusicSection.LEVEL3, soundEventLevel3);
+        SECTION_SOUNDS.put(SculptorMusicSection.TRANSITION, soundEventTransition);
+        SECTION_SOUNDS.put(SculptorMusicSection.LEVEL4, soundEventLevel4);
+        SECTION_SOUNDS.put(SculptorMusicSection.ENDING, soundEventEnding);
+        SECTION_SOUNDS.put(SculptorMusicSection.OUTRO, soundEventOutro);
+    }
+
+    private SculptorMusicSection currentSection;
 
     public SculptorBossMusic() {
         super(null);
-        soundEventIntro = MMSounds.MUSIC_SCULPTOR_THEME_INTRO.get();
-        soundEventLevel1 = MMSounds.MUSIC_SCULPTOR_THEME_LEVEL1.get();
-        soundEventLevel2 = MMSounds.MUSIC_SCULPTOR_THEME_LEVEL2.get();
-        soundEventLevel3 = MMSounds.MUSIC_SCULPTOR_THEME_LEVEL3.get();
-        soundEventTransition = MMSounds.MUSIC_SCULPTOR_THEME_TRANSITION.get();
-        soundEventLevel4 = MMSounds.MUSIC_SCULPTOR_THEME_LEVEL4.get();
-        soundEventEnding = MMSounds.MUSIC_SCULPTOR_THEME_ENDING.get();
-        soundEventOutro = MMSounds.MUSIC_SCULPTOR_THEME_OUTRO.get();
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (getBoss() instanceof EntitySculptor sculptor) {
-            if (sculptor.isTesting()) {
-                // Level 3
-                if (sculptor.playerProgress() > 0.66) {
-                    soundLevel3.fadeIn();
-                    soundLevel2.fadeOut();
-                    soundLevel1.fadeOut();
-                }
-                // Level 2
-                else if (sculptor.playerProgress() > 0.33) {
-                    soundLevel3.fadeOut();
-                    soundLevel2.fadeIn();
-                    soundLevel1.fadeOut();
-                }
-                // Level 1
-                else {
-                    soundLevel3.fadeOut();
-                    soundLevel2.fadeOut();
-                    soundLevel1.fadeIn();
+        if (getBoss() != null) {
+            if (ticksPlaying == 35) {
+                startMainTrack();
+            }
+
+            if (
+                    currentSection == SculptorMusicSection.LEVEL1 ||
+                    currentSection == SculptorMusicSection.LEVEL2 ||
+                    currentSection == SculptorMusicSection.LEVEL3 ||
+                    currentSection == SculptorMusicSection.LEVEL4
+            ) {
+                mainTracksTick++;
+                if (mainTracksTick % 128 == 0) {
+                    measureBreak();
                 }
             }
+
+//            if (getBoss().isTesting()) {
+//                // Level 3
+//                if (getBoss().playerProgress() > 0.66) {
+//                    soundLevel3.fadeIn();
+//                    soundLevel2.fadeOut();
+//                    soundLevel1.fadeOut();
+//                }
+//                // Level 2
+//                else if (getBoss().playerProgress() > 0.33) {
+//                    soundLevel3.fadeOut();
+//                    soundLevel2.fadeIn();
+//                    soundLevel1.fadeOut();
+//                }
+//                // Level 1
+//                else {
+//                    soundLevel3.fadeOut();
+//                    soundLevel2.fadeOut();
+//                    soundLevel1.fadeIn();
+//                }
+//            }
         }
+    }
+
+    private void startMainTrack() {
+        mainTracksTick = 0;
+        changeLevelSection(SculptorMusicSection.LEVEL1);
+    }
+
+    private void measureBreak() {
+//        Minecraft.getInstance().player.playSound(MMSounds.ENTITY_WROUGHT_UNDAMAGED.get(), 1, 1);
+        float playerProgress = getBoss().playerProgress();
+        float currentSectionHeight = SECTION_HEIGHTS.get(currentSection);
+        SculptorMusicSection nextSection = SculptorMusicSection.LEVEL1;
+        for (Map.Entry<SculptorMusicSection, Float> sectionHeight : SECTION_HEIGHTS.entrySet()) {
+            SculptorMusicSection section = sectionHeight.getKey();
+            float height = sectionHeight.getValue();
+            // If the current section is above the height we are checking, then the player moved down. We add a slight buffer before switching tracks.
+            if (currentSectionHeight >= height) {
+                height -= 0.05;
+            }
+            // If the player is in this height range,
+            if (playerProgress > height) {
+                nextSection = section;
+            }
+        }
+        if (nextSection != currentSection) {
+            changeLevelSection(nextSection);
+        }
+    }
+
+    private void changeLevelSection(SculptorMusicSection section) {
+        if (currentSound != null) {
+            currentSound.fadeOut();
+        }
+        SoundEvent requestedSoundEvent = SECTION_SOUNDS.get(section);
+        currentSound = new BossMusicSound(requestedSoundEvent, getBoss(), this);
+        Minecraft.getInstance().getSoundManager().play(currentSound);
+        currentSection = section;
     }
 
     public void play() {
         super.play();
-        section = SculptorMusicSection.INTRO;
-        soundLevel1 = new BossMusicSound(soundEventLevel1, getBoss(), this);
-        soundLevel2 = new BossMusicSound(soundEventLevel2, getBoss(), this);
-        soundLevel2.cutOut();
-        soundLevel3 = new BossMusicSound(soundEventLevel3, getBoss(), this);
-        soundLevel3.cutOut();
-        Minecraft.getInstance().getSoundManager().play(soundLevel1);
-        Minecraft.getInstance().getSoundManager().play(soundLevel2);
-        Minecraft.getInstance().getSoundManager().play(soundLevel3);
+        currentSection = SculptorMusicSection.INTRO;
+        soundIntro = new BossMusicSound(soundEventIntro, getBoss(), this, false);
+        Minecraft.getInstance().getSoundManager().play(soundIntro);
+        mainTracksTick = 0;
     }
 
     @Override
     public void stop() {
-        if (soundLevel1 != null) soundLevel1.doStop();
-        if (soundLevel2 != null) soundLevel2.doStop();
-        if (soundLevel3 != null) soundLevel3.doStop();
+        if (soundIntro != null) soundIntro.doStop();
+        if (soundTransition != null) soundTransition.doStop();
+        if (soundEnding != null) soundEnding.doStop();
+        if (soundOutro != null) soundOutro.doStop();
+        if (currentSound != null) currentSound.doStop();
         super.stop();
     }
 }
