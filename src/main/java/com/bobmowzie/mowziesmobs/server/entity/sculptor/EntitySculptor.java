@@ -84,7 +84,7 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public class EntitySculptor extends MowzieGeckoEntity {
-    public static int TEST_HEIGHT = 50;
+    public static int TEST_HEIGHT = 60;
     public static int TEST_RADIUS_BOTTOM = 6;
     public static int TEST_RADIUS = 16;
     public static int TEST_MAX_RADIUS_HEIGHT = 20;
@@ -620,6 +620,18 @@ public class EntitySculptor extends MowzieGeckoEntity {
         return getTestingPlayerID().isPresent();
     }
 
+    public boolean isTestPassed() {
+        return getActiveAbilityType() == PASS_TEST;
+    }
+
+    public boolean isTestFailed() {
+        return getActiveAbilityType() == FAIL_TEST;
+    }
+
+    public boolean isTestOver() {
+        return isTestPassed() || isTestFailed();
+    }
+
     public Optional<UUID> getTestingPlayerID() {
         return getEntityData().get(TESTING_PLAYER);
     }
@@ -768,7 +780,7 @@ public class EntitySculptor extends MowzieGeckoEntity {
 
     @Override
     protected boolean canPlayMusic() {
-        if (isTesting()) return true;
+        if (isTesting() && !isTestFailed()) return true;
         return super.canPlayMusic();
     }
 

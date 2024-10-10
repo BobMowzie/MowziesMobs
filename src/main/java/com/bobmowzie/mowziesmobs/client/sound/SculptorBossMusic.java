@@ -26,7 +26,7 @@ public class SculptorBossMusic extends BossMusic<EntitySculptor> {
     protected BossMusicSound soundOutro;
     protected BossMusicSound currentSound;
 
-    private int mainTracksTick;
+    private int ticksInSection;
 
     private enum SculptorMusicSection {
         INTRO,
@@ -45,6 +45,7 @@ public class SculptorBossMusic extends BossMusic<EntitySculptor> {
         SECTION_HEIGHTS.put(SculptorMusicSection.LEVEL2, 0.1f);
         SECTION_HEIGHTS.put(SculptorMusicSection.LEVEL3, 0.35f);
         SECTION_HEIGHTS.put(SculptorMusicSection.LEVEL4, 0.65f);
+        SECTION_HEIGHTS.put(SculptorMusicSection.ENDING, 0.98f);
     }
     private static final Map<SculptorMusicSection, SoundEvent> SECTION_SOUNDS = new HashMap<>();
     static {
@@ -67,55 +68,59 @@ public class SculptorBossMusic extends BossMusic<EntitySculptor> {
     @Override
     public void tick() {
         super.tick();
+        ticksInSection++;
+
         if (getBoss() != null) {
-            if (ticksPlaying == 35) {
+            if (currentSection == SculptorMusicSection.INTRO && ticksInSection == 35) {
                 startMainTrack();
+                return;
+            }
+
+            if (currentSection == SculptorMusicSection.TRANSITION) {
+                if (ticksInSection == 512) {
+                    changeLevelSection(SculptorMusicSection.LEVEL4);
+                    return;
+                }
+            }
+
+            if (currentSection == SculptorMusicSection.ENDING) {
+                if (ticksInSection % 64 == 0 && getBoss().isTestPassed()) {
+                    changeLevelSection(SculptorMusicSection.OUTRO, false);
+                    return;
+                }
             }
 
             if (
                     currentSection == SculptorMusicSection.LEVEL1 ||
                     currentSection == SculptorMusicSection.LEVEL2 ||
                     currentSection == SculptorMusicSection.LEVEL3 ||
-                    currentSection == SculptorMusicSection.LEVEL4
+                    currentSection == SculptorMusicSection.TRANSITION ||
+                    currentSection == SculptorMusicSection.LEVEL4 ||
+                    currentSection == SculptorMusicSection.ENDING
             ) {
-                mainTracksTick++;
-                if (mainTracksTick % 128 == 0) {
+                if (ticksInSection % 128 == 0) {
                     measureBreak();
                 }
             }
-
-//            if (getBoss().isTesting()) {
-//                // Level 3
-//                if (getBoss().playerProgress() > 0.66) {
-//                    soundLevel3.fadeIn();
-//                    soundLevel2.fadeOut();
-//                    soundLevel1.fadeOut();
-//                }
-//                // Level 2
-//                else if (getBoss().playerProgress() > 0.33) {
-//                    soundLevel3.fadeOut();
-//                    soundLevel2.fadeIn();
-//                    soundLevel1.fadeOut();
-//                }
-//                // Level 1
-//                else {
-//                    soundLevel3.fadeOut();
-//                    soundLevel2.fadeOut();
-//                    soundLevel1.fadeIn();
-//                }
-//            }
         }
     }
 
     private void startMainTrack() {
-        mainTracksTick = 0;
+        ticksInSection = 0;
         changeLevelSection(SculptorMusicSection.LEVEL1);
     }
 
     private void measureBreak() {
-//        Minecraft.getInstance().player.playSound(MMSounds.ENTITY_WROUGHT_UNDAMAGED.get(), 1, 1);
+        if (getBoss().isTestPassed()) {
+            changeLevelSection(SculptorMusicSection.OUTRO, false);
+            return;
+        }
+
+        SculptorMusicSection currentSectionIgnoreTransition = currentSection;
+        if (currentSection == SculptorMusicSection.TRANSITION) currentSectionIgnoreTransition = SculptorMusicSection.LEVEL4;
+
         float playerProgress = getBoss().playerProgress();
-        float currentSectionHeight = SECTION_HEIGHTS.get(currentSection);
+        float currentSectionHeight = SECTION_HEIGHTS.get(currentSectionIgnoreTransition);
         SculptorMusicSection nextSection = SculptorMusicSection.LEVEL1;
         for (Map.Entry<SculptorMusicSection, Float> sectionHeight : SECTION_HEIGHTS.entrySet()) {
             SculptorMusicSection section = sectionHeight.getKey();
@@ -124,24 +129,32 @@ public class SculptorBossMusic extends BossMusic<EntitySculptor> {
             if (currentSectionHeight >= height) {
                 height -= 0.05;
             }
-            // If the player is in this height range,
+            // If the player is in this height range, play the associated section
             if (playerProgress > height) {
                 nextSection = section;
             }
         }
-        if (nextSection != currentSection) {
+        if (nextSection != currentSectionIgnoreTransition) {
+            if (nextSection == SculptorMusicSection.LEVEL4) {
+                nextSection = SculptorMusicSection.TRANSITION;
+            }
             changeLevelSection(nextSection);
         }
     }
 
     private void changeLevelSection(SculptorMusicSection section) {
+        changeLevelSection(section, true);
+    }
+
+    private void changeLevelSection(SculptorMusicSection section, boolean loop) {
         if (currentSound != null) {
             currentSound.fadeOut();
         }
         SoundEvent requestedSoundEvent = SECTION_SOUNDS.get(section);
-        currentSound = new BossMusicSound(requestedSoundEvent, getBoss(), this);
+        currentSound = new BossMusicSound(requestedSoundEvent, getBoss(), this, loop);
         Minecraft.getInstance().getSoundManager().play(currentSound);
         currentSection = section;
+        ticksInSection = 0;
     }
 
     public void play() {
@@ -149,7 +162,7 @@ public class SculptorBossMusic extends BossMusic<EntitySculptor> {
         currentSection = SculptorMusicSection.INTRO;
         soundIntro = new BossMusicSound(soundEventIntro, getBoss(), this, false);
         Minecraft.getInstance().getSoundManager().play(soundIntro);
-        mainTracksTick = 0;
+        ticksInSection = 0;
     }
 
     @Override
